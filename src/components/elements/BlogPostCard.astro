@@ -1,0 +1,27 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Heading from '../HTML/Heading.astro';
+import Link from '../Link.astro';
+
+type Props = CollectionEntry<'blog'> & {
+	as?: 'li' | (string & {});
+	to?: string;
+};
+
+const { data, as: AS = 'div' as any, to = '/blog' } = Astro.props as Props;
+---
+
+<AS class="space-y-8">
+	<Link href={to}>
+		<img
+			class="sm:max-h-[300px] max-h-[250px] rounded-md w-full object-cover aspect-square"
+			src={data.heroImage}
+			alt={data.title}
+		/>
+	</Link>
+	<div class="space-y-3">
+		<p class="text-[darker-altA3]">{data.pubDate.toDateString()}</p>
+		<Heading type="h4"><Link href={to}>{data.title}</Link></Heading>
+		<p class="text-lg clamp-2 min-h-[56px]">{data.description}</p>
+	</div>
+</AS>

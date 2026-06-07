@@ -1,0 +1,66 @@
+<div class="relative py-10 flex items-center justify-center overflow-x-hidden">
+	<div class="flex-1 flex absolute left-0 animateCarousel">
+		<div class="w-1/2 flex animateItem"><slot /></div>
+		<div class="w-1/2 flex animateItem"><slot /></div>
+	</div>
+</div>
+
+<style>
+	@keyframes marquee {
+		0% {
+			left: 0;
+		}
+		100% {
+			left: -200%;
+		}
+	}
+	.animateCarousel {
+		width: 400%;
+		animation: marquee 15s linear infinite;
+		top: 50%;
+		transform: translate(0, -50%);
+	}
+	.animateItem > * {
+		width: unset;
+		-webkit-transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+	}
+
+	@media screen and (min-width: 992px) {
+		@keyframes marquee {
+			0% {
+				left: 0;
+			}
+			100% {
+				left: -90%;
+			}
+		}
+		.animateCarousel {
+			width: 180%;
+			animation: marquee 18s linear infinite;
+			top: 50%;
+			transform: translate(0, -50%);
+		}
+		.animateItem > * {
+			width: fit-content;
+			padding: 5px;
+			-webkit-transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+		}
+	}
+
+	.animateCarousel:hover {
+		animation-play-state: paused;
+	}
+
+	.animateItem > *:hover {
+		transform: scale(1.3);
+	}
+
+	.fullBleed {
+		width: 100vw;
+		position: relative;
+		left: 50%;
+		right: 50%;
+		margin-left: -50vw;
+		margin-right: -50vw;
+	}
+</style>

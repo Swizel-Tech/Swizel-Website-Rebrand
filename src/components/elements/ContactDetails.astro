@@ -1,0 +1,39 @@
+---
+import AccentHeader from '../HTML/AccentHeader.astro';
+
+type Props = {
+	textColor?: string;
+	phone?: string;
+	email?: string;
+};
+
+const {
+	textColor = 'text-darker',
+	phone = '+234 814 083 3014',
+	email = 'info@swizel.co',
+} = Astro.props;
+---
+
+<div class="space-y-8">
+	<AccentHeader class={`!${textColor}`}>Get in touch</AccentHeader>
+	<div class="flex flex-wrap justify-between gap-4">
+		<a
+			class:list={[
+				'md:text-6xl text-4xl font-extrabold text-darker sm:leading-[1.25]',
+				`!${textColor}`,
+			]}
+			href={`tel:${phone}`}
+		>
+			{phone}
+		</a>
+		<a
+			class:list={[
+				'md:text-6xl text-4xl font-extrabold text-darker sm:leading-[1.25]',
+				`!${textColor}`,
+			]}
+			href={`mailto:${email}`}
+		>
+			{email}
+		</a>
+	</div>
+</div>

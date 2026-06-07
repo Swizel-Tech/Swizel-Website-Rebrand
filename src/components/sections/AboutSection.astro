@@ -1,0 +1,82 @@
+---
+import CustomButton from '../CustomButton.astro';
+import AccentHeader from '../HTML/AccentHeader.astro';
+import Heading from '../HTML/Heading.astro';
+import Section from '../HTML/Section.astro';
+import QuickInfo from '../blocks/QuickInfo.astro';
+---
+
+<Section id="about" divClass="py-24">
+	<div class="grid gap-12 lg:gap-16 md:grid-cols-2 items-center">
+		<div class="about--media relative">
+			<span class="about--accent" aria-hidden="true"></span>
+			<img
+				class="relative z-10 w-full"
+				src="/images/about-pic.svg"
+				alt="The Swizel team collaborating on a project"
+				loading="lazy"
+			/>
+		</div>
+		<div class="grid gap-5">
+			<AccentHeader>About Swizel</AccentHeader>
+			<Heading type="h2">Your team as a service</Heading>
+			<p class="text-darker/70 max-w-lg leading-relaxed">
+				We're a group of professionals equipped with knowledge and
+				experience across diverse fields of business and technology. We
+				take pride in our innovative products, client-centric culture and
+				the timely delivery of smart solutions.
+			</p>
+			<p class="text-darker/70 max-w-lg leading-relaxed">
+				Whether you're building a new service, revamping an existing
+				product or expanding into new markets, our energetic team is
+				grounded in mobile &amp; web development, design, business
+				development, advertising and marketing.
+			</p>
+			<div class="mt-4">
+				<CustomButton
+					variant="outline"
+					elementType="a"
+					class="!text-swizelGreen !border-swizelGreen/40 hover:!border-swizelGreen text-sm"
+					href="/about"
+				>
+					More about us
+				</CustomButton>
+			</div>
+		</div>
+	</div>
+	<div class="pt-16 -mb-10">
+		<QuickInfo
+			firstSection={{
+				desc: 'Years in the business',
+				headingText: '5+',
+			}}
+			secondSection={{
+				desc: 'Team members',
+				headingText: '25+',
+			}}
+			thirdSection={{
+				desc: 'Projects completed',
+				headingText: '50+',
+			}}
+		/>
+	</div>
+</Section>
+
+<style>
+	.about--media {
+		isolation: isolate;
+	}
+	.about--accent {
+		position: absolute;
+		inset: -12px -12px auto auto;
+		width: 70%;
+		height: 70%;
+		border-radius: 1.5rem;
+		background: linear-gradient(
+			135deg,
+			rgba(24, 222, 190, 0.12),
+			rgba(40, 166, 236, 0.1)
+		);
+		z-index: 0;
+	}
+</style>

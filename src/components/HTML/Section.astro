@@ -1,0 +1,21 @@
+---
+export interface Props {
+	sectionClass?: string;
+	divClass?: string;
+	HTMLElement?: string;
+	id?: string;
+}
+
+const {
+	divClass = '',
+	sectionClass = '',
+	HTMLElement = 'section',
+	id,
+} = Astro.props as Props;
+---
+
+<HTMLElement id={id} class:list={['px-[5%]', sectionClass]}>
+	<div class:list={['container mx-auto', divClass]}>
+		<slot />
+	</div>
+</HTMLElement>

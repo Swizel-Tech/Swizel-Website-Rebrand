@@ -1,0 +1,56 @@
+---
+import { portfolio } from '../../consts';
+import CustomButton from '../CustomButton.astro';
+import AccentHeader from '../HTML/AccentHeader.astro';
+import Heading from '../HTML/Heading.astro';
+import Section from '../HTML/Section.astro';
+import PortfolioInnerContent from '../elements/PortfolioInnerContent.astro';
+
+const portfolioCLass =
+	'portfolio--card block rounded-xl2 focus-visible:outline-none';
+---
+
+<Section sectionClass="bg-swizelDark" divClass="py-20">
+	<div class="my-10">
+		<div class="text-center space-y-5 mb-14 max-w-2xl mx-auto">
+			<AccentHeader>Portfolio</AccentHeader>
+			<Heading type="h2" className="!text-white">Latest Work</Heading>
+			<p class="text-white/60">
+				A glimpse of the products we've designed, built and launched for
+				clients across fintech, sports, real estate, retail and more.
+			</p>
+		</div>
+		<div class="md:pb-24 space-y-16">
+			<div class="grid sm:grid-cols-2 gap-8">
+				{
+					portfolio.slice(0, 2).map(({ url, ...rest }) =>
+						url ? (
+							<a href={url} class={portfolioCLass}>
+								<PortfolioInnerContent
+									imageHeightControl="md:h-[420px] h-[280px]"
+									{...rest}
+								/>
+							</a>
+						) : (
+							<div class={portfolioCLass} aria-disabled="true">
+								<PortfolioInnerContent
+									imageHeightControl="md:h-[420px] h-[280px]"
+									{...rest}
+								/>
+							</div>
+						)
+					)
+				}
+			</div>
+			<div class="w-fit mx-auto">
+				<CustomButton
+					elementType="a"
+					href="/portfolio"
+					variant="accent"
+				>
+					View all projects
+				</CustomButton>
+			</div>
+		</div>
+	</div>
+</Section>

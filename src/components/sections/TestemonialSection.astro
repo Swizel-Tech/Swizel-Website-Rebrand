@@ -1,0 +1,112 @@
+---
+import AccentHeader from '../HTML/AccentHeader.astro';
+import Heading from '../HTML/Heading.astro';
+import Section from '../HTML/Section.astro';
+import TestemonialBox from '../elements/TestemonialBox.astro';
+
+const testimonials = [
+	{
+		name: 'Chidimma',
+		rating: 5,
+		comment:
+			'I have worked with Swizel as a liaison officer for my company and they have been warm and responsive to our tech needs.',
+		// jobDesc: 'GK Prime',
+		img: '/testimonial/chidima.jpeg',
+	},
+	{
+		name: 'Rusell',
+		rating: 5,
+		comment:
+			'I freelance for Swizel and I’ve kept in touch since moving abroad. The work environment is friendly and efficient.',
+		// jobDesc: '',
+		img: '/testimonial/russell.jpeg',
+	},
+	{
+		name: 'Favour',
+		rating: 5,
+		comment:
+			'We co-marketed a product with Swizel and I can say without the risk of exaggeration that they are geniuses over there.',
+		// jobDesc: '',
+		img: '/testimonial/favour.jpeg',
+	},
+	{
+		name: 'Cheta',
+		rating: 5,
+		comment:
+			'Working with Swizel made things easy for me. You guys are thorough and polite. And I especially love the timely delivery.',
+		// jobDesc: '',
+		img: '/testimonial/cheta.jpeg',
+	},
+];
+---
+
+<Section sectionClass="bg-swizelDark" divClass="py-24">
+	<div class="space-y-10">
+		<div class="text-center space-y-5 mb-10">
+			<AccentHeader>Testimonials</AccentHeader>
+			<Heading
+				type="h3"
+				className="!text-white max-w-xl mx-auto !leading-tight"
+			>
+				What Our Clients Are Saying
+			</Heading>
+		</div>
+		<div
+			class="md:grid grid-cols-2 max-w-5xl mx-auto testmonial--content items-start"
+		>
+			<div class="testmonial--left">
+				{
+					testimonials.slice(0, 2).map((testemonial, idx) => (
+						<TestemonialBox
+							className="testmonial--content-single"
+							headerClass={
+								idx === 0 ? 'h4__header' : '!text-white'
+							}
+							{...testemonial}
+						/> // is a list
+					))
+				}
+			</div>
+			<div>
+				{
+					testimonials.slice(2).map((testemonial) => (
+						<TestemonialBox
+							className="testmonial--content-single"
+							{...testemonial}
+						/> // is a list
+					))
+				}
+			</div>
+		</div>
+	</div>
+</Section>
+
+<style>
+	.testmonial--content > .testmonial--left > *:first-child {
+		background-color: #fff;
+		color: #302c29;
+		padding-block: 50px;
+	}
+	.testmonial--content > div > *:nth-child(even) {
+		border-top: 0;
+	}
+
+	@media (min-width: 768px) {
+		.testmonial--content > div:first-child > *:first-child {
+			border-radius: 8px 0 0 0;
+		}
+		.testmonial--content > div:first-child > *:last-child {
+			border-radius: 0 0 0 8px;
+		}
+		.testmonial--content > div:last-child > * {
+			border-left: 0;
+		}
+
+		.testmonial--content > div:last-child > *:first-child {
+			border-radius: 0 8px 0 0;
+		}
+		.testmonial--content > div:last-child > *:last-child {
+			border-radius: 0 0 8px 0;
+		}
+	}
+</style>

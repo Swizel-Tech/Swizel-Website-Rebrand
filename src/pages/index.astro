@@ -1,0 +1,47 @@
+---
+import AboutSection from '../components/sections/AboutSection.astro';
+import HeroSection from '../components/sections/HeroSection.astro';
+import HeroBuilder from '../components/sections/HeroBuilder.astro';
+import HeroFounder from '../components/sections/HeroFounder.astro';
+import HeroCampus from '../components/sections/HeroCampus.astro';
+import HeroStudio from '../components/sections/HeroStudio.astro';
+import HeroLegacy from '../components/sections/HeroLegacy.astro';
+import HowWeDoIt from '../components/sections/HowWeDoIt.astro';
+import PartnersSection from '../components/sections/PartnersSection.astro';
+import Portfolio from '../components/sections/Portfolio.astro';
+import MainLayout from '../layouts/MainLayout.astro';
+import ServicesSection from '../components/sections/ServicesSection.astro';
+import TestemonialSection from '../components/sections/TestemonialSection.astro';
+import OurBlogSection from '../components/sections/OurBlogSection.astro';
+import NewsLetterAndContact from '../components/sections/NewsLetterAndContact.astro';
+import BuilderBody from '../components/sections/BuilderBody.astro';
+
+const pageTitle =
+	'Swizel Technologies | Software, Design & Digital Marketing in Nigeria';
+const pageDescription =
+	'Swizel Technologies turns ideas into successful products. We design, build, market and maintain web & mobile software for ambitious businesses. Tell us about your project.';
+---
+
+<MainLayout title={pageTitle} description={pageDescription}>
+	<HeroSection />
+	<HeroBuilder />
+	<HeroFounder />
+	<HeroCampus />
+	<HeroStudio />
+	<HeroLegacy />
+
+	<!-- Builder view body (built section by section) -->
+	<BuilderBody />
+
+	<!-- Shared body for the other views -->
+	<div class="default-body">
+		<PartnersSection />
+		<AboutSection />
+		<HowWeDoIt />
+		<Portfolio />
+		<ServicesSection />
+		<TestemonialSection />
+		<OurBlogSection />
+		<NewsLetterAndContact />
+	</div>
+</MainLayout>

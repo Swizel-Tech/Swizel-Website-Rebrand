@@ -1,0 +1,164 @@
+---
+import { Icon } from 'astro-icon';
+import CustomButton from '../../components/CustomButton.astro';
+import AccentHeader from '../../components/HTML/AccentHeader.astro';
+import Heading from '../../components/HTML/Heading.astro';
+import Section from '../../components/HTML/Section.astro';
+import Breadcrumb from '../../components/blocks/Breadcrumb.astro';
+import { bootCampFaq } from '../../consts';
+import MainLayout from '../../layouts/MainLayout.astro';
+---
+
+<MainLayout>
+	<Breadcrumb desc="" title="Swizel Bootcamp" />
+	<Section sectionClass="my-24">
+		<div class="grid md:grid-cols-2 gap-10">
+			<div class="flex items-center sm:justify-center">
+				<div class="max-w-lg text-swizelDark/60 space-y-4">
+					<AccentHeader>A 3 - MONTHS PROGRAM</AccentHeader>
+					<Heading className="sm:!leading-[1.125]" type="h2">
+						+ 3 months mentorship and paid internship
+					</Heading>
+					<p>
+						Also featuring Q & A session with tech giants employees
+						from Google, Tesla, Youverify, M&P O'Sullivan Ltd, Udemy
+						etc...
+					</p>
+					<p class="text-swizelDark">Requirement:</p>
+					<p>A laptop and a strong internet connection</p>
+					<p>
+						Is it free? YES! our boot camp program is completely
+						free however there's an affordable fee attached to the
+						certification exam at the end of the program.
+					</p>
+
+					<CustomButton
+						class="text-swizelGreen px-8"
+						variant="outline"
+						elementType="a"
+						href="/bootcamp/register"
+					>
+						Register Now
+					</CustomButton>
+				</div>
+			</div>
+			<div class="">
+				<img
+					src="/images/bootcamp.jpg"
+					alt="the swizel bootcamp"
+					class="mx-auto h-full object-cover rounded-md"
+				/>
+			</div>
+		</div>
+	</Section>
+	<Section sectionClass="my-24">
+		<Heading type="h2" className="text-center">Our Programs</Heading>
+		<div
+			class="grid md:grid-cols-2 mt-24 gap-7 max-w-7xl mx-auto text-swizelDark/60"
+		>
+			<div
+				class="flex xl:flex-row md:flex-col gap-3 gap-y-10 border py-10 px-5 border-swizelDark/60 rounded-md"
+			>
+				<img
+					src="/images/software-dev-illustration.svg"
+					alt=""
+					class="flex-1 md:block hidden"
+				/>
+				<div class="space-y-2">
+					<p
+						class="text-swizelDark text-lg xl:text-left md:text-center"
+					>
+						Software Development
+					</p>
+					<ul class="list-disc sm:pl-10 pl-3">
+						<li>
+							Fundamentals of Programming and Algorithms using
+							Scratch
+						</li>
+						<li>Coding for Beginners using Python</li>
+						<li>Building interactive GUI with python Tkinter</li>
+					</ul>
+				</div>
+			</div>
+			<div
+				class="space-y-2 flex flex-col justify-center py-10 bg-[#EEF8F6] rounded-md px-5"
+			>
+				<p class="text-swizelDark text-lg">Visual Design</p>
+				<ul class="list-disc sm:pl-10 pl-3">
+					<li>Basic principles of design</li>
+					<li>Introduction to user interface design</li>
+					<li>Introduction to graphics design</li>
+					<li>Project & portfolio management</li>
+				</ul>
+			</div>
+			<div
+				class="md:col-span-2 bg-[#FEF5F1] py-10 px-5 grid place-items-center md:grid-cols-2 gap-y-16"
+			>
+				<img
+					src="/images/digital-marketing-illustration.svg"
+					class="md:max-w-full sm:max-w-[420px]"
+					alt=""
+				/>
+				{
+					/* 420px is the total width of the ul element, this is to prevent the image from being larger than the text content */
+				}
+
+				<div class="space-y-2">
+					<p class="text-swizelDark text-lg">Digital Marketing</p>
+					<ul class="list-disc sm:pl-10 pl-3">
+						<li>Introduction to Digital Marketing</li>
+						<li>Building a Digital Marketing Strategy</li>
+						<li>Customer Experience (Your Brand, Your Website)</li>
+						<li>Introduction to SEO</li>
+						<li>Social Media (Video Content - Easy graphics</li>
+						<li>Measurement and Analytics</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</Section>
+	<Section divClass="max-w-7xl mx-auto space-y-10 my-24">
+		<Heading type="h2">FAQ</Heading>
+		<ul id="bootcamp--faq" class="grid md:grid-cols-2 md:gap-10 gap-y-5">
+			{
+				bootCampFaq.map(({ answer, question }, idx) => (
+					<li
+						class="space-y-7 py-7 px-5 shadow-md border faq--item"
+						data-expanded={idx === 0 ? 'true' : 'false'}
+					>
+						<button
+							type="button"
+							class="flex w-full text-left md:items-center justify-between gap-4"
+						>
+							<Heading className="!text-lg" type="h4">
+								{question}
+							</Heading>
+							<div class="h-[32px] w-[32px] icon">
+								<Icon size={28} name="faq--dropdown" />
+							</div>
+						</button>
+						<p class="text-darker/60 faq--content">{answer}</p>
+					</li>
+				))
+			}
+		</ul>
+	</Section>
+</MainLayout>
+
+<style>
+	.faq--content {
+		/* display: none; */
+	}
+
+	.faq--item[data-expanded='true'] {
+		/* background-color: #428876; */
+	}
+
+	.faq--item[data-expanded='true'] .faq--content {
+		/* display: block; */
+	}
+	.faq--item .icon {
+		/* transform: scaleY(-1); */
+		display: none;
+	}
+</style>

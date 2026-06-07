@@ -1,0 +1,653 @@
+---
+import { Icon } from 'astro-icon';
+import CustomButton from '../CustomButton.astro';
+import Section from '../HTML/Section.astro';
+
+const stats = [
+	{ to: 7, suffix: '+', label: 'Years shipping' },
+	{ to: 25, suffix: '+', label: 'Specialists' },
+	{ to: 65, suffix: '+', label: 'Products built' },
+];
+
+const sectors = [
+	'Fintech',
+	'Healthtech',
+	'Agritech',
+	'Sports',
+	'Real Estate',
+	'E-commerce',
+	'Education',
+	'Logistics',
+];
+---
+
+<Section
+	sectionClass="hero--stage hero-view hero-boardroom relative overflow-hidden"
+	divClass="relative z-10 pb-16 sm:pb-24"
+>
+	<div class="hero--bgfill" aria-hidden="true"></div>
+	<div class="hero--glow" aria-hidden="true"></div>
+
+	<div class="hero--top">
+		<span class="hero--eyebrow">
+			<span class="hero--eyebrow-dot"></span>
+			7 years of shipping digital products
+		</span>
+
+		<h1 class="hero--display font-bebas">
+			<span class="hero--imagine">You Imagine.</span>
+			<span class="hero--weline">
+				<span>We</span>
+				<span class="hero--rotator" aria-hidden="true">
+					<span class="hero--rot gradient-text" style="--i:0">Build.</span>
+					<span class="hero--rot gradient-text" style="--i:1">Design.</span>
+					<span class="hero--rot gradient-text" style="--i:2">Scale.</span>
+					<span class="hero--rot gradient-text" style="--i:3">Launch.</span>
+				</span>
+				<span class="sr-only">We build, design, scale and launch.</span>
+			</span>
+		</h1>
+
+		<p class="hero--sub">
+			Swizel designs, builds and scales web &amp; mobile products for
+			ambitious businesses, turning bold ideas into software people love.
+		</p>
+
+		<div class="hero--cta">
+			<CustomButton
+				variant="accent"
+				elementType="a"
+				href="/contact"
+				class="flex items-center justify-center gap-2"
+			>
+				Start your project
+				<Icon width={18} name="mdi:arrow-right" />
+			</CustomButton>
+			<a href="/portfolio" class="hero--textlink">
+				See our work
+				<Icon width={16} name="mdi:arrow-right" />
+			</a>
+			<button class="hero--tour" type="button" data-tour-start="boardroom">
+				<Icon width={16} name="mdi:compass-outline" />
+				Take the tour
+			</button>
+		</div>
+	</div>
+
+	<!-- Big team photo — the focal point -->
+	<div class="hero--showcase">
+		<div class="hero--photo-card" id="hero-tilt">
+			<div class="hero--photo-inner">
+				<img
+					class="hero--photo"
+					src="/images/hero-team.jpg"
+					alt="The Swizel team — designers and engineers who build your product with you"
+					width="856"
+					height="580"
+				/>
+				<span class="hero--photo-spot" aria-hidden="true"></span>
+				<span class="hero--photo-ring" aria-hidden="true"></span>
+			</div>
+
+			<!-- floating proof, kept minimal & intentional -->
+			<div class="hero--badge hero--badge-rating">
+				<span class="hero--badge-stars">★★★★★</span>
+				<span>5.0 average client rating</span>
+			</div>
+
+			<!-- business impact widget -->
+			<div class="hero--impact" id="boardroom-impact" data-tour="impact">
+				<div class="hero--impact-head">
+					<span class="hero--impact-title">Business impact</span>
+					<span class="hero--impact-up">▲ on-time</span>
+				</div>
+				<div class="hero--impact-row">
+					<span class="hero--impact-num" data-count-to={98} data-suffix="%">0%</span>
+					<span class="hero--impact-label">on-time delivery</span>
+				</div>
+				<div class="hero--impact-chart" aria-hidden="true">
+					<span style="--h:38%"></span>
+					<span style="--h:55%"></span>
+					<span style="--h:64%"></span>
+					<span style="--h:80%"></span>
+					<span style="--h:92%"></span>
+					<span style="--h:100%"></span>
+				</div>
+				<span class="hero--impact-foot">products shipped, year on year</span>
+			</div>
+		</div>
+
+		<!-- Stats rail -->
+		<ul class="hero--stats">
+			{
+				stats.map((s) => (
+					<li class="hero--stat">
+						<span
+							class="hero--stat-num"
+							data-count-to={s.to}
+							data-suffix={s.suffix}
+						>
+							{s.to}{s.suffix}
+						</span>
+						<span class="hero--stat-label">{s.label}</span>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+
+	<!-- Industries showcase -->
+	<div class="hero--industries">
+		<span class="hero--industries-label">Industries we build for</span>
+		<ul class="hero--sectors" id="hero-sectors">
+			{
+				sectors.map((s, i) => (
+					<li class="hero--sector" style={`--si:${i}`}>
+						{s}
+					</li>
+				))
+			}
+			<li class="hero--sector hero--sector-more">+ more</li>
+		</ul>
+	</div>
+
+	<a href="#about" class="hero--scroll" aria-label="Scroll to learn more">
+		<span></span>
+	</a>
+</Section>
+
+<style>
+	/* ====== Dark product stage (matches live swizel.co #28293E) ====== */
+	.hero--stage {
+		color: #fff;
+		isolation: isolate;
+		background: #28293e;
+	}
+	.hero--bgfill {
+		position: absolute;
+		top: 0;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 100vw;
+		height: 100%;
+		z-index: 0;
+		pointer-events: none;
+		background: radial-gradient(
+				1200px 620px at 50% -8%,
+				color-mix(in srgb, var(--view-accent) 20%, transparent),
+				transparent 62%
+			),
+			linear-gradient(180deg, #2b2c43 0%, #28293e 42%, #212236 100%);
+	}
+	.hero--glow {
+		position: absolute;
+		top: -18%;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 70vw;
+		max-width: 900px;
+		height: 520px;
+		background: radial-gradient(
+			ellipse at center,
+			color-mix(in srgb, var(--view-accent) 22%, transparent),
+			transparent 70%
+		);
+		filter: blur(40px);
+		z-index: 0;
+		pointer-events: none;
+	}
+
+	/* lift content above glow */
+	.hero--top,
+	.hero--showcase,
+	.hero--industries,
+	.hero--scroll {
+		position: relative;
+		z-index: 2;
+	}
+
+	/* ====== Top copy ====== */
+	.hero--top {
+		text-align: center;
+		max-width: 880px;
+		margin: 0 auto;
+		padding-top: clamp(2.5rem, 6vw, 5rem);
+		display: grid;
+		gap: 1.6rem;
+		justify-items: center;
+	}
+	.hero--eyebrow {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.6rem;
+		padding: 0.5rem 1.1rem;
+		border-radius: 9999px;
+		border: 1px solid rgba(255, 255, 255, 0.16);
+		background: rgba(255, 255, 255, 0.05);
+		backdrop-filter: blur(8px);
+		font-size: 0.72rem;
+		font-weight: 600;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: rgba(255, 255, 255, 0.78);
+	}
+	.hero--eyebrow-dot {
+		width: 7px;
+		height: 7px;
+		border-radius: 9999px;
+		background: var(--view-accent);
+		box-shadow: 0 0 0 0 rgba(24, 222, 190, 0.55);
+		animation: dot 2.4s infinite;
+	}
+	@keyframes dot {
+		0% {
+			box-shadow: 0 0 0 0 rgba(24, 222, 190, 0.5);
+		}
+		70% {
+			box-shadow: 0 0 0 9px rgba(24, 222, 190, 0);
+		}
+		100% {
+			box-shadow: 0 0 0 0 rgba(24, 222, 190, 0);
+		}
+	}
+
+	.hero--display {
+		font-weight: 800;
+		text-transform: uppercase;
+		line-height: 0.92;
+		letter-spacing: 1px;
+		font-size: clamp(3.2rem, 9vw, 7.5rem);
+		margin: 0;
+		color: #fff;
+		-webkit-text-fill-color: #fff;
+	}
+	.hero--imagine {
+		display: block;
+	}
+	.hero--weline {
+		display: flex;
+		gap: 0.3em;
+		align-items: baseline;
+		justify-content: center;
+	}
+	.hero--rotator {
+		display: inline-grid;
+	}
+	.hero--rot {
+		grid-area: 1 / 1;
+		opacity: 0;
+		transform: translateY(0.4em) rotateX(-50deg);
+		animation: rotword 9.2s infinite;
+		animation-delay: calc(var(--i) * 2.3s);
+		will-change: opacity, transform;
+		text-align: left;
+		white-space: nowrap;
+	}
+	@keyframes rotword {
+		0% {
+			opacity: 0;
+			transform: translateY(0.42em) rotateX(-55deg);
+		}
+		4%,
+		21% {
+			opacity: 1;
+			transform: translateY(0) rotateX(0);
+		}
+		26%,
+		100% {
+			opacity: 0;
+			transform: translateY(-0.42em) rotateX(55deg);
+		}
+	}
+	.sr-only {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+		white-space: nowrap;
+		border: 0;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.hero--rot {
+			animation: none !important;
+		}
+		.hero--rot:first-child {
+			opacity: 1;
+			transform: none;
+		}
+	}
+	.hero--sub {
+		max-width: 640px;
+		font-size: clamp(1.05rem, 1.5vw, 1.3rem);
+		line-height: 1.7;
+		color: rgba(255, 255, 255, 0.72);
+	}
+	.hero--cta {
+		display: flex;
+		align-items: center;
+		gap: 1.5rem;
+		flex-wrap: wrap;
+		justify-content: center;
+		margin-top: 0.4rem;
+	}
+	.hero--textlink {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		font-weight: 600;
+		color: #86e2ef;
+		transition: gap 0.3s ease, color 0.3s ease;
+	}
+	.hero--textlink:hover {
+		gap: 0.7rem;
+		color: #fff;
+	}
+	.hero--tour {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 0.82rem;
+		font-weight: 600;
+		color: rgba(255, 255, 255, 0.8);
+		padding: 0.7rem 1.1rem;
+		border-radius: 9999px;
+		border: 1px dashed rgba(255, 255, 255, 0.28);
+		transition: border-color 0.25s ease, color 0.25s ease, background 0.25s ease;
+	}
+	.hero--tour:hover {
+		border-color: var(--view-accent, #28a6ec);
+		color: var(--view-accent, #28a6ec);
+		background: color-mix(in srgb, var(--view-accent, #28a6ec) 10%, transparent);
+	}
+
+	/* business impact widget */
+	.hero--impact {
+		position: absolute;
+		top: 14px;
+		right: -22px;
+		width: 188px;
+		padding: 0.85rem 1rem;
+		border-radius: 1rem;
+		background: rgba(20, 21, 32, 0.72);
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		backdrop-filter: blur(12px);
+		box-shadow: 0 20px 40px -18px rgba(0, 0, 0, 0.7);
+		z-index: 3;
+	}
+	.hero--impact-head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 0.5rem;
+	}
+	.hero--impact-title {
+		font-size: 0.7rem;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		color: rgba(255, 255, 255, 0.55);
+	}
+	.hero--impact-up { font-size: 0.66rem; color: #28c840; font-weight: 700; }
+	.hero--impact-row { display: flex; align-items: baseline; gap: 0.4rem; }
+	.hero--impact-num {
+		font-family: 'Bebas Neue', sans-serif;
+		font-size: 1.9rem;
+		line-height: 1;
+		color: #fff;
+	}
+	.hero--impact-label { font-size: 0.66rem; color: rgba(255, 255, 255, 0.5); }
+	.hero--impact-chart {
+		display: flex;
+		align-items: flex-end;
+		gap: 5px;
+		height: 46px;
+		margin: 0.7rem 0 0.4rem;
+	}
+	.hero--impact-chart span {
+		flex: 1;
+		height: 0;
+		border-radius: 3px 3px 0 0;
+		background: linear-gradient(180deg, #86e2ef, var(--view-accent, #28a6ec));
+		animation: bargrow 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+	}
+	.hero--impact-chart span:nth-child(1) { animation-delay: 0.1s; }
+	.hero--impact-chart span:nth-child(2) { animation-delay: 0.2s; }
+	.hero--impact-chart span:nth-child(3) { animation-delay: 0.3s; }
+	.hero--impact-chart span:nth-child(4) { animation-delay: 0.4s; }
+	.hero--impact-chart span:nth-child(5) { animation-delay: 0.5s; }
+	.hero--impact-chart span:nth-child(6) { animation-delay: 0.6s; }
+	@keyframes bargrow { to { height: var(--h); } }
+	.hero--impact-foot { font-size: 0.6rem; color: rgba(255, 255, 255, 0.4); }
+
+	@media (max-width: 600px) {
+		.hero--impact { right: 6px; top: 6px; width: 156px; }
+	}
+
+	/* ====== Showcase (photo + stats) ====== */
+	.hero--showcase {
+		margin-top: clamp(2.5rem, 5vw, 4.5rem);
+		display: grid;
+		justify-items: center;
+		gap: clamp(2rem, 4vw, 3.5rem);
+	}
+	.hero--photo-card {
+		position: relative;
+		width: min(100%, 880px);
+		border-radius: 1.6rem;
+		padding: 10px;
+		background: linear-gradient(
+			150deg,
+			rgba(255, 255, 255, 0.16),
+			rgba(255, 255, 255, 0.02) 45%,
+			rgba(24, 222, 190, 0.14)
+		);
+		box-shadow: 0 50px 90px -40px rgba(0, 0, 0, 0.75);
+		transform-style: preserve-3d;
+		transition: transform 0.3s ease-out;
+		will-change: transform;
+	}
+	.hero--photo-inner {
+		position: relative;
+		border-radius: 1.2rem;
+		overflow: hidden;
+		transform: translateZ(0);
+	}
+	.hero--photo {
+		display: block;
+		width: 100%;
+		height: auto;
+		border-radius: 1.2rem;
+	}
+	.hero--photo-spot {
+		position: absolute;
+		inset: 0;
+		background: radial-gradient(
+			320px circle at var(--mx, 70%) var(--my, 30%),
+			rgba(255, 255, 255, 0.18),
+			transparent 60%
+		);
+		opacity: 0;
+		transition: opacity 0.4s ease;
+		pointer-events: none;
+	}
+	.hero--photo-card:hover .hero--photo-spot {
+		opacity: 1;
+	}
+	.hero--photo-ring {
+		position: absolute;
+		inset: 0;
+		border-radius: 1.2rem;
+		box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+		pointer-events: none;
+	}
+	.hero--badge {
+		position: absolute;
+		bottom: 18px;
+		left: -18px;
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+		padding: 0.7rem 1rem;
+		border-radius: 0.9rem;
+		background: rgba(20, 21, 32, 0.72);
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		backdrop-filter: blur(12px);
+		box-shadow: 0 20px 40px -18px rgba(0, 0, 0, 0.7);
+		transform: translateZ(60px);
+		font-size: 0.8rem;
+		color: rgba(255, 255, 255, 0.78);
+	}
+	.hero--badge-stars {
+		color: #fbbf24;
+		letter-spacing: 1px;
+		font-size: 0.85rem;
+	}
+
+	/* Stats */
+	.hero--stats {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: clamp(2rem, 6vw, 5rem);
+	}
+	.hero--stat {
+		text-align: center;
+	}
+	.hero--stat-num {
+		display: block;
+		font-family: 'Bebas Neue', sans-serif;
+		font-size: clamp(2.6rem, 5vw, 3.6rem);
+		line-height: 1;
+		letter-spacing: 1px;
+		background: linear-gradient(135deg, #8dfeea, #28a6ec);
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+		color: transparent;
+	}
+	.hero--stat-label {
+		margin-top: 0.35rem;
+		font-size: 0.78rem;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		color: rgba(255, 255, 255, 0.5);
+	}
+
+	/* ====== Industries ====== */
+	.hero--industries {
+		margin-top: clamp(3rem, 6vw, 5rem);
+		text-align: center;
+	}
+	.hero--industries-label {
+		display: block;
+		font-size: 0.72rem;
+		font-weight: 600;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: rgba(255, 255, 255, 0.45);
+		margin-bottom: 1.25rem;
+	}
+	.hero--sectors {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0.7rem;
+	}
+	.hero--sector {
+		padding: 0.55rem 1.15rem;
+		border-radius: 9999px;
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		background: rgba(255, 255, 255, 0.03);
+		font-size: 0.9rem;
+		font-weight: 500;
+		color: rgba(255, 255, 255, 0.7);
+		transition: color 0.3s ease, border-color 0.3s ease,
+			background 0.3s ease, transform 0.3s ease;
+		cursor: default;
+	}
+	.hero--sector.is-active,
+	.hero--sector:hover {
+		color: #0b0d18;
+		border-color: transparent;
+		background: linear-gradient(95deg, #8dfeea, #18debe);
+		transform: translateY(-2px);
+	}
+	.hero--sector-more {
+		font-style: italic;
+		opacity: 0.7;
+	}
+
+	/* ====== Scroll cue ====== */
+	.hero--scroll {
+		position: absolute;
+		bottom: 18px;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 26px;
+		height: 42px;
+		border: 2px solid rgba(255, 255, 255, 0.25);
+		border-radius: 14px;
+		display: none;
+	}
+	.hero--scroll span {
+		position: absolute;
+		top: 8px;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 4px;
+		height: 8px;
+		border-radius: 4px;
+		background: #86e2ef;
+		animation: hs 1.8s ease-in-out infinite;
+	}
+	@keyframes hs {
+		0% {
+			opacity: 0;
+			transform: translate(-50%, 0);
+		}
+		40% {
+			opacity: 1;
+		}
+		80% {
+			opacity: 0;
+			transform: translate(-50%, 14px);
+		}
+		100% {
+			opacity: 0;
+		}
+	}
+
+	.hero--stage {
+		padding-bottom: clamp(3rem, 6vw, 5rem);
+	}
+
+	@media (min-width: 1024px) {
+		.hero--scroll {
+			display: block;
+		}
+		.hero--badge {
+			left: -28px;
+		}
+	}
+	@media (max-width: 600px) {
+		.hero--badge {
+			left: 8px;
+			bottom: 8px;
+		}
+		.hero--cta {
+			gap: 1rem;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.hero--eyebrow-dot,
+		.hero--scroll span {
+			animation: none !important;
+		}
+		.hero--photo-card {
+			transition: none !important;
+		}
+	}
+</style>

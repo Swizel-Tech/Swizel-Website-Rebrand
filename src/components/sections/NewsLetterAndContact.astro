@@ -1,0 +1,44 @@
+---
+import CustomButton from '../CustomButton.astro';
+import Heading from '../HTML/Heading.astro';
+import Section from '../HTML/Section.astro';
+import ContactDetails from '../elements/ContactDetails.astro';
+
+interface Props {
+	hideContact?: true;
+	hideNewsLetter?: true;
+}
+
+const { hideContact, hideNewsLetter } = Astro.props;
+---
+
+<Section>
+	<div class="space-y-20 my-20">
+		{
+			false && !hideNewsLetter && (
+				<div class="flex items-center justify-between flex-wrap gap-5">
+					<Heading type="h3">Newsletter</Heading>
+					<form id="newsletter" class="flex sm:gap-5 gap-2 flex-wrap max-md:w-full">
+						<input
+							class="px-5 border border-swizelBrown placeholder:text-sm text-darker placeholder:text-darker/60 rounded-md flex-1 sm:min-w-[320px] max-sm:min-h-[50px]"
+							type="text"
+							name="email"
+							type="email"
+							id="email"
+							placeholder="Your email"
+						/>
+						<CustomButton
+							class="rounded-full sm:w-fit w-full"
+							type="submit"
+							variant="primary"
+						>
+							Submit
+						</CustomButton>
+					</form>
+				</div>
+			)
+		}
+
+		{!hideContact && <ContactDetails />}
+	</div>
+</Section>

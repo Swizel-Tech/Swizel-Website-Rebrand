@@ -1,0 +1,121 @@
+---
+// Import the global.css file here so that it is included on
+// all pages through the use of the <BaseHead /> component.
+import { SITE_TITLE } from '../consts';
+
+export interface Props {
+	title: string;
+	description: string;
+	image?: string;
+	/** Set to "article" on blog posts so social cards render correctly. */
+	type?: 'website' | 'article';
+}
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+const {
+	title,
+	description,
+	image = '/images/og-default.jpg',
+	type = 'website',
+} = Astro.props;
+
+// Absolute URL for the social share image (required by Facebook/Twitter).
+const socialImageURL = new URL(image, Astro.site);
+
+// Organization structured data for rich results in Google.
+const organizationSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'Organization',
+	name: 'Swizel Technologies Limited',
+	url: 'https://swizel.co',
+	logo: 'https://swizel.co/swizel.svg',
+	description:
+		'Swizel is an IT solution company harnessing web technologies to deliver software, design and marketing solutions for businesses.',
+	email: 'swizelhq@swizel.co',
+	sameAs: [
+		'https://twitter.com/swizelhq',
+		'https://www.instagram.com/swizelhq',
+		'https://www.facebook.com/swizelhq',
+		'https://www.linkedin.com/company/swizelhq',
+	],
+};
+---
+
+<!-- Global Metadata -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="generator" content={Astro.generator} />
+<meta name="theme-color" content="#28293E" />
+<meta name="robots" content="index, follow" />
+
+<!-- Apply saved theme + view before paint to avoid a flash -->
+<script is:inline>
+	(function () {
+		try {
+			var stored = localStorage.getItem('theme');
+			var prefersDark =
+				window.matchMedia &&
+				window.matchMedia('(prefers-color-scheme: dark)').matches;
+			if (stored === 'dark' || (!stored && prefersDark)) {
+				document.documentElement.classList.add('dark');
+			}
+			var view = localStorage.getItem('swizel-view');
+			if (view) {
+				document.documentElement.setAttribute('data-view', view);
+			}
+		} catch (e) {}
+	})();
+</script>
+
+<!-- Canonical URL -->
+<link rel="canonical" href={canonicalURL} />
+
+<!-- Performance: connect early to font origins -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+<!-- Primary Meta Tags -->
+<title>{title}</title>
+<meta name="title" content={title} />
+<meta name="description" content={description} />
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content={type} />
+<meta property="og:url" content={canonicalURL} />
+<meta property="og:site_name" content={SITE_TITLE} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={socialImageURL} />
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content={canonicalURL} />
+<meta property="twitter:title" content={title} />
+<meta property="twitter:description" content={description} />
+<meta property="twitter:image" content={socialImageURL} />
+
+<!-- Structured data -->
+<script
+	type="application/ld+json"
+	set:html={JSON.stringify(organizationSchema)}
+/>
+
+<!-- Global CSS -->
+<link rel="stylesheet" href="/styles/global.css" />
+
+<!-- swiper js -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9CH1K4P5C8"></script>
+<script is:inline>
+	window.dataLayer = window.dataLayer || [];
+	function gtag() {
+		dataLayer.push(arguments);
+	}
+	gtag('js', new Date());
+	gtag('config', 'G-9CH1K4P5C8');
+	gtag('config', 'AW-11006297401');
+</script>

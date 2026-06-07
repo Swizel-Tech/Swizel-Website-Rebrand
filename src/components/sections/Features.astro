@@ -1,0 +1,104 @@
+---
+import { Icon } from 'astro-icon';
+import AccentHeader from '../HTML/AccentHeader.astro';
+import Heading from '../HTML/Heading.astro';
+import Section from '../HTML/Section.astro';
+
+const list = [
+	'Range including technical skills',
+	'Business understanding',
+	'Partner on the long run',
+];
+
+const features = [
+	{
+		name: 'Features',
+		text: "Long run, and work as an extension of the merchant's team.",
+		button: 'Read More',
+		isAccent: true,
+		className: 'px-0 md:pr-24',
+	},
+	{
+		name: 'Professional',
+		text: 'Full service range including technical skills, design.',
+		icon: 'proffessional',
+		className: 'bg-white border rounded-t-lg border-swizelBrown shadow--md',
+	},
+	{
+		name: 'Accessibilty',
+		text: 'Business understanding, ability to put themselves.',
+		className:
+			'border rounded-b-lg max-md:border-t-0 md:border-l-0 md:rounded-r-lg border-swizelBrown',
+	},
+];
+---
+
+<Section divClass="py-16">
+	<div class="grid md:grid-cols-2 gap-8 gap-y-16">
+		<div class="max-md:order-2">
+			<div class="max-w-md space-y-8">
+				<AccentHeader>Features</AccentHeader>
+				<Heading type="h2">Give Your Site A New Look</Heading>
+				<p class="text-darker">
+					Service range including technical skills, design, business
+					understanding.
+				</p>
+				<div>
+					<ul class="text-darker/60 features--list space-y-4">
+						{
+							list.map((item) => (
+								<li class="flex items-center gap-4 text-lg">
+									{item}
+								</li>
+							))
+						}
+					</ul>
+				</div>
+			</div>
+		</div>
+		<img
+			class="max-md:px-5 max-md:order-1"
+			src="/images/features--image.svg"
+			alt=""
+		/>
+	</div>
+	<ul class="grid md:grid-cols-3 items-end mt-16">
+		{
+			features.map(
+				({ name, text, className, icon, button, isAccent }) => (
+					<li class:list={['p-12 space-y-4', className]}>
+						{icon && <Icon class="mb-2" size={48} name={icon} />}
+
+						{isAccent ? (
+							<AccentHeader>{name}</AccentHeader>
+						) : (
+							<Heading type="h4">{name}</Heading>
+						)}
+
+						<p class="text-darker/60">{text}</p>
+						{button && (
+							<div>
+								<a href="/about" class="text-darker text-base">
+									Read More
+								</a>
+							</div>
+						)}
+					</li>
+				)
+			)
+		}
+	</ul>
+</Section>
+
+<style>
+	.features--list li::before {
+		content: url('/images/check.svg');
+		display: block;
+		width: 32px;
+		height: 32px;
+	}
+
+	.shadow--md {
+		box-shadow: 0px 32px 64px rgba(57, 20, 0, 0.05);
+	}
+</style>

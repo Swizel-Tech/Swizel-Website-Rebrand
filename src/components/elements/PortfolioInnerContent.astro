@@ -1,0 +1,83 @@
+---
+import { Icon } from 'astro-icon';
+
+type Props = {
+	category: string;
+	name: string;
+	imageHeightControl: string; // set of tailwind class applied to the image container to control the height
+	titleColor?: string;
+	src?: string;
+};
+
+const {
+	category,
+	name,
+	imageHeightControl,
+	titleColor = 'text-white/90',
+	src,
+} = Astro.props;
+---
+
+<div class="portfolio--card md:space-y-5 space-y-3">
+	<div
+		class={`relative rounded-xl2 overflow-hidden ${imageHeightControl}`}
+	>
+		<img
+			src={src ?? `/images/portfolio/${name}.jpg`}
+			alt={`${name} project preview`}
+			loading="lazy"
+			class="portfolio--img w-full max-h-full h-full object-cover"
+		/>
+		<div class="portfolio--overlay absolute inset-0 grid items-end md:p-8 p-6">
+			<div class="flex items-end justify-between gap-4">
+				<span
+					class="bg-white/95 text-darker px-4 py-2 uppercase leading-normal tracking-wider w-fit rounded-full text-[0.7rem] font-bold"
+				>
+					{category}
+				</span>
+				<span class="portfolio--arrow">
+					<Icon name="mdi:arrow-top-right" width={20} />
+				</span>
+			</div>
+		</div>
+	</div>
+	<p
+		class={`${titleColor} text-lg sm:text-xl uppercase tracking-[3px] font-semibold`}
+	>
+		{name}
+	</p>
+</div>
+
+<style>
+	.portfolio--img {
+		transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.portfolio--card:hover .portfolio--img {
+		transform: scale(1.06);
+	}
+	.portfolio--overlay {
+		background: linear-gradient(
+			to top,
+			rgba(20, 21, 33, 0.78) 0%,
+			rgba(20, 21, 33, 0.15) 45%,
+			rgba(20, 21, 33, 0) 70%
+		);
+	}
+	.portfolio--arrow {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 44px;
+		height: 44px;
+		border-radius: 9999px;
+		background: linear-gradient(135deg, #18debe, #28a6ec);
+		color: #14151f;
+		opacity: 0;
+		transform: translateY(8px);
+		transition: opacity 0.4s ease, transform 0.4s ease;
+	}
+	.portfolio--card:hover .portfolio--arrow {
+		opacity: 1;
+		transform: translateY(0);
+	}
+</style>

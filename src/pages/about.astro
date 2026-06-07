@@ -1,0 +1,142 @@
+---
+import { Icon } from 'astro-icon';
+import CustomButton from '../components/CustomButton.astro';
+import AccentHeader from '../components/HTML/AccentHeader.astro';
+import Heading from '../components/HTML/Heading.astro';
+import Section from '../components/HTML/Section.astro';
+import Breadcrumb from '../components/blocks/Breadcrumb.astro';
+import FooterCTA from '../components/blocks/FooterCTA.astro';
+import QuickInfo from '../components/blocks/QuickInfo.astro';
+import SplideImageCarousel from '../components/blocks/SplideImageCarousel.astro';
+import NewsLetterAndContact from '../components/sections/NewsLetterAndContact.astro';
+import MainLayout from '../layouts/MainLayout.astro';
+---
+
+<MainLayout>
+	<Breadcrumb
+		desc="Swizel is a digital agency that provides a full service range including design, software development, marketing and management."
+		overrideDescStyle="!max-w-xl"
+	/>
+	<Section sectionClass="my-24">
+		<div class="grid md:grid-cols-2 gap-2 gap-y-5 my-5 items-center">
+			<div class="space-y-5">
+				<AccentHeader>About</AccentHeader>
+				<Heading className="max-w-xl" type="h2">
+					We believe in smart solutions
+				</Heading>
+			</div>
+			<div class="text-swizelDark/60">
+				We use technology to improve business processes. At Swizel, we
+				take complex ideas and develop intuitive applications designed
+				with the end user in mind. We humanize the latest cutting-edge
+				cloud technologies to build interactive experiences that solve
+				complex problems and engage users..
+			</div>
+		</div>
+	</Section>
+	<Section sectionClass="my-24">
+		<div
+			class="grid md:grid-cols-2 gap-2 gap-y-8 my-5 items-center justify-between"
+		>
+			<div class="space-y-5">
+				<p>Our Goal</p>
+				<Heading
+					className="max-w-[450px] sm:leading-[1.25] text-swizelGreen"
+					type="h3"
+				>
+					To drive the digitalization in African business.
+				</Heading>
+			</div>
+			<img src="/images/about-us-frame.jpg" alt="about us" />
+		</div>
+	</Section>
+	<Section sectionClass="my-20">
+		<div>
+			<AccentHeader>Hire us for</AccentHeader>
+			<div
+				class="grid md:grid-cols-2 gap-5 sm:mt-3 mt-6 items-center justify-between text-swizelDark/60"
+			>
+				<div>
+					<div class="sm:space-y-6 space-y-3 md:max-w-[470px]">
+						<Heading className="max-sm:text-3xl" type="h3">
+							One-time projects
+						</Heading>
+						<p>
+							If you have an upcoming or ongoing project and need
+							extra hands to come in at any point then our team is
+							a quality and cost effective way to go. A quick
+							prototype, campaign or to fix a software issue— we
+							got you.
+						</p>
+					</div>
+				</div>
+				<div>
+					<div class="sm:space-y-6 space-y-3 md:max-w-[470px]">
+						<Heading className="max-sm:text-3xl" type="h3">
+							Long-term services
+						</Heading>
+						<p>
+							This is the sweet sauce. Forget about hiring and
+							training staff because we have got all that covered.
+							We have a team ready to go for whatever project you
+							have in mind. Reach out to a project manager today,
+							and tell us what you need.
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<CustomButton
+			class="rounded-full flex items-center justify-center gap-2 mx-auto mt-16"
+			elementType="a"
+			href="/contact"
+		>
+			Tell us about your project
+			<Icon width={20} name="mdi:arrow-right" />
+		</CustomButton>
+		<div class="my-24">
+			<QuickInfo />
+		</div>
+	</Section>
+	<Section sectionClass="my-24 bg-swizelDark" divClass="py-16">
+		<div class="space-y-5 max-w-xl">
+			<AccentHeader>Meet The Dream Team</AccentHeader>
+			<Heading className="!text-white !leading-[1.25]" type="h2">
+				Meet The Dream Team
+			</Heading>
+		</div>
+		<SplideImageCarousel />
+		<div
+			class="grid sm:grid-cols-2 place-items-center my-20 gap-x-5 gap-y-16"
+		>
+			<a
+				download="The Brevarium by Swizel"
+				href="/The Brevarium by Swizel.pdf"
+				aria-label="download the brevarium"
+			>
+				<img src="/bevarium.jpg" alt="the brevarium" />
+			</a>
+			<div class="text-white/60 space-y-6">
+				<Heading
+					className="!text-white max-w-xl !leading-[1.25]"
+					type="h3"
+				>
+					Education has never been easier and smarter
+				</Heading>
+				<p>
+					Swizel is a dynamic I.T solutions company, with its primary
+					emphasis on harnessing web technologies to deliver web and
+					mobile solutions that aim at improving the way of life and
+					ease of doing business across all sectors of human life, the
+					educational sector being a crucial part. We take pride in
+					our Innovative Products, Client centric culture, and Timely
+					Delivery of smart solutions
+				</p>
+			</div>
+		</div>
+	</Section>
+	<div class="my-24">
+		<NewsLetterAndContact hideContact />
+	</div>
+	<FooterCTA />
+</MainLayout>

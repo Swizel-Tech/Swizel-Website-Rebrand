@@ -1,0 +1,39 @@
+---
+import Heading from '../HTML/Heading.astro';
+
+type Props = {
+	url: string;
+	category: string;
+	name: string;
+};
+
+const { category, name, url } = Astro.props;
+---
+
+<a
+	href={url ?? '#'}
+	class="md:col-span-1 md:h-[420px] h-[280px] relative rounded-lg overflow-hidden"
+>
+	<div
+		class="absolute mix-blend-normal inset-0 bg-darker/[0.32] grid items-end md:p-10 p-6"
+	>
+		<div class="space-y-3">
+			<span
+				class="bg-white px-5 p-1.5 leading-none tracking-wider flex items-center justify-center w-fit rounded-full text-darker"
+			>
+				{category}
+			</span>
+			<Heading
+				className="!text-white max-md:text-3xl text-[34px]"
+				type="h3"
+			>
+				{name}
+			</Heading>
+		</div>
+	</div>
+	<img
+		src={`/images/portfolio/${name}.jpg`}
+		alt="name"
+		class="w-full h-full object-cover"
+	/>
+</a>

@@ -1,0 +1,180 @@
+---
+import { Icon } from 'astro-icon';
+import CustomButton from '../CustomButton.astro';
+import Section from '../HTML/Section.astro';
+import RotatingHeadline from '../RotatingHeadline.astro';
+import TeamChip from '../TeamChip.astro';
+
+const stats = [
+	{ to: 65, suffix: '+', label: 'Products designed' },
+	{ to: 9, suffix: '', label: 'Sectors served' },
+	{ to: 7, suffix: '+', label: 'Years crafting' },
+];
+
+const projects = [
+	{ name: 'Brixmarket', sector: 'E commerce', img: '/images/portfolio/brix%20marketplace.jpg' },
+	{ name: 'Betslipswitch', sector: 'Sports', img: '/images/portfolio/betslipswitch.jpg' },
+	{ name: 'My Eya Estate', sector: 'Real estate', img: '/images/portfolio/my%20eya%20estate.jpg' },
+	{ name: 'Purple Panda', sector: 'Marketing', img: '/images/portfolio/purplepanda%20world.jpg' },
+	{ name: 'Saros GP', sector: 'Finance', img: '/images/portfolio/sarosgp.jpg' },
+	{ name: 'Beauty Hive', sector: 'Beauty', img: '/images/portfolio/beauty-hive.webp' },
+];
+---
+
+<Section
+	sectionClass="hero--stage hero-view hero-studio studio--stage relative overflow-hidden"
+	divClass="relative z-10 pb-16 sm:pb-24"
+>
+	<div class="studio--bg" aria-hidden="true">
+		<span class="studio--glow studio--glow-1"></span>
+		<span class="studio--glow studio--glow-2"></span>
+	</div>
+
+	<div class="studio--layout">
+		<div class="studio--copy">
+			<span class="studio--eyebrow">
+				<Icon width={15} name="mdi:palette-outline" />
+				The work speaks
+			</span>
+
+			<RotatingHeadline class="studio--head" />
+
+			<p class="studio--sub">
+				Design that ships. Real products, real brands, real results, across
+				every sector we touch. Swipe through a few.
+			</p>
+
+			<div class="studio--cta">
+				<CustomButton
+					variant="accent"
+					elementType="a"
+					href="/portfolio"
+					class="flex items-center justify-center gap-2"
+				>
+					See the full portfolio
+					<Icon width={18} name="mdi:arrow-right" />
+				</CustomButton>
+				<button class="studio--tour" type="button" data-tour-start="studio">
+					<Icon width={16} name="mdi:compass-outline" />
+					Take the 20s tour
+				</button>
+			</div>
+
+			<ul class="studio--stats" data-tour="stats">
+				{
+					stats.map((s) => (
+						<li class="studio--stat">
+							<span class="studio--statnum" data-count-to={s.to} data-suffix={s.suffix}>
+								{s.to}
+								{s.suffix}
+							</span>
+							<span class="studio--statlabel">{s.label}</span>
+						</li>
+					))
+				}
+			</ul>
+
+			<TeamChip kicker="// the designers behind the work" label="Meet the makers" />
+		</div>
+
+		<!-- Work gallery widget -->
+		<div class="studio--gallery" id="studio-gallery" data-tour="gallery">
+			<div class="sg--stage">
+				{
+					projects.map((p, i) => (
+						<figure class:list={['sg--slide', { 'is-active': i === 0 }]} data-i={i}>
+							<img src={p.img} alt={`${p.name} — ${p.sector}`} loading="lazy" />
+							<figcaption class="sg--cap">
+								<span class="sg--pill">{p.sector}</span>
+								<span class="sg--name">{p.name}</span>
+							</figcaption>
+						</figure>
+					))
+				}
+				<button class="sg--arrow sg--prev" type="button" data-sg-prev aria-label="Previous project">
+					<Icon width={20} name="mdi:chevron-left" />
+				</button>
+				<button class="sg--arrow sg--next" type="button" data-sg-next aria-label="Next project">
+					<Icon width={20} name="mdi:chevron-right" />
+				</button>
+			</div>
+			<div class="sg--thumbs" data-tour="thumbs">
+				{
+					projects.map((p, i) => (
+						<button class:list={['sg--thumb', { 'is-active': i === 0 }]} data-go={i} type="button" aria-label={p.name}>
+							<img src={p.img} alt="" loading="lazy" />
+						</button>
+					))
+				}
+			</div>
+		</div>
+	</div>
+</Section>
+
+<style>
+	.studio--stage {
+		background:
+			radial-gradient(800px 480px at 82% -8%, rgba(236, 72, 153, 0.2), transparent 60%),
+			linear-gradient(180deg, #1d1020 0%, #160d1b 55%, #100a14 100%);
+		color: #fbeaf4;
+		isolation: isolate;
+	}
+	.studio--bg {
+		position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+		width: 100vw; height: 100%; z-index: 0; overflow: hidden; pointer-events: none;
+		background:
+			radial-gradient(800px 480px at 82% -8%, rgba(236, 72, 153, 0.2), transparent 60%),
+			linear-gradient(180deg, #1d1020 0%, #160d1b 55%, #100a14 100%);
+	}
+	.studio--glow { position: absolute; border-radius: 9999px; filter: blur(70px); }
+	.studio--glow-1 { width: 40vw; height: 40vw; top: -12%; right: -6%; background: radial-gradient(circle, rgba(236, 72, 153, 0.3), transparent 65%); }
+	.studio--glow-2 { width: 32vw; height: 32vw; bottom: -16%; left: -8%; background: radial-gradient(circle, rgba(139, 92, 246, 0.22), transparent 65%); }
+
+	.studio--layout { position: relative; z-index: 1; display: grid; gap: 2.5rem; align-items: center; min-height: calc(100vh - 90px); padding-top: 2rem; }
+	@media (min-width: 1024px) { .studio--layout { grid-template-columns: 0.86fr 1.14fr; gap: 3rem; } }
+
+	.studio--eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #f9a8d4; margin-bottom: 1.2rem; }
+	.studio--head { font-size: clamp(2.6rem, 6vw, 5.2rem); margin-bottom: 1.4rem; }
+	.studio--sub { max-width: 30rem; color: rgba(251, 234, 244, 0.7); font-size: 1.08rem; line-height: 1.65; margin-bottom: 1.8rem; }
+	.studio--cta { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem; }
+	.studio--tour { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; font-weight: 600; color: #fbeaf4; padding: 0.85rem 1.2rem; border-radius: 9999px; border: 1px dashed rgba(249, 168, 212, 0.5); transition: 0.25s ease; }
+	.studio--tour:hover { border-color: #ec4899; color: #f9a8d4; background: rgba(236, 72, 153, 0.1); }
+	.studio--stats { display: flex; gap: clamp(1.5rem, 4vw, 3rem); flex-wrap: wrap; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.08); }
+	.studio--statnum { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.2rem, 4vw, 3rem); line-height: 1; background: linear-gradient(135deg, #f9a8d4, #ec4899); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
+	.studio--statlabel { display: block; font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(251, 234, 244, 0.5); margin-top: 0.3rem; }
+
+	/* ===== gallery ===== */
+	.studio--gallery { width: 100%; }
+	.sg--stage {
+		position: relative;
+		aspect-ratio: 16 / 11;
+		border-radius: 1.25rem;
+		overflow: hidden;
+		border: 1px solid rgba(236, 72, 153, 0.25);
+		box-shadow: 0 40px 90px -40px rgba(0, 0, 0, 0.85);
+		background: #0f0a14;
+	}
+	.sg--slide { position: absolute; inset: 0; margin: 0; opacity: 0; transform: scale(1.04); transition: opacity 0.6s ease, transform 0.8s ease; }
+	.sg--slide.is-active { opacity: 1; transform: scale(1); }
+	.sg--slide img { width: 100%; height: 100%; object-fit: cover; }
+	.sg--cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 2.5rem 1.25rem 1.1rem; display: flex; flex-direction: column; gap: 0.35rem; background: linear-gradient(to top, rgba(15, 10, 20, 0.92), transparent); }
+	.sg--pill { width: fit-content; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding: 0.25rem 0.65rem; border-radius: 9999px; background: rgba(236, 72, 153, 0.9); color: #fff; }
+	.sg--name { font-family: 'Bebas Neue', sans-serif; font-size: 1.7rem; letter-spacing: 1px; color: #fff; }
+	.sg--arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; display: grid; place-items: center; border-radius: 9999px; background: rgba(15, 10, 20, 0.55); color: #fff; border: 1px solid rgba(255, 255, 255, 0.18); backdrop-filter: blur(6px); cursor: pointer; transition: background 0.2s ease, transform 0.2s ease; }
+	.sg--arrow:hover { background: #ec4899; transform: translateY(-50%) scale(1.08); }
+	.sg--prev { left: 12px; }
+	.sg--next { right: 12px; }
+	.sg--thumbs { display: flex; gap: 0.6rem; margin-top: 0.85rem; }
+	.sg--thumb { flex: 1; aspect-ratio: 16 / 10; border-radius: 0.6rem; overflow: hidden; border: 2px solid transparent; opacity: 0.5; cursor: pointer; transition: opacity 0.25s ease, border-color 0.25s ease, transform 0.25s ease; }
+	.sg--thumb img { width: 100%; height: 100%; object-fit: cover; }
+	.sg--thumb:hover { opacity: 0.85; }
+	.sg--thumb.is-active { opacity: 1; border-color: #ec4899; transform: translateY(-2px); }
+
+	@media (max-width: 1023px) { .studio--layout { min-height: auto; } }
+	@media (max-width: 768px) {
+		.studio--layout { gap: 1.75rem; padding-top: 0.5rem; }
+		.studio--head { font-size: clamp(2.2rem, 9.5vw, 3.2rem); }
+		.studio--sub { font-size: 1rem; margin-bottom: 1.4rem; }
+		.sg--name { font-size: 1.4rem; }
+	}
+</style>

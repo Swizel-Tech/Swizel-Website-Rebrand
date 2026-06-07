@@ -1,0 +1,156 @@
+---
+import { contactFormDetails } from '../../consts';
+import CustomButton from '../CustomButton.astro';
+import Input from '../HTML/Input.astro';
+---
+
+<form id="contact-form" class="space-y-8">
+	{
+		contactFormDetails.map((ele) => (
+			<Input textWhite {...ele} id={ele.name} errorID={`${ele.name}-error`} />
+		))
+	}
+	<CustomButton id="form-button" type="submit" class="w-fit block ml-auto rounded-full !px-16">
+		Submit
+	</CustomButton>
+</form>
+
+<style>
+	.msg {
+		border: 1px solid red;
+		padding: 12px 24px;
+		border-radius: 12px;
+	}
+</style>
+
+<script>
+	import { ZodIssue, z } from 'astro/zod';
+	import { ContactFormData, contactFormDetails, formatWord } from '../../consts';
+	import emailjs from '@emailjs/browser';
+	import toaster from '../../scripts/toast';
+
+	const assetNull = <T extends HTMLElement>(ele: T | null): T => {
+		if (ele) return ele;
+
+		throw new Error(`Element is undefined for ${ele}`);
+	};
+
+	(function () {
+		emailjs.init('6seJt_G90tNz7cnD5');
+	})();
+
+	const toast = toaster();
+
+	const contactForm = document.querySelector<HTMLFormElement>('#contact-form');
+
+	const formDataSchema = z.object({
+		email: z.string().email(),
+		message: z.string().min(5),
+		name: z.string().min(3),
+		phoneNumber: z.string().optional(),
+	});
+
+	if (contactForm) {
+		const allFormInputs: (HTMLInputElement | HTMLTextAreaElement)[] = [];
+
+		const allErrorParagraph: HTMLParagraphElement[] = [];
+
+		contactFormDetails.forEach(({ name }) => {
+			const inputEle = document.querySelector<HTMLInputElement | HTMLTextAreaElement>(
+				`#${name}`
+			);
+
+			const paragraphEle = document.querySelector<HTMLParagraphElement>(`#${name}-error`);
+
+			if (inputEle) {
+				allFormInputs.push(inputEle);
+			}
+
+			if (paragraphEle) {
+				allErrorParagraph.push(paragraphEle);
+			}
+		});
+
+		contactForm.onsubmit = (e) => {
+			e.preventDefault();
+
+			allErrorParagraph.forEach((ele) => {
+				ele.textContent = '';
+			});
+
+			let formData: ContactFormData = {
+				email: '',
+				message: '',
+				name: '',
+				phoneNumber: '',
+			};
+
+			// let inputElements: HTMLInputElement[] = [];
+
+			allFormInputs.forEach((ele) => {
+				const { value, name } = ele;
+
+				formData = {
+					...formData,
+					[name]: value,
+				};
+			});
+
+			const res = formDataSchema.safeParse(formData);
+
+			if (res.success) {
+				const emailButtonn = assetNull(document.getElementById('form-button'));
+
+				emailButtonn.textContent = 'Loading...';
+
+				emailjs
+					.send('service_xtbicfb', 'template_gp3qzsk', {
+						from_name: res.data.name,
+						name: res.data.name,
+						email: res.data.email,
+						message: res.data.message,
+						reply_to: res.data.email,
+						phoneNumber: res.data?.phoneNumber ?? 'N/A',
+					})
+					.then(() => {
+						toast('success', "Thanks for reaching out to us, we'd be in touch shortly");
+						emailButtonn.textContent = 'Submit';
+						contactForm.reset();
+					})
+					.catch((err) => {
+						console.log(err);
+						toast(
+							'danger',
+							'An errror occured while sending mail, you can always reach out to us on live chat'
+						);
+						emailButtonn.textContent = 'Submit';
+					});
+			} else {
+				toast('danger', 'Please fill all required fields');
+				const { fieldErrors } = res.error.flatten((issue: ZodIssue) => ({
+					message: issue.message.replaceAll('String', formatWord(issue.path.toString())),
+					elementName: issue.path[0],
+					errorCode: issue.code,
+				}));
+
+				for (const key in fieldErrors) {
+					if (Object.hasOwnProperty.call(fieldErrors, key)) {
+						const element = fieldErrors[key as keyof typeof fieldErrors];
+
+						if (element && element[0]) {
+							const elementName = element[0]?.elementName?.toString() ?? '';
+							const currInput = allErrorParagraph.find(
+								({ id }) => id === `${elementName}-error`
+							);
+
+							// console.log(currInput);
+							if (currInput) {
+								currInput.textContent = element[0]?.message;
+							}
+						}
+					}
+				}
+			}
+		};
+	}
+</script>

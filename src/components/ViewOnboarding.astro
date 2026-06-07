@@ -1,0 +1,402 @@
+---
+import { Icon } from 'astro-icon';
+import { views, viewQuiz } from '../consts';
+---
+
+<div id="view-onboarding" class="vo" data-open="false" aria-hidden="true">
+	<div class="vo__scrim" data-vo-close></div>
+
+	<div
+		class="vo__panel"
+		role="dialog"
+		aria-modal="true"
+		aria-label="Choose your Swizel experience"
+	>
+		<button class="vo__skip" type="button" data-vo-skip aria-label="Skip">
+			Skip
+		</button>
+
+		<div class="vo__progress" aria-hidden="true">
+			<span class="vo__progressbar" id="vo-bar"></span>
+		</div>
+
+		<!-- Intro -->
+		<section class="vo__step is-active" data-step="intro">
+			<span class="vo__kicker">Welcome to Swizel</span>
+			<h2 class="vo__title">
+				One studio.<br />
+				<span class="gradient-text">Many ways to see it.</span>
+			</h2>
+			<p class="vo__lead">
+				This whole site reshapes around you. Answer three quick questions
+				and we'll tailor it — then explore every view you like.
+			</p>
+			<div class="vo__actions">
+				<button class="vo__cta" type="button" data-vo-start>
+					Find my view
+					<Icon width={18} name="mdi:arrow-right" />
+				</button>
+				<button class="vo__textbtn" type="button" data-vo-explore>
+					Just show me everything
+				</button>
+			</div>
+		</section>
+
+		<!-- Questions -->
+		{
+			viewQuiz.map((q, qi) => (
+				<section class="vo__step" data-step={`q${qi}`}>
+					<span class="vo__qcount">
+						Question {qi + 1} of {viewQuiz.length}
+					</span>
+					<h3 class="vo__q">{q.q}</h3>
+					<div class="vo__options">
+						{q.options.map((o) => (
+							<button
+								class="vo__opt"
+								type="button"
+								data-scores={JSON.stringify(o.scores)}
+								data-q={qi}
+							>
+								<span>{o.label}</span>
+								<span class="vo__opt-arrow">
+									<Icon width={16} name="mdi:arrow-right" />
+								</span>
+							</button>
+						))}
+					</div>
+				</section>
+			))
+		}
+
+		<!-- Results -->
+		<section class="vo__step" data-step="results">
+			<span class="vo__kicker" id="vo-rec-kicker">Your match</span>
+			<h2 class="vo__title">
+				We think you'll love
+				<span class="gradient-text" id="vo-rec-name">Boardroom</span>
+			</h2>
+			<p class="vo__lead">
+				Every view carries the same information — pick one to enter, and
+				switch whenever you like.
+			</p>
+			<div class="vo__grid">
+				{
+					views.map((v) => (
+						<button
+							class="vo__card"
+							type="button"
+							data-view-id={v.id}
+							style={`--va:${v.accent}`}
+						>
+							<span class="vo__card-top">
+								<span class="vo__card-ico">
+									<Icon width={22} name={v.icon} />
+								</span>
+								<span class="vo__card-badge">Recommended</span>
+							</span>
+							<span class="vo__card-name">{v.name}</span>
+							<span class="vo__card-aud">{v.audience}</span>
+							<span class="vo__card-blurb">{v.blurb}</span>
+							<span class="vo__card-cta">
+								Enter view
+								<Icon width={15} name="mdi:arrow-right" />
+							</span>
+						</button>
+					))
+				}
+			</div>
+		</section>
+	</div>
+</div>
+
+<style>
+	.vo {
+		position: fixed;
+		inset: 0;
+		z-index: 1000;
+		display: none;
+		align-items: center;
+		justify-content: center;
+		padding: 1.25rem;
+	}
+	.vo[data-open='true'] {
+		display: flex;
+	}
+	.vo__scrim {
+		position: absolute;
+		inset: 0;
+		background: rgba(8, 9, 16, 0.72);
+		backdrop-filter: blur(10px);
+		animation: vo-fade 0.4s ease both;
+	}
+	.vo__panel {
+		position: relative;
+		width: min(100%, 820px);
+		max-height: 92vh;
+		overflow-y: auto;
+		border-radius: 1.5rem;
+		padding: clamp(1.75rem, 4vw, 3rem);
+		background: linear-gradient(180deg, #1c1e30, #14151f);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		box-shadow: 0 60px 120px -40px rgba(0, 0, 0, 0.8);
+		color: #fff;
+		animation: vo-pop 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+	}
+	@keyframes vo-fade {
+		from {
+			opacity: 0;
+		}
+	}
+	@keyframes vo-pop {
+		from {
+			opacity: 0;
+			transform: translateY(24px) scale(0.96);
+		}
+	}
+
+	.vo__skip {
+		position: absolute;
+		top: 1.1rem;
+		right: 1.3rem;
+		font-size: 0.8rem;
+		font-weight: 600;
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+		color: rgba(255, 255, 255, 0.5);
+		transition: color 0.2s ease;
+	}
+	.vo__skip:hover {
+		color: #fff;
+	}
+
+	.vo__progress {
+		height: 4px;
+		border-radius: 9999px;
+		background: rgba(255, 255, 255, 0.08);
+		overflow: hidden;
+		margin-bottom: 2rem;
+	}
+	.vo__progressbar {
+		display: block;
+		height: 100%;
+		width: 0%;
+		border-radius: 9999px;
+		background: linear-gradient(90deg, #8dfeea, #18debe, #28a6ec);
+		transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	.vo__step {
+		display: none;
+		animation: vo-step 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+	}
+	.vo__step.is-active {
+		display: block;
+	}
+	@keyframes vo-step {
+		from {
+			opacity: 0;
+			transform: translateX(24px);
+		}
+	}
+
+	.vo__kicker,
+	.vo__qcount {
+		display: inline-block;
+		font-size: 0.72rem;
+		font-weight: 700;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: #86e2ef;
+		margin-bottom: 1rem;
+	}
+	.vo__title {
+		font-family: 'Bebas Neue', sans-serif;
+		font-size: clamp(2.2rem, 5vw, 3.4rem);
+		line-height: 1.02;
+		letter-spacing: 1px;
+		text-transform: uppercase;
+		margin: 0 0 1rem;
+	}
+	.vo__q {
+		font-size: clamp(1.5rem, 3vw, 2.1rem);
+		font-weight: 800;
+		line-height: 1.2;
+		margin: 0 0 1.75rem;
+	}
+	.vo__lead {
+		color: rgba(255, 255, 255, 0.68);
+		font-size: 1.05rem;
+		line-height: 1.65;
+		max-width: 48ch;
+		margin: 0 0 1.75rem;
+	}
+
+	.vo__actions {
+		display: flex;
+		align-items: center;
+		gap: 1.25rem;
+		flex-wrap: wrap;
+	}
+	.vo__cta {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		font-size: 0.85rem;
+		color: #0b0d18;
+		background: linear-gradient(95deg, #8dfeea, #18debe, #28a6ec);
+		padding: 0.9rem 1.6rem;
+		border-radius: 9999px;
+		box-shadow: 0 14px 30px -12px rgba(24, 222, 190, 0.6);
+		transition: transform 0.25s ease, box-shadow 0.25s ease;
+	}
+	.vo__cta:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 20px 40px -12px rgba(40, 166, 236, 0.6);
+	}
+	.vo__textbtn {
+		font-weight: 600;
+		color: rgba(255, 255, 255, 0.6);
+		transition: color 0.2s ease;
+	}
+	.vo__textbtn:hover {
+		color: #fff;
+	}
+
+	/* Options */
+	.vo__options {
+		display: grid;
+		gap: 0.75rem;
+	}
+	.vo__opt {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		text-align: left;
+		padding: 1.05rem 1.25rem;
+		border-radius: 1rem;
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		background: rgba(255, 255, 255, 0.03);
+		color: #fff;
+		font-size: 1.02rem;
+		font-weight: 500;
+		cursor: pointer;
+		transition: border-color 0.25s ease, background 0.25s ease,
+			transform 0.25s ease;
+	}
+	.vo__opt:hover {
+		border-color: #18debe;
+		background: rgba(24, 222, 190, 0.08);
+		transform: translateX(4px);
+	}
+	.vo__opt-arrow {
+		display: inline-flex;
+		opacity: 0;
+		transform: translateX(-6px);
+		transition: opacity 0.25s ease, transform 0.25s ease;
+		color: #18debe;
+	}
+	.vo__opt:hover .vo__opt-arrow {
+		opacity: 1;
+		transform: translateX(0);
+	}
+
+	/* Results grid */
+	.vo__grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+		gap: 0.9rem;
+		margin-top: 0.5rem;
+	}
+	.vo__card {
+		text-align: left;
+		display: flex;
+		flex-direction: column;
+		gap: 0.35rem;
+		padding: 1.25rem;
+		border-radius: 1.1rem;
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		background: rgba(255, 255, 255, 0.03);
+		cursor: pointer;
+		transition: border-color 0.25s ease, background 0.25s ease,
+			transform 0.25s ease;
+		position: relative;
+	}
+	.vo__card:hover {
+		transform: translateY(-4px);
+		border-color: var(--va);
+		background: rgba(255, 255, 255, 0.05);
+	}
+	.vo__card-top {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 0.5rem;
+	}
+	.vo__card-ico {
+		display: inline-grid;
+		place-items: center;
+		width: 42px;
+		height: 42px;
+		border-radius: 0.8rem;
+		background: color-mix(in srgb, var(--va) 18%, transparent);
+		color: var(--va);
+	}
+	.vo__card-badge {
+		display: none;
+		font-size: 0.62rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		color: #0b0d18;
+		background: var(--va);
+		padding: 0.25rem 0.6rem;
+		border-radius: 9999px;
+	}
+	.vo__card.is-recommended {
+		border-color: var(--va);
+		background: color-mix(in srgb, var(--va) 10%, transparent);
+		box-shadow: 0 0 0 1px var(--va),
+			0 24px 50px -24px color-mix(in srgb, var(--va) 60%, transparent);
+	}
+	.vo__card.is-recommended .vo__card-badge {
+		display: inline-block;
+	}
+	.vo__card-name {
+		font-size: 1.15rem;
+		font-weight: 800;
+	}
+	.vo__card-aud {
+		font-size: 0.78rem;
+		color: rgba(255, 255, 255, 0.55);
+	}
+	.vo__card-blurb {
+		font-size: 0.85rem;
+		color: rgba(255, 255, 255, 0.7);
+		line-height: 1.5;
+		margin-top: 0.25rem;
+	}
+	.vo__card-cta {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		margin-top: 0.75rem;
+		font-size: 0.78rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: var(--va);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.vo__scrim,
+		.vo__panel,
+		.vo__step {
+			animation: none !important;
+		}
+	}
+</style>

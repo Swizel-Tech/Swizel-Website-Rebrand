@@ -1,0 +1,61 @@
+---
+interface Props {
+	type: 'h2' | 'h3' | 'h4' | 'h5';
+	className?: string;
+	id?: string;
+}
+
+const { type, className = '', id } = Astro.props;
+---
+
+{
+	type === 'h2' && (
+		<h2
+			id={id}
+			class:list={[
+				'md:text-6xl text-4xl font-extrabold text-darker sm:leading-[1.25]',
+				className,
+			]}
+		>
+			<slot> Enter backup text</slot>
+		</h2>
+	)
+}
+{
+	type === 'h3' && (
+		<h3
+			id={id}
+			class:list={[
+				'sm:text-4xl text-3xl font-extrabold text-darker leading-tight',
+				className,
+			]}
+		>
+			<slot> Enter backup text</slot>
+		</h3>
+	)
+}
+{
+	type === 'h4' && (
+		<h4
+			id={id}
+			class:list={[
+				'text-2xl font-bold text-darker leading-tight',
+				className,
+			]}
+		>
+			<slot> Enter backup text</slot>
+		</h4>
+	)
+}{
+	type === 'h5' && (
+		<h2
+			id={id}
+			class:list={[
+				'md:text-6xl text-4xl font-extrabold text-darker leading-tight',
+				className,
+			]}
+		>
+			<slot> Enter backup text</slot>
+		</h2>
+	)
+}

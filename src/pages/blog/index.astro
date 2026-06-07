@@ -1,0 +1,30 @@
+---
+import { getCollection } from 'astro:content';
+import MainLayout from '../../layouts/MainLayout.astro';
+import Breadcrumb from '../../components/blocks/Breadcrumb.astro';
+import BlogPostCard from '../../components/elements/BlogPostCard.astro';
+import Section from '../../components/HTML/Section.astro';
+import FooterCTA from '../../components/blocks/FooterCTA.astro';
+import NewsLetterAndContact from '../../components/sections/NewsLetterAndContact.astro';
+
+export const posts = (await getCollection('blog')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+---
+
+<MainLayout>
+	<Breadcrumb title="Articles" desc="" />
+	<Section divClass="py-20">
+		<ul
+			class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 pb-20 border-b border-swizelBrown"
+		>
+			{
+				posts.map((post) => (
+					<BlogPostCard as="li" to={`/blog/${post.slug}`} {...post} />
+				))
+			}
+		</ul>
+	</Section>
+	<NewsLetterAndContact hideContact />
+	<FooterCTA />
+</MainLayout>

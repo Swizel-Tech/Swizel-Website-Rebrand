@@ -1,0 +1,509 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import ToastContainer from '../components/elements/ToastContainer.astro';
+import ViewOnboarding from '../components/ViewOnboarding.astro';
+
+export interface Props {
+	title?: string;
+	description?: string;
+	image?: string;
+}
+
+const {
+	title = SITE_TITLE,
+	description = SITE_DESCRIPTION,
+	image,
+} = Astro.props;
+---
+
+<!DOCTYPE html>
+{
+/* prettier-ignore */
+}
+<html lang="en">
+	<head>
+		<BaseHead title={title} description={description} image={image} />
+	</head>
+	<body class="leading-loose">
+		<script is:inline type="text/javascript">
+		var Tawk_API = Tawk_API || {},
+			Tawk_LoadStart = new Date();
+		(function () {
+			var s1 = document.createElement('script'),
+				s0 = document.getElementsByTagName('script')[0];
+			s1.async = true;
+			s1.src = 'https://embed.tawk.to/6415ce6d31ebfa0fe7f359e9/1grqisntk';
+			s1.charset = 'UTF-8';
+			s1.setAttribute('crossorigin', '*');
+			s0.parentNode.insertBefore(s1, s0);
+		})();
+		</script>
+		<main id="swup">
+			<Header />
+			<slot />
+			<Footer />
+			<ToastContainer />
+			<ViewOnboarding />
+		</main>
+		<button id="back-to-top" type="button" aria-label="Back to top">
+			<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+		</button>
+		<div id="swizel-cursor" aria-hidden="true">
+			<svg class="cur-builder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 7 3 12 8 17"></polyline><polyline points="16 7 21 12 16 17"></polyline><line x1="14.5" y1="5" x2="9.5" y2="19"></line></svg>
+			<svg class="cur-founder" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c2.5 2.2 4 5.5 4 9 0 1.6-.4 3.2-1 4.6L12 18l-3-2.4C8.4 14.2 8 12.6 8 11c0-3.5 1.5-6.8 4-9z"></path><circle cx="12" cy="9.5" r="1.3" fill="#0b0d18"></circle><path d="M8.6 15.2 6.5 19l3-1M15.4 15.2 17.5 19l-3-1" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"></path></svg>
+			<svg class="cur-campus" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4 23 9l-11 5L1 9z"></path><path d="M5 11.5V15c0 1.6 3.1 3 7 3s7-1.4 7-3v-3.5" fill="none" stroke="currentColor" stroke-width="1.7"></path><path d="M23 9v3.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"></path></svg>
+			<svg class="cur-studio" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l4-1 11-11-3-3L4 17z"></path><path d="M14 6l3 3"></path></svg>
+			<svg class="cur-boardroom" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="11" rx="2"></rect><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="3" y1="13" x2="21" y2="13"></line><rect x="10.5" y="11.5" width="3" height="3" rx="0.6"></rect></svg>
+			<svg class="cur-legacy" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z"></path></svg>
+			<svg class="cur-term" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 8 9 12 5 16"></polyline><line x1="11.5" y1="16" x2="18" y2="16"></line></svg>
+			<svg class="cur-pkg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5v8l9 5 9-5z"></path><path d="M3 8l9 5 9-5M12 13v8"></path></svg>
+			<svg class="cur-branch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="6.5" cy="6" r="2.3"></circle><circle cx="6.5" cy="18" r="2.3"></circle><circle cx="17.5" cy="8" r="2.3"></circle><path d="M6.5 8.3v7.4M9.6 7.2c5 .6 7.9 2.6 7.9 7.3"></path></svg>
+			<svg class="cur-repo" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l2.7 5.5 6 .9-4.3 4.2 1 6L12 16.9 6.6 19.6l1-6L3.3 9.4l6-.9z"></path></svg>
+		</div>
+	</body>
+</html>
+
+<script>
+	import Swup from 'swup';
+	import SwupOverlayTheme from '@swup/overlay-theme';
+	import SwupA11yPlugin from '@swup/a11y-plugin';
+	import SwupHeadPlugin from '@swup/head-plugin';
+	import Splide from '@splidejs/splide';
+	import SwupScrollPlugin from '@swup/scroll-plugin';
+	import { initFlowbite } from 'flowbite';
+	import toaster from '../scripts/toast';
+
+	import { isTrue, teamDetails } from '../consts';
+
+	import { handleDropDown } from '../scripts/handleDropDown';
+	import { initViewExperience } from '../scripts/viewExperience';
+	import { initBuilderView } from '../scripts/builderView';
+	import { initBuilderBody } from '../scripts/builderBody';
+	import { initFounderView } from '../scripts/founderView';
+	import { initCampusView } from '../scripts/campusView';
+	import { initStudioView } from '../scripts/studioView';
+	import { initBoardroomView } from '../scripts/boardroomView';
+	import { initLegacyView } from '../scripts/legacyView';
+
+	const handleMenuToggle = () => {
+		const menuWrapper = document.querySelector<HTMLElement>('#mobile-wrapper');
+		const wrapperOverlay = document.querySelector<HTMLElement>('#close-overlay');
+
+		const showBtn = document.querySelector<HTMLButtonElement>('#toggler-show');
+		const hideBtn = document.querySelector<HTMLButtonElement>('#toggler-hide');
+
+		const toggleMenu = (state: 'true' | 'false') => {
+			if (menuWrapper) {
+				menuWrapper.dataset.expanded = state;
+			}
+		};
+
+		if (showBtn) {
+			showBtn.onclick = () => toggleMenu('true');
+		}
+
+		if (hideBtn) {
+			hideBtn.onclick = () => toggleMenu('false');
+		}
+
+		if (wrapperOverlay) {
+			wrapperOverlay.onclick = () => toggleMenu('false');
+		}
+	};
+
+	const handleTeamDialog = () => {
+		const teamMatesMember = document.querySelectorAll<HTMLLIElement>('.teammate-member');
+
+		const dialogModal = document.querySelector<HTMLDialogElement>('#member-dialog');
+
+		const dialogCloseBtn = document.getElementById('close-team-dialog') as HTMLButtonElement;
+
+		const dialogContent = document.getElementById('team-dialog--content') as HTMLDivElement;
+
+		// using typecasting because null checks would be verbose
+		const memberImage = document.getElementById('dialog--image') as HTMLImageElement;
+
+		const memberRole = document.getElementById('teammate--role') as HTMLParagraphElement;
+
+		const memberBio = document.getElementById('teammate--bio') as HTMLParagraphElement;
+
+		const memberExperienceList = document.getElementById(
+			'teammate--experience'
+		) as HTMLUListElement;
+
+		const memberName = document.getElementById('teammate--name') as HTMLHeadingElement;
+		const memberLinkedin = document.getElementById('teammate--linkedin') as HTMLLinkElement;
+
+		const writeExperienceItem = (company: string, jobDesc: string) => `
+		<div class="space-y-2 astro-7KIUVPD3">
+			<h4 class="text-xl font-bold text-darker leading-tight">
+				${company}
+			</h4>
+			<p class="astro-7KIUVPD3">${jobDesc}</p>
+		</div>`;
+
+		teamMatesMember.forEach((member) => {
+			member.onclick = () => {
+				const { membername } = member.dataset;
+
+				const selectedMember = teamDetails.find(({ name }) => name === membername);
+
+				if (dialogModal && selectedMember) {
+					// open modal
+					dialogModal.showModal();
+
+					// remove initial focus when dialog is open: https://stackoverflow.com/a/61855683
+					dialogCloseBtn.blur();
+
+					const { bio, experience, linkedinURL, name, role } = selectedMember;
+
+					// insert content into the dom
+					memberImage.src = `/teammates/${membername}.jpg`;
+					memberRole.textContent = role;
+					memberBio.textContent = bio;
+					memberName.textContent = name;
+					memberLinkedin.href = linkedinURL;
+
+					memberExperienceList.innerHTML = experience
+						.map(({ company, jobDesc }) => writeExperienceItem(company, jobDesc))
+						.join('');
+				} else {
+					throw new Error('Please check dialog and member details');
+				}
+			};
+		});
+
+		dialogCloseBtn.onclick = () => {
+			dialogModal!.close(); // using nullish operator because the element already exists
+		};
+
+		// using this to make sure that onclick outside of the dialog, it closes the modal cc: https://stackoverflow.com/a/73988585
+		if (dialogModal) {
+			dialogModal.onclick = (_e) => dialogModal.close();
+		}
+
+		if (dialogContent) {
+			dialogContent.onclick = (e) => e.stopPropagation();
+		}
+	};
+
+	const setThemeToggleState = () => {
+		const isDark = document.documentElement.classList.contains('dark');
+		document
+			.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]')
+			.forEach((btn) => btn.setAttribute('aria-checked', String(isDark)));
+	};
+
+	const handleThemeToggle = () => {
+		const toggles = document.querySelectorAll<HTMLButtonElement>(
+			'[data-theme-toggle]'
+		);
+		setThemeToggleState();
+		toggles.forEach((btn) => {
+			btn.onclick = () => {
+				const isDark =
+					document.documentElement.classList.toggle('dark');
+				try {
+					localStorage.setItem('theme', isDark ? 'dark' : 'light');
+				} catch (e) {}
+				setThemeToggleState();
+			};
+		});
+	};
+
+	const handleHero = () => {
+		const hero = document.querySelector<HTMLElement>('.hero--stage');
+		if (!hero) return;
+
+		// Animated stat counters
+		const counters =
+			hero.querySelectorAll<HTMLElement>('[data-count-to]');
+		if (counters.length) {
+			const runCount = (el: HTMLElement) => {
+				const target = Number(el.dataset.countTo || '0');
+				const suffix = el.dataset.suffix || '';
+				const dur = 1400;
+				const start = performance.now();
+				const tick = (now: number) => {
+					const p = Math.min((now - start) / dur, 1);
+					const eased = 1 - Math.pow(1 - p, 3);
+					el.textContent = Math.round(target * eased) + suffix;
+					if (p < 1) requestAnimationFrame(tick);
+				};
+				requestAnimationFrame(tick);
+			};
+			const io = new IntersectionObserver(
+				(entries) => {
+					entries.forEach((e) => {
+						if (e.isIntersecting) {
+							runCount(e.target as HTMLElement);
+							io.unobserve(e.target);
+						}
+					});
+				},
+				{ threshold: 0.6 }
+			);
+			counters.forEach((c) => io.observe(c));
+		}
+
+		const reduce = window.matchMedia(
+			'(prefers-reduced-motion: reduce)'
+		).matches;
+
+		// 3D tilt + cursor spotlight on the team photo
+		const card = hero.querySelector<HTMLElement>('#hero-tilt');
+		const inner = card?.querySelector<HTMLElement>('.hero--photo-inner');
+		const spot = card?.querySelector<HTMLElement>('.hero--photo-spot');
+		if (card && !reduce) {
+			const max = 7;
+			card.addEventListener('pointermove', (ev) => {
+				const r = card.getBoundingClientRect();
+				const px = (ev.clientX - r.left) / r.width;
+				const py = (ev.clientY - r.top) / r.height;
+				card.style.transform = `perspective(1100px) rotateY(${
+					(px - 0.5) * max
+				}deg) rotateX(${(0.5 - py) * max}deg)`;
+				if (spot) {
+					spot.style.setProperty('--mx', `${px * 100}%`);
+					spot.style.setProperty('--my', `${py * 100}%`);
+				}
+			});
+			card.addEventListener('pointerleave', () => {
+				card.style.transform =
+					'perspective(1100px) rotateY(0) rotateX(0)';
+			});
+		}
+
+		// Auto-cycling highlight across the industry chips
+		const sectorWrap = hero.querySelector<HTMLElement>('#hero-sectors');
+		if (sectorWrap && !reduce) {
+			const chips = Array.from(
+				sectorWrap.querySelectorAll<HTMLElement>(
+					'.hero--sector:not(.hero--sector-more)'
+				)
+			);
+			let idx = 0;
+			let hovering = false;
+			sectorWrap.addEventListener('pointerenter', () => (hovering = true));
+			sectorWrap.addEventListener('pointerleave', () => (hovering = false));
+			window.setInterval(() => {
+				if (hovering || !chips.length) return;
+				chips.forEach((c) => c.classList.remove('is-active'));
+				chips[idx % chips.length].classList.add('is-active');
+				idx++;
+			}, 1400);
+		}
+	};
+
+	const handleFooter = () => {
+		const clocks = document.querySelectorAll<HTMLElement>('.ft-clock');
+		if (clocks.length) {
+			const tick = () => {
+				clocks.forEach((c) => {
+					const tz = c.dataset.tz;
+					const t = c.querySelector('.ft-clock-time');
+					if (tz && t) {
+						try {
+							t.textContent = new Intl.DateTimeFormat('en-GB', {
+								timeZone: tz,
+								hour: '2-digit',
+								minute: '2-digit',
+							}).format(new Date());
+						} catch (e) {}
+					}
+				});
+			};
+			tick();
+			const w = window as any;
+			if (w.__swizelClock) clearInterval(w.__swizelClock);
+			w.__swizelClock = window.setInterval(tick, 1000);
+		}
+		const nf = document.getElementById('footer-newsletter') as HTMLFormElement | null;
+		if (nf) {
+			nf.onsubmit = (e) => {
+				e.preventDefault();
+				const msg = document.getElementById('footer-news-msg');
+				if (msg) msg.textContent = 'Thanks! You are on the list.';
+				nf.reset();
+			};
+		}
+		const yr = document.getElementById('footer-year');
+		if (yr) yr.textContent = new Date().getFullYear().toString();
+	};
+
+	const init = () => {
+		initFlowbite();
+		toaster();
+		handleThemeToggle();
+		handleHero();
+		initViewExperience();
+		initBuilderView();
+		initBuilderBody();
+		initFounderView();
+		initCampusView();
+		initStudioView();
+		initBoardroomView();
+		initLegacyView();
+		handleFooter();
+
+		if (document.querySelector('#newsletter')) {
+			const newsletterForm = document.getElementById('newsletter') as HTMLFormElement;
+
+			const email = document.getElementById('email') as HTMLInputElement;
+
+			newsletterForm.onsubmit = (e) => {
+				e.preventDefault();
+
+				const { name } = email;
+
+				/* should be submitted ::mailchimp */
+				console.log(name);
+			};
+		}
+
+		if (document.querySelector('#teammates-carousel')) {
+			const splide = new Splide('.splide', {
+				perPage: 1,
+				type: 'loop',
+				perMove: 1,
+				autoplay: true,
+				interval: 2000,
+				mediaQuery: 'min',
+				breakpoints: {
+					640: {
+						perPage: 2,
+						gap: 30,
+					},
+					768: {
+						perPage: 3,
+					},
+					1024: {
+						perPage: 4,
+					},
+				},
+			});
+			splide.mount();
+		}
+
+		if (document.querySelector('#services--dropdown')) {
+			const fields = document.querySelectorAll<HTMLDivElement>('.services--field');
+
+			fields.forEach((field) => {
+				field.addEventListener('click', () => {
+					const isActive = isTrue(field.dataset.hidden ?? '');
+					const fieldName = field.dataset.fieldname;
+					const btn = document.getElementById(`btn-${fieldName}`);
+
+					if (btn !== null) {
+						if (isActive) {
+							btn.firstElementChild!.textContent = `Hide ${fieldName}`;
+							btn.setAttribute('aria-expanded', 'true');
+						} else {
+							btn.firstElementChild!.textContent = `Expand ${fieldName}`;
+							btn.setAttribute('aria-expanded', 'false');
+						}
+					} else {
+						throw new Error(`${fieldName} Button is not defined:`);
+					}
+
+					field.dataset.hidden = (!isActive).toString();
+				});
+			});
+		}
+
+		if (document.querySelector<HTMLElement>('#mobile-wrapper')) {
+			handleMenuToggle();
+		}
+
+		if (document.querySelector('#member-dialog')) {
+			handleTeamDialog();
+		}
+
+		if (document.querySelector('#navbar--header')) {
+			const backTop = document.getElementById('back-to-top');
+			window.onscroll = function () {
+				const header = document.querySelector('#navbar--header');
+				if (window.pageYOffset > 200) {
+					header!.classList.add('header-sticky');
+				} else {
+					header!.classList.remove('header-sticky');
+				}
+				if (backTop) {
+					backTop.classList.toggle('is-visible', window.pageYOffset > 600);
+				}
+			};
+			if (backTop) {
+				backTop.onclick = () =>
+					window.scrollTo({ top: 0, behavior: 'smooth' });
+			}
+		}
+
+		if (document.querySelector('#bootcamp-register')) {
+			const registerationForm = document.querySelector<HTMLFormElement>('#bootcamp-register');
+
+			registerationForm!.onsubmit = (e) => {
+				e.preventDefault();
+
+				console.log('hello');
+			};
+		}
+		if (document.querySelector('#bootcamp--faq')) {
+			handleDropDown('faq--item');
+		}
+	};
+
+	// guide to events and function check: https://swup.js.org/getting-started/reloading-javascript
+	// swup with astro: https://navillus.dev/blog/astro-plus-swup
+	const overlay = new SwupOverlayTheme({
+		color: '#28293E',
+		duration: 600,
+		direction: 'to-top',
+	});
+
+	// @ts-ignore
+	const swup = new Swup({
+		plugins: [overlay, new SwupA11yPlugin(), new SwupHeadPlugin(), new SwupScrollPlugin()],
+		linkSelector: 'a[href]',
+	});
+
+	if (document.readyState === 'complete') {
+		init();
+	} else {
+		document.addEventListener('DOMContentLoaded', () => init());
+	}
+
+	// run after every additional navigation by swup
+	swup.on('contentReplaced', init);
+
+	// Themed animated custom cursor (attached once; element lives outside #swup)
+	const swizelCursor = document.getElementById('swizel-cursor');
+	if (swizelCursor && window.matchMedia('(pointer: fine)').matches) {
+		let idleTimer = 0;
+		window.addEventListener(
+			'pointermove',
+			(e) => {
+				swizelCursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+				const el = e.target instanceof Element ? e.target : null;
+				const zone = el && el.closest('.hero-view, .bbody');
+				swizelCursor.classList.toggle('is-active', !!zone);
+				const cz = el && el.closest('[data-cursor]');
+				const icon = cz && cz.getAttribute('data-cursor');
+				if (icon) swizelCursor.setAttribute('data-icon', icon);
+				else swizelCursor.removeAttribute('data-icon');
+				swizelCursor.classList.remove('is-idle');
+				window.clearTimeout(idleTimer);
+				idleTimer = window.setTimeout(
+					() => swizelCursor.classList.add('is-idle'),
+					700
+				);
+			},
+			{ passive: true }
+		);
+		document.addEventListener('mouseleave', () =>
+			swizelCursor.classList.remove('is-active')
+		);
+	}
+</script>

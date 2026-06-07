@@ -1,0 +1,67 @@
+---
+type Props = (
+	| astroHTML.JSX.InputHTMLAttributes
+	| astroHTML.JSX.TextareaHTMLAttributes
+) & {
+	label: string;
+	wrapperClass?: string;
+	inputClass?: string;
+	as?: 'input' | 'textarea';
+	errorID?: string;
+	textWhite?: true;
+};
+
+const {
+	label,
+	wrapperClass,
+	inputClass,
+	as: elementType = 'input',
+	errorID,
+	textWhite,
+	...props
+} = Astro.props;
+
+const defaultClass = 'p-3 bg-transparent border-[0.5px] rounded-xl';
+---
+
+<div class:list={['my-4', wrapperClass]}>
+	<label class="grid gap-2">
+		<span
+			class:list={['font-bold', textWhite ? 'text-white' : 'text-darker']}
+			>{label}</span
+		>
+		{
+			elementType === 'input' ? (
+				<input
+					class:list={[
+						defaultClass,
+						inputClass,
+						textWhite
+							? 'placeholder:text-white/60 text-white'
+							: 'text-darker',
+					]}
+					type={props.type ?? 'text'}
+					{...props}
+				/>
+			) : (
+				<textarea
+					class:list={[
+						defaultClass,
+						inputClass,
+						textWhite
+							? 'placeholder:text-white/60 text-white'
+							: 'text-darker/60',
+					]}
+					{...props}
+				/>
+			)
+		}
+		<p class="text-red-500 text-xs" id={errorID}></p>
+	</label>
+</div>
+
+<style>
+	p:empty {
+		display: none;
+	}
+</style>

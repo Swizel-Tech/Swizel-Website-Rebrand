@@ -1,0 +1,165 @@
+---
+import { Icon } from 'astro-icon';
+import Section from '../components/HTML/Section.astro';
+import Link from '../components/Link.astro';
+import BaseHead from '../components/BaseHead.astro';
+import { SITE_DESCRIPTION, SITE_TITLE, faq } from '../consts';
+import ContactDetails from '../components/elements/ContactDetails.astro';
+import AccentHeader from '../components/HTML/AccentHeader.astro';
+import Heading from '../components/HTML/Heading.astro';
+import ContactForm from '../components/blocks/ContactForm.astro';
+import ToastContainer from '../components/elements/ToastContainer.astro';
+---
+
+<!DOCTYPE html>
+{
+/* prettier-ignore */
+}
+<html lang="en">
+	<head>
+		<BaseHead
+			title="Contact Swizel Technologies | Start Your Project"
+			description="Get in touch with Swizel Technologies. Tell us about your project and our team will help you turn your idea into a successful product."
+		/>
+	</head>
+	<body class="grid min-h-screen items-center bg-swizelDark text-white">
+		<script is:inline type="text/javascript">
+			var Tawk_API = Tawk_API || {},
+				Tawk_LoadStart = new Date();
+			(function () {
+				var s1 = document.createElement('script'),
+					s0 = document.getElementsByTagName('script')[0];
+				s1.async = true;
+				s1.src = 'https://embed.tawk.to/6415ce6d31ebfa0fe7f359e9/1grqisntk';
+				s1.charset = 'UTF-8';
+				s1.setAttribute('crossorigin', '*');
+				s0.parentNode.insertBefore(s1, s0);
+			})();
+		</script>
+		<main class="py-10">
+			<Section sectionClass="bg-swizelDark -mb-8" divClass="my-16">
+				<div class="w-fit">
+					<Link
+						href="/"
+						class="flex items-center gap-4 text-white uppercase text-xs font-bold"
+					>
+						<Icon name="icon--back" size={18} />
+						<span class="text-white">Back to Home</span>
+					</Link>
+				</div>
+				<div class="grid md:grid-cols-2 gap-y-10 gap-x-5">
+					<div class="md:space-y-20 space-y-10 md:mt-12">
+						<Link
+							href="/"
+							class="block md:mx-0 mx-auto md:w-[300px] w-[150px]"
+							aria-label="back to home"
+						>
+							<Icon name="logo-alt" />
+						</Link>
+						<h1
+							class="text--header sm:text-[56px] text-5xl leading-snug sm:leading-[1.25] max-md:w-fit max-md:mx-auto md:text-left text-center"
+						>
+							<span> Tell us about your project.</span>
+						</h1>
+					</div>
+					<ContactForm />
+				</div>
+			</Section>
+			<Section sectionClass="my-16">
+				<ContactDetails email="contact@swizel.co" textColor="text-white" />
+			</Section>
+			<Section sectionClass="py-16">
+				<div class="md:flex space-y-10 md:space-y-0 justify-between">
+					<div class="space-y-5 max-w-lg flex-[0.4]">
+						<AccentHeader class="!text-white">FAQ</AccentHeader>
+						<Heading className="!text-white" type="h3">
+							Frequently Asked Questions
+						</Heading>
+					</div>
+					<ul class="grid flex-[0.6] max-w-2xl">
+						{
+							faq.map(({ answer, question }, idx) => (
+								<li
+									class="space-y-7 py-7 px-5 first-of-type:rounded-t-lg last-of-type:rounded-b-lg border-swizelBrown faq--item"
+									data-expanded={idx === 0 ? 'true' : 'false'}
+								>
+									<button
+										type="button"
+										class="flex w-full text-left md:items-center justify-between gap-4"
+									>
+										<Heading className="!text-white !text-lg" type="h4">
+											{question}
+										</Heading>
+										<div class="h-[32px] w-[32px] icon">
+											<Icon size={28} name="faq--dropdown" />
+										</div>
+									</button>
+									<p class="text-white/60 faq--content">{answer}</p>
+								</li>
+							))
+						}
+					</ul>
+				</div>
+			</Section>
+			<ToastContainer />
+		</main>
+	</body>
+</html>
+
+<style>
+	.text--header {
+		max-width: 419px;
+		/* min-height: 128px; */
+
+		font-family: 'Epilogue';
+		font-style: normal;
+		font-weight: 800;
+
+		/* or 114% */
+		letter-spacing: -1px;
+		text-transform: uppercase;
+
+		/* gradient */
+		background: linear-gradient(264.34deg, #8dfeea 0.47%, #18debe 45%, #28a6ec 93.6%);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+		text-fill-color: transparent;
+	}
+
+	.faq--item {
+		border-inline: 1px solid #f3d1bf;
+		box-shadow: 0px 32px 64px rgba(57, 20, 0, 0.04);
+	}
+	.faq--item:nth-child(even) {
+		border-block: 1px solid #f3d1bf;
+	}
+	.faq--item:first-child {
+		border-top: 1px solid #f3d1bf;
+	}
+	.faq--item:last-child {
+		border-bottom: 1px solid #f3d1bf;
+	}
+
+	/* styles to handle toggle */
+	.faq--content {
+		display: none;
+	}
+
+	.faq--item[data-expanded='true'] {
+		background-color: #428876;
+	}
+
+	.faq--item[data-expanded='true'] .faq--content {
+		display: block;
+	}
+	.faq--item[data-expanded='false'] .icon {
+		transform: scaleY(-1);
+	}
+</style>
+
+<script>
+	import { handleDropDown } from '../scripts/handleDropDown';
+
+	handleDropDown('faq--item');
+</script>

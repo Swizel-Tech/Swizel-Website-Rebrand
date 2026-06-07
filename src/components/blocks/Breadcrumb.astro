@@ -1,0 +1,29 @@
+---
+import { breadCrumbDesc, formatLink } from '../../consts';
+
+interface Props {
+	desc?: string;
+	title?: string;
+	overrideDescStyle?: string;
+}
+const { pathname } = Astro.url;
+const { desc, title, overrideDescStyle = '' } = Astro.props;
+
+// @ts-ignore
+const [, mainUrl, ...rest] = pathname.split('/');
+---
+
+<div
+	class="bg-swizelDark min-h-[300px] grid place-content-center text-center gap-5"
+>
+	<h1
+		class="text-6xl sm:text-7xl tracking-tighter font-extrabold capitalize text-white"
+	>
+		{title ?? formatLink(mainUrl ?? '')}
+	</h1>
+	<div class="px-3">
+		<p class:list={['max-w-lg mx-auto text-white/60', overrideDescStyle]}>
+			{desc ?? breadCrumbDesc}
+		</p>
+	</div>
+</div>

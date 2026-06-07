@@ -1,0 +1,40 @@
+---
+import CustomButton from '../../components/CustomButton.astro';
+import Heading from '../../components/HTML/Heading.astro';
+import Input from '../../components/HTML/Input.astro';
+import Section from '../../components/HTML/Section.astro';
+import { bootCampForm } from '../../consts';
+import MainLayout from '../../layouts/MainLayout.astro';
+---
+
+<MainLayout>
+	<Section divClass="my-20">
+		<div class="max-w-2xl mx-auto space-y-10">
+			<div class="space-y-4 text-darker/60">
+				<Heading type="h2">Register Now</Heading>
+				<p>Complete the form to signup for our bootcamp</p>
+			</div>
+			<form id="bootcamp-register" class="grid sm:grid-cols-2 gap-x-8">
+				{bootCampForm.map((details) => <Input {...details} />)}
+				<select
+					class="p-5 sm:col-span-2 my-4 rounded-lg bg-[#FAFDFC]/60 border shadow"
+				>
+					<option value="">Select Package</option>
+					<option value="Software Development">
+						Software Development
+					</option>
+					<option value="Visual Design">Visual Design</option>
+					<option value="Digital Marketing">Digital Marketing</option>
+				</select>
+				<Input
+					label="Additional text"
+					wrapperClass="sm:col-span-2"
+					rows={4}
+					as="textarea"
+				/>
+
+				<CustomButton type="submit" class="mt-8">Submit</CustomButton>
+			</form>
+		</div>
+	</Section>
+</MainLayout>

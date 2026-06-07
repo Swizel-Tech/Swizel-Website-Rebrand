@@ -1,0 +1,177 @@
+---
+import { Icon } from 'astro-icon';
+import AccentHeader from '../HTML/AccentHeader.astro';
+import Heading from '../HTML/Heading.astro';
+import Section from '../HTML/Section.astro';
+import PortfolioCTA from '../blocks/PortfolioCTA.astro';
+// import CustomButton from '../CustomButton.astro';
+
+const services = [
+	{
+		icon: 'design',
+		title: 'Design',
+		desc: 'A team skilled in brand design, graphics and user interface & experience design that makes your product unforgettable.',
+	},
+	{
+		icon: 'development',
+		title: 'Development',
+		desc: 'Web and mobile engineers who build, test and scale fast — sit back as we turn your idea into a real product.',
+	},
+	{
+		icon: 'market',
+		title: 'Marketing',
+		desc: 'We go beyond development to help you reach new audiences and grow across every media platform.',
+	},
+	{
+		icon: 'maintain',
+		title: 'Maintenance',
+		desc: 'We also improve existing products and keep complex systems running smoothly and securely.',
+	},
+];
+---
+
+<Section divClass="py-20">
+	{
+		/* <div class="grid gap-8 md:grid-cols-2 justify-between pb-10">
+		<img class="max-md:p-2" src="/images/services.svg" alt="" />
+		<div>
+			<div class="grid gap-4 mx-auto max-w-lg">
+				<AccentHeader>Services</AccentHeader>
+				<Heading type="h2">Making Complex Digital Products</Heading>
+				<p class="text-darker mt-5">
+					Agency provides a full service range including technical
+					skills, design, business. Lorem ipsum, dolor sit amet
+					consectetur adipisicing elit. Id alias ducimus eaque commodi
+					architecto, soluta eveniet rerum nisi praesentium autem.
+				</p>
+				<div class="text-darker/60">
+					<div class="flex gap-4 my-5 items-start">
+						<img
+							class="w-[64px] h-[64px]"
+							src="/images/hero-icon.svg"
+							alt=""
+						/>
+						<div class="space-y-4">
+							<q class="text-sm text-darker/60">
+								Lorem ipsum dolor sit amet consectetur
+								adipisicing elit. Veniam aliquam eum tempora
+								facilis reprehenderit
+							</q>
+							<p class="text-darker/90 tracking-wide text-base">
+								Jenny Murtaugh
+							</p>
+						</div>
+					</div>
+				</div>
+				<div>
+					<CustomButton variant="secondary">Explore</CustomButton>
+				</div>
+			</div>
+		</div>
+	</div> */
+	}
+	<div class="my-24 py-8 max-sm:mt-0">
+		<PortfolioCTA />
+	</div>
+	<div class="space-y-12">
+		<div class="space-y-5">
+			<AccentHeader>Services</AccentHeader>
+			<Heading className="max-w-xs" type="h3">
+				How Our Agency Can Help
+			</Heading>
+			<p class="md:max-w-lg text-darker/60">
+				Employ the services of a world class team of software engineers,
+				designers, data analysts, marketers and more. Book a free
+				consultation with a project manager today and tell us about your
+				project.
+			</p>
+		</div>
+		<ul class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 services--list">
+			{
+				services.map(({ desc, icon, title }) => (
+					<li class="service--card hover-lift group">
+						<a
+							href="/services"
+							class="block h-full p-8"
+							aria-label={`${title} services`}
+						>
+							<span class="service--icon">
+								<Icon size={34} name={icon} />
+							</span>
+							<Heading className="mt-7" type="h4">
+								{title}
+							</Heading>
+							<p class="text-darker/60 mt-3 text-[0.95rem] leading-relaxed">
+								{desc}
+							</p>
+							<span class="service--more">
+								Learn more
+								<Icon name="mdi:arrow-right" width={16} />
+							</span>
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</Section>
+
+<style>
+	.service--card {
+		background: #ffffff;
+		border: 1px solid #f0e7e1;
+		border-radius: 1.25rem;
+		box-shadow: 0 10px 30px -18px rgba(40, 41, 62, 0.18);
+		position: relative;
+		overflow: hidden;
+	}
+	.service--card::before {
+		content: '';
+		position: absolute;
+		inset: 0 0 auto 0;
+		height: 4px;
+		background: linear-gradient(95deg, #8dfeea, #18debe, #28a6ec);
+		transform: scaleX(0);
+		transform-origin: left;
+		transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.service--card:hover {
+		border-color: #d8f5ee;
+		box-shadow: 0 22px 46px -20px rgba(40, 41, 62, 0.3);
+	}
+	.service--card:hover::before {
+		transform: scaleX(1);
+	}
+	.service--icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 64px;
+		height: 64px;
+		border-radius: 1rem;
+		background: linear-gradient(
+			135deg,
+			rgba(24, 222, 190, 0.14),
+			rgba(40, 166, 236, 0.12)
+		);
+		color: #18debe;
+	}
+	.service--more {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		margin-top: 1.5rem;
+		font-size: 0.8rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+		color: #428876;
+		opacity: 0;
+		transform: translateY(6px);
+		transition: opacity 0.3s ease, transform 0.3s ease;
+	}
+	.service--card:hover .service--more {
+		opacity: 1;
+		transform: translateY(0);
+	}
+</style>

@@ -1,0 +1,67 @@
+---
+import { __dirname } from '../../../overwrites';
+import CSSCarousel from '../blocks/CSSCarousel.astro';
+
+const partners = [
+	'betslipswitch.svg',
+	'trueverdict.png',
+	'brix market logo.svg',
+	'ejike-fc.svg',
+	'purple-panda.svg',
+	'saros-sgp.svg',
+	'my eya homes.svg',
+	'the-presidential-diary.png',
+	'hemamsynergy.png',
+];
+
+const convertImageNameToAlt = (str: string) => {
+	// remove all trailing slashes with space, and then replace all .svg or .png to empty string
+	return str.replaceAll('-', ' ').replaceAll(/.svg|.png/gi, '');
+};
+---
+
+<section class="partners--section py-12 border-y border-[#F3D1BF]/60">
+	<p
+		class="text-center text-xs sm:text-sm font-semibold uppercase tracking-[0.18em] text-darker/50 mb-8 px-[5%]"
+	>
+		Trusted by ambitious brands &amp; startups around the world
+	</p>
+	<div class="partners--marquee">
+		<CSSCarousel>
+			<div class="flex items-center sm:gap-16 gap-8 justify-between px-8">
+				{
+					partners.map((partner) => (
+						<img
+							class="max-h-[72px] w-fit overflow-hidden object-cover sm:object-contain grayscale opacity-70 transition duration-300 hover:grayscale-0 hover:opacity-100"
+							src={`/images/partners/${partner}`}
+							alt={`${convertImageNameToAlt(partner)} logo`}
+							loading="lazy"
+						/>
+					))
+				}
+			</div>
+		</CSSCarousel>
+	</div>
+</section>
+
+<style>
+	/* Edge fade so logos appear to scroll in/out of the full-width band */
+	.partners--marquee {
+		position: relative;
+		width: 100%;
+		-webkit-mask-image: linear-gradient(
+			to right,
+			transparent,
+			#000 8%,
+			#000 92%,
+			transparent
+		);
+		mask-image: linear-gradient(
+			to right,
+			transparent,
+			#000 8%,
+			#000 92%,
+			transparent
+		);
+	}
+</style>

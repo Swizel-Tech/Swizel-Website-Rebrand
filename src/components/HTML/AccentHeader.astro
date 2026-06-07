@@ -1,0 +1,13 @@
+---
+interface Props extends astroHTML.JSX.HtmlHTMLAttributes {}
+const { class: className } = Astro.props;
+---
+
+<p
+	class:list={[
+		'text-swizelGreen text-base tracking-widest uppercase',
+		className,
+	]}
+>
+	<slot> Enter Accent text</slot>
+</p>

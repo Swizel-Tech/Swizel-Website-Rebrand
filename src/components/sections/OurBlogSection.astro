@@ -1,0 +1,63 @@
+---
+import { posts } from '../../pages/blog/index.astro';
+import CustomButton from '../CustomButton.astro';
+import AccentHeader from '../HTML/AccentHeader.astro';
+import Heading from '../HTML/Heading.astro';
+import Section from '../HTML/Section.astro';
+import BlogPostCard from '../elements/BlogPostCard.astro';
+
+interface Props {
+	hideTitle?: true;
+	hideButton?: true;
+	pageTitle?: string;
+}
+
+const {
+	hideButton,
+	hideTitle,
+	pageTitle = 'Latest Blog Articles',
+} = Astro.props;
+---
+
+<Section>
+	<div class="my-20 sm:space-y-20 space-y-12">
+		<div
+			class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 items-start"
+		>
+			<div class="space-y-4">
+				{!hideTitle && <AccentHeader>Our Blog</AccentHeader>}
+				<Heading type="h3" className={!hideTitle ? 'max-w-xs' : ''}>
+					{pageTitle}
+				</Heading>
+			</div>
+			{
+				!hideButton && (
+					<CustomButton
+						elementType="a"
+						href="/blog"
+						variant="secondary"
+					>
+						Discover All
+					</CustomButton>
+				)
+			}
+		</div>
+		<div>
+			<ul
+				class="grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-7 pb-20 border-b border-swizelBrown"
+			>
+				{
+					posts
+						.slice(0, 3)
+						.map((post) => (
+							<BlogPostCard
+								to={`/blog/${post.slug}`}
+								{...post}
+								as="li"
+							/>
+						))
+				}
+			</ul>
+		</div>
+	</div>
+</Section>

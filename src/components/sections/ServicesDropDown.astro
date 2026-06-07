@@ -1,0 +1,111 @@
+---
+import { Icon } from 'astro-icon';
+import Section from '../HTML/Section.astro';
+import List from '../HTML/List.astro';
+import Heading from '../HTML/Heading.astro';
+import servicesFields from '../../data/servicesFields';
+---
+
+<Section>
+	<div id="services--dropdown" class="text-swizelDark/60">
+		{
+			servicesFields.map(({ name, children }, idx) => (
+				<div
+					class="services--field"
+					data-hidden={idx === 0 ? 'false' : 'true'}
+					data-fieldname={name}
+				>
+					<div class="border-swizelBrown py-14 grid grid-cols-2 items-center gap-4 justify-between services--header">
+						<div class="flex items-center gap-2 sm:gap-10">
+							<div class="sm:w-[80px] w-[50px]">
+								<>
+									<Icon
+										name={name}
+										size={80}
+										className="hidden sm:block"
+									/>
+									<Icon
+										name={name}
+										size={50}
+										className="block sm:hidden"
+									/>
+								</>
+							</div>
+							<p class="md:text-6xl first-letter:capitalize text-3xl sm:text-4xl font-extrabold text-darker leading-tight">
+								{name}
+							</p>
+						</div>
+						<div>
+							<button
+								aria-expanded="false"
+								class="block w-fit ml-auto"
+								type="button"
+								aria-controls={name}
+								id={`btn-${name}`}
+							>
+								<span class="sr-only">
+									{idx === 0 ? 'Hide' : 'Expand'} {name}
+								</span>
+								<Icon size={32} name="dropdownicon" />
+							</button>
+						</div>
+					</div>
+					<div class="services--content" id={name}>
+						<div class="grid md:grid-cols-2 py-16 gap-y-16 gap-x-4">
+							{children.map(({ paragraph, title, listItem }) => (
+								<div class="space-y-6 grid">
+									<div class="flex items-center gap-6">
+										<Icon name="check" size={32} />
+										<Heading type="h3">{title}</Heading>
+									</div>
+									<p class="md:max-w-lg text-darker/60 leading-loose">
+										{paragraph}
+									</p>
+									<List
+										listItem={listItem as any}
+										checkColor="alt"
+										class="pt-3 align-bottom"
+										type="ul"
+									/>
+								</div>
+							))}
+						</div>
+					</div>
+				</div>
+			))
+		}
+	</div>
+</Section>
+
+<style>
+	.override {
+		border-bottom: none;
+	}
+	.services--field:nth-of-type(odd) .services--header {
+		border-block: 1px solid rgb(243 209 191 / 1);
+	}
+
+	.services--content {
+		display: none;
+	}
+
+	.services--field button {
+		transform: scaleY(-1);
+	}
+
+	.services--field[data-hidden='false'] button {
+		transform: scaleY(1);
+	}
+	.services--field[data-hidden='false'] button {
+		transform: scaleY(1);
+	}
+	.services--field[data-hidden='false'] .services--content {
+		display: block;
+	}
+	.services--field[data-hidden='false']:nth-child(even) .services--content {
+		border-top: 1px solid rgb(243 209 191 / 1);
+	}
+	.services--field[data-hidden='false']:nth-child(odd) .services--content {
+		border-bottom: 1px solid rgb(243 209 191 / 1);
+	}
+</style>

@@ -1,0 +1,67 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import MainLayout from './MainLayout.astro';
+import FooterCTA from '../components/blocks/FooterCTA.astro';
+import Section from '../components/HTML/Section.astro';
+import Link from '../components/Link.astro';
+import Heading from '../components/HTML/Heading.astro';
+import { Icon } from 'astro-icon';
+import OurBlogSection from '../components/sections/OurBlogSection.astro';
+
+type Props = CollectionEntry<'blog'>['data'];
+
+const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+---
+
+<MainLayout
+	title={`${title} | Swizel Technologies`}
+	description={description}
+	image={heroImage}
+>
+	<Section divClass="py-20 blog--post">
+		<div class="max-w-2xl mx-auto space-y-6 md:pb-16">
+			<Link
+				href="/blog"
+				class="flex items-center gap-4 text-darker uppercase text-xs font-bold"
+			>
+				<Icon name="arrow-left" size={18} />
+				<span class="text-darker">Back to blog</span>
+			</Link>
+			<Heading className="!leading-tight" type="h2">{title}</Heading>
+			<div
+				class="flex items-center flex-wrap justify-between text-base text-darker/60"
+			>
+				<p class="flex gap-2">
+					In <span class="text-darker font-medium">Blogposts</span> by
+					<span class="text-darker font-medium">Swizel</span>
+				</p>
+				<span>{pubDate?.toDateString() ?? pubDate}</span>
+			</div>
+		</div>
+		{
+			heroImage && (
+				<div class="mb-10">
+					<img
+						class="md:w-3/4 max-h-[500px] object-cover"
+						src={heroImage}
+						alt={title}
+					/>
+				</div>
+			)
+		}
+		{
+			updatedDate && (
+				<div>
+					Last updated on <time>{updatedDate}</time>
+				</div>
+			)
+		}
+		<div class="max-w-2xl mx-auto markdown--content">
+			<slot />
+		</div>
+		<div class="text-swizelBrown mt-16 -mb-24 border-b border-swizelBrown">
+		</div>
+	</Section>
+	<OurBlogSection pageTitle="Recent Articles" hideButton hideTitle />
+	<FooterCTA />
+</MainLayout>

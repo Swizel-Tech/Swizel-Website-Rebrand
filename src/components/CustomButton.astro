@@ -1,0 +1,71 @@
+---
+enum buttonStyles {
+	outline = 'text-white border border-[#302C29A3]',
+	primary = 'text-white bg-swizelGreen',
+	secondary = 'bg-white btn--shadow',
+	accent = 'btn--accent text-swizelDark',
+	ghost = 'text-white border border-white/30 hover:border-accent hover:text-accent',
+}
+
+type LinkType = astroHTML.JSX.AnchorHTMLAttributes & {
+	elementType: 'a';
+};
+type ButtonType = astroHTML.JSX.ButtonHTMLAttributes & {
+	elementType?: 'button';
+};
+
+type ElemenetType = LinkType | ButtonType;
+
+export type Props = ElemenetType & {
+	variant?: keyof typeof buttonStyles;
+	notRounded?: true;
+};
+
+const {
+	variant = 'primary',
+	class: className = '',
+	type = 'button',
+	notRounded,
+	elementType: Elemenet = 'button' as any,
+	...props
+} = Astro.props;
+---
+
+<Elemenet
+	class:list={[
+		'font-bolder text-sm leading-none text-center uppercase px-8 py-4 uppercase rounded-md transition-all duration-300 ease-smooth hover:-translate-y-0.5',
+		buttonStyles[variant],
+		className,
+		Elemenet === 'a' ? 'block w-fit' : '',
+		notRounded ? '' : 'rounded-full',
+	]}
+	type={type}
+	{...props}
+>
+	<slot> Enter Button text</slot>
+</Elemenet>
+
+<style>
+	.btn--shadow {
+		box-shadow: 0px 3px 9px rgba(57, 20, 0, 0.1);
+	}
+
+	/* Brand teal gradient CTA */
+	.btn--accent {
+		background-image: linear-gradient(
+			95deg,
+			#8dfeea 0%,
+			#18debe 48%,
+			#28a6ec 100%
+		);
+		background-size: 160% 100%;
+		background-position: 0% 50%;
+		box-shadow: 0 10px 24px -10px rgba(24, 222, 190, 0.6);
+		transition: background-position 0.5s ease, box-shadow 0.3s ease,
+			transform 0.3s ease;
+	}
+	.btn--accent:hover {
+		background-position: 100% 50%;
+		box-shadow: 0 14px 30px -10px rgba(40, 166, 236, 0.6);
+	}
+</style>

@@ -1,0 +1,90 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import MainLayout from './MainLayout.astro';
+import FooterCTA from '../components/blocks/FooterCTA.astro';
+import Section from '../components/HTML/Section.astro';
+import Link from '../components/Link.astro';
+import Heading from '../components/HTML/Heading.astro';
+import { Icon } from 'astro-icon';
+import AccentHeader from '../components/HTML/AccentHeader.astro';
+// import OurBlogSection from '../components/sections/OurBlogSection.astro';
+
+type Props = CollectionEntry<'portfolio'>['data'];
+
+const {
+	clientLogo,
+	date,
+	description,
+	previewImage,
+	title,
+	whatWeDid,
+	client,
+} = Astro.props;
+---
+
+<MainLayout
+	title={`${title} | Swizel Portfolio`}
+	description={description}
+	image={previewImage}
+>
+	<Section divClass="py-20">
+		<div class="max-w-2xl mx-auto space-y-6 md:pb-16">
+			<Link
+				href="/portfolio"
+				class="flex items-center gap-4 text-darker uppercase text-xs font-bold"
+			>
+				<Icon name="arrow-left" size={18} />
+				<span class="text-darker">Back to portfolio</span>
+			</Link>
+			<Heading className="!leading-tight" type="h2">{title}</Heading>
+			<div
+				class="flex items-center flex-wrap justify-between max-w-xl text-lg md:text-xl text-darker"
+			>
+				<p>{description}</p>
+			</div>
+			<p class="text-darker/60 max-w-xl">
+				Grow and upscale your business today, with a very small amount
+				per month, you can keep host and deploy your website on our
+				platforms.
+			</p>
+
+			<div class="grid sm:grid-cols-2 gap-y-8">
+				<div>
+					<AccentHeader>What We Did</AccentHeader>
+					<ul class="text-darker/60 mt-3 max-sm:flex flex-wrap gap-4">
+						{whatWeDid.map((list) => <li>{list}</li>)}
+					</ul>
+				</div>
+				<div
+					class="flex sm:flex-col flex-row flex-wrap justify-between gap-6"
+				>
+					<div class="grid gap-4">
+						<AccentHeader>Client</AccentHeader>
+						<img src={clientLogo} alt={client} />
+					</div>
+					<div class="grid gap-2">
+						<AccentHeader>Date</AccentHeader>
+						<p class="justify-end">{date}</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="mb-10">
+			<img
+				class="md:w-3/4 max-h-[500px] object-cover 2xl:object-contain mx-auto"
+				src={previewImage}
+				alt={title}
+			/>
+		</div>
+
+		<div class="max-w-2xl mx-auto markdown--content">
+			<slot />
+		</div>
+		<div class="text-swizelBrown mt-16 -mb-24 border-b border-swizelBrown">
+		</div>
+	</Section>
+	<div class="pb-16"></div>
+	<!-- <OurBlogSection pageTitle="Recent Articles" hideButton hideTitle /> -->
+	<FooterCTA />
+</MainLayout>

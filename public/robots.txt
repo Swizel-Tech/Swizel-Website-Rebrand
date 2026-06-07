@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://swizel.co/sitemap-index.xml

@@ -1,0 +1,698 @@
+---
+import { Icon } from 'astro-icon';
+import CustomButton from '../CustomButton.astro';
+import Section from '../HTML/Section.astro';
+import RotatingHeadline from '../RotatingHeadline.astro';
+
+const stats = [
+	{ to: 7, suffix: '+', label: 'Years shipping' },
+	{ to: 25, suffix: '+', label: 'Engineers & designers' },
+	{ to: 65, suffix: '+', label: 'Products live' },
+];
+
+const tokens = ['React', 'Flutter', 'Node', 'TypeScript', 'Python', 'Swift', 'Go', 'Figma'];
+
+// Kept as a string so Astro does not parse the braces as expressions.
+const builderCode = `// what we ship, across every sector
+const shipped = [
+  ['BuyGas',         'Gas delivery'],
+  ['Betslipswitch',  'Sports'],
+  ['Brixmarket',     'Real estate'],
+  ['TellaTrust',     'Fintech'],
+  ['Saros',          'Education'],
+  ['MasterBuilder',  'Construction ERP'],
+];
+
+shipped.forEach(([name, sector]) => ship(name, sector));
+done('65+ products live in 10+ countries');`;
+
+const buildTypes = [
+	'iOS apps',
+	'Android apps',
+	'Websites',
+	'Web apps',
+	'PWAs',
+	'POCs',
+	'ERPs',
+	'Software',
+];
+---
+
+<Section
+	sectionClass="hero--stage hero-view hero-builder builder--stage relative overflow-hidden"
+	divClass="relative z-10 pb-16 sm:pb-24"
+>
+	<div class="builder--bg" aria-hidden="true">
+		<span class="builder--grid"></span>
+		<span class="builder--scan"></span>
+		{
+			tokens.map((t, i) => (
+				<span class="builder--token" style={`--i:${i}`}>
+					{t}
+				</span>
+			))
+		}
+	</div>
+
+	<div class="builder--layout">
+		<div class="builder--copy">
+			<span class="builder--eyebrow">
+				<span class="builder--blink"></span>// builder view
+			</span>
+
+			<RotatingHeadline class="builder--head" />
+
+			<p class="builder--sub">
+				If you can imagine it, we build it. Hit run and watch what we have
+				already shipped, live, across every sector and 10+ countries.
+			</p>
+
+			<div class="builder--caps" aria-label="What we build">
+				<span class="builder--caps-k">we build:</span>
+				<div class="builder--caps-track">
+					<div class="builder--caps-row">
+						{buildTypes.map((t) => <span class="builder--cap">{t}</span>)}
+						{buildTypes.map((t) => <span class="builder--cap" aria-hidden="true">{t}</span>)}
+					</div>
+				</div>
+			</div>
+
+			<div class="builder--cta">
+				<CustomButton
+					variant="accent"
+					elementType="a"
+					href="/contact"
+					class="flex items-center justify-center gap-2"
+				>
+					Start your build
+					<Icon width={18} name="mdi:arrow-right" />
+				</CustomButton>
+				<button class="builder--tour" type="button" data-tour-start="builder">
+					<Icon width={16} name="mdi:compass-outline" />
+					Take the 20s tour
+				</button>
+			</div>
+
+			<ul class="builder--stats" data-tour="stats">
+				{
+					stats.map((s) => (
+						<li class="builder--stat">
+							<span
+								class="builder--statnum"
+								data-count-to={s.to}
+								data-suffix={s.suffix}
+							>
+								{s.to}
+								{s.suffix}
+							</span>
+							<span class="builder--statlabel">{s.label}</span>
+						</li>
+					))
+				}
+			</ul>
+
+			<a href="/about" class="builder--team" data-tour="team">
+				<span class="builder--team-pic">
+					<img
+						src="/images/hero-team.jpg"
+						alt="The Swizel team"
+						loading="lazy"
+					/>
+					<span class="builder--team-live"></span>
+				</span>
+				<span class="builder--team-txt">
+					<span class="builder--team-k">// the humans behind the code</span>
+					<span class="builder--team-l">
+						Meet the team that ships
+						<Icon width={14} name="mdi:arrow-right" />
+					</span>
+				</span>
+			</a>
+		</div>
+
+		<!-- The live IDE -->
+		<div class="builder--ide" id="builder-ide" data-tour="ide">
+			<span class="ide2--cue" id="builder-ide-cue" aria-hidden="true">
+				<Icon width={15} name="mdi:gesture-tap" />
+				This is real. Edit it, then run
+			</span>
+			<div class="ide2--bar">
+				<span class="ide2--dot"></span>
+				<span class="ide2--dot"></span>
+				<span class="ide2--dot"></span>
+				<span class="ide2--file">swizel.dev</span>
+				<span class="ide2--live"><span class="ide2--livedot"></span>live</span>
+				<button class="ide2--run ide2--run--pulse" type="button" data-tour="run">
+					<svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+					Run
+				</button>
+			</div>
+			<div class="ide2--body">
+				<div class="ide2--editor">
+					<pre class="ide2--gutter" aria-hidden="true"></pre>
+					<textarea class="ide2--code" spellcheck="false" aria-label="Live code editor">{builderCode}</textarea>
+				</div>
+				<div class="ide2--console" data-tour="out">
+					<div class="ide2--consolebar">
+						<span>console</span>
+						<span class="ide2--hint">editable · ⌘/Ctrl + Enter</span>
+					</div>
+					<div class="ide2--out" id="builder-out"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</Section>
+
+<style>
+	.builder--stage {
+		background:
+			radial-gradient(900px 500px at 78% -10%, rgba(24, 222, 190, 0.12), transparent 60%),
+			linear-gradient(180deg, #0b0f17 0%, #080a11 100%);
+		color: #e8f0f4;
+		isolation: isolate;
+	}
+
+	/* moving background — full bleed so it spans the whole page width */
+	.builder--bg {
+		position: absolute;
+		top: 0;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 100vw;
+		height: 100%;
+		z-index: 0;
+		overflow: hidden;
+		pointer-events: none;
+		background:
+			radial-gradient(900px 500px at 78% -10%, rgba(24, 222, 190, 0.12), transparent 60%),
+			linear-gradient(180deg, #0b0f17 0%, #080a11 100%);
+	}
+	/* glassy / glossy sheen */
+	.builder--bg::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background:
+			linear-gradient(180deg, rgba(255, 255, 255, 0.07), transparent 20%),
+			radial-gradient(130% 60% at 50% -12%, rgba(255, 255, 255, 0.09), transparent 55%),
+			linear-gradient(115deg, transparent 38%, rgba(255, 255, 255, 0.05) 48%, transparent 58%);
+		pointer-events: none;
+	}
+	.builder--bg::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		backdrop-filter: saturate(120%);
+		-webkit-backdrop-filter: saturate(120%);
+		pointer-events: none;
+	}
+	.builder--grid {
+		position: absolute;
+		inset: 0;
+		background-image: linear-gradient(rgba(24, 222, 190, 0.06) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(24, 222, 190, 0.06) 1px, transparent 1px);
+		background-size: 40px 40px;
+		mask-image: radial-gradient(ellipse 90% 70% at 60% 30%, #000 30%, transparent 100%);
+		-webkit-mask-image: radial-gradient(ellipse 90% 70% at 60% 30%, #000 30%, transparent 100%);
+	}
+	.builder--scan {
+		position: absolute;
+		left: 0;
+		right: 0;
+		height: 180px;
+		background: linear-gradient(180deg, transparent, rgba(24, 222, 190, 0.05), transparent);
+		animation: scan 7s linear infinite;
+	}
+	@keyframes scan {
+		0% { top: -20%; }
+		100% { top: 120%; }
+	}
+	.builder--token {
+		position: absolute;
+		font-family: ui-monospace, monospace;
+		font-size: 0.8rem;
+		color: rgba(134, 226, 239, 0.18);
+		left: calc((var(--i) + 1) * 11%);
+		top: -10%;
+		animation: tokenfall 14s linear infinite;
+		animation-delay: calc(var(--i) * -1.7s);
+		white-space: nowrap;
+	}
+	@keyframes tokenfall {
+		0% { transform: translateY(-10vh); opacity: 0; }
+		10% { opacity: 1; }
+		90% { opacity: 1; }
+		100% { transform: translateY(115vh); opacity: 0; }
+	}
+
+	.builder--layout {
+		position: relative;
+		z-index: 1;
+		display: grid;
+		gap: 2.5rem;
+		align-items: center;
+		min-height: calc(100vh - 90px);
+		padding-top: 2rem;
+	}
+	@media (min-width: 1024px) {
+		.builder--layout {
+			grid-template-columns: 0.92fr 1.08fr;
+			gap: 3rem;
+		}
+	}
+
+	.builder--eyebrow {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-family: ui-monospace, monospace;
+		font-size: 0.8rem;
+		letter-spacing: 0.1em;
+		color: var(--view-accent, #18debe);
+		margin-bottom: 1.2rem;
+	}
+	.builder--blink {
+		width: 8px;
+		height: 16px;
+		background: var(--view-accent, #18debe);
+		display: inline-block;
+		animation: blink 1.1s steps(2) infinite;
+	}
+	@keyframes blink { 50% { opacity: 0; } }
+
+	.builder--head {
+		font-size: clamp(2.6rem, 6vw, 5.2rem);
+		margin-bottom: 1.4rem;
+	}
+	.builder--sub {
+		max-width: 30rem;
+		color: rgba(232, 240, 244, 0.66);
+		font-size: 1.08rem;
+		line-height: 1.65;
+		margin-bottom: 1.4rem;
+	}
+	/* capabilities marquee */
+	.builder--caps {
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		max-width: 30rem;
+		margin-bottom: 1.6rem;
+	}
+	.builder--caps-k {
+		font-family: ui-monospace, monospace;
+		font-size: 0.78rem;
+		color: var(--view-accent, #18debe);
+		flex-shrink: 0;
+	}
+	.builder--caps-track {
+		position: relative;
+		overflow: hidden;
+		flex: 1;
+		-webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+		mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+	}
+	.builder--caps-row {
+		display: flex;
+		gap: 0.5rem;
+		width: max-content;
+		animation: capscroll 16s linear infinite;
+	}
+	.builder--caps-track:hover .builder--caps-row { animation-play-state: paused; }
+	@keyframes capscroll { to { transform: translateX(-50%); } }
+	.builder--cap {
+		font-size: 0.75rem;
+		font-weight: 600;
+		white-space: nowrap;
+		padding: 0.3rem 0.7rem;
+		border-radius: 9999px;
+		border: 1px solid rgba(134, 226, 239, 0.2);
+		background: rgba(255, 255, 255, 0.03);
+		color: rgba(232, 240, 244, 0.8);
+	}
+	.builder--cta {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		flex-wrap: wrap;
+		margin-bottom: 2rem;
+	}
+	.builder--tour {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-family: ui-monospace, monospace;
+		font-size: 0.82rem;
+		font-weight: 600;
+		color: #e8f0f4;
+		padding: 0.85rem 1.2rem;
+		border-radius: 9999px;
+		border: 1px dashed rgba(134, 226, 239, 0.4);
+		transition: border-color 0.25s ease, color 0.25s ease, background 0.25s ease;
+	}
+	.builder--tour:hover {
+		border-color: var(--view-accent, #18debe);
+		color: var(--view-accent, #18debe);
+		background: rgba(24, 222, 190, 0.08);
+	}
+
+	.builder--stats {
+		display: flex;
+		gap: clamp(1.5rem, 4vw, 3rem);
+		flex-wrap: wrap;
+		padding-top: 1.5rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.08);
+	}
+	.builder--statnum {
+		font-family: 'Bebas Neue', sans-serif;
+		font-size: clamp(2.2rem, 4vw, 3rem);
+		line-height: 1;
+		background: linear-gradient(135deg, #8dfeea, var(--view-accent, #18debe));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+		color: transparent;
+	}
+	.builder--statlabel {
+		display: block;
+		font-size: 0.74rem;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		color: rgba(232, 240, 244, 0.5);
+		margin-top: 0.3rem;
+	}
+
+	/* small team photo — the humans behind the code */
+	.builder--team {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.85rem;
+		margin-top: 1.5rem;
+		padding: 0.5rem 0.9rem 0.5rem 0.5rem;
+		border-radius: 9999px;
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		background: rgba(255, 255, 255, 0.03);
+		width: fit-content;
+		transition: border-color 0.3s ease, background 0.3s ease,
+			transform 0.3s ease;
+	}
+	.builder--team:hover {
+		border-color: var(--view-accent, #18debe);
+		background: rgba(24, 222, 190, 0.07);
+		transform: translateY(-2px);
+	}
+	.builder--team-pic {
+		position: relative;
+		flex-shrink: 0;
+		width: 86px;
+		height: 52px;
+		border-radius: 9999px;
+		overflow: hidden;
+		border: 1px solid rgba(134, 226, 239, 0.3);
+	}
+	.builder--team-pic img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: 50% 28%;
+	}
+	.builder--team-live {
+		position: absolute;
+		right: 5px;
+		bottom: 5px;
+		width: 8px;
+		height: 8px;
+		border-radius: 9999px;
+		background: #28c840;
+		border: 2px solid #0b0f17;
+	}
+	.builder--team-txt {
+		display: flex;
+		flex-direction: column;
+		gap: 1px;
+	}
+	.builder--team-k {
+		font-family: ui-monospace, monospace;
+		font-size: 0.7rem;
+		color: rgba(232, 240, 244, 0.45);
+	}
+	.builder--team-l {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		font-size: 0.92rem;
+		font-weight: 700;
+		color: #e8f0f4;
+	}
+
+	/* ===== IDE ===== */
+	.builder--ide {
+		position: relative;
+		border-radius: 1rem;
+		overflow: visible;
+		background: #0d111a;
+		border: 1px solid rgba(134, 226, 239, 0.18);
+		box-shadow: 0 40px 90px -40px rgba(0, 0, 0, 0.9),
+			0 0 0 1px rgba(255, 255, 255, 0.02);
+	}
+	.builder--ide .ide2--bar { border-radius: 1rem 1rem 0 0; }
+	/* "this is real" cue badge */
+	.ide2--cue {
+		position: absolute;
+		top: -16px;
+		left: 18px;
+		z-index: 5;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		font-size: 0.74rem;
+		font-weight: 700;
+		color: #06231c;
+		background: linear-gradient(95deg, #8dfeea, #18debe);
+		padding: 0.35rem 0.75rem;
+		border-radius: 9999px;
+		box-shadow: 0 10px 22px -8px rgba(24, 222, 190, 0.7);
+		animation: cuebob 2.4s ease-in-out infinite;
+		transition: opacity 0.4s ease, transform 0.4s ease;
+	}
+	.ide2--cue.is-hidden { opacity: 0; transform: translateY(-6px); pointer-events: none; }
+	@keyframes cuebob {
+		0%, 100% { transform: translateY(0); }
+		50% { transform: translateY(-4px); }
+	}
+	.ide2--run--pulse { position: relative; }
+	.ide2--run--pulse::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		border-radius: 7px;
+		box-shadow: 0 0 0 0 rgba(24, 222, 190, 0.6);
+		animation: runpulse 2s ease-out infinite;
+	}
+	.ide2--run--pulse.is-done::after { animation: none; }
+	@keyframes runpulse {
+		0% { box-shadow: 0 0 0 0 rgba(24, 222, 190, 0.55); }
+		70% { box-shadow: 0 0 0 12px rgba(24, 222, 190, 0); }
+		100% { box-shadow: 0 0 0 0 rgba(24, 222, 190, 0); }
+	}
+	.ide2--bar {
+		display: flex;
+		align-items: center;
+		gap: 7px;
+		padding: 0.7rem 0.9rem;
+		background: #11161f;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+	}
+	.ide2--dot {
+		width: 11px;
+		height: 11px;
+		border-radius: 9999px;
+		background: #2a3340;
+	}
+	.ide2--dot:first-child { background: #ff5f57; }
+	.ide2--dot:nth-child(2) { background: #febc2e; }
+	.ide2--dot:nth-child(3) { background: #28c840; }
+	.ide2--file {
+		margin-left: 6px;
+		font-family: ui-monospace, monospace;
+		font-size: 0.8rem;
+		color: rgba(232, 240, 244, 0.6);
+	}
+	.ide2--live {
+		margin-left: auto;
+		display: inline-flex;
+		align-items: center;
+		gap: 5px;
+		font-family: ui-monospace, monospace;
+		font-size: 0.7rem;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		color: #28c840;
+	}
+	.ide2--livedot {
+		width: 7px;
+		height: 7px;
+		border-radius: 9999px;
+		background: #28c840;
+		box-shadow: 0 0 0 0 rgba(40, 200, 64, 0.5);
+		animation: pulse 1.8s infinite;
+	}
+	@keyframes pulse {
+		0% { box-shadow: 0 0 0 0 rgba(40, 200, 64, 0.5); }
+		70% { box-shadow: 0 0 0 7px rgba(40, 200, 64, 0); }
+		100% { box-shadow: 0 0 0 0 rgba(40, 200, 64, 0); }
+	}
+	.ide2--run {
+		display: inline-flex;
+		align-items: center;
+		gap: 5px;
+		margin-left: 0.75rem;
+		font-size: 0.74rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		color: #06231c;
+		background: linear-gradient(95deg, #8dfeea, #18debe);
+		padding: 0.35rem 0.75rem;
+		border-radius: 7px;
+		cursor: pointer;
+		transition: transform 0.2s ease, filter 0.2s ease;
+	}
+	.ide2--run:hover { transform: translateY(-1px); filter: brightness(1.05); }
+
+	.ide2--editor {
+		position: relative;
+		display: grid;
+		grid-template-columns: 2.4rem 1fr;
+		background: #0d111a;
+	}
+	.ide2--gutter {
+		margin: 0;
+		padding: 0.9rem 0;
+		text-align: right;
+		font-family: ui-monospace, monospace;
+		font-size: 0.78rem;
+		line-height: 1.55;
+		color: rgba(232, 240, 244, 0.25);
+		user-select: none;
+		border-right: 1px solid rgba(255, 255, 255, 0.05);
+	}
+	.ide2--code {
+		display: block;
+		width: 100%;
+		min-height: 220px;
+		resize: none;
+		border: 0;
+		outline: none;
+		background: transparent;
+		color: #cfe9e3;
+		font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+		font-size: 0.78rem;
+		line-height: 1.55;
+		padding: 0.9rem 1rem;
+		white-space: pre;
+		tab-size: 2;
+	}
+	.ide2--console {
+		border-top: 1px solid rgba(255, 255, 255, 0.06);
+		background: #090c12;
+	}
+	.ide2--consolebar {
+		display: flex;
+		justify-content: space-between;
+		padding: 0.5rem 0.9rem;
+		font-family: ui-monospace, monospace;
+		font-size: 0.68rem;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		color: rgba(232, 240, 244, 0.4);
+		border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+	}
+	.ide2--out {
+		padding: 0.7rem 0.9rem 1rem;
+		min-height: 120px;
+		font-family: ui-monospace, monospace;
+		font-size: 0.8rem;
+		display: grid;
+		gap: 0.4rem;
+		align-content: start;
+	}
+	.ide2--row {
+		display: flex;
+		align-items: center;
+		gap: 0.55rem;
+		opacity: 0;
+		transform: translateX(-8px);
+		animation: rowin 0.4s ease forwards;
+		animation-delay: var(--d, 0s);
+	}
+	@keyframes rowin {
+		to { opacity: 1; transform: translateX(0); }
+	}
+	.ide2--rocket { filter: saturate(1.2); }
+	.ide2--name { color: #e8f0f4; font-weight: 600; }
+	.ide2--pill {
+		font-size: 0.66rem;
+		padding: 0.12rem 0.5rem;
+		border-radius: 9999px;
+		background: rgba(24, 222, 190, 0.14);
+		color: #8dfeea;
+		border: 1px solid rgba(24, 222, 190, 0.25);
+	}
+	.ide2--ok { margin-left: auto; color: #28c840; font-size: 0.72rem; }
+	.ide2--done {
+		margin-top: 0.4rem;
+		padding-top: 0.5rem;
+		border-top: 1px dashed rgba(255, 255, 255, 0.1);
+		color: #8dfeea;
+		opacity: 0;
+		animation: rowin 0.4s ease forwards;
+	}
+	.ide2--err { color: #ff7a7a; }
+
+	@media (max-width: 1023px) {
+		.builder--layout { min-height: auto; }
+		.builder--token:nth-child(n + 6) { display: none; }
+	}
+	/* Compact, well proportioned IDE on phones — scrolls inside, not down the page */
+	@media (max-width: 768px) {
+		.builder--layout {
+			gap: 1.75rem;
+			padding-top: 0.5rem;
+		}
+		.builder--head {
+			font-size: clamp(2.2rem, 9.5vw, 3.2rem);
+		}
+		.builder--sub {
+			font-size: 1rem;
+			margin-bottom: 1.4rem;
+		}
+		.builder--stats {
+			gap: 1.4rem;
+		}
+		.ide2--code {
+			min-height: 0;
+			height: 150px;
+			font-size: 0.74rem;
+			overflow: auto;
+		}
+		.ide2--gutter {
+			font-size: 0.74rem;
+		}
+		.ide2--out {
+			min-height: 0;
+			max-height: 168px;
+			overflow-y: auto;
+			padding-bottom: 0.75rem;
+		}
+		.ide2--row,
+		.ide2--out .ide2--row {
+			font-size: 0.76rem;
+			gap: 0.45rem;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.builder--scan, .builder--token, .builder--blink, .ide2--livedot { animation: none !important; }
+	}
+</style>

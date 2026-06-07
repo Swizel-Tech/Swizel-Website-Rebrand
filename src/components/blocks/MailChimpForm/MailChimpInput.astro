@@ -1,0 +1,28 @@
+---
+type Props = astroHTML.JSX.InputHTMLAttributes & {
+	inputClass?: string;
+	textWhite?: true;
+	label: string;
+	id: string;
+	class?: string;
+};
+
+const { inputClass, textWhite, label, class: className, ...props } = Astro.props;
+
+const defaultClass = 'p-3 bg-transparent border-[0.5px] rounded-xl';
+---
+
+<div class="mc-field-group grid grid-cols-1 gap-1">
+	<label for={props.id}>
+		{label} <span class="asterisk">{props.required && '*'}</span></label
+	><input
+		{...props}
+		class:list={[
+			defaultClass,
+			inputClass,
+			textWhite ? 'placeholder:text-white/60 text-white' : 'text-darker',
+			className,
+		]}
+		type={props.type ?? 'text'}
+	/>
+</div>

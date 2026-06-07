@@ -1,0 +1,36 @@
+---
+import CustomButton from '../CustomButton.astro';
+import Heading from '../HTML/Heading.astro';
+import Section from '../HTML/Section.astro';
+---
+
+<Section divClass="bg-[#28293E] rounded-md md:px-20 px-10 py-20 my-10">
+	<div
+		class="flex md:flex-row gap-y-16 gap-x-3 flex-col-reverse items-center justify-between"
+	>
+		<div class="max-w-lg space-y-10">
+			<Heading
+				className="!text-white md:leading-tight leading-snug"
+				type="h2"
+			>
+				Bring your project to life!
+			</Heading>
+			<p class="text-white/80">
+				We help businesses turn their ideas into successful products.
+				Our goal is to help you grow your bussiness from start to finish
+			</p>
+			<CustomButton
+				class="!bg-white text-[#391400]"
+				elementType="a"
+				href="/contact"
+			>
+				Contact Now
+			</CustomButton>
+		</div>
+		<img
+			class="max-sm:min-h-[284px] object-contain"
+			src="/footer--cta.svg"
+			alt="contact us now"
+		/>
+	</div>
+</Section>

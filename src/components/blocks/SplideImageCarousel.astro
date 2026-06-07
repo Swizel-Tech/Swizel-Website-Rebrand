@@ -1,0 +1,156 @@
+---
+// import '@splidejs/splide/css';
+
+// or other themes
+// import '@splidejs/splide/css/skyblue';
+import "@splidejs/splide/css/sea-green";
+import { teamDetails } from "../../consts";
+import Heading from "../HTML/Heading.astro";
+import { Icon } from "astro-icon";
+import Link from "../Link.astro";
+
+// or only core styles
+// import '@splidejs/splide/css/core';
+---
+
+<section
+  id="teammates-carousel"
+  class="splide"
+  aria-label="Custom Arrows Example"
+>
+  <div class="splide__arrows img--carousel">
+    <button class="splide__arrow splide__arrow--prev" aria-level="previous">
+      <Icon class="-scale-x-100" name="slider-arrow-right" />
+    </button>
+    <button class="splide__arrow splide__arrow--next" aria-label="next">
+      <Icon name="slider-arrow-right" />
+    </button>
+  </div>
+
+  <div class="splide__track">
+    <ul class="splide__list">
+      {
+        teamDetails.map(({ name, role }) => (
+          <li
+            data-memberName={name}
+            class="splide__slide w-96 teammate-member cursor-pointer"
+            role="button"
+            aria-label="view bio"
+          >
+            <div class="splide__slide__container">
+              <img
+                src={`/teammates/${name}.jpg`}
+                alt={name}
+                class="slide-img"
+              />
+              <div class="mt-5">
+                <Heading className="!text-white" type="h4">
+                  {name}
+                </Heading>
+                <p class="text-white/60">{role}</p>
+              </div>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<dialog
+  class="bg-transparent px-0 min-h-full overflow-y-auto"
+  id="member-dialog"
+>
+  <div
+    id="team-dialog--content"
+    class="border max-w-4xl bg-white h-full w-full overflow-y-scroll z-[50] py-10"
+  >
+    <div
+      class="flex justify-between items-center text-darker pb-5 border-b px-5"
+    >
+      <h2 class="text-2xl font-bold text-darker leading-tight">Team Details</h2>
+      <button aria-label="close dialog" id="close-team-dialog">
+        <Icon class="text-swizelDark/60" size={32} name="close--alt" />
+      </button>
+    </div>
+    <div class="grid sm:grid-flow-col gap-8 pt-10 px-[5%] text-darker">
+      <div class="sm:w-[300px] space-y-5">
+        <img
+          src="/teammates/Princewill.jpg"
+          class="w-full"
+          alt="Princewill"
+          id="dialog--image"
+        />
+        <div class="space-y-2">
+          <Heading id="teammate--name" type="h4">
+            {/**  */}
+          </Heading>
+          <p
+            id="teammate--role"
+            class="tracking-[3px] sm:max-w-[190px] text-sm leading-7 uppercase break-words"
+          >
+            {/**  */}
+          </p>
+        </div>
+        <div>
+          <Link
+            id="teammate--linkedin"
+            href=""
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Icon size={30} name="linkedin" />
+          </Link>
+        </div>
+      </div>
+      <div class="space-y-5 py-2">
+        <div class="space-y-5">
+          <Heading className="text-swizelGreen" type="h3">Bio</Heading>
+          <p id="teammate--bio">
+            {/**  */}
+          </p>
+        </div>
+        <Heading className="text-swizelGreen" type="h3">Experience</Heading>
+        <ul id="teammate--experience" class="flex flex-wrap gap-6">
+          {/**  */}
+        </ul>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<style>
+  .splide__track {
+    margin-block: 50px;
+  }
+
+  .splide__slide img {
+    width: 100%;
+    object-fit: cover;
+  }
+  .splide__arrow svg {
+    fill: transparent;
+  }
+
+  .img--carousel .splide__arrow {
+    top: 0;
+    transform: translateY(0);
+  }
+
+  .img--carousel .splide__arrow--prev {
+    right: 120px;
+    left: auto;
+    transform: translateX(100%);
+  }
+  .img--carousel .splide__arrow--next {
+    right: 70px;
+    left: auto;
+    transform: translateX(100%);
+  }
+
+  .splide {
+    padding: 1rem 0;
+  }
+</style>
+
+<script></script>

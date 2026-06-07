@@ -1,0 +1,51 @@
+---
+import QuickInfoBox from '../elements/QuickInfoBox.astro';
+
+interface QuickInfoType {
+	desc: string;
+}
+
+interface IsIcon extends QuickInfoType {
+	iconName: string;
+	iconText?: string;
+	headingText?: never;
+}
+
+interface IsHeadingText extends QuickInfoType {
+	headingText: string;
+	iconName?: never;
+	iconText?: never;
+}
+
+export type SectionType = IsIcon | IsHeadingText;
+
+interface Props {
+	firstSection?: SectionType;
+	secondSection?: SectionType;
+	thirdSection?: SectionType;
+}
+
+const {
+	firstSection = {
+		desc: 'Years in the business',
+		headingText: '5+',
+	},
+	secondSection = {
+		desc: 'Team members',
+		headingText: '25+',
+	},
+	thirdSection = {
+		desc: 'Projects completed',
+		headingText: '50+',
+	},
+} = Astro.props;
+---
+
+<div class="grid md:grid-cols-3 my-5">
+	<QuickInfoBox {...firstSection} />
+	<QuickInfoBox
+		className="md:border-[#c6fdf2] md:bg-[#92e2c21a] md:border-x-0 border-x md:border-y border-y-0"
+		{...secondSection}
+	/>
+	<QuickInfoBox {...thirdSection} />
+</div>

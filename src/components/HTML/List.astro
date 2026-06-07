@@ -1,0 +1,66 @@
+---
+interface Props extends astroHTML.JSX.HTMLAttributes {
+	listItem: string[];
+	columns?: number;
+	checkColor?: 'alt';
+	type?: 'ul' | 'ol';
+}
+
+const {
+	listItem,
+	class: className,
+	columns = 1,
+	checkColor = 'default',
+	type: ListType = 'ul' as any, // stops typescript from throwing error
+
+	...rest
+} = Astro.props;
+---
+
+<ListType
+	class:list={[`grid gap-5 md:grid-cols-${columns} items-end`, className]}
+	{...rest}
+>
+	{
+		listItem.map((list) => (
+			<li
+				class:list={[
+					checkColor,
+					'text-darker-alt flex items-center gap-6',
+				]}
+			>
+				{list}
+			</li>
+		))
+	}
+</ListType>
+
+<style>
+	ul li::before {
+		display: block;
+		width: 32px;
+		height: 32px;
+	}
+
+	ul .alt::before {
+		content: url('/images/li--check.svg');
+	}
+	ul .default::before {
+		content: url('/images/check.svg');
+	}
+
+	ol {
+		counter-reset: ol-counter;
+	}
+
+	ol li {
+		counter-increment: ol-counter;
+	}
+	ol li::before {
+		font-size: 30px;
+		content: counter(ol-counter);
+		display: inline-block;
+		font-size: 3rem;
+		font-weight: 800;
+	}
+</style>

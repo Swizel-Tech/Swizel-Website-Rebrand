@@ -1,0 +1,78 @@
+---
+import { Icon } from 'astro-icon';
+import CustomButton from '../components/CustomButton.astro';
+import AccentHeader from '../components/HTML/AccentHeader.astro';
+import Heading from '../components/HTML/Heading.astro';
+import Section from '../components/HTML/Section.astro';
+import Breadcrumb from '../components/blocks/Breadcrumb.astro';
+import MainLayout from '../layouts/MainLayout.astro';
+import HowWeDoIt from '../components/sections/HowWeDoIt.astro';
+import ServicesDropDown from '../components/sections/ServicesDropDown.astro';
+import FooterCTA from '../components/blocks/FooterCTA.astro';
+---
+
+<MainLayout>
+	<Breadcrumb />
+	<Section>
+		<div class="py-20 grid md:grid-cols-2 gap-10">
+			<div class="max-w-md space-y-8">
+				<AccentHeader>Services</AccentHeader>
+				<Heading type="h3">
+					We provide tech solutions that are fully customizable to
+					your business needs.
+				</Heading>
+				<CustomButton
+					class="rounded-full flex items-center justify-center gap-2"
+					elementType="a"
+					href="/contact"
+				>
+					Talk to a project manager
+					<Icon width={20} name="mdi:arrow-right" />
+				</CustomButton>
+			</div>
+			<div class="space-y-9 text-swizelDark/60 max-w-lg leading-loose">
+				<p>
+					We offer flexible pricing, long-term partnerships, and
+					flexible teams.
+				</p>
+				<p>
+					While our service model can be divided into 4 groups:
+					design, develop, market, and manage—we understand that
+					projects of these kinds are never a one-off.  We build
+					long-term working relationships with clients therefore, we
+					are available to meet every one of your needs.
+				</p>
+			</div>
+		</div>
+	</Section>
+	<ServicesDropDown />
+	<HowWeDoIt class="override text-swizelDark/60 leading-loose" hideButton />
+	<Section>
+		<div class="py-20 text-swizelDark/60 leading-loose">
+			<div class="grid gap-4 md:grid-cols-2">
+				<div class="space-y-8 md:max-w-lg">
+					<AccentHeader>Hire us for</AccentHeader>
+					<Heading type="h3">One-time projects</Heading>
+					<p class="text-darker/60">
+						If you have an upcoming or ongoing project and need
+						extra hands to come in at any point then our team is a
+						quality and cost effective way to go. A quick prototype,
+						campaign or to fix a software issue— we got you.
+					</p>
+				</div>
+				<div class="space-y-8 md:max-w-lg">
+					<p></p>
+					<Heading type="h3">Long-term services</Heading>
+					<p class="text-darker/60">
+						Hire us for Long-term services This is the sweet sauce.
+						Forget about hiring and training staff because we have
+						got all that covered. We have a team ready to go for
+						whatever project you have in mind. Reach out to a
+						project manager today, and tell us what you need.
+					</p>
+				</div>
+			</div>
+		</div>
+	</Section>
+	<FooterCTA />
+</MainLayout>

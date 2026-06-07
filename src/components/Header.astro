@@ -1,0 +1,246 @@
+---
+import Icon from 'astro-icon';
+import CustomButton from './CustomButton.astro';
+import Link from './Link.astro';
+import { formatLink, links } from '../consts';
+---
+
+<header
+	class="site-header py-5 px-[5%] top-0 z-20 sticky"
+	id="navbar--header"
+>
+	<div class="container flex items-center justify-between mx-auto">
+		<div class="flex-[0.2]">
+			<Link
+				class="site-logo text-swizelGreen w-fit block"
+				aria-label="Swizel"
+				href="/"
+			>
+				<Icon width={124} name="swizel" />
+			</Link>
+		</div>
+		<div class="flex items-center justify-between col-span-2 flex-[0.8]">
+			<div
+				class="xl:hidden flex-1 text-white flex items-center justify-end gap-3"
+			>
+				<button
+					class="view-switch view-switch--icon"
+					type="button"
+					data-open-views
+					aria-label="Switch site view"
+				>
+					<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+				</button>
+				<button
+					class="theme-toggle"
+					type="button"
+					role="switch"
+					aria-checked="false"
+					aria-label="Toggle dark mode"
+					data-theme-toggle
+				>
+					<svg
+						class="tt-ico tt-sun"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2.2"
+						stroke-linecap="round"
+					>
+						<circle cx="12" cy="12" r="4.2"></circle>
+						<path
+							d="M12 1.5v2.5M12 20v2.5M3.5 3.5l1.8 1.8M18.7 18.7l1.8 1.8M1.5 12h2.5M20 12h2.5M3.5 20.5l1.8-1.8M18.7 5.3l1.8-1.8"
+						></path>
+					</svg>
+					<svg class="tt-ico tt-moon" viewBox="0 0 24 24" fill="currentColor">
+						<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+					</svg>
+				</button>
+				<button id="toggler-show" aria-label="show menu" type="button">
+					<Icon size={28} name="hamburger" />
+				</button>
+			</div>
+			<nav
+				class="xl:flex hidden items-center md:ml-9 gap-x-10 justify-between text-[1.05rem] font-medium gap-8 xl:pl-7"
+			>
+				<Link href="/">Home</Link>
+				{
+					links.map((link) => (
+						<Link class="capitalize" href={`/${link}`}>
+							{formatLink(link)}
+						</Link>
+					))
+				}
+				<!-- <Link
+					download="The Brevarium by Swizel"
+					href="/The Brevarium by Swizel.pdf"
+				>
+					The Brevarium
+				</Link> -->
+			</nav>
+			<div class="hidden xl:flex items-center gap-4">
+				<button
+					class="view-switch"
+					type="button"
+					data-open-views
+					aria-label="Switch site view"
+				>
+					<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+					<span>Views</span>
+				</button>
+				<button
+					id="theme-toggle"
+					class="theme-toggle"
+					type="button"
+					role="switch"
+					aria-checked="false"
+					aria-label="Toggle dark mode"
+					data-theme-toggle
+				>
+					<svg
+						class="tt-ico tt-sun"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2.2"
+						stroke-linecap="round"
+					>
+						<circle cx="12" cy="12" r="4.2"></circle>
+						<path
+							d="M12 1.5v2.5M12 20v2.5M3.5 3.5l1.8 1.8M18.7 18.7l1.8 1.8M1.5 12h2.5M20 12h2.5M3.5 20.5l1.8-1.8M18.7 5.3l1.8-1.8"
+						></path>
+					</svg>
+					<svg class="tt-ico tt-moon" viewBox="0 0 24 24" fill="currentColor">
+						<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+					</svg>
+				</button>
+				<CustomButton
+					elementType="a"
+					class="nav-cta flex"
+					variant="outline"
+					href="/contact"
+					notRounded
+				>
+					Contact
+				</CustomButton>
+			</div>
+		</div>
+	</div>
+
+	<div
+		id="mobile-wrapper"
+		role="dialog"
+		class="fixed z-[15] xl:hidden inset-0 overflow-x-hidden"
+	>
+		<div id="close-overlay" class="fixed inset-0 bg-black/40"></div>
+		<div
+			id="mobile-menu"
+			class="fixed left-0 h-full top-0 bg-swizelDark shadow-[-4px_0px_3px_1px_rgba(0,0,0,0.2)] border-l border-swizelDark"
+		>
+			<div class="py-4 px-5">
+				<div class="flex items-center justify-between gap-4">
+					<Link
+						class="text-swizelGreen w-fit block"
+						aria-label="Swizel"
+						href="/"
+					>
+						<Icon width={123} name="swizel" />
+					</Link>
+					<button
+						id="toggler-hide"
+						aria-label="show menu"
+						type="button"
+					>
+						<Icon size={35} name="close" />
+					</button>
+				</div>
+
+				<nav class="mt-16">
+					<ul
+						class="grid gap-8 pl-2 text-white my-8 duration-300 apitalize whitespace-nowrap"
+					>
+						<Link class="whitespace-nowrap" href="/">Home</Link>
+						{
+							links.map((link) => (
+								<li class="capitalize">
+									<Link
+										class="hover:text-white/60"
+										href={`/${link}`}
+									>
+										{formatLink(link)}
+									</Link>
+								</li>
+							))
+						}
+						<!-- <Link
+							download="The Brevarium by Swizel"
+							href="/The Brevarium by Swizel.pdf"
+						>
+							The Brevarium
+						</Link> -->
+						<li>
+							<CustomButton
+								elementType="a"
+								class="block max-w-[140px] mt-14 !border-white/60"
+								variant="outline"
+								href="/contact"
+								notRounded
+							>
+								Contact
+							</CustomButton>
+						</li>
+					</ul>
+				</nav>
+			</div>
+		</div>
+	</div>
+</header>
+
+<style>
+	#mobile-wrapper {
+		width: 0;
+	}
+
+	#mobile-wrapper[data-expanded='true'] {
+		width: auto;
+		transition: 0.5s;
+		/* transition-timing-function: linear;t */
+	}
+	#mobile-wrapper > div {
+		width: 0;
+		transition: 0.7s ease;
+		/* transition-timing-function: linear; */
+		overflow-x: hidden;
+	}
+	#mobile-wrapper #close-overlay {
+		width: 0;
+		transition: opacity 0.5s;
+		/* transition-timing-function: linear; */
+		opacity: 0;
+	}
+	#mobile-wrapper[data-expanded='true'] #close-overlay {
+		width: 100vw;
+		transform-origin: right;
+		opacity: 1;
+		cursor: pointer;
+	}
+	#mobile-wrapper #mobile-menu > * {
+		display: none;
+	}
+	#mobile-wrapper[data-expanded='true'] #mobile-menu {
+		width: 350px;
+	}
+	#mobile-wrapper[data-expanded='true'] #mobile-menu > * {
+		display: block;
+	}
+
+	.header-sticky {
+		box-shadow: 0 2px 3px 4px rgba(0, 0, 0, 0.19);
+	}
+
+	@media (max-width: 380px) {
+		#mobile-wrapper[data-expanded='true'] #mobile-menu {
+			width: 300px;
+		}
+	}
+</style>

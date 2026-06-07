@@ -1,0 +1,87 @@
+---
+import { Icon } from 'astro-icon';
+import CustomButton from '../CustomButton.astro';
+import Section from '../HTML/Section.astro';
+import RotatingHeadline from '../RotatingHeadline.astro';
+---
+
+<Section
+	sectionClass="hero-view hero-legacy legacy--stage bg-swizelDark text-white relative overflow-hidden"
+	divClass="relative z-10"
+>
+	<div class="legacy--grid">
+		<div class="legacy--copy">
+			<p class="legacy--eyebrow">zero to mvp</p>
+			<RotatingHeadline class="legacy--head" />
+			<p class="legacy--sub">
+				We help businesses turn their ideas into successful products.
+			</p>
+			<div class="legacy--cta">
+				<CustomButton
+					variant="accent"
+					elementType="a"
+					href="/contact"
+					class="flex items-center justify-center gap-2"
+				>
+					Tell us about your project
+					<Icon width={18} name="mdi:arrow-right" />
+				</CustomButton>
+				<button class="legacy--tour" type="button" data-tour-start="legacy">
+					<Icon width={16} name="mdi:compass-outline" />
+					Take the tour
+				</button>
+			</div>
+		</div>
+
+		<div class="legacy--art" data-tour="art">
+			<img
+				src="/images/hero--image.svg"
+				alt="The Swizel team building products"
+				width="570"
+				height="562"
+			/>
+		</div>
+	</div>
+</Section>
+
+<style>
+	.legacy--grid {
+		display: grid;
+		gap: 2rem;
+		align-items: center;
+		min-height: calc(100vh - 90px);
+		padding-block: 3rem;
+	}
+	@media (min-width: 768px) {
+		.legacy--grid { grid-template-columns: 1fr 1fr; }
+	}
+	.legacy--copy { display: grid; gap: 1.5rem; max-width: 36rem; }
+	.legacy--eyebrow {
+		font-size: 1rem;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+		color: #86e2ef;
+	}
+	.legacy--head { font-size: clamp(3rem, 10vw, 7rem); }
+	.legacy--sub { color: rgba(255, 255, 255, 0.64); font-size: 1.1rem; max-width: 24rem; }
+	.legacy--cta { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-top: 0.5rem; }
+	.legacy--tour {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 0.82rem;
+		font-weight: 600;
+		color: rgba(255, 255, 255, 0.78);
+		padding: 0.75rem 1.1rem;
+		border-radius: 9999px;
+		border: 1px solid rgba(255, 255, 255, 0.25);
+		transition: border-color 0.25s ease, color 0.25s ease;
+	}
+	.legacy--tour:hover { border-color: #428876; color: #86e2ef; }
+	.legacy--art { display: flex; justify-content: center; }
+	.legacy--art img { width: 100%; max-width: 520px; height: auto; }
+	@media (max-width: 767px) {
+		.legacy--grid { min-height: auto; }
+		.legacy--art { order: -1; }
+	}
+</style>

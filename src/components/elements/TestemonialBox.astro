@@ -1,0 +1,57 @@
+---
+// import { Icon } from 'astro-icon';
+import { Icon } from 'astro-icon';
+import Heading from '../HTML/Heading.astro';
+
+interface Props {
+	rating: number;
+	comment: string;
+	name: string;
+	jobDesc?: string;
+	img?: string;
+	className?: string;
+	headerClass?: string;
+}
+
+const {
+	comment,
+	img,
+	jobDesc,
+	name,
+	className = '',
+	rating,
+	headerClass,
+} = Astro.props;
+---
+
+<div
+	class:list={[
+		'p-6 sm:py-6 py-10 space-y-8 text-white border border-swizelBrown grid items-center',
+		className,
+	]}
+>
+	<div class="flex items-center">
+		{new Array(rating).fill('_').map(() => <Icon size={24} name="star" />)}
+	</div>
+	<p>{comment}</p>
+	<div class="flex items-center gap-2">
+		{
+			img && (
+				<img
+					class="h-[80px] w-[80px] object-cover rounded-full"
+					src={img || '/images/avatar.svg'}
+					alt={name}
+				/>
+			)
+		}
+		<div class="space-y-2">
+			<Heading
+				type="h4"
+				className={headerClass ? headerClass : '!text-white'}
+			>
+				{name}
+			</Heading>
+			{jobDesc && <p>{jobDesc}</p>}
+		</div>
+	</div>
+</div>

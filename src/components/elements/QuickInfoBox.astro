@@ -1,0 +1,27 @@
+---
+import { Icon } from 'astro-icon';
+import type { SectionType } from '../blocks/QuickInfo.astro';
+
+type Props = SectionType & {
+	className?: string;
+};
+
+const { desc, headingText, iconName, iconText, className = '' } = Astro.props;
+---
+
+<div class:list={['p-12 border space-y-2 border-swizelBrown', className]}>
+	{
+		headingText && (
+			<p class="font-extrabold text-4xl text-darker">{headingText}</p>
+		)
+	}
+	{
+		iconName && (
+			<div>
+				<Icon name={iconName} />
+				{iconText}
+			</div>
+		)
+	}
+	<p>{desc}</p>
+</div>
