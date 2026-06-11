@@ -1,0 +1,361 @@
+---
+// "Choose your world" — right after the hero in every view. A cinematic,
+// auto-gliding rail of media cards (Apple TV-style): each world is a
+// poster with its film placeholder; the current one is marked. Click to
+// step into another world. The rail pauses on hover.
+import { Icon } from 'astro-icon';
+import { views } from '../consts';
+---
+
+<section class="view-worlds" id="view-banner" aria-label="Choose your view">
+	<div class="vw-wrap">
+		<div class="vw-head">
+			<h2 class="vw-title">
+				You're in the <span class="vw-title-accent" id="vb-name">Boardroom</span> world.
+			</h2>
+			<p class="vw-sub">
+				Made <span id="vb-aud">for executives and leaders</span> — and
+				it's one of six. Same Swizel, six worlds. Step into another:
+			</p>
+		</div>
+	</div>
+
+	<div class="vw-rail" role="group" aria-label="Switch view" data-cursor="play">
+		<div class="vw-track">
+			{
+				[0, 1].map((copy) =>
+					views.map((v) => (
+						<button
+							class="vw-card"
+							type="button"
+							data-switch-view={v.id}
+							style={`--va:${v.accent}`}
+							aria-hidden={copy === 1 ? 'true' : undefined}
+							tabindex={copy === 1 ? -1 : undefined}
+						>
+							<span class="vw-card-media" aria-hidden="true">
+								<span class="vw-card-glow" />
+								<Icon class="vw-card-watermark" width={64} name={v.icon} />
+								<span class="vw-card-film">
+									<Icon width={15} name="mdi:movie-open-outline" />
+									Preview film placeholder
+								</span>
+							</span>
+							<span class="vw-card-overlay">
+								<span class="vw-card-name">{v.name}</span>
+								<span class="vw-card-aud">{v.audience}</span>
+								<span class="vw-card-go">
+									Enter
+									<Icon width={14} name="mdi:arrow-right" />
+								</span>
+							</span>
+							<span class="vw-card-here">You are here</span>
+						</button>
+					))
+				)
+			}
+		</div>
+	</div>
+
+	<p class="vw-foot">
+		Not sure which fits?
+		<button type="button" class="vw-quiz" data-open-views>
+			Answer two quick questions
+			<Icon width={14} name="mdi:arrow-right" />
+		</button>
+	</p>
+</section>
+
+<style>
+	.view-worlds {
+		--vw-ink: #14162a;
+		--vw-muted: rgba(20, 22, 40, 0.62);
+		position: relative;
+		overflow: hidden;
+		padding: clamp(2.5rem, 6vw, 4rem) 0 clamp(2rem, 4vw, 3rem);
+		color: var(--vw-ink);
+	}
+	:global(html.dark) .view-worlds {
+		--vw-ink: #e9eaf2;
+		--vw-muted: rgba(233, 234, 242, 0.62);
+	}
+
+	.vw-wrap {
+		max-width: 80rem;
+		margin: 0 auto;
+		padding-inline: clamp(1.25rem, 4vw, 2.5rem);
+	}
+	.vw-head {
+		text-align: center;
+		max-width: 46rem;
+		margin: 0 auto clamp(1.6rem, 4vw, 2.4rem);
+	}
+	.vw-title {
+		font-family: 'Bebas Neue', sans-serif;
+		font-size: clamp(2rem, 5vw, 3.4rem);
+		line-height: 1;
+		letter-spacing: 1px;
+		text-transform: uppercase;
+		margin: 0 0 0.8rem;
+	}
+	.vw-title-accent {
+		position: relative;
+		color: var(--view-accent, #28a6ec);
+	}
+	/* hand-drawn-feel underline that draws itself in */
+	.vw-title-accent::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: -0.12em;
+		height: 3px;
+		border-radius: 9999px;
+		background: linear-gradient(
+			90deg,
+			var(--view-accent, #28a6ec),
+			color-mix(in srgb, var(--view-accent, #28a6ec) 20%, transparent)
+		);
+		transform-origin: left;
+		animation: vw-underline 1s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
+	}
+	@keyframes vw-underline {
+		from {
+			transform: scaleX(0);
+		}
+	}
+	/* on narrow screens the headline wraps and the underline would
+	   strike through the next line — drop it there */
+	@media (max-width: 760px) {
+		.vw-title-accent::after {
+			display: none;
+		}
+	}
+	.vw-sub {
+		color: var(--vw-muted);
+		font-size: 1rem;
+		line-height: 1.6;
+		margin: 0;
+	}
+
+	/* ── The rail ── */
+	.vw-rail {
+		overflow: hidden;
+		-webkit-mask-image: linear-gradient(
+			90deg,
+			transparent,
+			#000 6%,
+			#000 94%,
+			transparent
+		);
+		mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+	}
+	.vw-track {
+		display: flex;
+		width: max-content;
+		animation: vw-glide 36s linear infinite;
+	}
+	.vw-rail:hover .vw-track,
+	.vw-rail:focus-within .vw-track {
+		animation-play-state: paused;
+	}
+	@keyframes vw-glide {
+		to {
+			transform: translateX(-50%);
+		}
+	}
+
+	/* ── Poster cards ── */
+	.vw-card {
+		position: relative;
+		flex-shrink: 0;
+		width: clamp(240px, 26vw, 320px);
+		aspect-ratio: 16 / 10;
+		margin-right: clamp(0.8rem, 1.5vw, 1.1rem);
+		border-radius: 1.35rem;
+		overflow: hidden;
+		cursor: pointer;
+		text-align: left;
+		background:
+			radial-gradient(70% 90% at 80% 0%, color-mix(in srgb, var(--va) 38%, transparent), transparent 70%),
+			radial-gradient(60% 80% at 10% 100%, color-mix(in srgb, var(--va) 20%, transparent), transparent 70%),
+			linear-gradient(160deg, #181a2c, #0c0e1b 70%);
+		border: 1px solid color-mix(in srgb, var(--va) 24%, rgba(255, 255, 255, 0.1));
+		box-shadow: 0 18px 40px -20px rgba(5, 6, 14, 0.7);
+		transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+			box-shadow 0.4s ease, border-color 0.3s ease;
+	}
+	.vw-card:hover {
+		transform: translateY(-6px) scale(1.015);
+		border-color: color-mix(in srgb, var(--va) 65%, transparent);
+		box-shadow: 0 30px 60px -24px color-mix(in srgb, var(--va) 45%, rgba(5, 6, 14, 0.8));
+	}
+
+	.vw-card-media {
+		position: absolute;
+		inset: 0;
+	}
+	/* glossy sweep across the poster */
+	.vw-card-glow {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(
+			115deg,
+			transparent 35%,
+			rgba(255, 255, 255, 0.07) 48%,
+			transparent 62%
+		);
+		transform: translateX(-100%);
+		animation: vw-gloss 6s ease-in-out infinite;
+	}
+	@keyframes vw-gloss {
+		0%,
+		50% {
+			transform: translateX(-100%);
+		}
+		80%,
+		100% {
+			transform: translateX(100%);
+		}
+	}
+	.vw-card :global(.vw-card-watermark) {
+		position: absolute;
+		top: 0.9rem;
+		right: 0.9rem;
+		color: color-mix(in srgb, var(--va) 55%, transparent);
+		opacity: 0.85;
+		filter: drop-shadow(0 6px 16px color-mix(in srgb, var(--va) 50%, transparent));
+		transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+	}
+	.vw-card:hover :global(.vw-card-watermark) {
+		transform: rotate(-8deg) scale(1.08);
+	}
+	.vw-card-film {
+		position: absolute;
+		top: 0.95rem;
+		left: 0.95rem;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		font-size: 0.62rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: rgba(255, 255, 255, 0.55);
+		border: 1px dashed rgba(255, 255, 255, 0.25);
+		border-radius: 9999px;
+		padding: 0.3rem 0.6rem;
+		backdrop-filter: blur(4px);
+	}
+
+	.vw-card-overlay {
+		position: absolute;
+		inset: auto 0 0 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.1rem;
+		padding: 1.6rem 1rem 0.9rem;
+		background: linear-gradient(180deg, transparent, rgba(5, 6, 14, 0.85) 60%);
+		color: #fff;
+	}
+	.vw-card-name {
+		font-size: 1.08rem;
+		font-weight: 800;
+		letter-spacing: -0.01em;
+	}
+	.vw-card-aud {
+		font-size: 0.74rem;
+		color: rgba(255, 255, 255, 0.6);
+	}
+	.vw-card-go {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3rem;
+		margin-top: 0.4rem;
+		font-size: 0.72rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		color: var(--va);
+		opacity: 0;
+		transform: translateX(-6px);
+		transition: opacity 0.25s ease, transform 0.25s ease;
+	}
+	.vw-card:hover .vw-card-go {
+		opacity: 1;
+		transform: translateX(0);
+	}
+	@media (pointer: coarse) {
+		.vw-card-go {
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	.vw-card-here {
+		position: absolute;
+		top: 0.9rem;
+		left: 0.95rem;
+		display: none;
+		font-size: 0.58rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: #05060e;
+		background: var(--va);
+		padding: 0.28rem 0.6rem;
+		border-radius: 9999px;
+		box-shadow: 0 8px 20px -8px color-mix(in srgb, var(--va) 80%, transparent);
+	}
+	.vw-card.is-current {
+		border-color: var(--va);
+		box-shadow: 0 0 0 1.5px var(--va),
+			0 26px 50px -22px color-mix(in srgb, var(--va) 55%, transparent);
+		cursor: default;
+	}
+	.vw-card.is-current .vw-card-here {
+		display: inline-block;
+	}
+	.vw-card.is-current .vw-card-film {
+		display: none;
+	}
+	.vw-card.is-current .vw-card-go {
+		display: none;
+	}
+
+	.vw-foot {
+		text-align: center;
+		margin: clamp(1.4rem, 3vw, 2rem) 0 0;
+		font-size: 0.92rem;
+		color: var(--vw-muted);
+	}
+	.vw-quiz {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		margin-left: 0.4rem;
+		font-weight: 700;
+		color: var(--view-accent, #28a6ec);
+		transition: gap 0.25s ease;
+	}
+	/* light mode: the bright accent washes out — run it deeper */
+	:global(html:not(.dark)) .vw-quiz,
+	:global(html:not(.dark)) .vw-title-accent {
+		color: color-mix(in srgb, var(--view-accent, #28a6ec) 62%, #0b2e40);
+	}
+	.vw-quiz:hover {
+		gap: 0.6rem;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.vw-track {
+			animation: none;
+			width: auto;
+			overflow-x: auto;
+		}
+		.vw-card-glow,
+		.vw-title-accent::after {
+			animation: none;
+		}
+	}
+</style>

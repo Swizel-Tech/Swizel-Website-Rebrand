@@ -74,7 +74,7 @@ export const views = [
     audience: "for executives and leaders",
     blurb: "Calm and premium. ROI, reliability and proof.",
     accent: "#28a6ec",
-    icon: "mdi:briefcase-outline",
+    icon: "mdi:diamond-stone",
   },
   {
     id: "founder",
@@ -113,36 +113,90 @@ export const views = [
 export type ViewId = (typeof views)[number]["id"];
 export const DEFAULT_VIEW: ViewId = "boardroom";
 
-// Quiz: each option nudges the score toward one or more views.
+// Quiz: two questions, each option nudges the score toward one or more views.
 export const viewQuiz = [
   {
-    q: "What brings you to Swizel today?",
+    q: "Who are you?",
+    hint: "So we can speak your language.",
     options: [
-      { label: "I'm building something technical", scores: { builder: 3 } },
-      { label: "I run or grow a business", scores: { boardroom: 3 } },
-      { label: "I'm a founder with an idea", scores: { founder: 3 } },
-      { label: "I'm learning & leveling up", scores: { campus: 3 } },
-      { label: "I care about design & brand", scores: { studio: 3 } },
+      {
+        label: "A business owner or executive",
+        sub: "I make the decisions",
+        icon: "mdi:chart-box-outline",
+        scores: { boardroom: 3 },
+      },
+      {
+        label: "A tech bro / sis",
+        sub: "Developer, engineer, technical lead",
+        icon: "mdi:code-tags",
+        scores: { builder: 3 },
+      },
+      {
+        label: "A founder with an idea",
+        sub: "Early stage, big plans",
+        icon: "mdi:rocket-launch-outline",
+        scores: { founder: 3 },
+      },
+      {
+        label: "A student or career switcher",
+        sub: "Learning, growing, job-hunting",
+        icon: "mdi:school-outline",
+        scores: { campus: 3 },
+      },
+      {
+        label: "A creative or brand person",
+        sub: "Design, content, marketing",
+        icon: "mdi:palette-outline",
+        scores: { studio: 3 },
+      },
+      {
+        label: "Just looking around",
+        sub: "Show me your best",
+        icon: "mdi:compass-outline",
+        scores: { boardroom: 1 },
+      },
     ],
   },
   {
-    q: "What matters most to you?",
+    q: "What do you want?",
+    hint: "Pick the closest one — you can explore everything after.",
     options: [
-      { label: "Speed to launch", scores: { founder: 2, builder: 1 } },
-      { label: "Code quality & architecture", scores: { builder: 2 } },
-      { label: "ROI & reliability", scores: { boardroom: 2 } },
-      { label: "A beautiful experience", scores: { studio: 2 } },
-      { label: "Growth & learning", scores: { campus: 2 } },
-    ],
-  },
-  {
-    q: "How do you like your information?",
-    options: [
-      { label: "Show me the code", scores: { builder: 2 } },
-      { label: "Just the bottom line", scores: { boardroom: 2 } },
-      { label: "Tell me with visuals", scores: { studio: 2 } },
-      { label: "Fast and fun", scores: { campus: 2 } },
-      { label: "The roadmap & milestones", scores: { founder: 2 } },
+      {
+        label: "Build a product or app",
+        sub: "From idea to launch",
+        icon: "mdi:hammer-wrench",
+        scores: { founder: 2, builder: 1 },
+      },
+      {
+        label: "Grow or modernize my business",
+        sub: "Software that pays for itself",
+        icon: "mdi:trending-up",
+        scores: { boardroom: 2 },
+      },
+      {
+        label: "A technical team I can trust",
+        sub: "Engineering, architecture, code",
+        icon: "mdi:source-branch",
+        scores: { builder: 2, boardroom: 1 },
+      },
+      {
+        label: "Design, branding or content",
+        sub: "Make my brand beautiful",
+        icon: "mdi:brush-variant",
+        scores: { studio: 2 },
+      },
+      {
+        label: "Learn tech skills & get hired",
+        sub: "The free bootcamp",
+        icon: "mdi:book-open-variant",
+        scores: { campus: 3 },
+      },
+      {
+        label: "See your work & story first",
+        sub: "Proof before promises",
+        icon: "mdi:eye-outline",
+        scores: { boardroom: 1, studio: 1 },
+      },
     ],
   },
 ] as const;

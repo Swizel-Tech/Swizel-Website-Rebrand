@@ -46,6 +46,8 @@ const organizationSchema = {
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+<link rel="manifest" href="/manifest.webmanifest" />
 <meta name="generator" content={Astro.generator} />
 <meta name="theme-color" content="#28293E" />
 <meta name="robots" content="index, follow" />
@@ -67,6 +69,20 @@ const organizationSchema = {
 			}
 		} catch (e) {}
 	})();
+</script>
+
+<!-- PWA: register the service worker so the site is installable.
+     Skipped on localhost so dev never serves stale cached assets. -->
+<script is:inline>
+	if (
+		'serviceWorker' in navigator &&
+		location.hostname !== 'localhost' &&
+		location.hostname !== '127.0.0.1'
+	) {
+		window.addEventListener('load', function () {
+			navigator.serviceWorker.register('/sw.js').catch(function () {});
+		});
+	}
 </script>
 
 <!-- Canonical URL -->

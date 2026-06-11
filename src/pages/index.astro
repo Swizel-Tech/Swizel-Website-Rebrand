@@ -14,7 +14,12 @@ import ServicesSection from '../components/sections/ServicesSection.astro';
 import TestemonialSection from '../components/sections/TestemonialSection.astro';
 import OurBlogSection from '../components/sections/OurBlogSection.astro';
 import NewsLetterAndContact from '../components/sections/NewsLetterAndContact.astro';
+import ViewBanner from '../components/ViewBanner.astro';
+import BoardroomBody from '../components/sections/BoardroomBody.astro';
 import BuilderBody from '../components/sections/BuilderBody.astro';
+import FounderBody from '../components/sections/FounderBody.astro';
+import CampusBody from '../components/sections/CampusBody.astro';
+import StudioBody from '../components/sections/StudioBody.astro';
 
 const pageTitle =
 	'Swizel Technologies | Software, Design & Digital Marketing in Nigeria';
@@ -30,8 +35,15 @@ const pageDescription =
 	<HeroStudio />
 	<HeroLegacy />
 
-	<!-- Builder view body (built section by section) -->
+	<!-- "You are here" — orient the visitor, let them switch worlds -->
+	<ViewBanner />
+
+	<!-- Per-view bodies (built section by section) -->
+	<BoardroomBody />
 	<BuilderBody />
+	<FounderBody />
+	<CampusBody />
+	<StudioBody />
 
 	<!-- Shared body for the other views -->
 	<div class="default-body">

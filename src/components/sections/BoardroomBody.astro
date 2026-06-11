@@ -1,0 +1,1400 @@
+---
+// Boardroom view body — deep, glossy, glassy. Asymmetric mosaic tiles,
+// scrolling sectors + client logos, rotating client words, cinematic CTA.
+import { Icon } from 'astro-icon';
+
+const numbers = [
+	{ to: 65, suffix: '+', label: 'Products shipped' },
+	{ to: 7, suffix: '+', label: 'Years in business' },
+	{ to: 25, suffix: '+', label: 'Specialists on the team' },
+	{ to: 10, suffix: '+', label: 'Countries served' },
+	{ to: 5, decimals: 1, suffix: '', label: 'Average client rating' },
+];
+
+const disciplines = [
+	{
+		icon: 'mdi:palette-outline',
+		title: 'Design',
+		desc: 'Brand identity, graphics and product design — interfaces your customers find effortless.',
+		tag: 'brand · UI/UX · motion',
+		span: 'bd-w5',
+	},
+	{
+		icon: 'mdi:code-tags',
+		title: 'Development',
+		desc: 'Web and mobile engineering, built to scale. We build, test and ship fast — without breaking things.',
+		tag: 'web · iOS · Android · APIs',
+		span: 'bd-w7',
+		loud: true,
+	},
+	{
+		icon: 'mdi:bullhorn-outline',
+		title: 'Marketing',
+		desc: 'We go beyond development to grow your audience across every platform that matters.',
+		tag: 'SEO · ads · social · content',
+		span: 'bd-w7',
+	},
+	{
+		icon: 'mdi:wrench-outline',
+		title: 'Maintenance',
+		desc: 'Improving existing products and keeping complex systems healthy, year after year.',
+		tag: 'support · DevOps · uptime',
+		span: 'bd-w5',
+	},
+];
+
+const process = [
+	{ n: '01', title: 'Discover', desc: 'Research, define and lock the goal — together.' },
+	{ n: '02', title: 'Design & build', desc: 'Design, engineer and test in tight, visible loops.' },
+	{ n: '03', title: 'Launch & scale', desc: 'Market, manage and grow what we shipped.' },
+];
+
+const work = [
+	{ name: 'Brixmarket', sector: 'Real estate marketplace', img: '/images/portfolio/brix%20marketplace.jpg', url: 'https://brixmarket.com/', cls: 'bd-work--feature' },
+	{ name: 'Betslipswitch', sector: 'Sports', img: '/images/portfolio/betslipswitch.jpg', url: 'https://betslipswitch.com/', cls: 'bd-work--side' },
+	{ name: 'Saros', sector: 'Education', img: '/images/portfolio/sarosgp.jpg', url: 'https://sarosinternationallearning.com/', cls: 'bd-work--side' },
+	{ name: 'Purple Panda', sector: 'Marketing', img: '/images/portfolio/purplepanda%20world.jpg', url: '', cls: 'bd-work--third' },
+	{ name: 'Beauty Hive', sector: 'Beauty', img: '/images/portfolio/beauty-hive.webp', url: '', cls: 'bd-work--third' },
+	{ name: 'My Eya Estate', sector: 'Real estate', img: '/images/portfolio/my%20eya%20estate.jpg', url: '', cls: 'bd-work--third' },
+];
+
+const sectors = [
+	'Fintech',
+	'Real estate',
+	'Sports',
+	'E-commerce',
+	'Education',
+	'Logistics',
+	'Healthcare',
+	'Beauty',
+	'Energy',
+	'Agritech',
+	'Hospitality',
+	'Media',
+	'Retail',
+	'Travel',
+	'Gaming',
+	'Legal',
+];
+
+const quotes = [
+	{
+		text: '“Warm, responsive and a true extension of our team. They took the worry out of shipping software.”',
+		name: 'Chidimma',
+		role: 'Client, education sector',
+		img: '/testimonial/chidima.jpeg',
+	},
+	{
+		text: '“Geniuses, honestly. Working with them was effortless from the first call to launch day.”',
+		name: 'Favour',
+		role: 'Client, marketing',
+		img: '/testimonial/favour.jpeg',
+	},
+	{
+		text: '“Thorough, polite and always on time. They make hard things feel easy.”',
+		name: 'Cheta',
+		role: 'Client, e-commerce',
+		img: '/testimonial/cheta.jpeg',
+	},
+	{
+		text: '“Friendly and efficient. I have trusted them with my products for years.”',
+		name: 'Russell',
+		role: 'Client, real estate',
+		img: '/testimonial/russell.jpeg',
+	},
+];
+
+const logos = [
+	'betslipswitch.svg',
+	'trueverdict.png',
+	'brix market logo.svg',
+	'ejike-fc.svg',
+	'purple-panda.svg',
+	'saros-sgp.svg',
+	'my eya homes.svg',
+	'the-presidential-diary.png',
+	'hemamsynergy.png',
+];
+---
+
+<div class="bdbody view-body view-body-boardroom">
+	<!-- Opening statement -->
+	<section class="bd-intro bd-reveal" data-cursor="chart">
+		<span class="bd-kicker">Swizel for business</span>
+		<h2 class="bd-display">Software that pays for itself.</h2>
+		<p class="bd-sub">
+			We design, build and run the systems that grow revenue, cut cost
+			and keep your customers coming back.
+		</p>
+		<div class="bd-links">
+			<a href="/contact" class="bd-pill">Start a project</a>
+			<a href="#bd-work" class="bd-link">
+				See the proof
+				<Icon width={15} name="mdi:chevron-down" />
+			</a>
+		</div>
+	</section>
+
+	<!-- Cinematic stage — your film, full width -->
+	<div class="bd-grid">
+		<section class="bd-tile bd-tile--full bd-tile--stage bd-reveal" data-cursor="play">
+			<div class="bd-media bd-media--wide">
+				<span class="bd-media-sheen" aria-hidden="true"></span>
+				<Icon width={34} name="mdi:play-circle-outline" />
+				<span class="bd-media-label">Video placeholder</span>
+				<span class="bd-media-sub">Boardroom cut — your film lands here</span>
+			</div>
+		</section>
+	</div>
+
+	<!-- Asymmetric mosaic -->
+	<div class="bd-mosaic">
+		<section class="bd-tile bd-tile--row bd-w7 bd-reveal" data-cursor="clock">
+			<div class="bd-tile-copy">
+				<h3 class="bd-h">On time. On budget.</h3>
+				<p class="bd-p">
+					98% on-time delivery across 65+ launches. You always know
+					what ships next, and when.
+				</p>
+				<a href="/contact" class="bd-link">
+					Plan your launch
+					<Icon width={15} name="mdi:chevron-right" />
+				</a>
+			</div>
+			<div class="bd-media bd-media--tall">
+				<span class="bd-media-sheen" aria-hidden="true"></span>
+				<Icon width={26} name="mdi:image-outline" />
+				<span class="bd-media-label">Image placeholder</span>
+				<span class="bd-media-sub">Delivery dashboard</span>
+			</div>
+		</section>
+
+		<section class="bd-tile bd-w5 bd-reveal" data-cursor="pulse">
+			<div class="bd-tile-copy">
+				<h3 class="bd-h">Runs while you sleep.</h3>
+				<p class="bd-p">
+					99.9% uptime, monitored around the clock, with same-day
+					response when it matters.
+				</p>
+				<a href="/services" class="bd-link">
+					About maintenance
+					<Icon width={15} name="mdi:chevron-right" />
+				</a>
+			</div>
+			<div class="bd-media">
+				<span class="bd-media-sheen" aria-hidden="true"></span>
+				<Icon width={26} name="mdi:image-outline" />
+				<span class="bd-media-label">Image placeholder</span>
+				<span class="bd-media-sub">Uptime monitor</span>
+			</div>
+		</section>
+
+		<section class="bd-tile bd-w5 bd-reveal" data-cursor="layers">
+			<div class="bd-tile-copy">
+				<h3 class="bd-h">One partner. Every discipline.</h3>
+				<p class="bd-p">
+					Strategy, design, engineering, marketing and maintenance —
+					one contract, one team to call.
+				</p>
+				<a href="/about" class="bd-link">
+					Meet the leadership
+					<Icon width={15} name="mdi:chevron-right" />
+				</a>
+			</div>
+			<div class="bd-media">
+				<span class="bd-media-sheen" aria-hidden="true"></span>
+				<Icon width={26} name="mdi:image-outline" />
+				<span class="bd-media-label">Image placeholder</span>
+				<span class="bd-media-sub">The team, at work</span>
+			</div>
+		</section>
+
+		<section class="bd-tile bd-tile--row bd-tile--row-rev bd-w7 bd-reveal" data-cursor="shield">
+			<div class="bd-tile-copy">
+				<h3 class="bd-h">Your data, guarded.</h3>
+				<p class="bd-p">
+					Security-first builds, automated backups and clean audits — so
+					the board never has to ask twice.
+				</p>
+				<a href="/contact" class="bd-link">
+					Ask about security
+					<Icon width={15} name="mdi:chevron-right" />
+				</a>
+			</div>
+			<div class="bd-media bd-media--tall">
+				<span class="bd-media-sheen" aria-hidden="true"></span>
+				<Icon width={26} name="mdi:image-outline" />
+				<span class="bd-media-label">Image placeholder</span>
+				<span class="bd-media-sub">Security visual</span>
+			</div>
+		</section>
+	</div>
+
+	<!-- What we do — the four disciplines -->
+	<section class="bd-head bd-reveal" id="bd-services">
+		<h3 class="bd-h bd-h--center">Everything under one roof.</h3>
+		<p class="bd-p bd-p--center">
+			Employ a world-class team of engineers, designers, analysts and
+			marketers — without hiring one.
+		</p>
+	</section>
+	<div class="bd-mosaic bd-mosaic--svc">
+		{
+			disciplines.map((d) => (
+				<section
+					class:list={['bd-tile', 'bd-tile--svc', d.span, 'bd-reveal', { 'bd-tile--loud': d.loud }]}
+					data-cursor="layers"
+				>
+					<span class="bd-svc-ic">
+						<Icon width={28} name={d.icon} />
+					</span>
+					<h4 class="bd-h bd-h--sm">{d.title}</h4>
+					<p class="bd-p bd-svc-p">{d.desc}</p>
+					<span class="bd-chips">
+						{d.tag.split('·').map((t) => (
+							<span class="bd-chip">{t.trim()}</span>
+						))}
+					</span>
+				</section>
+			))
+		}
+	</div>
+
+	<!-- How we work — three steps, carried by a quiet crimson heat -->
+	<div class="bd-grid bd-grid--narrow">
+		<section class="bd-tile bd-tile--full bd-tile--heat bd-reveal" data-cursor="branch">
+			<div class="bd-tile-copy">
+				<h3 class="bd-h">Bring your project to life.</h3>
+				<p class="bd-p">
+					Cost-effective, innovative and quick to MVP — here's how we
+					take you from idea to the next level.
+				</p>
+			</div>
+			<ol class="bd-steps">
+				{
+					process.map((p) => (
+						<li class="bd-step">
+							<span class="bd-step-n">{p.n}</span>
+							<h4 class="bd-step-t">{p.title}</h4>
+							<p class="bd-step-d">{p.desc}</p>
+						</li>
+					))
+				}
+			</ol>
+		</section>
+	</div>
+
+	<div class="bd-grid">
+		<!-- Numbers tile -->
+		<section class="bd-tile bd-tile--full bd-tile--inverse bd-reveal" id="bd-numbers" data-cursor="chart">
+			<div class="bd-tile-copy">
+				<h3 class="bd-h">The numbers behind the calm.</h3>
+				<p class="bd-p">
+					Seven years of shipping for ambitious businesses, measured the
+					only way that matters.
+				</p>
+			</div>
+			<ul class="bd-numbers">
+				{
+					numbers.map((n) => (
+						<li class="bd-number">
+							<strong
+								data-count={n.to}
+								data-suffix={n.suffix}
+								data-decimals={n.decimals || 0}
+							>
+								0{n.suffix}
+							</strong>
+							<span>{n.label}</span>
+						</li>
+					))
+				}
+			</ul>
+		</section>
+
+		<!-- Rotating client words -->
+		<section class="bd-tile bd-tile--full bd-tile--quote bd-reveal" data-cursor="quote" id="bd-quotes">
+			{
+				quotes.map((q, i) => (
+					<blockquote class:list={['bd-quote', { 'is-live': i === 0 }]} data-q={i}>
+						<p>{q.text}</p>
+						<footer>
+							<img src={q.img} alt="" loading="lazy" />
+							<span>
+								<strong>{q.name}</strong>
+								<em>{q.role}</em>
+							</span>
+						</footer>
+					</blockquote>
+				))
+			}
+			<div class="bd-quote-dots" aria-hidden="true">
+				{quotes.map((_, i) => <span class:list={['bd-qdot', { 'is-on': i === 0 }]} data-qdot={i} />)}
+			</div>
+		</section>
+	</div>
+
+	<!-- The proof — latest work -->
+	<section class="bd-work" id="bd-work" data-cursor="repo">
+		<div class="bd-head bd-reveal">
+			<h3 class="bd-h bd-h--center">The proof, shipped.</h3>
+			<p class="bd-p bd-p--center">
+				Real products, live in the market, carrying real businesses.
+			</p>
+		</div>
+		<div class="bd-work-grid bd-reveal">
+			{
+				work.map((w) => {
+					const Tag = w.url ? 'a' : 'div';
+					return (
+						<Tag
+							class:list={['bd-work-card', w.cls]}
+							href={w.url || undefined}
+							target={w.url ? '_blank' : undefined}
+							rel={w.url ? 'noopener noreferrer' : undefined}
+						>
+							<img src={w.img} alt={`${w.name} — ${w.sector}`} loading="lazy" />
+							<span class="bd-work-veil" aria-hidden="true" />
+							<span class="bd-work-meta">
+								<strong>{w.name}</strong>
+								<em>{w.sector}</em>
+							</span>
+							{w.url && (
+								<span class="bd-work-go" aria-hidden="true">
+									<Icon width={16} name="mdi:arrow-top-right" />
+								</span>
+							)}
+						</Tag>
+					);
+				})
+			}
+		</div>
+		<p class="bd-work-all">
+			<a href="/portfolio" class="bd-link">
+				See all 65+ projects
+				<Icon width={15} name="mdi:chevron-right" />
+			</a>
+		</p>
+	</section>
+
+	<!-- Sectors — endless drift -->
+	<section class="bd-sectors bd-reveal">
+		<h3 class="bd-h bd-h--center">At home in your industry.</h3>
+		<div class="bd-marquee" aria-hidden="true">
+			<div class="bd-marquee-track bd-marquee-track--sectors">
+				{
+					[0, 1].map(() =>
+						sectors.map((s) => <span class="bd-sector">{s}</span>)
+					)
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- Final CTA tile -->
+	<section class="bd-grid">
+		<div class="bd-tile bd-tile--full bd-tile--cta bd-reveal" data-cursor="phone">
+			<h3 class="bd-display bd-display--cta">Let's talk about your business.</h3>
+			<p class="bd-sub">
+				Tell us where you want the numbers to go. You'll have a reply
+				within one business day.
+			</p>
+			<div class="bd-links bd-links--center">
+				<a href="/contact" class="bd-pill bd-pill--light">Start your project</a>
+			</div>
+			<a href="tel:+2348100204570" class="bd-call">
+				<span class="bd-call-hint">or call us now</span>
+				<span class="bd-call-num">
+					<Icon width={30} name="mdi:phone" />
+					+234 810 020 4570
+				</span>
+			</a>
+		</div>
+	</section>
+
+	<!-- Client logos — last thing before the footer -->
+	<section class="bd-logos bd-reveal">
+		<p class="bd-logos-line">The brands that trust us with their software</p>
+		<div class="bd-marquee" aria-hidden="true">
+			<div class="bd-marquee-track bd-marquee-track--logos">
+				{
+					[0, 1].map(() =>
+						logos.map((l) => (
+							<span class="bd-logo">
+								<img src={`/images/partners/${l}`} alt="" loading="lazy" />
+							</span>
+						))
+					)
+				}
+			</div>
+		</div>
+	</section>
+</div>
+
+<style>
+	/* ── Boardroom world — deep, glossy, glassy. Cinematic in both themes. ── */
+	.bdbody {
+		--bd-ink: #f4f6fb;
+		--bd-muted: rgba(244, 246, 251, 0.62);
+		--bd-glass: linear-gradient(
+			160deg,
+			rgba(255, 255, 255, 0.07),
+			rgba(255, 255, 255, 0.02) 55%
+		);
+		--bd-glass-border: rgba(255, 255, 255, 0.1);
+		--bd-shadow: 0 34px 80px -34px rgba(0, 0, 0, 0.8);
+		--bd-accent: var(--view-accent, #28a6ec);
+		font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display',
+			'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+		position: relative;
+		isolation: isolate;
+		background:
+			radial-gradient(1100px 540px at 78% -6%, color-mix(in srgb, var(--bd-accent) 13%, transparent), transparent 62%),
+			radial-gradient(900px 520px at 8% 38%, rgba(58, 90, 200, 0.1), transparent 60%),
+			radial-gradient(800px 460px at 92% 78%, color-mix(in srgb, var(--bd-accent) 9%, transparent), transparent 65%),
+			linear-gradient(180deg, #070910 0%, #0a0d1c 45%, #05060d 100%);
+		color: var(--bd-ink);
+		padding: clamp(3.5rem, 8vw, 6.5rem) clamp(1rem, 3vw, 2rem)
+			clamp(2.5rem, 5vw, 4rem);
+		transition: background 0.4s ease, color 0.4s ease;
+	}
+	/* Light mode: the world brightens, but the cinematic tiles (film,
+	   numbers, CTA, the loud card) stay deep — alternating bands. */
+	:global(html:not(.dark)) .bdbody {
+		--bd-ink: #14162a;
+		--bd-muted: rgba(20, 22, 40, 0.64);
+		--bd-glass: linear-gradient(
+			160deg,
+			rgba(255, 255, 255, 0.82),
+			rgba(255, 255, 255, 0.55) 55%
+		);
+		--bd-glass-border: rgba(20, 22, 40, 0.1);
+		--bd-shadow: 0 30px 70px -34px rgba(20, 22, 40, 0.25);
+		background:
+			radial-gradient(1100px 540px at 78% -6%, color-mix(in srgb, var(--bd-accent) 10%, transparent), transparent 62%),
+			radial-gradient(900px 520px at 8% 38%, rgba(58, 90, 200, 0.06), transparent 60%),
+			linear-gradient(180deg, #eef2f7 0%, #e7edf6 50%, #eef2f7 100%);
+	}
+	:global(html:not(.dark)) .bdbody .bd-tile::before {
+		opacity: 0.9;
+	}
+	:global(html:not(.dark)) .bdbody .bd-svc-ic {
+		color: var(--bd-accent);
+	}
+	/* keep the dark stage tile cinematic in light mode */
+	:global(html:not(.dark)) .bdbody .bd-tile--stage {
+		background:
+			radial-gradient(720px 320px at 50% -10%, color-mix(in srgb, var(--bd-accent) 26%, transparent), transparent 70%),
+			linear-gradient(180deg, #15172a, #070910);
+		border-color: rgba(255, 255, 255, 0.12);
+	}
+	:global(html:not(.dark)) .bdbody .bd-tile--stage .bd-media {
+		--bd-ink: #f4f6fb;
+		--bd-muted: rgba(244, 246, 251, 0.62);
+		color: rgba(244, 246, 251, 0.62);
+	}
+	/* logos read dark on the light base */
+	:global(html:not(.dark)) .bdbody .bd-logo img {
+		filter: grayscale(1) brightness(0) opacity(0.55);
+	}
+	:global(html:not(.dark)) .bdbody .bd-logo:hover img {
+		filter: none;
+		opacity: 1;
+	}
+
+	/* ── Type ── */
+	.bd-kicker {
+		display: inline-block;
+		font-size: 0.78rem;
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--bd-accent);
+		margin-bottom: 1rem;
+	}
+	.bd-display {
+		font-size: clamp(2.6rem, 6vw, 4.6rem);
+		font-weight: 700;
+		letter-spacing: -0.025em;
+		line-height: 1.04;
+		margin: 0 0 1.1rem;
+	}
+	.bd-sub {
+		font-size: clamp(1.05rem, 2vw, 1.35rem);
+		line-height: 1.5;
+		color: var(--bd-muted);
+		max-width: 38rem;
+		margin: 0 auto 1.6rem;
+	}
+	.bd-h {
+		font-size: clamp(1.7rem, 3.4vw, 2.5rem);
+		font-weight: 700;
+		letter-spacing: -0.02em;
+		line-height: 1.1;
+		margin: 0 0 0.7rem;
+	}
+	.bd-h--center {
+		text-align: center;
+	}
+	.bd-p {
+		font-size: 1.02rem;
+		line-height: 1.6;
+		color: var(--bd-muted);
+		max-width: 30rem;
+		margin: 0 auto 1.2rem;
+	}
+
+	/* ── Intro ── */
+	.bd-intro {
+		text-align: center;
+		max-width: 56rem;
+		margin: 0 auto clamp(2.5rem, 6vw, 4.5rem);
+	}
+
+	/* ── Links & pills ── */
+	.bd-links {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 1.4rem;
+		flex-wrap: wrap;
+	}
+	.bd-pill {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		padding: 0.78rem 1.5rem;
+		border-radius: 9999px;
+		background: linear-gradient(
+			180deg,
+			color-mix(in srgb, var(--bd-accent) 88%, #fff),
+			var(--bd-accent) 45%,
+			color-mix(in srgb, var(--bd-accent) 72%, #03244a)
+		);
+		border: 1px solid color-mix(in srgb, var(--bd-accent) 60%, rgba(255, 255, 255, 0.4));
+		color: #fff;
+		font-size: 0.95rem;
+		font-weight: 600;
+		text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.35),
+			0 12px 28px -12px color-mix(in srgb, var(--bd-accent) 65%, transparent);
+		transition: transform 0.25s ease, box-shadow 0.25s ease;
+	}
+	.bd-pill:hover {
+		transform: translateY(-2px);
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.4),
+			0 18px 38px -12px color-mix(in srgb, var(--bd-accent) 80%, transparent);
+	}
+	.bd-pill--light {
+		background: linear-gradient(180deg, #ffffff, #dfe6f2);
+		border-color: rgba(255, 255, 255, 0.8);
+		color: #0b0d18;
+		text-shadow: none;
+	}
+	.bd-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.15rem;
+		font-size: 0.98rem;
+		font-weight: 600;
+		color: var(--bd-accent);
+		transition: gap 0.25s ease;
+	}
+	.bd-link:hover {
+		gap: 0.4rem;
+	}
+
+	/* ── Layout: full-width grids ── */
+	.bd-grid,
+	.bd-mosaic {
+		display: grid;
+		gap: clamp(0.9rem, 2vw, 1.4rem);
+		max-width: 88rem;
+		margin: 0 auto clamp(0.9rem, 2vw, 1.4rem);
+	}
+	.bd-mosaic {
+		grid-template-columns: repeat(12, minmax(0, 1fr));
+	}
+	.bd-w7 {
+		grid-column: span 7;
+	}
+	.bd-w5 {
+		grid-column: span 5;
+	}
+	@media (max-width: 940px) {
+		.bd-w7,
+		.bd-w5 {
+			grid-column: span 12;
+		}
+	}
+	.bd-tile--full {
+		grid-column: 1 / -1;
+	}
+
+	/* ── Tiles: glass ── */
+	.bd-tile {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		gap: 1.4rem;
+		text-align: center;
+		padding: clamp(2rem, 4vw, 3rem) clamp(1.25rem, 3vw, 2.25rem)
+			clamp(1.4rem, 3vw, 2rem);
+		border-radius: 1.75rem;
+		background: var(--bd-glass);
+		border: 1px solid var(--bd-glass-border);
+		box-shadow: var(--bd-shadow);
+		backdrop-filter: blur(22px) saturate(130%);
+		-webkit-backdrop-filter: blur(22px) saturate(130%);
+		overflow: hidden;
+		transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+			box-shadow 0.4s ease, border-color 0.4s ease;
+	}
+	.bd-tile::before {
+		content: '';
+		position: absolute;
+		inset: 0 0 auto 0;
+		height: 1px;
+		background: linear-gradient(
+			90deg,
+			transparent 5%,
+			rgba(255, 255, 255, 0.5) 50%,
+			transparent 95%
+		);
+		opacity: 0.55;
+		pointer-events: none;
+	}
+	.bd-tile::after {
+		content: '';
+		position: absolute;
+		top: -40%;
+		left: -20%;
+		width: 80%;
+		height: 80%;
+		background: radial-gradient(
+			closest-side,
+			rgba(255, 255, 255, 0.06),
+			transparent
+		);
+		transform: rotate(-12deg);
+		pointer-events: none;
+	}
+	.bd-tile:hover {
+		transform: translateY(-5px);
+		border-color: color-mix(in srgb, var(--bd-accent) 38%, rgba(255, 255, 255, 0.12));
+		box-shadow: 0 40px 90px -36px color-mix(in srgb, var(--bd-accent) 32%, rgba(0, 0, 0, 0.85));
+	}
+	.bd-tile-copy {
+		max-width: 40rem;
+		margin: 0 auto;
+	}
+	/* stage tile: just the film */
+	.bd-tile--stage {
+		padding: clamp(1rem, 2vw, 1.4rem);
+	}
+
+	/* horizontal tiles — copy beside media */
+	.bd-tile--row {
+		flex-direction: row;
+		align-items: center;
+		text-align: left;
+		gap: clamp(1.25rem, 3vw, 2.5rem);
+	}
+	.bd-tile--row .bd-tile-copy {
+		flex: 1 1 46%;
+		margin: 0;
+	}
+	.bd-tile--row .bd-p {
+		margin-inline: 0;
+	}
+	.bd-tile--row .bd-media {
+		flex: 1 1 54%;
+	}
+	.bd-tile--row-rev {
+		flex-direction: row-reverse;
+	}
+	@media (max-width: 720px) {
+		.bd-tile--row,
+		.bd-tile--row-rev {
+			flex-direction: column;
+			text-align: center;
+		}
+		.bd-tile--row .bd-p {
+			margin-inline: auto;
+		}
+		.bd-tile--row .bd-media {
+			width: 100%;
+		}
+	}
+
+	/* ── Media placeholders ── */
+	.bd-media {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.35rem;
+		width: 100%;
+		aspect-ratio: 4 / 3;
+		max-height: 300px;
+		border-radius: 1.25rem;
+		border: 1.5px dashed color-mix(in srgb, var(--bd-ink) 18%, transparent);
+		background:
+			radial-gradient(420px 200px at 70% 10%, color-mix(in srgb, var(--bd-accent) 10%, transparent), transparent),
+			color-mix(in srgb, var(--bd-ink) 3%, transparent);
+		color: var(--bd-muted);
+		overflow: hidden;
+	}
+	.bd-media--wide {
+		aspect-ratio: 21 / 9;
+		max-height: 460px;
+	}
+	.bd-media--tall {
+		aspect-ratio: 16 / 10;
+		max-height: 340px;
+	}
+	.bd-media-label {
+		font-size: 0.78rem;
+		font-weight: 700;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+	.bd-media-sub {
+		font-size: 0.78rem;
+		color: color-mix(in srgb, var(--bd-muted) 70%, transparent);
+	}
+	.bd-media-sheen {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(
+			115deg,
+			transparent 30%,
+			color-mix(in srgb, var(--bd-ink) 5%, transparent) 48%,
+			transparent 64%
+		);
+		transform: translateX(-100%);
+		animation: bd-sheen 5.5s ease-in-out infinite;
+		pointer-events: none;
+	}
+	@keyframes bd-sheen {
+		0%,
+		55% {
+			transform: translateX(-100%);
+		}
+		85%,
+		100% {
+			transform: translateX(100%);
+		}
+	}
+
+	/* ── Inverse numbers tile ── */
+	.bd-tile--inverse {
+		background:
+			radial-gradient(720px 320px at 50% -10%, color-mix(in srgb, var(--bd-accent) 34%, transparent), transparent 70%),
+			linear-gradient(180deg, rgba(21, 26, 48, 0.9), rgba(5, 6, 13, 0.95));
+		color: #f5f5f7;
+		border-color: color-mix(in srgb, var(--bd-accent) 30%, rgba(255, 255, 255, 0.1));
+	}
+	.bd-tile--inverse .bd-p {
+		color: rgba(245, 245, 247, 0.62);
+	}
+	.bd-numbers {
+		display: grid;
+		grid-template-columns: repeat(5, minmax(0, 1fr));
+		gap: 1.25rem;
+		list-style: none;
+		margin: 0.5rem 0 0.75rem;
+		padding: 0;
+	}
+	@media (max-width: 880px) {
+		.bd-numbers {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+		/* odd one out sits centered on its own row */
+		.bd-number:last-child {
+			grid-column: 1 / -1;
+		}
+	}
+	.bd-number strong {
+		display: block;
+		font-size: clamp(2.4rem, 5vw, 3.6rem);
+		font-weight: 700;
+		letter-spacing: -0.03em;
+		background: linear-gradient(135deg, #9bd8ff, var(--bd-accent));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	.bd-number span {
+		font-size: 0.85rem;
+		color: rgba(245, 245, 247, 0.6);
+	}
+
+	/* ── Rotating quotes — fixed height so the page never shifts,
+	   stylishly overlapping the numbers tile above ── */
+	.bd-tile--quote {
+		height: clamp(15rem, 26vw, 17rem);
+		padding: 0;
+		justify-content: center;
+		width: min(100%, 72rem);
+		margin: calc(-1 * clamp(2.2rem, 5vw, 3.6rem)) auto 0;
+		z-index: 2;
+		box-shadow: 0 30px 70px -28px rgba(0, 0, 0, 0.85);
+	}
+	.bd-quote {
+		max-width: 44rem;
+		margin: 0 auto;
+		opacity: 0;
+		transform: translateY(14px);
+		transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+		position: absolute;
+		inset: 0;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		padding: clamp(1.5rem, 3vw, 2.25rem) clamp(1.25rem, 4vw, 4rem) 2.8rem;
+		pointer-events: none;
+	}
+	.bd-quote.is-live {
+		opacity: 1;
+		transform: translateY(0);
+		pointer-events: auto;
+	}
+	.bd-quote.is-leaving {
+		opacity: 0;
+		transform: translateY(-14px);
+	}
+	@media (max-width: 640px) {
+		.bd-tile--quote {
+			height: 21rem;
+		}
+		.bd-quote p {
+			font-size: 1.12rem;
+		}
+	}
+
+	/* ── Section headers + centered copy ── */
+	.bd-head {
+		max-width: 56rem;
+		margin: clamp(2.5rem, 6vw, 4rem) auto clamp(1.5rem, 3vw, 2rem);
+		text-align: center;
+	}
+	.bd-p--center {
+		margin-inline: auto;
+		text-align: center;
+	}
+	.bd-h--sm {
+		font-size: clamp(1.35rem, 2.6vw, 1.9rem);
+	}
+
+	/* ── Discipline tiles — airy, icon-led, one loud ── */
+	/* narrower than the cinematic tiles: room to breathe on both sides */
+	.bd-mosaic--svc,
+	.bd-grid--narrow {
+		max-width: 72rem;
+	}
+	.bd-mosaic--svc {
+		gap: clamp(1.25rem, 2.5vw, 2rem);
+	}
+	.bd-tile--svc {
+		text-align: left;
+		align-items: flex-start;
+		gap: 0;
+		padding: clamp(2rem, 4vw, 3rem);
+	}
+	.bd-tile--svc .bd-h--sm {
+		margin: 1.2rem 0 0.5rem;
+	}
+	.bd-svc-p {
+		margin: 0 0 1.4rem;
+		margin-inline: 0;
+		max-width: 34rem;
+	}
+	.bd-svc-ic {
+		display: grid;
+		place-items: center;
+		width: 58px;
+		height: 58px;
+		flex-shrink: 0;
+		border-radius: 1.1rem;
+		background: linear-gradient(
+			135deg,
+			color-mix(in srgb, var(--bd-accent) 26%, transparent),
+			color-mix(in srgb, var(--bd-accent) 8%, transparent)
+		);
+		border: 1px solid color-mix(in srgb, var(--bd-accent) 35%, transparent);
+		color: #9bd8ff;
+		box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+	}
+	.bd-chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+	}
+	.bd-chip {
+		font-size: 0.72rem;
+		font-weight: 700;
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+		padding: 0.3rem 0.7rem;
+		border-radius: 9999px;
+		border: 1px solid color-mix(in srgb, var(--bd-ink) 16%, transparent);
+		color: color-mix(in srgb, var(--bd-ink) 55%, transparent);
+	}
+
+	/* the loud one — shock and awe */
+	.bd-tile--loud {
+		background:
+			radial-gradient(480px 260px at 85% -10%, rgba(255, 255, 255, 0.28), transparent 60%),
+			linear-gradient(135deg, #0ea5e9 0%, #2563eb 60%, #22d3ee 130%);
+		border-color: rgba(255, 255, 255, 0.45);
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.45),
+			0 40px 90px -30px rgba(14, 165, 233, 0.65);
+	}
+	.bd-tile--loud:hover {
+		border-color: rgba(255, 255, 255, 0.7);
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.5),
+			0 48px 110px -30px rgba(14, 165, 233, 0.85);
+	}
+	.bd-tile--loud .bd-h--sm,
+	.bd-tile--loud .bd-svc-p {
+		color: #ffffff;
+	}
+	.bd-tile--loud .bd-svc-p {
+		color: rgba(255, 255, 255, 0.85);
+	}
+	.bd-tile--loud .bd-svc-ic {
+		background: rgba(255, 255, 255, 0.18);
+		border-color: rgba(255, 255, 255, 0.5);
+		color: #ffffff;
+	}
+	.bd-tile--loud .bd-chip {
+		border-color: rgba(255, 255, 255, 0.45);
+		color: rgba(255, 255, 255, 0.9);
+	}
+	@media (max-width: 720px) {
+		.bd-tile--svc {
+			text-align: center;
+			align-items: center;
+		}
+		.bd-svc-p {
+			margin-inline: auto;
+		}
+		.bd-chips {
+			justify-content: center;
+		}
+	}
+
+	/* ── Process section — the whole tile runs warm crimson, subtle ── */
+	.bd-tile--heat {
+		background:
+			radial-gradient(760px 340px at 50% -12%, rgba(225, 29, 72, 0.2), transparent 70%),
+			radial-gradient(620px 320px at 88% 110%, rgba(225, 29, 72, 0.1), transparent 65%),
+			linear-gradient(160deg, rgba(225, 29, 72, 0.07), rgba(255, 255, 255, 0.02) 55%);
+		border-color: rgba(225, 29, 72, 0.3);
+	}
+	.bd-tile--heat:hover {
+		border-color: rgba(225, 29, 72, 0.5);
+		box-shadow: 0 40px 90px -36px rgba(225, 29, 72, 0.4);
+	}
+	.bd-tile--heat .bd-h {
+		background: linear-gradient(110deg, currentColor 55%, #fda4af);
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+
+	/* ── Process steps ── */
+	.bd-steps {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 1.25rem;
+		list-style: none;
+		margin: 0.75rem 0 0.5rem;
+		padding: 0;
+	}
+	@media (max-width: 720px) {
+		.bd-steps {
+			grid-template-columns: 1fr;
+		}
+	}
+	.bd-step {
+		position: relative;
+		padding: 1.4rem 1.2rem 1.2rem;
+		border-radius: 1.25rem;
+		border: 1px solid var(--bd-glass-border);
+		background: color-mix(in srgb, var(--bd-ink) 3%, transparent);
+		text-align: center;
+		transition: border-color 0.3s ease, box-shadow 0.3s ease;
+	}
+	/* inside the heat tile every step runs warm; the middle burns brightest */
+	.bd-tile--heat .bd-step {
+		border-color: rgba(225, 29, 72, 0.18);
+		background: color-mix(in srgb, #e11d48 3%, transparent);
+	}
+	.bd-tile--heat .bd-step:hover {
+		border-color: rgba(225, 29, 72, 0.45);
+		box-shadow: 0 24px 50px -24px rgba(225, 29, 72, 0.35);
+	}
+	.bd-tile--heat .bd-step-n {
+		background: linear-gradient(135deg, #fda4af, #e11d48);
+		-webkit-background-clip: text;
+		background-clip: text;
+	}
+	.bd-tile--heat .bd-step:nth-child(2) {
+		background:
+			radial-gradient(340px 160px at 50% -20%, rgba(225, 29, 72, 0.18), transparent 70%),
+			color-mix(in srgb, #e11d48 6%, transparent);
+		border-color: rgba(225, 29, 72, 0.38);
+	}
+	.bd-step-n {
+		display: block;
+		font-size: clamp(2rem, 4vw, 2.8rem);
+		font-weight: 700;
+		letter-spacing: -0.03em;
+		line-height: 1;
+		background: linear-gradient(135deg, #9bd8ff, var(--bd-accent));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+		margin-bottom: 0.5rem;
+	}
+	.bd-step-t {
+		font-size: 1.08rem;
+		font-weight: 700;
+		margin: 0 0 0.3rem;
+	}
+	.bd-step-d {
+		font-size: 0.88rem;
+		line-height: 1.5;
+		color: var(--bd-muted);
+		margin: 0;
+	}
+
+	/* ── Latest work — asymmetric proof grid ── */
+	.bd-work {
+		max-width: 88rem;
+		margin: 0 auto;
+	}
+	.bd-work-grid {
+		display: grid;
+		grid-template-columns: repeat(12, minmax(0, 1fr));
+		grid-auto-rows: clamp(130px, 16vw, 215px);
+		gap: clamp(0.9rem, 2vw, 1.4rem);
+	}
+	.bd-work-card {
+		position: relative;
+		display: block;
+		border-radius: 1.4rem;
+		overflow: hidden;
+		border: 1px solid var(--bd-glass-border);
+		box-shadow: var(--bd-shadow);
+	}
+	.bd-work--feature {
+		grid-column: span 7;
+		grid-row: span 2;
+	}
+	.bd-work--side {
+		grid-column: span 5;
+	}
+	.bd-work--third {
+		grid-column: span 4;
+	}
+	@media (max-width: 880px) {
+		.bd-work--feature {
+			grid-column: span 12;
+			grid-row: span 2;
+		}
+		.bd-work--side {
+			grid-column: span 6;
+		}
+		.bd-work--third {
+			grid-column: span 12;
+		}
+	}
+	.bd-work-card img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.bd-work-card:hover img {
+		transform: scale(1.05);
+	}
+	.bd-work-veil {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(180deg, transparent 38%, rgba(5, 6, 14, 0.88));
+		transition: background 0.4s ease;
+	}
+	.bd-work-meta {
+		position: absolute;
+		left: 1.1rem;
+		right: 1.1rem;
+		bottom: 0.95rem;
+		display: flex;
+		flex-direction: column;
+		color: #fff;
+	}
+	.bd-work-meta strong {
+		font-size: 1.05rem;
+		font-weight: 700;
+		letter-spacing: -0.01em;
+	}
+	.bd-work-meta em {
+		font-style: normal;
+		font-size: 0.76rem;
+		color: rgba(255, 255, 255, 0.62);
+	}
+	.bd-work-go {
+		position: absolute;
+		top: 0.9rem;
+		right: 0.9rem;
+		display: grid;
+		place-items: center;
+		width: 34px;
+		height: 34px;
+		border-radius: 9999px;
+		background: rgba(255, 255, 255, 0.12);
+		backdrop-filter: blur(6px);
+		color: #fff;
+		opacity: 0;
+		transform: translate(4px, -4px);
+		transition: opacity 0.3s ease, transform 0.3s ease;
+	}
+	.bd-work-card:hover .bd-work-go {
+		opacity: 1;
+		transform: translate(0, 0);
+	}
+	.bd-work-all {
+		text-align: center;
+		margin: 1.4rem 0 0;
+	}
+	.bd-quote p {
+		font-size: clamp(1.3rem, 2.6vw, 1.9rem);
+		font-weight: 600;
+		letter-spacing: -0.015em;
+		line-height: 1.35;
+		margin: 0 0 1.4rem;
+	}
+	.bd-quote footer {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.75rem;
+	}
+	.bd-quote img {
+		width: 44px;
+		height: 44px;
+		border-radius: 9999px;
+		object-fit: cover;
+		border: 2px solid color-mix(in srgb, var(--bd-accent) 50%, transparent);
+	}
+	.bd-quote footer span {
+		display: flex;
+		flex-direction: column;
+		text-align: left;
+		line-height: 1.25;
+	}
+	.bd-quote footer strong {
+		font-size: 0.92rem;
+	}
+	.bd-quote footer em {
+		font-style: normal;
+		font-size: 0.78rem;
+		color: var(--bd-muted);
+	}
+	.bd-quote-dots {
+		position: absolute;
+		bottom: 1.4rem;
+		left: 50%;
+		transform: translateX(-50%);
+		display: flex;
+		gap: 0.45rem;
+	}
+	.bd-qdot {
+		width: 7px;
+		height: 7px;
+		border-radius: 9999px;
+		background: color-mix(in srgb, var(--bd-ink) 20%, transparent);
+		transition: background 0.3s ease, transform 0.3s ease;
+	}
+	.bd-qdot.is-on {
+		background: var(--bd-accent);
+		transform: scale(1.25);
+	}
+
+	/* ── Marquees (sectors + logos) ── */
+	.bd-marquee {
+		overflow: hidden;
+		-webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+		mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+	}
+	.bd-marquee-track {
+		display: flex;
+		align-items: center;
+		width: max-content;
+	}
+	.bd-marquee-track--sectors {
+		animation: bd-drift 38s linear infinite;
+	}
+	.bd-marquee-track--logos {
+		animation: bd-drift 30s linear infinite;
+	}
+	.bd-marquee:hover .bd-marquee-track {
+		animation-play-state: paused;
+	}
+	@keyframes bd-drift {
+		to {
+			transform: translateX(-50%);
+		}
+	}
+
+	.bd-sectors {
+		max-width: 88rem;
+		margin: clamp(2.5rem, 6vw, 4rem) auto clamp(2rem, 5vw, 3.5rem);
+		text-align: center;
+	}
+	.bd-sectors .bd-h {
+		margin-bottom: 1.4rem;
+	}
+	.bd-sector {
+		flex-shrink: 0;
+		margin-right: clamp(1.6rem, 3vw, 2.8rem);
+		font-size: clamp(1.2rem, 2.4vw, 1.7rem);
+		font-weight: 700;
+		letter-spacing: -0.01em;
+		color: color-mix(in srgb, var(--bd-ink) 34%, transparent);
+		transition: color 0.3s ease;
+		cursor: default;
+	}
+	.bd-sector:hover {
+		color: var(--bd-accent);
+	}
+
+	.bd-logos {
+		max-width: 88rem;
+		margin: clamp(2.5rem, 5vw, 3.5rem) auto 0;
+		text-align: center;
+	}
+	.bd-logos-line {
+		font-size: 0.8rem;
+		font-weight: 700;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: color-mix(in srgb, var(--bd-ink) 38%, transparent);
+		margin: 0 0 1.3rem;
+	}
+	.bd-logo {
+		flex-shrink: 0;
+		display: grid;
+		place-items: center;
+		margin-right: clamp(2rem, 4vw, 3.5rem);
+	}
+	.bd-logo img {
+		height: 34px;
+		width: auto;
+		max-width: 140px;
+		object-fit: contain;
+		filter: grayscale(1) brightness(0) invert(1);
+		opacity: 0.5;
+		transition: opacity 0.3s ease, filter 0.3s ease, transform 0.3s ease;
+	}
+	.bd-logo:hover img {
+		filter: none;
+		opacity: 1;
+		transform: scale(1.06);
+	}
+
+	/* ── Final CTA ── */
+	.bd-tile--cta {
+		background:
+			radial-gradient(820px 380px at 50% 130%, color-mix(in srgb, var(--bd-accent) 38%, transparent), transparent 72%),
+			linear-gradient(180deg, rgba(18, 22, 42, 0.92), rgba(5, 6, 13, 0.96));
+		color: #f5f5f7;
+		border-color: color-mix(in srgb, var(--bd-accent) 26%, rgba(255, 255, 255, 0.1));
+		padding-block: clamp(3rem, 6vw, 5rem);
+	}
+	.bd-display--cta {
+		font-size: clamp(2.2rem, 5vw, 3.8rem);
+	}
+	.bd-tile--cta .bd-sub {
+		color: rgba(245, 245, 247, 0.62);
+	}
+	.bd-links--center {
+		justify-content: center;
+	}
+	/* the phone number — impossible to miss */
+	.bd-call {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.2rem;
+		margin-top: 1.6rem;
+	}
+	.bd-call-hint {
+		font-size: 0.78rem;
+		font-weight: 700;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: rgba(245, 245, 247, 0.5);
+	}
+	.bd-call-num {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.7rem;
+		font-size: clamp(1.8rem, 4.5vw, 3.2rem);
+		font-weight: 700;
+		letter-spacing: -0.02em;
+		background: linear-gradient(135deg, #ffffff, #9bd8ff 60%, var(--bd-accent));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+		transition: transform 0.3s ease, filter 0.3s ease;
+	}
+	.bd-call-num :global(svg) {
+		color: var(--bd-accent);
+		-webkit-text-fill-color: initial;
+	}
+	.bd-call:hover .bd-call-num {
+		transform: scale(1.03);
+		filter: drop-shadow(0 10px 30px color-mix(in srgb, var(--bd-accent) 55%, transparent));
+	}
+
+	/* ── Scroll reveal ── */
+	.bd-reveal {
+		opacity: 0;
+		transform: translateY(26px);
+		transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.bd-reveal.is-on {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.bd-reveal {
+			opacity: 1;
+			transform: none;
+			transition: none;
+		}
+		.bd-media-sheen,
+		.bd-marquee-track {
+			animation: none;
+		}
+		.bd-marquee {
+			overflow-x: auto;
+		}
+		.bd-tile,
+		.bd-tile:hover {
+			transform: none;
+		}
+	}
+</style>

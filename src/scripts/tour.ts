@@ -43,7 +43,13 @@ export function startTour(steps: TourStep[]) {
 			go(n + 1);
 			return;
 		}
-		el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+		// jump instantly — measuring mid-smooth-scroll puts the spotlight
+		// in the wrong place (html has scroll-behavior: smooth, so force it)
+		const root = document.documentElement;
+		const prevBehavior = root.style.scrollBehavior;
+		root.style.scrollBehavior = 'auto';
+		el.scrollIntoView({ block: 'center', behavior: 'auto' });
+		root.style.scrollBehavior = prevBehavior;
 		setTimeout(() => {
 			const r = el.getBoundingClientRect();
 			const pad = 8;
@@ -91,7 +97,7 @@ export function startTour(steps: TourStep[]) {
 			pop
 				.querySelector('[data-end]')
 				?.addEventListener('click', () => end());
-		}, 360);
+		}, 80);
 	};
 
 	go(0);

@@ -50,17 +50,19 @@ const {
 		box-shadow: 0px 3px 9px rgba(57, 20, 0, 0.1);
 	}
 
-	/* Brand teal gradient CTA */
+	/* Brand teal gradient CTA — deeper so dark text stays legible */
 	.btn--accent {
 		background-image: linear-gradient(
 			95deg,
-			#8dfeea 0%,
-			#18debe 48%,
-			#28a6ec 100%
+			#13b6a0 0%,
+			#13a8bf 50%,
+			#1f8fd6 100%
 		);
+		color: #03231d !important;
+		-webkit-text-fill-color: #03231d;
 		background-size: 160% 100%;
 		background-position: 0% 50%;
-		box-shadow: 0 10px 24px -10px rgba(24, 222, 190, 0.6);
+		box-shadow: 0 10px 24px -10px rgba(19, 168, 191, 0.55);
 		transition: background-position 0.5s ease, box-shadow 0.3s ease,
 			transform 0.3s ease;
 	}

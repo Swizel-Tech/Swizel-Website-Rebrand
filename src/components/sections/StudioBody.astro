@@ -1,0 +1,271 @@
+---
+import { Icon } from 'astro-icon';
+
+const stats = [
+	{ to: 65, suffix: '+', label: 'Products designed' },
+	{ to: 9, suffix: '', label: 'Sectors crafted for' },
+	{ to: 7, suffix: '+', label: 'Years crafting' },
+	{ to: 10, suffix: '+', label: 'Countries' },
+];
+
+const crafts = [
+	{ icon: 'mdi:star-four-points-outline', title: 'Branding', desc: 'Identities with a point of view, from logo to language.' },
+	{ icon: 'mdi:palette-outline', title: 'UI / UX', desc: 'Interfaces that feel obvious, beautiful and fast.' },
+	{ icon: 'mdi:cellphone-link', title: 'Web & mobile', desc: 'Design that ships, pixel perfect on every screen.' },
+	{ icon: 'mdi:movie-open-outline', title: 'Motion & content', desc: 'Story, motion and assets that make brands move.' },
+];
+
+const works = [
+	{ name: 'Brixmarket', sector: 'Real estate', img: '/images/portfolio/brix%20marketplace.jpg', url: 'https://brixmarket.com/', big: true },
+	{ name: 'Betslipswitch', sector: 'Sports', img: '/images/portfolio/betslipswitch.jpg', url: 'https://betslipswitch.com/' },
+	{ name: 'Saros', sector: 'Education', img: '/images/portfolio/sarosgp.jpg', url: 'https://sarosinternationallearning.com/' },
+	{ name: 'Purple Panda', sector: 'Marketing', img: '/images/portfolio/purplepanda%20world.jpg', url: '#' },
+	{ name: 'Beauty Hive', sector: 'Beauty', img: '/images/portfolio/beauty-hive.webp', url: '#' },
+	{ name: 'My Eya Estate', sector: 'Real estate', img: '/images/portfolio/my%20eya%20estate.jpg', url: '#' },
+];
+
+const steps = [
+	{ n: '01', title: 'Research', desc: 'We learn the market, the users and the goal.' },
+	{ n: '02', title: 'Concept', desc: 'Directions and ideas, explored boldly.' },
+	{ n: '03', title: 'Design', desc: 'Refined, tested and brought to life.' },
+	{ n: '04', title: 'Ship', desc: 'Handed off, launched and polished.' },
+];
+
+const clients = ['betslipswitch.svg', 'brix market logo.svg', 'purple-panda.svg', 'saros-sgp.svg', 'trueverdict.png', 'hemamsynergy.png'];
+
+const reviews = [
+	{ name: 'Favour', img: '/testimonial/favour.jpeg', body: 'They turned our brand into something we are proud to show off.' },
+	{ name: 'Chidimma', img: '/testimonial/chidima.jpeg', body: 'Warm, responsive and seriously talented designers.' },
+	{ name: 'Cheta', img: '/testimonial/cheta.jpeg', body: 'Thorough, polished and always on time.' },
+];
+---
+
+<div class="sbody view-body view-body-studio">
+	<!-- ABOUT -->
+	<section class="sb-sec">
+		<div class="sb-wrap sb-about">
+			<div class="sb-copy">
+				<span class="sb-kick">The studio</span>
+				<h2 class="sb-h">Design <span class="sb-accent">that ships.</span></h2>
+				<p class="sb-p">
+					We are a studio of designers and engineers who care about the
+					details. Real products, real brands, real results, across every
+					sector we touch.
+				</p>
+				<ul class="sb-stats">
+					{
+						stats.map((s) => (
+							<li>
+								<strong data-count={s.to} data-suffix={s.suffix}>{s.to}{s.suffix}</strong>
+								<span>{s.label}</span>
+							</li>
+						))
+					}
+				</ul>
+				<a href="/portfolio" class="sb-link">See the portfolio <Icon width={16} name="mdi:arrow-right" /></a>
+			</div>
+			<div class="sb-media">
+				<figure class="sb-photo">
+					<img src="/images/hero-team.jpg" alt="The Swizel design team" loading="lazy" />
+				</figure>
+				<button class="sb-reel" type="button" aria-label="Showreel coming soon">
+					<span class="sb-reel-play"><Icon width={20} name="mdi:play" /></span>
+					<span class="sb-reel-txt"><strong>Our showreel</strong><small>coming soon</small></span>
+				</button>
+			</div>
+		</div>
+	</section>
+
+	<!-- WHAT WE CRAFT -->
+	<section class="sb-sec">
+		<div class="sb-wrap">
+			<span class="sb-kick">What we craft</span>
+			<h2 class="sb-h">From idea <span class="sb-accent">to icon.</span></h2>
+			<div class="sb-crafts">
+				{
+					crafts.map((c) => (
+						<div class="sb-craft">
+							<span class="sb-craft-ic"><Icon width={24} name={c.icon} /></span>
+							<h3>{c.title}</h3>
+							<p>{c.desc}</p>
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- FEATURED WORK GALLERY -->
+	<section class="sb-sec">
+		<div class="sb-wrap">
+			<div class="sb-work-head">
+				<div>
+					<span class="sb-kick">Selected work</span>
+					<h2 class="sb-h">The work <span class="sb-accent">speaks.</span></h2>
+				</div>
+				<a href="/portfolio" class="sb-link sb-link-2">View all <Icon width={16} name="mdi:arrow-right" /></a>
+			</div>
+			<div class="sb-gallery">
+				{
+					works.map((w) => (
+						<a class:list={['sb-work', { 'sb-work-big': w.big }]} href={w.url} target="_blank" rel="noopener noreferrer">
+							<img src={w.img} alt={`${w.name} — ${w.sector}`} loading="lazy" />
+							<span class="sb-work-cap">
+								<span class="sb-work-sector">{w.sector}</span>
+								<span class="sb-work-name">{w.name}</span>
+							</span>
+							<span class="sb-work-go"><Icon width={18} name="mdi:arrow-top-right" /></span>
+						</a>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- PROCESS -->
+	<section class="sb-sec">
+		<div class="sb-wrap">
+			<span class="sb-kick">Our craft</span>
+			<h2 class="sb-h">How great work <span class="sb-accent">happens.</span></h2>
+			<ol class="sb-steps" id="sb-steps">
+				{
+					steps.map((s, i) => (
+						<li class="sb-step" data-i={i}>
+							<span class="sb-step-n">{s.n}</span>
+							<h3 class="sb-step-title">{s.title}</h3>
+							<p class="sb-step-desc">{s.desc}</p>
+						</li>
+					))
+				}
+			</ol>
+		</div>
+	</section>
+
+	<!-- CLIENTS -->
+	<section class="sb-sec">
+		<div class="sb-wrap sb-clients-wrap">
+			<span class="sb-kick">Selected clients</span>
+			<div class="sb-clients">
+				{
+					clients.map((c) => (
+						<img class="sb-client" src={`/images/partners/${c}`} alt="" loading="lazy" />
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- REVIEWS -->
+	<section class="sb-sec">
+		<div class="sb-wrap">
+			<span class="sb-kick">Client love</span>
+			<h2 class="sb-h">Brands that <span class="sb-accent">trusted us.</span></h2>
+			<div class="sb-reviews">
+				{
+					reviews.map((r) => (
+						<figure class="sb-rev">
+							<blockquote>{r.body}</blockquote>
+							<figcaption>
+								<img src={r.img} alt={r.name} loading="lazy" />
+								<span class="sb-rev-name">{r.name}</span>
+								<span class="sb-rev-stars">★★★★★</span>
+							</figcaption>
+						</figure>
+					))
+				}
+			</div>
+		</div>
+	</section>
+</div>
+
+<style>
+	.sbody {
+		position: relative;
+		background:
+			radial-gradient(800px 420px at 82% 0%, rgba(236, 72, 153, 0.1), transparent 60%),
+			linear-gradient(180deg, #160d1b 0%, #100a14 100%);
+		color: #f6e6ef;
+	}
+	.sb-sec { padding: clamp(3.5rem, 8vw, 6rem) 5%; border-top: 1px solid rgba(236, 72, 153, 0.12); }
+	.sb-sec:first-child { border-top: 0; }
+	.sb-wrap { max-width: 1120px; margin: 0 auto; }
+
+	.sb-kick { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #f9a8d4; }
+	.sb-dot { width: 8px; height: 8px; border-radius: 9999px; background: var(--view-accent, #ec4899); box-shadow: 0 0 10px 1px rgba(236, 72, 153, 0.6); }
+	.sb-h { font-size: clamp(2rem, 4.8vw, 3.4rem); font-weight: 800; line-height: 1.06; letter-spacing: -0.5px; color: #fff; margin: 0.7rem 0 1.8rem; }
+	.sb-accent { background: linear-gradient(95deg, #f9a8d4, var(--view-accent, #ec4899)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+	.sb-p { color: rgba(246, 230, 239, 0.72); line-height: 1.75; max-width: 34rem; }
+	.sb-link { display: inline-flex; align-items: center; gap: 0.45rem; font-weight: 700; color: #f9a8d4; transition: gap 0.25s ease; }
+	.sb-link:hover { gap: 0.8rem; }
+
+	/* About */
+	.sb-about { display: grid; gap: 2.5rem; align-items: center; }
+	@media (min-width: 920px) { .sb-about { grid-template-columns: 1fr 1.05fr; gap: 4rem; } }
+	.sb-about .sb-h { margin-top: 0.7rem; }
+	.sb-stats { list-style: none; padding: 1.7rem 0 0; margin: 1.7rem 0 0; display: grid; grid-template-columns: repeat(2, auto); gap: 1.5rem 2.5rem; width: fit-content; border-top: 1px solid rgba(255, 255, 255, 0.08); }
+	@media (min-width: 540px) { .sb-stats { grid-template-columns: repeat(4, auto); } }
+	.sb-stats strong { display: block; font-family: 'Bebas Neue', sans-serif; font-size: 2.4rem; line-height: 1; background: linear-gradient(135deg, #f9a8d4, var(--view-accent, #ec4899)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+	.sb-stats span { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(246, 230, 239, 0.5); max-width: 8rem; }
+	.sb-about .sb-link { margin-top: 1.8rem; }
+	.sb-media { position: relative; }
+	.sb-photo { position: relative; margin: 0; border-radius: 1.3rem; overflow: hidden; box-shadow: 0 40px 90px -40px rgba(0, 0, 0, 0.9); border: 1px solid rgba(236, 72, 153, 0.28); }
+	.sb-photo img { display: block; width: 100%; height: auto; }
+	.sb-reel { position: absolute; right: -14px; bottom: -22px; display: flex; align-items: center; gap: 0.7rem; padding: 0.7rem 1rem 0.7rem 0.7rem; border-radius: 0.9rem; border: 1px solid rgba(236, 72, 153, 0.4); background: rgba(22, 13, 27, 0.92); backdrop-filter: blur(10px); box-shadow: 0 20px 40px -18px rgba(0, 0, 0, 0.7); cursor: pointer; transition: border-color 0.25s ease, transform 0.25s ease; }
+	.sb-reel:hover { border-color: var(--view-accent, #ec4899); transform: translateY(-3px); }
+	.sb-reel-play { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 9999px; color: #2a0a1c; background: linear-gradient(135deg, #f9a8d4, var(--view-accent, #ec4899)); flex-shrink: 0; }
+	.sb-reel-txt { display: flex; flex-direction: column; text-align: left; }
+	.sb-reel-txt strong { font-size: 0.86rem; color: #fff; }
+	.sb-reel-txt small { font-size: 0.72rem; color: rgba(246, 230, 239, 0.5); }
+	@media (max-width: 919px) { .sb-reel { position: static; margin-top: 1.5rem; width: fit-content; right: auto; bottom: auto; } }
+
+	/* Crafts */
+	.sb-crafts { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+	.sb-craft { padding: 1.5rem; border-radius: 1.1rem; border: 1px solid rgba(236, 72, 153, 0.16); background: rgba(255, 255, 255, 0.02); transition: border-color 0.25s ease, transform 0.25s ease; }
+	.sb-craft:hover { border-color: var(--view-accent, #ec4899); transform: translateY(-4px); }
+	.sb-craft-ic { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 0.9rem; background: linear-gradient(135deg, rgba(249,168,212,0.18), rgba(236,72,153,0.14)); color: #f9a8d4; margin-bottom: 1rem; }
+	.sb-craft h3 { font-size: 1.15rem; font-weight: 800; color: #fff; }
+	.sb-craft p { color: rgba(246, 230, 239, 0.66); font-size: 0.92rem; line-height: 1.55; margin-top: 0.5rem; }
+
+	/* Gallery */
+	.sb-work-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.6rem; }
+	.sb-work-head .sb-h { margin-bottom: 0; }
+	.sb-gallery { display: grid; gap: 1rem; grid-template-columns: repeat(2, 1fr); }
+	@media (min-width: 760px) { .sb-gallery { grid-template-columns: repeat(3, 1fr); } }
+	.sb-work { position: relative; display: block; border-radius: 1.1rem; overflow: hidden; aspect-ratio: 4 / 3; border: 1px solid rgba(236, 72, 153, 0.14); }
+	.sb-work-big { grid-column: span 2; aspect-ratio: 16 / 10; }
+	@media (max-width: 759px) { .sb-work-big { aspect-ratio: 4 / 3; } }
+	.sb-work img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+	.sb-work:hover img { transform: scale(1.06); }
+	.sb-work-cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 2.2rem 1.1rem 1rem; display: flex; flex-direction: column; gap: 0.2rem; background: linear-gradient(to top, rgba(16, 10, 20, 0.92), transparent); }
+	.sb-work-sector { font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.08em; color: #f9a8d4; }
+	.sb-work-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 1px; color: #fff; }
+	.sb-work-go { position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; display: grid; place-items: center; border-radius: 9999px; background: rgba(16, 10, 20, 0.6); color: #fff; opacity: 0; transform: translateY(-4px); transition: opacity 0.25s ease, transform 0.25s ease; }
+	.sb-work:hover .sb-work-go { opacity: 1; transform: translateY(0); }
+
+	/* Process */
+	.sb-steps { list-style: none; padding: 0; margin: 0; display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+	.sb-step { opacity: 0; transform: translateY(14px); }
+	.sb-step.is-on { animation: sb-in 0.5s ease forwards; }
+	@keyframes sb-in { to { opacity: 1; transform: translateY(0); } }
+	.sb-step-n { font-family: 'Bebas Neue', sans-serif; font-size: 2.6rem; line-height: 1; background: linear-gradient(135deg, #f9a8d4, var(--view-accent, #ec4899)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+	.sb-step-title { font-size: 1.2rem; font-weight: 800; color: #fff; margin: 0.3rem 0; }
+	.sb-step-desc { color: rgba(246, 230, 239, 0.6); font-size: 0.9rem; line-height: 1.55; }
+
+	/* Clients */
+	.sb-clients-wrap { text-align: center; }
+	.sb-clients-wrap .sb-kick { justify-content: center; margin-bottom: 1.6rem; }
+	.sb-clients { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 2.5rem; }
+	.sb-client { max-height: 46px; width: auto; filter: grayscale(1) brightness(0) invert(1); opacity: 0.75; transition: opacity 0.3s ease; }
+	.sb-client:hover { opacity: 1; }
+
+	/* Reviews */
+	.sb-reviews { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+	.sb-rev { margin: 0; padding: 1.3rem; border-radius: 1.1rem; border: 1px solid rgba(236, 72, 153, 0.16); background: rgba(255, 255, 255, 0.02); }
+	.sb-rev blockquote { margin: 0 0 1rem; color: rgba(246, 230, 239, 0.82); line-height: 1.6; font-size: 0.95rem; }
+	.sb-rev figcaption { display: flex; align-items: center; gap: 0.55rem; }
+	.sb-rev figcaption img { width: 34px; height: 34px; border-radius: 9999px; object-fit: cover; }
+	.sb-rev-name { font-weight: 700; color: #fff; font-size: 0.9rem; }
+	.sb-rev-stars { margin-left: auto; color: #fbbf24; font-size: 0.85rem; letter-spacing: 1px; }
+
+	@media (prefers-reduced-motion: reduce) { .sb-step { opacity: 1; transform: none; } }
+</style>

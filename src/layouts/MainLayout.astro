@@ -31,6 +31,13 @@ const {
 		<script is:inline type="text/javascript">
 		var Tawk_API = Tawk_API || {},
 			Tawk_LoadStart = new Date();
+		// pin the live chat to the bottom-right corner
+		Tawk_API.customStyle = {
+			visibility: {
+				desktop: { position: 'br', xOffset: 18, yOffset: 18 },
+				mobile: { position: 'br', xOffset: 10, yOffset: 12 },
+			},
+		};
 		(function () {
 			var s1 = document.createElement('script'),
 				s0 = document.getElementsByTagName('script')[0];
@@ -57,6 +64,14 @@ const {
 			<svg class="cur-campus" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4 23 9l-11 5L1 9z"></path><path d="M5 11.5V15c0 1.6 3.1 3 7 3s7-1.4 7-3v-3.5" fill="none" stroke="currentColor" stroke-width="1.7"></path><path d="M23 9v3.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"></path></svg>
 			<svg class="cur-studio" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l4-1 11-11-3-3L4 17z"></path><path d="M14 6l3 3"></path></svg>
 			<svg class="cur-boardroom" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="11" rx="2"></rect><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="3" y1="13" x2="21" y2="13"></line><rect x="10.5" y="11.5" width="3" height="3" rx="0.6"></rect></svg>
+			<svg class="cur-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 14 21 6"></polyline><polyline points="15 6 21 6 21 12"></polyline></svg>
+			<svg class="cur-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3.5 2"></path></svg>
+			<svg class="cur-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v5c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6z"></path><path d="M9 12l2.2 2.2L15.5 10"></path></svg>
+			<svg class="cur-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 5-9 5-9-5z"></path><path d="M3 13l9 5 9-5"></path></svg>
+			<svg class="cur-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h4l2.5-6 4 12 2.5-6h7"></path></svg>
+			<svg class="cur-quote" viewBox="0 0 24 24" fill="currentColor"><path d="M10 7H6a3 3 0 0 0-3 3v7h7v-7H6.5A1.5 1.5 0 0 1 8 8.5h2zM21 7h-4a3 3 0 0 0-3 3v7h7v-7h-3.5A1.5 1.5 0 0 1 19 8.5h2z"></path></svg>
+			<svg class="cur-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M10 8.5l6 3.5-6 3.5z" fill="currentColor" stroke="none"></path></svg>
+			<svg class="cur-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a12 12 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"></path></svg>
 			<svg class="cur-legacy" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z"></path></svg>
 			<svg class="cur-term" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 8 9 12 5 16"></polyline><line x1="11.5" y1="16" x2="18" y2="16"></line></svg>
 			<svg class="cur-pkg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5v8l9 5 9-5z"></path><path d="M3 8l9 5 9-5M12 13v8"></path></svg>
@@ -80,8 +95,13 @@ const {
 
 	import { handleDropDown } from '../scripts/handleDropDown';
 	import { initViewExperience } from '../scripts/viewExperience';
+	import { initViewBanner } from '../scripts/viewBanner';
 	import { initBuilderView } from '../scripts/builderView';
 	import { initBuilderBody } from '../scripts/builderBody';
+	import { initFounderBody } from '../scripts/founderBody';
+	import { initCampusBody } from '../scripts/campusBody';
+	import { initStudioBody } from '../scripts/studioBody';
+	import { initBoardroomBody } from '../scripts/boardroomBody';
 	import { initFounderView } from '../scripts/founderView';
 	import { initCampusView } from '../scripts/campusView';
 	import { initStudioView } from '../scripts/studioView';
@@ -340,8 +360,13 @@ const {
 		handleThemeToggle();
 		handleHero();
 		initViewExperience();
+		initViewBanner();
 		initBuilderView();
 		initBuilderBody();
+		initFounderBody();
+		initCampusBody();
+		initStudioBody();
+		initBoardroomBody();
 		initFounderView();
 		initCampusView();
 		initStudioView();
@@ -482,23 +507,41 @@ const {
 	const swizelCursor = document.getElementById('swizel-cursor');
 	if (swizelCursor && window.matchMedia('(pointer: fine)').matches) {
 		let idleTimer = 0;
+		let lastX = -1;
+		let lastY = -1;
+
+		const applyZone = (el: Element | null) => {
+			const zone = el && el.closest('.hero-view, .view-body, .view-worlds');
+			swizelCursor.classList.toggle('is-active', !!zone);
+			const cz = el && el.closest('[data-cursor]');
+			const icon = cz && cz.getAttribute('data-cursor');
+			if (icon) swizelCursor.setAttribute('data-icon', icon);
+			else swizelCursor.removeAttribute('data-icon');
+		};
+
 		window.addEventListener(
 			'pointermove',
 			(e) => {
+				lastX = e.clientX;
+				lastY = e.clientY;
 				swizelCursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
-				const el = e.target instanceof Element ? e.target : null;
-				const zone = el && el.closest('.hero-view, .bbody');
-				swizelCursor.classList.toggle('is-active', !!zone);
-				const cz = el && el.closest('[data-cursor]');
-				const icon = cz && cz.getAttribute('data-cursor');
-				if (icon) swizelCursor.setAttribute('data-icon', icon);
-				else swizelCursor.removeAttribute('data-icon');
+				applyZone(e.target instanceof Element ? e.target : null);
 				swizelCursor.classList.remove('is-idle');
 				window.clearTimeout(idleTimer);
 				idleTimer = window.setTimeout(
 					() => swizelCursor.classList.add('is-idle'),
 					700
 				);
+			},
+			{ passive: true }
+		);
+		// scrolling moves the page under a stationary pointer — re-check the
+		// zone so the cursor never disappears between sections
+		window.addEventListener(
+			'scroll',
+			() => {
+				if (lastX < 0) return;
+				applyZone(document.elementFromPoint(lastX, lastY));
 			},
 			{ passive: true }
 		);

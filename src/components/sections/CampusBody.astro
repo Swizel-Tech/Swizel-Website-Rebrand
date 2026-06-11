@@ -1,0 +1,281 @@
+---
+import { Icon } from 'astro-icon';
+
+const stats = [
+	{ to: 3, suffix: ' mo', label: 'Free bootcamp' },
+	{ to: 100, suffix: '%', label: 'Hands-on' },
+	{ to: 65, suffix: '+', label: 'Products to learn from' },
+	{ to: 7, suffix: '+', label: 'Years mentoring' },
+];
+
+const tracks = [
+	{ icon: 'mdi:web', title: 'Web Development', desc: 'HTML, CSS, JavaScript and React, from zero to deployed.', tag: 'react · node · git' },
+	{ icon: 'mdi:cellphone', title: 'Mobile Development', desc: 'Build real apps for Android and iOS that people use.', tag: 'flutter · react native' },
+	{ icon: 'mdi:palette-outline', title: 'Product Design', desc: 'UI, UX and prototyping that gets you hired.', tag: 'figma · ui · ux' },
+	{ icon: 'mdi:bullhorn-outline', title: 'Digital Marketing', desc: 'SEO, ads and social that actually grows products.', tag: 'seo · ads · social' },
+];
+
+const journey = [
+	{ icon: 'mdi:book-open-variant', title: 'Learn', desc: 'Master the fundamentals with live coaches.' },
+	{ icon: 'mdi:hammer-wrench', title: 'Build', desc: 'Ship real projects to your portfolio.' },
+	{ icon: 'mdi:rocket-launch-outline', title: 'Intern', desc: 'Qualify for a paid internship with the team.' },
+	{ icon: 'mdi:briefcase-check-outline', title: 'Get hired', desc: 'Land the job, with our backing.' },
+];
+
+const builds = [
+	{ name: 'A sports platform', tag: 'like Betslipswitch', sector: 'Web', img: '/images/portfolio/betslipswitch.jpg' },
+	{ name: 'An online store', tag: 'like Brixmarket', sector: 'E-commerce', img: '/images/portfolio/brix%20marketplace.jpg' },
+	{ name: 'A brand campaign', tag: 'like Purple Panda', sector: 'Marketing', img: '/images/portfolio/purplepanda%20world.jpg' },
+	{ name: 'A delivery app', tag: 'like BuyGas', sector: 'Mobile', img: '' },
+];
+
+const perks = [
+	{ icon: 'mdi:gift-outline', title: '100% free to start', desc: 'Learn for free. Pay only for the certification exam.' },
+	{ icon: 'mdi:account-heart-outline', title: 'Real mentors', desc: 'Guided by working engineers and designers.' },
+	{ icon: 'mdi:cash-multiple', title: 'Paid internship', desc: 'Top students earn a paid spot with the team.' },
+	{ icon: 'mdi:certificate-outline', title: 'A job-ready portfolio', desc: 'Graduate with real, shipped projects.' },
+];
+
+const grads = [
+	{ name: 'Chidimma', img: '/testimonial/chidima.jpeg', body: 'The mentors actually care. I built things I am proud of.' },
+	{ name: 'Russell', img: '/testimonial/russell.jpeg', body: 'Friendly, efficient and hands-on the whole way.' },
+	{ name: 'Cheta', img: '/testimonial/cheta.jpeg', body: 'They made hard concepts click. Best decision I made.' },
+];
+---
+
+<div class="cbody view-body view-body-campus">
+	<!-- ABOUT -->
+	<section class="cb-sec">
+		<div class="cb-wrap cb-about">
+			<div class="cb-copy">
+				<span class="cb-kick">Free bootcamp</span>
+				<h2 class="cb-h">Learn to build. <span class="cb-accent">Get hired.</span></h2>
+				<p class="cb-p">
+					Start from zero and level up with the same team that ships real
+					products. You learn by building things people actually use, with
+					mentors in your corner the whole way.
+				</p>
+				<ul class="cb-stats">
+					{
+						stats.map((s) => (
+							<li>
+								<strong data-count={s.to} data-suffix={s.suffix}>{s.to}{s.suffix}</strong>
+								<span>{s.label}</span>
+							</li>
+						))
+					}
+				</ul>
+				<a href="/bootcamp" class="cb-link">Join the bootcamp <Icon width={16} name="mdi:arrow-right" /></a>
+			</div>
+			<div class="cb-media">
+				<figure class="cb-photo">
+					<img src="/images/hero-team.jpg" alt="Swizel mentors" loading="lazy" />
+				</figure>
+				<button class="cb-video" type="button" aria-label="Webinar coming soon">
+					<span class="cb-play"><Icon width={20} name="mdi:play" /></span>
+					<span class="cb-video-txt"><strong>Free intro webinar</strong><small>register to watch</small></span>
+				</button>
+			</div>
+		</div>
+	</section>
+
+	<!-- TRACKS -->
+	<section class="cb-sec">
+		<div class="cb-wrap">
+			<span class="cb-kick">Choose your track</span>
+			<h2 class="cb-h">Pick a path, <span class="cb-accent">we guide the rest.</span></h2>
+			<div class="cb-tracks">
+				{
+					tracks.map((t) => (
+						<div class="cb-track">
+							<span class="cb-track-ic"><Icon width={24} name={t.icon} /></span>
+							<h3 class="cb-track-title">{t.title}</h3>
+							<p class="cb-track-desc">{t.desc}</p>
+							<span class="cb-track-tag">{t.tag}</span>
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- JOURNEY -->
+	<section class="cb-sec">
+		<div class="cb-wrap">
+			<span class="cb-kick">Your journey</span>
+			<h2 class="cb-h">From newbie <span class="cb-accent">to hired.</span></h2>
+			<ol class="cb-journey" id="cb-journey">
+				{
+					journey.map((j, i) => (
+						<li class="cb-step" data-i={i}>
+							<span class="cb-step-ic"><Icon width={22} name={j.icon} /></span>
+							<span class="cb-step-n">{`Step 0${i + 1}`}</span>
+							<h3 class="cb-step-title">{j.title}</h3>
+							<p class="cb-step-desc">{j.desc}</p>
+						</li>
+					))
+				}
+			</ol>
+		</div>
+	</section>
+
+	<!-- WHAT YOU'LL BUILD -->
+	<section class="cb-sec">
+		<div class="cb-wrap">
+			<span class="cb-kick">What you'll build</span>
+			<h2 class="cb-h">Ship real things, <span class="cb-accent">across sectors.</span></h2>
+			<div class="cb-builds">
+				{
+					builds.map((w) => (
+						<div class="cb-build">
+							<div class="cb-build-img">
+								{w.img ? (
+									<img src={w.img} alt={w.name} loading="lazy" />
+								) : (
+									<span class="cb-build-ph"><Icon width={24} name="mdi:cellphone" /></span>
+								)}
+								<span class="cb-build-sector">{w.sector}</span>
+							</div>
+							<div class="cb-build-meta">
+								<span class="cb-build-name">{w.name}</span>
+								<span class="cb-build-tag">{w.tag}</span>
+							</div>
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- PERKS -->
+	<section class="cb-sec">
+		<div class="cb-wrap">
+			<span class="cb-kick">Why join</span>
+			<h2 class="cb-h">More than <span class="cb-accent">a course.</span></h2>
+			<div class="cb-perks">
+				{
+					perks.map((v) => (
+						<div class="cb-perk">
+							<span class="cb-perk-ic"><Icon width={22} name={v.icon} /></span>
+							<h3>{v.title}</h3>
+							<p>{v.desc}</p>
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- GRADS -->
+	<section class="cb-sec">
+		<div class="cb-wrap">
+			<span class="cb-kick">From our students</span>
+			<h2 class="cb-h">They started <span class="cb-accent">right where you are.</span></h2>
+			<div class="cb-reviews">
+				{
+					grads.map((r) => (
+						<figure class="cb-rev">
+							<blockquote>{r.body}</blockquote>
+							<figcaption>
+								<img src={r.img} alt={r.name} loading="lazy" />
+								<span class="cb-rev-name">{r.name}</span>
+								<span class="cb-rev-stars">★★★★★</span>
+							</figcaption>
+						</figure>
+					))
+				}
+			</div>
+		</div>
+	</section>
+</div>
+
+<style>
+	.cbody {
+		position: relative;
+		background:
+			radial-gradient(800px 420px at 82% 0%, rgba(245, 158, 11, 0.1), transparent 60%),
+			linear-gradient(180deg, #16110a 0%, #100c08 100%);
+		color: #f3ead9;
+	}
+	.cb-sec { padding: clamp(3.5rem, 8vw, 6rem) 5%; border-top: 1px solid rgba(245, 158, 11, 0.12); }
+	.cb-sec:first-child { border-top: 0; }
+	.cb-wrap { max-width: 1120px; margin: 0 auto; }
+
+	.cb-kick { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #fcd34d; }
+	.cb-dot { width: 8px; height: 8px; border-radius: 9999px; background: var(--view-accent, #f59e0b); box-shadow: 0 0 10px 1px rgba(245, 158, 11, 0.6); }
+	.cb-h { font-size: clamp(2rem, 4.6vw, 3.2rem); font-weight: 800; line-height: 1.08; letter-spacing: -0.5px; color: #fff; margin: 0.7rem 0 1.8rem; }
+	.cb-accent { background: linear-gradient(95deg, #fde68a, var(--view-accent, #f59e0b)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+	.cb-p { color: rgba(243, 234, 217, 0.72); line-height: 1.75; max-width: 34rem; }
+	.cb-link { display: inline-flex; align-items: center; gap: 0.45rem; font-weight: 700; color: #fcd34d; transition: gap 0.25s ease; }
+	.cb-link:hover { gap: 0.8rem; }
+
+	/* About */
+	.cb-about { display: grid; gap: 2.5rem; align-items: center; }
+	@media (min-width: 920px) { .cb-about { grid-template-columns: 1fr 1.05fr; gap: 4rem; } }
+	.cb-about .cb-h { margin-top: 0.7rem; }
+	.cb-stats { list-style: none; padding: 1.7rem 0 0; margin: 1.7rem 0 0; display: grid; grid-template-columns: repeat(2, auto); gap: 1.5rem 2.5rem; width: fit-content; border-top: 1px solid rgba(255, 255, 255, 0.08); }
+	@media (min-width: 540px) { .cb-stats { grid-template-columns: repeat(4, auto); } }
+	.cb-stats strong { display: block; font-family: 'Bebas Neue', sans-serif; font-size: 2.4rem; line-height: 1; background: linear-gradient(135deg, #fde68a, var(--view-accent, #f59e0b)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+	.cb-stats span { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(243, 234, 217, 0.5); max-width: 8rem; }
+	.cb-about .cb-link { margin-top: 1.8rem; }
+	.cb-media { position: relative; }
+	.cb-photo { position: relative; margin: 0; border-radius: 1.3rem; overflow: hidden; box-shadow: 0 40px 90px -40px rgba(0, 0, 0, 0.9); border: 1px solid rgba(245, 158, 11, 0.28); }
+	.cb-photo img { display: block; width: 100%; height: auto; }
+	.cb-video { position: absolute; right: -14px; bottom: -22px; display: flex; align-items: center; gap: 0.7rem; padding: 0.7rem 1rem 0.7rem 0.7rem; border-radius: 0.9rem; border: 1px solid rgba(245, 158, 11, 0.4); background: rgba(22, 17, 10, 0.92); backdrop-filter: blur(10px); box-shadow: 0 20px 40px -18px rgba(0, 0, 0, 0.7); cursor: pointer; transition: border-color 0.25s ease, transform 0.25s ease; }
+	.cb-video:hover { border-color: var(--view-accent, #f59e0b); transform: translateY(-3px); }
+	.cb-play { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 9999px; color: #2a1c02; background: linear-gradient(135deg, #fde68a, var(--view-accent, #f59e0b)); flex-shrink: 0; }
+	.cb-video-txt { display: flex; flex-direction: column; text-align: left; }
+	.cb-video-txt strong { font-size: 0.86rem; color: #fff; }
+	.cb-video-txt small { font-size: 0.72rem; color: rgba(243, 234, 217, 0.5); }
+	@media (max-width: 919px) { .cb-video { position: static; margin-top: 1.5rem; width: fit-content; right: auto; bottom: auto; } }
+
+	/* Tracks */
+	.cb-tracks { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+	.cb-track { padding: 1.5rem; border-radius: 1.1rem; border: 1px solid rgba(245, 158, 11, 0.16); background: rgba(255, 255, 255, 0.02); transition: border-color 0.25s ease, transform 0.25s ease; }
+	.cb-track:hover { border-color: var(--view-accent, #f59e0b); transform: translateY(-4px); }
+	.cb-track-ic { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 0.9rem; background: linear-gradient(135deg, rgba(253,230,138,0.18), rgba(245,158,11,0.14)); color: #fcd34d; margin-bottom: 1rem; }
+	.cb-track-title { font-size: 1.15rem; font-weight: 800; color: #fff; }
+	.cb-track-desc { color: rgba(243, 234, 217, 0.66); font-size: 0.92rem; line-height: 1.55; margin: 0.5rem 0 1rem; }
+	.cb-track-tag { font-family: ui-monospace, monospace; font-size: 0.74rem; color: rgba(252, 211, 77, 0.7); }
+
+	/* Journey */
+	.cb-journey { list-style: none; padding: 0; margin: 0; display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+	.cb-step { position: relative; opacity: 0; transform: translateY(14px); }
+	.cb-step.is-on { animation: cb-in 0.5s ease forwards; }
+	@keyframes cb-in { to { opacity: 1; transform: translateY(0); } }
+	.cb-step-ic { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 0.9rem; background: var(--view-accent, #f59e0b); color: #2a1c02; }
+	.cb-step-n { display: block; margin-top: 0.8rem; font-family: ui-monospace, monospace; font-size: 0.72rem; color: #fcd34d; }
+	.cb-step-title { font-size: 1.2rem; font-weight: 800; color: #fff; margin: 0.2rem 0; }
+	.cb-step-desc { color: rgba(243, 234, 217, 0.6); font-size: 0.9rem; line-height: 1.55; }
+
+	/* Builds */
+	.cb-builds { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+	.cb-build { border-radius: 1.1rem; overflow: hidden; border: 1px solid rgba(245, 158, 11, 0.16); background: rgba(255, 255, 255, 0.02); transition: border-color 0.25s ease, transform 0.25s ease; }
+	.cb-build:hover { border-color: var(--view-accent, #f59e0b); transform: translateY(-4px); }
+	.cb-build-img { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: #1a130a; }
+	.cb-build-img img { width: 100%; height: 100%; object-fit: cover; }
+	.cb-build-ph { position: absolute; inset: 0; display: grid; place-items: center; color: rgba(252, 211, 77, 0.5); background: repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0 10px, transparent 10px 20px); }
+	.cb-build-sector { position: absolute; top: 10px; left: 10px; padding: 0.2rem 0.6rem; border-radius: 9999px; background: rgba(22, 17, 10, 0.82); border: 1px solid rgba(245, 158, 11, 0.3); font-size: 0.7rem; color: #fcd34d; }
+	.cb-build-meta { padding: 0.9rem 1.1rem; }
+	.cb-build-name { display: block; font-weight: 700; color: #fff; }
+	.cb-build-tag { font-size: 0.78rem; color: rgba(243, 234, 217, 0.5); font-family: ui-monospace, monospace; }
+
+	/* Perks */
+	.cb-perks { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+	.cb-perk { padding: 1.4rem; border-radius: 1.1rem; border: 1px solid rgba(245, 158, 11, 0.16); background: rgba(255, 255, 255, 0.02); transition: border-color 0.25s ease, transform 0.25s ease; }
+	.cb-perk:hover { border-color: var(--view-accent, #f59e0b); transform: translateY(-4px); }
+	.cb-perk-ic { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 0.9rem; background: linear-gradient(135deg, rgba(253,230,138,0.18), rgba(245,158,11,0.14)); color: #fcd34d; margin-bottom: 0.9rem; }
+	.cb-perk h3 { font-size: 1.05rem; font-weight: 800; color: #fff; }
+	.cb-perk p { color: rgba(243, 234, 217, 0.65); font-size: 0.9rem; line-height: 1.55; margin-top: 0.4rem; }
+
+	/* Reviews */
+	.cb-reviews { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+	.cb-rev { margin: 0; padding: 1.3rem; border-radius: 1.1rem; border: 1px solid rgba(245, 158, 11, 0.16); background: rgba(255, 255, 255, 0.02); }
+	.cb-rev blockquote { margin: 0 0 1rem; color: rgba(243, 234, 217, 0.82); line-height: 1.6; font-size: 0.95rem; }
+	.cb-rev figcaption { display: flex; align-items: center; gap: 0.55rem; }
+	.cb-rev figcaption img { width: 34px; height: 34px; border-radius: 9999px; object-fit: cover; }
+	.cb-rev-name { font-weight: 700; color: #fff; font-size: 0.9rem; }
+	.cb-rev-stars { margin-left: auto; color: #fbbf24; font-size: 0.85rem; letter-spacing: 1px; }
+
+	@media (prefers-reduced-motion: reduce) { .cb-step { opacity: 1; transform: none; } }
+</style>

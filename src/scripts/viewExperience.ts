@@ -1,5 +1,5 @@
-// Multi-view experience: gamified onboarding quiz + view switching.
-// Theme (light/dark) and view are independent, both persisted.
+// Multi-view experience: gamified onboarding (welcome pitch + 2 questions)
+// and view switching. Theme (light/dark) and view are independent, both persisted.
 
 type Scores = Record<string, number>;
 
@@ -27,9 +27,7 @@ export function initViewExperience() {
 	const root = document.getElementById('view-onboarding');
 	if (!root) return;
 
-	const steps = Array.from(
-		root.querySelectorAll<HTMLElement>('.vo__step')
-	);
+	const steps = Array.from(root.querySelectorAll<HTMLElement>('.vo__step'));
 	const bar = root.querySelector<HTMLElement>('#vo-bar');
 	const recName = root.querySelector<HTMLElement>('#vo-rec-name');
 	const recKicker = root.querySelector<HTMLElement>('#vo-rec-kicker');
@@ -38,9 +36,20 @@ export function initViewExperience() {
 		root.querySelectorAll<HTMLButtonElement>('.vo__card')
 	);
 
-	// step order built from DOM
+	// step order built from DOM: intro, q0, q1, results
 	const order = steps.map((s) => s.dataset.step || '');
-	let scores: Scores = {};
+	// one answer per question; re-answering overwrites (no double counting)
+	let answers: Record<string, Scores> = {};
+
+	const totalScores = (): Scores => {
+		const sum: Scores = {};
+		Object.values(answers).forEach((s) =>
+			Object.entries(s).forEach(([k, v]) => {
+				sum[k] = (sum[k] || 0) + v;
+			})
+		);
+		return sum;
+	};
 
 	const setBar = (stepName: string) => {
 		if (!bar) return;
@@ -52,15 +61,22 @@ export function initViewExperience() {
 		bar.style.width = pct + '%';
 	};
 
-	const show = (stepName: string) => {
-		steps.forEach((s) =>
-			s.classList.toggle('is-active', s.dataset.step === stepName)
-		);
+	const show = (stepName: string, dir: 'fwd' | 'back' = 'fwd') => {
+		steps.forEach((s) => {
+			const active = s.dataset.step === stepName;
+			s.classList.toggle('is-active', active);
+			s.classList.toggle('is-back', active && dir === 'back');
+		});
 		setBar(stepName);
 		root.querySelector('.vo__panel')?.scrollTo({ top: 0 });
 	};
 
+	const current = () =>
+		steps.find((s) => s.classList.contains('is-active'))?.dataset.step ||
+		'intro';
+
 	const recommend = () => {
+		const scores = totalScores();
 		let best = recommendableOrder[0];
 		let bestScore = -1;
 		recommendableOrder.forEach((v) => {
@@ -70,7 +86,7 @@ export function initViewExperience() {
 				best = v;
 			}
 		});
-		const hasAnswers = Object.keys(scores).length > 0 && bestScore > 0;
+		const hasAnswers = Object.keys(answers).length > 0 && bestScore > 0;
 		cards.forEach((c) =>
 			c.classList.toggle(
 				'is-recommended',
@@ -107,7 +123,6 @@ export function initViewExperience() {
 			recommend();
 			show('results');
 		} else {
-			scores = {};
 			show('intro');
 		}
 	};
@@ -128,31 +143,45 @@ export function initViewExperience() {
 		show(next);
 	};
 
+	const goBack = () => {
+		const idx = order.indexOf(current());
+		if (idx > 0) show(order[idx - 1], 'back');
+	};
+
 	// wire controls
 	root
 		.querySelector('[data-vo-start]')
 		?.addEventListener('click', () => show(order[1]));
 	root.querySelector('[data-vo-explore]')?.addEventListener('click', () => {
-		scores = {};
+		answers = {};
+		root
+			.querySelectorAll('.vo__opt.is-selected')
+			.forEach((o) => o.classList.remove('is-selected'));
 		recommend();
 		show('results');
 	});
 	root
 		.querySelector('[data-vo-skip]')
 		?.addEventListener('click', () => close());
+	root.querySelector('.vo__scrim')?.addEventListener('click', () => close());
 	root
-		.querySelector('[data-vo-close]')
-		?.addEventListener('click', () => close());
+		.querySelectorAll('[data-vo-back]')
+		.forEach((b) => b.addEventListener('click', () => goBack()));
 
 	root.querySelectorAll<HTMLButtonElement>('.vo__opt').forEach((opt) => {
 		opt.addEventListener('click', () => {
+			const q = opt.dataset.q || '0';
 			try {
-				const s = JSON.parse(opt.dataset.scores || '{}') as Scores;
-				Object.entries(s).forEach(([k, v]) => {
-					scores[k] = (scores[k] || 0) + v;
-				});
+				answers[q] = JSON.parse(opt.dataset.scores || '{}') as Scores;
 			} catch (e) {}
-			goNextAfter(`q${opt.dataset.q}`);
+			// mark the choice (visible when revisiting via back)
+			opt
+				.closest('.vo__options')
+				?.querySelectorAll('.vo__opt')
+				.forEach((o) => o.classList.remove('is-selected'));
+			opt.classList.add('is-selected');
+			// brief pause so the check animation reads, then advance
+			window.setTimeout(() => goNextAfter(`q${q}`), 220);
 		});
 	});
 
@@ -172,9 +201,7 @@ export function initViewExperience() {
 	(window as any).openViewPicker = () => open(true);
 	document
 		.querySelectorAll('[data-open-views]')
-		.forEach((b) =>
-			b.addEventListener('click', () => open(true))
-		);
+		.forEach((b) => b.addEventListener('click', () => open(true)));
 
 	// auto-open for first-time visitors
 	let onboarded = false;

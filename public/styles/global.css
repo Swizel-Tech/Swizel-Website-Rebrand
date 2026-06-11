@@ -147,6 +147,15 @@ body {
   -webkit-text-fill-color: transparent;
   color: transparent;
 }
+/* on light surfaces the mint gradient washes out — run it deeper there
+   (dark surfaces like the hero keep the bright one even in light mode) */
+html:not(.dark) .site-footer .gradient-text,
+html:not(.dark) .vo .gradient-text,
+html:not(.dark) .view-worlds .gradient-text {
+  background: linear-gradient(264.34deg, #0c9a83 0.47%, #0e8a8f 45%, #1271ad 93.6%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
 
 /* Centered content container with consistent gutters */
 .container-pad {
@@ -445,6 +454,8 @@ html.dark .tt-moon { opacity: 1; transform: rotate(0) scale(1); }
    ========================================================= */
 :root { --view-accent: #18debe; }
 html[data-view="builder"]   { --view-accent: #18debe; }
+/* boardroom is the default view, so no data-view also gets its blue */
+html:not([data-view]),
 html[data-view="boardroom"] { --view-accent: #28a6ec; }
 html[data-view="founder"]   { --view-accent: #8b5cf6; }
 html[data-view="campus"]    { --view-accent: #f59e0b; }
@@ -737,10 +748,50 @@ html[data-view="builder"] .view-body-builder { display: block; }
 html[data-view="builder"] .default-body { display: none; }
 
 @media (pointer: fine) {
-  .bbody, .bbody * { cursor: none !important; }
+  .view-body, .view-body *,
+  .view-worlds, .view-worlds * { cursor: none !important; }
 }
 #swizel-cursor[data-icon] svg { display: none !important; }
 #swizel-cursor[data-icon="term"] .cur-term,
 #swizel-cursor[data-icon="pkg"] .cur-pkg,
 #swizel-cursor[data-icon="branch"] .cur-branch,
-#swizel-cursor[data-icon="repo"] .cur-repo { display: block !important; }
+#swizel-cursor[data-icon="repo"] .cur-repo,
+#swizel-cursor[data-icon="chart"] .cur-chart,
+#swizel-cursor[data-icon="clock"] .cur-clock,
+#swizel-cursor[data-icon="shield"] .cur-shield,
+#swizel-cursor[data-icon="layers"] .cur-layers,
+#swizel-cursor[data-icon="pulse"] .cur-pulse,
+#swizel-cursor[data-icon="quote"] .cur-quote,
+#swizel-cursor[data-icon="play"] .cur-play,
+#swizel-cursor[data-icon="phone"] .cur-phone { display: block !important; }
+
+/* Boardroom view body visibility — boardroom is the default view, so it
+   also shows when no view has been chosen yet */
+.view-body-boardroom { display: none; }
+html:not([data-view]) .view-body-boardroom,
+html[data-view="boardroom"] .view-body-boardroom { display: block; }
+html:not([data-view]) .default-body,
+html[data-view="boardroom"] .default-body { display: none; }
+
+/* Founder view body visibility */
+.view-body-founder { display: none; }
+html[data-view="founder"] .view-body-founder { display: block; }
+html[data-view="founder"] .default-body { display: none; }
+
+/* Campus view body visibility */
+.view-body-campus { display: none; }
+html[data-view="campus"] .view-body-campus { display: block; }
+html[data-view="campus"] .default-body { display: none; }
+
+/* Studio view body visibility */
+.view-body-studio { display: none; }
+html[data-view="studio"] .view-body-studio { display: block; }
+html[data-view="studio"] .default-body { display: none; }
+
+/* Boardroom view body visibility — boardroom is also the default view
+   (no data-view attribute set yet), so cover both cases. */
+.view-body-boardroom { display: none; }
+html:not([data-view]) .view-body-boardroom,
+html[data-view="boardroom"] .view-body-boardroom { display: block; }
+html:not([data-view]) .default-body,
+html[data-view="boardroom"] .default-body { display: none; }

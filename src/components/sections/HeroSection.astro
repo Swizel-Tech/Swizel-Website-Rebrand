@@ -30,7 +30,7 @@ const sectors = [
 
 	<div class="hero--top">
 		<span class="hero--eyebrow">
-			<span class="hero--eyebrow-dot"></span>
+			
 			7 years of shipping digital products
 		</span>
 
@@ -49,8 +49,8 @@ const sectors = [
 		</h1>
 
 		<p class="hero--sub">
-			Swizel designs, builds and scales web &amp; mobile products for
-			ambitious businesses, turning bold ideas into software people love.
+			Web &amp; mobile products for ambitious businesses —
+			bold ideas, turned into software people love.
 		</p>
 
 		<div class="hero--cta">
@@ -95,25 +95,25 @@ const sectors = [
 				<span>5.0 average client rating</span>
 			</div>
 
-			<!-- business impact widget -->
+			<!-- uptime ring widget -->
 			<div class="hero--impact" id="boardroom-impact" data-tour="impact">
 				<div class="hero--impact-head">
-					<span class="hero--impact-title">Business impact</span>
-					<span class="hero--impact-up">▲ on-time</span>
+					<span class="hero--impact-title">Uptime · 12 months</span>
 				</div>
-				<div class="hero--impact-row">
-					<span class="hero--impact-num" data-count-to={98} data-suffix="%">0%</span>
-					<span class="hero--impact-label">on-time delivery</span>
+				<div class="hero--impact-ringrow">
+					<span class="hero--impact-ring" aria-hidden="true">
+						<svg viewBox="0 0 64 64">
+							<circle class="ring-track" cx="32" cy="32" r="26" />
+							<circle class="ring-arc" cx="32" cy="32" r="26" />
+						</svg>
+						<span class="ring-spark"></span>
+					</span>
+					<span class="hero--impact-meta">
+						<span class="hero--impact-num">99.9%</span>
+						<span class="hero--impact-label">across 65+ products</span>
+					</span>
 				</div>
-				<div class="hero--impact-chart" aria-hidden="true">
-					<span style="--h:38%"></span>
-					<span style="--h:55%"></span>
-					<span style="--h:64%"></span>
-					<span style="--h:80%"></span>
-					<span style="--h:92%"></span>
-					<span style="--h:100%"></span>
-				</div>
-				<span class="hero--impact-foot">products shipped, year on year</span>
+				<span class="hero--impact-foot">monitored around the clock</span>
 			</div>
 		</div>
 
@@ -157,11 +157,11 @@ const sectors = [
 </Section>
 
 <style>
-	/* ====== Dark product stage (matches live swizel.co #28293E) ====== */
+	/* ====== Deep glossy stage (matches the boardroom body) ====== */
 	.hero--stage {
 		color: #fff;
 		isolation: isolate;
-		background: #28293e;
+		background: #070910;
 	}
 	.hero--bgfill {
 		position: absolute;
@@ -174,10 +174,15 @@ const sectors = [
 		pointer-events: none;
 		background: radial-gradient(
 				1200px 620px at 50% -8%,
-				color-mix(in srgb, var(--view-accent) 20%, transparent),
+				color-mix(in srgb, var(--view-accent) 22%, transparent),
 				transparent 62%
 			),
-			linear-gradient(180deg, #2b2c43 0%, #28293e 42%, #212236 100%);
+			radial-gradient(
+				900px 500px at 12% 92%,
+				color-mix(in srgb, var(--view-accent) 9%, transparent),
+				transparent 65%
+			),
+			linear-gradient(180deg, #0a0d1c 0%, #070910 48%, #05060d 100%);
 	}
 	.hero--glow {
 		position: absolute;
@@ -389,37 +394,72 @@ const sectors = [
 		letter-spacing: 0.08em;
 		color: rgba(255, 255, 255, 0.55);
 	}
-	.hero--impact-up { font-size: 0.66rem; color: #28c840; font-weight: 700; }
-	.hero--impact-row { display: flex; align-items: baseline; gap: 0.4rem; }
+	.hero--impact-ringrow {
+		display: flex;
+		align-items: center;
+		gap: 0.7rem;
+		margin: 0.55rem 0 0.45rem;
+	}
+	.hero--impact-ring {
+		position: relative;
+		width: 56px;
+		height: 56px;
+		flex-shrink: 0;
+	}
+	.hero--impact-ring svg {
+		width: 100%;
+		height: 100%;
+		transform: rotate(-90deg);
+	}
+	.hero--impact-ring .ring-track {
+		fill: none;
+		stroke: rgba(255, 255, 255, 0.1);
+		stroke-width: 5;
+	}
+	.hero--impact-ring .ring-arc {
+		fill: none;
+		stroke: var(--view-accent, #28a6ec);
+		stroke-width: 5;
+		stroke-linecap: round;
+		stroke-dasharray: 163.4;
+		stroke-dashoffset: 163.4;
+		filter: drop-shadow(0 0 6px color-mix(in srgb, var(--view-accent, #28a6ec) 70%, transparent));
+		animation: ringdraw 1.6s cubic-bezier(0.22, 1, 0.36, 1) 0.4s forwards;
+	}
+	@keyframes ringdraw { to { stroke-dashoffset: 2.5; } }
+	/* tiny comet that orbits the ring once, then settles */
+	.hero--impact-ring .ring-spark {
+		position: absolute;
+		top: 2px;
+		left: 50%;
+		width: 7px;
+		height: 7px;
+		margin-left: -3.5px;
+		border-radius: 9999px;
+		background: #fff;
+		box-shadow: 0 0 10px 2px color-mix(in srgb, var(--view-accent, #28a6ec) 80%, transparent);
+		transform-origin: 3.5px 26px;
+		animation: ringorbit 1.6s cubic-bezier(0.22, 1, 0.36, 1) 0.4s forwards;
+		opacity: 0;
+	}
+	@keyframes ringorbit {
+		0% { opacity: 1; transform: rotate(0deg); }
+		95% { opacity: 1; }
+		100% { opacity: 1; transform: rotate(354deg); }
+	}
+	.hero--impact-meta { display: flex; flex-direction: column; gap: 0.1rem; }
 	.hero--impact-num {
 		font-family: 'Bebas Neue', sans-serif;
-		font-size: 1.9rem;
+		font-size: 1.7rem;
 		line-height: 1;
 		color: #fff;
 	}
 	.hero--impact-label { font-size: 0.66rem; color: rgba(255, 255, 255, 0.5); }
-	.hero--impact-chart {
-		display: flex;
-		align-items: flex-end;
-		gap: 5px;
-		height: 46px;
-		margin: 0.7rem 0 0.4rem;
-	}
-	.hero--impact-chart span {
-		flex: 1;
-		height: 0;
-		border-radius: 3px 3px 0 0;
-		background: linear-gradient(180deg, #86e2ef, var(--view-accent, #28a6ec));
-		animation: bargrow 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-	}
-	.hero--impact-chart span:nth-child(1) { animation-delay: 0.1s; }
-	.hero--impact-chart span:nth-child(2) { animation-delay: 0.2s; }
-	.hero--impact-chart span:nth-child(3) { animation-delay: 0.3s; }
-	.hero--impact-chart span:nth-child(4) { animation-delay: 0.4s; }
-	.hero--impact-chart span:nth-child(5) { animation-delay: 0.5s; }
-	.hero--impact-chart span:nth-child(6) { animation-delay: 0.6s; }
-	@keyframes bargrow { to { height: var(--h); } }
 	.hero--impact-foot { font-size: 0.6rem; color: rgba(255, 255, 255, 0.4); }
+	@media (prefers-reduced-motion: reduce) {
+		.hero--impact-ring .ring-arc { animation: none; stroke-dashoffset: 2.5; }
+		.hero--impact-ring .ring-spark { animation: none; opacity: 1; transform: rotate(354deg); }
+	}
 
 	@media (max-width: 600px) {
 		.hero--impact { right: 6px; top: 6px; width: 156px; }

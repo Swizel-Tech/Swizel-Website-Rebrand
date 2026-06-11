@@ -77,8 +77,8 @@ export function initStudioView() {
 		},
 		{
 			sel: '.hero-studio [data-tour="team"]',
-			title: 'The makers',
-			body: 'Real designers behind every pixel. Tap to meet them.',
+			title: 'The designers',
+			body: 'Real people behind every pixel. Tap to say hello.',
 		},
 	];
 	document

@@ -123,7 +123,7 @@ const buildTypes = [
 				<span class="builder--team-txt">
 					<span class="builder--team-k">// the humans behind the code</span>
 					<span class="builder--team-l">
-						Meet the team that ships
+						The engineers you'll work with
 						<Icon width={14} name="mdi:arrow-right" />
 					</span>
 				</span>
@@ -671,14 +671,19 @@ const buildTypes = [
 		.builder--stats {
 			gap: 1.4rem;
 		}
+		/* the gutter can't scroll with the code pane on phones — drop it
+		   so the numbers never drift out of line with the code */
+		.ide2--editor {
+			grid-template-columns: 1fr;
+		}
+		.ide2--gutter {
+			display: none;
+		}
 		.ide2--code {
 			min-height: 0;
 			height: 150px;
 			font-size: 0.74rem;
 			overflow: auto;
-		}
-		.ide2--gutter {
-			font-size: 0.74rem;
 		}
 		.ide2--out {
 			min-height: 0;

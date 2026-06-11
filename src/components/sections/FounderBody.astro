@@ -1,0 +1,294 @@
+---
+import { Icon } from 'astro-icon';
+
+const stats = [
+	{ to: 6, suffix: ' wks', label: 'Idea to MVP' },
+	{ to: 65, suffix: '+', label: 'Products launched' },
+	{ to: 7, suffix: '+', label: 'Years building' },
+	{ to: 10, suffix: '+', label: 'Countries' },
+];
+
+const sprint = [
+	{ title: 'Discover & design', items: ['Product strategy', 'UX & UI design', 'Clickable prototype'] },
+	{ title: 'Build & test', items: ['Web & mobile build', 'QA and reviews', 'Integrations & APIs'] },
+	{ title: 'Launch & scale', items: ['App store & web launch', 'Analytics & growth', 'Support & DevOps'] },
+];
+
+const roadmap = [
+	{ wk: 'Week 1', title: 'Discover', desc: 'Goals, users and the spec, locked.' },
+	{ wk: 'Week 2', title: 'Design', desc: 'A prototype you can click and feel.' },
+	{ wk: 'Weeks 3–5', title: 'Build', desc: 'Engineering in tight, visible sprints.' },
+	{ wk: 'Week 6', title: 'Launch', desc: 'Go live, measure, then grow.' },
+];
+
+const launches = [
+	{ name: 'Betslipswitch', sector: 'Sports', metric: 'Live in production', img: '/images/portfolio/betslipswitch.jpg', url: 'https://betslipswitch.com/' },
+	{ name: 'Brixmarket', sector: 'Real estate', metric: 'Marketplace at scale', img: '/images/portfolio/brix%20marketplace.jpg', url: 'https://brixmarket.com/' },
+	{ name: 'ConvertMyBetCode', sector: 'Sports', metric: '10+ countries', img: '', url: 'https://convertmybetcode.com/' },
+	{ name: 'BuyGas', sector: 'Gas delivery', metric: 'On-demand delivery', img: '', url: 'https://buygas.org/' },
+];
+
+const values = [
+	{ icon: 'mdi:rocket-launch-outline', title: 'Speed', desc: 'Weeks, not months. Momentum is everything early on.' },
+	{ icon: 'mdi:account-group-outline', title: 'One team', desc: 'Design, engineering and growth under one roof.' },
+	{ icon: 'mdi:chart-line', title: 'Built to scale', desc: 'Architecture that grows from MVP to millions.' },
+	{ icon: 'mdi:handshake-outline', title: 'We stay', desc: 'We support and scale long after launch day.' },
+];
+
+const reviews = [
+	{ name: 'Chidimma', img: '/testimonial/chidima.jpeg', body: 'Warm, responsive and a true extension of our team.' },
+	{ name: 'Favour', img: '/testimonial/favour.jpeg', body: 'Geniuses, honestly. Working with them was effortless.' },
+	{ name: 'Cheta', img: '/testimonial/cheta.jpeg', body: 'Thorough, polite and always on time.' },
+];
+---
+
+<div class="fbody view-body view-body-founder">
+	<!-- ABOUT -->
+	<section class="fb-sec">
+		<div class="fb-wrap fb-about">
+			<div class="fb-copy">
+				<span class="fb-kick">For founders</span>
+				<h2 class="fb-h">We are the team that <span class="fb-accent">ships your MVP.</span></h2>
+				<p class="fb-p">
+					Bring the idea. We bring product strategy, design, engineering
+					and launch, as one focused team, so you go from a blank page to
+					a real product in weeks.
+				</p>
+				<ul class="fb-stats">
+					{
+						stats.map((s) => (
+							<li>
+								<strong data-count={s.to} data-suffix={s.suffix}>{s.to}{s.suffix}</strong>
+								<span>{s.label}</span>
+							</li>
+						))
+					}
+				</ul>
+				<a href="/contact" class="fb-link">Book a build sprint <Icon width={16} name="mdi:arrow-right" /></a>
+			</div>
+			<div class="fb-media">
+				<figure class="fb-photo">
+					<img src="/images/hero-team.jpg" alt="The Swizel build team" loading="lazy" />
+					<span class="fb-photo-glow"></span>
+				</figure>
+				<button class="fb-video" type="button" aria-label="Video coming soon">
+					<span class="fb-play"><Icon width={20} name="mdi:play" /></span>
+					<span class="fb-video-txt"><strong>How we build</strong><small>video coming soon</small></span>
+				</button>
+			</div>
+		</div>
+	</section>
+
+	<!-- BUILD SPRINT (services) -->
+	<section class="fb-sec">
+		<div class="fb-wrap">
+			<span class="fb-kick">The build sprint</span>
+			<h2 class="fb-h">Everything you need to <span class="fb-accent">launch.</span></h2>
+			<div class="fb-sprint">
+				{
+					sprint.map((s, i) => (
+						<div class="fb-phase">
+							<span class="fb-phase-n">{`0${i + 1}`}</span>
+							<h3 class="fb-phase-title">{s.title}</h3>
+							<ul>
+								{s.items.map((it) => (
+									<li><Icon width={15} name="mdi:check" />{it}</li>
+								))}
+							</ul>
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ROADMAP (process) -->
+	<section class="fb-sec">
+		<div class="fb-wrap">
+			<span class="fb-kick">The roadmap</span>
+			<h2 class="fb-h">From zero to launched, <span class="fb-accent">in six weeks.</span></h2>
+			<ol class="fb-road" id="fb-road">
+				{
+					roadmap.map((r, i) => (
+						<li class="fb-mile" data-i={i}>
+							<span class="fb-mile-dot"></span>
+							<span class="fb-mile-wk">{r.wk}</span>
+							<h3 class="fb-mile-title">{r.title}</h3>
+							<p class="fb-mile-desc">{r.desc}</p>
+						</li>
+					))
+				}
+			</ol>
+		</div>
+	</section>
+
+	<!-- LAUNCHES (work) -->
+	<section class="fb-sec">
+		<div class="fb-wrap">
+			<div class="fb-work-head">
+				<div>
+					<span class="fb-kick">Recent launches</span>
+					<h2 class="fb-h">Products we took <span class="fb-accent">to market.</span></h2>
+				</div>
+				<a href="/portfolio" class="fb-link fb-link-2">All work <Icon width={16} name="mdi:arrow-right" /></a>
+			</div>
+			<div class="fb-launches">
+				{
+					launches.map((w) => (
+						<a class="fb-launch" href={w.url} target="_blank" rel="noopener noreferrer">
+							<div class="fb-launch-img">
+								{w.img ? (
+									<img src={w.img} alt={`${w.name} — ${w.sector}`} loading="lazy" />
+								) : (
+									<span class="fb-launch-ph"><Icon width={24} name="mdi:rocket-launch-outline" /></span>
+								)}
+								<span class="fb-launch-live"><span class="fb-live-dot"></span>{w.metric}</span>
+							</div>
+							<div class="fb-launch-meta">
+								<span class="fb-launch-name">{w.name}</span>
+								<span class="fb-launch-sector">{w.sector}</span>
+							</div>
+						</a>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- VALUES -->
+	<section class="fb-sec">
+		<div class="fb-wrap">
+			<span class="fb-kick">Why founders pick us</span>
+			<h2 class="fb-h">A partner, <span class="fb-accent">not just a vendor.</span></h2>
+			<div class="fb-values">
+				{
+					values.map((v) => (
+						<div class="fb-value">
+							<span class="fb-value-ic"><Icon width={22} name={v.icon} /></span>
+							<h3>{v.title}</h3>
+							<p>{v.desc}</p>
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- REVIEWS -->
+	<section class="fb-sec">
+		<div class="fb-wrap">
+			<span class="fb-kick">Founder love</span>
+			<h2 class="fb-h">Teams that <span class="fb-accent">trusted us.</span></h2>
+			<div class="fb-reviews">
+				{
+					reviews.map((r) => (
+						<figure class="fb-rev">
+							<blockquote>{r.body}</blockquote>
+							<figcaption>
+								<img src={r.img} alt={r.name} loading="lazy" />
+								<span class="fb-rev-name">{r.name}</span>
+								<span class="fb-rev-stars">★★★★★</span>
+							</figcaption>
+						</figure>
+					))
+				}
+			</div>
+		</div>
+	</section>
+</div>
+
+<style>
+	.fbody {
+		position: relative;
+		background:
+			radial-gradient(800px 420px at 82% 0%, rgba(139, 92, 246, 0.1), transparent 60%),
+			linear-gradient(180deg, #120f22 0%, #0d0b1a 100%);
+		color: #e7e3f5;
+	}
+	.fb-sec { padding: clamp(3.5rem, 8vw, 6rem) 5%; border-top: 1px solid rgba(167, 139, 250, 0.1); }
+	.fb-sec:first-child { border-top: 0; }
+	.fb-wrap { max-width: 1120px; margin: 0 auto; }
+
+	.fb-kick { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #c4b5fd; }
+	.fb-dot { width: 8px; height: 8px; border-radius: 9999px; background: var(--view-accent, #8b5cf6); box-shadow: 0 0 10px 1px rgba(139, 92, 246, 0.6); }
+	.fb-h { font-size: clamp(2rem, 4.6vw, 3.2rem); font-weight: 800; line-height: 1.08; letter-spacing: -0.5px; color: #fff; margin: 0.7rem 0 1.8rem; }
+	.fb-accent { background: linear-gradient(95deg, #c4b5fd, var(--view-accent, #8b5cf6)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+	.fb-p { color: rgba(231, 227, 245, 0.72); line-height: 1.75; max-width: 34rem; }
+	.fb-link { display: inline-flex; align-items: center; gap: 0.45rem; font-weight: 700; color: #c4b5fd; transition: gap 0.25s ease; }
+	.fb-link:hover { gap: 0.8rem; }
+
+	/* About */
+	.fb-about { display: grid; gap: 2.5rem; align-items: center; }
+	@media (min-width: 920px) { .fb-about { grid-template-columns: 1fr 1.05fr; gap: 4rem; } }
+	.fb-about .fb-h { margin-top: 0.7rem; }
+	.fb-stats { list-style: none; padding: 1.7rem 0 0; margin: 1.7rem 0 0; display: grid; grid-template-columns: repeat(2, auto); gap: 1.5rem 2.5rem; width: fit-content; border-top: 1px solid rgba(255, 255, 255, 0.08); }
+	@media (min-width: 540px) { .fb-stats { grid-template-columns: repeat(4, auto); } }
+	.fb-stats strong { display: block; font-family: 'Bebas Neue', sans-serif; font-size: 2.4rem; line-height: 1; background: linear-gradient(135deg, #c4b5fd, var(--view-accent, #8b5cf6)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+	.fb-stats span { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(231, 227, 245, 0.5); }
+	.fb-about .fb-link { margin-top: 1.8rem; }
+	.fb-media { position: relative; }
+	.fb-photo { position: relative; margin: 0; border-radius: 1.3rem; overflow: hidden; box-shadow: 0 40px 90px -40px rgba(0, 0, 0, 0.9); border: 1px solid rgba(167, 139, 250, 0.25); }
+	.fb-photo img { display: block; width: 100%; height: auto; }
+	.fb-video { position: absolute; right: -14px; bottom: -22px; display: flex; align-items: center; gap: 0.7rem; padding: 0.7rem 1rem 0.7rem 0.7rem; border-radius: 0.9rem; border: 1px solid rgba(167, 139, 250, 0.4); background: rgba(18, 15, 34, 0.92); backdrop-filter: blur(10px); box-shadow: 0 20px 40px -18px rgba(0, 0, 0, 0.7); cursor: pointer; transition: border-color 0.25s ease, transform 0.25s ease; }
+	.fb-video:hover { border-color: var(--view-accent, #8b5cf6); transform: translateY(-3px); }
+	.fb-play { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 9999px; color: #1a1030; background: linear-gradient(135deg, #c4b5fd, var(--view-accent, #8b5cf6)); flex-shrink: 0; }
+	.fb-video-txt { display: flex; flex-direction: column; text-align: left; }
+	.fb-video-txt strong { font-size: 0.86rem; color: #fff; }
+	.fb-video-txt small { font-size: 0.72rem; color: rgba(231, 227, 245, 0.5); }
+	@media (max-width: 919px) { .fb-video { position: static; margin-top: 1.5rem; width: fit-content; right: auto; bottom: auto; } }
+
+	/* Sprint */
+	.fb-sprint { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+	.fb-phase { padding: 1.5rem; border-radius: 1.1rem; border: 1px solid rgba(167, 139, 250, 0.16); background: rgba(255, 255, 255, 0.02); transition: border-color 0.25s ease, transform 0.25s ease; }
+	.fb-phase:hover { border-color: var(--view-accent, #8b5cf6); transform: translateY(-4px); }
+	.fb-phase-n { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; line-height: 1; background: linear-gradient(135deg, #c4b5fd, var(--view-accent, #8b5cf6)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+	.fb-phase-title { font-size: 1.15rem; font-weight: 800; color: #fff; margin: 0.4rem 0 0.9rem; }
+	.fb-phase ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.55rem; }
+	.fb-phase li { display: flex; align-items: center; gap: 0.5rem; color: rgba(231, 227, 245, 0.72); font-size: 0.9rem; }
+	.fb-phase li :global(svg) { color: var(--view-accent, #8b5cf6); flex-shrink: 0; }
+
+	/* Roadmap */
+	.fb-road { list-style: none; padding: 0; margin: 0; display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); position: relative; }
+	.fb-mile { position: relative; padding-top: 1.5rem; border-top: 2px solid rgba(167, 139, 250, 0.2); opacity: 0; transform: translateY(14px); }
+	.fb-mile.is-on { animation: fb-in 0.5s ease forwards; }
+	@keyframes fb-in { to { opacity: 1; transform: translateY(0); } }
+	.fb-mile-dot { position: absolute; top: -7px; left: 0; width: 12px; height: 12px; border-radius: 9999px; background: var(--view-accent, #8b5cf6); box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.2); }
+	.fb-mile-wk { font-family: ui-monospace, monospace; font-size: 0.75rem; color: #c4b5fd; }
+	.fb-mile-title { font-size: 1.2rem; font-weight: 800; color: #fff; margin: 0.3rem 0; }
+	.fb-mile-desc { color: rgba(231, 227, 245, 0.6); font-size: 0.9rem; line-height: 1.55; }
+
+	/* Launches */
+	.fb-work-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.6rem; }
+	.fb-work-head .fb-h { margin-bottom: 0; }
+	.fb-launches { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+	.fb-launch { display: block; border-radius: 1.1rem; overflow: hidden; border: 1px solid rgba(167, 139, 250, 0.16); background: rgba(255, 255, 255, 0.02); transition: border-color 0.25s ease, transform 0.25s ease; }
+	.fb-launch:hover { border-color: var(--view-accent, #8b5cf6); transform: translateY(-4px); }
+	.fb-launch-img { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: #161229; }
+	.fb-launch-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+	.fb-launch:hover .fb-launch-img img { transform: scale(1.06); }
+	.fb-launch-ph { position: absolute; inset: 0; display: grid; place-items: center; color: rgba(196, 181, 253, 0.5); background: repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0 10px, transparent 10px 20px); }
+	.fb-launch-live { position: absolute; bottom: 10px; left: 10px; display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.25rem 0.6rem; border-radius: 9999px; background: rgba(18, 15, 34, 0.82); border: 1px solid rgba(167, 139, 250, 0.3); backdrop-filter: blur(6px); font-size: 0.72rem; color: #e7e3f5; }
+	.fb-live-dot { width: 6px; height: 6px; border-radius: 9999px; background: #28c840; }
+	.fb-launch-meta { display: flex; align-items: center; justify-content: space-between; padding: 0.9rem 1.1rem; }
+	.fb-launch-name { font-weight: 700; color: #fff; }
+	.fb-launch-sector { font-size: 0.72rem; padding: 0.2rem 0.6rem; border-radius: 9999px; background: rgba(139, 92, 246, 0.16); color: #c4b5fd; border: 1px solid rgba(139, 92, 246, 0.3); }
+
+	/* Values */
+	.fb-values { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+	.fb-value { padding: 1.4rem; border-radius: 1.1rem; border: 1px solid rgba(167, 139, 250, 0.16); background: rgba(255, 255, 255, 0.02); transition: border-color 0.25s ease, transform 0.25s ease; }
+	.fb-value:hover { border-color: var(--view-accent, #8b5cf6); transform: translateY(-4px); }
+	.fb-value-ic { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 0.9rem; background: linear-gradient(135deg, rgba(196,181,253,0.18), rgba(139,92,246,0.14)); color: #c4b5fd; margin-bottom: 0.9rem; }
+	.fb-value h3 { font-size: 1.1rem; font-weight: 800; color: #fff; }
+	.fb-value p { color: rgba(231, 227, 245, 0.65); font-size: 0.9rem; line-height: 1.55; margin-top: 0.4rem; }
+
+	/* Reviews */
+	.fb-reviews { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+	.fb-rev { margin: 0; padding: 1.3rem; border-radius: 1.1rem; border: 1px solid rgba(167, 139, 250, 0.16); background: rgba(255, 255, 255, 0.02); }
+	.fb-rev blockquote { margin: 0 0 1rem; color: rgba(231, 227, 245, 0.82); line-height: 1.6; font-size: 0.95rem; }
+	.fb-rev figcaption { display: flex; align-items: center; gap: 0.55rem; }
+	.fb-rev figcaption img { width: 34px; height: 34px; border-radius: 9999px; object-fit: cover; }
+	.fb-rev-name { font-weight: 700; color: #fff; font-size: 0.9rem; }
+	.fb-rev-stars { margin-left: auto; color: #fbbf24; font-size: 0.85rem; letter-spacing: 1px; }
+
+	@media (prefers-reduced-motion: reduce) { .fb-mile { opacity: 1; transform: none; } }
+</style>
