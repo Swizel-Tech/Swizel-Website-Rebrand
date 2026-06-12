@@ -1,42 +1,78 @@
 ---
+// Campus view body — an actual school. Orientation day, a whiteboard with
+// sticky notes, course registration, a roadmap to the job market, clubs &
+// societies on a corkboard, a chalkboard that teaches you something, and
+// an arcade START button at the end. School spirit, real outcomes.
 import { Icon } from 'astro-icon';
 
 const stats = [
-	{ to: 3, suffix: ' mo', label: 'Free bootcamp' },
-	{ to: 100, suffix: '%', label: 'Hands-on' },
-	{ to: 65, suffix: '+', label: 'Products to learn from' },
-	{ to: 7, suffix: '+', label: 'Years mentoring' },
+	{ n: '3 mo', label: 'bootcamp' },
+	{ n: '100%', label: 'hands-on' },
+	{ n: '65+', label: 'products' },
+	{ n: '₦0', label: 'tuition' },
 ];
 
-const tracks = [
-	{ icon: 'mdi:web', title: 'Web Development', desc: 'HTML, CSS, JavaScript and React, from zero to deployed.', tag: 'react · node · git' },
-	{ icon: 'mdi:cellphone', title: 'Mobile Development', desc: 'Build real apps for Android and iOS that people use.', tag: 'flutter · react native' },
-	{ icon: 'mdi:palette-outline', title: 'Product Design', desc: 'UI, UX and prototyping that gets you hired.', tag: 'figma · ui · ux' },
-	{ icon: 'mdi:bullhorn-outline', title: 'Digital Marketing', desc: 'SEO, ads and social that actually grows products.', tag: 'seo · ads · social' },
+const courses = [
+	{ code: 'WEB 101', icon: 'mdi:web', title: 'Web Development', desc: 'HTML, CSS, JavaScript and React — zero to deployed.', chips: ['react', 'node', 'git'], room: 'Lecture Hall A' },
+	{ code: 'MOB 201', icon: 'mdi:cellphone', title: 'Mobile Development', desc: 'Real apps for Android and iOS that people use.', chips: ['flutter', 'react native'], room: 'Lab 2' },
+	{ code: 'DSN 110', icon: 'mdi:palette-outline', title: 'Product Design', desc: 'UI, UX and prototyping that gets you hired.', chips: ['figma', 'ui', 'ux'], room: 'Design Studio' },
+	{ code: 'MKT 105', icon: 'mdi:bullhorn-outline', title: 'Digital Marketing', desc: 'SEO, ads and social that actually grows products.', chips: ['seo', 'ads', 'social'], room: 'Lecture Hall B' },
 ];
 
-const journey = [
-	{ icon: 'mdi:book-open-variant', title: 'Learn', desc: 'Master the fundamentals with live coaches.' },
-	{ icon: 'mdi:hammer-wrench', title: 'Build', desc: 'Ship real projects to your portfolio.' },
-	{ icon: 'mdi:rocket-launch-outline', title: 'Intern', desc: 'Qualify for a paid internship with the team.' },
-	{ icon: 'mdi:briefcase-check-outline', title: 'Get hired', desc: 'Land the job, with our backing.' },
+const roadmap = [
+	{ lvl: 'Term 1', xp: '+500 XP', title: 'Lectures', desc: 'Whiteboards, markers and fundamentals — taught live by working engineers.' },
+	{ lvl: 'Term 2', xp: '+1500 XP', title: 'Practicals', desc: 'Out of the lecture room: ship real projects into your portfolio.' },
+	{ lvl: 'Term 3', xp: '+3000 XP', title: 'Internship', desc: 'Top students earn a paid seat on our product team.' },
+	{ lvl: 'Graduation', xp: '🏆 HIRED', title: 'Job market', desc: 'CV, portfolio, interview prep — and our backing till you land it.' },
 ];
 
-const builds = [
-	{ name: 'A sports platform', tag: 'like Betslipswitch', sector: 'Web', img: '/images/portfolio/betslipswitch.jpg' },
-	{ name: 'An online store', tag: 'like Brixmarket', sector: 'E-commerce', img: '/images/portfolio/brix%20marketplace.jpg' },
-	{ name: 'A brand campaign', tag: 'like Purple Panda', sector: 'Marketing', img: '/images/portfolio/purplepanda%20world.jpg' },
-	{ name: 'A delivery app', tag: 'like BuyGas', sector: 'Mobile', img: '' },
+// the to-do board — school + life, balanced
+const todos = [
+	{ icon: '📖', task: 'Read chapter 4', when: 'before Tuesday', done: true },
+	{ icon: '🐍', task: 'Study Python', when: 'lab on Wednesday', done: false },
+	{ icon: '⚛️', task: 'Test React build', when: 'push by Thursday', done: false },
+	{ icon: '⚽', task: 'Play football', when: 'Saturday 4pm', done: true },
+	{ icon: '🎤', task: 'Demo Day prep', when: 'end of term', done: false },
+	{ icon: '😴', task: 'Sleep 8 hours', when: 'tonight. seriously', done: false },
 ];
 
-const perks = [
-	{ icon: 'mdi:gift-outline', title: '100% free to start', desc: 'Learn for free. Pay only for the certification exam.' },
-	{ icon: 'mdi:account-heart-outline', title: 'Real mentors', desc: 'Guided by working engineers and designers.' },
-	{ icon: 'mdi:cash-multiple', title: 'Paid internship', desc: 'Top students earn a paid spot with the team.' },
-	{ icon: 'mdi:certificate-outline', title: 'A job-ready portfolio', desc: 'Graduate with real, shipped projects.' },
+const facts = [
+	'The first computer "bug" was a real moth — taped into a logbook at Harvard in 1947.',
+	'JavaScript was written in just 10 days. It now runs most of the web.',
+	'The first website ever made is still online — info.cern.ch. Go visit it.',
+	'Lagos has more tech startups than any other city in Africa.',
+	'The first 1GB hard drive (1980) weighed over 250 kg. Your phone holds 256× more.',
 ];
 
-const grads = [
+const ships = [
+	{ name: 'A sports platform', tag: 'like Betslipswitch', img: '/images/portfolio/betslipswitch.jpg' },
+	{ name: 'A physio clinic site', tag: 'like Anchorstep', img: '' },
+	{ name: 'An online marketplace', tag: 'like Brixmarket', img: '/images/portfolio/brix%20marketplace.jpg' },
+	{ name: 'A delivery app', tag: 'like BuyGas', img: '' },
+	{ name: 'A learning platform', tag: 'like Saros', img: '/images/portfolio/sarosgp.jpg' },
+	{ name: 'An estate website', tag: 'like My Eya Estate', img: '/images/portfolio/my%20eya%20estate.jpg' },
+	{ name: 'A news magazine', tag: 'like TrueVerdict', img: '' },
+	{ name: 'A company portal', tag: 'like Hemam Synergy', img: '' },
+];
+
+const programs = [
+	{ icon: 'mdi:school-outline', title: 'Annual Bootcamp', fee: 'FREE', hot: true, desc: '3 months, once a year. Learn, build, get hired — pay only for the certification exam.' },
+	{ icon: 'mdi:book-open-page-variant-outline', title: 'Beginner Classes', fee: 'small fee', desc: "New to tech? Year-round beginner courses that start from absolute zero." },
+	{ icon: 'mdi:badge-account-outline', title: 'SIWES / IT Internship', fee: 'small fee', desc: 'Do your 6-month school industrial training with a team that ships real products.' },
+	{ icon: 'mdi:flag-outline', title: 'NYSC Placement', fee: 'small fee', desc: 'Serve your NYSC year at Swizel — real projects, real mentorship, a real head start.' },
+];
+
+const sectors = ['Fintech', 'Real estate', 'Sports', 'E-commerce', 'Education', 'Healthcare', 'Logistics', 'Beauty', 'Energy', 'Media', 'Travel'];
+const logos = ['betslipswitch.svg', 'trueverdict.png', 'brix market logo.svg', 'ejike-fc.svg', 'purple-panda.svg', 'saros-sgp.svg', 'my eya homes.svg', 'the-presidential-diary.png', 'hemamsynergy.png'];
+
+const achievements = [
+	{ icon: 'mdi:gift-outline', title: 'Free Start', desc: 'Learn for free. Pay only for the certification exam.' },
+	{ icon: 'mdi:account-heart-outline', title: 'Mentor Backed', desc: 'Guided by working engineers and designers.' },
+	{ icon: 'mdi:cash-multiple', title: 'Paid Internship', desc: 'Top students earn a paid spot with the team.' },
+	{ icon: 'mdi:briefcase-check-outline', title: 'Job-Ready Portfolio', desc: 'Graduate with real, shipped projects.' },
+];
+
+const voices = [
 	{ name: 'Chidimma', img: '/testimonial/chidima.jpeg', body: 'The mentors actually care. I built things I am proud of.' },
 	{ name: 'Russell', img: '/testimonial/russell.jpeg', body: 'Friendly, efficient and hands-on the whole way.' },
 	{ name: 'Cheta', img: '/testimonial/cheta.jpeg', body: 'They made hard concepts click. Best decision I made.' },
@@ -44,74 +80,119 @@ const grads = [
 ---
 
 <div class="cbody view-body view-body-campus">
-	<!-- ABOUT -->
-	<section class="cb-sec">
-		<div class="cb-wrap cb-about">
-			<div class="cb-copy">
-				<span class="cb-kick">Free bootcamp</span>
-				<h2 class="cb-h">Learn to build. <span class="cb-accent">Get hired.</span></h2>
-				<p class="cb-p">
-					Start from zero and level up with the same team that ships real
-					products. You learn by building things people actually use, with
-					mentors in your corner the whole way.
+	<!-- ── A · orientation day ─────────────────────────────── -->
+	<section class="cp-sec">
+		<div class="cp-wrap cp-open">
+			<div class="cp-copy cp-rev">
+				<span class="cp-badge">🎓 Orientation · Cohort '26</span>
+				<h2 class="cp-h cp-h--xl">Welcome to class. <em>Leave with a career.</em></h2>
+				<p class="cp-p">
+					A free, hands-on bootcamp that feels like school and pays like
+					a head start: lecture rooms, whiteboards, coursemates — and
+					mentors who ship real products for a living.
 				</p>
-				<ul class="cb-stats">
+				<ul class="cp-stats">
 					{
 						stats.map((s) => (
 							<li>
-								<strong data-count={s.to} data-suffix={s.suffix}>{s.to}{s.suffix}</strong>
+								<strong>{s.n}</strong>
 								<span>{s.label}</span>
 							</li>
 						))
 					}
 				</ul>
-				<a href="/bootcamp" class="cb-link">Join the bootcamp <Icon width={16} name="mdi:arrow-right" /></a>
+				<div class="cp-row">
+					<a href="/bootcamp" class="cp-cta">
+						Enroll free
+						<Icon width={17} name="mdi:school-outline" />
+					</a>
+					<a href="#cp-quest" class="cp-link">
+						See the roadmap
+						<Icon width={15} name="mdi:chevron-down" />
+					</a>
+				</div>
 			</div>
-			<div class="cb-media">
-				<figure class="cb-photo">
-					<img src="/images/hero-team.jpg" alt="Swizel mentors" loading="lazy" />
-				</figure>
-				<button class="cb-video" type="button" aria-label="Webinar coming soon">
-					<span class="cb-play"><Icon width={20} name="mdi:play" /></span>
-					<span class="cb-video-txt"><strong>Free intro webinar</strong><small>register to watch</small></span>
-				</button>
+
+			<!-- the whiteboard: white in every theme, like real life -->
+			<div class="cp-board cp-rev" data-cursor="pen">
+				<span class="cp-board-date" id="cp-board-date">Mon, 1 Jan</span>
+				<p class="cp-board-title">today: build something real <span class="cp-board-swish" aria-hidden="true"></span></p>
+				<div class="cp-board-video">
+					<Icon width={30} name="mdi:play-circle-outline" />
+					<span class="cp-board-vname">lecture-day-1.mp4 — video placeholder</span>
+					<span class="cp-board-vsub">A real class, projected here</span>
+				</div>
+				<span class="cp-sticky cp-sticky--y">ship &gt; perfect</span>
+				<span class="cp-sticky cp-sticky--p">demo friday!</span>
+				<span class="cp-marker-tray" aria-hidden="true">
+					<i class="cp-marker cp-marker--r"></i>
+					<i class="cp-marker cp-marker--b"></i>
+					<i class="cp-marker cp-marker--g"></i>
+					<i class="cp-eraser"></i>
+				</span>
 			</div>
 		</div>
 	</section>
 
-	<!-- TRACKS -->
-	<section class="cb-sec">
-		<div class="cb-wrap">
-			<span class="cb-kick">Choose your track</span>
-			<h2 class="cb-h">Pick a path, <span class="cb-accent">we guide the rest.</span></h2>
-			<div class="cb-tracks">
+	<!-- ── B · course registration ─────────────────────────── -->
+	<section class="cp-sec" data-cursor="book">
+		<div class="cp-wrap">
+			<div class="cp-head cp-rev">
+				<span class="cp-badge">Course registration</span>
+				<h2 class="cp-h">Pick <em>your course.</em></h2>
+				<p class="cp-p cp-p--center">
+					Taught year-round for a small fee — and completely free during
+					the annual 3-month bootcamp.
+				</p>
+			</div>
+			<div class="cp-tracks">
 				{
-					tracks.map((t) => (
-						<div class="cb-track">
-							<span class="cb-track-ic"><Icon width={24} name={t.icon} /></span>
-							<h3 class="cb-track-title">{t.title}</h3>
-							<p class="cb-track-desc">{t.desc}</p>
-							<span class="cb-track-tag">{t.tag}</span>
-						</div>
+					courses.map((t, i) => (
+						<a href="/bootcamp" class="cp-track cp-rev" style={`--i:${i}`}>
+							<span class="cp-track-top">
+								<span class="cp-track-ic">
+									<Icon width={24} name={t.icon} />
+								</span>
+								<span class="cp-track-code">{t.code}</span>
+							</span>
+							<h3 class="cp-track-t">{t.title}</h3>
+							<p class="cp-track-d">{t.desc}</p>
+							<span class="cp-chips">
+								{t.chips.map((c) => <span class="cp-chip">{c}</span>)}
+							</span>
+							<span class="cp-track-room">
+								<Icon width={13} name="mdi:map-marker-outline" />
+								{t.room}
+							</span>
+							<span class="cp-track-go">Register ▸</span>
+						</a>
 					))
 				}
 			</div>
 		</div>
 	</section>
 
-	<!-- JOURNEY -->
-	<section class="cb-sec">
-		<div class="cb-wrap">
-			<span class="cb-kick">Your journey</span>
-			<h2 class="cb-h">From newbie <span class="cb-accent">to hired.</span></h2>
-			<ol class="cb-journey" id="cb-journey">
+	<!-- ── C · roadmap to the job market ───────────────────── -->
+	<section class="cp-sec" id="cp-quest" data-cursor="book">
+		<div class="cp-wrap">
+			<div class="cp-head cp-rev">
+				<span class="cp-badge">The roadmap</span>
+				<h2 class="cp-h">Lecture room <em>→ job market.</em></h2>
+				<p class="cp-p cp-p--center">
+					Three terms, one graduation. XP is earned by shipping — not by
+					watching videos.
+				</p>
+			</div>
+
+			<ol class="cp-questline" id="cp-questline">
+				<span class="cp-quest-bar" aria-hidden="true"></span>
 				{
-					journey.map((j, i) => (
-						<li class="cb-step" data-i={i}>
-							<span class="cb-step-ic"><Icon width={22} name={j.icon} /></span>
-							<span class="cb-step-n">{`Step 0${i + 1}`}</span>
-							<h3 class="cb-step-title">{j.title}</h3>
-							<p class="cb-step-desc">{j.desc}</p>
+					roadmap.map((q, i) => (
+						<li class="cp-stage cp-rev" style={`--i:${i}`}>
+							<span class="cp-stage-node" aria-hidden="true">{i + 1}</span>
+							<span class="cp-stage-lvl">{q.lvl} <em>{q.xp}</em></span>
+							<h3 class="cp-stage-t">{q.title}</h3>
+							<p class="cp-stage-d">{q.desc}</p>
 						</li>
 					))
 				}
@@ -119,27 +200,130 @@ const grads = [
 		</div>
 	</section>
 
-	<!-- WHAT YOU'LL BUILD -->
-	<section class="cb-sec">
-		<div class="cb-wrap">
-			<span class="cb-kick">What you'll build</span>
-			<h2 class="cb-h">Ship real things, <span class="cb-accent">across sectors.</span></h2>
-			<div class="cb-builds">
+	<!-- ── C2 · programs & admissions ──────────────────────── -->
+	<section class="cp-sec" data-cursor="book">
+		<div class="cp-wrap">
+			<div class="cp-head cp-rev">
+				<span class="cp-badge">Programs & admissions</span>
+				<h2 class="cp-h">Four doors <em>into tech.</em></h2>
+				<p class="cp-p cp-p--center">
+					Whatever stage you're at — brand new, in school, serving, or
+					ready to sprint — there's a desk for you here.
+				</p>
+			</div>
+			<div class="cp-programs">
 				{
-					builds.map((w) => (
-						<div class="cb-build">
-							<div class="cb-build-img">
-								{w.img ? (
-									<img src={w.img} alt={w.name} loading="lazy" />
-								) : (
-									<span class="cb-build-ph"><Icon width={24} name="mdi:cellphone" /></span>
-								)}
-								<span class="cb-build-sector">{w.sector}</span>
-							</div>
-							<div class="cb-build-meta">
-								<span class="cb-build-name">{w.name}</span>
-								<span class="cb-build-tag">{w.tag}</span>
-							</div>
+					programs.map((g, i) => (
+						<a href="/bootcamp" class:list={['cp-program', 'cp-rev', { 'cp-program--hot': g.hot }]} style={`--i:${i}`}>
+							<span class="cp-program-fee">{g.fee}</span>
+							<span class="cp-program-ic">
+								<Icon width={26} name={g.icon} />
+							</span>
+							<h3 class="cp-program-t">{g.title}</h3>
+							<p class="cp-program-d">{g.desc}</p>
+							<span class="cp-track-go">Apply ▸</span>
+						</a>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── D · the to-do board: campus life, balanced ──────── -->
+	<section class="cp-sec" data-cursor="pen">
+		<div class="cp-wrap">
+			<div class="cp-head cp-rev">
+				<span class="cp-badge">Campus life</span>
+				<h2 class="cp-h">The to-do board: <em>work, play, repeat.</em></h2>
+				<p class="cp-p cp-p--center">
+					School isn't only syllabus. Study hard, ship things — and
+					still make Saturday football. Balance is the real curriculum.
+				</p>
+			</div>
+			<div class="cp-cork cp-rev">
+				{
+					todos.map((c, i) => (
+						<div class:list={['cp-pin', { 'cp-pin--done': c.done }]} style={`--r:${(i % 3) - 1}`}>
+							<span class="cp-pin-tack" aria-hidden="true">📌</span>
+							<span class="cp-pin-icon">{c.icon}</span>
+							<strong><i class="cp-check" aria-hidden="true">{c.done ? '☑' : '☐'}</i> {c.task}</strong>
+							<em>{c.when}</em>
+						</div>
+					))
+				}
+				<div class="cp-pin cp-pin--photo" style="--r:1">
+					<span class="cp-pin-tack" aria-hidden="true">📌</span>
+					<span class="cp-pin-ph">
+						<Icon width={20} name="mdi:image-outline" />
+						sports-day.jpg
+					</span>
+				</div>
+				<div class="cp-pin cp-pin--photo" style="--r:-1">
+					<span class="cp-pin-tack" aria-hidden="true">📌</span>
+					<span class="cp-pin-ph">
+						<Icon width={20} name="mdi:image-outline" />
+						club-night.jpg
+					</span>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── E · the chalkboard teaches you something ────────── -->
+	<section class="cp-sec" data-cursor="book">
+		<div class="cp-wrap cp-chalkwrap">
+			<div class="cp-copy cp-rev">
+				<span class="cp-badge">Gen 101</span>
+				<h2 class="cp-h">Learn something <em>right now.</em></h2>
+				<p class="cp-p">
+					Class is always in session. Real tech history, rotating on the
+					board — the kind of trivia that wins arguments.
+				</p>
+			</div>
+			<div class="cp-chalk cp-rev" id="cp-chalk">
+				<span class="cp-chalk-head">DID YOU KNOW?</span>
+				{
+					facts.map((f, i) => (
+						<p class:list={['cp-fact', { 'is-live': i === 0 }]} data-fact={i}>{f}</p>
+					))
+				}
+				<span class="cp-chalk-count" id="cp-chalk-count">1 / {facts.length}</span>
+				<span class="cp-chalk-tray">
+					<button class="cp-chalk-btn" type="button" id="cp-chalk-prev" aria-label="Previous fact"></button>
+					<button class="cp-chalk-btn cp-chalk-btn--y" type="button" id="cp-chalk-next" aria-label="Next fact"></button>
+				</span>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── F · practicals: build real things ───────────────── -->
+	<section class="cp-sec" data-cursor="repo">
+		<div class="cp-wrap">
+			<div class="cp-head cp-rev">
+				<span class="cp-badge">Practicals</span>
+				<h2 class="cp-h">You'll build <em>real things.</em></h2>
+				<p class="cp-p cp-p--center">
+					Not toy todo-apps. Projects modeled on products we actually
+					shipped for clients.
+				</p>
+			</div>
+			<div class="cp-ships cp-rev">
+				{
+					ships.map((s) => (
+						<div class="cp-ship">
+							{s.img ? (
+								<img src={s.img} alt={`${s.name} ${s.tag}`} loading="lazy" />
+							) : (
+								<span class="cp-ship-ph">
+									<Icon width={22} name="mdi:image-outline" />
+									<span>screenshot placeholder</span>
+								</span>
+							)}
+							<span class="cp-ship-veil" aria-hidden="true" />
+							<span class="cp-ship-meta">
+								<strong>{s.name}</strong>
+								<em>{s.tag}</em>
+							</span>
 						</div>
 					))
 				}
@@ -147,18 +331,121 @@ const grads = [
 		</div>
 	</section>
 
-	<!-- PERKS -->
-	<section class="cb-sec">
-		<div class="cb-wrap">
-			<span class="cb-kick">Why join</span>
-			<h2 class="cb-h">More than <span class="cb-accent">a course.</span></h2>
-			<div class="cb-perks">
+	<!-- ── F2 · subjects & brands, drifting through ────────── -->
+	<section class="cp-sec cp-sec--belts">
+		<div class="cp-wrap">
+			<p class="cp-belt-label cp-rev">Subjects we've shipped in</p>
+		</div>
+		<div class="cp-belt" aria-hidden="true">
+			<div class="cp-belt-track">
 				{
-					perks.map((v) => (
-						<div class="cb-perk">
-							<span class="cb-perk-ic"><Icon width={22} name={v.icon} /></span>
-							<h3>{v.title}</h3>
-							<p>{v.desc}</p>
+					[0, 1].map(() =>
+						sectors.map((x) => <span class="cp-bstamp">{x}</span>)
+					)
+				}
+			</div>
+		</div>
+		<div class="cp-wrap">
+			<p class="cp-belt-label cp-rev">Brands your mentors built for</p>
+		</div>
+		<div class="cp-belt" aria-hidden="true">
+			<div class="cp-belt-track cp-belt-track--logos">
+				{
+					[0, 1].map(() =>
+						logos.map((l) => (
+							<span class="cp-blogo">
+								<img src={`/images/partners/${l}`} alt="" loading="lazy" />
+							</span>
+						))
+					)
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── F3 · what Swizel actually does (refer us!) ──────── -->
+	<section class="cp-sec" data-cursor="phone">
+		<div class="cp-wrap">
+			<div class="cp-biz cp-rev">
+				<span class="cp-biz-tag">For businesses · refer us & look brilliant</span>
+				<h2 class="cp-h">Know someone who <em class="cp-biz-em">needs software?</em></h2>
+				<p class="cp-biz-p">
+					Beyond the classroom, Swizel is a full product studio. We
+					<strong> design</strong>, <strong>build</strong>,
+					<strong> market</strong> and <strong>maintain</strong> web &
+					mobile software for businesses — from first call to launch in
+					weeks, then we keep it running. Got a startup idea yourself, or
+					an uncle with a business? Send them our way.
+				</p>
+				<div class="cp-biz-row">
+					<a href="/contact" class="cp-biz-cta">
+						Start a project
+						<Icon width={17} name="mdi:arrow-right" />
+					</a>
+					<a href="tel:+2348100204570" class="cp-biz-call">
+						or call <strong>+234 810 020 4570</strong>
+					</a>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── G · from past bootcamps ─────────────────────────── -->
+	<section class="cp-sec" data-cursor="play">
+		<div class="cp-wrap">
+			<div class="cp-head cp-rev">
+				<span class="cp-badge">The archives</span>
+				<h2 class="cp-h">From past <em>bootcamps.</em></h2>
+			</div>
+			<div class="cp-gallery cp-rev">
+				<div class="cp-shot cp-shot--wide">
+					<Icon width={30} name="mdi:play-circle-outline" />
+					<span class="cp-shot-name">bootcamp-2025-recap.mp4 — video placeholder</span>
+					<span class="cp-shot-sub">Last cohort, start to graduation</span>
+				</div>
+				<div class="cp-shot">
+					<Icon width={22} name="mdi:image-outline" />
+					<span class="cp-shot-name">graduation-day.jpg</span>
+				</div>
+				<div class="cp-shot">
+					<Icon width={22} name="mdi:image-outline" />
+					<span class="cp-shot-name">whiteboard-wars.jpg</span>
+				</div>
+				<div class="cp-shot">
+					<Icon width={26} name="mdi:play-circle-outline" />
+					<span class="cp-shot-name">demo-day.mp4 — video</span>
+				</div>
+				<div class="cp-shot">
+					<Icon width={22} name="mdi:image-outline" />
+					<span class="cp-shot-name">class-of-25.jpg</span>
+				</div>
+				<div class="cp-shot">
+					<Icon width={22} name="mdi:image-outline" />
+					<span class="cp-shot-name">hackathon-night.jpg</span>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── H · achievements ────────────────────────────────── -->
+	<section class="cp-sec" data-cursor="layers">
+		<div class="cp-wrap">
+			<div class="cp-head cp-rev">
+				<span class="cp-badge">Achievements</span>
+				<h2 class="cp-h">Unlocked <em>by showing up.</em></h2>
+			</div>
+			<div class="cp-achvs" id="cp-achvs">
+				{
+					achievements.map((a, i) => (
+						<div class="cp-achv" style={`--i:${i}`}>
+							<span class="cp-achv-lock" aria-hidden="true">
+								<Icon width={22} name="mdi:lock-outline" />
+							</span>
+							<span class="cp-achv-ic" aria-hidden="true">
+								<Icon width={26} name={a.icon} />
+							</span>
+							<h3 class="cp-achv-t">{a.title}</h3>
+							<p class="cp-achv-d">{a.desc}</p>
 						</div>
 					))
 				}
@@ -166,116 +453,1388 @@ const grads = [
 		</div>
 	</section>
 
-	<!-- GRADS -->
-	<section class="cb-sec">
-		<div class="cb-wrap">
-			<span class="cb-kick">From our students</span>
-			<h2 class="cb-h">They started <span class="cb-accent">right where you are.</span></h2>
-			<div class="cb-reviews">
+	<!-- ── I · alumni board ────────────────────────────────── -->
+	<section class="cp-sec" data-cursor="quote">
+		<div class="cp-wrap">
+			<div class="cp-head cp-rev">
+				<span class="cp-badge">Alumni board</span>
+				<h2 class="cp-h">Grads, <em>five stars in.</em></h2>
+			</div>
+			<div class="cp-voices">
 				{
-					grads.map((r) => (
-						<figure class="cb-rev">
-							<blockquote>{r.body}</blockquote>
-							<figcaption>
-								<img src={r.img} alt={r.name} loading="lazy" />
-								<span class="cb-rev-name">{r.name}</span>
-								<span class="cb-rev-stars">★★★★★</span>
-							</figcaption>
-						</figure>
+					voices.map((v, i) => (
+						<article class="cp-voice cp-rev" style={`--i:${i}`}>
+							<div class="cp-voice-top">
+								<img src={v.img} alt="" loading="lazy" />
+								<span class="cp-voice-who">
+									<strong>{v.name}</strong>
+									<em>★★★★★</em>
+								</span>
+							</div>
+							<p class="cp-voice-body">“{v.body}”</p>
+						</article>
 					))
 				}
 			</div>
+		</div>
+	</section>
+
+	<!-- ── J · enrollment is open ──────────────────────────── -->
+	<section class="cp-sec cp-sec--cta" data-cursor="phone">
+		<div class="cp-wrap cp-ctabox cp-rev">
+			<span class="cp-badge">New semester</span>
+			<h2 class="cp-h cp-h--xl">Enrollment <em>is open.</em></h2>
+			<p class="cp-p cp-p--center">
+				The next cohort is forming. Three months from now you could be
+				shipping — for free, with real mentors and coursemates.
+			</p>
+			<a href="/bootcamp" class="cp-start">
+				<Icon width={20} name="mdi:gamepad-variant-outline" />
+				START — join the bootcamp
+			</a>
+			<p class="cp-alt">
+				Questions before you enroll? Call
+				<a href="tel:+2348100204570" class="cp-phone">+234 810 020 4570</a>
+			</p>
 		</div>
 	</section>
 </div>
 
 <style>
+	/* ── Campus world — warm school amber. Dark-native, sunny in light. ── */
 	.cbody {
+		--cp-ink: #fdf6ea;
+		--cp-muted: rgba(253, 246, 234, 0.62);
+		--cp-faint: rgba(253, 246, 234, 0.4);
+		--cp-acc: var(--view-accent, #f59e0b);
+		--cp-acc2: #fb7185;
+		--cp-line: rgba(255, 255, 255, 0.09);
+		--cp-card: rgba(255, 255, 255, 0.035);
+		--cp-marker: 'Bradley Hand', 'Segoe Print', 'Comic Sans MS', cursive;
+		font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+			Roboto, sans-serif;
 		position: relative;
+		isolation: isolate;
 		background:
-			radial-gradient(800px 420px at 82% 0%, rgba(245, 158, 11, 0.1), transparent 60%),
-			linear-gradient(180deg, #16110a 0%, #100c08 100%);
-		color: #f3ead9;
+			radial-gradient(1000px 540px at 82% -6%, rgba(245, 158, 11, 0.13), transparent 62%),
+			radial-gradient(820px 480px at 6% 44%, rgba(251, 113, 133, 0.07), transparent 60%),
+			linear-gradient(180deg, #120c04 0%, #160f08 50%, #0e0903 100%);
+		color: var(--cp-ink);
+		padding: clamp(3rem, 7vw, 5.5rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 4rem);
+		transition: background 0.4s ease, color 0.4s ease;
 	}
-	.cb-sec { padding: clamp(3.5rem, 8vw, 6rem) 5%; border-top: 1px solid rgba(245, 158, 11, 0.12); }
-	.cb-sec:first-child { border-top: 0; }
-	.cb-wrap { max-width: 1120px; margin: 0 auto; }
+	:global(html:not(.dark)) .cbody {
+		--cp-ink: #2b1c08;
+		--cp-muted: rgba(43, 28, 8, 0.68);
+		--cp-faint: rgba(43, 28, 8, 0.46);
+		--cp-acc: #b45309;
+		--cp-line: rgba(43, 28, 8, 0.1);
+		--cp-card: rgba(43, 28, 8, 0.045);
+		background:
+			radial-gradient(1000px 540px at 82% -6%, rgba(245, 158, 11, 0.14), transparent 62%),
+			linear-gradient(180deg, #fdf4e3 0%, #faecd4 55%, #fdf4e3 100%);
+	}
 
-	.cb-kick { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #fcd34d; }
-	.cb-dot { width: 8px; height: 8px; border-radius: 9999px; background: var(--view-accent, #f59e0b); box-shadow: 0 0 10px 1px rgba(245, 158, 11, 0.6); }
-	.cb-h { font-size: clamp(2rem, 4.6vw, 3.2rem); font-weight: 800; line-height: 1.08; letter-spacing: -0.5px; color: #fff; margin: 0.7rem 0 1.8rem; }
-	.cb-accent { background: linear-gradient(95deg, #fde68a, var(--view-accent, #f59e0b)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-	.cb-p { color: rgba(243, 234, 217, 0.72); line-height: 1.75; max-width: 34rem; }
-	.cb-link { display: inline-flex; align-items: center; gap: 0.45rem; font-weight: 700; color: #fcd34d; transition: gap 0.25s ease; }
-	.cb-link:hover { gap: 0.8rem; }
+	.cp-sec {
+		padding-block: clamp(2rem, 5vw, 3.5rem);
+	}
+	.cp-wrap {
+		max-width: 74rem;
+		margin: 0 auto;
+	}
 
-	/* About */
-	.cb-about { display: grid; gap: 2.5rem; align-items: center; }
-	@media (min-width: 920px) { .cb-about { grid-template-columns: 1fr 1.05fr; gap: 4rem; } }
-	.cb-about .cb-h { margin-top: 0.7rem; }
-	.cb-stats { list-style: none; padding: 1.7rem 0 0; margin: 1.7rem 0 0; display: grid; grid-template-columns: repeat(2, auto); gap: 1.5rem 2.5rem; width: fit-content; border-top: 1px solid rgba(255, 255, 255, 0.08); }
-	@media (min-width: 540px) { .cb-stats { grid-template-columns: repeat(4, auto); } }
-	.cb-stats strong { display: block; font-family: 'Bebas Neue', sans-serif; font-size: 2.4rem; line-height: 1; background: linear-gradient(135deg, #fde68a, var(--view-accent, #f59e0b)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-	.cb-stats span { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(243, 234, 217, 0.5); max-width: 8rem; }
-	.cb-about .cb-link { margin-top: 1.8rem; }
-	.cb-media { position: relative; }
-	.cb-photo { position: relative; margin: 0; border-radius: 1.3rem; overflow: hidden; box-shadow: 0 40px 90px -40px rgba(0, 0, 0, 0.9); border: 1px solid rgba(245, 158, 11, 0.28); }
-	.cb-photo img { display: block; width: 100%; height: auto; }
-	.cb-video { position: absolute; right: -14px; bottom: -22px; display: flex; align-items: center; gap: 0.7rem; padding: 0.7rem 1rem 0.7rem 0.7rem; border-radius: 0.9rem; border: 1px solid rgba(245, 158, 11, 0.4); background: rgba(22, 17, 10, 0.92); backdrop-filter: blur(10px); box-shadow: 0 20px 40px -18px rgba(0, 0, 0, 0.7); cursor: pointer; transition: border-color 0.25s ease, transform 0.25s ease; }
-	.cb-video:hover { border-color: var(--view-accent, #f59e0b); transform: translateY(-3px); }
-	.cb-play { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 9999px; color: #2a1c02; background: linear-gradient(135deg, #fde68a, var(--view-accent, #f59e0b)); flex-shrink: 0; }
-	.cb-video-txt { display: flex; flex-direction: column; text-align: left; }
-	.cb-video-txt strong { font-size: 0.86rem; color: #fff; }
-	.cb-video-txt small { font-size: 0.72rem; color: rgba(243, 234, 217, 0.5); }
-	@media (max-width: 919px) { .cb-video { position: static; margin-top: 1.5rem; width: fit-content; right: auto; bottom: auto; } }
+	/* ── Type & shared ── */
+	.cp-badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		font-family: ui-monospace, monospace;
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--cp-acc);
+		border: 1.5px solid color-mix(in srgb, var(--cp-acc) 45%, transparent);
+		padding: 0.35rem 0.85rem;
+		border-radius: 0.4rem;
+		box-shadow: 2.5px 2.5px 0 color-mix(in srgb, var(--cp-acc) 35%, transparent);
+		margin-bottom: 1rem;
+	}
+	.cp-h {
+		font-size: clamp(1.9rem, 4.2vw, 3rem);
+		font-weight: 850;
+		letter-spacing: -0.025em;
+		line-height: 1.06;
+		margin: 0 0 1rem;
+	}
+	.cp-h--xl {
+		font-size: clamp(2.2rem, 4.4vw, 3.4rem);
+	}
+	.cp-h em {
+		font-style: normal;
+		background: linear-gradient(95deg, var(--cp-acc), var(--cp-acc2));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	:global(html:not(.dark)) .cbody .cp-h em {
+		background: linear-gradient(95deg, #b45309, #be123c);
+		-webkit-background-clip: text;
+		background-clip: text;
+	}
+	.cp-p {
+		font-size: 1.02rem;
+		line-height: 1.65;
+		color: var(--cp-muted);
+		max-width: 34rem;
+		margin: 0 0 1.4rem;
+	}
+	.cp-head {
+		text-align: center;
+		max-width: 46rem;
+		margin: 0 auto clamp(1.5rem, 3vw, 2.25rem);
+	}
+	.cp-p--center {
+		margin-inline: auto;
+		text-align: center;
+	}
+	.cp-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		font-weight: 700;
+		color: var(--cp-acc);
+		transition: gap 0.25s ease;
+	}
+	.cp-link:hover {
+		gap: 0.75rem;
+	}
+	.cp-row {
+		display: flex;
+		align-items: center;
+		gap: 1.4rem;
+		flex-wrap: wrap;
+	}
+	.cp-cta {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+		padding: 0.85rem 1.7rem;
+		border-radius: 0.8rem;
+		font-weight: 800;
+		font-size: 0.95rem;
+		color: #2b1c08;
+		background: linear-gradient(180deg, #fcd34d, var(--cp-acc));
+		border: 1px solid rgba(255, 255, 255, 0.4);
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.5),
+			0 6px 0 color-mix(in srgb, var(--cp-acc) 60%, #5b3305),
+			0 18px 38px -14px color-mix(in srgb, var(--cp-acc) 70%, transparent);
+		transition: transform 0.15s ease, box-shadow 0.15s ease;
+	}
+	.cp-cta:hover {
+		transform: translateY(2px);
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.5),
+			0 4px 0 color-mix(in srgb, var(--cp-acc) 60%, #5b3305),
+			0 14px 30px -14px color-mix(in srgb, var(--cp-acc) 70%, transparent);
+	}
 
-	/* Tracks */
-	.cb-tracks { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
-	.cb-track { padding: 1.5rem; border-radius: 1.1rem; border: 1px solid rgba(245, 158, 11, 0.16); background: rgba(255, 255, 255, 0.02); transition: border-color 0.25s ease, transform 0.25s ease; }
-	.cb-track:hover { border-color: var(--view-accent, #f59e0b); transform: translateY(-4px); }
-	.cb-track-ic { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 0.9rem; background: linear-gradient(135deg, rgba(253,230,138,0.18), rgba(245,158,11,0.14)); color: #fcd34d; margin-bottom: 1rem; }
-	.cb-track-title { font-size: 1.15rem; font-weight: 800; color: #fff; }
-	.cb-track-desc { color: rgba(243, 234, 217, 0.66); font-size: 0.92rem; line-height: 1.55; margin: 0.5rem 0 1rem; }
-	.cb-track-tag { font-family: ui-monospace, monospace; font-size: 0.74rem; color: rgba(252, 211, 77, 0.7); }
+	/* ── A · open + the whiteboard ── */
+	.cp-open {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: clamp(1.75rem, 4vw, 3.5rem);
+		align-items: center;
+	}
+	@media (min-width: 920px) {
+		.cp-open {
+			grid-template-columns: 1fr 1.05fr;
+		}
+	}
+	.cp-stats {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 1rem 1.25rem;
+		list-style: none;
+		margin: 0 0 1.5rem;
+		padding: 0;
+		max-width: 30rem;
+	}
+	@media (max-width: 520px) {
+		.cp-stats {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+	.cp-stats strong {
+		display: block;
+		font-size: clamp(1.5rem, 2.6vw, 2rem);
+		font-weight: 850;
+		letter-spacing: -0.02em;
+		white-space: nowrap;
+		background: linear-gradient(135deg, #fcd34d, var(--cp-acc));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	:global(html:not(.dark)) .cbody .cp-stats strong {
+		background: linear-gradient(135deg, #b45309, #d97706);
+		-webkit-background-clip: text;
+		background-clip: text;
+	}
+	.cp-stats span {
+		font-size: 0.78rem;
+		color: var(--cp-faint);
+	}
 
-	/* Journey */
-	.cb-journey { list-style: none; padding: 0; margin: 0; display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
-	.cb-step { position: relative; opacity: 0; transform: translateY(14px); }
-	.cb-step.is-on { animation: cb-in 0.5s ease forwards; }
-	@keyframes cb-in { to { opacity: 1; transform: translateY(0); } }
-	.cb-step-ic { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 0.9rem; background: var(--view-accent, #f59e0b); color: #2a1c02; }
-	.cb-step-n { display: block; margin-top: 0.8rem; font-family: ui-monospace, monospace; font-size: 0.72rem; color: #fcd34d; }
-	.cb-step-title { font-size: 1.2rem; font-weight: 800; color: #fff; margin: 0.2rem 0; }
-	.cb-step-desc { color: rgba(243, 234, 217, 0.6); font-size: 0.9rem; line-height: 1.55; }
+	/* the whiteboard — white in both themes, aluminium frame, marker ink */
+	.cp-board {
+		position: relative;
+		background: #fbfcfd;
+		border: 7px solid #d4dae1;
+		border-bottom-width: 10px;
+		border-radius: 0.9rem;
+		padding: 1.5rem 1.5rem 2.2rem;
+		transform: rotate(-1deg);
+		box-shadow: 0 34px 80px -30px rgba(0, 0, 0, 0.55);
+		transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.cp-board:hover {
+		transform: rotate(0deg);
+	}
+	.cp-board-title {
+		position: relative;
+		display: inline-block;
+		font-family: var(--cp-marker);
+		font-size: clamp(1.2rem, 2.4vw, 1.6rem);
+		font-weight: 700;
+		color: #1d4ed8;
+		margin: 0 0 1rem;
+		transform: rotate(-1deg);
+	}
+	.cp-board-swish {
+		position: absolute;
+		left: 0;
+		right: -6px;
+		bottom: -7px;
+		height: 5px;
+		border-radius: 9999px;
+		background: #dc2626;
+		opacity: 0.85;
+		transform: rotate(-0.6deg);
+	}
+	.cp-board-video {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.4rem;
+		aspect-ratio: 16 / 9;
+		min-height: clamp(240px, 26vw, 380px);
+		border: 2px dashed rgba(29, 78, 216, 0.35);
+		border-radius: 0.7rem;
+		color: #475569;
+		background: radial-gradient(420px 200px at 70% 10%, rgba(29, 78, 216, 0.06), transparent);
+	}
+	.cp-board-vname {
+		font-size: 0.78rem;
+		font-weight: 800;
+		letter-spacing: 0.07em;
+		text-transform: uppercase;
+		text-align: center;
+		padding-inline: 0.75rem;
+	}
+	.cp-board-vsub {
+		font-size: 0.76rem;
+		color: #94a3b8;
+	}
+	.cp-sticky {
+		position: absolute;
+		font-family: var(--cp-marker);
+		font-size: 0.95rem;
+		font-weight: 700;
+		color: #44403c;
+		padding: 0.8rem 0.9rem 1rem;
+		box-shadow: 0 10px 22px -8px rgba(0, 0, 0, 0.35);
+	}
+	.cp-sticky--y {
+		top: -16px;
+		right: 26px;
+		background: #fde68a;
+		transform: rotate(3deg);
+	}
+	.cp-sticky--p {
+		bottom: 14px;
+		right: -14px;
+		background: #fbcfe8;
+		transform: rotate(-4deg);
+	}
+	.cp-marker-tray {
+		position: absolute;
+		left: 1.4rem;
+		bottom: -7px;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+	.cp-marker {
+		display: block;
+		width: 44px;
+		height: 9px;
+		border-radius: 9999px;
+	}
+	.cp-marker--r { background: #dc2626; }
+	.cp-marker--b { background: #1d4ed8; }
+	.cp-marker--g { background: #16a34a; }
+	.cp-eraser {
+		display: block;
+		width: 30px;
+		height: 13px;
+		border-radius: 3px;
+		background: #64748b;
+	}
 
-	/* Builds */
-	.cb-builds { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
-	.cb-build { border-radius: 1.1rem; overflow: hidden; border: 1px solid rgba(245, 158, 11, 0.16); background: rgba(255, 255, 255, 0.02); transition: border-color 0.25s ease, transform 0.25s ease; }
-	.cb-build:hover { border-color: var(--view-accent, #f59e0b); transform: translateY(-4px); }
-	.cb-build-img { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: #1a130a; }
-	.cb-build-img img { width: 100%; height: 100%; object-fit: cover; }
-	.cb-build-ph { position: absolute; inset: 0; display: grid; place-items: center; color: rgba(252, 211, 77, 0.5); background: repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0 10px, transparent 10px 20px); }
-	.cb-build-sector { position: absolute; top: 10px; left: 10px; padding: 0.2rem 0.6rem; border-radius: 9999px; background: rgba(22, 17, 10, 0.82); border: 1px solid rgba(245, 158, 11, 0.3); font-size: 0.7rem; color: #fcd34d; }
-	.cb-build-meta { padding: 0.9rem 1.1rem; }
-	.cb-build-name { display: block; font-weight: 700; color: #fff; }
-	.cb-build-tag { font-size: 0.78rem; color: rgba(243, 234, 217, 0.5); font-family: ui-monospace, monospace; }
+	/* ── B · course cards ── */
+	.cp-tracks {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: clamp(0.9rem, 2vw, 1.25rem);
+	}
+	@media (max-width: 980px) {
+		.cp-tracks {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+	@media (max-width: 540px) {
+		.cp-tracks {
+			grid-template-columns: 1fr;
+		}
+	}
+	.cp-track {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		padding: 1.3rem 1.25rem 1.15rem;
+		border-radius: 1.1rem;
+		border: 1px solid var(--cp-line);
+		background: var(--cp-card);
+		transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+			border-color 0.3s ease, box-shadow 0.3s ease;
+	}
+	.cp-track:hover {
+		transform: translateY(-6px) rotate(-0.6deg);
+		border-color: color-mix(in srgb, var(--cp-acc) 55%, transparent);
+		box-shadow: 0 26px 56px -24px color-mix(in srgb, var(--cp-acc) 45%, transparent);
+	}
+	.cp-track-top {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		width: 100%;
+		margin-bottom: 0.9rem;
+	}
+	.cp-track-ic {
+		display: grid;
+		place-items: center;
+		width: 48px;
+		height: 48px;
+		border-radius: 0.9rem;
+		background: linear-gradient(135deg, color-mix(in srgb, var(--cp-acc) 26%, transparent), color-mix(in srgb, var(--cp-acc) 8%, transparent));
+		border: 1px solid color-mix(in srgb, var(--cp-acc) 35%, transparent);
+		color: var(--cp-acc);
+	}
+	.cp-track-code {
+		font-family: ui-monospace, monospace;
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		color: var(--cp-faint);
+		border: 1px solid var(--cp-line);
+		padding: 0.2rem 0.5rem;
+		border-radius: 0.35rem;
+	}
+	.cp-track-t {
+		font-size: 1.06rem;
+		font-weight: 800;
+		margin: 0 0 0.35rem;
+	}
+	.cp-track-d {
+		font-size: 0.86rem;
+		line-height: 1.55;
+		color: var(--cp-muted);
+		margin: 0 0 0.9rem;
+	}
+	.cp-chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.35rem;
+		margin-bottom: 0.9rem;
+	}
+	.cp-chip {
+		font-family: ui-monospace, monospace;
+		font-size: 0.68rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		padding: 0.22rem 0.55rem;
+		border-radius: 9999px;
+		border: 1px solid color-mix(in srgb, var(--cp-ink) 16%, transparent);
+		color: color-mix(in srgb, var(--cp-ink) 55%, transparent);
+	}
+	.cp-track-room {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3rem;
+		font-size: 0.74rem;
+		color: var(--cp-faint);
+		margin-bottom: 0.7rem;
+	}
+	.cp-track-go {
+		margin-top: auto;
+		font-family: ui-monospace, monospace;
+		font-size: 0.78rem;
+		font-weight: 800;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--cp-acc);
+		opacity: 0;
+		transform: translateX(-6px);
+		transition: opacity 0.25s ease, transform 0.25s ease;
+	}
+	.cp-track:hover .cp-track-go {
+		opacity: 1;
+		transform: translateX(0);
+	}
+	@media (pointer: coarse) {
+		.cp-track-go {
+			opacity: 1;
+			transform: none;
+		}
+	}
 
-	/* Perks */
-	.cb-perks { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
-	.cb-perk { padding: 1.4rem; border-radius: 1.1rem; border: 1px solid rgba(245, 158, 11, 0.16); background: rgba(255, 255, 255, 0.02); transition: border-color 0.25s ease, transform 0.25s ease; }
-	.cb-perk:hover { border-color: var(--view-accent, #f59e0b); transform: translateY(-4px); }
-	.cb-perk-ic { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 0.9rem; background: linear-gradient(135deg, rgba(253,230,138,0.18), rgba(245,158,11,0.14)); color: #fcd34d; margin-bottom: 0.9rem; }
-	.cb-perk h3 { font-size: 1.05rem; font-weight: 800; color: #fff; }
-	.cb-perk p { color: rgba(243, 234, 217, 0.65); font-size: 0.9rem; line-height: 1.55; margin-top: 0.4rem; }
+	/* ── C · roadmap (quest line) ── */
+	.cp-questline {
+		position: relative;
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 1.25rem;
+		list-style: none;
+		margin: 2.5rem 0 0;
+		padding: 0;
+	}
+	.cp-quest-bar {
+		position: absolute;
+		top: 14px;
+		left: 2%;
+		right: 2%;
+		height: 6px;
+		border-radius: 9999px;
+		background: color-mix(in srgb, var(--cp-ink) 10%, transparent);
+		overflow: hidden;
+	}
+	.cp-quest-bar::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		border-radius: 9999px;
+		background: repeating-linear-gradient(
+			45deg,
+			var(--cp-acc) 0 10px,
+			#fcd34d 10px 20px
+		);
+		transform: scaleX(0);
+		transform-origin: left;
+		transition: transform 2.4s cubic-bezier(0.22, 1, 0.36, 1) 0.3s;
+	}
+	.cp-questline.is-on .cp-quest-bar::after {
+		transform: scaleX(1);
+	}
+	.cp-stage {
+		position: relative;
+		padding-top: 2.6rem;
+	}
+	.cp-stage-node {
+		position: absolute;
+		top: 0;
+		left: 0;
+		display: grid;
+		place-items: center;
+		width: 34px;
+		height: 34px;
+		border-radius: 9999px;
+		font-weight: 850;
+		font-size: 0.9rem;
+		color: #2b1c08;
+		background: linear-gradient(180deg, #fcd34d, var(--cp-acc));
+		border: 3px solid color-mix(in srgb, var(--cp-acc) 30%, #160f08);
+		box-shadow: 0 0 18px color-mix(in srgb, var(--cp-acc) 55%, transparent);
+		transform: scale(0);
+	}
+	:global(html:not(.dark)) .cbody .cp-stage-node {
+		border-color: #faecd4;
+	}
+	.cp-questline.is-on li:nth-child(2) .cp-stage-node { animation: cp-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s forwards; }
+	.cp-questline.is-on li:nth-child(3) .cp-stage-node { animation: cp-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 1.0s forwards; }
+	.cp-questline.is-on li:nth-child(4) .cp-stage-node { animation: cp-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 1.6s forwards; }
+	.cp-questline.is-on li:nth-child(5) .cp-stage-node { animation: cp-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 2.2s forwards; }
+	@keyframes cp-pop {
+		to { transform: scale(1); }
+	}
+	.cp-stage-lvl {
+		font-family: ui-monospace, monospace;
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--cp-acc);
+	}
+	.cp-stage-lvl em {
+		font-style: normal;
+		color: var(--cp-faint);
+		margin-left: 0.35rem;
+	}
+	.cp-stage-t {
+		font-size: 1.12rem;
+		font-weight: 800;
+		margin: 0.25rem 0 0.3rem;
+	}
+	.cp-stage-d {
+		margin: 0;
+		font-size: 0.88rem;
+		line-height: 1.55;
+		color: var(--cp-muted);
+	}
+	@media (max-width: 760px) {
+		.cp-questline {
+			grid-template-columns: 1fr;
+			gap: 1.5rem;
+			padding-left: 2.4rem;
+		}
+		.cp-quest-bar {
+			top: 2%;
+			bottom: 4%;
+			left: 14px;
+			right: auto;
+			width: 6px;
+			height: auto;
+		}
+		.cp-quest-bar::after {
+			transform: scaleY(0);
+			transform-origin: top;
+		}
+		.cp-questline.is-on .cp-quest-bar::after {
+			transform: scaleY(1);
+		}
+		.cp-stage {
+			padding-top: 0;
+		}
+		.cp-stage-node {
+			left: -2.4rem;
+			top: 0;
+		}
+	}
 
-	/* Reviews */
-	.cb-reviews { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
-	.cb-rev { margin: 0; padding: 1.3rem; border-radius: 1.1rem; border: 1px solid rgba(245, 158, 11, 0.16); background: rgba(255, 255, 255, 0.02); }
-	.cb-rev blockquote { margin: 0 0 1rem; color: rgba(243, 234, 217, 0.82); line-height: 1.6; font-size: 0.95rem; }
-	.cb-rev figcaption { display: flex; align-items: center; gap: 0.55rem; }
-	.cb-rev figcaption img { width: 34px; height: 34px; border-radius: 9999px; object-fit: cover; }
-	.cb-rev-name { font-weight: 700; color: #fff; font-size: 0.9rem; }
-	.cb-rev-stars { margin-left: auto; color: #fbbf24; font-size: 0.85rem; letter-spacing: 1px; }
+	/* ── D · the corkboard ── */
+	.cp-cork {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		align-items: stretch;
+		gap: clamp(0.9rem, 2vw, 1.4rem);
+		padding: clamp(1.5rem, 3vw, 2.5rem);
+		border-radius: 1.2rem;
+		border: 8px solid #7c4a23;
+		background:
+			radial-gradient(8px 8px at 20% 30%, rgba(0, 0, 0, 0.06), transparent),
+			radial-gradient(6px 6px at 70% 60%, rgba(0, 0, 0, 0.05), transparent),
+			linear-gradient(160deg, #c89a6b, #b07f4e);
+		box-shadow: inset 0 0 50px rgba(60, 35, 12, 0.35), 0 30px 70px -30px rgba(0, 0, 0, 0.6);
+	}
+	.cp-pin {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		gap: 0.15rem;
+		min-width: 11rem;
+		padding: 1.3rem 1.1rem 0.9rem;
+		background: #fffdf5;
+		color: #44403c;
+		box-shadow: 0 12px 26px -10px rgba(0, 0, 0, 0.45);
+		transform: rotate(calc(var(--r, 0) * 2deg));
+		transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+	}
+	.cp-pin:hover {
+		transform: rotate(0deg) scale(1.04);
+		z-index: 2;
+	}
+	.cp-pin-tack {
+		position: absolute;
+		top: -10px;
+		left: 50%;
+		transform: translateX(-50%) rotate(15deg);
+		font-size: 1.15rem;
+		filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.3));
+	}
+	.cp-pin-icon {
+		font-size: 1.45rem;
+		line-height: 1;
+		margin-bottom: 0.3rem;
+	}
+	.cp-pin strong {
+		font-family: var(--cp-marker);
+		font-size: 1.02rem;
+	}
+	.cp-pin em {
+		font-style: normal;
+		font-size: 0.74rem;
+		color: #78716c;
+	}
+	.cp-pin--photo {
+		justify-content: center;
+		align-items: center;
+		min-height: 7.5rem;
+		background: #f1f5f9;
+	}
+	.cp-pin-ph {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.3rem;
+		font-size: 0.7rem;
+		font-weight: 700;
+		letter-spacing: 0.07em;
+		text-transform: uppercase;
+		color: #94a3b8;
+	}
 
-	@media (prefers-reduced-motion: reduce) { .cb-step { opacity: 1; transform: none; } }
+	/* ── E · the chalkboard ── */
+	.cp-chalkwrap {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: clamp(1.75rem, 4vw, 3.5rem);
+		align-items: center;
+	}
+	@media (min-width: 880px) {
+		.cp-chalkwrap {
+			grid-template-columns: 0.85fr 1.15fr;
+		}
+	}
+	.cp-chalk {
+		position: relative;
+		min-height: 15rem;
+		padding: 1.8rem 2rem 2.6rem;
+		border-radius: 0.8rem;
+		border: 9px solid #8a5a2b;
+		background:
+			radial-gradient(500px 240px at 30% 20%, rgba(255, 255, 255, 0.045), transparent),
+			linear-gradient(160deg, #1f3d32, #163027);
+		box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.35), 0 30px 70px -30px rgba(0, 0, 0, 0.6);
+	}
+	.cp-chalk-head {
+		display: inline-block;
+		font-family: var(--cp-marker);
+		font-size: 1rem;
+		letter-spacing: 0.18em;
+		color: #fde68a;
+		border-bottom: 2px dashed rgba(253, 230, 138, 0.5);
+		padding-bottom: 0.3rem;
+		margin-bottom: 1rem;
+		transform: rotate(-1deg);
+	}
+	.cp-fact {
+		display: none;
+		margin: 0;
+		font-family: var(--cp-marker);
+		font-size: clamp(1.2rem, 2.4vw, 1.7rem);
+		line-height: 1.5;
+		color: #f1f5f4;
+		text-shadow: 0 0 8px rgba(241, 245, 244, 0.18);
+		animation: cp-chalkin 0.5s ease both;
+	}
+	.cp-fact.is-live {
+		display: block;
+	}
+	@keyframes cp-chalkin {
+		from {
+			opacity: 0;
+			transform: translateY(6px);
+		}
+	}
+	.cp-chalk-count {
+		position: absolute;
+		right: 1.2rem;
+		bottom: 1rem;
+		font-family: var(--cp-marker);
+		font-size: 0.85rem;
+		color: rgba(241, 245, 244, 0.55);
+	}
+	.cp-chalk-tray {
+		position: absolute;
+		left: 1.6rem;
+		bottom: -9px;
+		display: flex;
+		gap: 0.5rem;
+	}
+	.cp-chalk-tray i {
+		display: block;
+		width: 38px;
+		height: 8px;
+		border-radius: 9999px;
+		background: #e7e5e4;
+	}
+	.cp-chalk-tray i:last-child {
+		width: 26px;
+		background: #fde68a;
+	}
+
+	/* ── F · ships ── */
+	.cp-ships {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		grid-auto-rows: clamp(150px, 17vw, 210px);
+		gap: clamp(0.9rem, 2vw, 1.25rem);
+	}
+	@media (max-width: 880px) {
+		.cp-ships {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+	@media (max-width: 480px) {
+		.cp-ships {
+			grid-template-columns: 1fr;
+		}
+	}
+	.cp-ship {
+		position: relative;
+		border-radius: 1.1rem;
+		overflow: hidden;
+		border: 1px solid var(--cp-line);
+		box-shadow: 0 24px 56px -28px rgba(0, 0, 0, 0.6);
+	}
+	.cp-ship img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.cp-ship:hover img {
+		transform: scale(1.06);
+	}
+	.cp-ship-ph {
+		position: absolute;
+		inset: 0;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.3rem;
+		color: var(--cp-faint);
+		font-size: 0.7rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		background:
+			radial-gradient(300px 160px at 70% 10%, color-mix(in srgb, var(--cp-acc) 12%, transparent), transparent),
+			var(--cp-card);
+	}
+	.cp-ship-veil {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(180deg, transparent 45%, rgba(18, 12, 4, 0.88));
+	}
+	.cp-ship-meta {
+		position: absolute;
+		left: 1rem;
+		right: 1rem;
+		bottom: 0.85rem;
+		display: flex;
+		flex-direction: column;
+		line-height: 1.3;
+		color: #fff;
+	}
+	.cp-ship-meta strong {
+		font-size: 0.92rem;
+		font-weight: 800;
+	}
+	.cp-ship-meta em {
+		font-style: normal;
+		font-size: 0.74rem;
+		color: rgba(255, 255, 255, 0.65);
+	}
+
+	/* ── G · gallery ── */
+	.cp-gallery {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		grid-auto-rows: clamp(150px, 16vw, 200px);
+		gap: clamp(0.9rem, 2vw, 1.25rem);
+	}
+	@media (max-width: 760px) {
+		.cp-gallery {
+			grid-template-columns: 1fr;
+		}
+	}
+	.cp-shot {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.35rem;
+		border-radius: 1.1rem;
+		border: 1.5px dashed color-mix(in srgb, var(--cp-ink) 22%, transparent);
+		background:
+			radial-gradient(420px 200px at 70% 10%, color-mix(in srgb, var(--cp-acc) 10%, transparent), transparent),
+			var(--cp-card);
+		color: var(--cp-muted);
+	}
+	.cp-shot--wide {
+		grid-column: span 2;
+		grid-row: span 2;
+	}
+	@media (max-width: 760px) {
+		.cp-shot--wide {
+			grid-column: span 1;
+		}
+	}
+	.cp-shot-name {
+		font-size: 0.78rem;
+		font-weight: 800;
+		letter-spacing: 0.07em;
+		text-transform: uppercase;
+		text-align: center;
+		padding-inline: 0.75rem;
+	}
+	.cp-shot-sub {
+		font-size: 0.76rem;
+		color: var(--cp-faint);
+	}
+
+	/* ── H · achievements: locked → unlocked ── */
+	.cp-achvs {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: clamp(0.9rem, 2vw, 1.25rem);
+	}
+	@media (max-width: 980px) {
+		.cp-achvs {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+	@media (max-width: 540px) {
+		.cp-achvs {
+			grid-template-columns: 1fr;
+		}
+	}
+	.cp-achv {
+		position: relative;
+		padding: 1.4rem 1.25rem 1.2rem;
+		border-radius: 1.1rem;
+		border: 1px solid var(--cp-line);
+		background: var(--cp-card);
+		filter: grayscale(1);
+		opacity: 0.55;
+		transition: filter 0.6s ease, opacity 0.6s ease, border-color 0.5s ease,
+			box-shadow 0.5s ease;
+		transition-delay: calc(var(--i, 0) * 0.25s);
+	}
+	.cp-achvs.is-on .cp-achv {
+		filter: grayscale(0);
+		opacity: 1;
+		border-color: color-mix(in srgb, var(--cp-acc) 45%, transparent);
+		box-shadow: 0 22px 48px -24px color-mix(in srgb, var(--cp-acc) 45%, transparent);
+	}
+	.cp-achv-lock {
+		position: absolute;
+		top: 1rem;
+		right: 1rem;
+		color: var(--cp-faint);
+		transition: opacity 0.4s ease, transform 0.4s ease;
+		transition-delay: calc(var(--i, 0) * 0.25s);
+	}
+	.cp-achvs.is-on .cp-achv-lock {
+		opacity: 0;
+		transform: scale(0.5) rotate(-20deg);
+	}
+	.cp-achv-ic {
+		display: grid;
+		place-items: center;
+		width: 52px;
+		height: 52px;
+		border-radius: 9999px;
+		background: linear-gradient(180deg, #fcd34d, var(--cp-acc));
+		color: #2b1c08;
+		margin-bottom: 0.9rem;
+		transform: scale(0.85);
+		transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+		transition-delay: calc(var(--i, 0) * 0.25s);
+	}
+	.cp-achvs.is-on .cp-achv-ic {
+		transform: scale(1);
+	}
+	.cp-achv-t {
+		font-size: 1.05rem;
+		font-weight: 800;
+		margin: 0 0 0.3rem;
+	}
+	.cp-achv-d {
+		margin: 0;
+		font-size: 0.85rem;
+		line-height: 1.55;
+		color: var(--cp-muted);
+	}
+
+	/* ── I · alumni ── */
+	.cp-voices {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: clamp(0.9rem, 2vw, 1.25rem);
+		max-width: 64rem;
+		margin: 0 auto;
+	}
+	@media (max-width: 880px) {
+		.cp-voices {
+			grid-template-columns: 1fr;
+		}
+	}
+	.cp-voice {
+		padding: 1.2rem 1.25rem 1.1rem;
+		border-radius: 1.1rem;
+		border: 1px solid var(--cp-line);
+		background: var(--cp-card);
+		transition: transform 0.3s ease, border-color 0.3s ease;
+	}
+	.cp-voice:hover {
+		transform: translateY(-4px);
+		border-color: color-mix(in srgb, var(--cp-acc) 45%, transparent);
+	}
+	.cp-voice-top {
+		display: flex;
+		align-items: center;
+		gap: 0.7rem;
+		margin-bottom: 0.7rem;
+	}
+	.cp-voice-top img {
+		width: 38px;
+		height: 38px;
+		border-radius: 9999px;
+		object-fit: cover;
+		border: 2px solid color-mix(in srgb, var(--cp-acc) 50%, transparent);
+	}
+	.cp-voice-who {
+		display: flex;
+		flex-direction: column;
+		line-height: 1.25;
+	}
+	.cp-voice-who strong {
+		font-size: 0.92rem;
+	}
+	.cp-voice-who em {
+		font-style: normal;
+		font-size: 0.74rem;
+		letter-spacing: 0.1em;
+		color: var(--cp-acc);
+	}
+	.cp-voice-body {
+		margin: 0;
+		font-size: 0.95rem;
+		line-height: 1.6;
+		color: var(--cp-muted);
+	}
+
+	/* ── J · enrollment ── */
+	.cp-sec--cta {
+		padding-bottom: clamp(1.5rem, 3vw, 2.5rem);
+	}
+	.cp-ctabox {
+		text-align: center;
+		max-width: 50rem;
+		padding: clamp(2.5rem, 5vw, 4rem) clamp(1.25rem, 3vw, 3rem);
+		border-radius: 1.5rem;
+		border: 1px solid color-mix(in srgb, var(--cp-acc) 30%, var(--cp-line));
+		background:
+			radial-gradient(640px 300px at 50% 120%, color-mix(in srgb, var(--cp-acc) 18%, transparent), transparent 70%),
+			var(--cp-card);
+		margin-inline: auto;
+	}
+	.cp-start {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.6rem;
+		padding: 1rem 2.2rem;
+		border-radius: 0.9rem;
+		font-weight: 850;
+		font-size: 1.05rem;
+		letter-spacing: 0.02em;
+		color: #2b1c08;
+		background: linear-gradient(180deg, #fcd34d, var(--cp-acc));
+		border: 1px solid rgba(255, 255, 255, 0.4);
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.5),
+			0 7px 0 color-mix(in srgb, var(--cp-acc) 60%, #5b3305),
+			0 22px 44px -14px color-mix(in srgb, var(--cp-acc) 70%, transparent);
+		animation: cp-throb 2.4s ease-in-out infinite;
+		transition: transform 0.15s ease, box-shadow 0.15s ease;
+	}
+	.cp-start:hover {
+		transform: translateY(3px);
+		animation-play-state: paused;
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.5),
+			0 4px 0 color-mix(in srgb, var(--cp-acc) 60%, #5b3305),
+			0 16px 34px -14px color-mix(in srgb, var(--cp-acc) 70%, transparent);
+	}
+	@keyframes cp-throb {
+		0%, 100% { filter: brightness(1); }
+		50% { filter: brightness(1.12); }
+	}
+	.cp-alt {
+		margin: 1.4rem 0 0;
+		font-size: 0.92rem;
+		color: var(--cp-muted);
+	}
+	.cp-phone {
+		font-family: ui-monospace, monospace;
+		font-weight: 800;
+		font-size: 1.15rem;
+		color: var(--cp-ink);
+		transition: color 0.25s ease;
+	}
+	.cp-phone:hover {
+		color: var(--cp-acc);
+	}
+
+
+	/* ── whiteboard date, as the teacher wrote it ── */
+	.cp-board-date {
+		position: absolute;
+		top: 1.1rem;
+		right: 1.4rem;
+		font-family: var(--cp-marker);
+		font-size: 1rem;
+		font-weight: 700;
+		color: #16a34a;
+		transform: rotate(1.5deg);
+	}
+
+	/* ── to-do board details ── */
+	.cp-check {
+		font-style: normal;
+		margin-right: 0.15rem;
+	}
+	.cp-pin--done strong {
+		text-decoration: line-through;
+		text-decoration-thickness: 2px;
+		text-decoration-color: #dc2626;
+		opacity: 0.75;
+	}
+
+	/* ── chalk prev/next: the chalk sticks ARE the buttons ── */
+	.cp-chalk-btn {
+		display: block;
+		width: 38px;
+		height: 9px;
+		border-radius: 9999px;
+		background: #e7e5e4;
+		cursor: pointer;
+		transition: transform 0.2s ease, box-shadow 0.2s ease;
+	}
+	.cp-chalk-btn--y {
+		width: 28px;
+		background: #fde68a;
+	}
+	.cp-chalk-btn:hover {
+		transform: translateY(-3px);
+		box-shadow: 0 6px 12px -4px rgba(0, 0, 0, 0.5);
+	}
+
+	/* ── programs & admissions ── */
+	.cp-programs {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: clamp(0.9rem, 2vw, 1.25rem);
+	}
+	@media (max-width: 980px) {
+		.cp-programs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	}
+	@media (max-width: 540px) {
+		.cp-programs { grid-template-columns: 1fr; }
+	}
+	.cp-program {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		padding: 1.4rem 1.25rem 1.15rem;
+		border-radius: 1.1rem;
+		border: 1px solid var(--cp-line);
+		background: var(--cp-card);
+		transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+			border-color 0.3s ease, box-shadow 0.3s ease;
+	}
+	.cp-program:hover {
+		transform: translateY(-6px);
+		border-color: color-mix(in srgb, var(--cp-acc) 55%, transparent);
+		box-shadow: 0 26px 56px -24px color-mix(in srgb, var(--cp-acc) 45%, transparent);
+	}
+	.cp-program-fee {
+		position: absolute;
+		top: 1rem;
+		right: 1rem;
+		font-family: ui-monospace, monospace;
+		font-size: 0.62rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		padding: 0.25rem 0.55rem;
+		border-radius: 9999px;
+		border: 1px solid var(--cp-line);
+		color: var(--cp-faint);
+	}
+	.cp-program--hot {
+		border-color: color-mix(in srgb, var(--cp-acc) 55%, transparent);
+		background:
+			radial-gradient(300px 160px at 80% -10%, color-mix(in srgb, var(--cp-acc) 16%, transparent), transparent),
+			var(--cp-card);
+	}
+	.cp-program--hot .cp-program-fee {
+		color: #2b1c08;
+		background: linear-gradient(180deg, #fcd34d, var(--cp-acc));
+		border-color: rgba(255, 255, 255, 0.4);
+	}
+	.cp-program-ic {
+		display: grid;
+		place-items: center;
+		width: 50px;
+		height: 50px;
+		border-radius: 0.9rem;
+		background: linear-gradient(135deg, color-mix(in srgb, var(--cp-acc) 26%, transparent), color-mix(in srgb, var(--cp-acc) 8%, transparent));
+		border: 1px solid color-mix(in srgb, var(--cp-acc) 35%, transparent);
+		color: var(--cp-acc);
+		margin-bottom: 0.9rem;
+	}
+	.cp-program-t {
+		font-size: 1.05rem;
+		font-weight: 800;
+		margin: 0 0 0.35rem;
+	}
+	.cp-program-d {
+		font-size: 0.85rem;
+		line-height: 1.55;
+		color: var(--cp-muted);
+		margin: 0 0 0.9rem;
+	}
+
+	/* ── belts: subjects + brands ── */
+	.cp-sec--belts {
+		padding-block: clamp(1.5rem, 3.5vw, 2.5rem);
+	}
+	.cp-belt-label {
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--cp-faint);
+		margin: 0 0 0.7rem;
+	}
+	.cp-belt {
+		overflow: hidden;
+		margin-bottom: 1.6rem;
+		-webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+		mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+	}
+	.cp-belt-track {
+		display: flex;
+		align-items: center;
+		width: max-content;
+		animation: cp-drift 42s linear infinite;
+	}
+	.cp-belt-track--logos {
+		animation: cp-drift 36s linear infinite reverse;
+		padding-block: 0.4rem;
+	}
+	.cp-belt:hover .cp-belt-track {
+		animation-play-state: paused;
+	}
+	@keyframes cp-drift {
+		to { transform: translateX(-50%); }
+	}
+	.cp-bstamp {
+		flex-shrink: 0;
+		margin-right: 1.1rem;
+		font-family: ui-monospace, monospace;
+		font-size: 0.8rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: color-mix(in srgb, var(--cp-ink) 55%, transparent);
+		border: 1.5px solid color-mix(in srgb, var(--cp-acc) 40%, transparent);
+		padding: 0.4rem 0.9rem;
+		border-radius: 0.4rem;
+		box-shadow: 2px 2px 0 color-mix(in srgb, var(--cp-acc) 25%, transparent);
+		transition: color 0.3s ease, border-color 0.3s ease;
+	}
+	.cp-bstamp:hover {
+		color: var(--cp-acc);
+		border-color: var(--cp-acc);
+	}
+	.cp-blogo {
+		flex-shrink: 0;
+		display: grid;
+		place-items: center;
+		margin-right: clamp(1.8rem, 3.5vw, 3rem);
+	}
+	.cp-blogo img {
+		height: 26px;
+		width: auto;
+		max-width: 120px;
+		object-fit: contain;
+		filter: grayscale(1) brightness(0) invert(1);
+		opacity: 0.45;
+		transition: opacity 0.3s ease, filter 0.3s ease;
+	}
+	:global(html:not(.dark)) .cbody .cp-blogo img {
+		filter: grayscale(1) brightness(0);
+	}
+	.cp-blogo:hover img {
+		filter: none;
+		opacity: 1;
+	}
+
+	/* ── the business CTA: pops in Swizel brand teal-blue ── */
+	.cp-biz {
+		position: relative;
+		text-align: center;
+		padding: clamp(2.25rem, 4.5vw, 3.5rem) clamp(1.25rem, 3vw, 3rem);
+		border-radius: 1.5rem;
+		border: 1px solid rgba(40, 166, 236, 0.4);
+		background:
+			radial-gradient(700px 320px at 85% -20%, rgba(24, 222, 190, 0.16), transparent 65%),
+			radial-gradient(600px 300px at 10% 120%, rgba(40, 166, 236, 0.14), transparent 65%),
+			linear-gradient(160deg, rgba(13, 27, 38, 0.92), rgba(8, 16, 24, 0.95));
+		color: #e9f4f6;
+		box-shadow: 0 40px 90px -36px rgba(40, 166, 236, 0.45);
+	}
+	.cp-biz-tag {
+		display: inline-block;
+		font-family: ui-monospace, monospace;
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: #8dfeea;
+		border: 1.5px solid rgba(141, 254, 234, 0.4);
+		padding: 0.35rem 0.85rem;
+		border-radius: 0.4rem;
+		margin-bottom: 1rem;
+	}
+	.cp-biz .cp-h {
+		color: #ffffff;
+	}
+	.cp-biz-em {
+		font-style: normal;
+		background: linear-gradient(95deg, #8dfeea, #28a6ec);
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	.cp-biz-p {
+		font-size: 1rem;
+		line-height: 1.7;
+		color: rgba(233, 244, 246, 0.72);
+		max-width: 42rem;
+		margin: 0 auto 1.5rem;
+	}
+	.cp-biz-p strong {
+		color: #8dfeea;
+		font-weight: 800;
+	}
+	.cp-biz-row {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 1.4rem;
+		flex-wrap: wrap;
+	}
+	.cp-biz-cta {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+		padding: 0.85rem 1.7rem;
+		border-radius: 9999px;
+		font-weight: 800;
+		font-size: 0.95rem;
+		color: #03231d;
+		background: linear-gradient(95deg, #13b6a0, #13a8bf 50%, #1f8fd6);
+		border: 1px solid rgba(255, 255, 255, 0.35);
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.4),
+			0 16px 38px -14px rgba(19, 168, 191, 0.65);
+		transition: transform 0.25s ease, box-shadow 0.25s ease;
+	}
+	.cp-biz-cta:hover {
+		transform: translateY(-2px);
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.45),
+			0 22px 48px -14px rgba(31, 143, 214, 0.75);
+	}
+	.cp-biz-call {
+		font-size: 0.95rem;
+		color: rgba(233, 244, 246, 0.66);
+	}
+	.cp-biz-call strong {
+		font-family: ui-monospace, monospace;
+		font-weight: 800;
+		font-size: 1.3rem;
+		color: #ffffff;
+	}
+	.cp-biz-call:hover strong {
+		color: #8dfeea;
+	}
+
+	/* ── Reveals ── */
+	.cp-rev {
+		opacity: 0;
+		transform: translateY(22px);
+		transition: opacity 0.65s ease, transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+		transition-delay: calc(var(--i, 0) * 0.12s);
+	}
+	.cp-rev.is-on {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.cp-rev {
+			opacity: 1;
+			transform: none;
+			transition: none;
+		}
+		.cp-start {
+			animation: none;
+		}
+		.cp-board,
+		.cp-pin {
+			transform: none;
+		}
+		.cp-stage-node {
+			transform: scale(1);
+			animation: none !important;
+		}
+		.cp-achv,
+		.cp-achv-ic,
+		.cp-achv-lock {
+			transition: none;
+		}
+		.cp-achv {
+			filter: grayscale(0);
+			opacity: 1;
+		}
+		.cp-fact {
+			animation: none;
+		}
+		.cp-belt-track {
+			animation: none;
+		}
+	}
 </style>

@@ -46,7 +46,7 @@ const builds = [
 		<div class="campus--copy">
 			<span class="campus--eyebrow">
 				<Icon width={15} name="mdi:school-outline" />
-				Free bootcamp · learn, build, get hired
+				Admissions open · Cohort '26 · Free
 			</span>
 
 			<RotatingHeadline class="campus--head" />
@@ -166,8 +166,29 @@ const builds = [
 		position: absolute; top: 0; left: 50%; transform: translateX(-50%);
 		width: 100vw; height: 100%; z-index: 0; overflow: hidden; pointer-events: none;
 		background:
+			/* faint exercise-book ruling — school in the bones */
+			repeating-linear-gradient(180deg, transparent 0 38px, rgba(252, 211, 77, 0.05) 38px 39px),
+			linear-gradient(90deg, transparent 0 64px, rgba(251, 113, 133, 0.07) 64px 65px, transparent 65px 100%),
 			radial-gradient(900px 520px at 78% -10%, rgba(245, 158, 11, 0.22), transparent 60%),
 			linear-gradient(180deg, #1d1606 0%, #16110a 55%, #100c08 100%);
+	}
+	/* campus world CTA: chunky amber, pressable like the body's */
+	:global(.hero-campus .btn--accent) {
+		background-image: linear-gradient(180deg, #fcd34d, #f59e0b) !important;
+		color: #2b1c08 !important;
+		-webkit-text-fill-color: #2b1c08;
+		border-radius: 0.8rem !important;
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.5),
+			0 6px 0 rgba(120, 67, 5, 0.9),
+			0 18px 38px -14px rgba(245, 158, 11, 0.7) !important;
+	}
+	:global(.hero-campus .btn--accent:hover) {
+		transform: translateY(2px);
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.5),
+			0 4px 0 rgba(120, 67, 5, 0.9),
+			0 14px 30px -14px rgba(245, 158, 11, 0.7) !important;
 	}
 	.campus--glow {
 		position: absolute; top: -18%; left: 50%; transform: translateX(-50%);
@@ -194,7 +215,7 @@ const builds = [
 	.campus--layout { position: relative; z-index: 1; display: grid; gap: 2.5rem; align-items: center; min-height: calc(100vh - 90px); padding-top: 2rem; }
 	@media (min-width: 1024px) { .campus--layout { grid-template-columns: 0.92fr 1.08fr; gap: 3rem; } }
 
-	.campus--eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #fcd34d; margin-bottom: 1.2rem; }
+	.campus--eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.74rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #fcd34d; border: 1.5px solid rgba(252, 211, 77, 0.45); padding: 0.35rem 0.85rem; border-radius: 0.4rem; box-shadow: 2.5px 2.5px 0 rgba(252, 211, 77, 0.3); margin-bottom: 1.2rem; }
 	.campus--head { font-size: clamp(2.6rem, 6vw, 5.2rem); margin-bottom: 1.4rem; }
 	.campus--sub { max-width: 30rem; color: rgba(253, 243, 227, 0.7); font-size: 1.08rem; line-height: 1.65; margin-bottom: 1.8rem; }
 	.campus--cta { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem; }

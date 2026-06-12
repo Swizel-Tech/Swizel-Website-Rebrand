@@ -763,7 +763,9 @@ html[data-view="builder"] .default-body { display: none; }
 #swizel-cursor[data-icon="pulse"] .cur-pulse,
 #swizel-cursor[data-icon="quote"] .cur-quote,
 #swizel-cursor[data-icon="play"] .cur-play,
-#swizel-cursor[data-icon="phone"] .cur-phone { display: block !important; }
+#swizel-cursor[data-icon="phone"] .cur-phone,
+#swizel-cursor[data-icon="book"] .cur-book,
+#swizel-cursor[data-icon="pen"] .cur-pen { display: block !important; }
 
 /* Boardroom view body visibility — boardroom is the default view, so it
    also shows when no view has been chosen yet */

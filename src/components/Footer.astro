@@ -226,6 +226,7 @@ const phones = [
 		--ft-card: rgba(20, 22, 40, 0.05);
 		--ft-border: rgba(20, 22, 40, 0.12);
 		position: relative;
+		z-index: 2;
 		overflow: hidden;
 		color: var(--ft-ink);
 		background: var(--ft-bg);
@@ -252,7 +253,7 @@ const phones = [
 	@keyframes ft-rise { 0% { transform: translateY(20px); opacity: 0; } 30% { opacity: 0.8; } 100% { transform: translateY(-120px); opacity: 0; } }
 
 	/* CTA */
-	.ft-cta { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; text-align: center; padding: clamp(3rem, 7vw, 5.5rem) 0 clamp(2rem, 4vw, 3rem); }
+	.ft-cta { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; text-align: center; padding: clamp(4rem, 8vw, 6.5rem) 0 clamp(2rem, 4vw, 3rem); }
 	.ft-cta-kicker { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--view-accent, #86e2ef); }
 	.ft-cta-title { font-size: clamp(2.6rem, 7vw, 5rem); line-height: 0.98; letter-spacing: 1px; text-transform: uppercase; margin: 0.6rem 0 1rem; }
 	.ft-cta-sub { color: var(--ft-muted); max-width: 30rem; margin: 0 auto 1.6rem; line-height: 1.6; }

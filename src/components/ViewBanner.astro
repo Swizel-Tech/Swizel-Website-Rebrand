@@ -74,6 +74,11 @@ import { views } from '../consts';
 		overflow: hidden;
 		padding: clamp(2.5rem, 6vw, 4rem) 0 clamp(2rem, 4vw, 3rem);
 		color: var(--vw-ink);
+		/* tint the strip with the active world's accent so it bridges the
+		   hero and the body instead of sitting on cold navy */
+		background:
+			radial-gradient(900px 420px at 50% 0%, color-mix(in srgb, var(--view-accent, #28a6ec) 9%, transparent), transparent 70%),
+			linear-gradient(180deg, color-mix(in srgb, var(--view-accent, #28a6ec) 5%, transparent), transparent 80%);
 	}
 	:global(html.dark) .view-worlds {
 		--vw-ink: #e9eaf2;

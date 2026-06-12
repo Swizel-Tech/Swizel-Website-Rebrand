@@ -85,31 +85,62 @@ export function initCampusView() {
 		if ((e as CustomEvent).detail === 'campus') setTimeout(launch, 350);
 	});
 
+	// the tour walks the whole campus world, hero to footer
 	const steps: TourStep[] = [
 		{
 			sel: '.hero-campus .rhead',
 			title: 'Our promise',
-			body: 'You imagine it. We build, design, scale and launch it. The same signature rides every view.',
+			body: 'You imagine it. We build, design, scale and launch it.',
 		},
 		{
 			sel: '#campus-widget [data-tour="track"]',
 			title: 'Level up to hired',
-			body: 'Watch the journey from newbie to hired. Our bootcamp takes you from zero to job ready.',
+			body: 'Watch the journey from newbie to hired — zero to job ready.',
 		},
 		{
-			sel: '#campus-widget [data-tour="badges"]',
-			title: 'Real skills',
-			body: 'Web, mobile, design and marketing. You unlock each as you build.',
+			sel: '#view-banner .vw-head',
+			title: 'Six worlds, one Swizel',
+			body: 'This site reshapes around you. Step into any world, anytime — nothing is locked.',
 		},
 		{
-			sel: '#campus-widget [data-tour="builds"]',
-			title: 'Build across sectors',
-			body: 'You learn by shipping the same kinds of products we do, from food delivery to sports and commerce.',
+			sel: '.cbody .cp-open',
+			title: 'Player 1: you',
+			body: 'A free, hands-on bootcamp run by the team that ships real products.',
 		},
 		{
-			sel: '.hero-campus [data-tour="team"]',
-			title: 'Your mentors',
-			body: 'Real engineers and designers guide you the whole way. Tap to meet them.',
+			sel: '.cp-tracks',
+			title: 'Choose your track',
+			body: 'Web, mobile, design or marketing — pick your character.',
+		},
+		{
+			sel: '#cp-questline',
+			title: 'The main quest',
+			body: 'Learn → Build → Intern → Hired. XP is earned by shipping.',
+		},
+		{
+			sel: '.cp-ships',
+			title: 'Real side quests',
+			body: 'You build projects modeled on products we actually shipped for clients.',
+		},
+		{
+			sel: '#cp-achvs',
+			title: 'Achievements',
+			body: 'Free start, real mentors, paid internships and a job-ready portfolio.',
+		},
+		{
+			sel: '.cp-voices',
+			title: 'Player reviews',
+			body: 'Grads, five stars in. Real people who made the jump.',
+		},
+		{
+			sel: '.cp-ctabox',
+			title: 'Press START',
+			body: 'Join the next cohort free — or start a project if you’re building a business.',
+		},
+		{
+			sel: '.site-footer .ft-socials',
+			title: 'Follow the build',
+			body: 'Daily updates and behind the scenes — hover any handle for a preview.',
 		},
 	];
 	document
