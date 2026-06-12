@@ -19,10 +19,10 @@ const stages = [
 ];
 
 const launched = [
-	{ name: 'OGGMA', sector: 'Food delivery' },
+	{ name: 'BuyGas', sector: 'Gas delivery' },
 	{ name: 'Betslipswitch', sector: 'Sports' },
 	{ name: 'Hemam Synergy', sector: 'Real estate' },
-	{ name: 'Brixmarket', sector: 'E commerce' },
+	{ name: 'Anchorstep Physiotherapy', sector: 'Healthcare' },
 ];
 ---
 
@@ -39,14 +39,14 @@ const launched = [
 		<div class="founder--copy">
 			<span class="founder--eyebrow">
 				<Icon width={15} name="mdi:rocket-launch-outline" />
-				Zero to MVP
+				Founder mode · Zero to MVP
 			</span>
 
 			<RotatingHeadline class="founder--head" />
 
 			<p class="founder--sub">
-				From a blank page to a launched product in weeks, not months. We
-				plan, build and ship with you, then scale what works.
+				From a blank page to a launched product in six weeks. We plan,
+				build and ship with you — then stay to scale what works.
 			</p>
 
 			<div class="founder--cta">
@@ -56,8 +56,8 @@ const launched = [
 					href="/contact"
 					class="flex items-center justify-center gap-2"
 				>
-					Book a build sprint
-					<Icon width={18} name="mdi:arrow-right" />
+					Start Week 1
+					<Icon width={18} name="mdi:rocket-launch-outline" />
 				</CustomButton>
 				<button class="founder--tour" type="button" data-tour-start="founder">
 					<Icon width={16} name="mdi:compass-outline" />
@@ -212,12 +212,23 @@ const launched = [
 		display: inline-flex;
 		align-items: center;
 		gap: 0.5rem;
-		font-size: 0.78rem;
-		font-weight: 700;
+		font-size: 0.74rem;
+		font-weight: 800;
 		letter-spacing: 0.14em;
 		text-transform: uppercase;
 		color: #c4b5fd;
+		border: 1.5px dashed rgba(196, 181, 253, 0.5);
+		padding: 0.35rem 0.85rem;
+		border-radius: 0.5rem;
+		transform: rotate(-2deg);
 		margin-bottom: 1.2rem;
+	}
+	/* founder world CTA runs violet → pink, like the body */
+	:global(.hero-founder .btn--accent) {
+		background-image: linear-gradient(95deg, #8b5cf6, #ec4899) !important;
+		color: #fff !important;
+		-webkit-text-fill-color: #fff;
+		box-shadow: 0 14px 34px -12px rgba(139, 92, 246, 0.6) !important;
 	}
 	.founder--head { font-size: clamp(2.6rem, 6vw, 5.2rem); margin-bottom: 1.4rem; }
 	.founder--sub {

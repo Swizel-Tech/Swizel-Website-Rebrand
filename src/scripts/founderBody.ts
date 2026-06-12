@@ -1,14 +1,31 @@
+// Founder world: scroll reveals, momentum counters, the sprint track fill,
+// the traction curve draw, and the founders group-chat sequence.
 export function initFounderBody() {
-	const body = document.querySelector('.view-body-founder');
+	const body = document.querySelector('.fbody');
 	if (!body) return;
 	const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-	let played = false;
 
+	// ── scroll reveals ──
+	const reveals = Array.from(body.querySelectorAll<HTMLElement>('.fd-rev'));
+	if (reveals.length) {
+		const io = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((e) => {
+					if (e.isIntersecting) {
+						e.target.classList.add('is-on');
+						io.unobserve(e.target);
+					}
+				});
+			},
+			{ threshold: 0.15 }
+		);
+		reveals.forEach((r) => io.observe(r));
+	}
+
+	// ── counters ──
 	const counts = Array.from(body.querySelectorAll<HTMLElement>('[data-count]'));
-	const run = () => {
-		if (played) return;
-		played = true;
-		counts.forEach((el) => {
+	if (counts.length) {
+		const run = (el: HTMLElement) => {
 			const t = Number(el.dataset.count || '0');
 			const sfx = el.dataset.suffix || '';
 			if (reduce) {
@@ -22,35 +39,95 @@ export function initFounderBody() {
 				if (p < 1) requestAnimationFrame(tick);
 			};
 			requestAnimationFrame(tick);
-		});
-	};
-
-	const miles = Array.from(body.querySelectorAll<HTMLElement>('.fb-mile'));
-	if (miles.length) {
+		};
 		const io = new IntersectionObserver(
 			(entries) => {
 				entries.forEach((e) => {
 					if (e.isIntersecting) {
-						const i = miles.indexOf(e.target as HTMLElement);
-						(e.target as HTMLElement).style.animationDelay =
-							(reduce ? 0 : i * 0.12) + 's';
+						run(e.target as HTMLElement);
+						io.unobserve(e.target);
+					}
+				});
+			},
+			{ threshold: 0.6 }
+		);
+		counts.forEach((c) => io.observe(c));
+	}
+
+	// ── the sprint track fills when it enters view ──
+	const track = body.querySelector<HTMLElement>('#fd-track');
+	if (track) {
+		const io = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((e) => {
+					if (e.isIntersecting) {
 						e.target.classList.add('is-on');
 						io.unobserve(e.target);
 					}
 				});
 			},
-			{ threshold: 0.4 }
+			{ threshold: 0.35 }
 		);
-		miles.forEach((m) => io.observe(m));
+		io.observe(track);
 	}
 
-	const isFounder = () =>
-		document.documentElement.getAttribute('data-view') === 'founder';
-	if (isFounder()) setTimeout(run, 400);
-	window.addEventListener('swizel:viewchange', (e) => {
-		if ((e as CustomEvent).detail === 'founder') {
-			played = false;
-			setTimeout(run, 300);
-		}
-	});
+	// ── the traction curve draws itself ──
+	const chart = body.querySelector<HTMLElement>('#fd-chart');
+	if (chart) {
+		const io = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((e) => {
+					if (e.isIntersecting) {
+						e.target.classList.add('is-draw');
+						io.unobserve(e.target);
+					}
+				});
+			},
+			{ threshold: 0.45 }
+		);
+		io.observe(chart);
+	}
+
+	// ── the group chat plays out like a real thread ──
+	const phone = body.querySelector<HTMLElement>('#fd-chat');
+	if (phone) {
+		const msgs = Array.from(phone.querySelectorAll<HTMLElement>('.fd-msg'));
+		const typing = phone.querySelector<HTMLElement>('#fd-typing');
+		let played = false;
+
+		const play = async () => {
+			if (played) return;
+			played = true;
+			if (reduce) {
+				msgs.forEach((m) => m.classList.add('is-in'));
+				return;
+			}
+			const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+			for (const m of msgs) {
+				const incoming = m.classList.contains('fd-msg--them');
+				if (incoming && typing) {
+					// the dots appear right before each founder message
+					m.parentElement?.insertBefore(typing, m);
+					typing.classList.add('is-on');
+					await sleep(750);
+					typing.classList.remove('is-on');
+				}
+				m.classList.add('is-in');
+				await sleep(incoming ? 480 : 700);
+			}
+		};
+
+		const io = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((e) => {
+					if (e.isIntersecting) {
+						play();
+						io.unobserve(e.target);
+					}
+				});
+			},
+			{ threshold: 0.35 }
+		);
+		io.observe(phone);
+	}
 }

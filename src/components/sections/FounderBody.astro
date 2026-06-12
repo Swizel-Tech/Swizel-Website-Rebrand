@@ -1,120 +1,125 @@
 ---
+// Founder view body — a world built on momentum. Day-0 stamps, a six-week
+// sprint tracker, a traction curve that draws itself, founders talking in
+// a group chat, and a boarding-pass CTA. Idea in, product out.
 import { Icon } from 'astro-icon';
 
 const stats = [
-	{ to: 6, suffix: ' wks', label: 'Idea to MVP' },
-	{ to: 65, suffix: '+', label: 'Products launched' },
-	{ to: 7, suffix: '+', label: 'Years building' },
-	{ to: 10, suffix: '+', label: 'Countries' },
+	{ to: 6, suffix: ' wks', label: 'idea → MVP' },
+	{ to: 65, suffix: '+', label: 'products launched' },
+	{ to: 10, suffix: '+', label: 'countries' },
+	{ to: 7, suffix: '+', label: 'years shipping' },
 ];
 
 const sprint = [
-	{ title: 'Discover & design', items: ['Product strategy', 'UX & UI design', 'Clickable prototype'] },
-	{ title: 'Build & test', items: ['Web & mobile build', 'QA and reviews', 'Integrations & APIs'] },
-	{ title: 'Launch & scale', items: ['App store & web launch', 'Analytics & growth', 'Support & DevOps'] },
-];
-
-const roadmap = [
-	{ wk: 'Week 1', title: 'Discover', desc: 'Goals, users and the spec, locked.' },
-	{ wk: 'Week 2', title: 'Design', desc: 'A prototype you can click and feel.' },
-	{ wk: 'Weeks 3–5', title: 'Build', desc: 'Engineering in tight, visible sprints.' },
-	{ wk: 'Week 6', title: 'Launch', desc: 'Go live, measure, then grow.' },
+	{ wk: 'W1', title: 'Discover', desc: 'Goals, users and scope — locked in writing.' },
+	{ wk: 'W2', title: 'Design', desc: 'A prototype you can click, feel and pitch.' },
+	{ wk: 'W3–5', title: 'Build & test', desc: 'Senior engineers, visible sprints, no surprises.' },
+	{ wk: 'W6', title: 'Launch 🚀', desc: 'Live, measured and in your users’ hands.' },
 ];
 
 const launches = [
-	{ name: 'Betslipswitch', sector: 'Sports', metric: 'Live in production', img: '/images/portfolio/betslipswitch.jpg', url: 'https://betslipswitch.com/' },
-	{ name: 'Brixmarket', sector: 'Real estate', metric: 'Marketplace at scale', img: '/images/portfolio/brix%20marketplace.jpg', url: 'https://brixmarket.com/' },
-	{ name: 'ConvertMyBetCode', sector: 'Sports', metric: '10+ countries', img: '', url: 'https://convertmybetcode.com/' },
-	{ name: 'BuyGas', sector: 'Gas delivery', metric: 'On-demand delivery', img: '', url: 'https://buygas.org/' },
+	{ name: 'Brixmarket', sector: 'Real-estate marketplace', img: '/images/portfolio/brix%20marketplace.jpg', url: 'https://brixmarket.com/', big: true },
+	{ name: 'Betslipswitch', sector: 'Sports', img: '/images/portfolio/betslipswitch.jpg', url: 'https://betslipswitch.com/' },
+	{ name: 'Saros', sector: 'Education', img: '/images/portfolio/sarosgp.jpg', url: 'https://sarosinternationallearning.com/' },
+	{ name: 'ConvertMyBetCode', sector: 'Sports · 10+ countries', img: '', url: 'https://convertmybetcode.com/' },
+	{ name: 'BuyGas', sector: 'On-demand delivery', img: '', url: 'https://buygas.org/' },
+	{ name: 'Anchorstep Physiotherapy', sector: 'Healthcare', img: '', url: 'http://anchorsteppt.com/' },
 ];
 
-const values = [
-	{ icon: 'mdi:rocket-launch-outline', title: 'Speed', desc: 'Weeks, not months. Momentum is everything early on.' },
-	{ icon: 'mdi:account-group-outline', title: 'One team', desc: 'Design, engineering and growth under one roof.' },
-	{ icon: 'mdi:chart-line', title: 'Built to scale', desc: 'Architecture that grows from MVP to millions.' },
-	{ icon: 'mdi:handshake-outline', title: 'We stay', desc: 'We support and scale long after launch day.' },
+const sectors = [
+	'Fintech', 'Real estate', 'Sports', 'E-commerce', 'Education', 'Healthcare',
+	'Logistics', 'Beauty', 'Energy', 'Agritech', 'Hospitality', 'Media', 'Travel',
 ];
 
-const reviews = [
-	{ name: 'Chidimma', img: '/testimonial/chidima.jpeg', body: 'Warm, responsive and a true extension of our team.' },
-	{ name: 'Favour', img: '/testimonial/favour.jpeg', body: 'Geniuses, honestly. Working with them was effortless.' },
-	{ name: 'Cheta', img: '/testimonial/cheta.jpeg', body: 'Thorough, polite and always on time.' },
+const logos = [
+	'betslipswitch.svg',
+	'trueverdict.png',
+	'brix market logo.svg',
+	'ejike-fc.svg',
+	'purple-panda.svg',
+	'saros-sgp.svg',
+	'my eya homes.svg',
+	'the-presidential-diary.png',
+	'hemamsynergy.png',
+];
+
+// the group chat — incoming = founders, outgoing = us
+const chat = [
+	{ from: 'them', name: 'Chidimma', img: '/testimonial/chidima.jpeg', text: 'Warm, responsive and a true extension of our team 🙌' },
+	{ from: 'us', text: 'Sprint 4 just shipped. Demo on Friday?' },
+	{ from: 'them', name: 'Favour', img: '/testimonial/favour.jpeg', text: 'Geniuses, honestly. Working with you was effortless.' },
+	{ from: 'them', name: 'Cheta', img: '/testimonial/cheta.jpeg', text: 'Thorough, polite and always on time.' },
+	{ from: 'us', text: 'That’s the job 💜 Launch window for v2 is open.' },
+	{ from: 'them', name: 'Russell', img: '/testimonial/russell.jpeg', text: 'I’ve trusted you with my products for years — not stopping now.' },
 ];
 ---
 
 <div class="fbody view-body view-body-founder">
-	<!-- ABOUT -->
-	<section class="fb-sec">
-		<div class="fb-wrap fb-about">
-			<div class="fb-copy">
-				<span class="fb-kick">For founders</span>
-				<h2 class="fb-h">We are the team that <span class="fb-accent">ships your MVP.</span></h2>
-				<p class="fb-p">
-					Bring the idea. We bring product strategy, design, engineering
-					and launch, as one focused team, so you go from a blank page to
-					a real product in weeks.
+	<!-- ── A · day zero ────────────────────────────────────── -->
+	<section class="fd-sec">
+		<div class="fd-wrap fd-open">
+			<div class="fd-copy fd-rev">
+				<span class="fd-stamp">Founder mode · Day 0</span>
+				<h2 class="fd-h fd-h--xl">Momentum is <em>the moat.</em></h2>
+				<p class="fd-p">
+					You bring the idea. We bring the senior team that turns it
+					into a live product in six weeks — then stays to grow it.
 				</p>
-				<ul class="fb-stats">
+				<ul class="fd-stats">
 					{
 						stats.map((s) => (
 							<li>
-								<strong data-count={s.to} data-suffix={s.suffix}>{s.to}{s.suffix}</strong>
+								<strong data-count={s.to} data-suffix={s.suffix}>0{s.suffix}</strong>
 								<span>{s.label}</span>
 							</li>
 						))
 					}
 				</ul>
-				<a href="/contact" class="fb-link">Book a build sprint <Icon width={16} name="mdi:arrow-right" /></a>
+				<div class="fd-row">
+					<a href="/contact" class="fd-cta">
+						Start Week 1
+						<Icon width={17} name="mdi:rocket-launch-outline" />
+					</a>
+					<a href="#fd-wall" class="fd-link">
+						Founders we've launched
+						<Icon width={15} name="mdi:chevron-down" />
+					</a>
+				</div>
 			</div>
-			<div class="fb-media">
-				<figure class="fb-photo">
-					<img src="/images/hero-team.jpg" alt="The Swizel build team" loading="lazy" />
-					<span class="fb-photo-glow"></span>
-				</figure>
-				<button class="fb-video" type="button" aria-label="Video coming soon">
-					<span class="fb-play"><Icon width={20} name="mdi:play" /></span>
-					<span class="fb-video-txt"><strong>How we build</strong><small>video coming soon</small></span>
-				</button>
+
+			<div class="fd-film fd-rev" data-cursor="play">
+				<div class="fd-film-frame">
+					<Icon width={34} name="mdi:play-circle-outline" />
+					<span class="fd-film-label">founder-story.mp4 — video placeholder</span>
+					<span class="fd-film-sub">Your origin story plays here</span>
+				</div>
+				<span class="fd-film-tag">REC ● Day 0 → Launch day</span>
 			</div>
 		</div>
 	</section>
 
-	<!-- BUILD SPRINT (services) -->
-	<section class="fb-sec">
-		<div class="fb-wrap">
-			<span class="fb-kick">The build sprint</span>
-			<h2 class="fb-h">Everything you need to <span class="fb-accent">launch.</span></h2>
-			<div class="fb-sprint">
+	<!-- ── B · the six-week sprint ─────────────────────────── -->
+	<section class="fd-sec" data-cursor="clock">
+		<div class="fd-wrap">
+			<div class="fd-head fd-rev">
+				<span class="fd-stamp">The plan</span>
+				<h2 class="fd-h">Six weeks. <em>Visible every day.</em></h2>
+				<p class="fd-p fd-p--center">
+					No black box, no "we'll get back to you." A roadmap you can
+					hold us to — because you'll watch it happen.
+				</p>
+			</div>
+
+			<ol class="fd-track" id="fd-track">
+				<span class="fd-track-line" aria-hidden="true"></span>
 				{
 					sprint.map((s, i) => (
-						<div class="fb-phase">
-							<span class="fb-phase-n">{`0${i + 1}`}</span>
-							<h3 class="fb-phase-title">{s.title}</h3>
-							<ul>
-								{s.items.map((it) => (
-									<li><Icon width={15} name="mdi:check" />{it}</li>
-								))}
-							</ul>
-						</div>
-					))
-				}
-			</div>
-		</div>
-	</section>
-
-	<!-- ROADMAP (process) -->
-	<section class="fb-sec">
-		<div class="fb-wrap">
-			<span class="fb-kick">The roadmap</span>
-			<h2 class="fb-h">From zero to launched, <span class="fb-accent">in six weeks.</span></h2>
-			<ol class="fb-road" id="fb-road">
-				{
-					roadmap.map((r, i) => (
-						<li class="fb-mile" data-i={i}>
-							<span class="fb-mile-dot"></span>
-							<span class="fb-mile-wk">{r.wk}</span>
-							<h3 class="fb-mile-title">{r.title}</h3>
-							<p class="fb-mile-desc">{r.desc}</p>
+						<li class="fd-stop fd-rev" style={`--i:${i}`}>
+							<span class="fd-stop-node" aria-hidden="true"></span>
+							<span class="fd-stop-wk">{s.wk}</span>
+							<h3 class="fd-stop-t">{s.title}</h3>
+							<p class="fd-stop-d">{s.desc}</p>
 						</li>
 					))
 				}
@@ -122,173 +127,1385 @@ const reviews = [
 		</div>
 	</section>
 
-	<!-- LAUNCHES (work) -->
-	<section class="fb-sec">
-		<div class="fb-wrap">
-			<div class="fb-work-head">
-				<div>
-					<span class="fb-kick">Recent launches</span>
-					<h2 class="fb-h">Products we took <span class="fb-accent">to market.</span></h2>
+	<!-- ── C · the curve ───────────────────────────────────── -->
+	<section class="fd-sec" data-cursor="chart">
+		<div class="fd-wrap fd-curvewrap">
+			<div class="fd-copy fd-rev">
+				<span class="fd-stamp">After launch</span>
+				<h2 class="fd-h">Built for <em>the curve.</em></h2>
+				<p class="fd-p">
+					Analytics from day one, growth loops baked in, and a stack
+					that scales when things work. Launch day isn't the finish
+					line — it's the starting gun.
+				</p>
+				<a href="/contact" class="fd-link">
+					Plan the climb
+					<Icon width={15} name="mdi:arrow-right" />
+				</a>
+			</div>
+
+			<figure class="fd-chart fd-rev" id="fd-chart" aria-label="Traction curve">
+				<svg viewBox="0 0 460 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<defs>
+						<linearGradient id="fd-grad" x1="0" y1="200" x2="460" y2="0" gradientUnits="userSpaceOnUse">
+							<stop stop-color="#8b5cf6" />
+							<stop offset="1" stop-color="#ec4899" />
+						</linearGradient>
+						<linearGradient id="fd-fill" x1="0" y1="0" x2="0" y2="200" gradientUnits="userSpaceOnUse">
+							<stop stop-color="#8b5cf6" stop-opacity="0.25" />
+							<stop offset="1" stop-color="#8b5cf6" stop-opacity="0" />
+						</linearGradient>
+					</defs>
+					<g class="fd-gridlines">
+						{[40, 80, 120, 160].map((y) => <line x1="0" y1={y} x2="460" y2={y} />)}
+					</g>
+					<path
+						class="fd-area"
+						d="M8 186 C90 182 150 168 210 140 C270 112 320 74 396 44 L440 34 L440 200 L8 200 Z"
+						fill="url(#fd-fill)"
+					/>
+					<path
+						class="fd-line"
+						d="M8 186 C90 182 150 168 210 140 C270 112 320 74 396 44 L440 34"
+						stroke="url(#fd-grad)"
+						stroke-width="3.5"
+						stroke-linecap="round"
+					/>
+					<!-- milestones pop in as the line passes them -->
+					<circle class="fd-mile fd-mile--1" cx="185" cy="148" r="5.5" />
+					<circle class="fd-mile fd-mile--2" cx="305" cy="86" r="5.5" />
+					<circle class="fd-dot" cx="440" cy="34" r="6.5" fill="#ec4899" />
+				</svg>
+				<figcaption class="fd-chart-tag">you, six months in ↗</figcaption>
+				<div class="fd-chart-x" aria-hidden="true">
+					<span>W1</span><span>launch</span><span>M3</span><span>M6</span>
 				</div>
-				<a href="/portfolio" class="fb-link fb-link-2">All work <Icon width={16} name="mdi:arrow-right" /></a>
+			</figure>
+		</div>
+	</section>
+
+	<!-- ── C2 · more frames: the journey in pictures ───────── -->
+	<section class="fd-sec" data-cursor="play">
+		<div class="fd-wrap">
+			<div class="fd-head fd-rev">
+				<span class="fd-stamp">The journey</span>
+				<h2 class="fd-h">Moments worth <em>filming.</em></h2>
 			</div>
-			<div class="fb-launches">
+			<div class="fd-media fd-rev">
+				<div class="fd-shot fd-shot--wide">
+					<Icon width={30} name="mdi:play-circle-outline" />
+					<span class="fd-shot-name">launch-night.mp4 — video placeholder</span>
+					<span class="fd-shot-sub">The night it went live</span>
+				</div>
+				<div class="fd-shot-stack">
+					<div class="fd-shot">
+						<Icon width={22} name="mdi:image-outline" />
+						<span class="fd-shot-name">demo-day.jpg</span>
+					</div>
+					<div class="fd-shot">
+						<Icon width={22} name="mdi:image-outline" />
+						<span class="fd-shot-name">first-users.jpg</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── D · the launch wall ─────────────────────────────── -->
+	<section class="fd-sec" id="fd-wall" data-cursor="repo">
+		<div class="fd-wrap">
+			<div class="fd-head fd-rev">
+				<span class="fd-stamp">Receipts</span>
+				<h2 class="fd-h">Founders <em>we've launched.</em></h2>
+			</div>
+			<div class="fd-wall fd-rev">
 				{
-					launches.map((w) => (
-						<a class="fb-launch" href={w.url} target="_blank" rel="noopener noreferrer">
-							<div class="fb-launch-img">
-								{w.img ? (
-									<img src={w.img} alt={`${w.name} — ${w.sector}`} loading="lazy" />
+					launches.map((l) => {
+						const Tag = l.url ? 'a' : 'div';
+						return (
+							<Tag
+								class:list={['fd-launch', { 'fd-launch--big': l.big }]}
+								href={l.url || undefined}
+								target={l.url ? '_blank' : undefined}
+								rel={l.url ? 'noopener noreferrer' : undefined}
+							>
+								{l.img ? (
+									<img src={l.img} alt={`${l.name} — ${l.sector}`} loading="lazy" />
 								) : (
-									<span class="fb-launch-ph"><Icon width={24} name="mdi:rocket-launch-outline" /></span>
+									<span class="fd-launch-ph">
+										<Icon width={24} name="mdi:image-outline" />
+										<span>screenshot placeholder</span>
+									</span>
 								)}
-								<span class="fb-launch-live"><span class="fb-live-dot"></span>{w.metric}</span>
+								<span class="fd-launch-veil" aria-hidden="true" />
+								<span class="fd-launch-meta">
+									<span class="fd-live" aria-hidden="true" />
+									<span class="fd-launch-name">
+										<strong>{l.name}</strong>
+										<em>{l.sector}</em>
+									</span>
+									{l.url && (
+										<Icon class="fd-launch-go" width={15} name="mdi:arrow-top-right" />
+									)}
+								</span>
+							</Tag>
+						);
+					})
+				}
+			</div>
+			<p class="fd-wall-all fd-rev">
+				<a href="/portfolio" class="fd-link">
+					Every launch, 65+ and counting
+					<Icon width={15} name="mdi:arrow-right" />
+				</a>
+			</p>
+		</div>
+	</section>
+
+	<!-- ── E · the group chat ──────────────────────────────── -->
+	<section class="fd-sec" data-cursor="quote">
+		<div class="fd-wrap fd-chatwrap">
+			<div class="fd-copy fd-rev">
+				<span class="fd-stamp">Group chat</span>
+				<h2 class="fd-h">Our founders, <em>unfiltered.</em></h2>
+				<p class="fd-p">
+					Real messages from real founders we build for. The kind of
+					thread you want your product team in.
+				</p>
+			</div>
+
+			<div class="fd-phone fd-rev" id="fd-chat">
+				<div class="fd-phone-top">
+					<span class="fd-phone-avatars">
+						{
+							chat.filter((m) => m.from === 'them').slice(0, 3).map((m) => (
+								<img src={m.img} alt="" loading="lazy" />
+							))
+						}
+					</span>
+					<span class="fd-phone-title">founders × swizel</span>
+					<span class="fd-phone-count">{chat.length} messages</span>
+				</div>
+				<div class="fd-phone-body">
+					{
+						chat.map((m) => (
+							<div class:list={['fd-msg', m.from === 'us' ? 'fd-msg--us' : 'fd-msg--them']}>
+								{m.from === 'them' && <img class="fd-msg-ava" src={m.img} alt="" loading="lazy" />}
+								<div class="fd-bubble">
+									{m.from === 'them' && <strong class="fd-msg-name">{m.name}</strong>}
+									<span class="fd-msg-text">{m.text}</span>
+								</div>
 							</div>
-							<div class="fb-launch-meta">
-								<span class="fb-launch-name">{w.name}</span>
-								<span class="fb-launch-sector">{w.sector}</span>
-							</div>
-						</a>
-					))
+						))
+					}
+					<div class="fd-typing" id="fd-typing" aria-hidden="true">
+						<span></span><span></span><span></span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── E2 · sectors & brands, stamped through ──────────── -->
+	<section class="fd-sec fd-sec--belts">
+		<div class="fd-wrap">
+			<p class="fd-belt-label fd-rev">Sectors we play in</p>
+		</div>
+		<div class="fd-belt" aria-hidden="true">
+			<div class="fd-belt-track">
+				{
+					[0, 1].map(() =>
+						sectors.map((s) => <span class="fd-bstamp">{s}</span>)
+					)
+				}
+			</div>
+		</div>
+		<div class="fd-wrap">
+			<p class="fd-belt-label fd-rev">Brands we've built for</p>
+		</div>
+		<div class="fd-belt" aria-hidden="true">
+			<div class="fd-belt-track fd-belt-track--logos">
+				{
+					[0, 1].map(() =>
+						logos.map((l) => (
+							<span class="fd-blogo">
+								<img src={`/images/partners/${l}`} alt="" loading="lazy" />
+							</span>
+						))
+					)
 				}
 			</div>
 		</div>
 	</section>
 
-	<!-- VALUES -->
-	<section class="fb-sec">
-		<div class="fb-wrap">
-			<span class="fb-kick">Why founders pick us</span>
-			<h2 class="fb-h">A partner, <span class="fb-accent">not just a vendor.</span></h2>
-			<div class="fb-values">
-				{
-					values.map((v) => (
-						<div class="fb-value">
-							<span class="fb-value-ic"><Icon width={22} name={v.icon} /></span>
-							<h3>{v.title}</h3>
-							<p>{v.desc}</p>
-						</div>
-					))
-				}
+	<!-- ── E3 · from the founder ───────────────────────────── -->
+	<section class="fd-sec" data-cursor="quote">
+		<div class="fd-wrap fd-qgrid">
+			<div class="fd-qmedia fd-rev">
+				<div class="fd-qframe">
+					<Icon width={28} name="mdi:account-outline" />
+					<span class="fd-shot-name">founder-portrait.jpg / video</span>
+					<span class="fd-shot-sub">Photo or film of the founder lands here</span>
+				</div>
+			</div>
+			<div class="fd-qbody">
+				<span class="fd-qmark fd-qmark--open" aria-hidden="true">“</span>
+				<blockquote class="fd-q">
+					<span class="fd-qline fd-rev" style="--i:0">Every empire you admire was once</span>
+					<span class="fd-qline fd-rev" style="--i:1">one decision away from not existing.</span>
+					<span class="fd-qline fd-qline--hot fd-rev" style="--i:2">Start before you feel ready.</span>
+					<span class="fd-qline fd-rev" style="--i:3">Build before the world believes you,</span>
+					<span class="fd-qline fd-rev" style="--i:4">and let the results argue on your behalf.</span>
+				</blockquote>
+				<span class="fd-qmark fd-qmark--close" aria-hidden="true">”</span>
+				<div class="fd-qwho fd-rev" style="--i:5">
+					<strong class="fd-qname">Engr. Tochukwu Nnamdi-Nwaeze</strong>
+					<span class="fd-qtitle">MBA · PMP · MNSE · MIAENG</span>
+					<span class="fd-qrole">Founder & CEO, Swizel Technologies Limited</span>
+				</div>
 			</div>
 		</div>
 	</section>
 
-	<!-- REVIEWS -->
-	<section class="fb-sec">
-		<div class="fb-wrap">
-			<span class="fb-kick">Founder love</span>
-			<h2 class="fb-h">Teams that <span class="fb-accent">trusted us.</span></h2>
-			<div class="fb-reviews">
-				{
-					reviews.map((r) => (
-						<figure class="fb-rev">
-							<blockquote>{r.body}</blockquote>
-							<figcaption>
-								<img src={r.img} alt={r.name} loading="lazy" />
-								<span class="fb-rev-name">{r.name}</span>
-								<span class="fb-rev-stars">★★★★★</span>
-							</figcaption>
-						</figure>
-					))
-				}
+	<!-- ── F · boarding pass CTA ───────────────────────────── -->
+	<section class="fd-sec fd-sec--cta" data-cursor="phone">
+		<div class="fd-wrap">
+			<div class="fd-pass fd-rev">
+				<div class="fd-pass-main">
+					<span class="fd-stamp">Boarding pass</span>
+					<h2 class="fd-h fd-h--xl">Six weeks from now, <em>you're live.</em></h2>
+					<p class="fd-p">
+						Limited launch windows each month — we start on Mondays.
+						Tell us the idea; a senior builder replies within one
+						business day.
+					</p>
+					<a href="/contact" class="fd-cta fd-cta--big">
+						Claim your launch window
+						<Icon width={18} name="mdi:rocket-launch-outline" />
+					</a>
+				</div>
+				<div class="fd-pass-stub">
+					<dl class="fd-pass-info">
+						<div><dt>Passenger</dt><dd>Founder</dd></div>
+						<div><dt>From</dt><dd>Idea</dd></div>
+						<div><dt>To</dt><dd>Production</dd></div>
+						<div><dt>Gate</dt><dd>Week 1</dd></div>
+					</dl>
+					<a href="tel:+2348100204570" class="fd-pass-call">
+						<span>or call</span>
+						<strong>+234 810 020 4570</strong>
+					</a>
+					<span class="fd-pass-barcode" aria-hidden="true">
+						{Array.from({ length: 24 }).map(() => <i />)}
+					</span>
+				</div>
 			</div>
 		</div>
 	</section>
 </div>
 
 <style>
+	/* ── Founder world — violet momentum. Dark-native, bright in light. ── */
 	.fbody {
+		--fd-ink: #f1edfb;
+		--fd-muted: rgba(241, 237, 251, 0.62);
+		--fd-faint: rgba(241, 237, 251, 0.4);
+		--fd-acc: var(--view-accent, #8b5cf6);
+		--fd-acc2: #ec4899;
+		--fd-line: rgba(255, 255, 255, 0.09);
+		--fd-card: rgba(255, 255, 255, 0.035);
+		font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+			Roboto, sans-serif;
 		position: relative;
+		isolation: isolate;
 		background:
-			radial-gradient(800px 420px at 82% 0%, rgba(139, 92, 246, 0.1), transparent 60%),
-			linear-gradient(180deg, #120f22 0%, #0d0b1a 100%);
-		color: #e7e3f5;
+			radial-gradient(1000px 540px at 82% -6%, rgba(139, 92, 246, 0.16), transparent 62%),
+			radial-gradient(820px 480px at 6% 44%, rgba(236, 72, 153, 0.08), transparent 60%),
+			linear-gradient(180deg, #0a0714 0%, #0d0a18 50%, #080610 100%);
+		color: var(--fd-ink);
+		padding: clamp(3rem, 7vw, 5.5rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 4rem);
+		transition: background 0.4s ease, color 0.4s ease;
 	}
-	.fb-sec { padding: clamp(3.5rem, 8vw, 6rem) 5%; border-top: 1px solid rgba(167, 139, 250, 0.1); }
-	.fb-sec:first-child { border-top: 0; }
-	.fb-wrap { max-width: 1120px; margin: 0 auto; }
+	:global(html:not(.dark)) .fbody {
+		--fd-ink: #1d1430;
+		--fd-muted: rgba(29, 20, 48, 0.66);
+		--fd-faint: rgba(29, 20, 48, 0.45);
+		--fd-acc: #6d3fe0;
+		--fd-line: rgba(29, 20, 48, 0.1);
+		--fd-card: rgba(29, 20, 48, 0.04);
+		background:
+			radial-gradient(1000px 540px at 82% -6%, rgba(139, 92, 246, 0.12), transparent 62%),
+			linear-gradient(180deg, #f4f1fb 0%, #ece7f8 55%, #f4f1fb 100%);
+	}
 
-	.fb-kick { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #c4b5fd; }
-	.fb-dot { width: 8px; height: 8px; border-radius: 9999px; background: var(--view-accent, #8b5cf6); box-shadow: 0 0 10px 1px rgba(139, 92, 246, 0.6); }
-	.fb-h { font-size: clamp(2rem, 4.6vw, 3.2rem); font-weight: 800; line-height: 1.08; letter-spacing: -0.5px; color: #fff; margin: 0.7rem 0 1.8rem; }
-	.fb-accent { background: linear-gradient(95deg, #c4b5fd, var(--view-accent, #8b5cf6)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-	.fb-p { color: rgba(231, 227, 245, 0.72); line-height: 1.75; max-width: 34rem; }
-	.fb-link { display: inline-flex; align-items: center; gap: 0.45rem; font-weight: 700; color: #c4b5fd; transition: gap 0.25s ease; }
-	.fb-link:hover { gap: 0.8rem; }
+	.fd-sec {
+		padding-block: clamp(2rem, 5vw, 3.5rem);
+	}
+	.fd-wrap {
+		max-width: 74rem;
+		margin: 0 auto;
+	}
 
-	/* About */
-	.fb-about { display: grid; gap: 2.5rem; align-items: center; }
-	@media (min-width: 920px) { .fb-about { grid-template-columns: 1fr 1.05fr; gap: 4rem; } }
-	.fb-about .fb-h { margin-top: 0.7rem; }
-	.fb-stats { list-style: none; padding: 1.7rem 0 0; margin: 1.7rem 0 0; display: grid; grid-template-columns: repeat(2, auto); gap: 1.5rem 2.5rem; width: fit-content; border-top: 1px solid rgba(255, 255, 255, 0.08); }
-	@media (min-width: 540px) { .fb-stats { grid-template-columns: repeat(4, auto); } }
-	.fb-stats strong { display: block; font-family: 'Bebas Neue', sans-serif; font-size: 2.4rem; line-height: 1; background: linear-gradient(135deg, #c4b5fd, var(--view-accent, #8b5cf6)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-	.fb-stats span { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(231, 227, 245, 0.5); }
-	.fb-about .fb-link { margin-top: 1.8rem; }
-	.fb-media { position: relative; }
-	.fb-photo { position: relative; margin: 0; border-radius: 1.3rem; overflow: hidden; box-shadow: 0 40px 90px -40px rgba(0, 0, 0, 0.9); border: 1px solid rgba(167, 139, 250, 0.25); }
-	.fb-photo img { display: block; width: 100%; height: auto; }
-	.fb-video { position: absolute; right: -14px; bottom: -22px; display: flex; align-items: center; gap: 0.7rem; padding: 0.7rem 1rem 0.7rem 0.7rem; border-radius: 0.9rem; border: 1px solid rgba(167, 139, 250, 0.4); background: rgba(18, 15, 34, 0.92); backdrop-filter: blur(10px); box-shadow: 0 20px 40px -18px rgba(0, 0, 0, 0.7); cursor: pointer; transition: border-color 0.25s ease, transform 0.25s ease; }
-	.fb-video:hover { border-color: var(--view-accent, #8b5cf6); transform: translateY(-3px); }
-	.fb-play { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 9999px; color: #1a1030; background: linear-gradient(135deg, #c4b5fd, var(--view-accent, #8b5cf6)); flex-shrink: 0; }
-	.fb-video-txt { display: flex; flex-direction: column; text-align: left; }
-	.fb-video-txt strong { font-size: 0.86rem; color: #fff; }
-	.fb-video-txt small { font-size: 0.72rem; color: rgba(231, 227, 245, 0.5); }
-	@media (max-width: 919px) { .fb-video { position: static; margin-top: 1.5rem; width: fit-content; right: auto; bottom: auto; } }
+	/* ── Type & shared bits ── */
+	.fd-stamp {
+		display: inline-block;
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--fd-acc);
+		border: 1.5px dashed color-mix(in srgb, var(--fd-acc) 55%, transparent);
+		padding: 0.35rem 0.8rem;
+		border-radius: 0.5rem;
+		transform: rotate(-2deg);
+		margin-bottom: 1rem;
+	}
+	:global(html:not(.dark)) .fbody .fd-stamp {
+		color: #5d34c4;
+	}
+	.fd-h {
+		font-size: clamp(1.9rem, 4.2vw, 3rem);
+		font-weight: 850;
+		letter-spacing: -0.025em;
+		line-height: 1.06;
+		margin: 0 0 1rem;
+	}
+	.fd-h--xl {
+		font-size: clamp(2.2rem, 4.4vw, 3.4rem);
+	}
+	.fd-h em {
+		font-style: italic;
+		background: linear-gradient(95deg, var(--fd-acc), var(--fd-acc2));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+		padding-right: 0.06em;
+	}
+	:global(html:not(.dark)) .fbody .fd-h em {
+		background: linear-gradient(95deg, #5d34c4, #b81d68);
+		-webkit-background-clip: text;
+		background-clip: text;
+	}
+	.fd-p {
+		font-size: 1.02rem;
+		line-height: 1.65;
+		color: var(--fd-muted);
+		max-width: 34rem;
+		margin: 0 0 1.4rem;
+	}
+	.fd-head {
+		text-align: center;
+		max-width: 46rem;
+		margin: 0 auto clamp(1.5rem, 3vw, 2.25rem);
+	}
+	.fd-p--center {
+		margin-inline: auto;
+		text-align: center;
+	}
+	.fd-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		font-weight: 700;
+		color: var(--fd-acc);
+		transition: gap 0.25s ease;
+	}
+	.fd-link:hover {
+		gap: 0.75rem;
+	}
+	:global(html:not(.dark)) .fbody .fd-link {
+		color: #5d34c4;
+	}
+	.fd-row {
+		display: flex;
+		align-items: center;
+		gap: 1.4rem;
+		flex-wrap: wrap;
+	}
+	.fd-cta {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+		padding: 0.85rem 1.7rem;
+		border-radius: 9999px;
+		font-weight: 800;
+		font-size: 0.95rem;
+		color: #fff;
+		background: linear-gradient(95deg, var(--fd-acc), var(--fd-acc2));
+		border: 1px solid rgba(255, 255, 255, 0.3);
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.35),
+			0 16px 38px -14px color-mix(in srgb, var(--fd-acc) 70%, transparent);
+		transition: transform 0.25s ease, box-shadow 0.25s ease;
+	}
+	.fd-cta:hover {
+		transform: translateY(-2px) rotate(-0.5deg);
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.4),
+			0 22px 48px -14px color-mix(in srgb, var(--fd-acc2) 70%, transparent);
+	}
+	.fd-cta--big {
+		font-size: 1.05rem;
+		padding: 1rem 2rem;
+	}
 
-	/* Sprint */
-	.fb-sprint { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
-	.fb-phase { padding: 1.5rem; border-radius: 1.1rem; border: 1px solid rgba(167, 139, 250, 0.16); background: rgba(255, 255, 255, 0.02); transition: border-color 0.25s ease, transform 0.25s ease; }
-	.fb-phase:hover { border-color: var(--view-accent, #8b5cf6); transform: translateY(-4px); }
-	.fb-phase-n { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; line-height: 1; background: linear-gradient(135deg, #c4b5fd, var(--view-accent, #8b5cf6)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-	.fb-phase-title { font-size: 1.15rem; font-weight: 800; color: #fff; margin: 0.4rem 0 0.9rem; }
-	.fb-phase ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.55rem; }
-	.fb-phase li { display: flex; align-items: center; gap: 0.5rem; color: rgba(231, 227, 245, 0.72); font-size: 0.9rem; }
-	.fb-phase li :global(svg) { color: var(--view-accent, #8b5cf6); flex-shrink: 0; }
+	/* ── A · open ── */
+	.fd-open {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: clamp(1.75rem, 4vw, 3.5rem);
+		align-items: center;
+	}
+	@media (min-width: 920px) {
+		.fd-open {
+			grid-template-columns: 1fr 1fr;
+		}
+	}
+	.fd-stats {
+		display: grid;
+		grid-template-columns: repeat(2, auto);
+		justify-content: start;
+		gap: 1rem 2.25rem;
+		list-style: none;
+		margin: 0 0 1.5rem;
+		padding: 0;
+	}
+	@media (min-width: 640px) {
+		.fd-stats {
+			grid-template-columns: repeat(4, auto);
+		}
+	}
+	.fd-stats li {
+		white-space: nowrap;
+	}
+	.fd-stats strong {
+		display: block;
+		font-size: clamp(1.5rem, 2.6vw, 2rem);
+		font-weight: 850;
+		letter-spacing: -0.02em;
+		background: linear-gradient(135deg, #c4b5fd, var(--fd-acc));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	:global(html:not(.dark)) .fbody .fd-stats strong {
+		background: linear-gradient(135deg, #5d34c4, #8b5cf6);
+		-webkit-background-clip: text;
+		background-clip: text;
+	}
+	.fd-stats span {
+		font-size: 0.78rem;
+		color: var(--fd-faint);
+	}
 
-	/* Roadmap */
-	.fb-road { list-style: none; padding: 0; margin: 0; display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); position: relative; }
-	.fb-mile { position: relative; padding-top: 1.5rem; border-top: 2px solid rgba(167, 139, 250, 0.2); opacity: 0; transform: translateY(14px); }
-	.fb-mile.is-on { animation: fb-in 0.5s ease forwards; }
-	@keyframes fb-in { to { opacity: 1; transform: translateY(0); } }
-	.fb-mile-dot { position: absolute; top: -7px; left: 0; width: 12px; height: 12px; border-radius: 9999px; background: var(--view-accent, #8b5cf6); box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.2); }
-	.fb-mile-wk { font-family: ui-monospace, monospace; font-size: 0.75rem; color: #c4b5fd; }
-	.fb-mile-title { font-size: 1.2rem; font-weight: 800; color: #fff; margin: 0.3rem 0; }
-	.fb-mile-desc { color: rgba(231, 227, 245, 0.6); font-size: 0.9rem; line-height: 1.55; }
+	/* film placeholder, slightly tilted for energy */
+	.fd-film {
+		position: relative;
+		transform: rotate(1.2deg);
+		transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.fd-film:hover {
+		transform: rotate(0deg) scale(1.01);
+	}
+	.fd-film-frame {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.4rem;
+		aspect-ratio: 16 / 10;
+		min-height: clamp(300px, 30vw, 440px);
+		border-radius: 1.25rem;
+		border: 1.5px dashed color-mix(in srgb, var(--fd-ink) 22%, transparent);
+		background:
+			radial-gradient(420px 220px at 70% 8%, color-mix(in srgb, var(--fd-acc) 14%, transparent), transparent),
+			var(--fd-card);
+		color: var(--fd-muted);
+		box-shadow: 0 34px 80px -34px color-mix(in srgb, var(--fd-acc) 35%, rgba(0, 0, 0, 0.6));
+	}
+	.fd-film-label {
+		font-size: 0.8rem;
+		font-weight: 800;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+	.fd-film-sub {
+		font-size: 0.78rem;
+		color: var(--fd-faint);
+	}
+	.fd-film-tag {
+		position: absolute;
+		top: 0.9rem;
+		left: 1rem;
+		font-size: 0.68rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: #ff6b81;
+	}
 
-	/* Launches */
-	.fb-work-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.6rem; }
-	.fb-work-head .fb-h { margin-bottom: 0; }
-	.fb-launches { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
-	.fb-launch { display: block; border-radius: 1.1rem; overflow: hidden; border: 1px solid rgba(167, 139, 250, 0.16); background: rgba(255, 255, 255, 0.02); transition: border-color 0.25s ease, transform 0.25s ease; }
-	.fb-launch:hover { border-color: var(--view-accent, #8b5cf6); transform: translateY(-4px); }
-	.fb-launch-img { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: #161229; }
-	.fb-launch-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
-	.fb-launch:hover .fb-launch-img img { transform: scale(1.06); }
-	.fb-launch-ph { position: absolute; inset: 0; display: grid; place-items: center; color: rgba(196, 181, 253, 0.5); background: repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0 10px, transparent 10px 20px); }
-	.fb-launch-live { position: absolute; bottom: 10px; left: 10px; display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.25rem 0.6rem; border-radius: 9999px; background: rgba(18, 15, 34, 0.82); border: 1px solid rgba(167, 139, 250, 0.3); backdrop-filter: blur(6px); font-size: 0.72rem; color: #e7e3f5; }
-	.fb-live-dot { width: 6px; height: 6px; border-radius: 9999px; background: #28c840; }
-	.fb-launch-meta { display: flex; align-items: center; justify-content: space-between; padding: 0.9rem 1.1rem; }
-	.fb-launch-name { font-weight: 700; color: #fff; }
-	.fb-launch-sector { font-size: 0.72rem; padding: 0.2rem 0.6rem; border-radius: 9999px; background: rgba(139, 92, 246, 0.16); color: #c4b5fd; border: 1px solid rgba(139, 92, 246, 0.3); }
+	/* ── B · sprint track ── */
+	.fd-track {
+		position: relative;
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 1.25rem;
+		list-style: none;
+		margin: 2.5rem 0 0;
+		padding: 0;
+	}
+	.fd-track-line {
+		position: absolute;
+		top: 7px;
+		left: 2%;
+		right: 2%;
+		height: 3px;
+		border-radius: 9999px;
+		background: color-mix(in srgb, var(--fd-ink) 10%, transparent);
+		overflow: hidden;
+	}
+	.fd-track-line::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		border-radius: 9999px;
+		background: linear-gradient(90deg, var(--fd-acc), var(--fd-acc2));
+		transform: scaleX(0);
+		transform-origin: left;
+		transition: transform 2.2s cubic-bezier(0.22, 1, 0.36, 1) 0.3s;
+	}
+	.fd-track.is-on .fd-track-line::after {
+		transform: scaleX(1);
+	}
+	.fd-stop {
+		position: relative;
+		padding-top: 1.9rem;
+	}
+	.fd-stop-node {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 17px;
+		height: 17px;
+		border-radius: 9999px;
+		background: var(--fd-acc);
+		border: 3px solid color-mix(in srgb, var(--fd-acc) 30%, #0d0a18);
+		box-shadow: 0 0 16px color-mix(in srgb, var(--fd-acc) 60%, transparent);
+		transform: scale(0);
+	}
+	/* nodes pop one by one as the progress line reaches them */
+	.fd-track.is-on li:nth-child(2) .fd-stop-node { animation: fd-pop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 0.35s forwards; }
+	.fd-track.is-on li:nth-child(3) .fd-stop-node { animation: fd-pop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 0.95s forwards; }
+	.fd-track.is-on li:nth-child(4) .fd-stop-node { animation: fd-pop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 1.55s forwards; }
+	.fd-track.is-on li:nth-child(5) .fd-stop-node { animation: fd-pop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 2.15s forwards; }
+	@keyframes fd-pop {
+		to { transform: scale(1); }
+	}
+	:global(html:not(.dark)) .fbody .fd-stop-node {
+		border-color: #ece7f8;
+	}
+	.fd-stop-wk {
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--fd-acc);
+	}
+	:global(html:not(.dark)) .fbody .fd-stop-wk {
+		color: #5d34c4;
+	}
+	.fd-stop-t {
+		font-size: 1.12rem;
+		font-weight: 800;
+		margin: 0.25rem 0 0.3rem;
+	}
+	.fd-stop-d {
+		margin: 0;
+		font-size: 0.88rem;
+		line-height: 1.55;
+		color: var(--fd-muted);
+	}
+	@media (max-width: 760px) {
+		.fd-track {
+			grid-template-columns: 1fr;
+			gap: 1.5rem;
+			padding-left: 1.6rem;
+		}
+		.fd-track-line {
+			top: 2%;
+			bottom: 4%;
+			left: 7px;
+			right: auto;
+			width: 3px;
+			height: auto;
+		}
+		.fd-track-line::after {
+			transform: scaleY(0);
+			transform-origin: top;
+			background: linear-gradient(180deg, var(--fd-acc), var(--fd-acc2));
+		}
+		.fd-track.is-on .fd-track-line::after {
+			transform: scaleY(1);
+		}
+		.fd-stop {
+			padding-top: 0;
+		}
+		.fd-stop-node {
+			left: -1.6rem;
+			top: 4px;
+		}
+	}
 
-	/* Values */
-	.fb-values { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
-	.fb-value { padding: 1.4rem; border-radius: 1.1rem; border: 1px solid rgba(167, 139, 250, 0.16); background: rgba(255, 255, 255, 0.02); transition: border-color 0.25s ease, transform 0.25s ease; }
-	.fb-value:hover { border-color: var(--view-accent, #8b5cf6); transform: translateY(-4px); }
-	.fb-value-ic { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 0.9rem; background: linear-gradient(135deg, rgba(196,181,253,0.18), rgba(139,92,246,0.14)); color: #c4b5fd; margin-bottom: 0.9rem; }
-	.fb-value h3 { font-size: 1.1rem; font-weight: 800; color: #fff; }
-	.fb-value p { color: rgba(231, 227, 245, 0.65); font-size: 0.9rem; line-height: 1.55; margin-top: 0.4rem; }
+	/* ── C · the curve ── */
+	.fd-curvewrap {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: clamp(1.75rem, 4vw, 3.5rem);
+		align-items: center;
+	}
+	@media (min-width: 920px) {
+		.fd-curvewrap {
+			grid-template-columns: 0.9fr 1.1fr;
+		}
+	}
+	.fd-chart {
+		position: relative;
+		margin: 0;
+		padding: 3rem 1.4rem 0.9rem;
+		border-radius: 1.25rem;
+		border: 1px solid var(--fd-line);
+		background: var(--fd-card);
+		box-shadow: 0 30px 70px -32px color-mix(in srgb, var(--fd-acc) 30%, rgba(0, 0, 0, 0.6));
+	}
+	.fd-chart svg {
+		width: 100%;
+		height: auto;
+		display: block;
+	}
+	.fd-gridlines line {
+		stroke: color-mix(in srgb, var(--fd-ink) 8%, transparent);
+		stroke-width: 1;
+	}
+	.fd-line {
+		stroke-dasharray: 640;
+		stroke-dashoffset: 640;
+		transition: stroke-dashoffset 2.4s cubic-bezier(0.22, 1, 0.36, 1) 0.2s;
+	}
+	.fd-area {
+		opacity: 0;
+		transition: opacity 1s ease 1.6s;
+	}
+	.fd-dot {
+		opacity: 0;
+		transition: opacity 0.4s ease 2.3s;
+	}
+	.fd-chart.is-draw .fd-line {
+		stroke-dashoffset: 0;
+	}
+	.fd-chart.is-draw .fd-area {
+		opacity: 1;
+	}
+	.fd-chart.is-draw .fd-dot {
+		opacity: 1;
+		animation: fd-dotpulse 2.2s ease-out 2.4s infinite;
+	}
+	/* milestone points pop as the line passes */
+	.fd-mile {
+		fill: #0d0a18;
+		stroke: var(--fd-acc);
+		stroke-width: 3;
+		opacity: 0;
+		transform-box: fill-box;
+		transform-origin: center;
+		transform: scale(0);
+	}
+	:global(html:not(.dark)) .fbody .fd-mile {
+		fill: #ece7f8;
+	}
+	.fd-chart.is-draw .fd-mile--1 {
+		animation: fd-milepop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 1.1s forwards;
+	}
+	.fd-chart.is-draw .fd-mile--2 {
+		animation: fd-milepop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 1.8s forwards;
+	}
+	@keyframes fd-milepop {
+		to { opacity: 1; transform: scale(1); }
+	}
+	@keyframes fd-dotpulse {
+		0% { filter: drop-shadow(0 0 0 rgba(236, 72, 153, 0.7)); }
+		60% { filter: drop-shadow(0 0 10px rgba(236, 72, 153, 0.2)); }
+		100% { filter: drop-shadow(0 0 0 rgba(236, 72, 153, 0)); }
+	}
+	.fd-chart-tag {
+		position: absolute;
+		top: 0.9rem;
+		right: 1.1rem;
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--fd-acc2);
+	}
+	:global(html:not(.dark)) .fbody .fd-chart-tag {
+		color: #b81d68;
+	}
+	.fd-chart-x {
+		display: flex;
+		justify-content: space-between;
+		margin-top: 0.4rem;
+		font-size: 0.7rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--fd-faint);
+	}
 
-	/* Reviews */
-	.fb-reviews { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
-	.fb-rev { margin: 0; padding: 1.3rem; border-radius: 1.1rem; border: 1px solid rgba(167, 139, 250, 0.16); background: rgba(255, 255, 255, 0.02); }
-	.fb-rev blockquote { margin: 0 0 1rem; color: rgba(231, 227, 245, 0.82); line-height: 1.6; font-size: 0.95rem; }
-	.fb-rev figcaption { display: flex; align-items: center; gap: 0.55rem; }
-	.fb-rev figcaption img { width: 34px; height: 34px; border-radius: 9999px; object-fit: cover; }
-	.fb-rev-name { font-weight: 700; color: #fff; font-size: 0.9rem; }
-	.fb-rev-stars { margin-left: auto; color: #fbbf24; font-size: 0.85rem; letter-spacing: 1px; }
+	/* ── C2 · media gallery ── */
+	.fd-media {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: clamp(0.9rem, 2vw, 1.25rem);
+	}
+	@media (min-width: 880px) {
+		.fd-media {
+			grid-template-columns: 2fr 1fr;
+		}
+	}
+	.fd-shot-stack {
+		display: grid;
+		grid-template-rows: 1fr 1fr;
+		gap: clamp(0.9rem, 2vw, 1.25rem);
+	}
+	.fd-shot {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.35rem;
+		min-height: 170px;
+		border-radius: 1.1rem;
+		border: 1.5px dashed color-mix(in srgb, var(--fd-ink) 22%, transparent);
+		background:
+			radial-gradient(420px 200px at 70% 10%, color-mix(in srgb, var(--fd-acc) 10%, transparent), transparent),
+			var(--fd-card);
+		color: var(--fd-muted);
+	}
+	.fd-shot--wide {
+		min-height: clamp(280px, 38vw, 420px);
+	}
+	.fd-shot-name {
+		font-size: 0.78rem;
+		font-weight: 800;
+		letter-spacing: 0.07em;
+		text-transform: uppercase;
+		text-align: center;
+		padding-inline: 0.75rem;
+	}
+	.fd-shot-sub {
+		font-size: 0.76rem;
+		color: var(--fd-faint);
+	}
 
-	@media (prefers-reduced-motion: reduce) { .fb-mile { opacity: 1; transform: none; } }
+	/* ── E2 · belts: sector stamps + brand logos ── */
+	.fd-sec--belts {
+		padding-block: clamp(1.5rem, 3.5vw, 2.5rem);
+	}
+	.fd-belt-label {
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--fd-faint);
+		margin: 0 0 0.7rem;
+	}
+	.fd-belt {
+		overflow: hidden;
+		margin-bottom: 1.6rem;
+		-webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+		mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+	}
+	.fd-belt-track {
+		display: flex;
+		align-items: center;
+		width: max-content;
+		animation: fd-drift 42s linear infinite;
+	}
+	.fd-belt-track--logos {
+		animation: fd-drift 36s linear infinite reverse;
+		padding-block: 0.4rem;
+	}
+	.fd-belt:hover .fd-belt-track {
+		animation-play-state: paused;
+	}
+	@keyframes fd-drift {
+		to { transform: translateX(-50%); }
+	}
+	.fd-bstamp {
+		flex-shrink: 0;
+		margin-right: 1.1rem;
+		font-size: 0.8rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: color-mix(in srgb, var(--fd-ink) 55%, transparent);
+		border: 1.5px dashed color-mix(in srgb, var(--fd-acc) 40%, transparent);
+		padding: 0.4rem 0.9rem;
+		border-radius: 0.5rem;
+		transition: color 0.3s ease, border-color 0.3s ease;
+	}
+	.fd-bstamp:nth-child(odd) { transform: rotate(-1.5deg); }
+	.fd-bstamp:nth-child(even) { transform: rotate(1.5deg); }
+	.fd-bstamp:hover {
+		color: var(--fd-acc);
+		border-color: var(--fd-acc);
+	}
+	.fd-blogo {
+		flex-shrink: 0;
+		display: grid;
+		place-items: center;
+		margin-right: clamp(1.8rem, 3.5vw, 3rem);
+	}
+	.fd-blogo img {
+		height: 26px;
+		width: auto;
+		max-width: 120px;
+		object-fit: contain;
+		filter: grayscale(1) brightness(0) invert(1);
+		opacity: 0.45;
+		transition: opacity 0.3s ease, filter 0.3s ease;
+	}
+	:global(html:not(.dark)) .fbody .fd-blogo img {
+		filter: grayscale(1) brightness(0);
+	}
+	.fd-blogo:hover img {
+		filter: none;
+		opacity: 1;
+	}
+
+	/* ── E3 · from the founder ── */
+	.fd-qgrid {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: clamp(1.75rem, 4vw, 3.5rem);
+		align-items: center;
+	}
+	@media (min-width: 880px) {
+		.fd-qgrid {
+			grid-template-columns: 0.75fr 1.25fr;
+		}
+	}
+	.fd-qframe {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.4rem;
+		aspect-ratio: 4 / 5;
+		max-height: 460px;
+		border-radius: 1.4rem;
+		border: 1.5px dashed color-mix(in srgb, var(--fd-ink) 22%, transparent);
+		background:
+			radial-gradient(360px 280px at 50% 0%, color-mix(in srgb, var(--fd-acc) 16%, transparent), transparent),
+			var(--fd-card);
+		color: var(--fd-muted);
+		box-shadow: 0 34px 80px -34px color-mix(in srgb, var(--fd-acc) 40%, rgba(0, 0, 0, 0.7));
+	}
+	.fd-qbody {
+		position: relative;
+		padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1rem, 2.5vw, 2rem);
+	}
+	.fd-qmark {
+		position: absolute;
+		font-family: Georgia, 'Times New Roman', serif;
+		font-size: clamp(5rem, 10vw, 8.5rem);
+		line-height: 1;
+		background: linear-gradient(135deg, var(--fd-acc), var(--fd-acc2));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+		animation: fd-qfloat 5.5s ease-in-out infinite alternate;
+		pointer-events: none;
+	}
+	.fd-qmark--open {
+		top: -0.5rem;
+		left: -0.4rem;
+	}
+	.fd-qmark--close {
+		bottom: 2.2rem;
+		right: 0.2rem;
+		animation-delay: -2.75s;
+	}
+	@keyframes fd-qfloat {
+		from { transform: translateY(0) rotate(-2deg); opacity: 0.85; }
+		to { transform: translateY(-10px) rotate(2deg); opacity: 1; }
+	}
+	.fd-q {
+		margin: 0 0 1.6rem;
+		padding-left: clamp(2.25rem, 5vw, 3.5rem);
+	}
+	.fd-qline {
+		display: block;
+		font-size: clamp(1.3rem, 2.8vw, 2rem);
+		font-weight: 800;
+		font-style: italic;
+		letter-spacing: -0.015em;
+		line-height: 1.35;
+	}
+	.fd-qline--hot {
+		background: linear-gradient(95deg, var(--fd-acc), var(--fd-acc2));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	:global(html:not(.dark)) .fbody .fd-qline--hot {
+		background: linear-gradient(95deg, #5d34c4, #b81d68);
+		-webkit-background-clip: text;
+		background-clip: text;
+	}
+	.fd-qwho {
+		display: flex;
+		flex-direction: column;
+		gap: 0.15rem;
+		padding-left: clamp(2.25rem, 5vw, 3.5rem);
+	}
+	.fd-qname {
+		font-size: 1.1rem;
+		font-weight: 850;
+		background: linear-gradient(95deg, var(--fd-acc), var(--fd-acc2));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+		width: fit-content;
+	}
+	:global(html:not(.dark)) .fbody .fd-qname {
+		background: linear-gradient(95deg, #5d34c4, #b81d68);
+		-webkit-background-clip: text;
+		background-clip: text;
+	}
+	.fd-qtitle {
+		font-size: 0.74rem;
+		font-weight: 800;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--fd-faint);
+	}
+	.fd-qrole {
+		font-size: 0.88rem;
+		font-weight: 600;
+		color: var(--fd-muted);
+	}
+
+	/* ── D · launch wall ── */
+	.fd-wall {
+		display: grid;
+		grid-template-columns: repeat(12, minmax(0, 1fr));
+		grid-auto-rows: clamp(120px, 15vw, 200px);
+		gap: clamp(0.9rem, 2vw, 1.25rem);
+	}
+	.fd-launch {
+		position: relative;
+		display: block;
+		grid-column: span 4;
+		border-radius: 1.2rem;
+		overflow: hidden;
+		border: 1px solid var(--fd-line);
+		box-shadow: 0 24px 56px -28px rgba(0, 0, 0, 0.7);
+	}
+	.fd-launch--big {
+		grid-column: span 8;
+		grid-row: span 2;
+	}
+	@media (max-width: 880px) {
+		.fd-launch { grid-column: span 6; }
+		.fd-launch--big { grid-column: span 12; }
+	}
+	@media (max-width: 560px) {
+		.fd-launch { grid-column: span 12; }
+	}
+	.fd-launch img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.fd-launch:hover img {
+		transform: scale(1.05) rotate(-0.5deg);
+	}
+	.fd-launch-ph {
+		position: absolute;
+		inset: 0;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.3rem;
+		color: var(--fd-faint);
+		font-size: 0.72rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		background:
+			radial-gradient(300px 160px at 70% 10%, color-mix(in srgb, var(--fd-acc) 12%, transparent), transparent),
+			var(--fd-card);
+	}
+	.fd-launch-veil {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(180deg, transparent 45%, rgba(10, 7, 20, 0.88));
+	}
+	.fd-launch-meta {
+		position: absolute;
+		left: 1rem;
+		right: 1rem;
+		bottom: 0.85rem;
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		color: #fff;
+	}
+	.fd-live {
+		width: 8px;
+		height: 8px;
+		flex-shrink: 0;
+		border-radius: 9999px;
+		background: #34d399;
+		box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.5);
+		animation: fd-live 2.2s ease-out infinite;
+	}
+	@keyframes fd-live {
+		0% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.5); }
+		70% { box-shadow: 0 0 0 7px transparent; }
+		100% { box-shadow: 0 0 0 0 transparent; }
+	}
+	.fd-launch-name {
+		display: flex;
+		flex-direction: column;
+		line-height: 1.25;
+		min-width: 0;
+	}
+	.fd-launch-name strong {
+		font-size: 0.95rem;
+		font-weight: 800;
+	}
+	.fd-launch-name em {
+		font-style: normal;
+		font-size: 0.74rem;
+		color: rgba(255, 255, 255, 0.65);
+	}
+	.fd-launch :global(.fd-launch-go) {
+		margin-left: auto;
+		opacity: 0;
+		transform: translate(4px, -4px);
+		transition: opacity 0.3s ease, transform 0.3s ease;
+	}
+	.fd-launch:hover :global(.fd-launch-go) {
+		opacity: 1;
+		transform: translate(0, 0);
+	}
+	.fd-wall-all {
+		text-align: center;
+		margin: 1.5rem 0 0;
+	}
+
+	/* ── E · group chat ── */
+	.fd-chatwrap {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: clamp(1.75rem, 4vw, 3.5rem);
+		align-items: center;
+	}
+	@media (min-width: 920px) {
+		.fd-chatwrap {
+			grid-template-columns: 0.9fr 1.1fr;
+		}
+	}
+	.fd-phone {
+		border-radius: 1.5rem;
+		overflow: hidden;
+		border: 1px solid var(--fd-line);
+		background: var(--fd-card);
+		box-shadow: 0 34px 80px -34px color-mix(in srgb, var(--fd-acc) 30%, rgba(0, 0, 0, 0.7));
+	}
+	.fd-phone-top {
+		display: flex;
+		align-items: center;
+		padding: 0.8rem 1.1rem;
+		border-bottom: 1px solid var(--fd-line);
+		background: color-mix(in srgb, var(--fd-ink) 4%, transparent);
+	}
+	.fd-phone-avatars {
+		display: flex;
+	}
+	.fd-phone-avatars img {
+		width: 26px;
+		height: 26px;
+		border-radius: 9999px;
+		object-fit: cover;
+		border: 2px solid #0d0a18;
+		margin-right: -8px;
+	}
+	:global(html:not(.dark)) .fbody .fd-phone-avatars img {
+		border-color: #ece7f8;
+	}
+	.fd-phone-title {
+		font-weight: 800;
+		font-size: 0.9rem;
+		margin-left: 1.1rem;
+	}
+	.fd-phone-count {
+		margin-left: auto;
+		font-size: 0.72rem;
+		color: var(--fd-faint);
+	}
+	.fd-phone-body {
+		padding: 1.1rem 1.1rem 1.3rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.65rem;
+		min-height: 320px;
+	}
+	.fd-msg {
+		display: flex;
+		align-items: flex-end;
+		gap: 0.5rem;
+		max-width: 85%;
+		opacity: 0;
+		transform: translateY(10px) scale(0.97);
+		transition: opacity 0.4s ease, transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+	}
+	.fd-msg.is-in {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+	.fd-msg--us {
+		align-self: flex-end;
+		flex-direction: row-reverse;
+	}
+	.fd-msg-ava {
+		width: 26px;
+		height: 26px;
+		border-radius: 9999px;
+		object-fit: cover;
+		flex-shrink: 0;
+	}
+	.fd-bubble {
+		display: flex;
+		flex-direction: column;
+		gap: 0.1rem;
+		padding: 0.6rem 0.9rem;
+		border-radius: 1.1rem;
+		border-bottom-left-radius: 0.3rem;
+		background: color-mix(in srgb, var(--fd-ink) 7%, transparent);
+		font-size: 0.92rem;
+		line-height: 1.45;
+	}
+	.fd-msg--us .fd-bubble {
+		border-radius: 1.1rem;
+		border-bottom-right-radius: 0.3rem;
+		background: linear-gradient(95deg, var(--fd-acc), color-mix(in srgb, var(--fd-acc) 70%, var(--fd-acc2)));
+		color: #fff;
+	}
+	.fd-msg-name {
+		font-size: 0.7rem;
+		font-weight: 800;
+		color: var(--fd-acc);
+	}
+	:global(html:not(.dark)) .fbody .fd-msg-name {
+		color: #5d34c4;
+	}
+	.fd-typing {
+		display: none;
+		align-self: flex-start;
+		gap: 4px;
+		padding: 0.65rem 0.9rem;
+		border-radius: 1.1rem;
+		border-bottom-left-radius: 0.3rem;
+		background: color-mix(in srgb, var(--fd-ink) 7%, transparent);
+	}
+	.fd-typing.is-on {
+		display: flex;
+	}
+	.fd-typing span {
+		width: 7px;
+		height: 7px;
+		border-radius: 9999px;
+		background: var(--fd-faint);
+		animation: fd-type 1s ease-in-out infinite;
+	}
+	.fd-typing span:nth-child(2) { animation-delay: 0.15s; }
+	.fd-typing span:nth-child(3) { animation-delay: 0.3s; }
+	@keyframes fd-type {
+		0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+		30% { transform: translateY(-4px); opacity: 1; }
+	}
+
+	/* ── F · boarding pass ── */
+	.fd-sec--cta {
+		padding-bottom: clamp(1.5rem, 3vw, 2.5rem);
+	}
+	.fd-pass {
+		position: relative;
+		display: grid;
+		grid-template-columns: 1fr;
+		border-radius: 1.5rem;
+		border: 1px solid color-mix(in srgb, var(--fd-acc) 30%, var(--fd-line));
+		background:
+			radial-gradient(700px 320px at 12% 120%, color-mix(in srgb, var(--fd-acc) 18%, transparent), transparent 70%),
+			var(--fd-card);
+		overflow: hidden;
+		box-shadow: 0 40px 90px -36px color-mix(in srgb, var(--fd-acc) 40%, rgba(0, 0, 0, 0.7));
+	}
+	@media (min-width: 880px) {
+		.fd-pass {
+			grid-template-columns: 1.7fr 1fr;
+		}
+	}
+	.fd-pass-main {
+		padding: clamp(2rem, 4.5vw, 3.5rem);
+	}
+	.fd-pass-stub {
+		position: relative;
+		padding: clamp(2rem, 4vw, 3rem) clamp(1.5rem, 3vw, 2.25rem);
+		border-top: 2px dashed color-mix(in srgb, var(--fd-ink) 22%, transparent);
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+		justify-content: center;
+	}
+	@media (min-width: 880px) {
+		.fd-pass-stub {
+			border-top: 0;
+			border-left: 2px dashed color-mix(in srgb, var(--fd-ink) 22%, transparent);
+		}
+		/* ticket notches */
+		.fd-pass-stub::before,
+		.fd-pass-stub::after {
+			content: '';
+			position: absolute;
+			left: -13px;
+			width: 26px;
+			height: 26px;
+			border-radius: 9999px;
+			background: #080610;
+		}
+		.fd-pass-stub::before { top: -14px; }
+		.fd-pass-stub::after { bottom: -14px; }
+	}
+	:global(html:not(.dark)) .fbody .fd-pass-stub::before,
+	:global(html:not(.dark)) .fbody .fd-pass-stub::after {
+		background: #f4f1fb;
+	}
+	.fd-pass-info {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.9rem 1.25rem;
+		margin: 0;
+	}
+	.fd-pass-info dt {
+		font-size: 0.66rem;
+		font-weight: 800;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--fd-faint);
+	}
+	.fd-pass-info dd {
+		margin: 0.1rem 0 0;
+		font-size: 1rem;
+		font-weight: 800;
+	}
+	.fd-pass-call {
+		display: flex;
+		flex-direction: column;
+		line-height: 1.3;
+	}
+	.fd-pass-call span {
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--fd-faint);
+	}
+	.fd-pass-call strong {
+		font-size: clamp(1.15rem, 2.4vw, 1.5rem);
+		font-weight: 850;
+		letter-spacing: -0.01em;
+		background: linear-gradient(95deg, var(--fd-acc), var(--fd-acc2));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+		transition: filter 0.3s ease;
+	}
+	:global(html:not(.dark)) .fbody .fd-pass-call strong {
+		background: linear-gradient(95deg, #5d34c4, #b81d68);
+		-webkit-background-clip: text;
+		background-clip: text;
+	}
+	.fd-pass-call:hover strong {
+		filter: brightness(1.2);
+	}
+	.fd-pass-barcode {
+		display: flex;
+		gap: 3px;
+		align-items: flex-end;
+	}
+	.fd-pass-barcode i {
+		display: block;
+		width: 3px;
+		height: 26px;
+		background: color-mix(in srgb, var(--fd-ink) 55%, transparent);
+	}
+	.fd-pass-barcode i:nth-child(3n) { height: 18px; width: 2px; }
+	.fd-pass-barcode i:nth-child(4n) { height: 30px; width: 4px; }
+	.fd-pass-barcode i:nth-child(5n) { height: 22px; }
+
+	/* ── Reveals ── */
+	.fd-rev {
+		opacity: 0;
+		transform: translateY(22px);
+		transition: opacity 0.65s ease, transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+		transition-delay: calc(var(--i, 0) * 0.12s);
+	}
+	.fd-rev.is-on {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.fd-rev {
+			opacity: 1;
+			transform: none;
+			transition: none;
+		}
+		.fd-live,
+		.fd-typing span,
+		.fd-belt-track,
+		.fd-qmark {
+			animation: none;
+		}
+		.fd-stop-node {
+			transform: scale(1);
+		}
+		.fd-mile {
+			opacity: 1;
+			transform: scale(1);
+		}
+		.fd-line {
+			stroke-dashoffset: 0;
+			transition: none;
+		}
+		.fd-area,
+		.fd-dot {
+			opacity: 1;
+			transition: none;
+		}
+		.fd-film {
+			transform: none;
+		}
+		.fd-msg {
+			opacity: 1;
+			transform: none;
+			transition: none;
+		}
+	}
 </style>

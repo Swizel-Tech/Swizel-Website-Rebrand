@@ -64,11 +64,12 @@ export function initFounderView() {
 		if ((e as CustomEvent).detail === 'founder') setTimeout(launch, 350);
 	});
 
+	// the tour walks the whole founder world, hero to footer
 	const steps: TourStep[] = [
 		{
 			sel: '.hero-founder .rhead',
 			title: 'Our promise',
-			body: 'You imagine it. We build, design, scale and launch it. The same signature rides every view.',
+			body: 'You imagine it. We build, design, scale and launch it.',
 		},
 		{
 			sel: '#founder-widget [data-tour="ring"]',
@@ -76,19 +77,49 @@ export function initFounderView() {
 			body: 'Watch a build go from zero to launched. Most MVPs ship in about six weeks.',
 		},
 		{
-			sel: '#founder-widget .fw--stages',
-			title: 'A clear path',
-			body: 'Four simple stages: discover, design, build, launch. No mystery and no surprises.',
+			sel: '#view-banner .vw-head',
+			title: 'Six worlds, one Swizel',
+			body: 'This site reshapes around you. Step into any world, anytime — nothing is locked.',
 		},
 		{
-			sel: '#founder-widget [data-tour="launched"]',
-			title: 'Proof, across sectors',
-			body: 'Real products we launched, spanning food, sports, real estate and commerce.',
+			sel: '.fbody .fd-open',
+			title: 'Day 0',
+			body: 'Momentum is the moat. You bring the idea — we bring the senior team.',
 		},
 		{
-			sel: '.hero-founder [data-tour="team"]',
-			title: 'Your build team',
-			body: 'Real people who ship with you. Tap to meet them.',
+			sel: '#fd-track',
+			title: 'The six-week plan',
+			body: 'Discover, design, build, launch — a roadmap you can hold us to.',
+		},
+		{
+			sel: '#fd-chart',
+			title: 'Built for the curve',
+			body: 'Analytics from day one, and a stack that scales when things work.',
+		},
+		{
+			sel: '#fd-wall',
+			title: 'Receipts',
+			body: 'Founders we launched — live products, pulsing in production right now.',
+		},
+		{
+			sel: '#fd-chat',
+			title: 'The group chat',
+			body: 'Real founders, real messages. Watch the thread play out.',
+		},
+		{
+			sel: '.fd-qbody',
+			title: 'From our founder',
+			body: 'A word from Engr. Tochukwu Nnamdi-Nwaeze — founder to founder.',
+		},
+		{
+			sel: '.fd-pass',
+			title: 'Your boarding pass',
+			body: 'Idea → Production, Gate: Week 1. Claim your launch window or call us directly.',
+		},
+		{
+			sel: '.site-footer .ft-socials',
+			title: 'Follow the build',
+			body: 'Daily updates and behind the scenes — hover any handle for a preview.',
 		},
 	];
 	document

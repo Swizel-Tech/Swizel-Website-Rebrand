@@ -121,36 +121,62 @@ export function initBuilderView() {
 		}
 	});
 
+	// the tour walks the whole builder world, hero to footer
 	const steps: TourStep[] = [
 		{
 			sel: '.hero-builder .rhead',
 			title: 'Our promise',
-			body: 'You imagine it. We build, design, scale and launch it. This line is our signature in every view.',
+			body: 'You imagine it. We build, design, scale and launch it.',
 		},
 		{
 			sel: '#builder-ide .ide2--code',
 			title: 'A real editor',
-			body: 'This is live code, not a screenshot. Edit it however you like.',
+			body: 'This is live code, not a screenshot. Edit it, then press run and watch products deploy below.',
 		},
 		{
-			sel: '#builder-ide .ide2--run',
-			title: 'Press run',
-			body: 'Run it and watch real Swizel products deploy in the console below.',
+			sel: '#view-banner .vw-head',
+			title: 'Six worlds, one Swizel',
+			body: 'This site reshapes around you. Step into any world, anytime — nothing is locked.',
 		},
 		{
-			sel: '#builder-out',
-			title: 'Proof, across sectors',
-			body: 'Every line is a product we shipped, tagged by industry. The best way to prove we can build anything is to show what we already have.',
+			sel: '#bb-term',
+			title: 'Your kickoff, typed live',
+			body: 'swizel init your-product — design system, engineers and pipeline, ready in weeks.',
 		},
 		{
-			sel: '.hero-builder [data-tour="stats"]',
-			title: '7+ years',
-			body: '65+ products and 25+ specialists, spanning fintech, health, agric, sports and more.',
+			sel: '#bb-game',
+			title: 'The idea compiler',
+			body: 'Go on — hit the build button. We dare you.',
 		},
 		{
-			sel: '.hero-builder [data-tour="team"]',
-			title: 'Real people',
-			body: 'Behind every line is a real team. Tap here to meet the humans who build with you.',
+			sel: '#bb-editor',
+			title: 'Services as source files',
+			body: 'Design, build, market, maintain — click through the tabs like a real IDE.',
+		},
+		{
+			sel: '#bb-git',
+			title: 'git log --your-product',
+			body: 'Our process as commits: from init to release, every push visible.',
+		},
+		{
+			sel: '.bb-deploys',
+			title: 'Live in production',
+			body: 'A deployments panel of real products — green dots, real domains, real uptime.',
+		},
+		{
+			sel: '.bb-prs',
+			title: 'Code review: approved',
+			body: 'Clients sign off like pull requests — +1 product, −0 regrets.',
+		},
+		{
+			sel: '.bb-cta',
+			title: 'Ready to merge?',
+			body: 'Start your branch — a senior engineer replies within one business day.',
+		},
+		{
+			sel: '.site-footer .ft-socials',
+			title: 'Follow the build',
+			body: 'Daily updates and behind the scenes — hover any handle for a preview.',
 		},
 	];
 	document
