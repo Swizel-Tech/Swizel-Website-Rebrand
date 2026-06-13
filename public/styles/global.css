@@ -343,13 +343,35 @@ html.dark {
   --nav-cta-border: rgba(255, 255, 255, 0.45);
 }
 .site-header {
+  --nav-h: 92px;
+  /* DEFAULT = solid + readable everywhere (safe even if JS never runs) */
   background: var(--nav-bg);
   color: var(--nav-ink);
   -webkit-backdrop-filter: blur(16px) saturate(140%);
   backdrop-filter: blur(16px) saturate(140%);
   border-bottom: 1px solid var(--nav-border);
   transition: background 0.4s ease, color 0.4s ease, border-color 0.4s ease,
-    box-shadow 0.4s ease;
+    box-shadow 0.4s ease, backdrop-filter 0.4s ease;
+}
+/* Blend: JS adds .at-hero-top only while we're parked at the top of a page
+   that has a (always-dark) hero. The nav floats transparently on it; the
+   moment you scroll, the class drops and the solid bar returns. Because the
+   default is solid, the nav can never become invisible. */
+.site-header.at-hero-top {
+  background: transparent;
+  --nav-ink: #ffffff;
+  --nav-cta-border: rgba(255, 255, 255, 0.55);
+  border-bottom-color: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+/* lift the live hero up so its dark canvas fills behind the floating bar.
+   margin/padding cancel for content, so nothing moves — the hero bg just
+   extends up under the nav. */
+body:has(.hero-view) .hero-view {
+  margin-top: calc(-1 * var(--nav-h, 92px));
+  padding-top: var(--nav-h, 92px);
 }
 .site-header a { color: var(--nav-ink); }
 .site-header nav a { position: relative; transition: color 0.25s ease; }
@@ -368,7 +390,14 @@ html.dark {
 }
 .site-header nav a:hover::after,
 .site-header nav a.active::after { width: 100%; }
+/* once scrolled, the bar is always its solid self (explicit, so the
+   blended top state can never leak into the sticky state) */
 .site-header.header-sticky {
+  background: var(--nav-bg);
+  color: var(--nav-ink);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  backdrop-filter: blur(16px) saturate(140%);
+  border-bottom-color: var(--nav-border);
   box-shadow: 0 10px 34px -16px rgba(0, 0, 0, 0.3);
 }
 .nav-cta {
@@ -765,7 +794,9 @@ html[data-view="builder"] .default-body { display: none; }
 #swizel-cursor[data-icon="play"] .cur-play,
 #swizel-cursor[data-icon="phone"] .cur-phone,
 #swizel-cursor[data-icon="book"] .cur-book,
-#swizel-cursor[data-icon="pen"] .cur-pen { display: block !important; }
+#swizel-cursor[data-icon="pen"] .cur-pen,
+#swizel-cursor[data-icon="palette"] .cur-palette,
+#swizel-cursor[data-icon="vector"] .cur-vector { display: block !important; }
 
 /* Boardroom view body visibility — boardroom is the default view, so it
    also shows when no view has been chosen yet */

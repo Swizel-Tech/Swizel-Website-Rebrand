@@ -34,14 +34,15 @@ const projects = [
 		<div class="studio--copy">
 			<span class="studio--eyebrow">
 				<Icon width={15} name="mdi:palette-outline" />
-				The work speaks
+				Swizel Studio · The Craft Issue
 			</span>
 
 			<RotatingHeadline class="studio--head" />
 
 			<p class="studio--sub">
-				Design that ships. Real products, real brands, real results, across
-				every sector we touch. Swipe through a few.
+				A studio of designers and engineers whose work hangs in the real
+				world — brands you can buy from, apps you can download. Step into
+				the gallery.
 			</p>
 
 			<div class="studio--cta">
@@ -123,8 +124,18 @@ const projects = [
 		position: absolute; top: 0; left: 50%; transform: translateX(-50%);
 		width: 100vw; height: 100%; z-index: 0; overflow: hidden; pointer-events: none;
 		background:
+			/* faint gallery-wall frame grid — the museum, in the bones */
+			repeating-linear-gradient(90deg, transparent 0 119px, rgba(236, 72, 153, 0.05) 119px 120px),
+			repeating-linear-gradient(180deg, transparent 0 119px, rgba(255, 255, 255, 0.025) 119px 120px),
 			radial-gradient(800px 480px at 82% -8%, rgba(236, 72, 153, 0.2), transparent 60%),
-			linear-gradient(180deg, #1d1020 0%, #160d1b 55%, #100a14 100%);
+			linear-gradient(180deg, #150a12 0%, #110810 55%, #0c060a 100%);
+	}
+	/* studio CTA runs the museum pink */
+	:global(.hero-studio .btn--accent) {
+		background-image: linear-gradient(95deg, #ec4899, #be1862) !important;
+		color: #fff !important;
+		-webkit-text-fill-color: #fff;
+		box-shadow: 0 14px 34px -12px rgba(236, 72, 153, 0.6) !important;
 	}
 	.studio--glow { position: absolute; border-radius: 9999px; filter: blur(70px); }
 	.studio--glow-1 { width: 40vw; height: 40vw; top: -12%; right: -6%; background: radial-gradient(circle, rgba(236, 72, 153, 0.3), transparent 65%); }
@@ -133,7 +144,7 @@ const projects = [
 	.studio--layout { position: relative; z-index: 1; display: grid; gap: 2.5rem; align-items: center; min-height: calc(100vh - 90px); padding-top: 2rem; }
 	@media (min-width: 1024px) { .studio--layout { grid-template-columns: 0.86fr 1.14fr; gap: 3rem; } }
 
-	.studio--eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #f9a8d4; margin-bottom: 1.2rem; }
+	.studio--eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: #f9a8d4; border: 1.5px solid rgba(249, 168, 212, 0.4); padding: 0.35rem 0.85rem; border-radius: 9999px; margin-bottom: 1.3rem; }
 	.studio--head { font-size: clamp(2.6rem, 6vw, 5.2rem); margin-bottom: 1.4rem; }
 	.studio--sub { max-width: 30rem; color: rgba(251, 234, 244, 0.7); font-size: 1.08rem; line-height: 1.65; margin-bottom: 1.8rem; }
 	.studio--cta { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem; }

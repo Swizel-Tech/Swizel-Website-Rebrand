@@ -1,174 +1,342 @@
 ---
+// Studio view body — The Swizel Gallery. A museum of work: the collection
+// is on the walls (shown directly, never hidden), big framed exhibitions,
+// a studio reel, museum plaques, a guestbook and a commission desk. The
+// longest, richest world — built to be filled with the studio's own media.
 import { Icon } from 'astro-icon';
 
-const stats = [
-	{ to: 65, suffix: '+', label: 'Products designed' },
-	{ to: 9, suffix: '', label: 'Sectors crafted for' },
-	{ to: 7, suffix: '+', label: 'Years crafting' },
-	{ to: 10, suffix: '+', label: 'Countries' },
+// the collection wall — varying tile sizes, each with a museum plaque
+const collection = [
+	{ name: 'Brixmarket', sector: 'Real estate', medium: 'Brand · Web · App', year: "'23", img: '/images/portfolio/brix%20marketplace.jpg', url: 'https://brixmarket.com/', size: 'lg' },
+	{ name: 'Betslipswitch', sector: 'Sports', medium: 'Web · App · Growth', year: "'22", img: '/images/portfolio/betslipswitch.jpg', url: 'https://betslipswitch.com/', size: 'tall' },
+	{ name: 'Purple Panda', sector: 'Marketing', medium: 'Brand · Campaign', year: "'23", img: '/images/portfolio/purplepanda%20world.jpg', url: '', size: 'sm' },
+	{ name: 'Saros', sector: 'Education', medium: 'Brand · Platform', year: "'24", img: '/images/portfolio/sarosgp.jpg', url: 'https://sarosinternationallearning.com/', size: 'sm' },
+	{ name: 'Beauty Hive', sector: 'Beauty', medium: 'Brand · Store', year: "'24", img: '/images/portfolio/beauty-hive.webp', url: '', size: 'wide' },
+	{ name: 'My Eya Estate', sector: 'Real estate', medium: 'Brand · Web', year: "'25", img: '/images/portfolio/my%20eya%20estate.jpg', url: '', size: 'sm' },
+	{ name: 'Anchorstep', sector: 'Healthcare', medium: 'Brand · Web', year: "'25", img: '', url: 'http://anchorsteppt.com/', size: 'sm' },
+];
+
+// big alternating case-study exhibitions
+const exhibitions = [
+	{
+		name: 'Brixmarket',
+		room: 'Room 01',
+		sector: 'Real-estate marketplace',
+		blurb: 'A property marketplace that had to feel as trustworthy as it was vast. We built the identity, the web platform and the mobile app — one coherent world buyers actually believe in.',
+		tags: ['Brand identity', 'Web platform', 'iOS & Android', 'Marketing'],
+		img: '/images/portfolio/brix%20marketplace.jpg',
+		url: 'https://brixmarket.com/',
+	},
+	{
+		name: 'Betslipswitch',
+		room: 'Room 02',
+		sector: 'Sports · 10+ countries',
+		blurb: 'Speed was the whole product. We designed an interface that converts a bet code across bookmakers in seconds — then grew it across a continent with content and ads.',
+		tags: ['Product design', 'Web app', 'Growth', 'Content'],
+		img: '/images/portfolio/betslipswitch.jpg',
+		url: 'https://betslipswitch.com/',
+	},
+	{
+		name: 'Saros',
+		room: 'Room 03',
+		sector: 'Education · learning platform',
+		blurb: 'A learning brand that needed to feel both serious and warm. We shaped the identity and the platform so students trust it and parents recommend it — design carrying the whole promise.',
+		tags: ['Brand identity', 'Platform', 'UI/UX', 'Content'],
+		img: '/images/portfolio/sarosgp.jpg',
+		url: 'https://sarosinternationallearning.com/',
+	},
 ];
 
 const crafts = [
-	{ icon: 'mdi:star-four-points-outline', title: 'Branding', desc: 'Identities with a point of view, from logo to language.' },
-	{ icon: 'mdi:palette-outline', title: 'UI / UX', desc: 'Interfaces that feel obvious, beautiful and fast.' },
-	{ icon: 'mdi:cellphone-link', title: 'Web & mobile', desc: 'Design that ships, pixel perfect on every screen.' },
-	{ icon: 'mdi:movie-open-outline', title: 'Motion & content', desc: 'Story, motion and assets that make brands move.' },
+	{ n: '01', title: 'Branding', desc: 'Identities with a point of view — from the logo to the language to the way it walks into a room.', tags: ['logo', 'system', 'voice'] },
+	{ n: '02', title: 'UI / UX', desc: 'Interfaces that feel obvious. Beautiful, fast, and impossible to get lost in.', tags: ['product', 'prototyping', 'design systems'] },
+	{ n: '03', title: 'Web & Mobile', desc: 'Design that ships — pixel-perfect on every screen, engineered by the same house.', tags: ['web', 'iOS', 'Android'] },
+	{ n: '04', title: 'Motion & Content', desc: 'Story, motion and assets that make a brand move, not just sit there.', tags: ['motion', 'film', 'social'] },
 ];
 
-const works = [
-	{ name: 'Brixmarket', sector: 'Real estate', img: '/images/portfolio/brix%20marketplace.jpg', url: 'https://brixmarket.com/', big: true },
-	{ name: 'Betslipswitch', sector: 'Sports', img: '/images/portfolio/betslipswitch.jpg', url: 'https://betslipswitch.com/' },
-	{ name: 'Saros', sector: 'Education', img: '/images/portfolio/sarosgp.jpg', url: 'https://sarosinternationallearning.com/' },
-	{ name: 'Purple Panda', sector: 'Marketing', img: '/images/portfolio/purplepanda%20world.jpg', url: '#' },
-	{ name: 'Beauty Hive', sector: 'Beauty', img: '/images/portfolio/beauty-hive.webp', url: '#' },
-	{ name: 'My Eya Estate', sector: 'Real estate', img: '/images/portfolio/my%20eya%20estate.jpg', url: '#' },
+const process = [
+	{ cap: 'Research', note: 'we learn the market & the user' },
+	{ cap: 'Concept', note: 'directions, explored boldly' },
+	{ cap: 'Craft', note: 'refined until it sings' },
+	{ cap: 'Ship', note: 'launched, polished, alive' },
 ];
 
-const steps = [
-	{ n: '01', title: 'Research', desc: 'We learn the market, the users and the goal.' },
-	{ n: '02', title: 'Concept', desc: 'Directions and ideas, explored boldly.' },
-	{ n: '03', title: 'Design', desc: 'Refined, tested and brought to life.' },
-	{ n: '04', title: 'Ship', desc: 'Handed off, launched and polished.' },
+// the full studio — what we make (design is only the beginning)
+const services = [
+	{ icon: 'mdi:palette-swatch-outline', title: 'Brand & Identity', desc: 'Logos, systems and voice — a brand that walks into the room and owns it.' },
+	{ icon: 'mdi:monitor-dashboard', title: 'Websites & Web Apps', desc: 'Landing pages to full SaaS platforms — designed and engineered under one roof.' },
+	{ icon: 'mdi:cellphone', title: 'Mobile Apps', desc: 'iOS & Android people actually keep on their home screen.' },
+	{ icon: 'mdi:database-cog-outline', title: 'ERPs & Systems', desc: 'Dashboards, internal tools and ERPs that run the business behind the brand.' },
+	{ icon: 'mdi:bullhorn-outline', title: 'Marketing & Growth', desc: 'SEO, ads, content and social that keep compounding after launch.' },
+	{ icon: 'mdi:lifebuoy', title: 'Maintenance & Support', desc: 'We stay — uptime, updates and a real human whenever you need one.' },
 ];
 
-const clients = ['betslipswitch.svg', 'brix market logo.svg', 'purple-panda.svg', 'saros-sgp.svg', 'trueverdict.png', 'hemamsynergy.png'];
+const howWeWork = ['Research', 'Design', 'Build', 'Launch', 'Grow'];
 
-const reviews = [
-	{ name: 'Favour', img: '/testimonial/favour.jpeg', body: 'They turned our brand into something we are proud to show off.' },
-	{ name: 'Chidimma', img: '/testimonial/chidima.jpeg', body: 'Warm, responsive and seriously talented designers.' },
-	{ name: 'Cheta', img: '/testimonial/cheta.jpeg', body: 'Thorough, polished and always on time.' },
+const quotes = [
+	{ text: 'They turned our brand into something we are proud to show off.', name: 'Favour', role: 'Marketing' },
+	{ text: 'Warm, responsive and seriously talented designers.', name: 'Chidimma', role: 'Education' },
+	{ text: 'Thorough, polished and always on time.', name: 'Cheta', role: 'E-commerce' },
 ];
+
+const sectors = ['fintech', 'real estate', 'sports', 'e-commerce', 'education', 'healthcare', 'beauty', 'media', 'travel', 'energy'];
+const logos = ['betslipswitch.svg', 'trueverdict.png', 'brix market logo.svg', 'ejike-fc.svg', 'purple-panda.svg', 'saros-sgp.svg', 'my eya homes.svg', 'the-presidential-diary.png', 'hemamsynergy.png'];
 ---
 
 <div class="sbody view-body view-body-studio">
-	<!-- ABOUT -->
-	<section class="sb-sec">
-		<div class="sb-wrap sb-about">
-			<div class="sb-copy">
-				<span class="sb-kick">The studio</span>
-				<h2 class="sb-h">Design <span class="sb-accent">that ships.</span></h2>
-				<p class="sb-p">
-					We are a studio of designers and engineers who care about the
-					details. Real products, real brands, real results, across every
-					sector we touch.
+	<!-- ── A · the atrium ──────────────────────────────────── -->
+	<section class="sd-sec sd-atrium">
+		<div class="sd-wrap">
+			<div class="sd-folio sd-rev">
+				<span>The Swizel Gallery</span>
+				<span>Now showing — The Collection</span>
+				<span>Est. 2019 · 65+ works · 9 wings</span>
+			</div>
+			<h2 class="sd-display sd-rev">
+				A gallery of work<br />
+				that went <em>to market.</em>
+			</h2>
+			<p class="sd-lead sd-rev">
+				Not a moodboard. A studio of designers and engineers whose work
+				lives in the real world — brands you can buy from, apps you can
+				download, products people actually use. Walk the rooms.
+			</p>
+
+			<!-- the centerpiece, on the wall from the very first screen -->
+			<figure class="sd-centerpiece sd-rev" data-cursor="play">
+				<span class="sd-centerpiece-media">
+					<Icon width={40} name="mdi:play-circle-outline" />
+					<span class="sd-cp-name">gallery-reel.mp4 — video placeholder</span>
+					<span class="sd-cp-sub">A two-minute walk through the collection</span>
+				</span>
+				<figcaption class="sd-plaque sd-plaque--lg">
+					<strong>The Swizel Collection</strong>
+					<span>Mixed media · 2019—'26 · Permanent exhibition</span>
+				</figcaption>
+			</figure>
+
+			<ul class="sd-wings sd-rev">
+				<li><strong>65+</strong><span>works in the collection</span></li>
+				<li><strong>9</strong><span>sectors curated</span></li>
+				<li><strong>7+</strong><span>years exhibiting</span></li>
+				<li><strong>10+</strong><span>countries on loan to</span></li>
+			</ul>
+		</div>
+	</section>
+
+	<!-- ── B · giant type, drifting ────────────────────────── -->
+	<div class="sd-marquee" aria-hidden="true">
+		<div class="sd-marquee-track">
+			{
+				[0, 1].map(() => (
+					<span class="sd-marquee-text">
+						the&nbsp;collection&nbsp;✦&nbsp;on&nbsp;view&nbsp;now&nbsp;✦&nbsp;
+					</span>
+				))
+			}
+		</div>
+	</div>
+
+	<!-- ── C · the collection wall (work shown directly!) ──── -->
+	<section class="sd-sec" id="sd-work" data-cursor="repo">
+		<div class="sd-wrap">
+			<div class="sd-rule sd-rev">
+				<span>The Collection</span>
+				<span>Hanging now · all media on the wall</span>
+			</div>
+			<div class="sd-wall">
+				{
+					collection.map((w, i) => {
+						const Tag = w.url ? 'a' : 'div';
+						return (
+							<Tag
+								class:list={['sd-art', `sd-art--${w.size}`, 'sd-rev', { 'sd-art--empty': w.empty }]}
+								style={`--i:${i}`}
+								href={w.url || undefined}
+								target={w.url && w.url.startsWith('http') ? '_blank' : undefined}
+								rel={w.url && w.url.startsWith('http') ? 'noopener noreferrer' : undefined}
+							>
+								<span class="sd-art-frame">
+									{w.img ? (
+										<img src={w.img} alt={`${w.name} — ${w.sector}`} loading="lazy" />
+									) : (
+										<span class="sd-art-ph">
+											<Icon width={26} name={w.empty ? 'mdi:plus' : 'mdi:image-outline'} />
+											<span>{w.empty ? 'reserved' : 'image placeholder'}</span>
+										</span>
+									)}
+									{w.url && !w.empty && (
+										<span class="sd-art-view" aria-hidden="true">
+											View <Icon width={14} name="mdi:arrow-top-right" />
+										</span>
+									)}
+								</span>
+								<span class="sd-plaque">
+									<strong>{w.name}</strong>
+									<span>{w.sector} · {w.medium} · {w.year}</span>
+								</span>
+							</Tag>
+						);
+					})
+				}
+			</div>
+			<!-- the next acquisition: a wide invitation, no dead grid space -->
+			<a href="/contact" class="sd-next sd-rev" data-cursor="phone">
+				<span class="sd-next-arrow" aria-hidden="true">
+					<Icon width={30} name="mdi:arrow-up" />
+				</span>
+				<span class="sd-next-copy">
+					<span class="sd-next-kicker">The wall has one space left</span>
+					<strong class="sd-next-title">Will your brand hang here next?</strong>
+					<span class="sd-next-sub">The next acquisition is yours — bring the brief, we'll frame the result.</span>
+				</span>
+				<span class="sd-next-cta">
+					Reserve the spot
+					<Icon width={16} name="mdi:arrow-right" />
+				</span>
+			</a>
+			<p class="sd-wall-all sd-rev">
+				<a href="/portfolio" class="sd-link">
+					Enter the full archive — 65+ works
+					<Icon width={15} name="mdi:arrow-right" />
+				</a>
+			</p>
+		</div>
+	</section>
+
+	<!-- ── D · featured exhibitions (big case studies) ─────── -->
+	{
+		exhibitions.map((ex, i) => (
+			<section class="sd-sec sd-exhibit" data-cursor="play">
+				<div class="sd-wrap">
+					<div class:list={['sd-exwrap', { 'sd-exwrap--rev': i % 2 === 1 }]}>
+						<a
+							class="sd-exmedia sd-rev"
+							href={ex.url || undefined}
+							target={ex.url ? '_blank' : undefined}
+							rel={ex.url ? 'noopener noreferrer' : undefined}
+						>
+							<img src={ex.img} alt={`${ex.name} — ${ex.sector}`} loading="lazy" />
+							<span class="sd-exmedia-veil" aria-hidden="true" />
+							<span class="sd-exmedia-room">{ex.room}</span>
+						</a>
+						<div class="sd-excopy sd-rev">
+							<span class="sd-exroom">{ex.room} · {ex.sector}</span>
+							<h3 class="sd-exname">{ex.name}</h3>
+							<p class="sd-exblurb">{ex.blurb}</p>
+							<ul class="sd-extags">
+								{ex.tags.map((t) => <li>{t}</li>)}
+							</ul>
+							{ex.url && (
+								<a href={ex.url} target="_blank" rel="noopener noreferrer" class="sd-link">
+									View the live piece
+									<Icon width={15} name="mdi:arrow-top-right" />
+								</a>
+							)}
+						</div>
+					</div>
+				</div>
+			</section>
+		))
+	}
+
+	<!-- ── D2 · the full studio (what we do) — shouting section ── -->
+	<section class="sd-fullstudio" data-cursor="palette">
+		<div class="sd-fs-glow" aria-hidden="true"></div>
+		<div class="sd-wrap">
+			<div class="sd-fs-head sd-rev">
+				<span class="sd-fs-kicker">Design is only the beginning</span>
+				<h2 class="sd-fs-h">We don't just make it pretty.<br /><span>We build the whole machine.</span></h2>
+				<p class="sd-fs-lead">
+					Brand, websites, mobile apps, ERPs, marketing, maintenance —
+					the entire product, designed and engineered by one team. You
+					bring the idea; we take it from blank page to launched, then
+					keep it running and growing. And yes — we do all that and a
+					whole lot more.
 				</p>
-				<ul class="sb-stats">
+			</div>
+
+			<div class="sd-fs-grid">
+				{
+					services.map((s, i) => (
+						<article class="sd-fs-card sd-rev" style={`--i:${i}`}>
+							<span class="sd-fs-ic">
+								<Icon width={26} name={s.icon} />
+							</span>
+							<h3 class="sd-fs-card-t">{s.title}</h3>
+							<p class="sd-fs-card-d">{s.desc}</p>
+						</article>
+					))
+				}
+			</div>
+
+			<div class="sd-fs-how sd-rev">
+				<span class="sd-fs-how-label">How we do it</span>
+				<ol class="sd-fs-flow">
 					{
-						stats.map((s) => (
+						howWeWork.map((step, i) => (
 							<li>
-								<strong data-count={s.to} data-suffix={s.suffix}>{s.to}{s.suffix}</strong>
-								<span>{s.label}</span>
+								<span class="sd-fs-step">{step}</span>
+								{i < howWeWork.length - 1 && <span class="sd-fs-arrow" aria-hidden="true">→</span>}
 							</li>
 						))
 					}
-				</ul>
-				<a href="/portfolio" class="sb-link">See the portfolio <Icon width={16} name="mdi:arrow-right" /></a>
+				</ol>
 			</div>
-			<div class="sb-media">
-				<figure class="sb-photo">
-					<img src="/images/hero-team.jpg" alt="The Swizel design team" loading="lazy" />
-				</figure>
-				<button class="sb-reel" type="button" aria-label="Showreel coming soon">
-					<span class="sb-reel-play"><Icon width={20} name="mdi:play" /></span>
-					<span class="sb-reel-txt"><strong>Our showreel</strong><small>coming soon</small></span>
-				</button>
+
+			<div class="sd-fs-cta sd-rev">
+				<a href="/contact" class="sd-fs-btn">
+					See what we can build for you
+					<Icon width={17} name="mdi:arrow-right" />
+				</a>
+				<a href="/services" class="sd-fs-link">Explore every service</a>
 			</div>
 		</div>
 	</section>
 
-	<!-- WHAT WE CRAFT -->
-	<section class="sb-sec">
-		<div class="sb-wrap">
-			<span class="sb-kick">What we craft</span>
-			<h2 class="sb-h">From idea <span class="sb-accent">to icon.</span></h2>
-			<div class="sb-crafts">
-				{
-					crafts.map((c) => (
-						<div class="sb-craft">
-							<span class="sb-craft-ic"><Icon width={24} name={c.icon} /></span>
-							<h3>{c.title}</h3>
-							<p>{c.desc}</p>
-						</div>
-					))
-				}
+	<!-- ── E · the crafts ──────────────────────────────────── -->
+	<section class="sd-sec" data-cursor="vector">
+		<div class="sd-wrap">
+			<div class="sd-rule sd-rev">
+				<span>The crafts</span>
+				<span>What the studio is commissioned for</span>
 			</div>
-		</div>
-	</section>
-
-	<!-- FEATURED WORK GALLERY -->
-	<section class="sb-sec">
-		<div class="sb-wrap">
-			<div class="sb-work-head">
-				<div>
-					<span class="sb-kick">Selected work</span>
-					<h2 class="sb-h">The work <span class="sb-accent">speaks.</span></h2>
-				</div>
-				<a href="/portfolio" class="sb-link sb-link-2">View all <Icon width={16} name="mdi:arrow-right" /></a>
-			</div>
-			<div class="sb-gallery">
-				{
-					works.map((w) => (
-						<a class:list={['sb-work', { 'sb-work-big': w.big }]} href={w.url} target="_blank" rel="noopener noreferrer">
-							<img src={w.img} alt={`${w.name} — ${w.sector}`} loading="lazy" />
-							<span class="sb-work-cap">
-								<span class="sb-work-sector">{w.sector}</span>
-								<span class="sb-work-name">{w.name}</span>
+			{
+				crafts.map((c, i) => (
+					<article class:list={['sd-craft', 'sd-rev', { 'sd-craft--alt': i % 2 === 1 }]}>
+						<span class="sd-craft-n" aria-hidden="true">{c.n}</span>
+						<div class="sd-craft-body">
+							<h3 class="sd-craft-t">{c.title}</h3>
+							<p class="sd-craft-d">{c.desc}</p>
+							<span class="sd-craft-tags">
+								{c.tags.map((t) => <span>{t}</span>)}
 							</span>
-							<span class="sb-work-go"><Icon width={18} name="mdi:arrow-top-right" /></span>
-						</a>
-					))
-				}
+						</div>
+					</article>
+				))
+			}
+		</div>
+	</section>
+
+	<!-- ── F · behind the glass (process) ──────────────────── -->
+	<section class="sd-sec" data-cursor="pen">
+		<div class="sd-wrap">
+			<div class="sd-rule sd-rev">
+				<span>Behind the glass</span>
+				<span>How a piece gets made</span>
 			</div>
-		</div>
-	</section>
-
-	<!-- PROCESS -->
-	<section class="sb-sec">
-		<div class="sb-wrap">
-			<span class="sb-kick">Our craft</span>
-			<h2 class="sb-h">How great work <span class="sb-accent">happens.</span></h2>
-			<ol class="sb-steps" id="sb-steps">
+			<div class="sd-sheet">
 				{
-					steps.map((s, i) => (
-						<li class="sb-step" data-i={i}>
-							<span class="sb-step-n">{s.n}</span>
-							<h3 class="sb-step-title">{s.title}</h3>
-							<p class="sb-step-desc">{s.desc}</p>
-						</li>
-					))
-				}
-			</ol>
-		</div>
-	</section>
-
-	<!-- CLIENTS -->
-	<section class="sb-sec">
-		<div class="sb-wrap sb-clients-wrap">
-			<span class="sb-kick">Selected clients</span>
-			<div class="sb-clients">
-				{
-					clients.map((c) => (
-						<img class="sb-client" src={`/images/partners/${c}`} alt="" loading="lazy" />
-					))
-				}
-			</div>
-		</div>
-	</section>
-
-	<!-- REVIEWS -->
-	<section class="sb-sec">
-		<div class="sb-wrap">
-			<span class="sb-kick">Client love</span>
-			<h2 class="sb-h">Brands that <span class="sb-accent">trusted us.</span></h2>
-			<div class="sb-reviews">
-				{
-					reviews.map((r) => (
-						<figure class="sb-rev">
-							<blockquote>{r.body}</blockquote>
+					process.map((c, i) => (
+						<figure class="sd-shot sd-rev" style={`--i:${i}; --r:${(i % 2 === 0 ? -1.6 : 1.8)}deg`}>
+							<span class="sd-tape" aria-hidden="true"></span>
+							<span class="sd-shot-frame">
+								<Icon width={22} name="mdi:image-outline" />
+								<span>{c.cap.toLowerCase()}-{i + 1}.jpg</span>
+							</span>
 							<figcaption>
-								<img src={r.img} alt={r.name} loading="lazy" />
-								<span class="sb-rev-name">{r.name}</span>
-								<span class="sb-rev-stars">★★★★★</span>
+								<strong>{c.cap}</strong>
+								<em>{c.note}</em>
 							</figcaption>
 						</figure>
 					))
@@ -176,96 +344,1244 @@ const reviews = [
 			</div>
 		</div>
 	</section>
+
+	<!-- ── G · the studio reel ─────────────────────────────── -->
+	<section class="sd-sec" data-cursor="play">
+		<div class="sd-wrap">
+			<div class="sd-rule sd-rev">
+				<span>In the studio</span>
+				<span>Footage & frames — your media goes here</span>
+			</div>
+			<div class="sd-media sd-rev">
+				<div class="sd-frame sd-frame--wide">
+					<Icon width={34} name="mdi:play-circle-outline" />
+					<span class="sd-frame-name">studio-tour.mp4 — video placeholder</span>
+					<span class="sd-frame-sub">Walk the rooms with us</span>
+				</div>
+				<div class="sd-frame">
+					<Icon width={22} name="mdi:image-outline" />
+					<span class="sd-frame-name">moodboard-wall.jpg</span>
+				</div>
+				<div class="sd-frame">
+					<Icon width={22} name="mdi:image-outline" />
+					<span class="sd-frame-name">critique-friday.jpg</span>
+				</div>
+				<div class="sd-frame">
+					<Icon width={26} name="mdi:play-circle-outline" />
+					<span class="sd-frame-name">launch-night.mp4 — video</span>
+				</div>
+				<div class="sd-frame">
+					<Icon width={22} name="mdi:image-outline" />
+					<span class="sd-frame-name">the-desk.jpg</span>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── H · the index belts ─────────────────────────────── -->
+	<section class="sd-sec sd-sec--belts">
+		<div class="sd-wrap">
+			<div class="sd-rule sd-rev">
+				<span>The index</span>
+				<span>Set in, and set for</span>
+			</div>
+		</div>
+		<div class="sd-belt" aria-hidden="true">
+			<div class="sd-belt-track">
+				{
+					[0, 1].map(() =>
+						sectors.map((x) => <span class="sd-bword"><em>{x}</em>&nbsp;✦&nbsp;</span>)
+					)
+				}
+			</div>
+		</div>
+		<div class="sd-belt" aria-hidden="true">
+			<div class="sd-belt-track sd-belt-track--logos">
+				{
+					[0, 1].map(() =>
+						logos.map((l) => (
+							<span class="sd-blogo">
+								<img src={`/images/partners/${l}`} alt="" loading="lazy" />
+							</span>
+						))
+					)
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── I · the guestbook (pull quotes) ─────────────────── -->
+	<section class="sd-sec" data-cursor="quote">
+		<div class="sd-wrap">
+			<div class="sd-rule sd-rev">
+				<span>The guestbook</span>
+				<span>Signed by the collectors</span>
+			</div>
+			<div class="sd-pull" id="sd-pull">
+				<span class="sd-pull-mark" aria-hidden="true">“</span>
+				<div class="sd-pull-stage">
+					{
+						quotes.map((q, i) => (
+							<blockquote class:list={['sd-quote', { 'is-live': i === 0 }]}>
+								<p>{q.text}</p>
+								<footer>— {q.name}, <em>{q.role}</em></footer>
+							</blockquote>
+						))
+					}
+				</div>
+				<div class="sd-pull-controls">
+					<div class="sd-pull-nav">
+						{quotes.map((_, i) => <button class:list={['sd-pull-tick', { 'is-on': i === 0 }]} type="button" data-tick={i} aria-label={`Quote ${i + 1}`} />)}
+					</div>
+					<div class="sd-pull-arrows">
+						<button class="sd-pull-arrow" type="button" id="sd-pull-prev" aria-label="Previous quote">
+							<Icon width={18} name="mdi:arrow-left" />
+						</button>
+						<button class="sd-pull-arrow" type="button" id="sd-pull-next" aria-label="Next quote">
+							<Icon width={18} name="mdi:arrow-right" />
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── J · the commission desk ─────────────────────────── -->
+	<section class="sd-sec sd-sec--cta" data-cursor="phone">
+		<div class="sd-wrap sd-cta sd-rev">
+			<div class="sd-folio">
+				<span>Acquisitions open</span>
+				<span>The collection grows</span>
+			</div>
+			<h2 class="sd-display sd-display--cta">
+				Add your brand<br />
+				to <em>the collection.</em>
+			</h2>
+			<p class="sd-lead sd-lead--center">
+				We design it, build it, market it and keep it running — the whole
+				machine, under one roof. Bring the brief; we'll hang the result.
+			</p>
+			<div class="sd-cta-row">
+				<a href="/contact" class="sd-btn">
+					Commission the studio
+					<Icon width={17} name="mdi:arrow-right" />
+				</a>
+				<a href="tel:+2348100204570" class="sd-call">
+					or call <strong>+234 810 020 4570</strong>
+				</a>
+			</div>
+		</div>
+	</section>
 </div>
 
 <style>
+	/* ── Studio world — The Gallery. Dark wing & light wing, pink accent. ── */
 	.sbody {
+		--sd-ink: #f3edf0;
+		--sd-muted: rgba(243, 237, 240, 0.64);
+		--sd-faint: rgba(243, 237, 240, 0.42);
+		--sd-acc: var(--view-accent, #ec4899);
+		--sd-line: rgba(243, 237, 240, 0.14);
+		--sd-card: rgba(255, 255, 255, 0.04);
+		--sd-plaque-bg: #faf7f2;
+		--sd-plaque-ink: #221a1e;
+		--sd-plaque-sub: #8a7f85;
+		--sd-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+		font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+			Roboto, sans-serif;
 		position: relative;
+		isolation: isolate;
 		background:
-			radial-gradient(800px 420px at 82% 0%, rgba(236, 72, 153, 0.1), transparent 60%),
-			linear-gradient(180deg, #160d1b 0%, #100a14 100%);
-		color: #f6e6ef;
+			radial-gradient(1100px 560px at 84% -6%, rgba(236, 72, 153, 0.13), transparent 60%),
+			radial-gradient(820px 480px at 8% 50%, rgba(168, 85, 247, 0.07), transparent 60%),
+			linear-gradient(180deg, #0f0a0d 0%, #130c11 50%, #0b0709 100%);
+		color: var(--sd-ink);
+		padding: clamp(3rem, 7vw, 5.5rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 4rem);
+		transition: background 0.4s ease, color 0.4s ease;
 	}
-	.sb-sec { padding: clamp(3.5rem, 8vw, 6rem) 5%; border-top: 1px solid rgba(236, 72, 153, 0.12); }
-	.sb-sec:first-child { border-top: 0; }
-	.sb-wrap { max-width: 1120px; margin: 0 auto; }
+	/* light wing — a real gallery: warm museum-white walls, ink labels */
+	:global(html:not(.dark)) .sbody {
+		--sd-ink: #1c151a;
+		--sd-muted: rgba(28, 21, 26, 0.7);
+		--sd-faint: rgba(28, 21, 26, 0.48);
+		--sd-acc: #cf2570;
+		--sd-line: rgba(28, 21, 26, 0.14);
+		--sd-card: rgba(28, 21, 26, 0.035);
+		--sd-plaque-bg: #ffffff;
+		--sd-plaque-ink: #1c151a;
+		--sd-plaque-sub: #8a7f85;
+		background:
+			radial-gradient(1100px 560px at 84% -6%, rgba(236, 72, 153, 0.07), transparent 60%),
+			linear-gradient(180deg, #f3ece6 0%, #ece2da 55%, #f3ece6 100%);
+	}
 
-	.sb-kick { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #f9a8d4; }
-	.sb-dot { width: 8px; height: 8px; border-radius: 9999px; background: var(--view-accent, #ec4899); box-shadow: 0 0 10px 1px rgba(236, 72, 153, 0.6); }
-	.sb-h { font-size: clamp(2rem, 4.8vw, 3.4rem); font-weight: 800; line-height: 1.06; letter-spacing: -0.5px; color: #fff; margin: 0.7rem 0 1.8rem; }
-	.sb-accent { background: linear-gradient(95deg, #f9a8d4, var(--view-accent, #ec4899)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-	.sb-p { color: rgba(246, 230, 239, 0.72); line-height: 1.75; max-width: 34rem; }
-	.sb-link { display: inline-flex; align-items: center; gap: 0.45rem; font-weight: 700; color: #f9a8d4; transition: gap 0.25s ease; }
-	.sb-link:hover { gap: 0.8rem; }
+	.sd-sec {
+		padding-block: clamp(2.25rem, 5vw, 3.75rem);
+	}
+	.sd-wrap {
+		max-width: 80rem;
+		margin: 0 auto;
+	}
 
-	/* About */
-	.sb-about { display: grid; gap: 2.5rem; align-items: center; }
-	@media (min-width: 920px) { .sb-about { grid-template-columns: 1fr 1.05fr; gap: 4rem; } }
-	.sb-about .sb-h { margin-top: 0.7rem; }
-	.sb-stats { list-style: none; padding: 1.7rem 0 0; margin: 1.7rem 0 0; display: grid; grid-template-columns: repeat(2, auto); gap: 1.5rem 2.5rem; width: fit-content; border-top: 1px solid rgba(255, 255, 255, 0.08); }
-	@media (min-width: 540px) { .sb-stats { grid-template-columns: repeat(4, auto); } }
-	.sb-stats strong { display: block; font-family: 'Bebas Neue', sans-serif; font-size: 2.4rem; line-height: 1; background: linear-gradient(135deg, #f9a8d4, var(--view-accent, #ec4899)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-	.sb-stats span { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(246, 230, 239, 0.5); max-width: 8rem; }
-	.sb-about .sb-link { margin-top: 1.8rem; }
-	.sb-media { position: relative; }
-	.sb-photo { position: relative; margin: 0; border-radius: 1.3rem; overflow: hidden; box-shadow: 0 40px 90px -40px rgba(0, 0, 0, 0.9); border: 1px solid rgba(236, 72, 153, 0.28); }
-	.sb-photo img { display: block; width: 100%; height: auto; }
-	.sb-reel { position: absolute; right: -14px; bottom: -22px; display: flex; align-items: center; gap: 0.7rem; padding: 0.7rem 1rem 0.7rem 0.7rem; border-radius: 0.9rem; border: 1px solid rgba(236, 72, 153, 0.4); background: rgba(22, 13, 27, 0.92); backdrop-filter: blur(10px); box-shadow: 0 20px 40px -18px rgba(0, 0, 0, 0.7); cursor: pointer; transition: border-color 0.25s ease, transform 0.25s ease; }
-	.sb-reel:hover { border-color: var(--view-accent, #ec4899); transform: translateY(-3px); }
-	.sb-reel-play { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 9999px; color: #2a0a1c; background: linear-gradient(135deg, #f9a8d4, var(--view-accent, #ec4899)); flex-shrink: 0; }
-	.sb-reel-txt { display: flex; flex-direction: column; text-align: left; }
-	.sb-reel-txt strong { font-size: 0.86rem; color: #fff; }
-	.sb-reel-txt small { font-size: 0.72rem; color: rgba(246, 230, 239, 0.5); }
-	@media (max-width: 919px) { .sb-reel { position: static; margin-top: 1.5rem; width: fit-content; right: auto; bottom: auto; } }
+	/* ── editorial furniture ── */
+	.sd-folio {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+		flex-wrap: wrap;
+		padding: 0.6rem 0;
+		border-top: 2px solid var(--sd-ink);
+		border-bottom: 1px solid var(--sd-line);
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--sd-faint);
+		margin-bottom: clamp(1.75rem, 4vw, 3rem);
+	}
+	.sd-folio span:first-child {
+		color: var(--sd-ink);
+	}
+	.sd-rule {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 1rem;
+		padding-bottom: 0.5rem;
+		border-bottom: 1px solid var(--sd-line);
+		margin-bottom: clamp(1.5rem, 3.5vw, 2.5rem);
+		font-size: 0.74rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+	}
+	.sd-rule span:first-child {
+		color: var(--sd-acc);
+	}
+	.sd-rule span:last-child {
+		color: var(--sd-faint);
+		font-style: italic;
+		font-family: var(--sd-serif);
+		letter-spacing: 0.02em;
+		text-transform: none;
+		font-size: 0.98rem;
+		font-weight: 400;
+	}
 
-	/* Crafts */
-	.sb-crafts { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
-	.sb-craft { padding: 1.5rem; border-radius: 1.1rem; border: 1px solid rgba(236, 72, 153, 0.16); background: rgba(255, 255, 255, 0.02); transition: border-color 0.25s ease, transform 0.25s ease; }
-	.sb-craft:hover { border-color: var(--view-accent, #ec4899); transform: translateY(-4px); }
-	.sb-craft-ic { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 0.9rem; background: linear-gradient(135deg, rgba(249,168,212,0.18), rgba(236,72,153,0.14)); color: #f9a8d4; margin-bottom: 1rem; }
-	.sb-craft h3 { font-size: 1.15rem; font-weight: 800; color: #fff; }
-	.sb-craft p { color: rgba(246, 230, 239, 0.66); font-size: 0.92rem; line-height: 1.55; margin-top: 0.5rem; }
+	/* ── type ── */
+	.sd-display {
+		font-size: clamp(2.8rem, 7vw, 5.6rem);
+		font-weight: 850;
+		letter-spacing: -0.03em;
+		line-height: 0.98;
+		margin: 0 0 1.25rem;
+	}
+	.sd-display em {
+		font-family: var(--sd-serif);
+		font-style: italic;
+		font-weight: 500;
+		letter-spacing: -0.01em;
+		color: var(--sd-acc);
+	}
+	.sd-lead {
+		font-size: clamp(1.05rem, 1.7vw, 1.3rem);
+		line-height: 1.6;
+		color: var(--sd-muted);
+		max-width: 44rem;
+		margin: 0 0 clamp(2rem, 4vw, 3rem);
+	}
+	.sd-lead--center {
+		text-align: center;
+		margin-inline: auto;
+		max-width: 38rem;
+		margin-bottom: 1.6rem;
+	}
+	.sd-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		font-weight: 800;
+		font-size: 0.95rem;
+		letter-spacing: 0.01em;
+		color: var(--sd-acc);
+		border-bottom: 2px solid color-mix(in srgb, var(--sd-acc) 45%, transparent);
+		padding-bottom: 0.15rem;
+		transition: border-color 0.25s ease, gap 0.25s ease;
+	}
+	.sd-link:hover {
+		gap: 0.7rem;
+		border-color: var(--sd-acc);
+	}
 
-	/* Gallery */
-	.sb-work-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.6rem; }
-	.sb-work-head .sb-h { margin-bottom: 0; }
-	.sb-gallery { display: grid; gap: 1rem; grid-template-columns: repeat(2, 1fr); }
-	@media (min-width: 760px) { .sb-gallery { grid-template-columns: repeat(3, 1fr); } }
-	.sb-work { position: relative; display: block; border-radius: 1.1rem; overflow: hidden; aspect-ratio: 4 / 3; border: 1px solid rgba(236, 72, 153, 0.14); }
-	.sb-work-big { grid-column: span 2; aspect-ratio: 16 / 10; }
-	@media (max-width: 759px) { .sb-work-big { aspect-ratio: 4 / 3; } }
-	.sb-work img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
-	.sb-work:hover img { transform: scale(1.06); }
-	.sb-work-cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 2.2rem 1.1rem 1rem; display: flex; flex-direction: column; gap: 0.2rem; background: linear-gradient(to top, rgba(16, 10, 20, 0.92), transparent); }
-	.sb-work-sector { font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.08em; color: #f9a8d4; }
-	.sb-work-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 1px; color: #fff; }
-	.sb-work-go { position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; display: grid; place-items: center; border-radius: 9999px; background: rgba(16, 10, 20, 0.6); color: #fff; opacity: 0; transform: translateY(-4px); transition: opacity 0.25s ease, transform 0.25s ease; }
-	.sb-work:hover .sb-work-go { opacity: 1; transform: translateY(0); }
+	/* ── A · atrium ── */
+	.sd-centerpiece {
+		margin: 0 0 clamp(1.5rem, 3vw, 2.25rem);
+	}
+	.sd-centerpiece-media {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+		aspect-ratio: 21 / 9;
+		max-height: 520px;
+		border-radius: 0.4rem;
+		/* a hung canvas: thick mat + frame line */
+		border: 1px solid var(--sd-line);
+		box-shadow:
+			inset 0 0 0 12px color-mix(in srgb, var(--sd-ink) 5%, transparent),
+			0 40px 90px -36px rgba(0, 0, 0, 0.7);
+		background:
+			radial-gradient(600px 300px at 70% 8%, color-mix(in srgb, var(--sd-acc) 12%, transparent), transparent),
+			var(--sd-card);
+		color: var(--sd-muted);
+	}
+	.sd-cp-name {
+		font-size: 0.82rem;
+		font-weight: 800;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+	.sd-cp-sub {
+		font-family: var(--sd-serif);
+		font-style: italic;
+		font-size: 0.92rem;
+		color: var(--sd-faint);
+	}
+	/* the gallery label — sleek dark glass, not white tape */
+	.sd-plaque {
+		display: inline-flex;
+		flex-direction: column;
+		gap: 0.12rem;
+		margin-top: 0.85rem;
+		padding: 0.6rem 0.95rem;
+		background: rgba(12, 8, 11, 0.66);
+		-webkit-backdrop-filter: blur(12px) saturate(130%);
+		backdrop-filter: blur(12px) saturate(130%);
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		border-left: 3px solid var(--sd-acc);
+		border-radius: 0 0.5rem 0.5rem 0;
+		box-shadow: 0 14px 30px -14px rgba(0, 0, 0, 0.6);
+		max-width: fit-content;
+	}
+	.sd-plaque strong {
+		font-size: 0.82rem;
+		font-weight: 850;
+		letter-spacing: 0.02em;
+		color: #ffffff;
+	}
+	.sd-plaque span {
+		font-family: var(--sd-serif);
+		font-style: italic;
+		font-size: 0.74rem;
+		color: rgba(255, 255, 255, 0.62);
+	}
+	.sd-plaque--lg strong {
+		font-size: 0.92rem;
+	}
+	.sd-wings {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 1rem;
+		list-style: none;
+		margin: 0;
+		padding: 1.4rem 0 0;
+		border-top: 1px solid var(--sd-line);
+	}
+	@media (max-width: 620px) {
+		.sd-wings {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 1.25rem;
+		}
+	}
+	.sd-wings strong {
+		display: block;
+		font-size: clamp(1.7rem, 3.4vw, 2.6rem);
+		font-weight: 850;
+		letter-spacing: -0.03em;
+		line-height: 1;
+	}
+	.sd-wings span {
+		font-family: var(--sd-serif);
+		font-style: italic;
+		font-size: 0.86rem;
+		color: var(--sd-faint);
+	}
 
-	/* Process */
-	.sb-steps { list-style: none; padding: 0; margin: 0; display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
-	.sb-step { opacity: 0; transform: translateY(14px); }
-	.sb-step.is-on { animation: sb-in 0.5s ease forwards; }
-	@keyframes sb-in { to { opacity: 1; transform: translateY(0); } }
-	.sb-step-n { font-family: 'Bebas Neue', sans-serif; font-size: 2.6rem; line-height: 1; background: linear-gradient(135deg, #f9a8d4, var(--view-accent, #ec4899)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-	.sb-step-title { font-size: 1.2rem; font-weight: 800; color: #fff; margin: 0.3rem 0; }
-	.sb-step-desc { color: rgba(246, 230, 239, 0.6); font-size: 0.9rem; line-height: 1.55; }
+	/* ── B · marquee ── */
+	.sd-marquee {
+		overflow: hidden;
+		padding-block: clamp(1rem, 2.5vw, 2rem);
+		border-block: 1px solid var(--sd-line);
+		-webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+		mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+	}
+	.sd-marquee-track {
+		display: flex;
+		width: max-content;
+		animation: sd-drift 40s linear infinite;
+	}
+	.sd-marquee-text {
+		font-size: clamp(3rem, 8vw, 6.5rem);
+		font-weight: 850;
+		letter-spacing: -0.02em;
+		line-height: 1;
+		white-space: nowrap;
+		color: transparent;
+		-webkit-text-stroke: 1.5px color-mix(in srgb, var(--sd-ink) 42%, transparent);
+		text-transform: uppercase;
+	}
+	@keyframes sd-drift {
+		to { transform: translateX(-50%); }
+	}
 
-	/* Clients */
-	.sb-clients-wrap { text-align: center; }
-	.sb-clients-wrap .sb-kick { justify-content: center; margin-bottom: 1.6rem; }
-	.sb-clients { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 2.5rem; }
-	.sb-client { max-height: 46px; width: auto; filter: grayscale(1) brightness(0) invert(1); opacity: 0.75; transition: opacity 0.3s ease; }
-	.sb-client:hover { opacity: 1; }
+	/* ── C · the collection wall (bento, work visible) ── */
+	.sd-wall {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		grid-auto-rows: clamp(130px, 13vw, 180px);
+		gap: clamp(0.8rem, 1.6vw, 1.25rem);
+	}
+	.sd-art--lg { grid-column: span 2; grid-row: span 2; }
+	.sd-art--tall { grid-column: span 1; grid-row: span 2; }
+	.sd-art--wide { grid-column: span 2; grid-row: span 1; }
+	.sd-art--sm { grid-column: span 1; grid-row: span 1; }
+	@media (max-width: 860px) {
+		.sd-wall { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+		.sd-art--lg { grid-column: span 2; grid-row: span 2; }
+		.sd-art--wide { grid-column: span 2; }
+		.sd-art--tall { grid-row: span 2; }
+	}
+	@media (max-width: 520px) {
+		.sd-wall { grid-template-columns: 1fr; grid-auto-rows: 200px; }
+		.sd-art--lg, .sd-art--tall, .sd-art--wide, .sd-art--sm { grid-column: span 1; grid-row: span 1; }
+	}
+	.sd-art {
+		position: relative;
+		display: block;
+		overflow: hidden;
+		background: var(--sd-card);
+		border: 1px solid var(--sd-line);
+	}
+	.sd-art-frame {
+		position: absolute;
+		inset: 0;
+		overflow: hidden;
+	}
+	.sd-art-frame img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), filter 0.4s ease;
+	}
+	.sd-art:hover .sd-art-frame img {
+		transform: scale(1.05);
+	}
+	.sd-art-ph {
+		position: absolute;
+		inset: 0;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.3rem;
+		color: rgba(255, 255, 255, 0.55);
+		font-size: 0.68rem;
+		font-weight: 800;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		/* a covered frame — tinted dark in both themes so the white plaque pops */
+		background:
+			radial-gradient(240px 160px at 60% 25%, color-mix(in srgb, var(--sd-acc) 26%, transparent), transparent),
+			linear-gradient(150deg, #2a1a22, #170f14);
+	}
+	.sd-art-view {
+		position: absolute;
+		top: 0.7rem;
+		right: 0.7rem;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.25rem;
+		font-size: 0.68rem;
+		font-weight: 800;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: #fff;
+		background: var(--sd-acc);
+		padding: 0.25rem 0.55rem;
+		opacity: 0;
+		transform: translateY(-4px);
+		transition: opacity 0.3s ease, transform 0.3s ease;
+	}
+	.sd-art:hover .sd-art-view {
+		opacity: 1;
+		transform: translateY(0);
+	}
+	/* plaque sits on the bottom-left of each work, like a museum label —
+	   always visible, because a labelled wall is the whole point */
+	.sd-art .sd-plaque {
+		position: absolute;
+		left: 0.7rem;
+		bottom: 0.7rem;
+		right: 0.7rem;
+		margin: 0;
+		z-index: 2;
+		max-width: none;
+		transform: translateY(0);
+		transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.sd-art:hover .sd-plaque {
+		transform: translateY(-3px);
+	}
+	.sd-art--empty {
+		border-style: dashed;
+		border-color: color-mix(in srgb, var(--sd-acc) 40%, transparent);
+	}
+	.sd-art--empty .sd-plaque {
+		opacity: 1;
+		transform: none;
+		background: transparent;
+		border-left-color: var(--sd-acc);
+		box-shadow: none;
+	}
+	.sd-art--empty .sd-plaque strong { color: var(--sd-ink); }
+	.sd-art--empty .sd-plaque span { color: var(--sd-faint); }
+	/* the next-acquisition invitation banner */
+	.sd-next {
+		display: flex;
+		align-items: center;
+		gap: clamp(1rem, 3vw, 2rem);
+		margin-top: clamp(0.9rem, 2vw, 1.25rem);
+		padding: clamp(1.25rem, 3vw, 2rem) clamp(1.25rem, 3vw, 2.25rem);
+		border: 1.5px dashed color-mix(in srgb, var(--sd-acc) 50%, transparent);
+		background:
+			radial-gradient(600px 240px at 90% -30%, color-mix(in srgb, var(--sd-acc) 14%, transparent), transparent),
+			var(--sd-card);
+		transition: border-color 0.3s ease, background 0.3s ease, transform 0.3s ease;
+	}
+	.sd-next:hover {
+		border-style: solid;
+		transform: translateY(-2px);
+		background:
+			radial-gradient(600px 240px at 90% -30%, color-mix(in srgb, var(--sd-acc) 20%, transparent), transparent),
+			var(--sd-card);
+	}
+	.sd-next-arrow {
+		display: grid;
+		place-items: center;
+		width: 54px;
+		height: 54px;
+		flex-shrink: 0;
+		border-radius: 9999px;
+		color: #fff;
+		background: var(--sd-acc);
+		box-shadow: 0 14px 30px -10px color-mix(in srgb, var(--sd-acc) 75%, transparent);
+		animation: sd-nudge 1.8s ease-in-out infinite;
+	}
+	@keyframes sd-nudge {
+		0%, 100% { transform: translateY(0); }
+		50% { transform: translateY(-8px); }
+	}
+	.sd-next-copy {
+		display: flex;
+		flex-direction: column;
+		gap: 0.2rem;
+		flex: 1;
+		min-width: 0;
+	}
+	.sd-next-kicker {
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--sd-acc);
+	}
+	.sd-next-title {
+		font-family: var(--sd-serif);
+		font-style: italic;
+		font-size: clamp(1.3rem, 2.6vw, 1.9rem);
+		font-weight: 600;
+		line-height: 1.15;
+		color: var(--sd-ink);
+	}
+	.sd-next-sub {
+		font-size: 0.9rem;
+		color: var(--sd-muted);
+	}
+	.sd-next-cta {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		flex-shrink: 0;
+		padding: 0.8rem 1.5rem;
+		font-weight: 850;
+		font-size: 0.92rem;
+		color: #fff;
+		background: var(--sd-acc);
+		transition: gap 0.25s ease, border-radius 0.3s ease;
+	}
+	.sd-next:hover .sd-next-cta {
+		gap: 0.7rem;
+		border-radius: 2rem;
+	}
+	@media (max-width: 720px) {
+		.sd-next {
+			flex-wrap: wrap;
+			text-align: left;
+		}
+		.sd-next-cta {
+			width: 100%;
+			justify-content: center;
+		}
+	}
 
-	/* Reviews */
-	.sb-reviews { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
-	.sb-rev { margin: 0; padding: 1.3rem; border-radius: 1.1rem; border: 1px solid rgba(236, 72, 153, 0.16); background: rgba(255, 255, 255, 0.02); }
-	.sb-rev blockquote { margin: 0 0 1rem; color: rgba(246, 230, 239, 0.82); line-height: 1.6; font-size: 0.95rem; }
-	.sb-rev figcaption { display: flex; align-items: center; gap: 0.55rem; }
-	.sb-rev figcaption img { width: 34px; height: 34px; border-radius: 9999px; object-fit: cover; }
-	.sb-rev-name { font-weight: 700; color: #fff; font-size: 0.9rem; }
-	.sb-rev-stars { margin-left: auto; color: #fbbf24; font-size: 0.85rem; letter-spacing: 1px; }
+	.sd-wall-all {
+		margin: 1.4rem 0 0;
+		text-align: center;
+	}
 
-	@media (prefers-reduced-motion: reduce) { .sb-step { opacity: 1; transform: none; } }
+	/* ── D · featured exhibitions ── */
+	.sd-exhibit {
+		padding-block: clamp(2rem, 4vw, 3rem);
+	}
+	.sd-exwrap {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: clamp(1.5rem, 3.5vw, 3rem);
+		align-items: center;
+	}
+	@media (min-width: 860px) {
+		.sd-exwrap {
+			grid-template-columns: 1.25fr 0.75fr;
+		}
+		.sd-exwrap--rev .sd-exmedia { order: 2; }
+		.sd-exwrap--rev .sd-excopy { order: 1; }
+	}
+	.sd-exmedia {
+		position: relative;
+		display: block;
+		aspect-ratio: 16 / 10;
+		overflow: hidden;
+		border: 1px solid var(--sd-line);
+		box-shadow:
+			inset 0 0 0 10px color-mix(in srgb, var(--sd-ink) 6%, transparent),
+			0 40px 90px -38px rgba(0, 0, 0, 0.7);
+	}
+	.sd-exmedia img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.sd-exmedia:hover img {
+		transform: scale(1.04);
+	}
+	.sd-exmedia-veil {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(180deg, transparent 55%, rgba(11, 7, 9, 0.55));
+	}
+	.sd-exmedia-room {
+		position: absolute;
+		top: 1rem;
+		left: 1rem;
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: #fff;
+		background: rgba(0, 0, 0, 0.35);
+		backdrop-filter: blur(6px);
+		padding: 0.3rem 0.6rem;
+	}
+	.sd-exroom {
+		display: block;
+		font-size: 0.74rem;
+		font-weight: 800;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--sd-acc);
+		margin-bottom: 0.6rem;
+	}
+	.sd-exname {
+		font-size: clamp(2rem, 4vw, 3rem);
+		font-weight: 850;
+		letter-spacing: -0.025em;
+		line-height: 1;
+		margin: 0 0 0.8rem;
+	}
+	.sd-exblurb {
+		font-family: var(--sd-serif);
+		font-size: 1.05rem;
+		line-height: 1.65;
+		color: var(--sd-muted);
+		margin: 0 0 1.1rem;
+	}
+	.sd-extags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		list-style: none;
+		margin: 0 0 1.2rem;
+		padding: 0;
+	}
+	.sd-extags li {
+		font-size: 0.72rem;
+		font-weight: 700;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+		padding: 0.3rem 0.7rem;
+		border: 1px solid var(--sd-line);
+		border-radius: 9999px;
+		color: var(--sd-faint);
+	}
+
+	/* ── D2 · the full studio — full-bleed electric band ── */
+	.sd-fullstudio {
+		position: relative;
+		isolation: isolate;
+		overflow: hidden;
+		margin: clamp(2.5rem, 5vw, 4rem) calc(-1 * clamp(1rem, 3vw, 2rem));
+		padding: clamp(3rem, 7vw, 5.5rem) clamp(1rem, 3vw, 2rem);
+		background:
+			linear-gradient(125deg, #1a0a2e 0%, #5b1670 42%, #c0218a 78%, #ff2d78 100%);
+		color: #fff;
+	}
+	.sd-fs-glow {
+		position: absolute;
+		top: -30%;
+		right: -10%;
+		width: 60vw;
+		height: 60vw;
+		max-width: 820px;
+		max-height: 820px;
+		border-radius: 9999px;
+		background: radial-gradient(closest-side, rgba(255, 110, 196, 0.5), transparent 70%);
+		filter: blur(20px);
+		z-index: -1;
+		animation: sd-fsglow 9s ease-in-out infinite alternate;
+	}
+	@keyframes sd-fsglow {
+		from { transform: translate(0, 0) scale(1); }
+		to { transform: translate(-6%, 8%) scale(1.12); }
+	}
+	.sd-fs-head {
+		max-width: 52rem;
+		margin-bottom: clamp(2rem, 4vw, 3rem);
+	}
+	.sd-fs-kicker {
+		display: inline-block;
+		font-size: 0.74rem;
+		font-weight: 800;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: #ffd6ec;
+		margin-bottom: 1rem;
+		border: 1.5px solid rgba(255, 255, 255, 0.35);
+		padding: 0.35rem 0.85rem;
+		border-radius: 9999px;
+	}
+	.sd-fs-h {
+		font-size: clamp(2.2rem, 5.2vw, 4rem);
+		font-weight: 850;
+		letter-spacing: -0.03em;
+		line-height: 1;
+		margin: 0 0 1.2rem;
+	}
+	.sd-fs-h span {
+		font-family: var(--sd-serif);
+		font-style: italic;
+		font-weight: 500;
+		color: #ffe14d;
+	}
+	.sd-fs-lead {
+		font-size: clamp(1.02rem, 1.7vw, 1.25rem);
+		line-height: 1.65;
+		color: rgba(255, 255, 255, 0.85);
+		margin: 0;
+	}
+	.sd-fs-grid {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: clamp(0.9rem, 2vw, 1.4rem);
+		margin-bottom: clamp(2rem, 4vw, 3rem);
+	}
+	@media (max-width: 860px) { .sd-fs-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+	@media (max-width: 520px) { .sd-fs-grid { grid-template-columns: 1fr; } }
+	.sd-fs-card {
+		padding: 1.5rem 1.4rem;
+		border-radius: 1rem;
+		border: 1px solid rgba(255, 255, 255, 0.18);
+		background: rgba(255, 255, 255, 0.07);
+		-webkit-backdrop-filter: blur(8px);
+		backdrop-filter: blur(8px);
+		transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s ease, border-color 0.3s ease;
+	}
+	.sd-fs-card:hover {
+		transform: translateY(-5px);
+		background: rgba(255, 255, 255, 0.13);
+		border-color: rgba(255, 255, 255, 0.4);
+	}
+	.sd-fs-ic {
+		display: grid;
+		place-items: center;
+		width: 50px;
+		height: 50px;
+		border-radius: 0.8rem;
+		background: rgba(255, 255, 255, 0.16);
+		color: #fff;
+		margin-bottom: 0.9rem;
+	}
+	.sd-fs-card-t {
+		font-size: 1.12rem;
+		font-weight: 800;
+		margin: 0 0 0.4rem;
+	}
+	.sd-fs-card-d {
+		font-size: 0.9rem;
+		line-height: 1.55;
+		color: rgba(255, 255, 255, 0.78);
+		margin: 0;
+	}
+	.sd-fs-how {
+		display: flex;
+		align-items: center;
+		gap: 1.25rem;
+		flex-wrap: wrap;
+		padding: 1.1rem 0;
+		border-block: 1px solid rgba(255, 255, 255, 0.2);
+		margin-bottom: clamp(1.75rem, 3.5vw, 2.5rem);
+	}
+	.sd-fs-how-label {
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: #ffd6ec;
+	}
+	.sd-fs-flow {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.5rem 0.9rem;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	.sd-fs-flow li {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.9rem;
+	}
+	.sd-fs-step {
+		font-family: var(--sd-serif);
+		font-style: italic;
+		font-size: clamp(1.1rem, 2.2vw, 1.6rem);
+		font-weight: 600;
+	}
+	.sd-fs-arrow { color: #ffe14d; font-weight: 800; }
+	.sd-fs-cta {
+		display: flex;
+		align-items: center;
+		gap: 1.5rem;
+		flex-wrap: wrap;
+	}
+	.sd-fs-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+		padding: 0.95rem 1.9rem;
+		font-weight: 850;
+		font-size: 0.98rem;
+		color: #2a0a1e;
+		background: #ffe14d;
+		border-radius: 9999px;
+		box-shadow: 0 18px 42px -14px rgba(255, 225, 77, 0.6);
+		transition: transform 0.25s ease, box-shadow 0.25s ease;
+	}
+	.sd-fs-btn:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 26px 54px -14px rgba(255, 225, 77, 0.8);
+	}
+	.sd-fs-link {
+		font-weight: 800;
+		color: #fff;
+		border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+		padding-bottom: 0.15rem;
+		transition: border-color 0.25s ease;
+	}
+	.sd-fs-link:hover { border-color: #fff; }
+
+	/* ── E · crafts ── */
+	.sd-craft {
+		display: grid;
+		grid-template-columns: auto 1fr;
+		align-items: center;
+		gap: clamp(1.25rem, 4vw, 3rem);
+		padding: clamp(1.25rem, 3vw, 2rem) 0;
+		border-bottom: 1px solid var(--sd-line);
+	}
+	.sd-craft--alt {
+		grid-template-columns: 1fr auto;
+	}
+	.sd-craft--alt .sd-craft-n { order: 2; }
+	.sd-craft--alt .sd-craft-body { order: 1; text-align: right; }
+	.sd-craft--alt .sd-craft-d { margin-left: auto; }
+	.sd-craft--alt .sd-craft-tags { justify-content: flex-end; }
+	.sd-craft-n {
+		font-family: var(--sd-serif);
+		font-style: italic;
+		font-size: clamp(3.5rem, 8vw, 6.5rem);
+		line-height: 1;
+		color: transparent;
+		-webkit-text-stroke: 1.5px color-mix(in srgb, var(--sd-acc) 70%, transparent);
+		transition: color 0.4s ease;
+	}
+	.sd-craft:hover .sd-craft-n {
+		color: var(--sd-acc);
+		-webkit-text-stroke-color: transparent;
+	}
+	.sd-craft-t {
+		font-size: clamp(1.5rem, 3vw, 2.2rem);
+		font-weight: 850;
+		letter-spacing: -0.02em;
+		margin: 0 0 0.4rem;
+	}
+	.sd-craft-d {
+		font-family: var(--sd-serif);
+		font-size: 1.02rem;
+		line-height: 1.65;
+		color: var(--sd-muted);
+		max-width: 36rem;
+		margin: 0 0 0.7rem;
+	}
+	.sd-craft-tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+	}
+	.sd-craft-tags span {
+		font-size: 0.72rem;
+		font-weight: 700;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+		color: var(--sd-faint);
+		padding: 0.25rem 0.6rem;
+		border: 1px solid var(--sd-line);
+		border-radius: 9999px;
+	}
+
+	/* ── F · contact sheet ── */
+	.sd-sheet {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: clamp(1rem, 2.5vw, 2rem);
+	}
+	@media (max-width: 880px) { .sd-sheet { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+	@media (max-width: 480px) { .sd-sheet { grid-template-columns: 1fr; } }
+	.sd-shot {
+		position: relative;
+		margin: 0;
+		padding: 0.8rem 0.8rem 1rem;
+		background: #fffdf8;
+		box-shadow: 0 18px 40px -16px rgba(0, 0, 0, 0.5);
+		transform: rotate(var(--r, 0deg));
+		transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+	}
+	.sd-shot:hover { transform: rotate(0deg) scale(1.04); z-index: 2; }
+	.sd-tape {
+		position: absolute;
+		top: -12px;
+		left: 50%;
+		transform: translateX(-50%) rotate(-3deg);
+		width: 76px;
+		height: 24px;
+		background: rgba(236, 72, 153, 0.35);
+		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+	}
+	.sd-shot-frame {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.35rem;
+		aspect-ratio: 1;
+		background: #efe9e0;
+		color: #8a8076;
+		font-size: 0.66rem;
+		font-weight: 800;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+	.sd-shot figcaption {
+		display: flex;
+		flex-direction: column;
+		margin-top: 0.6rem;
+		line-height: 1.3;
+	}
+	.sd-shot figcaption strong {
+		font-size: 0.95rem;
+		font-weight: 850;
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+		color: #2a2118;
+	}
+	.sd-shot figcaption em {
+		font-family: var(--sd-serif);
+		font-size: 0.82rem;
+		color: #7a6f64;
+	}
+
+	/* ── G · media wall ── */
+	.sd-media {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		grid-auto-rows: clamp(140px, 15vw, 200px);
+		gap: clamp(0.9rem, 2vw, 1.25rem);
+	}
+	.sd-frame--wide { grid-column: span 2; grid-row: span 2; }
+	@media (max-width: 760px) {
+		.sd-media { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+		.sd-frame--wide { grid-column: span 2; }
+	}
+	.sd-frame {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.35rem;
+		border: 1.5px dashed color-mix(in srgb, var(--sd-ink) 24%, transparent);
+		background:
+			radial-gradient(320px 180px at 70% 10%, color-mix(in srgb, var(--sd-acc) 9%, transparent), transparent),
+			var(--sd-card);
+		color: var(--sd-muted);
+		text-align: center;
+		padding: 0.75rem;
+	}
+	.sd-frame-name {
+		font-size: 0.74rem;
+		font-weight: 800;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+	}
+	.sd-frame-sub {
+		font-family: var(--sd-serif);
+		font-style: italic;
+		font-size: 0.82rem;
+		color: var(--sd-faint);
+	}
+
+	/* ── H · belts ── */
+	.sd-sec--belts { padding-block: clamp(1.5rem, 3.5vw, 2.5rem); }
+	.sd-belt {
+		overflow: hidden;
+		margin-bottom: 1.4rem;
+		-webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+		mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+	}
+	.sd-belt-track {
+		display: flex;
+		align-items: center;
+		width: max-content;
+		animation: sd-drift 46s linear infinite;
+	}
+	.sd-belt-track--logos {
+		animation: sd-drift 38s linear infinite reverse;
+		padding-block: 0.4rem;
+	}
+	.sd-belt:hover .sd-belt-track { animation-play-state: paused; }
+	.sd-bword {
+		flex-shrink: 0;
+		font-family: var(--sd-serif);
+		font-size: clamp(1.4rem, 3vw, 2.1rem);
+		color: var(--sd-faint);
+	}
+	.sd-bword em { font-style: italic; transition: color 0.3s ease; }
+	.sd-bword:hover em { color: var(--sd-acc); }
+	.sd-blogo { flex-shrink: 0; display: grid; place-items: center; margin-right: clamp(1.8rem, 3.5vw, 3rem); }
+	.sd-blogo img {
+		height: 26px;
+		width: auto;
+		max-width: 120px;
+		object-fit: contain;
+		filter: grayscale(1) brightness(0) invert(1);
+		opacity: 0.45;
+		transition: opacity 0.3s ease, filter 0.3s ease;
+	}
+	:global(html:not(.dark)) .sbody .sd-blogo img { filter: grayscale(1) brightness(0); }
+	.sd-blogo:hover img { filter: none; opacity: 1; }
+
+	/* ── I · guestbook ── */
+	.sd-pull {
+		position: relative;
+		max-width: 60rem;
+		margin: 0 auto;
+		padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1.5rem, 6vw, 5rem) 0;
+		touch-action: pan-y;
+	}
+	.sd-pull-mark {
+		position: absolute;
+		top: -1.5rem;
+		left: clamp(0.25rem, 3vw, 2rem);
+		font-family: var(--sd-serif);
+		font-size: clamp(6rem, 12vw, 10rem);
+		line-height: 1;
+		color: var(--sd-acc);
+		opacity: 0.85;
+		animation: sd-markfloat 6s ease-in-out infinite alternate;
+		pointer-events: none;
+	}
+	@keyframes sd-markfloat {
+		from { transform: translateY(0) rotate(-2deg); }
+		to { transform: translateY(-8px) rotate(1.5deg); }
+	}
+	.sd-pull-stage {
+		position: relative;
+		min-height: 11rem;
+	}
+	.sd-quote {
+		position: absolute;
+		inset: 0;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		margin: 0;
+		opacity: 0;
+		transform: translateY(12px);
+		transition: opacity 0.5s ease, transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+		pointer-events: none;
+	}
+	.sd-quote.is-live { opacity: 1; transform: translateY(0); pointer-events: auto; }
+	.sd-quote p {
+		font-family: var(--sd-serif);
+		font-style: italic;
+		font-size: clamp(1.5rem, 3.4vw, 2.5rem);
+		line-height: 1.35;
+		margin: 0 0 1rem;
+	}
+	.sd-quote footer {
+		font-size: 0.85rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--sd-faint);
+	}
+	.sd-quote footer em {
+		font-family: var(--sd-serif);
+		font-style: italic;
+		text-transform: none;
+		letter-spacing: 0;
+		font-weight: 400;
+	}
+	.sd-pull-controls {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		margin-top: 1rem;
+		flex-wrap: wrap;
+	}
+	.sd-pull-nav {
+		display: flex;
+		gap: 0.5rem;
+	}
+	.sd-pull-tick {
+		width: 26px;
+		height: 4px;
+		padding: 0;
+		border: 0;
+		cursor: pointer;
+		background: color-mix(in srgb, var(--sd-ink) 18%, transparent);
+		transition: background 0.3s ease, transform 0.2s ease;
+	}
+	.sd-pull-tick:hover { transform: scaleY(1.6); }
+	.sd-pull-tick.is-on { background: var(--sd-acc); }
+	.sd-pull-arrows {
+		display: flex;
+		gap: 0.5rem;
+	}
+	.sd-pull-arrow {
+		display: grid;
+		place-items: center;
+		width: 44px;
+		height: 44px;
+		border-radius: 9999px;
+		border: 1.5px solid var(--sd-line);
+		color: var(--sd-ink);
+		cursor: pointer;
+		transition: border-color 0.25s ease, color 0.25s ease, transform 0.25s ease, background 0.25s ease;
+	}
+	.sd-pull-arrow:hover {
+		border-color: var(--sd-acc);
+		color: #fff;
+		background: var(--sd-acc);
+		transform: translateY(-2px);
+	}
+
+	/* ── J · CTA ── */
+	.sd-sec--cta { padding-bottom: clamp(1.5rem, 3vw, 2.5rem); }
+	.sd-cta { text-align: center; }
+	.sd-cta .sd-folio { margin-bottom: 1.75rem; }
+	.sd-display--cta { font-size: clamp(2.4rem, 5.5vw, 4.6rem); margin-bottom: 1.2rem; }
+	.sd-cta-row {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 1.4rem;
+		flex-wrap: wrap;
+	}
+	.sd-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+		padding: 0.95rem 1.9rem;
+		font-weight: 850;
+		font-size: 0.95rem;
+		letter-spacing: 0.02em;
+		color: #fff;
+		background: var(--sd-acc);
+		border: 1px solid color-mix(in srgb, var(--sd-acc) 60%, #fff);
+		box-shadow: 0 18px 42px -16px color-mix(in srgb, var(--sd-acc) 75%, transparent);
+		transition: transform 0.25s ease, box-shadow 0.25s ease, border-radius 0.3s ease;
+	}
+	.sd-btn:hover {
+		transform: translateY(-2px);
+		border-radius: 2rem;
+		box-shadow: 0 26px 54px -16px color-mix(in srgb, var(--sd-acc) 85%, transparent);
+	}
+	.sd-call {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 0.7rem;
+		font-size: 0.98rem;
+		color: var(--sd-muted);
+	}
+	.sd-call strong {
+		font-size: 1.55rem;
+		font-weight: 850;
+		letter-spacing: -0.01em;
+		color: var(--sd-ink);
+		transition: color 0.25s ease;
+	}
+	.sd-call:hover strong { color: var(--sd-acc); }
+
+	/* ── reveals ── */
+	.sd-rev {
+		opacity: 0;
+		transform: translateY(22px);
+		transition: opacity 0.65s ease, transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+		transition-delay: calc(var(--i, 0) * 0.06s);
+	}
+	.sd-rev.is-on { opacity: 1; transform: translateY(0); }
+
+	@media (prefers-reduced-motion: reduce) {
+		.sd-rev { opacity: 1; transform: none; transition: none; }
+		.sd-marquee-track,
+		.sd-belt-track,
+		.sd-pull-mark,
+		.sd-fs-glow { animation: none; }
+		.sd-shot { transform: none; }
+		.sd-quote { transition: none; }
+		.sd-art .sd-plaque { opacity: 1; transform: none; }
+	}
 </style>

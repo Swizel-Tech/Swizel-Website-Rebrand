@@ -31,13 +31,6 @@ const {
 		<script is:inline type="text/javascript">
 		var Tawk_API = Tawk_API || {},
 			Tawk_LoadStart = new Date();
-		// pin the live chat to the bottom-right corner
-		Tawk_API.customStyle = {
-			visibility: {
-				desktop: { position: 'br', xOffset: 18, yOffset: 18 },
-				mobile: { position: 'br', xOffset: 10, yOffset: 12 },
-			},
-		};
 		(function () {
 			var s1 = document.createElement('script'),
 				s0 = document.getElementsByTagName('script')[0];
@@ -74,6 +67,8 @@ const {
 			<svg class="cur-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a12 12 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"></path></svg>
 			<svg class="cur-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1.6-3.8-2.2-7-2v14c3.2-.2 5.5.4 7 2 1.5-1.6 3.8-2.2 7-2V4c-3.2-.2-5.5.4-7 2z"></path><path d="M12 6v14"></path></svg>
 			<svg class="cur-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.2-4.2L16.4 4.6a2 2 0 0 1 2.8 0l.2.2a2 2 0 0 1 0 2.8L8.2 18.8z"></path><path d="M14.5 6.5l3 3"></path></svg>
+			<svg class="cur-palette" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 0 0 0 18c1 0 1.7-.8 1.7-1.8 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-1 .8-1.8 1.8-1.8H16a5 5 0 0 0 5-5c0-3.9-4-7-9-7z"></path><circle cx="7.5" cy="11.5" r="1" fill="currentColor"></circle><circle cx="10" cy="7.5" r="1" fill="currentColor"></circle><circle cx="15" cy="7.5" r="1" fill="currentColor"></circle><circle cx="17.5" cy="11.5" r="1" fill="currentColor"></circle></svg>
+			<svg class="cur-vector" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="4" height="4"></rect><rect x="17" y="3" width="4" height="4"></rect><rect x="3" y="17" width="4" height="4"></rect><rect x="17" y="17" width="4" height="4"></rect><path d="M7 5h10M5 7v10M19 7v10M7 19h10" opacity="0.5"></path></svg>
 			<svg class="cur-legacy" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z"></path></svg>
 			<svg class="cur-term" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 8 9 12 5 16"></polyline><line x1="11.5" y1="16" x2="18" y2="16"></line></svg>
 			<svg class="cur-pkg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5v8l9 5 9-5z"></path><path d="M3 8l9 5 9-5M12 13v8"></path></svg>
@@ -451,17 +446,24 @@ const {
 
 		if (document.querySelector('#navbar--header')) {
 			const backTop = document.getElementById('back-to-top');
-			window.onscroll = function () {
-				const header = document.querySelector('#navbar--header');
-				if (window.pageYOffset > 200) {
-					header!.classList.add('header-sticky');
-				} else {
-					header!.classList.remove('header-sticky');
-				}
-				if (backTop) {
-					backTop.classList.toggle('is-visible', window.pageYOffset > 600);
-				}
+			const header = document.querySelector('#navbar--header');
+			const hasHero = !!document.querySelector('.hero-view');
+			const onScrollNav = () => {
+				const y =
+					window.scrollY ||
+					window.pageYOffset ||
+					document.documentElement.scrollTop ||
+					0;
+				if (!header) return;
+				header.classList.toggle('header-sticky', y > 120);
+				// blend onto the hero only while parked near the very top
+				header.classList.toggle('at-hero-top', hasHero && y < 40);
+				if (backTop) backTop.classList.toggle('is-visible', y > 600);
 			};
+			// passive listener is reliable across scroll containers
+			window.addEventListener('scroll', onScrollNav, { passive: true });
+			window.onscroll = onScrollNav;
+			onScrollNav();
 			if (backTop) {
 				backTop.onclick = () =>
 					window.scrollTo({ top: 0, behavior: 'smooth' });
