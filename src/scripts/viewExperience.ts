@@ -98,10 +98,10 @@ export function initViewExperience() {
 			const name =
 				card?.querySelector('.vo__card-name')?.textContent || 'Boardroom';
 			if (recName) recName.textContent = name;
-			if (recKicker) recKicker.textContent = 'Your match';
+			if (recKicker) recKicker.textContent = 'Recommendation';
 			if (recTitle)
 				recTitle.firstChild &&
-					(recTitle.childNodes[0].nodeValue = "We think you'll love ");
+					(recTitle.childNodes[0].nodeValue = 'We think you fit best in ');
 			// float the recommended card to the front
 			if (card && card.parentElement) {
 				card.parentElement.prepend(card);
@@ -190,6 +190,18 @@ export function initViewExperience() {
 			const id = card.dataset.viewId;
 			if (id) applyView(id);
 			close();
+			// The view "worlds" only render on the home page. If a world is
+			// picked from another page (e.g. /about), go home so it shows.
+			// Click a real link so swup intercepts it and plays the page
+			// transition (version-proof — no swup API call needed).
+			if (id && window.location.pathname !== '/') {
+				const a = document.createElement('a');
+				a.href = '/';
+				a.style.display = 'none';
+				document.body.appendChild(a);
+				a.click();
+				a.remove();
+			}
 		});
 	});
 

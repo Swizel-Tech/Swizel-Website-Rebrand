@@ -95,4 +95,85 @@ export function initBoardroomBody() {
 		stage.addEventListener('pointerenter', stop);
 		stage.addEventListener('pointerleave', start);
 	}
+
+	// team profile modal (About page)
+	const modal = document.getElementById('bd-member-modal');
+	if (modal) {
+		const photo = modal.querySelector<HTMLImageElement>('#bd-modal-photo');
+		const nameEl = modal.querySelector('#bd-modal-name');
+		const roleEl = modal.querySelector('#bd-modal-role');
+		const bioEl = modal.querySelector('#bd-modal-bio');
+		const linkedinEl = modal.querySelector<HTMLAnchorElement>('#bd-modal-linkedin');
+		const expWrap = modal.querySelector<HTMLElement>('#bd-modal-exp-wrap');
+		const expList = modal.querySelector('#bd-modal-exp');
+		let lastFocused: HTMLElement | null = null;
+
+		const open = (btn: HTMLElement) => {
+			const name = btn.getAttribute('data-name') || '';
+			const role = btn.getAttribute('data-role') || '';
+			const bio = btn.getAttribute('data-bio') || '';
+			const linkedin = btn.getAttribute('data-linkedin') || '';
+			let exp: { company: string; jobDesc: string }[] = [];
+			try {
+				exp = JSON.parse(btn.getAttribute('data-exp') || '[]');
+			} catch (e) {}
+			if (photo) {
+				photo.src = `/teammates/${name}.jpg`;
+				photo.alt = name;
+			}
+			if (nameEl) nameEl.textContent = name;
+			if (roleEl) roleEl.textContent = role;
+			if (bioEl) bioEl.textContent = bio;
+			if (linkedinEl) {
+				if (linkedin) {
+					linkedinEl.href = linkedin;
+					linkedinEl.hidden = false;
+				} else {
+					linkedinEl.hidden = true;
+				}
+			}
+			if (expList && expWrap) {
+				expList.innerHTML = '';
+				if (exp.length) {
+					exp.forEach((e) => {
+						const li = document.createElement('li');
+						const s = document.createElement('strong');
+						s.textContent = e.company;
+						const sp = document.createElement('span');
+						sp.textContent = e.jobDesc;
+						li.appendChild(s);
+						li.appendChild(sp);
+						expList.appendChild(li);
+					});
+					expWrap.hidden = false;
+				} else {
+					expWrap.hidden = true;
+				}
+			}
+			lastFocused = document.activeElement as HTMLElement;
+			modal.hidden = false;
+			void (modal as HTMLElement).offsetWidth; // reflow for transition
+			modal.classList.add('is-open');
+			document.body.style.overflow = 'hidden';
+			modal.querySelector<HTMLElement>('.bd-modal-x')?.focus();
+		};
+		const close = () => {
+			modal.classList.remove('is-open');
+			document.body.style.overflow = '';
+			window.setTimeout(() => {
+				modal.hidden = true;
+			}, 300);
+			lastFocused?.focus();
+		};
+
+		body.querySelectorAll<HTMLElement>('[data-member]').forEach((btn) => {
+			btn.addEventListener('click', () => open(btn));
+		});
+		modal.querySelectorAll('[data-modal-close]').forEach((el) =>
+			el.addEventListener('click', close)
+		);
+		document.addEventListener('keydown', (e) => {
+			if (e.key === 'Escape' && !modal.hidden) close();
+		});
+	}
 }

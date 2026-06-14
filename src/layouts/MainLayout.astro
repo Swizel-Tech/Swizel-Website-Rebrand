@@ -10,12 +10,15 @@ export interface Props {
 	title?: string;
 	description?: string;
 	image?: string;
+	/** Pages that ship their own footer (e.g. About) suppress the global one. */
+	hideFooter?: boolean;
 }
 
 const {
 	title = SITE_TITLE,
 	description = SITE_DESCRIPTION,
 	image,
+	hideFooter = false,
 } = Astro.props;
 ---
 
@@ -41,10 +44,10 @@ const {
 			s0.parentNode.insertBefore(s1, s0);
 		})();
 		</script>
-		<main id="swup">
+		<main id="swup" class="transition-main">
 			<Header />
 			<slot />
-			<Footer />
+			{!hideFooter && <Footer />}
 			<ToastContainer />
 			<ViewOnboarding />
 		</main>
@@ -80,7 +83,6 @@ const {
 
 <script>
 	import Swup from 'swup';
-	import SwupOverlayTheme from '@swup/overlay-theme';
 	import SwupA11yPlugin from '@swup/a11y-plugin';
 	import SwupHeadPlugin from '@swup/head-plugin';
 	import Splide from '@splidejs/splide';
@@ -486,17 +488,14 @@ const {
 
 	// guide to events and function check: https://swup.js.org/getting-started/reloading-javascript
 	// swup with astro: https://navillus.dev/blog/astro-plus-swup
-	const overlay = new SwupOverlayTheme({
-		color: '#28293E',
-		duration: 600,
-		direction: 'to-top',
-	});
-
 	// @ts-ignore
 	const swup = new Swup({
-		plugins: [overlay, new SwupA11yPlugin(), new SwupHeadPlugin(), new SwupScrollPlugin()],
+		plugins: [new SwupA11yPlugin(), new SwupHeadPlugin(), new SwupScrollPlugin()],
 		linkSelector: 'a[href]',
+		animationSelector: '.transition-main',
 	});
+	// expose so the view picker can navigate home when a world is chosen off-home
+	(window as any).swup = swup;
 
 	if (document.readyState === 'complete') {
 		init();

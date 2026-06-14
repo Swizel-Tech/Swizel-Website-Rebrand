@@ -1,5 +1,25 @@
 /* global css */
 
+/* ── Page transition (swup): a smooth lift + fade, replaces the heavy
+   overlay wipe. Old content fades/slides up & blurs out; new content
+   rises in from below. ── */
+/* NOTE: do NOT add will-change/transform/filter to this element in its resting
+   state — it would become a containing block for position:fixed descendants
+   (the view-switcher modal, mobile menu, toasts all live inside #swup) and
+   break them once the page is scrolled. The transform/filter below only apply
+   during an active transition, when no such overlay is open. */
+.transition-main {
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+html.is-animating .transition-main { opacity: 0; }
+html.is-leaving .transition-main { transform: translateY(-6px); }
+html.is-rendering .transition-main { transform: translateY(8px); }
+@media (prefers-reduced-motion: reduce) {
+  .transition-main { transition: opacity 0.14s ease; }
+  html.is-leaving .transition-main,
+  html.is-rendering .transition-main { transform: none; }
+}
+
 @import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Epilogue:wght@400;500;600;700;800;900&display=swap");
 
 body {
@@ -365,6 +385,23 @@ html.dark {
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
   box-shadow: none;
+}
+/* The floating nav uses white ink assuming a dark hero behind it. In light
+   mode the hero carries a light glow at its very top, which washes the white
+   text out. A top-down scrim behind the (transparent) nav guarantees the
+   white logo/links/buttons stay legible over every view's hero. */
+html:not(.dark) .site-header.at-hero-top::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(8, 10, 20, 0.62) 0%,
+    rgba(8, 10, 20, 0.32) 55%,
+    rgba(8, 10, 20, 0) 100%
+  );
 }
 /* lift the live hero up so its dark canvas fills behind the floating bar.
    margin/padding cancel for content, so nothing moves — the hero bg just
@@ -798,6 +835,18 @@ html[data-view="builder"] .default-body { display: none; }
 #swizel-cursor[data-icon="palette"] .cur-palette,
 #swizel-cursor[data-icon="vector"] .cur-vector { display: block !important; }
 
+/* Tailor the cursor to the page's world: the About page is the Boardroom
+   world, so force the boardroom blue + boardroom base icon there regardless
+   of the visitor's last-selected view. Per-section data-icon cursors still win
+   on hover (handled above). */
+body:has(.bd-about) #swizel-cursor { color: #28a6ec; }
+body:has(.bd-about) #swizel-cursor .cur-builder,
+body:has(.bd-about) #swizel-cursor .cur-founder,
+body:has(.bd-about) #swizel-cursor .cur-campus,
+body:has(.bd-about) #swizel-cursor .cur-studio,
+body:has(.bd-about) #swizel-cursor .cur-legacy { display: none; }
+body:has(.bd-about) #swizel-cursor:not([data-icon]) .cur-boardroom { display: block; }
+
 /* Boardroom view body visibility — boardroom is the default view, so it
    also shows when no view has been chosen yet */
 .view-body-boardroom { display: none; }
@@ -828,3 +877,13 @@ html:not([data-view]) .view-body-boardroom,
 html[data-view="boardroom"] .view-body-boardroom { display: block; }
 html:not([data-view]) .default-body,
 html[data-view="boardroom"] .default-body { display: none; }
+
+/* About page fallback: the boardroom About only shows in the boardroom world
+   (above). For every other world (until each gets its own About), show the
+   original neutral About instead. */
+.about-default-view { display: none; }
+html[data-view="builder"] .about-default-view,
+html[data-view="founder"] .about-default-view,
+html[data-view="campus"] .about-default-view,
+html[data-view="studio"] .about-default-view,
+html[data-view="legacy"] .about-default-view { display: block; }
