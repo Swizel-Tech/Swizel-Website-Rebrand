@@ -839,13 +839,20 @@ html[data-view="builder"] .default-body { display: none; }
    world, so force the boardroom blue + boardroom base icon there regardless
    of the visitor's last-selected view. Per-section data-icon cursors still win
    on hover (handled above). */
-body:has(.bd-about) #swizel-cursor { color: #28a6ec; }
+body:has(.bd-about) #swizel-cursor,
+body:has(.bd-services) #swizel-cursor { color: #28a6ec; }
 body:has(.bd-about) #swizel-cursor .cur-builder,
 body:has(.bd-about) #swizel-cursor .cur-founder,
 body:has(.bd-about) #swizel-cursor .cur-campus,
 body:has(.bd-about) #swizel-cursor .cur-studio,
-body:has(.bd-about) #swizel-cursor .cur-legacy { display: none; }
-body:has(.bd-about) #swizel-cursor:not([data-icon]) .cur-boardroom { display: block; }
+body:has(.bd-about) #swizel-cursor .cur-legacy,
+body:has(.bd-services) #swizel-cursor .cur-builder,
+body:has(.bd-services) #swizel-cursor .cur-founder,
+body:has(.bd-services) #swizel-cursor .cur-campus,
+body:has(.bd-services) #swizel-cursor .cur-studio,
+body:has(.bd-services) #swizel-cursor .cur-legacy { display: none; }
+body:has(.bd-about) #swizel-cursor:not([data-icon]) .cur-boardroom,
+body:has(.bd-services) #swizel-cursor:not([data-icon]) .cur-boardroom { display: block; }
 
 /* Boardroom view body visibility — boardroom is the default view, so it
    also shows when no view has been chosen yet */
@@ -878,12 +885,12 @@ html[data-view="boardroom"] .view-body-boardroom { display: block; }
 html:not([data-view]) .default-body,
 html[data-view="boardroom"] .default-body { display: none; }
 
-/* About page fallback: the boardroom About only shows in the boardroom world
-   (above). For every other world (until each gets its own About), show the
-   original neutral About instead. */
-.about-default-view { display: none; }
-html[data-view="builder"] .about-default-view,
-html[data-view="founder"] .about-default-view,
-html[data-view="campus"] .about-default-view,
-html[data-view="studio"] .about-default-view,
-html[data-view="legacy"] .about-default-view { display: block; }
+/* Per-page fallback: a boardroom-styled page (About, Services…) only shows in
+   the boardroom world. For every other world (until each gets its own), show
+   the original neutral page instead — wrap that markup in .alt-view-only. */
+.alt-view-only { display: none; }
+html[data-view="builder"] .alt-view-only,
+html[data-view="founder"] .alt-view-only,
+html[data-view="campus"] .alt-view-only,
+html[data-view="studio"] .alt-view-only,
+html[data-view="legacy"] .alt-view-only { display: block; }

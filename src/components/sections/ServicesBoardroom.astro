@@ -1,0 +1,450 @@
+---
+// Services hub — the Boardroom world. An "adventure" into everything Swizel
+// does: each discipline is a door into its own world (per-service pages come
+// next). Reuses the boardroom engine (initBoardroomBody → reveals/counters)
+// and the themed cursor; locked to boardroom blue. Self-contained .bd-* styles.
+import { Icon } from 'astro-icon';
+
+// The disciplines — each links to its own page (built progressively).
+const disciplines = [
+	{
+		slug: 'design',
+		icon: 'mdi:palette-outline',
+		cursor: 'palette',
+		n: '01',
+		title: 'Design',
+		tagline: 'Brand & product design people feel.',
+		desc: 'Identity, interfaces and motion that make your product effortless and unmistakably yours.',
+		items: ['Brand identity', 'UI/UX design', 'Prototyping', 'Design systems', 'Motion'],
+		color: '#22d3ee',
+	},
+	{
+		slug: 'development',
+		icon: 'mdi:code-tags',
+		cursor: 'term',
+		n: '02',
+		title: 'Development',
+		tagline: 'Software built to ship and scale.',
+		desc: 'Web and mobile engineering with modern stacks, tested and shipped fast — without breaking things.',
+		items: ['Web apps', 'iOS & Android', 'APIs & backends', 'E-commerce', 'Integrations'],
+		color: '#3b82f6',
+	},
+	{
+		slug: 'marketing',
+		icon: 'mdi:bullhorn-outline',
+		cursor: 'pulse',
+		n: '03',
+		title: 'Marketing',
+		tagline: 'Growth across every platform that matters.',
+		desc: 'Data-driven campaigns that deliver conversions, not just clicks — and grow the audience around your product.',
+		items: ['SEO', 'Paid ads', 'Social', 'Content', 'Email'],
+		color: '#8b5cf6',
+	},
+	{
+		slug: 'strategy',
+		icon: 'mdi:compass-outline',
+		cursor: 'vector',
+		n: '04',
+		title: 'Strategy',
+		tagline: 'The plan before the pixels.',
+		desc: 'Research, definition and a roadmap that turns an ambitious idea into a product worth building.',
+		items: ['Discovery', 'Product roadmap', 'UX research', 'MVP scoping', 'Analytics'],
+		color: '#f59e0b',
+	},
+	{
+		slug: 'maintenance',
+		icon: 'mdi:shield-check-outline',
+		cursor: 'shield',
+		n: '05',
+		title: 'Maintenance',
+		tagline: 'It keeps running while you sleep.',
+		desc: 'Hosting, monitoring and support that keep complex systems secure, fast and online — year after year.',
+		items: ['Hosting & DevOps', 'Monitoring', '24/7 support', 'Security', 'Backups'],
+		color: '#10b981',
+	},
+	{
+		slug: 'ai-automation',
+		icon: 'mdi:robot-outline',
+		cursor: 'repo',
+		n: '06',
+		title: 'AI & Automation',
+		tagline: 'Put the busywork on autopilot.',
+		desc: 'Smart features and automations that save hours — chat, workflows and data working for you.',
+		items: ['AI features', 'Chatbots', 'Workflow automation', 'Data pipelines'],
+		color: '#ec4899',
+	},
+];
+
+const process = [
+	{ n: '01', title: 'Discover', desc: 'We research, define and lock the goal together — so we build the right thing.' },
+	{ n: '02', title: 'Design & build', desc: 'Design, engineer and test in tight, visible loops you can follow every week.' },
+	{ n: '03', title: 'Launch & scale', desc: 'Ship it, market it, then maintain and grow what we shipped.' },
+];
+
+const stack = [
+	'Figma', 'React', 'Next.js', 'Flutter', 'Swift', 'Kotlin', 'Node', 'Python',
+	'Firebase', 'PostgreSQL', 'AWS', 'Vercel', 'Tailwind', 'Stripe',
+];
+
+const stats = [
+	{ to: 65, suffix: '+', label: 'Products shipped' },
+	{ to: 98, suffix: '%', label: 'On-time delivery' },
+	{ to: 7, suffix: '+', label: 'Years building' },
+	{ to: 5, decimals: 1, suffix: '', label: 'Average rating' },
+];
+
+const sectors = [
+	'Fintech', 'Real estate', 'Sports', 'E-commerce', 'Education', 'Logistics',
+	'Healthcare', 'Beauty', 'Energy', 'Agritech', 'Hospitality', 'Media',
+	'Retail', 'Travel', 'Gaming', 'Legal',
+];
+---
+
+<div class="bdbody bd-services view-body view-body-boardroom">
+	<!-- ── Hero ───────────────────────────────────────────── -->
+	<header class="svc-hero bd-reveal">
+		<span class="svc-hero-aurora" aria-hidden="true"></span>
+		<span class="bd-kicker">What we do</span>
+		<h1 class="bd-display svc-h1">
+			One team for the
+			<span class="bd-grad">whole journey.</span>
+		</h1>
+		<p class="bd-sub">
+			Design, build, market and maintain — every discipline you need to
+			launch and grow, under one roof. Pick a door and dive in.
+		</p>
+		<div class="bd-links">
+			<a href="/contact" class="bd-pill">Start a project</a>
+			<a href="#svc-disciplines" class="bd-link">
+				Explore what we do
+				<Icon width={15} name="mdi:chevron-down" />
+			</a>
+		</div>
+	</header>
+
+	<!-- ── The disciplines — doors into each world ─────────── -->
+	<section class="bd-head bd-reveal" id="svc-disciplines">
+		<h2 class="bd-h bd-h--center">Six disciplines. One contract.</h2>
+		<p class="bd-p bd-p--center">
+			No hiring, no hand-offs, no finger-pointing — every capability you
+			need lives in the same room.
+		</p>
+	</section>
+	<div class="svc-grid">
+		{
+			disciplines.map((d) => (
+				<a
+					href={`/services/${d.slug}`}
+					class="svc-card bd-reveal"
+					data-cursor={d.cursor}
+					style={`--c:${d.color}`}
+				>
+					<span class="svc-card-glow" aria-hidden="true" />
+					<span class="svc-card-n">{d.n}</span>
+					<span class="svc-card-ic">
+						<Icon width={30} name={d.icon} />
+					</span>
+					<h3 class="svc-card-title">{d.title}</h3>
+					<p class="svc-card-tag">{d.tagline}</p>
+					<p class="svc-card-desc">{d.desc}</p>
+					<ul class="svc-card-items">
+						{d.items.map((it) => (
+							<li>
+								<Icon width={14} name="mdi:check" />
+								{it}
+							</li>
+						))}
+					</ul>
+					<span class="svc-card-go">
+						Explore {d.title}
+						<Icon width={16} name="mdi:arrow-right" />
+					</span>
+				</a>
+			))
+		}
+	</div>
+
+	<!-- ── How we work — the journey ───────────────────────── -->
+	<section class="svc-journey bd-reveal" data-cursor="branch">
+		<span class="svc-journey-aurora" aria-hidden="true"></span>
+		<div class="bd-head">
+			<h2 class="bd-h bd-h--center">How the adventure goes.</h2>
+			<p class="bd-p bd-p--center">
+				The same three moves on every project — visible, predictable, yours
+				to follow.
+			</p>
+		</div>
+		<ol class="svc-steps">
+			<span class="svc-steps-line" aria-hidden="true"></span>
+			{
+				process.map((p) => (
+					<li class="svc-step">
+						<span class="svc-step-n">{p.n}</span>
+						<h3 class="svc-step-t">{p.title}</h3>
+						<p class="svc-step-d">{p.desc}</p>
+					</li>
+				))
+			}
+		</ol>
+	</section>
+
+	<!-- ── Numbers ─────────────────────────────────────────── -->
+	<div class="bd-grid">
+		<section class="bd-tile bd-tile--full bd-tile--inverse bd-reveal" id="svc-numbers" data-cursor="chart">
+			<div class="bd-tile-copy">
+				<h2 class="bd-h">Measured the only way that matters.</h2>
+				<p class="bd-p">Seven years of shipping for ambitious businesses.</p>
+			</div>
+			<ul class="bd-numbers">
+				{
+					stats.map((n) => (
+						<li class="bd-number">
+							<strong data-count={n.to} data-suffix={n.suffix} data-decimals={n.decimals || 0}>
+								0{n.suffix}
+							</strong>
+							<span>{n.label}</span>
+						</li>
+					))
+				}
+			</ul>
+		</section>
+	</div>
+
+	<!-- ── The stack — capabilities marquee ────────────────── -->
+	<section class="svc-stack bd-reveal" data-cursor="layers">
+		<h2 class="bd-h bd-h--center">The tools in our hands.</h2>
+		<div class="bd-marquee" aria-hidden="true">
+			<div class="bd-marquee-track bd-marquee-track--stack">
+				{
+					[0, 1].map(() =>
+						stack.map((s) => <span class="svc-chip">{s}</span>)
+					)
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── Sectors ─────────────────────────────────────────── -->
+	<section class="bd-sectors bd-reveal" data-cursor="repo">
+		<h2 class="bd-h bd-h--center">At home in your industry.</h2>
+		<div class="bd-marquee" aria-hidden="true">
+			<div class="bd-marquee-track bd-marquee-track--sectors">
+				{
+					[0, 1].map(() =>
+						sectors.map((s) => <span class="bd-sector">{s}</span>)
+					)
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── CTA ─────────────────────────────────────────────── -->
+	<section class="bd-grid">
+		<div class="bd-tile bd-tile--full bd-tile--cta bd-reveal" data-cursor="phone">
+			<h2 class="bd-display bd-display--cta">Ready to build?</h2>
+			<p class="bd-sub">
+				Tell us what you have in mind. You'll have a reply within one
+				business day.
+			</p>
+			<div class="bd-links bd-links--center">
+				<a href="/contact" class="bd-pill bd-pill--light">Start your project</a>
+				<a href="/portfolio" class="bd-link bd-link--invert">
+					See the work
+					<Icon width={15} name="mdi:chevron-right" />
+				</a>
+			</div>
+			<a href="tel:+2348100204570" class="bd-call">
+				<span class="bd-call-hint">or call us now</span>
+				<span class="bd-call-num">
+					<Icon width={30} name="mdi:phone" />
+					+234 810 020 4570
+				</span>
+			</a>
+		</div>
+	</section>
+</div>
+
+<style>
+	/* ════ Boardroom base (self-contained, mirrors AboutBoardroom) ════ */
+	.bdbody {
+		--bd-accent: #28a6ec;
+		--bd-ink: #f4f6fb;
+		--bd-muted: rgba(244, 246, 251, 0.62);
+		--bd-glass: linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02) 55%);
+		--bd-glass-border: rgba(255, 255, 255, 0.1);
+		--bd-shadow: 0 34px 80px -34px rgba(0, 0, 0, 0.8);
+		font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+		position: relative;
+		isolation: isolate;
+		background:
+			radial-gradient(1100px 540px at 78% -6%, color-mix(in srgb, var(--bd-accent) 13%, transparent), transparent 62%),
+			radial-gradient(900px 520px at 8% 38%, rgba(58, 90, 200, 0.1), transparent 60%),
+			linear-gradient(180deg, #070910 0%, #0a0d1c 45%, #05060d 100%);
+		color: var(--bd-ink);
+		padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 4rem);
+		transition: background 0.4s ease, color 0.4s ease;
+	}
+	:global(html:not(.dark)) .bdbody {
+		--bd-ink: #14162a;
+		--bd-muted: rgba(20, 22, 40, 0.64);
+		--bd-glass: linear-gradient(160deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.55) 55%);
+		--bd-glass-border: rgba(20, 22, 40, 0.1);
+		--bd-shadow: 0 30px 70px -34px rgba(20, 22, 40, 0.25);
+		background:
+			radial-gradient(1100px 540px at 78% -6%, color-mix(in srgb, var(--bd-accent) 10%, transparent), transparent 62%),
+			linear-gradient(180deg, #eef2f7 0%, #e7edf6 50%, #eef2f7 100%);
+	}
+
+	.bd-kicker { display: inline-block; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bd-accent); margin-bottom: 1rem; }
+	.bd-display { font-size: clamp(2.6rem, 6vw, 4.6rem); font-weight: 700; letter-spacing: -0.025em; line-height: 1.04; margin: 0 0 1.1rem; }
+	.bd-grad {
+		background: linear-gradient(110deg, #9bd8ff 0%, var(--bd-accent) 38%, #7ef0d2 64%, #9bd8ff 100%);
+		background-size: 220% 100%;
+		-webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+		animation: svc-grad 7s ease infinite;
+	}
+	@keyframes svc-grad { 0%,100%{ background-position:0% 50%; } 50%{ background-position:100% 50%; } }
+	.bd-sub { font-size: clamp(1.05rem, 2vw, 1.35rem); line-height: 1.5; color: var(--bd-muted); max-width: 40rem; margin: 0 auto 1.6rem; }
+	.bd-h { font-size: clamp(1.7rem, 3.4vw, 2.5rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; margin: 0 0 0.7rem; }
+	.bd-h--center { text-align: center; }
+	.bd-p { font-size: 1.02rem; line-height: 1.6; color: var(--bd-muted); max-width: 30rem; margin: 0 auto 1.2rem; }
+	.bd-p--center { margin-inline: auto; text-align: center; }
+	.bd-head { max-width: 56rem; margin: clamp(2.5rem, 6vw, 4rem) auto clamp(1.5rem, 3vw, 2rem); text-align: center; }
+
+	.bd-links { display: flex; align-items: center; justify-content: center; gap: 1.4rem; flex-wrap: wrap; }
+	.bd-links--center { justify-content: center; }
+	.bd-pill {
+		position: relative; display: inline-flex; align-items: center; padding: 0.78rem 1.5rem; border-radius: 9999px;
+		background: linear-gradient(180deg, color-mix(in srgb, var(--bd-accent) 88%, #fff), var(--bd-accent) 45%, color-mix(in srgb, var(--bd-accent) 72%, #03244a));
+		border: 1px solid color-mix(in srgb, var(--bd-accent) 60%, rgba(255, 255, 255, 0.4));
+		color: #fff; font-size: 0.95rem; font-weight: 600; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+		box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 12px 28px -12px color-mix(in srgb, var(--bd-accent) 65%, transparent);
+		transition: transform 0.25s ease, box-shadow 0.25s ease;
+	}
+	.bd-pill:hover { transform: translateY(-2px); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 18px 38px -12px color-mix(in srgb, var(--bd-accent) 80%, transparent); }
+	.bd-pill--light { background: linear-gradient(180deg, #ffffff, #dfe6f2); border-color: rgba(255, 255, 255, 0.8); color: #0b0d18; text-shadow: none; }
+	.bd-link { display: inline-flex; align-items: center; gap: 0.15rem; font-size: 0.98rem; font-weight: 600; color: var(--bd-accent); transition: gap 0.25s ease; }
+	.bd-link:hover { gap: 0.4rem; }
+	.bd-link--invert { color: #9bd8ff; }
+
+	.bd-grid { display: grid; gap: clamp(0.9rem, 2vw, 1.4rem); max-width: 88rem; margin: 0 auto clamp(0.9rem, 2vw, 1.4rem); }
+	.bd-tile {
+		position: relative; display: flex; flex-direction: column; gap: 1.4rem; text-align: center;
+		padding: clamp(2rem, 4vw, 3rem) clamp(1.25rem, 3vw, 2.25rem) clamp(1.4rem, 3vw, 2rem);
+		border-radius: 1.75rem; background: var(--bd-glass); border: 1px solid var(--bd-glass-border); box-shadow: var(--bd-shadow);
+		backdrop-filter: blur(22px) saturate(130%); -webkit-backdrop-filter: blur(22px) saturate(130%); overflow: hidden;
+	}
+	.bd-tile--full { grid-column: 1 / -1; }
+	.bd-tile-copy { max-width: 40rem; margin: 0 auto; }
+	.bd-tile--inverse {
+		background: radial-gradient(720px 320px at 50% -10%, color-mix(in srgb, var(--bd-accent) 34%, transparent), transparent 70%), linear-gradient(180deg, rgba(21, 26, 48, 0.9), rgba(5, 6, 13, 0.95));
+		color: #f5f5f7; border-color: color-mix(in srgb, var(--bd-accent) 30%, rgba(255, 255, 255, 0.1));
+	}
+	.bd-tile--inverse .bd-p { color: rgba(245, 245, 247, 0.62); }
+	.bd-numbers { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.25rem; list-style: none; margin: 0.5rem 0 0.75rem; padding: 0; }
+	@media (max-width: 760px) { .bd-numbers { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+	.bd-number strong {
+		display: block; font-size: clamp(2.4rem, 5vw, 3.6rem); font-weight: 700; letter-spacing: -0.03em;
+		background: linear-gradient(135deg, #9bd8ff, var(--bd-accent)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+	}
+	.bd-number span { font-size: 0.85rem; color: rgba(245, 245, 247, 0.6); }
+
+	/* ── Hero ── */
+	.svc-hero { position: relative; overflow: hidden; text-align: center; max-width: 60rem; margin: 0 auto clamp(2rem, 5vw, 3.5rem); padding: clamp(1rem, 3vw, 2.5rem) 1rem clamp(1.5rem, 4vw, 3rem); }
+	.svc-hero-aurora {
+		position: absolute; inset: -20%; z-index: -1; pointer-events: none;
+		background:
+			radial-gradient(460px 360px at 26% 26%, rgba(34, 211, 238, 0.26), transparent 60%),
+			radial-gradient(460px 380px at 78% 30%, rgba(139, 92, 246, 0.22), transparent 62%),
+			radial-gradient(400px 320px at 50% 92%, color-mix(in srgb, var(--bd-accent) 28%, transparent), transparent 60%);
+		filter: blur(46px); opacity: 0.6; animation: svc-aurora 17s ease-in-out infinite;
+	}
+	:global(html:not(.dark)) .svc-hero-aurora { opacity: 0.4; }
+	@keyframes svc-aurora { 0%,100%{ transform: translate3d(0,0,0) scale(1); } 50%{ transform: translate3d(2%,-2%,0) scale(1.08); } }
+	.svc-h1 { max-width: 16ch; margin-inline: auto; }
+
+	/* ── Discipline doors ── */
+	.svc-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1rem, 2vw, 1.5rem); max-width: 84rem; margin: 0 auto; }
+	@media (max-width: 940px) { .svc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+	@media (max-width: 600px) { .svc-grid { grid-template-columns: 1fr; } }
+	.svc-card {
+		position: relative; display: flex; flex-direction: column; align-items: flex-start; overflow: hidden;
+		padding: clamp(1.75rem, 3vw, 2.4rem); border-radius: 1.5rem; background: var(--bd-glass);
+		border: 1px solid var(--bd-glass-border); box-shadow: var(--bd-shadow);
+		backdrop-filter: blur(20px) saturate(130%); -webkit-backdrop-filter: blur(20px) saturate(130%);
+		transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.4s ease, box-shadow 0.4s ease;
+	}
+	.svc-card:hover { transform: translateY(-8px); border-color: color-mix(in srgb, var(--c) 55%, var(--bd-glass-border)); box-shadow: 0 44px 90px -34px color-mix(in srgb, var(--c) 40%, rgba(0,0,0,0.85)); }
+	.svc-card-glow { position: absolute; inset: -40% 30% auto -20%; height: 70%; z-index: -1; background: radial-gradient(closest-side, color-mix(in srgb, var(--c) 38%, transparent), transparent); filter: blur(30px); opacity: 0; transition: opacity 0.45s ease; pointer-events: none; }
+	.svc-card:hover .svc-card-glow { opacity: 0.9; }
+	.svc-card-n { position: absolute; top: 1.1rem; right: 1.3rem; font-size: 0.95rem; font-weight: 800; letter-spacing: 0.1em; color: color-mix(in srgb, var(--c) 70%, transparent); }
+	.svc-card-ic {
+		display: grid; place-items: center; width: 60px; height: 60px; border-radius: 1.1rem; margin-bottom: 1.2rem;
+		background: linear-gradient(135deg, color-mix(in srgb, var(--c) 30%, transparent), color-mix(in srgb, var(--c) 8%, transparent));
+		border: 1px solid color-mix(in srgb, var(--c) 40%, transparent); color: var(--c); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+	}
+	.svc-card-title { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.015em; margin: 0 0 0.3rem; }
+	.svc-card-tag { font-size: 0.98rem; font-weight: 600; color: color-mix(in srgb, var(--c) 75%, var(--bd-ink)); margin: 0 0 0.7rem; }
+	.svc-card-desc { font-size: 0.95rem; line-height: 1.55; color: var(--bd-muted); margin: 0 0 1.1rem; }
+	.svc-card-items { list-style: none; padding: 0; margin: 0 0 1.4rem; display: flex; flex-wrap: wrap; gap: 0.4rem 0.9rem; }
+	.svc-card-items li { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.82rem; font-weight: 600; color: color-mix(in srgb, var(--bd-ink) 70%, transparent); }
+	.svc-card-items :global(svg) { color: var(--c); }
+	.svc-card-go { margin-top: auto; display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.92rem; font-weight: 700; color: var(--c); transition: gap 0.25s ease; }
+	.svc-card:hover .svc-card-go { gap: 0.6rem; }
+
+	/* ── Journey / process ── */
+	.svc-journey { position: relative; overflow: hidden; max-width: 72rem; margin: clamp(2.5rem, 6vw, 4rem) auto; padding: clamp(2rem, 5vw, 3.5rem) clamp(1rem, 3vw, 2rem); border-radius: 2rem; isolation: isolate; }
+	.svc-journey-aurora {
+		position: absolute; inset: 0; z-index: -1; pointer-events: none;
+		background: radial-gradient(600px 300px at 20% 0%, rgba(225, 29, 72, 0.14), transparent 60%), radial-gradient(600px 320px at 90% 100%, color-mix(in srgb, var(--bd-accent) 16%, transparent), transparent 62%);
+		filter: blur(30px); opacity: 0.7; animation: svc-aurora 20s ease-in-out infinite;
+	}
+	.svc-steps { position: relative; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1rem, 2.5vw, 1.75rem); }
+	.svc-steps-line { position: absolute; top: 38px; left: 12%; right: 12%; height: 2px; background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--bd-accent) 55%, transparent), transparent); z-index: 0; }
+	@media (max-width: 720px) { .svc-steps { grid-template-columns: 1fr; } .svc-steps-line { display: none; } }
+	.svc-step { position: relative; z-index: 1; padding: 1.6rem 1.4rem; border-radius: 1.25rem; background: var(--bd-glass); border: 1px solid var(--bd-glass-border); box-shadow: var(--bd-shadow); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); text-align: center; transition: transform 0.35s ease, border-color 0.35s ease; }
+	.svc-step:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--bd-accent) 40%, var(--bd-glass-border)); }
+	.svc-step-n { display: grid; place-items: center; width: 46px; height: 46px; margin: 0 auto 0.9rem; border-radius: 9999px; font-weight: 800; font-size: 1.05rem; color: #fff; background: linear-gradient(135deg, color-mix(in srgb, var(--bd-accent) 90%, #fff), var(--bd-accent)); box-shadow: 0 10px 24px -10px color-mix(in srgb, var(--bd-accent) 70%, transparent); }
+	.svc-step-t { font-size: 1.15rem; font-weight: 700; margin: 0 0 0.35rem; }
+	.svc-step-d { font-size: 0.9rem; line-height: 1.55; color: var(--bd-muted); margin: 0; }
+
+	/* ── Stack + sectors marquees ── */
+	.bd-marquee { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+	.bd-marquee-track { display: flex; align-items: center; width: max-content; }
+	.bd-marquee-track--stack { animation: svc-drift 34s linear infinite; }
+	.bd-marquee-track--sectors { animation: svc-drift 40s linear infinite; }
+	.bd-marquee:hover .bd-marquee-track { animation-play-state: paused; }
+	@keyframes svc-drift { to { transform: translateX(-50%); } }
+	.svc-stack { max-width: 88rem; margin: clamp(2.5rem, 6vw, 4rem) auto clamp(1.5rem, 4vw, 2.5rem); text-align: center; }
+	.svc-stack .bd-h { margin-bottom: 1.4rem; }
+	.svc-chip { flex-shrink: 0; margin-right: 0.9rem; padding: 0.6rem 1.1rem; border-radius: 9999px; border: 1px solid var(--bd-glass-border); background: var(--bd-glass); font-size: 0.95rem; font-weight: 600; color: color-mix(in srgb, var(--bd-ink) 78%, transparent); }
+	.bd-sectors { max-width: 88rem; margin: clamp(2rem, 5vw, 3.5rem) auto; text-align: center; }
+	.bd-sectors .bd-h { margin-bottom: 1.4rem; }
+	.bd-sector { flex-shrink: 0; margin-right: clamp(1.6rem, 3vw, 2.8rem); font-size: clamp(1.2rem, 2.4vw, 1.7rem); font-weight: 700; letter-spacing: -0.01em; color: color-mix(in srgb, var(--bd-ink) 34%, transparent); transition: color 0.3s ease; cursor: default; }
+	.bd-sector:hover { color: var(--bd-accent); }
+
+	/* ── CTA ── */
+	.bd-tile--cta {
+		background: radial-gradient(820px 380px at 50% 130%, color-mix(in srgb, var(--bd-accent) 38%, transparent), transparent 72%), linear-gradient(180deg, rgba(18, 22, 42, 0.92), rgba(5, 6, 13, 0.96));
+		color: #f5f5f7; border-color: color-mix(in srgb, var(--bd-accent) 26%, rgba(255, 255, 255, 0.1)); padding-block: clamp(3rem, 6vw, 5rem);
+	}
+	.bd-display--cta { font-size: clamp(2.2rem, 5vw, 3.8rem); }
+	.bd-tile--cta .bd-sub { color: rgba(245, 245, 247, 0.62); }
+	.bd-call { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; margin-top: 1.6rem; }
+	.bd-call-hint { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(245, 245, 247, 0.5); }
+	.bd-call-num {
+		display: inline-flex; align-items: center; gap: 0.7rem; font-size: clamp(1.8rem, 4.5vw, 3.2rem); font-weight: 700; letter-spacing: -0.02em;
+		background: linear-gradient(135deg, #ffffff, #9bd8ff 60%, var(--bd-accent)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+	}
+	.bd-call-num :global(svg) { color: var(--bd-accent); -webkit-text-fill-color: initial; }
+
+	/* ── Reveal ── */
+	.bd-reveal { opacity: 0; transform: translateY(26px); transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
+	.bd-reveal.is-on { opacity: 1; transform: translateY(0); }
+	@media (prefers-reduced-motion: reduce) {
+		.bd-reveal { opacity: 1; transform: none; transition: none; }
+		.svc-hero-aurora, .svc-journey-aurora, .bd-marquee-track, .bd-grad { animation: none; }
+		.bd-marquee { overflow-x: auto; }
+		.svc-card:hover, .svc-step:hover { transform: none; }
+	}
+</style>
