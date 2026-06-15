@@ -3,6 +3,7 @@ import Icon from 'astro-icon';
 import CustomButton from './CustomButton.astro';
 import Link from './Link.astro';
 import { formatLink, links } from '../consts';
+import { disciplines } from '../data/disciplines';
 ---
 
 <header
@@ -66,11 +67,43 @@ import { formatLink, links } from '../consts';
 			>
 				<Link href="/">Home</Link>
 				{
-					links.map((link) => (
-						<Link class="capitalize" href={`/${link}`}>
-							{formatLink(link)}
-						</Link>
-					))
+					links.map((link) =>
+						link === 'services' ? (
+							<div class="nav-dd">
+								<Link class="capitalize nav-dd-trigger" href="/services">
+									{formatLink(link)}
+									<svg class="nav-dd-caret" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9" /></svg>
+								</Link>
+								<div class="nav-dd-panel">
+									<a href="/services" class="nav-dd-item nav-dd-item--over">
+										<span class="nav-dd-ic">
+											<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /></svg>
+										</span>
+										<span class="nav-dd-txt">
+											<strong>Services Overview</strong>
+											<em>Everything we do, in one place</em>
+										</span>
+									</a>
+									<span class="nav-dd-sep" />
+									{disciplines.map((d) => (
+										<a href={`/services/${d.slug}`} class="nav-dd-item" style={`--c:${d.color}`}>
+											<span class="nav-dd-ic">
+												<Icon width={18} name={d.icon} />
+											</span>
+											<span class="nav-dd-txt">
+												<strong>{d.title}</strong>
+												<em>{d.tagline}</em>
+											</span>
+										</a>
+									))}
+								</div>
+							</div>
+						) : (
+							<Link class="capitalize" href={`/${link}`}>
+								{formatLink(link)}
+							</Link>
+						)
+					)
 				}
 				<!-- <Link
 					download="The Brevarium by Swizel"
@@ -162,16 +195,30 @@ import { formatLink, links } from '../consts';
 					>
 						<Link class="whitespace-nowrap" href="/">Home</Link>
 						{
-							links.map((link) => (
-								<li class="capitalize">
-									<Link
-										class="hover:text-white/60"
-										href={`/${link}`}
-									>
-										{formatLink(link)}
-									</Link>
-								</li>
-							))
+							links.map((link) =>
+								link === 'services' ? (
+									<li class="capitalize">
+										<details class="nav-m-dd">
+											<summary>
+												<Link href="/services">{formatLink(link)}</Link>
+												<svg class="nav-m-caret" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9" /></svg>
+											</summary>
+											<ul class="nav-m-sub">
+												<li><a href="/services">Services Overview</a></li>
+												{disciplines.map((d) => (
+													<li><a href={`/services/${d.slug}`}>{d.title}</a></li>
+												))}
+											</ul>
+										</details>
+									</li>
+								) : (
+									<li class="capitalize">
+										<Link class="hover:text-white/60" href={`/${link}`}>
+											{formatLink(link)}
+										</Link>
+									</li>
+								)
+							)
 						}
 						<!-- <Link
 							download="The Brevarium by Swizel"
@@ -244,4 +291,68 @@ import { formatLink, links } from '../consts';
 			width: 300px;
 		}
 	}
+
+	/* ── Desktop Services dropdown ── */
+	.nav-dd { position: relative; }
+	.nav-dd-trigger { display: inline-flex; align-items: center; gap: 0.28rem; }
+	.nav-dd-caret { transition: transform 0.25s ease; opacity: 0.8; }
+	.nav-dd:hover .nav-dd-caret,
+	.nav-dd:focus-within .nav-dd-caret { transform: rotate(180deg); }
+	.nav-dd-panel {
+		position: absolute;
+		top: 100%;
+		left: 50%;
+		transform: translateX(-50%) translateY(8px);
+		margin-top: 14px;
+		width: 340px;
+		padding: 0.5rem;
+		display: grid;
+		gap: 0.1rem;
+		border-radius: 1.1rem;
+		background: #12152a;
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.7);
+		opacity: 0;
+		visibility: hidden;
+		pointer-events: none;
+		transition: opacity 0.25s ease, transform 0.32s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.25s;
+		z-index: 50;
+	}
+	:global(html:not(.dark)) .nav-dd-panel { background: #ffffff; border-color: rgba(20, 22, 40, 0.1); box-shadow: 0 40px 90px -30px rgba(20, 22, 40, 0.28); }
+	/* invisible bridge so the gap doesn't drop the hover */
+	.nav-dd-panel::before { content: ''; position: absolute; left: 0; right: 0; top: -16px; height: 16px; }
+	.nav-dd:hover .nav-dd-panel,
+	.nav-dd:focus-within .nav-dd-panel { opacity: 1; visibility: visible; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+	.nav-dd-item {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		padding: 0.6rem 0.7rem;
+		border-radius: 0.7rem;
+		color: #e9eaf2;
+		transition: background 0.2s ease;
+	}
+	:global(html:not(.dark)) .nav-dd-item { color: #14162a; }
+	.nav-dd-item:hover { background: color-mix(in srgb, var(--c, #28a6ec) 14%, transparent); }
+	.nav-dd-ic {
+		display: grid; place-items: center; width: 38px; height: 38px; flex-shrink: 0; border-radius: 0.6rem;
+		color: var(--c, #28a6ec);
+		background: color-mix(in srgb, var(--c, #28a6ec) 14%, transparent);
+		border: 1px solid color-mix(in srgb, var(--c, #28a6ec) 28%, transparent);
+	}
+	.nav-dd-txt { display: flex; flex-direction: column; line-height: 1.2; min-width: 0; }
+	.nav-dd-txt strong { font-size: 0.92rem; font-weight: 700; }
+	.nav-dd-txt em { font-style: normal; font-size: 0.74rem; opacity: 0.6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+	.nav-dd-item--over .nav-dd-ic { color: #9bd8ff; background: rgba(155, 216, 255, 0.14); border-color: rgba(155, 216, 255, 0.3); }
+	.nav-dd-sep { display: block; height: 1px; margin: 0.35rem 0.6rem; background: rgba(255, 255, 255, 0.1); }
+	:global(html:not(.dark)) .nav-dd-sep { background: rgba(20, 22, 40, 0.1); }
+
+	/* ── Mobile Services accordion ── */
+	.nav-m-dd > summary { display: flex; align-items: center; justify-content: space-between; list-style: none; cursor: pointer; gap: 0.5rem; }
+	.nav-m-dd > summary::-webkit-details-marker { display: none; }
+	.nav-m-caret { transition: transform 0.25s ease; opacity: 0.7; flex-shrink: 0; }
+	.nav-m-dd[open] > summary .nav-m-caret { transform: rotate(180deg); }
+	.nav-m-sub { list-style: none; padding: 0.6rem 0 0.2rem 0.9rem; margin: 0.4rem 0 0; display: grid; gap: 0.7rem; border-left: 1px solid rgba(255, 255, 255, 0.16); }
+	.nav-m-sub a { font-size: 0.95rem; color: rgba(255, 255, 255, 0.7); transition: color 0.2s ease; }
+	.nav-m-sub a:hover { color: #fff; }
 </style>

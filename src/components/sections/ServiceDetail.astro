@@ -1,0 +1,253 @@
+---
+// A single service/discipline detail page — Boardroom world, themed in the
+// discipline's own colour. Reuses initBoardroomBody reveals + the boardroom
+// cursor (.bd-services). Self-contained .bd-* base styles.
+import { Icon } from 'astro-icon';
+import type { Discipline } from '../../data/disciplines';
+
+interface Props {
+	discipline: Discipline;
+	others: Discipline[];
+}
+const { discipline: d, others } = Astro.props;
+---
+
+<div class="bdbody bd-services bd-detail view-body view-body-boardroom" style={`--c:${d.color}`}>
+	<!-- ── Hero ───────────────────────────────────────────── -->
+	<header class="det-hero bd-reveal" data-cursor={d.cursor}>
+		<span class="det-aurora" aria-hidden="true"></span>
+		<a href="/services" class="det-back">
+			<Icon width={15} name="mdi:arrow-left" />
+			All services
+		</a>
+		<span class="det-ic">
+			<Icon width={34} name={d.icon} />
+		</span>
+		<span class="det-kicker">{d.title}</span>
+		<h1 class="bd-display det-h1">{d.tagline}</h1>
+		<p class="bd-sub">{d.heroDesc}</p>
+		<div class="bd-links">
+			<a href="/contact" class="bd-pill">Start a project</a>
+			<a href="#det-included" class="bd-link">
+				What's included
+				<Icon width={15} name="mdi:chevron-down" />
+			</a>
+		</div>
+	</header>
+
+	<!-- ── Overview ────────────────────────────────────────── -->
+	<div class="bd-grid bd-grid--narrow">
+		<section class="bd-tile bd-tile--full det-overview bd-reveal" data-cursor="vector">
+			<span class="bd-eyebrow">What it is</span>
+			<p class="det-overview-text">{d.overview}</p>
+			<p class="det-outcome"><Icon width={18} name="mdi:flag-checkered" /> {d.outcome}</p>
+		</section>
+	</div>
+
+	<!-- ── What's included ─────────────────────────────────── -->
+	<section class="bd-head bd-reveal" id="det-included">
+		<h2 class="bd-h bd-h--center">What's included.</h2>
+		<p class="bd-p bd-p--center">Everything under {d.title}, handled by one team.</p>
+	</section>
+	<div class="det-grid">
+		{
+			d.included.map((s) => (
+				<article class="det-card bd-reveal" data-cursor="layers">
+					<h3 class="det-card-t">{s.title}</h3>
+					<p class="det-card-d">{s.desc}</p>
+					<ul class="det-card-items">
+						{s.items.map((it) => (
+							<li><Icon width={14} name="mdi:check" /> {it}</li>
+						))}
+					</ul>
+				</article>
+			))
+		}
+	</div>
+
+	<!-- ── How we approach it ──────────────────────────────── -->
+	<section class="det-approach bd-reveal" data-cursor="branch">
+		<span class="det-approach-aurora" aria-hidden="true"></span>
+		<div class="bd-head">
+			<h2 class="bd-h bd-h--center">How we approach it.</h2>
+		</div>
+		<ol class="det-steps">
+			<span class="det-steps-line" aria-hidden="true"></span>
+			{
+				d.approach.map((p) => (
+					<li class="det-step">
+						<span class="det-step-n">{p.n}</span>
+						<h3 class="det-step-t">{p.title}</h3>
+						<p class="det-step-d">{p.desc}</p>
+					</li>
+				))
+			}
+		</ol>
+	</section>
+
+	<!-- ── CTA ─────────────────────────────────────────────── -->
+	<section class="bd-grid">
+		<div class="bd-tile bd-tile--full det-cta bd-reveal" data-cursor="phone">
+			<h2 class="bd-display det-cta-h">Let's talk {d.title}.</h2>
+			<p class="bd-sub">Tell us what you have in mind — you'll have a reply within one business day.</p>
+			<div class="bd-links bd-links--center">
+				<a href="/contact" class="bd-pill bd-pill--light">Start your project</a>
+				<a href="tel:+2348100204570" class="bd-link bd-link--invert">
+					<Icon width={16} name="mdi:phone" />
+					+234 810 020 4570
+				</a>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── Explore other disciplines ───────────────────────── -->
+	<section class="det-others bd-reveal" data-cursor="repo">
+		<h2 class="bd-h bd-h--center">Explore the rest.</h2>
+		<div class="det-others-grid">
+			{
+				others.map((o) => (
+					<a href={`/services/${o.slug}`} class="det-other" style={`--c:${o.color}`} data-cursor={o.cursor}>
+						<span class="det-other-ic"><Icon width={22} name={o.icon} /></span>
+						<span class="det-other-meta">
+							<strong>{o.title}</strong>
+							<em>{o.tagline}</em>
+						</span>
+						<Icon width={18} name="mdi:arrow-right" />
+					</a>
+				))
+			}
+		</div>
+	</section>
+</div>
+
+<style>
+	/* ════ Boardroom base (self-contained), themed by --c ════ */
+	.bdbody {
+		--bd-accent: var(--c, #28a6ec);
+		--bd-ink: #f4f6fb;
+		--bd-muted: rgba(244, 246, 251, 0.62);
+		--bd-glass: linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02) 55%);
+		--bd-glass-border: rgba(255, 255, 255, 0.1);
+		--bd-shadow: 0 34px 80px -34px rgba(0, 0, 0, 0.8);
+		font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+		position: relative;
+		isolation: isolate;
+		background:
+			radial-gradient(1100px 540px at 78% -6%, color-mix(in srgb, var(--c) 16%, transparent), transparent 62%),
+			radial-gradient(900px 520px at 8% 38%, rgba(58, 90, 200, 0.1), transparent 60%),
+			linear-gradient(180deg, #070910 0%, #0a0d1c 45%, #05060d 100%);
+		color: var(--bd-ink);
+		padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 4rem);
+	}
+	:global(html:not(.dark)) .bdbody {
+		--bd-ink: #14162a;
+		--bd-muted: rgba(20, 22, 40, 0.64);
+		--bd-glass: linear-gradient(160deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.55) 55%);
+		--bd-glass-border: rgba(20, 22, 40, 0.1);
+		--bd-shadow: 0 30px 70px -34px rgba(20, 22, 40, 0.25);
+		background:
+			radial-gradient(1100px 540px at 78% -6%, color-mix(in srgb, var(--c) 12%, transparent), transparent 62%),
+			linear-gradient(180deg, #eef2f7 0%, #e7edf6 50%, #eef2f7 100%);
+	}
+
+	.bd-display { font-size: clamp(2.4rem, 5.5vw, 4.2rem); font-weight: 700; letter-spacing: -0.025em; line-height: 1.05; margin: 0 0 1.1rem; }
+	.bd-sub { font-size: clamp(1.05rem, 2vw, 1.32rem); line-height: 1.5; color: var(--bd-muted); max-width: 40rem; margin: 0 auto 1.6rem; }
+	.bd-h { font-size: clamp(1.7rem, 3.4vw, 2.5rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; margin: 0 0 0.7rem; }
+	.bd-h--center { text-align: center; }
+	.bd-p { font-size: 1.02rem; line-height: 1.6; color: var(--bd-muted); max-width: 30rem; margin: 0 auto 1.2rem; }
+	.bd-p--center { margin-inline: auto; text-align: center; }
+	.bd-eyebrow { display: block; font-size: 0.78rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--c); margin-bottom: 0.7rem; }
+	.bd-head { max-width: 56rem; margin: clamp(2.5rem, 6vw, 4rem) auto clamp(1.5rem, 3vw, 2rem); text-align: center; }
+
+	.bd-links { display: flex; align-items: center; justify-content: center; gap: 1.4rem; flex-wrap: wrap; }
+	.bd-links--center { justify-content: center; }
+	.bd-pill {
+		display: inline-flex; align-items: center; padding: 0.78rem 1.5rem; border-radius: 9999px;
+		background: linear-gradient(180deg, color-mix(in srgb, var(--c) 88%, #fff), var(--c) 45%, color-mix(in srgb, var(--c) 72%, #03244a));
+		border: 1px solid color-mix(in srgb, var(--c) 60%, rgba(255, 255, 255, 0.4)); color: #fff; font-size: 0.95rem; font-weight: 600;
+		text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 12px 28px -12px color-mix(in srgb, var(--c) 65%, transparent);
+		transition: transform 0.25s ease, box-shadow 0.25s ease;
+	}
+	.bd-pill:hover { transform: translateY(-2px); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 18px 38px -12px color-mix(in srgb, var(--c) 80%, transparent); }
+	.bd-pill--light { background: linear-gradient(180deg, #fff, #dfe6f2); border-color: rgba(255, 255, 255, 0.8); color: #0b0d18; text-shadow: none; }
+	.bd-link { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.98rem; font-weight: 600; color: var(--c); transition: gap 0.25s ease; }
+	.bd-link:hover { gap: 0.5rem; }
+	.bd-link--invert { color: color-mix(in srgb, var(--c) 60%, #fff); }
+
+	.bd-grid { display: grid; gap: clamp(0.9rem, 2vw, 1.4rem); max-width: 88rem; margin: 0 auto clamp(0.9rem, 2vw, 1.4rem); }
+	.bd-grid--narrow { max-width: 64rem; }
+	.bd-tile {
+		position: relative; border-radius: 1.75rem; background: var(--bd-glass); border: 1px solid var(--bd-glass-border);
+		box-shadow: var(--bd-shadow); backdrop-filter: blur(22px) saturate(130%); -webkit-backdrop-filter: blur(22px) saturate(130%); overflow: hidden;
+		padding: clamp(2rem, 4vw, 3rem) clamp(1.5rem, 3vw, 2.5rem);
+	}
+	.bd-tile--full { grid-column: 1 / -1; }
+
+	/* ── Hero ── */
+	.det-hero { position: relative; overflow: hidden; text-align: center; max-width: 56rem; margin: 0 auto clamp(2rem, 5vw, 3.5rem); padding: clamp(0.5rem, 2vw, 1.5rem) 1rem clamp(1.5rem, 4vw, 3rem); }
+	.det-aurora { position: absolute; inset: -25% -10% auto; height: 120%; z-index: -1; pointer-events: none; background: radial-gradient(480px 360px at 50% 18%, color-mix(in srgb, var(--c) 36%, transparent), transparent 60%); filter: blur(50px); opacity: 0.7; animation: det-float 16s ease-in-out infinite; }
+	:global(html:not(.dark)) .det-aurora { opacity: 0.45; }
+	@keyframes det-float { 0%,100%{ transform: translateY(0) scale(1); } 50%{ transform: translateY(-3%) scale(1.07); } }
+	.det-back { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.88rem; font-weight: 600; color: var(--bd-muted); margin-bottom: 1.6rem; transition: gap 0.25s ease, color 0.25s ease; }
+	.det-back:hover { gap: 0.55rem; color: var(--c); }
+	.det-ic { display: grid; place-items: center; width: 76px; height: 76px; margin: 0 auto 1.2rem; border-radius: 1.4rem; color: var(--c); background: linear-gradient(135deg, color-mix(in srgb, var(--c) 30%, transparent), color-mix(in srgb, var(--c) 8%, transparent)); border: 1px solid color-mix(in srgb, var(--c) 40%, transparent); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 18px 40px -16px color-mix(in srgb, var(--c) 60%, transparent); }
+	.det-kicker { display: block; font-size: 0.82rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: var(--c); margin-bottom: 0.9rem; }
+	.det-h1 { max-width: 18ch; margin-inline: auto; }
+
+	/* ── Overview ── */
+	.det-overview { text-align: center; }
+	.det-overview-text { font-size: clamp(1.1rem, 2.2vw, 1.5rem); font-weight: 500; line-height: 1.5; max-width: 44rem; margin: 0 auto 1.4rem; }
+	.det-outcome { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.98rem; font-weight: 700; color: var(--c); margin: 0; }
+	.det-outcome :global(svg) { color: var(--c); }
+
+	/* ── Included grid ── */
+	.det-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1rem, 2vw, 1.5rem); max-width: 72rem; margin: 0 auto; }
+	@media (max-width: 720px) { .det-grid { grid-template-columns: 1fr; } }
+	.det-card { position: relative; padding: clamp(1.5rem, 3vw, 2.2rem); border-radius: 1.4rem; background: var(--bd-glass); border: 1px solid var(--bd-glass-border); box-shadow: var(--bd-shadow); backdrop-filter: blur(18px) saturate(130%); -webkit-backdrop-filter: blur(18px) saturate(130%); transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease; overflow: hidden; }
+	.det-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--c); opacity: 0.85; }
+	.det-card:hover { transform: translateY(-5px); border-color: color-mix(in srgb, var(--c) 50%, var(--bd-glass-border)); box-shadow: 0 40px 90px -36px color-mix(in srgb, var(--c) 34%, rgba(0,0,0,0.85)); }
+	.det-card-t { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.01em; margin: 0 0 0.4rem; }
+	.det-card-d { font-size: 0.95rem; line-height: 1.55; color: var(--bd-muted); margin: 0 0 1rem; }
+	.det-card-items { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.4rem 0.9rem; }
+	.det-card-items li { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.82rem; font-weight: 600; color: color-mix(in srgb, var(--bd-ink) 70%, transparent); }
+	.det-card-items :global(svg) { color: var(--c); }
+
+	/* ── Approach ── */
+	.det-approach { position: relative; overflow: hidden; max-width: 72rem; margin: clamp(2.5rem, 6vw, 4rem) auto; padding: clamp(2rem, 5vw, 3.5rem) clamp(1rem, 3vw, 2rem); border-radius: 2rem; isolation: isolate; }
+	.det-approach-aurora { position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(600px 320px at 50% 0%, color-mix(in srgb, var(--c) 18%, transparent), transparent 62%); filter: blur(34px); opacity: 0.7; }
+	.det-steps { position: relative; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1rem, 2.5vw, 1.75rem); }
+	.det-steps-line { position: absolute; top: 38px; left: 14%; right: 14%; height: 2px; background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--c) 55%, transparent), transparent); z-index: 0; }
+	@media (max-width: 720px) { .det-steps { grid-template-columns: 1fr; } .det-steps-line { display: none; } }
+	.det-step { position: relative; z-index: 1; padding: 1.6rem 1.4rem; border-radius: 1.25rem; background: var(--bd-glass); border: 1px solid var(--bd-glass-border); box-shadow: var(--bd-shadow); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); text-align: center; }
+	.det-step-n { display: grid; place-items: center; width: 46px; height: 46px; margin: 0 auto 0.9rem; border-radius: 9999px; font-weight: 800; color: #06121a; background: linear-gradient(135deg, color-mix(in srgb, var(--c) 85%, #fff), var(--c)); box-shadow: 0 10px 24px -10px color-mix(in srgb, var(--c) 70%, transparent); }
+	.det-step-t { font-size: 1.15rem; font-weight: 700; margin: 0 0 0.35rem; }
+	.det-step-d { font-size: 0.9rem; line-height: 1.55; color: var(--bd-muted); margin: 0; }
+
+	/* ── CTA ── */
+	.det-cta { text-align: center; background: radial-gradient(820px 380px at 50% 130%, color-mix(in srgb, var(--c) 38%, transparent), transparent 72%), linear-gradient(180deg, rgba(18, 22, 42, 0.92), rgba(5, 6, 13, 0.96)); color: #f5f5f7; border-color: color-mix(in srgb, var(--c) 26%, rgba(255, 255, 255, 0.1)); padding-block: clamp(3rem, 6vw, 4.5rem); }
+	.det-cta-h { font-size: clamp(2rem, 4.5vw, 3.4rem); }
+	.det-cta .bd-sub { color: rgba(245, 245, 247, 0.62); }
+
+	/* ── Explore others ── */
+	.det-others { max-width: 72rem; margin: clamp(2.5rem, 6vw, 4rem) auto 0; text-align: center; }
+	.det-others .bd-h { margin-bottom: 1.6rem; }
+	.det-others-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.9rem; }
+	@media (max-width: 860px) { .det-others-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+	@media (max-width: 540px) { .det-others-grid { grid-template-columns: 1fr; } }
+	.det-other { display: flex; align-items: center; gap: 0.8rem; text-align: left; padding: 0.9rem 1rem; border-radius: 1.1rem; background: var(--bd-glass); border: 1px solid var(--bd-glass-border); box-shadow: var(--bd-shadow); transition: transform 0.3s ease, border-color 0.3s ease; }
+	.det-other:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--c) 50%, var(--bd-glass-border)); }
+	.det-other-ic { display: grid; place-items: center; width: 42px; height: 42px; flex-shrink: 0; border-radius: 0.8rem; color: var(--c); background: color-mix(in srgb, var(--c) 14%, transparent); border: 1px solid color-mix(in srgb, var(--c) 30%, transparent); }
+	.det-other-meta { display: flex; flex-direction: column; line-height: 1.25; min-width: 0; flex: 1; }
+	.det-other-meta strong { font-size: 0.98rem; }
+	.det-other-meta em { font-style: normal; font-size: 0.78rem; color: var(--bd-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+	.det-other > :global(svg) { color: var(--c); flex-shrink: 0; }
+
+	/* ── Reveal ── */
+	.bd-reveal { opacity: 0; transform: translateY(26px); transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
+	.bd-reveal.is-on { opacity: 1; transform: translateY(0); }
+	@media (prefers-reduced-motion: reduce) {
+		.bd-reveal { opacity: 1; transform: none; transition: none; }
+		.det-aurora { animation: none; }
+		.det-card:hover, .det-other:hover { transform: none; }
+	}
+</style>

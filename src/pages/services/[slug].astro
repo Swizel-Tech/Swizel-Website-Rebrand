@@ -1,0 +1,49 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import ServiceDetail from '../../components/sections/ServiceDetail.astro';
+import CustomButton from '../../components/CustomButton.astro';
+import { Icon } from 'astro-icon';
+import { disciplines } from '../../data/disciplines';
+
+export function getStaticPaths() {
+	return disciplines.map((d) => ({
+		params: { slug: d.slug },
+		props: { discipline: d, others: disciplines.filter((x) => x.slug !== d.slug) },
+	}));
+}
+
+const { discipline, others } = Astro.props;
+const pageTitle = `${discipline.title} | Swizel Services`;
+const pageDescription = discipline.heroDesc;
+---
+
+<MainLayout title={pageTitle} description={pageDescription}>
+	<!-- Boardroom world (also the default). Hidden in other views. -->
+	<ServiceDetail discipline={discipline} others={others} />
+
+	<!-- Minimal fallback for the other worlds. -->
+	<div class="alt-view-only">
+		<section class="px-[5%] py-24 max-w-3xl mx-auto text-center space-y-6">
+			<p class="uppercase tracking-widest text-sm text-swizelGreen font-semibold">
+				Services
+			</p>
+			<h1 class="text-4xl font-bold">{discipline.title}</h1>
+			<p class="text-swizelDark/60 dark:text-white/60 leading-loose">
+				{discipline.overview}
+			</p>
+			<div class="flex flex-wrap gap-3 justify-center pt-4">
+				<CustomButton
+					class="rounded-full flex items-center gap-2"
+					elementType="a"
+					href="/contact"
+				>
+					Talk to a project manager
+					<Icon width={18} name="mdi:arrow-right" />
+				</CustomButton>
+				<a href="/services" class="rounded-full px-6 py-3 border border-current">
+					All services
+				</a>
+			</div>
+		</section>
+	</div>
+</MainLayout>

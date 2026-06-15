@@ -4,76 +4,8 @@
 // next). Reuses the boardroom engine (initBoardroomBody → reveals/counters)
 // and the themed cursor; locked to boardroom blue. Self-contained .bd-* styles.
 import { Icon } from 'astro-icon';
-
-// The disciplines — each links to its own page (built progressively).
-const disciplines = [
-	{
-		slug: 'design',
-		icon: 'mdi:palette-outline',
-		cursor: 'palette',
-		n: '01',
-		title: 'Design',
-		tagline: 'Brand & product design people feel.',
-		desc: 'Identity, interfaces and motion that make your product effortless and unmistakably yours.',
-		items: ['Brand identity', 'UI/UX design', 'Prototyping', 'Design systems', 'Motion'],
-		color: '#22d3ee',
-	},
-	{
-		slug: 'development',
-		icon: 'mdi:code-tags',
-		cursor: 'term',
-		n: '02',
-		title: 'Development',
-		tagline: 'Software built to ship and scale.',
-		desc: 'Web and mobile engineering with modern stacks, tested and shipped fast — without breaking things.',
-		items: ['Web apps', 'iOS & Android', 'APIs & backends', 'E-commerce', 'Integrations'],
-		color: '#3b82f6',
-	},
-	{
-		slug: 'marketing',
-		icon: 'mdi:bullhorn-outline',
-		cursor: 'pulse',
-		n: '03',
-		title: 'Marketing',
-		tagline: 'Growth across every platform that matters.',
-		desc: 'Data-driven campaigns that deliver conversions, not just clicks — and grow the audience around your product.',
-		items: ['SEO', 'Paid ads', 'Social', 'Content', 'Email'],
-		color: '#8b5cf6',
-	},
-	{
-		slug: 'strategy',
-		icon: 'mdi:compass-outline',
-		cursor: 'vector',
-		n: '04',
-		title: 'Strategy',
-		tagline: 'The plan before the pixels.',
-		desc: 'Research, definition and a roadmap that turns an ambitious idea into a product worth building.',
-		items: ['Discovery', 'Product roadmap', 'UX research', 'MVP scoping', 'Analytics'],
-		color: '#f59e0b',
-	},
-	{
-		slug: 'maintenance',
-		icon: 'mdi:shield-check-outline',
-		cursor: 'shield',
-		n: '05',
-		title: 'Maintenance',
-		tagline: 'It keeps running while you sleep.',
-		desc: 'Hosting, monitoring and support that keep complex systems secure, fast and online — year after year.',
-		items: ['Hosting & DevOps', 'Monitoring', '24/7 support', 'Security', 'Backups'],
-		color: '#10b981',
-	},
-	{
-		slug: 'ai-automation',
-		icon: 'mdi:robot-outline',
-		cursor: 'repo',
-		n: '06',
-		title: 'AI & Automation',
-		tagline: 'Put the busywork on autopilot.',
-		desc: 'Smart features and automations that save hours — chat, workflows and data working for you.',
-		items: ['AI features', 'Chatbots', 'Workflow automation', 'Data pipelines'],
-		color: '#ec4899',
-	},
-];
+import { disciplines } from '../../data/disciplines';
+// Each discipline links to its own detail page (/services/<slug>).
 
 const process = [
 	{ n: '01', title: 'Discover', desc: 'We research, define and lock the goal together — so we build the right thing.' },
@@ -389,8 +321,29 @@ const sectors = [
 	.svc-card-items { list-style: none; padding: 0; margin: 0 0 1.4rem; display: flex; flex-wrap: wrap; gap: 0.4rem 0.9rem; }
 	.svc-card-items li { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.82rem; font-weight: 600; color: color-mix(in srgb, var(--bd-ink) 70%, transparent); }
 	.svc-card-items :global(svg) { color: var(--c); }
-	.svc-card-go { margin-top: auto; display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.92rem; font-weight: 700; color: var(--c); transition: gap 0.25s ease; }
-	.svc-card:hover .svc-card-go { gap: 0.6rem; }
+	.svc-card-go {
+		margin-top: auto;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		padding: 0.62rem 1.25rem;
+		border-radius: 9999px;
+		font-size: 0.95rem;
+		font-weight: 700;
+		color: var(--c);
+		border: 1.5px solid color-mix(in srgb, var(--c) 55%, transparent);
+		background: color-mix(in srgb, var(--c) 12%, transparent);
+		transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease, gap 0.25s ease, transform 0.25s ease;
+	}
+	.svc-card-go :global(svg) { transition: transform 0.25s ease; }
+	.svc-card:hover .svc-card-go {
+		gap: 0.65rem;
+		background: var(--c);
+		color: #06121a;
+		border-color: var(--c);
+		box-shadow: 0 14px 30px -10px color-mix(in srgb, var(--c) 70%, transparent);
+	}
+	.svc-card:hover .svc-card-go :global(svg) { transform: translateX(2px); }
 
 	/* ── Journey / process ── */
 	.svc-journey { position: relative; overflow: hidden; max-width: 72rem; margin: clamp(2.5rem, 6vw, 4rem) auto; padding: clamp(2rem, 5vw, 3.5rem) clamp(1rem, 3vw, 2rem); border-radius: 2rem; isolation: isolate; }
