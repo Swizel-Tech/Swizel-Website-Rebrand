@@ -26,6 +26,7 @@ const { discipline: d, others } = Astro.props;
 		<span class="det-kicker">{d.title}</span>
 		<h1 class="bd-display det-h1">{d.tagline}</h1>
 		<p class="bd-sub">{d.heroDesc}</p>
+		<p class="det-clarify">{d.clarifier}</p>
 		<div class="bd-links">
 			<a href="/contact" class="bd-pill">Start a project</a>
 			<a href="#det-included" class="bd-link">
@@ -35,13 +36,19 @@ const { discipline: d, others } = Astro.props;
 		</div>
 	</header>
 
-	<!-- ── Overview ────────────────────────────────────────── -->
-	<div class="bd-grid bd-grid--narrow">
-		<section class="bd-tile bd-tile--full det-overview bd-reveal" data-cursor="vector">
+	<!-- ── Intro: what it is + a showcase ──────────────────── -->
+	<div class="det-intro bd-reveal" data-cursor="vector">
+		<div class="det-intro-text">
 			<span class="bd-eyebrow">What it is</span>
 			<p class="det-overview-text">{d.overview}</p>
 			<p class="det-outcome"><Icon width={18} name="mdi:flag-checkered" /> {d.outcome}</p>
-		</section>
+		</div>
+		<div class="det-media" data-cursor={d.media.kind === 'video' ? 'play' : 'repo'}>
+			<span class="det-media-sheen" aria-hidden="true"></span>
+			<Icon width={32} name={d.media.kind === 'video' ? 'mdi:play-circle-outline' : 'mdi:image-outline'} />
+			<span class="det-media-label">{d.media.kind} placeholder</span>
+			<span class="det-media-sub">{d.media.label}</span>
+		</div>
 	</div>
 
 	<!-- ── What's included ─────────────────────────────────── -->
@@ -65,8 +72,25 @@ const { discipline: d, others } = Astro.props;
 		}
 	</div>
 
+	<!-- ── Ways we can work together ───────────────────────── -->
+	<section class="bd-head bd-reveal">
+		<h2 class="bd-h bd-h--center">However you want to work.</h2>
+		<p class="bd-p bd-p--center">Hands-on or hands-off — we shape the engagement around you, and nothing ships until you're happy.</p>
+	</section>
+	<div class="det-ways">
+		{
+			d.ways.map((w) => (
+				<article class="det-way bd-reveal" data-cursor="branch">
+					<span class="det-way-ic"><Icon width={24} name={w.icon} /></span>
+					<h3 class="det-way-t">{w.title}</h3>
+					<p class="det-way-d">{w.desc}</p>
+				</article>
+			))
+		}
+	</div>
+
 	<!-- ── How we approach it ──────────────────────────────── -->
-	<section class="det-approach bd-reveal" data-cursor="branch">
+	<section class="det-approach bd-reveal" data-cursor="chart">
 		<span class="det-approach-aurora" aria-hidden="true"></span>
 		<div class="bd-head">
 			<h2 class="bd-h bd-h--center">How we approach it.</h2>
@@ -85,6 +109,47 @@ const { discipline: d, others } = Astro.props;
 		</ol>
 	</section>
 
+	<!-- ── Selected work ───────────────────────────────────── -->
+	<section class="det-work-wrap bd-reveal" data-cursor="repo">
+		<div class="bd-head">
+			<h2 class="bd-h bd-h--center">{d.title} we've shipped.</h2>
+			<p class="bd-p bd-p--center">A few of the products this discipline helped build.</p>
+		</div>
+		<div class="det-work">
+			{
+				d.projects.map((p) => (
+					<a href="/portfolio" class="det-work-card">
+						<img src={p.img} alt={p.name} loading="lazy" />
+						<span class="det-work-veil" aria-hidden="true" />
+						<span class="det-work-meta">
+							<strong>{p.name}</strong>
+							<em>{p.sector}</em>
+						</span>
+						<span class="det-work-go" aria-hidden="true"><Icon width={16} name="mdi:arrow-top-right" /></span>
+					</a>
+				))
+			}
+		</div>
+		<p class="det-work-all">
+			<a href="/portfolio" class="bd-link">See the full portfolio <Icon width={15} name="mdi:chevron-right" /></a>
+		</p>
+	</section>
+
+	<!-- ── Review ──────────────────────────────────────────── -->
+	<div class="bd-grid bd-grid--narrow">
+		<section class="det-review bd-reveal" data-cursor="quote">
+			<Icon class="det-quote-mark" width={40} name="mdi:format-quote-close" />
+			<blockquote>{d.review.quote}</blockquote>
+			<footer>
+				<img src={d.review.img} alt="" loading="lazy" />
+				<span>
+					<strong>{d.review.name}</strong>
+					<em>{d.review.role}</em>
+				</span>
+			</footer>
+		</section>
+	</div>
+
 	<!-- ── CTA ─────────────────────────────────────────────── -->
 	<section class="bd-grid">
 		<div class="bd-tile bd-tile--full det-cta bd-reveal" data-cursor="phone">
@@ -100,7 +165,7 @@ const { discipline: d, others } = Astro.props;
 		</div>
 	</section>
 
-	<!-- ── Explore other disciplines ───────────────────────── -->
+	<!-- ── Explore other disciplines (even grid: + Overview) ── -->
 	<section class="det-others bd-reveal" data-cursor="repo">
 		<h2 class="bd-h bd-h--center">Explore the rest.</h2>
 		<div class="det-others-grid">
@@ -116,6 +181,16 @@ const { discipline: d, others } = Astro.props;
 					</a>
 				))
 			}
+			<a href="/services" class="det-other det-other--over" style="--c:#28a6ec">
+				<span class="det-other-ic">
+					<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /></svg>
+				</span>
+				<span class="det-other-meta">
+					<strong>All services</strong>
+					<em>The full overview</em>
+				</span>
+				<Icon width={18} name="mdi:arrow-right" />
+			</a>
 		</div>
 	</section>
 </div>
@@ -151,15 +226,15 @@ const { discipline: d, others } = Astro.props;
 	}
 
 	.bd-display { font-size: clamp(2.4rem, 5.5vw, 4.2rem); font-weight: 700; letter-spacing: -0.025em; line-height: 1.05; margin: 0 0 1.1rem; }
-	.bd-sub { font-size: clamp(1.05rem, 2vw, 1.32rem); line-height: 1.5; color: var(--bd-muted); max-width: 40rem; margin: 0 auto 1.6rem; }
+	.bd-sub { font-size: clamp(1.05rem, 2vw, 1.32rem); line-height: 1.5; color: var(--bd-muted); max-width: 40rem; margin: 0 auto 1rem; }
 	.bd-h { font-size: clamp(1.7rem, 3.4vw, 2.5rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; margin: 0 0 0.7rem; }
 	.bd-h--center { text-align: center; }
-	.bd-p { font-size: 1.02rem; line-height: 1.6; color: var(--bd-muted); max-width: 30rem; margin: 0 auto 1.2rem; }
+	.bd-p { font-size: 1.02rem; line-height: 1.6; color: var(--bd-muted); max-width: 34rem; margin: 0 auto 1.2rem; }
 	.bd-p--center { margin-inline: auto; text-align: center; }
 	.bd-eyebrow { display: block; font-size: 0.78rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--c); margin-bottom: 0.7rem; }
 	.bd-head { max-width: 56rem; margin: clamp(2.5rem, 6vw, 4rem) auto clamp(1.5rem, 3vw, 2rem); text-align: center; }
 
-	.bd-links { display: flex; align-items: center; justify-content: center; gap: 1.4rem; flex-wrap: wrap; }
+	.bd-links { display: flex; align-items: center; justify-content: center; gap: 1.4rem; flex-wrap: wrap; margin-top: 1.4rem; }
 	.bd-links--center { justify-content: center; }
 	.bd-pill {
 		display: inline-flex; align-items: center; padding: 0.78rem 1.5rem; border-radius: 9999px;
@@ -175,12 +250,8 @@ const { discipline: d, others } = Astro.props;
 	.bd-link--invert { color: color-mix(in srgb, var(--c) 60%, #fff); }
 
 	.bd-grid { display: grid; gap: clamp(0.9rem, 2vw, 1.4rem); max-width: 88rem; margin: 0 auto clamp(0.9rem, 2vw, 1.4rem); }
-	.bd-grid--narrow { max-width: 64rem; }
-	.bd-tile {
-		position: relative; border-radius: 1.75rem; background: var(--bd-glass); border: 1px solid var(--bd-glass-border);
-		box-shadow: var(--bd-shadow); backdrop-filter: blur(22px) saturate(130%); -webkit-backdrop-filter: blur(22px) saturate(130%); overflow: hidden;
-		padding: clamp(2rem, 4vw, 3rem) clamp(1.5rem, 3vw, 2.5rem);
-	}
+	.bd-grid--narrow { max-width: 60rem; }
+	.bd-tile { position: relative; border-radius: 1.75rem; background: var(--bd-glass); border: 1px solid var(--bd-glass-border); box-shadow: var(--bd-shadow); backdrop-filter: blur(22px) saturate(130%); -webkit-backdrop-filter: blur(22px) saturate(130%); overflow: hidden; padding: clamp(2rem, 4vw, 3rem) clamp(1.5rem, 3vw, 2.5rem); }
 	.bd-tile--full { grid-column: 1 / -1; }
 
 	/* ── Hero ── */
@@ -193,12 +264,27 @@ const { discipline: d, others } = Astro.props;
 	.det-ic { display: grid; place-items: center; width: 76px; height: 76px; margin: 0 auto 1.2rem; border-radius: 1.4rem; color: var(--c); background: linear-gradient(135deg, color-mix(in srgb, var(--c) 30%, transparent), color-mix(in srgb, var(--c) 8%, transparent)); border: 1px solid color-mix(in srgb, var(--c) 40%, transparent); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 18px 40px -16px color-mix(in srgb, var(--c) 60%, transparent); }
 	.det-kicker { display: block; font-size: 0.82rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: var(--c); margin-bottom: 0.9rem; }
 	.det-h1 { max-width: 18ch; margin-inline: auto; }
+	.det-clarify { font-size: 0.92rem; font-weight: 600; letter-spacing: 0.01em; color: color-mix(in srgb, var(--c) 78%, var(--bd-ink)); margin: 0 auto; max-width: 36rem; }
 
-	/* ── Overview ── */
-	.det-overview { text-align: center; }
-	.det-overview-text { font-size: clamp(1.1rem, 2.2vw, 1.5rem); font-weight: 500; line-height: 1.5; max-width: 44rem; margin: 0 auto 1.4rem; }
+	/* ── Intro: 2-col what-it-is + media ── */
+	.det-intro { display: grid; gap: clamp(1.5rem, 4vw, 3rem); align-items: center; max-width: 80rem; margin: 0 auto clamp(1rem, 2vw, 1.4rem); }
+	@media (min-width: 880px) { .det-intro { grid-template-columns: 1.05fr 0.95fr; } }
+	.det-intro-text { text-align: left; }
+	.det-overview-text { font-size: clamp(1.05rem, 1.8vw, 1.3rem); font-weight: 500; line-height: 1.55; margin: 0 0 1.3rem; }
 	.det-outcome { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.98rem; font-weight: 700; color: var(--c); margin: 0; }
 	.det-outcome :global(svg) { color: var(--c); }
+	.det-media {
+		position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.4rem;
+		aspect-ratio: 4 / 3; border-radius: 1.5rem; overflow: hidden;
+		border: 1.5px dashed color-mix(in srgb, var(--c) 40%, transparent);
+		background: radial-gradient(420px 220px at 70% 15%, color-mix(in srgb, var(--c) 18%, transparent), transparent), color-mix(in srgb, var(--bd-ink) 4%, transparent);
+		color: var(--bd-muted);
+	}
+	.det-media :global(svg):first-of-type { color: var(--c); }
+	.det-media-label { font-size: 0.78rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+	.det-media-sub { font-size: 0.8rem; color: color-mix(in srgb, var(--bd-muted) 75%, transparent); }
+	.det-media-sheen { position: absolute; inset: 0; background: linear-gradient(115deg, transparent 35%, color-mix(in srgb, var(--bd-ink) 6%, transparent) 50%, transparent 64%); transform: translateX(-100%); animation: det-sheen 5.5s ease-in-out infinite; pointer-events: none; }
+	@keyframes det-sheen { 0%,55%{ transform: translateX(-100%); } 85%,100%{ transform: translateX(100%); } }
 
 	/* ── Included grid ── */
 	.det-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1rem, 2vw, 1.5rem); max-width: 72rem; margin: 0 auto; }
@@ -212,6 +298,15 @@ const { discipline: d, others } = Astro.props;
 	.det-card-items li { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.82rem; font-weight: 600; color: color-mix(in srgb, var(--bd-ink) 70%, transparent); }
 	.det-card-items :global(svg) { color: var(--c); }
 
+	/* ── Ways we can work ── */
+	.det-ways { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1rem, 2vw, 1.4rem); max-width: 72rem; margin: 0 auto; }
+	@media (max-width: 820px) { .det-ways { grid-template-columns: 1fr; } }
+	.det-way { padding: clamp(1.5rem, 3vw, 2.1rem); border-radius: 1.4rem; background: color-mix(in srgb, var(--c) 7%, var(--bd-glass)); border: 1px solid color-mix(in srgb, var(--c) 22%, var(--bd-glass-border)); box-shadow: var(--bd-shadow); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); transition: transform 0.35s ease, border-color 0.35s ease; }
+	.det-way:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--c) 45%, transparent); }
+	.det-way-ic { display: grid; place-items: center; width: 52px; height: 52px; margin-bottom: 1rem; border-radius: 1rem; color: var(--c); background: color-mix(in srgb, var(--c) 16%, transparent); border: 1px solid color-mix(in srgb, var(--c) 32%, transparent); }
+	.det-way-t { font-size: 1.12rem; font-weight: 700; margin: 0 0 0.4rem; }
+	.det-way-d { font-size: 0.92rem; line-height: 1.55; color: var(--bd-muted); margin: 0; }
+
 	/* ── Approach ── */
 	.det-approach { position: relative; overflow: hidden; max-width: 72rem; margin: clamp(2.5rem, 6vw, 4rem) auto; padding: clamp(2rem, 5vw, 3.5rem) clamp(1rem, 3vw, 2rem); border-radius: 2rem; isolation: isolate; }
 	.det-approach-aurora { position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(600px 320px at 50% 0%, color-mix(in srgb, var(--c) 18%, transparent), transparent 62%); filter: blur(34px); opacity: 0.7; }
@@ -222,6 +317,32 @@ const { discipline: d, others } = Astro.props;
 	.det-step-n { display: grid; place-items: center; width: 46px; height: 46px; margin: 0 auto 0.9rem; border-radius: 9999px; font-weight: 800; color: #06121a; background: linear-gradient(135deg, color-mix(in srgb, var(--c) 85%, #fff), var(--c)); box-shadow: 0 10px 24px -10px color-mix(in srgb, var(--c) 70%, transparent); }
 	.det-step-t { font-size: 1.15rem; font-weight: 700; margin: 0 0 0.35rem; }
 	.det-step-d { font-size: 0.9rem; line-height: 1.55; color: var(--bd-muted); margin: 0; }
+
+	/* ── Selected work ── */
+	.det-work-wrap { max-width: 80rem; margin: 0 auto; }
+	.det-work { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(0.9rem, 2vw, 1.4rem); }
+	@media (max-width: 820px) { .det-work { grid-template-columns: 1fr 1fr; } }
+	@media (max-width: 520px) { .det-work { grid-template-columns: 1fr; } }
+	.det-work-card { position: relative; display: block; aspect-ratio: 4 / 3; border-radius: 1.3rem; overflow: hidden; border: 1px solid var(--bd-glass-border); box-shadow: var(--bd-shadow); }
+	.det-work-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+	.det-work-card:hover img { transform: scale(1.06); }
+	.det-work-veil { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(5, 6, 14, 0.85)); }
+	.det-work-meta { position: absolute; left: 1.1rem; right: 1.1rem; bottom: 0.95rem; display: flex; flex-direction: column; color: #fff; }
+	.det-work-meta strong { font-size: 1.05rem; font-weight: 700; }
+	.det-work-meta em { font-style: normal; font-size: 0.78rem; color: rgba(255, 255, 255, 0.66); }
+	.det-work-go { position: absolute; top: 0.9rem; right: 0.9rem; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 9999px; background: color-mix(in srgb, var(--c) 80%, transparent); color: #fff; opacity: 0; transform: translate(4px, -4px); transition: opacity 0.3s ease, transform 0.3s ease; }
+	.det-work-card:hover .det-work-go { opacity: 1; transform: translate(0, 0); }
+	.det-work-all { text-align: center; margin: 1.5rem 0 0; }
+
+	/* ── Review ── */
+	.det-review { position: relative; text-align: center; padding: clamp(2.25rem, 5vw, 3.5rem) clamp(1.5rem, 4vw, 3rem); border-radius: 1.75rem; overflow: hidden; background: radial-gradient(620px 300px at 50% -10%, color-mix(in srgb, var(--c) 18%, transparent), transparent 65%), var(--bd-glass); border: 1px solid color-mix(in srgb, var(--c) 24%, var(--bd-glass-border)); box-shadow: var(--bd-shadow); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+	.det-quote-mark { color: var(--c); opacity: 0.5; }
+	.det-review blockquote { font-size: clamp(1.25rem, 2.6vw, 1.8rem); font-weight: 600; line-height: 1.4; letter-spacing: -0.01em; max-width: 40rem; margin: 0.6rem auto 1.6rem; }
+	.det-review footer { display: flex; align-items: center; justify-content: center; gap: 0.75rem; }
+	.det-review footer img { width: 46px; height: 46px; border-radius: 9999px; object-fit: cover; border: 2px solid color-mix(in srgb, var(--c) 55%, transparent); }
+	.det-review footer span { display: flex; flex-direction: column; text-align: left; line-height: 1.25; }
+	.det-review footer strong { font-size: 0.95rem; }
+	.det-review footer em { font-style: normal; font-size: 0.8rem; color: var(--bd-muted); }
 
 	/* ── CTA ── */
 	.det-cta { text-align: center; background: radial-gradient(820px 380px at 50% 130%, color-mix(in srgb, var(--c) 38%, transparent), transparent 72%), linear-gradient(180deg, rgba(18, 22, 42, 0.92), rgba(5, 6, 13, 0.96)); color: #f5f5f7; border-color: color-mix(in srgb, var(--c) 26%, rgba(255, 255, 255, 0.1)); padding-block: clamp(3rem, 6vw, 4.5rem); }
@@ -236,6 +357,7 @@ const { discipline: d, others } = Astro.props;
 	@media (max-width: 540px) { .det-others-grid { grid-template-columns: 1fr; } }
 	.det-other { display: flex; align-items: center; gap: 0.8rem; text-align: left; padding: 0.9rem 1rem; border-radius: 1.1rem; background: var(--bd-glass); border: 1px solid var(--bd-glass-border); box-shadow: var(--bd-shadow); transition: transform 0.3s ease, border-color 0.3s ease; }
 	.det-other:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--c) 50%, var(--bd-glass-border)); }
+	.det-other--over { background: color-mix(in srgb, #28a6ec 10%, var(--bd-glass)); }
 	.det-other-ic { display: grid; place-items: center; width: 42px; height: 42px; flex-shrink: 0; border-radius: 0.8rem; color: var(--c); background: color-mix(in srgb, var(--c) 14%, transparent); border: 1px solid color-mix(in srgb, var(--c) 30%, transparent); }
 	.det-other-meta { display: flex; flex-direction: column; line-height: 1.25; min-width: 0; flex: 1; }
 	.det-other-meta strong { font-size: 0.98rem; }
@@ -247,7 +369,7 @@ const { discipline: d, others } = Astro.props;
 	.bd-reveal.is-on { opacity: 1; transform: translateY(0); }
 	@media (prefers-reduced-motion: reduce) {
 		.bd-reveal { opacity: 1; transform: none; transition: none; }
-		.det-aurora { animation: none; }
-		.det-card:hover, .det-other:hover { transform: none; }
+		.det-aurora, .det-media-sheen { animation: none; }
+		.det-card:hover, .det-other:hover, .det-way:hover, .det-work-card:hover img { transform: none; }
 	}
 </style>
