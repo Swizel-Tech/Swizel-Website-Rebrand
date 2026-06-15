@@ -133,6 +133,22 @@ const sectors = [
 		</ol>
 	</section>
 
+	<!-- ── Showreel — video placeholder ────────────────────── -->
+	<section class="svc-reel bd-reveal" data-cursor="play">
+		<div class="bd-head">
+			<h2 class="bd-h bd-h--center">See how we build.</h2>
+			<p class="bd-p bd-p--center">A two-minute look inside the studio — from first sketch to launch day.</p>
+		</div>
+		<div class="svc-reel-frame">
+			<span class="svc-reel-sheen" aria-hidden="true"></span>
+			<button type="button" class="svc-reel-play" aria-label="Play showreel">
+				<Icon width={34} name="mdi:play" />
+			</button>
+			<span class="svc-reel-label">Video placeholder</span>
+			<span class="svc-reel-sub">Studio showreel · 2:00</span>
+		</div>
+	</section>
+
 	<!-- ── Numbers ─────────────────────────────────────────── -->
 	<div class="bd-grid">
 		<section class="bd-tile bd-tile--full bd-tile--inverse bd-reveal" id="svc-numbers" data-cursor="chart">
@@ -391,6 +407,31 @@ const sectors = [
 	.svc-step-t { font-size: 1.15rem; font-weight: 700; margin: 0 0 0.35rem; }
 	.svc-step-d { font-size: 0.9rem; line-height: 1.55; color: var(--bd-muted); margin: 0; }
 
+	/* ── Showreel video placeholder ── */
+	.svc-reel { max-width: 72rem; margin: clamp(2.5rem, 6vw, 4rem) auto; }
+	.svc-reel-frame {
+		position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem;
+		aspect-ratio: 16 / 9; max-height: 520px; border-radius: 1.75rem; overflow: hidden; cursor: pointer;
+		border: 1.5px dashed color-mix(in srgb, var(--bd-accent) 38%, transparent);
+		background:
+			radial-gradient(700px 320px at 50% 0%, color-mix(in srgb, var(--bd-accent) 18%, transparent), transparent 65%),
+			linear-gradient(180deg, rgba(18, 22, 42, 0.7), rgba(5, 6, 13, 0.85));
+		color: var(--bd-muted);
+		box-shadow: var(--bd-shadow);
+	}
+	.svc-reel-sheen { position: absolute; inset: 0; background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, 0.06) 50%, transparent 64%); transform: translateX(-100%); animation: svc-sheen 6s ease-in-out infinite; pointer-events: none; }
+	@keyframes svc-sheen { 0%, 55% { transform: translateX(-100%); } 85%, 100% { transform: translateX(100%); } }
+	.svc-reel-play {
+		display: grid; place-items: center; width: 84px; height: 84px; border-radius: 9999px; cursor: pointer; color: #fff;
+		background: linear-gradient(180deg, color-mix(in srgb, var(--bd-accent) 90%, #fff), var(--bd-accent));
+		border: 1px solid color-mix(in srgb, var(--bd-accent) 60%, rgba(255, 255, 255, 0.4));
+		box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 20px 44px -14px color-mix(in srgb, var(--bd-accent) 70%, transparent);
+		transition: transform 0.25s ease; margin-bottom: 0.3rem;
+	}
+	.svc-reel-frame:hover .svc-reel-play { transform: scale(1.08); }
+	.svc-reel-label { font-size: 0.78rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
+	.svc-reel-sub { font-size: 0.82rem; color: color-mix(in srgb, var(--bd-muted) 75%, transparent); }
+
 	/* ── Stack + sectors marquees ── */
 	.bd-marquee { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
 	.bd-marquee-track { display: flex; align-items: center; width: max-content; }
@@ -433,7 +474,7 @@ const sectors = [
 	.bd-reveal.is-on { opacity: 1; transform: translateY(0); }
 	@media (prefers-reduced-motion: reduce) {
 		.bd-reveal { opacity: 1; transform: none; transition: none; }
-		.svc-hero-aurora, .svc-journey-aurora, .bd-marquee-track, .bd-grad { animation: none; }
+		.svc-hero-aurora, .svc-journey-aurora, .bd-marquee-track, .bd-grad, .svc-reel-sheen { animation: none; }
 		.bd-marquee { overflow-x: auto; }
 		.svc-card:hover, .svc-step:hover { transform: none; }
 	}
