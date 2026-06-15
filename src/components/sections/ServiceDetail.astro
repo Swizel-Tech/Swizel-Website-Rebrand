@@ -10,6 +10,9 @@ interface Props {
 	others: Discipline[];
 }
 const { discipline: d, others } = Astro.props;
+// The Design page leads with the work (show, don't tell); others keep the
+// standard "selected work" lower down.
+const isDesign = d.slug === 'design';
 ---
 
 <div class="bdbody bd-services bd-detail view-body view-body-boardroom" style={`--c:${d.color}`}>
@@ -36,12 +39,38 @@ const { discipline: d, others } = Astro.props;
 		</div>
 	</header>
 
+	{
+		isDesign && (
+			<section class="det-gallery bd-reveal" data-cursor={d.cursor}>
+				<div class="det-gallery-grid">
+					{d.projects.map((p, i) => (
+						<a href="/portfolio" class:list={['det-gallery-card', { 'det-gallery-card--lead': i === 0 }]}>
+							<img src={p.img} alt={p.name} loading={i === 0 ? 'eager' : 'lazy'} />
+							<span class="det-gallery-veil" aria-hidden="true" />
+							<span class="det-gallery-meta">
+								<strong>{p.name}</strong>
+								<em>{p.sector}</em>
+							</span>
+						</a>
+					))}
+				</div>
+				<p class="det-gallery-cap">
+					A few things we've designed.
+					<a href="/portfolio" class="bd-link">See the full portfolio <Icon width={15} name="mdi:chevron-right" /></a>
+				</p>
+			</section>
+		)
+	}
+
 	<!-- ── Intro: what it is + a showcase ──────────────────── -->
 	<div class="det-intro bd-reveal" data-cursor="vector">
 		<div class="det-intro-text">
 			<span class="bd-eyebrow">What it is</span>
 			<p class="det-overview-text">{d.overview}</p>
-			<p class="det-outcome"><Icon width={18} name="mdi:flag-checkered" /> {d.outcome}</p>
+			<p class="det-outcome">
+				<svg class="det-outcome-spark" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l1.9 5.6L19 9.5l-5.1 1.9L12 17l-1.9-5.6L5 9.5l5.1-1.9z" /></svg>
+				{d.outcome}
+			</p>
 		</div>
 		<div class="det-media" data-cursor={d.media.kind === 'video' ? 'play' : 'repo'}>
 			<span class="det-media-sheen" aria-hidden="true"></span>
@@ -109,31 +138,33 @@ const { discipline: d, others } = Astro.props;
 		</ol>
 	</section>
 
-	<!-- ── Selected work ───────────────────────────────────── -->
-	<section class="det-work-wrap bd-reveal" data-cursor="repo">
-		<div class="bd-head">
-			<h2 class="bd-h bd-h--center">{d.title} we've shipped.</h2>
-			<p class="bd-p bd-p--center">A few of the products this discipline helped build.</p>
-		</div>
-		<div class="det-work">
-			{
-				d.projects.map((p) => (
-					<a href="/portfolio" class="det-work-card">
-						<img src={p.img} alt={p.name} loading="lazy" />
-						<span class="det-work-veil" aria-hidden="true" />
-						<span class="det-work-meta">
-							<strong>{p.name}</strong>
-							<em>{p.sector}</em>
-						</span>
-						<span class="det-work-go" aria-hidden="true"><Icon width={16} name="mdi:arrow-top-right" /></span>
-					</a>
-				))
-			}
-		</div>
-		<p class="det-work-all">
-			<a href="/portfolio" class="bd-link">See the full portfolio <Icon width={15} name="mdi:chevron-right" /></a>
-		</p>
-	</section>
+	<!-- ── Selected work (Design leads with its gallery instead) ── -->
+	{
+		!isDesign && (
+			<section class="det-work-wrap bd-reveal" data-cursor="repo">
+				<div class="bd-head">
+					<h2 class="bd-h bd-h--center">{d.title} we've shipped.</h2>
+					<p class="bd-p bd-p--center">A few of the products this discipline helped build.</p>
+				</div>
+				<div class="det-work">
+					{d.projects.map((p) => (
+						<a href="/portfolio" class="det-work-card">
+							<img src={p.img} alt={p.name} loading="lazy" />
+							<span class="det-work-veil" aria-hidden="true" />
+							<span class="det-work-meta">
+								<strong>{p.name}</strong>
+								<em>{p.sector}</em>
+							</span>
+							<span class="det-work-go" aria-hidden="true"><Icon width={16} name="mdi:arrow-top-right" /></span>
+						</a>
+					))}
+				</div>
+				<p class="det-work-all">
+					<a href="/portfolio" class="bd-link">See the full portfolio <Icon width={15} name="mdi:chevron-right" /></a>
+				</p>
+			</section>
+		)
+	}
 
 	<!-- ── Review ──────────────────────────────────────────── -->
 	<div class="bd-grid bd-grid--narrow">
@@ -333,6 +364,22 @@ const { discipline: d, others } = Astro.props;
 	.det-work-go { position: absolute; top: 0.9rem; right: 0.9rem; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 9999px; background: color-mix(in srgb, var(--c) 80%, transparent); color: #fff; opacity: 0; transform: translate(4px, -4px); transition: opacity 0.3s ease, transform 0.3s ease; }
 	.det-work-card:hover .det-work-go { opacity: 1; transform: translate(0, 0); }
 	.det-work-all { text-align: center; margin: 1.5rem 0 0; }
+
+	/* ── Design gallery (Design page leads with work) ── */
+	.det-gallery { max-width: 84rem; margin: 0 auto clamp(2rem, 5vw, 3.5rem); }
+	.det-gallery-grid { display: grid; grid-template-columns: 1.5fr 1fr; grid-auto-rows: minmax(150px, 1fr); gap: clamp(0.8rem, 2vw, 1.3rem); }
+	@media (max-width: 700px) { .det-gallery-grid { grid-template-columns: 1fr; } }
+	.det-gallery-card { position: relative; overflow: hidden; border-radius: 1.5rem; border: 1px solid var(--bd-glass-border); box-shadow: var(--bd-shadow); min-height: 170px; }
+	.det-gallery-card--lead { grid-row: span 2; }
+	@media (max-width: 700px) { .det-gallery-card--lead { grid-row: auto; aspect-ratio: 4 / 3; } }
+	.det-gallery-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
+	.det-gallery-card:hover img { transform: scale(1.05); }
+	.det-gallery-veil { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 45%, rgba(5, 6, 14, 0.86)); }
+	.det-gallery-meta { position: absolute; left: 1.2rem; right: 1.2rem; bottom: 1.1rem; display: flex; flex-direction: column; color: #fff; }
+	.det-gallery-meta strong { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.01em; }
+	.det-gallery-card--lead .det-gallery-meta strong { font-size: clamp(1.3rem, 2.4vw, 1.8rem); }
+	.det-gallery-meta em { font-style: normal; font-size: 0.82rem; color: rgba(255, 255, 255, 0.7); }
+	.det-gallery-cap { display: flex; align-items: center; justify-content: center; gap: 0.5rem; flex-wrap: wrap; margin: 1.4rem 0 0; font-size: 0.95rem; color: var(--bd-muted); }
 
 	/* ── Review ── */
 	.det-review { position: relative; text-align: center; padding: clamp(2.25rem, 5vw, 3.5rem) clamp(1.5rem, 4vw, 3rem); border-radius: 1.75rem; overflow: hidden; background: radial-gradient(620px 300px at 50% -10%, color-mix(in srgb, var(--c) 18%, transparent), transparent 65%), var(--bd-glass); border: 1px solid color-mix(in srgb, var(--c) 24%, var(--bd-glass-border)); box-shadow: var(--bd-shadow); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }

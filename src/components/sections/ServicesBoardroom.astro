@@ -14,8 +14,12 @@ const process = [
 ];
 
 const stack = [
-	'Figma', 'React', 'Next.js', 'Flutter', 'Swift', 'Kotlin', 'Node', 'Python',
-	'Firebase', 'PostgreSQL', 'AWS', 'Vercel', 'Tailwind', 'Stripe',
+	{ group: 'Design', tools: ['Figma', 'Illustrator', 'After Effects'] },
+	{ group: 'Web', tools: ['React', 'Next.js', 'Vue', 'Tailwind'] },
+	{ group: 'Mobile', tools: ['Flutter', 'Swift', 'Kotlin'] },
+	{ group: 'Backend', tools: ['Node', 'Python', 'PHP', 'Laravel'] },
+	{ group: 'Cloud & data', tools: ['AWS', 'Vercel', 'Firebase', 'PostgreSQL'] },
+	{ group: 'Commerce', tools: ['Stripe', 'Shopify', 'WooCommerce'] },
 ];
 
 const stats = [
@@ -51,6 +55,15 @@ const sectors = [
 				Explore what we do
 				<Icon width={15} name="mdi:chevron-down" />
 			</a>
+		</div>
+		<div class="svc-hero-disc">
+			{
+				disciplines.map((d) => (
+					<a href={`/services/${d.slug}`} class="svc-hero-disc-ic" style={`--c:${d.color}`} data-cursor={d.cursor} aria-label={d.title} title={d.title}>
+						<Icon width={20} name={d.icon} />
+					</a>
+				))
+			}
 		</div>
 	</header>
 
@@ -142,17 +155,23 @@ const sectors = [
 		</section>
 	</div>
 
-	<!-- ── The stack — capabilities marquee ────────────────── -->
+	<!-- ── The stack — a static, grouped capability grid ────── -->
 	<section class="svc-stack bd-reveal" data-cursor="layers">
-		<h2 class="bd-h bd-h--center">The tools in our hands.</h2>
-		<div class="bd-marquee" aria-hidden="true">
-			<div class="bd-marquee-track bd-marquee-track--stack">
-				{
-					[0, 1].map(() =>
-						stack.map((s) => <span class="svc-chip">{s}</span>)
-					)
-				}
-			</div>
+		<div class="bd-head">
+			<h2 class="bd-h bd-h--center">The tools in our hands.</h2>
+			<p class="bd-p bd-p--center">A modern, proven toolkit — picked for the job, not for the hype.</p>
+		</div>
+		<div class="svc-stack-grid">
+			{
+				stack.map((cat) => (
+					<div class="svc-stack-cat">
+						<span class="svc-stack-label">{cat.group}</span>
+						<div class="svc-stack-chips">
+							{cat.tools.map((t) => <span class="svc-chip">{t}</span>)}
+						</div>
+					</div>
+				))
+			}
 		</div>
 	</section>
 
@@ -282,18 +301,29 @@ const sectors = [
 	.bd-number span { font-size: 0.85rem; color: rgba(245, 245, 247, 0.6); }
 
 	/* ── Hero ── */
-	.svc-hero { position: relative; overflow: hidden; text-align: center; max-width: 60rem; margin: 0 auto clamp(2rem, 5vw, 3.5rem); padding: clamp(1rem, 3vw, 2.5rem) 1rem clamp(1.5rem, 4vw, 3rem); }
+	/* full-bleed hero: background spans edge-to-edge, content stays centred */
+	.svc-hero {
+		position: relative;
+		overflow: hidden;
+		text-align: center;
+		margin: calc(-1 * clamp(2.5rem, 6vw, 4.5rem)) calc(-1 * clamp(1rem, 3vw, 2rem)) clamp(2.5rem, 6vw, 4rem);
+		padding: clamp(4rem, 9vw, 7rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 4rem);
+	}
+	.svc-hero > :not(.svc-hero-aurora) { position: relative; z-index: 1; max-width: 60rem; margin-inline: auto; }
 	.svc-hero-aurora {
-		position: absolute; inset: -20%; z-index: -1; pointer-events: none;
+		position: absolute; inset: -30% -10%; z-index: 0; pointer-events: none;
 		background:
-			radial-gradient(460px 360px at 26% 26%, rgba(34, 211, 238, 0.26), transparent 60%),
-			radial-gradient(460px 380px at 78% 30%, rgba(139, 92, 246, 0.22), transparent 62%),
-			radial-gradient(400px 320px at 50% 92%, color-mix(in srgb, var(--bd-accent) 28%, transparent), transparent 60%);
-		filter: blur(46px); opacity: 0.6; animation: svc-aurora 17s ease-in-out infinite;
+			radial-gradient(560px 420px at 22% 26%, rgba(34, 211, 238, 0.26), transparent 60%),
+			radial-gradient(560px 440px at 80% 28%, rgba(139, 92, 246, 0.24), transparent 62%),
+			radial-gradient(520px 380px at 50% 96%, color-mix(in srgb, var(--bd-accent) 30%, transparent), transparent 60%);
+		filter: blur(54px); opacity: 0.62; animation: svc-aurora 17s ease-in-out infinite;
 	}
 	:global(html:not(.dark)) .svc-hero-aurora { opacity: 0.4; }
 	@keyframes svc-aurora { 0%,100%{ transform: translate3d(0,0,0) scale(1); } 50%{ transform: translate3d(2%,-2%,0) scale(1.08); } }
 	.svc-h1 { max-width: 16ch; margin-inline: auto; }
+	.svc-hero-disc { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.65rem; margin-top: clamp(1.6rem, 4vw, 2.6rem); }
+	.svc-hero-disc-ic { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 1rem; color: var(--c); background: color-mix(in srgb, var(--c) 14%, transparent); border: 1px solid color-mix(in srgb, var(--c) 32%, transparent); transition: transform 0.25s cubic-bezier(0.22,1,0.36,1), background 0.25s ease, box-shadow 0.25s ease; }
+	.svc-hero-disc-ic:hover { transform: translateY(-4px) scale(1.06); background: color-mix(in srgb, var(--c) 26%, transparent); box-shadow: 0 14px 28px -12px color-mix(in srgb, var(--c) 70%, transparent); }
 
 	/* ── Discipline doors ── */
 	.svc-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1rem, 2vw, 1.5rem); max-width: 84rem; margin: 0 auto; }
@@ -368,11 +398,17 @@ const sectors = [
 	.bd-marquee-track--sectors { animation: svc-drift 40s linear infinite; }
 	.bd-marquee:hover .bd-marquee-track { animation-play-state: paused; }
 	@keyframes svc-drift { to { transform: translateX(-50%); } }
-	.svc-stack { max-width: 88rem; margin: clamp(4rem, 9vw, 7rem) auto 0; padding-block: clamp(0.5rem, 2vw, 1.5rem); text-align: center; }
-	.svc-stack .bd-h { margin-bottom: 2rem; }
-	.svc-chip { flex-shrink: 0; margin-right: 1.1rem; padding: 0.7rem 1.4rem; border-radius: 9999px; border: 1px solid var(--bd-glass-border); background: var(--bd-glass); font-size: 0.98rem; font-weight: 600; color: color-mix(in srgb, var(--bd-ink) 78%, transparent); }
+	.svc-stack { max-width: 78rem; margin: clamp(4rem, 9vw, 7rem) auto 0; text-align: center; }
+	.svc-stack-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(0.9rem, 2vw, 1.4rem); text-align: left; }
+	@media (max-width: 820px) { .svc-stack-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+	@media (max-width: 520px) { .svc-stack-grid { grid-template-columns: 1fr; } }
+	.svc-stack-cat { padding: clamp(1.1rem, 2.5vw, 1.5rem); border-radius: 1.2rem; background: var(--bd-glass); border: 1px solid var(--bd-glass-border); box-shadow: var(--bd-shadow); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); transition: transform 0.3s ease, border-color 0.3s ease; }
+	.svc-stack-cat:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--bd-accent) 38%, var(--bd-glass-border)); }
+	.svc-stack-label { display: block; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bd-accent); margin-bottom: 0.8rem; }
+	.svc-stack-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+	.svc-chip { padding: 0.4rem 0.85rem; border-radius: 9999px; border: 1px solid color-mix(in srgb, var(--bd-ink) 14%, transparent); background: color-mix(in srgb, var(--bd-ink) 4%, transparent); font-size: 0.88rem; font-weight: 600; color: color-mix(in srgb, var(--bd-ink) 80%, transparent); transition: border-color 0.25s ease, color 0.25s ease; }
+	.svc-stack-cat:hover .svc-chip { border-color: color-mix(in srgb, var(--bd-accent) 30%, transparent); }
 	.bd-sectors { max-width: 88rem; margin: clamp(4rem, 9vw, 7rem) auto clamp(2.5rem, 6vw, 4rem); text-align: center; }
-	.bd-sectors .bd-h { margin-bottom: 2rem; }
 	.bd-sectors .bd-h { margin-bottom: 1.4rem; }
 	.bd-sector { flex-shrink: 0; margin-right: clamp(1.6rem, 3vw, 2.8rem); font-size: clamp(1.2rem, 2.4vw, 1.7rem); font-weight: 700; letter-spacing: -0.01em; color: color-mix(in srgb, var(--bd-ink) 34%, transparent); transition: color 0.3s ease; cursor: default; }
 	.bd-sector:hover { color: var(--bd-accent); }

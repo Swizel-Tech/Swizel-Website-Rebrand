@@ -70,8 +70,8 @@ export const disciplines: Discipline[] = [
 			{ n: '03', title: 'Validate', desc: 'We test with real people and hand off pixel-perfect, dev-ready files.' },
 		],
 		ways: [
-			{ icon: 'mdi:creation-outline', title: 'From scratch or a refresh', desc: 'A brand-new identity, or a careful evolution of the one you already have.' },
-			{ icon: 'mdi:hand-heart-outline', title: 'Design-only or design + build', desc: 'Hand the files to your own developers, or we design and build it together.' },
+			{ icon: 'mdi:auto-fix', title: 'From scratch or a refresh', desc: 'A brand-new identity, or a careful evolution of the one you already have.' },
+			{ icon: 'mdi:hand-heart', title: 'Design-only or design + build', desc: 'Hand the files to your own developers, or we design and build it together.' },
 			{ icon: 'mdi:account-check-outline', title: 'Carried along, every step', desc: 'You review and steer at each stage — nothing ships until you love it.' },
 		],
 		projects: [
@@ -95,16 +95,17 @@ export const disciplines: Discipline[] = [
 		title: 'Development',
 		tagline: 'Websites and apps, built to last.',
 		desc: 'Websites, web apps and mobile apps — engineered on modern stacks, tested and shipped fast.',
-		clarifier: 'Websites, web apps, iOS & Android apps, e-commerce and APIs.',
-		items: ['Websites', 'Web apps', 'iOS & Android', 'E-commerce', 'APIs'],
+		clarifier: 'Websites, web & mobile apps, PWAs, proofs of concept, e-commerce and APIs.',
+		items: ['Websites', 'Web apps', 'Mobile apps', 'PWA', 'POC / MVP', 'E-commerce'],
 		heroDesc:
 			'Websites, web apps and mobile apps — engineered to ship fast, scale cleanly and run for years.',
 		overview:
 			"When people say “development” it can mean a hundred things — so let’s be clear: we build websites, web applications and mobile apps. Fast, reliable software on modern, battle-tested stacks, mobile-first by default, architected to keep performing as your numbers grow. And if you’d rather not build from scratch, we’ll set up and tailor Shopify, WordPress and the like instead.",
 		included: [
 			{ title: 'Websites', desc: 'Fast, beautiful marketing sites, blogs and landing pages.', items: ['Marketing sites', 'Blogs', 'Landing pages'] },
-			{ title: 'Web applications', desc: 'Dashboards, portals and platforms that do real work.', items: ['React / Next.js', 'Vue', 'PHP / Python'] },
+			{ title: 'Web apps & PWAs', desc: 'Dashboards, portals and installable progressive web apps that do real work.', items: ['React / Next.js', 'Vue', 'PWA', 'PHP / Python'] },
 			{ title: 'Mobile apps', desc: 'Native-quality iOS and Android from one focused team.', items: ['Flutter', 'Native iOS', 'Native Android'] },
+			{ title: 'Proof of concept & MVP', desc: 'Validate the idea fast with a working POC or a lean first version.', items: ['Rapid prototype', 'POC', 'MVP build'] },
 			{ title: 'E-commerce & integrations', desc: 'Storefronts, payments and the tools you already use, wired together.', items: ['Shopify / WooCommerce', 'Payments', 'Third-party APIs'] },
 		],
 		approach: [
@@ -201,7 +202,7 @@ export const disciplines: Discipline[] = [
 		ways: [
 			{ icon: 'mdi:timer-sand', title: 'A sprint or a partnership', desc: 'A focused discovery sprint, or ongoing strategy as you grow.' },
 			{ icon: 'mdi:account-group-outline', title: 'Workshops with your team', desc: 'We plan with you, not at you — your people in the room, deciding together.' },
-			{ icon: 'mdi:hand-heart-outline', title: 'Plan only, or plan + build', desc: 'Take the roadmap to any team, or let us build exactly what we mapped.' },
+			{ icon: 'mdi:hand-heart', title: 'Plan only, or plan + build', desc: 'Take the roadmap to any team, or let us build exactly what we mapped.' },
 		],
 		projects: [
 			{ name: 'Brixmarket', sector: 'Real estate', img: '/images/portfolio/brix%20marketplace.jpg' },
