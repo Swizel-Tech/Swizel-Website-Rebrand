@@ -1,0 +1,350 @@
+---
+// Portfolio — the Boardroom world. Real, shipped client work with live
+// screenshots, a featured case-study reel and a CSS-only sector filter.
+// Reuses the boardroom engine (initBoardroomBody → reveals/counters) and the
+// themed cursor; self-contained .bd-* base styles.
+import { Icon } from 'astro-icon';
+import { projects, sectorLabels, type ProjectSector } from '../../data/projects';
+
+const featured = projects.filter((p) => p.featured);
+const sectors: ProjectSector[] = ['agri', 'media', 'property', 'commerce', 'product'];
+const sectorCount = (s: ProjectSector) => projects.filter((p) => p.sector === s).length;
+
+const stats = [
+	{ to: projects.length, suffix: '+', label: 'Products shipped' },
+	{ to: 5, suffix: '', label: 'Sectors served' },
+	{ to: 7, suffix: '+', label: 'Years building' },
+	{ to: 99.9, decimals: 1, suffix: '%', label: 'Uptime upheld' },
+];
+
+// a doubled strip of shots for the hero marquee
+const marquee = [...projects, ...projects];
+---
+
+<div class="bdbody bd-services bd-portfolio view-body view-body-boardroom">
+	<!-- ── Hero ───────────────────────────────────────────── -->
+	<header class="pf-hero bd-reveal">
+		<span class="pf-hero-aurora" aria-hidden="true"></span>
+		<div class="pf-hero-copy">
+			<span class="bd-kicker">Our work</span>
+			<h1 class="bd-display pf-h1">
+				Proof, not
+				<span class="bd-grad">promises.</span>
+			</h1>
+			<p class="bd-sub pf-hero-sub">
+				Real products, live on the internet — agritech, media, property,
+				commerce and platforms we designed, built and still look after.
+			</p>
+			<div class="bd-links pf-hero-links">
+				<a href="#pf-work" class="bd-pill">Browse the work</a>
+				<a href="/contact" class="bd-link">Start your project <Icon width={15} name="mdi:arrow-right" /></a>
+			</div>
+		</div>
+
+		<!-- drifting wall of real screenshots -->
+		<div class="pf-marquee" aria-hidden="true">
+			<div class="pf-marquee-track">
+				{marquee.map((p) => (
+					<span class="pf-thumb" style={`--c:${p.color}`}>
+						<img src={p.img} alt="" loading="lazy" />
+					</span>
+				))}
+			</div>
+		</div>
+	</header>
+
+	<!-- ── Impact numbers ──────────────────────────────────── -->
+	<div class="bd-grid">
+		<section class="bd-tile bd-tile--full bd-tile--inverse bd-reveal" data-cursor="chart">
+			<ul class="bd-numbers">
+				{stats.map((n) => (
+					<li class="bd-number">
+						<strong data-count={n.to} data-suffix={n.suffix} data-decimals={n.decimals || 0}>0{n.suffix}</strong>
+						<span>{n.label}</span>
+					</li>
+				))}
+			</ul>
+		</section>
+	</div>
+
+	<!-- ── Featured case studies ───────────────────────────── -->
+	<section class="bd-head bd-reveal">
+		<h2 class="bd-h bd-h--center">Selected work.</h2>
+		<p class="bd-p bd-p--center">A few we’re especially proud of — go on, open them in a new tab.</p>
+	</section>
+	<div class="pf-feats">
+		{featured.map((p, i) => (
+			<article class:list={['pf-feat', 'bd-reveal', { 'pf-feat--rev': i % 2 === 1 }]} style={`--c:${p.color}`} data-cursor="repo">
+				<a class="pf-shot pf-shot--lg" href={p.url ?? undefined} target={p.url ? '_blank' : undefined} rel={p.url ? 'noopener noreferrer' : undefined} aria-label={p.url ? `Visit ${p.name}` : p.name}>
+					<span class="pf-bar" aria-hidden="true"><i></i><i></i><i></i><span class="pf-url">{p.host}</span></span>
+					<span class="pf-img"><img src={p.img} alt={`${p.name} website`} loading={i === 0 ? 'eager' : 'lazy'} /></span>
+					<span class="pf-open" aria-hidden="true"><Icon width={16} name="mdi:arrow-top-right" /></span>
+				</a>
+				<div class="pf-feat-body">
+					<span class="pf-feat-eyebrow">Featured · {sectorLabels[p.sector]}</span>
+					<h3 class="pf-feat-name">{p.name}</h3>
+					<p class="pf-feat-tagline">{p.tagline}</p>
+					<p class="pf-feat-blurb">{p.blurb}</p>
+					<ul class="pf-tags">
+						{p.tags.map((t) => <li>{t}</li>)}
+					</ul>
+					{p.url ? (
+						<a class="bd-link pf-feat-link" href={p.url} target="_blank" rel="noopener noreferrer">
+							Visit live site <Icon width={15} name="mdi:open-in-new" />
+						</a>
+					) : (
+						<span class="pf-feat-note">Private engagement</span>
+					)}
+				</div>
+			</article>
+		))}
+	</div>
+
+	<!-- ── All work — CSS-only sector filter ───────────────── -->
+	<section class="bd-head bd-reveal" id="pf-work">
+		<h2 class="bd-h bd-h--center">Every project.</h2>
+		<p class="bd-p bd-p--center">Filter by sector — {projects.length} products and counting.</p>
+	</section>
+	<form class="pf-filter">
+		<input class="pf-radio" type="radio" name="pf" id="pf-all" checked />
+		{sectors.map((s) => (
+			<input class="pf-radio" type="radio" name="pf" id={`pf-${s}`} />
+		))}
+		<div class="pf-chips bd-reveal">
+			<label class="pf-chip" for="pf-all">All work <span>{projects.length}</span></label>
+			{sectors.map((s) => (
+				<label class="pf-chip" for={`pf-${s}`}>{sectorLabels[s]} <span>{sectorCount(s)}</span></label>
+			))}
+		</div>
+		<div class="pf-grid">
+			{projects.map((p) => (
+				<article class:list={['pf-card', 'bd-reveal', `s-${p.sector}`]} style={`--c:${p.color}`} data-cursor="repo">
+					<a
+						class="pf-card-link"
+						href={p.url ?? undefined}
+						target={p.url ? '_blank' : undefined}
+						rel={p.url ? 'noopener noreferrer' : undefined}
+						aria-label={p.url ? `Visit ${p.name}` : p.name}
+						aria-disabled={p.url ? undefined : 'true'}
+					>
+						<span class="pf-shot">
+							<span class="pf-bar" aria-hidden="true"><i></i><i></i><i></i><span class="pf-url">{p.host}</span></span>
+							<span class="pf-img"><img src={p.img} alt={`${p.name} website`} loading="lazy" /></span>
+							<span class="pf-open" aria-hidden="true"><Icon width={15} name={p.url ? 'mdi:arrow-top-right' : 'mdi:lock-outline'} /></span>
+						</span>
+						<div class="pf-card-body">
+							<div class="pf-card-head">
+								<h3 class="pf-card-name">{p.name}</h3>
+								<span class="pf-card-year">{p.year}</span>
+							</div>
+							<p class="pf-card-tagline">{p.tagline}</p>
+							<ul class="pf-tags">
+								{p.tags.map((t) => <li>{t}</li>)}
+							</ul>
+						</div>
+					</a>
+				</article>
+			))}
+		</div>
+	</form>
+
+	<!-- ── CTA ─────────────────────────────────────────────── -->
+	<section class="bd-grid">
+		<div class="bd-tile bd-tile--full bd-tile--cta bd-reveal" data-cursor="phone">
+			<h2 class="bd-display bd-display--cta">Your project, next on this page.</h2>
+			<p class="bd-sub">Tell us what you have in mind — you’ll have a reply within one business day.</p>
+			<div class="bd-links bd-links--center">
+				<a href="/contact" class="bd-pill bd-pill--light">Start your project</a>
+				<a href="/services" class="bd-link bd-link--invert">See what we do <Icon width={15} name="mdi:chevron-right" /></a>
+			</div>
+		</div>
+	</section>
+</div>
+
+<style>
+	/* ════ Boardroom base (self-contained), boardroom blue ════ */
+	.bdbody {
+		--bd-accent: #28a6ec;
+		--bd-ink: #f4f6fb;
+		--bd-muted: rgba(244, 246, 251, 0.62);
+		--bd-glass: linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02) 55%);
+		--bd-glass-border: rgba(255, 255, 255, 0.1);
+		--bd-shadow: 0 34px 80px -34px rgba(0, 0, 0, 0.8);
+		font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+		position: relative;
+		isolation: isolate;
+		background:
+			radial-gradient(1100px 540px at 78% -6%, color-mix(in srgb, var(--bd-accent) 13%, transparent), transparent 62%),
+			radial-gradient(900px 520px at 8% 38%, rgba(58, 90, 200, 0.1), transparent 60%),
+			linear-gradient(180deg, #070910 0%, #0a0d1c 45%, #05060d 100%);
+		color: var(--bd-ink);
+		padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 4rem);
+		transition: background 0.4s ease, color 0.4s ease;
+		overflow: hidden;
+	}
+	:global(html:not(.dark)) .bdbody {
+		--bd-ink: #14162a;
+		--bd-muted: rgba(20, 22, 40, 0.64);
+		--bd-glass: linear-gradient(160deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.55) 55%);
+		--bd-glass-border: rgba(20, 22, 40, 0.1);
+		--bd-shadow: 0 30px 70px -34px rgba(20, 22, 40, 0.25);
+		background:
+			radial-gradient(1100px 540px at 78% -6%, color-mix(in srgb, var(--bd-accent) 10%, transparent), transparent 62%),
+			linear-gradient(180deg, #eef2f7 0%, #e7edf6 50%, #eef2f7 100%);
+	}
+
+	.bd-kicker { display: inline-block; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bd-accent); margin-bottom: 1rem; }
+	.bd-display { font-size: clamp(2.6rem, 6vw, 4.6rem); font-weight: 700; letter-spacing: -0.025em; line-height: 1.04; margin: 0 0 1.1rem; }
+	.bd-grad {
+		background: linear-gradient(110deg, #9bd8ff 0%, var(--bd-accent) 38%, #7ef0d2 64%, #9bd8ff 100%);
+		background-size: 220% 100%;
+		-webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+		animation: pf-grad 7s ease infinite;
+	}
+	@keyframes pf-grad { 0%,100%{ background-position:0% 50%; } 50%{ background-position:100% 50%; } }
+	.bd-sub { font-size: clamp(1.05rem, 2vw, 1.35rem); line-height: 1.5; color: var(--bd-muted); max-width: 40rem; margin: 0 auto 1.6rem; }
+	.bd-h { font-size: clamp(1.7rem, 3.4vw, 2.5rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; margin: 0 0 0.7rem; }
+	.bd-h--center { text-align: center; }
+	.bd-p { font-size: 1.02rem; line-height: 1.6; color: var(--bd-muted); max-width: 34rem; margin: 0 auto 1.2rem; }
+	.bd-p--center { margin-inline: auto; text-align: center; }
+	.bd-head { max-width: 56rem; margin: clamp(2.5rem, 6vw, 4rem) auto clamp(1.5rem, 3vw, 2rem); text-align: center; }
+
+	.bd-links { display: flex; align-items: center; justify-content: center; gap: 1.4rem; flex-wrap: wrap; }
+	.bd-links--center { justify-content: center; }
+	.bd-pill {
+		position: relative; display: inline-flex; align-items: center; padding: 0.78rem 1.5rem; border-radius: 9999px;
+		background: linear-gradient(180deg, color-mix(in srgb, var(--bd-accent) 88%, #fff), var(--bd-accent) 45%, color-mix(in srgb, var(--bd-accent) 72%, #03244a));
+		border: 1px solid color-mix(in srgb, var(--bd-accent) 60%, rgba(255, 255, 255, 0.4));
+		color: #fff; font-size: 0.95rem; font-weight: 600; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+		box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 12px 28px -12px color-mix(in srgb, var(--bd-accent) 65%, transparent);
+		transition: transform 0.25s ease, box-shadow 0.25s ease;
+	}
+	.bd-pill:hover { transform: translateY(-2px); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 18px 38px -12px color-mix(in srgb, var(--bd-accent) 80%, transparent); }
+	.bd-pill--light { background: linear-gradient(180deg, #ffffff, #dfe6f2); border-color: rgba(255, 255, 255, 0.8); color: #0b0d18; text-shadow: none; }
+	.bd-link { display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.98rem; font-weight: 600; color: var(--bd-accent); transition: gap 0.25s ease; }
+	.bd-link:hover { gap: 0.5rem; }
+	.bd-link--invert { color: #9bd8ff; }
+
+	.bd-grid { display: grid; gap: clamp(0.9rem, 2vw, 1.4rem); max-width: 88rem; margin: 0 auto clamp(0.9rem, 2vw, 1.4rem); }
+	.bd-tile { position: relative; display: flex; flex-direction: column; gap: 1.4rem; text-align: center; padding: clamp(2rem, 4vw, 3rem) clamp(1.25rem, 3vw, 2.25rem); border-radius: 1.75rem; background: var(--bd-glass); border: 1px solid var(--bd-glass-border); box-shadow: var(--bd-shadow); backdrop-filter: blur(22px) saturate(130%); -webkit-backdrop-filter: blur(22px) saturate(130%); overflow: hidden; }
+	.bd-tile--full { grid-column: 1 / -1; }
+	.bd-tile--inverse { background: radial-gradient(720px 320px at 50% -10%, color-mix(in srgb, var(--bd-accent) 34%, transparent), transparent 70%), linear-gradient(180deg, rgba(21, 26, 48, 0.9), rgba(5, 6, 13, 0.95)); color: #f5f5f7; border-color: color-mix(in srgb, var(--bd-accent) 30%, rgba(255, 255, 255, 0.1)); }
+	.bd-numbers { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.25rem; list-style: none; margin: 0; padding: 0; width: 100%; }
+	@media (max-width: 760px) { .bd-numbers { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+	.bd-number strong { display: block; font-size: clamp(2.4rem, 5vw, 3.6rem); font-weight: 700; letter-spacing: -0.03em; background: linear-gradient(135deg, #9bd8ff, var(--bd-accent)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+	.bd-number span { font-size: 0.85rem; color: rgba(245, 245, 247, 0.6); }
+
+	/* ── Hero ── */
+	.pf-hero { position: relative; overflow: hidden; margin: calc(-1 * clamp(2.5rem, 6vw, 4.5rem)) calc(-1 * clamp(1rem, 3vw, 2rem)) clamp(2rem, 4vw, 3rem); padding: clamp(3.5rem, 8vw, 6rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 3.5rem); text-align: center; }
+	.pf-hero-aurora { position: absolute; inset: -30% -10% auto; height: 90%; z-index: 0; pointer-events: none; background: radial-gradient(620px 440px at 30% 20%, rgba(34, 211, 238, 0.22), transparent 60%), radial-gradient(620px 460px at 78% 16%, rgba(139, 92, 246, 0.2), transparent 62%); filter: blur(54px); opacity: 0.6; animation: pf-aurora 18s ease-in-out infinite; }
+	:global(html:not(.dark)) .pf-hero-aurora { opacity: 0.38; }
+	@keyframes pf-aurora { 0%,100%{ transform: translate3d(0,0,0) scale(1); } 50%{ transform: translate3d(2%,-2%,0) scale(1.08); } }
+	.pf-hero-copy { position: relative; z-index: 1; max-width: 50rem; margin-inline: auto; }
+	.pf-h1 { max-width: 13ch; margin-inline: auto; }
+	.pf-hero-sub { margin-inline: auto; }
+	.pf-hero-links { justify-content: center; }
+
+	/* hero screenshot marquee */
+	.pf-marquee { position: relative; z-index: 1; margin-top: clamp(2.5rem, 5vw, 3.5rem); overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+	.pf-marquee-track { display: flex; gap: clamp(0.8rem, 2vw, 1.3rem); width: max-content; animation: pf-drift 60s linear infinite; }
+	.pf-marquee:hover .pf-marquee-track { animation-play-state: paused; }
+	@keyframes pf-drift { to { transform: translateX(-50%); } }
+	.pf-thumb { flex-shrink: 0; width: clamp(220px, 26vw, 340px); aspect-ratio: 16 / 10; border-radius: 1rem; overflow: hidden; border: 1px solid color-mix(in srgb, var(--c) 36%, var(--bd-glass-border)); box-shadow: 0 24px 50px -28px color-mix(in srgb, var(--c) 40%, rgba(0,0,0,0.8)); }
+	.pf-thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+
+	/* ── Browser-framed screenshot ── */
+	.pf-shot { position: relative; display: block; border-radius: 1.1rem; overflow: hidden; background: #0b0d16; border: 1px solid color-mix(in srgb, var(--c) 30%, var(--bd-glass-border)); box-shadow: var(--bd-shadow); }
+	.pf-bar { display: flex; align-items: center; gap: 0.4rem; padding: 0.55rem 0.8rem; background: color-mix(in srgb, var(--bd-ink) 8%, #11131c); border-bottom: 1px solid var(--bd-glass-border); }
+	.pf-bar i { width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,0.25); }
+	.pf-bar i:first-child { background: #ff5f57; } .pf-bar i:nth-child(2) { background: #febc2e; } .pf-bar i:nth-child(3) { background: #28c840; }
+	.pf-url { margin-left: 0.5rem; font-size: 0.72rem; font-weight: 600; color: color-mix(in srgb, var(--bd-ink) 60%, transparent); font-family: ui-monospace, 'SF Mono', Menlo, monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+	:global(html:not(.dark)) .pf-bar { background: #f1f3f8; }
+	:global(html:not(.dark)) .pf-shot { background: #f1f3f8; }
+	.pf-img { display: block; aspect-ratio: 16 / 10; overflow: hidden; }
+	.pf-img img { width: 100%; height: 100%; object-fit: cover; object-position: top; transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
+	.pf-open { position: absolute; top: 0.6rem; right: 0.6rem; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 9999px; color: #fff; background: color-mix(in srgb, var(--c) 82%, transparent); opacity: 0; transform: translate(4px, -4px); transition: opacity 0.3s ease, transform 0.3s ease; }
+
+	/* ── Featured rows ── */
+	.pf-feats { max-width: 80rem; margin: 0 auto; display: grid; gap: clamp(2rem, 5vw, 3.5rem); }
+	.pf-feat { display: grid; gap: clamp(1.5rem, 4vw, 3rem); align-items: center; }
+	@media (min-width: 900px) { .pf-feat { grid-template-columns: 1.15fr 0.85fr; } .pf-feat--rev .pf-shot--lg { order: 2; } }
+	.pf-shot--lg { transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease; }
+	.pf-shot--lg:hover { transform: translateY(-6px); box-shadow: 0 50px 100px -40px color-mix(in srgb, var(--c) 45%, rgba(0,0,0,0.85)); }
+	.pf-shot--lg:hover .pf-img img { transform: scale(1.04); }
+	.pf-shot--lg:hover .pf-open { opacity: 1; transform: translate(0, 0); }
+	.pf-feat-eyebrow { display: inline-block; font-size: 0.74rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--c); margin-bottom: 0.7rem; }
+	.pf-feat-name { font-size: clamp(1.6rem, 3.2vw, 2.3rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.08; margin: 0 0 0.5rem; }
+	.pf-feat-tagline { font-size: 1.05rem; font-weight: 600; color: color-mix(in srgb, var(--c) 72%, var(--bd-ink)); margin: 0 0 0.8rem; }
+	.pf-feat-blurb { font-size: 0.98rem; line-height: 1.6; color: var(--bd-muted); margin: 0 0 1.2rem; max-width: 34rem; }
+	.pf-feat-link { font-size: 1rem; }
+	.pf-feat-note { font-size: 0.85rem; font-weight: 600; color: var(--bd-muted); }
+
+	/* ── Tag pills ── */
+	.pf-tags { list-style: none; display: flex; flex-wrap: wrap; gap: 0.45rem; padding: 0; margin: 0 0 1.2rem; }
+	.pf-tags li { font-size: 0.76rem; font-weight: 600; padding: 0.3rem 0.7rem; border-radius: 9999px; color: color-mix(in srgb, var(--c) 80%, var(--bd-ink)); background: color-mix(in srgb, var(--c) 12%, transparent); border: 1px solid color-mix(in srgb, var(--c) 26%, transparent); }
+
+	/* ── Filter (pure CSS via radios) ── */
+	.pf-filter { max-width: 84rem; margin: 0 auto; }
+	.pf-radio { position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0; }
+	.pf-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.55rem; margin-bottom: clamp(1.5rem, 3vw, 2.25rem); }
+	.pf-chip { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.55rem 1.05rem; border-radius: 9999px; font-size: 0.92rem; font-weight: 600; color: var(--bd-ink); background: var(--bd-glass); border: 1px solid var(--bd-glass-border); cursor: pointer; transition: transform 0.2s ease, border-color 0.25s ease, background 0.25s ease, color 0.25s ease; }
+	.pf-chip span { font-size: 0.72rem; font-weight: 800; padding: 0.05rem 0.4rem; border-radius: 9999px; color: var(--bd-muted); background: color-mix(in srgb, var(--bd-ink) 8%, transparent); }
+	.pf-chip:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--bd-accent) 45%, var(--bd-glass-border)); }
+
+	/* active chip + filtering — one pair of rules per sector */
+	#pf-all:checked ~ .pf-chips label[for='pf-all'],
+	#pf-agri:checked ~ .pf-chips label[for='pf-agri'],
+	#pf-media:checked ~ .pf-chips label[for='pf-media'],
+	#pf-property:checked ~ .pf-chips label[for='pf-property'],
+	#pf-commerce:checked ~ .pf-chips label[for='pf-commerce'],
+	#pf-product:checked ~ .pf-chips label[for='pf-product'] {
+		color: #06121a;
+		background: linear-gradient(95deg, #8dfeea, #18debe, #28a6ec);
+		border-color: transparent;
+		box-shadow: 0 12px 26px -12px rgba(24, 222, 190, 0.5);
+	}
+	#pf-all:checked ~ .pf-chips label[for='pf-all'] span,
+	#pf-agri:checked ~ .pf-chips label[for='pf-agri'] span,
+	#pf-media:checked ~ .pf-chips label[for='pf-media'] span,
+	#pf-property:checked ~ .pf-chips label[for='pf-property'] span,
+	#pf-commerce:checked ~ .pf-chips label[for='pf-commerce'] span,
+	#pf-product:checked ~ .pf-chips label[for='pf-product'] span { color: #06121a; background: rgba(0, 0, 0, 0.14); }
+
+	#pf-agri:checked ~ .pf-grid .pf-card:not(.s-agri),
+	#pf-media:checked ~ .pf-grid .pf-card:not(.s-media),
+	#pf-property:checked ~ .pf-grid .pf-card:not(.s-property),
+	#pf-commerce:checked ~ .pf-grid .pf-card:not(.s-commerce),
+	#pf-product:checked ~ .pf-grid .pf-card:not(.s-product) { display: none; }
+
+	/* ── Project grid ── */
+	.pf-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1rem, 2.2vw, 1.6rem); }
+	@media (max-width: 900px) { .pf-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+	@media (max-width: 580px) { .pf-grid { grid-template-columns: 1fr; } }
+	.pf-card { border-radius: 1.3rem; background: var(--bd-glass); border: 1px solid var(--bd-glass-border); box-shadow: var(--bd-shadow); backdrop-filter: blur(18px) saturate(130%); -webkit-backdrop-filter: blur(18px) saturate(130%); overflow: hidden; transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.4s ease, box-shadow 0.4s ease; }
+	.pf-card:hover { transform: translateY(-7px); border-color: color-mix(in srgb, var(--c) 50%, var(--bd-glass-border)); box-shadow: 0 44px 90px -34px color-mix(in srgb, var(--c) 40%, rgba(0,0,0,0.85)); }
+	.pf-card-link { display: block; }
+	.pf-card .pf-shot { border: none; border-radius: 0; box-shadow: none; }
+	.pf-card:hover .pf-img img { transform: scale(1.05); }
+	.pf-card:hover .pf-open { opacity: 1; transform: translate(0, 0); }
+	.pf-card-body { padding: 1.1rem 1.25rem 1.35rem; }
+	.pf-card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.6rem; }
+	.pf-card-name { font-size: 1.18rem; font-weight: 700; letter-spacing: -0.01em; margin: 0; }
+	.pf-card-year { font-size: 0.78rem; font-weight: 700; color: color-mix(in srgb, var(--c) 70%, transparent); flex-shrink: 0; }
+	.pf-card-tagline { font-size: 0.9rem; line-height: 1.5; color: var(--bd-muted); margin: 0.3rem 0 0.9rem; }
+	.pf-card .pf-tags { margin-bottom: 0; }
+
+	/* ── CTA ── */
+	.bd-tile--cta { background: radial-gradient(820px 380px at 50% 130%, color-mix(in srgb, var(--bd-accent) 38%, transparent), transparent 72%), linear-gradient(180deg, rgba(18, 22, 42, 0.92), rgba(5, 6, 13, 0.96)); color: #f5f5f7; border-color: color-mix(in srgb, var(--bd-accent) 26%, rgba(255, 255, 255, 0.1)); padding-block: clamp(3rem, 6vw, 5rem); margin-top: clamp(2.5rem, 6vw, 4rem); }
+	.bd-display--cta { font-size: clamp(2rem, 5vw, 3.6rem); max-width: 18ch; margin-inline: auto; }
+	.bd-tile--cta .bd-sub { color: rgba(245, 245, 247, 0.62); }
+
+	/* ── Reveal ── */
+	.bd-reveal { opacity: 0; transform: translateY(26px); transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
+	.bd-reveal.is-on { opacity: 1; transform: translateY(0); }
+	@media (prefers-reduced-motion: reduce) {
+		.bd-reveal { opacity: 1; transform: none; transition: none; }
+		.pf-hero-aurora, .pf-marquee-track, .bd-grad { animation: none; }
+		.pf-marquee { -webkit-mask-image: none; mask-image: none; overflow-x: auto; }
+		.pf-card:hover, .pf-shot--lg:hover { transform: none; }
+	}
+</style>

@@ -314,6 +314,8 @@ export const disciplines: Discipline[] = [
 			{ title: 'Chatbots & assistants', desc: 'Answer customers and staff instantly, around the clock.', items: ['Support bots', 'Internal copilots', 'Voice / chat'] },
 			{ title: 'Workflow automation', desc: 'Connect your tools so manual steps disappear.', items: ['Integrations', 'Triggers & actions', 'No-code flows'] },
 			{ title: 'Data pipelines', desc: 'Move and shape data so it’s ready to use.', items: ['ETL', 'Dashboards', 'Reporting'] },
+			{ title: 'Document & content AI', desc: 'Summarise, extract and generate from documents, emails and media.', items: ['Summarisation', 'Data extraction', 'Generation'] },
+			{ title: 'Insights & forecasting', desc: 'Turn your data into predictions and decisions you can act on.', items: ['Predictive models', 'Anomaly alerts', 'Smart reports'] },
 		],
 		approach: [
 			{ n: '01', title: 'Find', desc: 'We spot the repetitive work worth automating.' },

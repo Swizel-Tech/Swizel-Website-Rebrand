@@ -5,73 +5,64 @@ import FooterCTA from '../../components/blocks/FooterCTA.astro';
 import PortfolioInnerContent from '../../components/elements/PortfolioInnerContent.astro';
 import { portfolio } from '../../consts';
 import MainLayout from '../../layouts/MainLayout.astro';
+import PortfolioBoardroom from '../../components/sections/PortfolioBoardroom.astro';
 
 const getImageClass = (idx: number) =>
 	idx === 0 ? 'md:h-[600px] h-[250px]' : 'md:h-[420px] h-[280px]';
 ---
 
 <MainLayout>
-	<Breadcrumb />
-	<Section>
-		<div class="py-20 space-y-10">
-			{
-				/* <ul
-				class="flex sm:flex-nowrap flex-wrap items-center justify-center gap-5 max-w-lg mx-auto pt-5"
-			>
-				{
-					categorise.map((cat) => (
-						<li
-							id={cat}
-							class="text-[#453D3D] font- capitalize tracking-wide text-sm cursor-pointer"
-						>
-							{cat}
-						</li>
-					))
-				}
-			</ul> */
-			}
-			<!-- so tailwind can generate the text white class -->
-			<p class="text-white/90 hidden"></p>
-			<div class="space-y-8">
-				<div class="grid sm:grid-cols-2 gap-6">
-					{
-						portfolio.map(({ url, ...rest }, idx) =>
-							url ? (
-								<a
-									class={
-										idx === 0
-											? 'sm:col-span-2'
-											: 'md:col-span-1'
-									}
-									href={url ?? ''}
-								>
-									<PortfolioInnerContent
-										{...rest}
-										imageHeightControl={getImageClass(idx)}
-										titleColor="text-darker"
-									/>
-								</a>
-							) : (
-								<div
-									aria-disabled="true"
-									class={
-										idx === 0
-											? 'sm:col-span-2'
-											: 'md:col-span-1'
-									}
-								>
-									<PortfolioInnerContent
-										{...rest}
-										imageHeightControl={getImageClass(idx)}
-										titleColor="text-darker"
-									/>
-								</div>
+	<!-- Boardroom world (also the default). Hidden in other views. -->
+	<PortfolioBoardroom />
+
+	<!-- Fallback portfolio for the other worlds. -->
+	<div class="alt-view-only">
+		<Breadcrumb />
+		<Section>
+			<div class="py-20 space-y-10">
+				<!-- so tailwind can generate the text white class -->
+				<p class="text-white/90 hidden"></p>
+				<div class="space-y-8">
+					<div class="grid sm:grid-cols-2 gap-6">
+						{
+							portfolio.map(({ url, ...rest }, idx) =>
+								url ? (
+									<a
+										class={
+											idx === 0
+												? 'sm:col-span-2'
+												: 'md:col-span-1'
+										}
+										href={url ?? ''}
+									>
+										<PortfolioInnerContent
+											{...rest}
+											imageHeightControl={getImageClass(idx)}
+											titleColor="text-darker"
+										/>
+									</a>
+								) : (
+									<div
+										aria-disabled="true"
+										class={
+											idx === 0
+												? 'sm:col-span-2'
+												: 'md:col-span-1'
+										}
+									>
+										<PortfolioInnerContent
+											{...rest}
+											imageHeightControl={getImageClass(idx)}
+											titleColor="text-darker"
+										/>
+									</div>
+								)
 							)
-						)
-					}
+						}
+					</div>
 				</div>
 			</div>
-		</div>
-	</Section>
-	<FooterCTA />
+		</Section>
+		<FooterCTA />
+	</div>
 </MainLayout>
