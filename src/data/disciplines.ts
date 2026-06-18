@@ -117,6 +117,7 @@ export const disciplines: Discipline[] = [
 			{ title: 'Mobile apps', desc: 'Native-quality iOS and Android from one focused team.', items: ['Flutter', 'Native iOS', 'Native Android'] },
 			{ title: 'Proof of concept & MVP', desc: 'Validate the idea fast with a working POC or a lean first version.', items: ['Rapid prototype', 'POC', 'MVP build'] },
 			{ title: 'E-commerce & integrations', desc: 'Storefronts, payments and the tools you already use, wired together.', items: ['Shopify / WooCommerce', 'Payments', 'Third-party APIs'] },
+			{ title: 'APIs & backends', desc: 'The engine room — secure APIs, databases and services your product runs on.', items: ['REST / GraphQL', 'Databases', 'Auth & security'] },
 		],
 		approach: [
 			{ n: '01', title: 'Talk it through', desc: 'We sit with you, explore your idea and look at samples and options together.' },

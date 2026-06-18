@@ -351,24 +351,27 @@ html.dark .text-darker\/50 { color: rgba(233, 234, 242, 0.5); }
    Theme-aware site header (rhymes with the hero) + refined toggle
    ========================================================= */
 :root {
-  --nav-bg: rgba(246, 250, 249, 0.82);
-  --nav-ink: #14162a;
-  --nav-border: rgba(20, 22, 40, 0.08);
-  --nav-cta-border: rgba(20, 22, 40, 0.22);
+  /* a touch translucent so the bar always frosts/blends with what's behind it */
+  --nav-bg: rgba(247, 250, 252, 0.72);
+  --nav-ink: #0f1120;
+  --nav-border: rgba(20, 22, 40, 0.12);
+  --nav-cta-border: rgba(20, 22, 40, 0.28);
+  --nav-active-grad: linear-gradient(95deg, #0b8e7c, #14589b);
 }
 html.dark {
-  --nav-bg: rgba(11, 13, 24, 0.82);
+  --nav-bg: rgba(10, 12, 22, 0.68);
   --nav-ink: #ffffff;
-  --nav-border: rgba(255, 255, 255, 0.08);
+  --nav-border: rgba(255, 255, 255, 0.1);
   --nav-cta-border: rgba(255, 255, 255, 0.45);
+  --nav-active-grad: linear-gradient(95deg, #2ee6c6, #56bbf6);
 }
 .site-header {
   --nav-h: 92px;
   /* DEFAULT = solid + readable everywhere (safe even if JS never runs) */
   background: var(--nav-bg);
   color: var(--nav-ink);
-  -webkit-backdrop-filter: blur(16px) saturate(140%);
-  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+  backdrop-filter: blur(22px) saturate(150%);
   border-bottom: 1px solid var(--nav-border);
   transition: background 0.4s ease, color 0.4s ease, border-color 0.4s ease,
     box-shadow 0.4s ease, backdrop-filter 0.4s ease;
@@ -432,8 +435,8 @@ body:has(.hero-view) .hero-view {
 .site-header.header-sticky {
   background: var(--nav-bg);
   color: var(--nav-ink);
-  -webkit-backdrop-filter: blur(16px) saturate(140%);
-  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+  backdrop-filter: blur(22px) saturate(150%);
   border-bottom-color: var(--nav-border);
   box-shadow: 0 10px 34px -16px rgba(0, 0, 0, 0.3);
 }
@@ -796,15 +799,20 @@ html[data-view="legacy"] #swizel-cursor .cur-legacy { display: block; }
 
 /* Active nav item: darker brand gradient (more visible than solid navy) */
 .site-header nav a.active {
-  background-image: linear-gradient(95deg, #12b39b, #1f7fc4);
+  background-image: var(--nav-active-grad);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
 }
 .site-header nav a.active::after {
-  background: linear-gradient(95deg, #12b39b, #1f7fc4);
+  background: var(--nav-active-grad);
 }
+/* the dropdown caret lives inside the (gradient-clipped) active link, where
+   currentColor becomes transparent — pin it to the readable nav ink so the
+   "there's a menu here" cue never disappears on /services/* pages */
+.site-header .nav-dd-caret { color: var(--nav-ink); opacity: 0.7; -webkit-text-fill-color: currentColor; }
+.site-header .nav-dd:hover .nav-dd-caret { color: var(--nav-active, #18debe); opacity: 1; }
 
 /* =========================================================
    Builder body (built section by section) + cursor overrides
