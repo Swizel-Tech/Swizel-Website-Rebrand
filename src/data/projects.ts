@@ -14,6 +14,7 @@ export interface Project {
 	color: string;
 	year: string;
 	featured?: boolean;
+	kind?: 'web' | 'app'; // 'app' shows a clean mockup, no browser chrome
 }
 
 export const sectorLabels: Record<ProjectSector | 'all', string> = {
@@ -67,6 +68,34 @@ export const projects: Project[] = [
 		color: '#6366f1',
 		year: '2025',
 		featured: true,
+	},
+	{
+		name: 'AppMan',
+		tagline: 'School management, in the palm of your hand.',
+		blurb:
+			'A school-management platform for institutions — attendance via QR smart-IDs, computer-based testing and a parent/student portal, on web and mobile.',
+		img: '/images/portfolio/shot-appman.jpg',
+		url: null,
+		host: 'AppMan',
+		sector: 'product',
+		tags: ['Mobile app', 'Web app', 'EdTech'],
+		color: '#2bb3c0',
+		year: '2022',
+		kind: 'app',
+	},
+	{
+		name: 'BuyGas',
+		tagline: 'Cooking gas, delivered.',
+		blurb:
+			'A platform-as-a-service connecting gas merchants to customers — easy, affordable cooking-gas ordering and delivery, tracked from tap to doorstep.',
+		img: '/images/portfolio/shot-buygas.jpg',
+		url: null,
+		host: 'BuyGas',
+		sector: 'product',
+		tags: ['Mobile app', 'Delivery', 'PaaS'],
+		color: '#22c55e',
+		year: '2023',
+		kind: 'app',
 	},
 	{
 		name: 'Hemam Synergy',

@@ -75,9 +75,9 @@ const marquee = [...projects, ...projects];
 	<div class="pf-feats">
 		{featured.map((p, i) => (
 			<article class:list={['pf-feat', 'bd-reveal', { 'pf-feat--rev': i % 2 === 1 }]} style={`--c:${p.color}`} data-cursor="repo">
-				<a class="pf-shot pf-shot--lg" href={p.url ?? undefined} target={p.url ? '_blank' : undefined} rel={p.url ? 'noopener noreferrer' : undefined} aria-label={p.url ? `Visit ${p.name}` : p.name}>
-					<span class="pf-bar" aria-hidden="true"><i></i><i></i><i></i><span class="pf-url">{p.host}</span></span>
-					<span class="pf-img"><img src={p.img} alt={`${p.name} website`} loading={i === 0 ? 'eager' : 'lazy'} /></span>
+				<a class:list={['pf-shot', 'pf-shot--lg', { 'pf-shot--app': p.kind === 'app' }]} href={p.url ?? undefined} target={p.url ? '_blank' : undefined} rel={p.url ? 'noopener noreferrer' : undefined} aria-label={p.url ? `Visit ${p.name}` : p.name}>
+					{p.kind !== 'app' && <span class="pf-bar" aria-hidden="true"><i></i><i></i><i></i><span class="pf-url">{p.host}</span></span>}
+					<span class="pf-img"><img src={p.img} alt={`${p.name} ${p.kind === 'app' ? 'app' : 'website'}`} loading={i === 0 ? 'eager' : 'lazy'} /></span>
 					<span class="pf-open" aria-hidden="true"><Icon width={16} name="mdi:arrow-top-right" /></span>
 				</a>
 				<div class="pf-feat-body">
@@ -127,9 +127,9 @@ const marquee = [...projects, ...projects];
 						aria-label={p.url ? `Visit ${p.name}` : p.name}
 						aria-disabled={p.url ? undefined : 'true'}
 					>
-						<span class="pf-shot">
-							<span class="pf-bar" aria-hidden="true"><i></i><i></i><i></i><span class="pf-url">{p.host}</span></span>
-							<span class="pf-img"><img src={p.img} alt={`${p.name} website`} loading="lazy" /></span>
+						<span class:list={['pf-shot', { 'pf-shot--app': p.kind === 'app' }]}>
+							{p.kind !== 'app' && <span class="pf-bar" aria-hidden="true"><i></i><i></i><i></i><span class="pf-url">{p.host}</span></span>}
+							<span class="pf-img"><img src={p.img} alt={`${p.name} ${p.kind === 'app' ? 'app' : 'website'}`} loading="lazy" /></span>
 							<span class="pf-open" aria-hidden="true"><Icon width={15} name={p.url ? 'mdi:arrow-top-right' : 'mdi:lock-outline'} /></span>
 						</span>
 						<div class="pf-card-body">
@@ -263,6 +263,11 @@ const marquee = [...projects, ...projects];
 	.pf-img { display: block; aspect-ratio: 16 / 10; overflow: hidden; }
 	.pf-img img { width: 100%; height: 100%; object-fit: cover; object-position: top; transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
 	.pf-open { position: absolute; top: 0.6rem; right: 0.6rem; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 9999px; color: #fff; background: color-mix(in srgb, var(--c) 82%, transparent); opacity: 0; transform: translate(4px, -4px); transition: opacity 0.3s ease, transform 0.3s ease; }
+
+	/* app mockups — show the whole composition on a brand-tinted canvas, no browser chrome */
+	.pf-shot--app .pf-img { background: radial-gradient(130% 130% at 50% 0%, color-mix(in srgb, var(--c) 22%, #0b0d16), #0b0d16); }
+	:global(html:not(.dark)) .pf-shot--app .pf-img { background: radial-gradient(130% 130% at 50% 0%, color-mix(in srgb, var(--c) 18%, #eef2f7), #eef2f7); }
+	.pf-shot--app .pf-img img { object-fit: contain; object-position: center; padding: 0.5rem; }
 
 	/* ── Featured rows ── */
 	.pf-feats { max-width: 80rem; margin: 0 auto; display: grid; gap: clamp(2rem, 5vw, 3.5rem); }
