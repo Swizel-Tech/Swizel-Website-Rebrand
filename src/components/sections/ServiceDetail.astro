@@ -15,49 +15,54 @@ const { discipline: d, others } = Astro.props;
 // standard "selected work" lower down.
 const isDesign = d.slug === 'design';
 
-// Per-discipline layout so the pages differ in STRUCTURE — where the signature
-// visual sits, the intro direction, the shape of the "included" block — not
-// just colour and copy.
-type Lay = { lead: 'gallery' | 'band' | 'split'; reverse?: boolean; incl: 2 | 3 | 'list' };
+// Per-discipline layout so the pages differ in STRUCTURE, not just colour/copy:
+// the hero is split (copy + signature visual), and we alternate which side the
+// visual sits on and vary the shape of the "included" block.
+type Lay = { incl: 2 | 3 | 'list'; heroRev?: boolean };
 const layouts: Record<string, Lay> = {
-	design: { lead: 'gallery', incl: 2 },
-	development: { lead: 'band', incl: 3 },
-	marketing: { lead: 'split', reverse: true, incl: 2 },
-	strategy: { lead: 'split', incl: 'list' },
-	maintenance: { lead: 'band', incl: 2 },
-	'ai-automation': { lead: 'split', reverse: true, incl: 3 },
+	design: { incl: 2 },
+	development: { incl: 3, heroRev: true },
+	marketing: { incl: 2 },
+	strategy: { incl: 'list', heroRev: true },
+	maintenance: { incl: 2 },
+	'ai-automation': { incl: 3, heroRev: true },
 };
-const L: Lay = layouts[d.slug] ?? { lead: 'split', incl: 2 };
+const L: Lay = layouts[d.slug] ?? { incl: 2 };
 // kind of media slot for this discipline's "in action" placeholder
 const mediaIsVideo = d.media?.kind === 'video';
 ---
 
 <div class="bdbody bd-services bd-detail view-body view-body-boardroom" style={`--c:${d.color}`}>
-	<!-- ── Hero ───────────────────────────────────────────── -->
-	<header class="det-hero bd-reveal" data-cursor={d.cursor}>
+	<!-- ── Hero — split: copy on one side, signature visual on the other ── -->
+	<header class:list={['det-hero', 'bd-reveal', { 'det-hero--rev': L.heroRev }]} data-cursor={d.cursor}>
 		<span class="det-aurora" aria-hidden="true"></span>
-		<a href="/services" class="det-back">
-			<Icon width={15} name="mdi:arrow-left" />
-			All services
-		</a>
-		<span class="det-ic">
-			<Icon width={34} name={d.icon} />
-		</span>
-		<span class="det-kicker">{d.title}</span>
-		<h1 class="bd-display det-h1">{d.tagline}</h1>
-		<p class="bd-sub">{d.heroDesc}</p>
-		<p class="det-clarify">{d.clarifier}</p>
-		<div class="bd-links">
-			<a href="/contact" class="bd-pill">Start a project</a>
-			<a href="#det-included" class="bd-link">
-				What's included
-				<Icon width={15} name="mdi:chevron-down" />
+		<div class="det-hero-text">
+			<a href="/services" class="det-back">
+				<Icon width={15} name="mdi:arrow-left" />
+				All services
 			</a>
+			<span class="det-kicker">
+				<span class="det-kicker-ic"><Icon width={17} name={d.icon} /></span>
+				{d.title}
+			</span>
+			<h1 class="bd-display det-h1">{d.tagline}</h1>
+			<p class="bd-sub det-sub">{d.heroDesc}</p>
+			<p class="det-clarify">{d.clarifier}</p>
+			<div class="bd-links det-links">
+				<a href="/contact" class="bd-pill">Start a project</a>
+				<a href="#det-included" class="bd-link">
+					What's included
+					<Icon width={15} name="mdi:chevron-down" />
+				</a>
+			</div>
+		</div>
+		<div class="det-hero-visual">
+			<ServiceVisual d={d} />
 		</div>
 	</header>
 
 	{
-		L.lead === 'gallery' && (
+		isDesign && (
 			<section class="det-gallery bd-reveal" data-cursor={d.cursor}>
 				<div class="det-gallery-grid">
 					{d.projects.map((p, i) => (
@@ -79,41 +84,18 @@ const mediaIsVideo = d.media?.kind === 'video';
 		)
 	}
 
-	{
-		L.lead === 'band' && (
-			<section class="det-band bd-reveal" data-cursor={d.cursor}>
-				<div class="det-band-inner">
-					<ServiceVisual d={d} />
-				</div>
-			</section>
-		)
-	}
-
-	<!-- ── Intro: what it is (+ showcase, when laid out as a split) ── -->
-	{
-		L.lead === 'split' ? (
-			<div class:list={['det-intro', 'bd-reveal', { 'det-intro--rev': L.reverse }]} data-cursor="vector">
-				<div class="det-intro-text">
-					<span class="bd-eyebrow">What it is</span>
-					<p class="det-overview-text">{d.overview}</p>
-					<p class="det-outcome">
-						<svg class="det-outcome-spark" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l1.9 5.6L19 9.5l-5.1 1.9L12 17l-1.9-5.6L5 9.5l5.1-1.9z" /></svg>
-						{d.outcome}
-					</p>
-				</div>
-				<ServiceVisual d={d} />
-			</div>
-		) : (
-			<div class="det-intro det-intro--solo bd-reveal" data-cursor="vector">
-				<span class="bd-eyebrow">What it is</span>
-				<p class="det-overview-text">{d.overview}</p>
-				<p class="det-outcome">
-					<svg class="det-outcome-spark" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l1.9 5.6L19 9.5l-5.1 1.9L12 17l-1.9-5.6L5 9.5l5.1-1.9z" /></svg>
-					{d.outcome}
-				</p>
-			</div>
-		)
-	}
+	<!-- ── What it is ──────────────────────────────────────── -->
+	<section class="det-about bd-reveal" data-cursor="vector">
+		<div class="det-about-line" aria-hidden="true"></div>
+		<div class="det-about-body">
+			<span class="bd-eyebrow">What it is</span>
+			<p class="det-overview-text">{d.overview}</p>
+			<p class="det-outcome">
+				<svg class="det-outcome-spark" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l1.9 5.6L19 9.5l-5.1 1.9L12 17l-1.9-5.6L5 9.5l5.1-1.9z" /></svg>
+				{d.outcome}
+			</p>
+		</div>
+	</section>
 
 	<!-- ── What's included ─────────────────────────────────── -->
 	<section class="bd-head bd-reveal" id="det-included">
@@ -220,15 +202,26 @@ const mediaIsVideo = d.media?.kind === 'video';
 		)
 	}
 
-	<!-- ── Media slot — drop in a real screenshot or clip later ── -->
+	<!-- ── Media slot — paired with copy; drop in a real clip/shot later ── -->
 	<section class="det-media-band bd-reveal" data-cursor={mediaIsVideo ? 'play' : 'repo'}>
-		<div class="det-media-slot">
-			<span class="det-media-sheen" aria-hidden="true"></span>
-			<span class="det-media-ic">
-				<Icon width={mediaIsVideo ? 30 : 26} name={mediaIsVideo ? 'mdi:play' : 'mdi:image-outline'} />
-			</span>
-			<span class="det-media-label">{mediaIsVideo ? 'Video placeholder' : 'Image placeholder'}</span>
-			<span class="det-media-sub">{d.media?.label ?? `${d.title} in action`}</span>
+		<div class="det-media-grid">
+			<div class="det-media-copy">
+				<span class="bd-eyebrow">{mediaIsVideo ? 'Watch' : 'See it'}</span>
+				<h2 class="det-media-h">{d.media?.label ?? `${d.title} in action`}</h2>
+				<p class="det-media-p">A closer look at how {d.title.toLowerCase()} actually comes together — real work, from first move to finished result.</p>
+				<button type="button" class="det-media-cta">
+					<span class="det-media-cta-ic"><Icon width={16} name={mediaIsVideo ? 'mdi:play' : 'mdi:image-outline'} /></span>
+					{mediaIsVideo ? 'Play the clip' : 'View the shots'}
+				</button>
+			</div>
+			<div class="det-media-slot">
+				<span class="det-media-sheen" aria-hidden="true"></span>
+				<span class="det-media-grid-lines" aria-hidden="true"></span>
+				<span class="det-media-ic">
+					<Icon width={mediaIsVideo ? 28 : 24} name={mediaIsVideo ? 'mdi:play' : 'mdi:image-outline'} />
+				</span>
+				<span class="det-media-label">{mediaIsVideo ? 'Video placeholder' : 'Image placeholder'}</span>
+			</div>
 		</div>
 	</section>
 
@@ -377,46 +370,55 @@ const mediaIsVideo = d.media?.kind === 'video';
 	.bd-tile { position: relative; border-radius: 1.75rem; background: var(--bd-glass); border: 1px solid var(--bd-glass-border); box-shadow: var(--bd-shadow); backdrop-filter: blur(22px) saturate(130%); -webkit-backdrop-filter: blur(22px) saturate(130%); overflow: hidden; padding: clamp(2rem, 4vw, 3rem) clamp(1.5rem, 3vw, 2.5rem); }
 	.bd-tile--full { grid-column: 1 / -1; }
 
-	/* ── Hero ── */
-	.det-hero { position: relative; overflow: hidden; text-align: center; max-width: 56rem; margin: 0 auto clamp(2rem, 5vw, 3.5rem); padding: clamp(0.5rem, 2vw, 1.5rem) 1rem clamp(1.5rem, 4vw, 3rem); }
-	.det-aurora { position: absolute; inset: -25% -10% auto; height: 120%; z-index: -1; pointer-events: none; background: radial-gradient(480px 360px at 50% 18%, color-mix(in srgb, var(--c) 36%, transparent), transparent 60%); filter: blur(50px); opacity: 0.7; animation: det-float 16s ease-in-out infinite; }
-	:global(html:not(.dark)) .det-aurora { opacity: 0.45; }
+	/* ── Hero — split: copy + signature visual side by side ── */
+	.det-hero { position: relative; overflow: hidden; max-width: 84rem; margin: 0 auto clamp(2rem, 5vw, 3.5rem); padding: clamp(1rem, 3vw, 2.5rem) clamp(0.5rem, 2vw, 1.5rem) clamp(2rem, 4vw, 3rem); display: grid; gap: clamp(2rem, 5vw, 4rem); align-items: center; }
+	@media (min-width: 940px) { .det-hero { grid-template-columns: 1.02fr 0.98fr; } .det-hero--rev .det-hero-text { order: 2; } }
+	.det-aurora { position: absolute; inset: -25% -10% auto; height: 120%; z-index: -1; pointer-events: none; background: radial-gradient(520px 380px at 30% 14%, color-mix(in srgb, var(--c) 34%, transparent), transparent 62%); filter: blur(54px); opacity: 0.65; animation: det-float 16s ease-in-out infinite; }
+	.det-hero--rev .det-aurora { background: radial-gradient(520px 380px at 70% 14%, color-mix(in srgb, var(--c) 34%, transparent), transparent 62%); }
+	:global(html:not(.dark)) .det-aurora { opacity: 0.4; }
 	@keyframes det-float { 0%,100%{ transform: translateY(0) scale(1); } 50%{ transform: translateY(-3%) scale(1.07); } }
-	.det-back { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.88rem; font-weight: 600; color: var(--bd-muted); margin-bottom: 1.6rem; transition: gap 0.25s ease, color 0.25s ease; }
+	.det-hero-text { text-align: left; }
+	.det-back { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.88rem; font-weight: 600; color: var(--bd-muted); margin-bottom: 1.5rem; transition: gap 0.25s ease, color 0.25s ease; }
 	.det-back:hover { gap: 0.55rem; color: var(--c); }
-	.det-ic { display: grid; place-items: center; width: 76px; height: 76px; margin: 0 auto 1.2rem; border-radius: 1.4rem; color: var(--c); background: linear-gradient(135deg, color-mix(in srgb, var(--c) 30%, transparent), color-mix(in srgb, var(--c) 8%, transparent)); border: 1px solid color-mix(in srgb, var(--c) 40%, transparent); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 18px 40px -16px color-mix(in srgb, var(--c) 60%, transparent); }
-	.det-kicker { display: block; font-size: 0.82rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: var(--c); margin-bottom: 0.9rem; }
-	.det-h1 { max-width: 18ch; margin-inline: auto; }
-	.det-clarify { font-size: 0.92rem; font-weight: 600; letter-spacing: 0.01em; color: color-mix(in srgb, var(--c) 78%, var(--bd-ink)); margin: 0 auto; max-width: 36rem; }
+	.det-kicker { display: inline-flex; align-items: center; gap: 0.55rem; font-size: 0.82rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--c); margin-bottom: 1rem; }
+	.det-kicker-ic { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 0.7rem; color: var(--c); background: linear-gradient(135deg, color-mix(in srgb, var(--c) 28%, transparent), color-mix(in srgb, var(--c) 8%, transparent)); border: 1px solid color-mix(in srgb, var(--c) 38%, transparent); }
+	.det-h1 { max-width: 14ch; margin: 0 0 1.1rem; }
+	.det-sub { margin-inline: 0; }
+	.det-clarify { font-size: 0.92rem; font-weight: 600; letter-spacing: 0.01em; color: color-mix(in srgb, var(--c) 78%, var(--bd-ink)); margin: 0 0 0.4rem; max-width: 34rem; }
+	.det-links { justify-content: flex-start; }
+	.det-hero-visual { width: 100%; }
 
-	/* ── Intro — split (visual beside copy) or solo (centred copy) ── */
-	.det-intro { max-width: 80rem; margin: 0 auto clamp(1rem, 2vw, 1.4rem); }
-	.det-intro:not(.det-intro--solo) { display: grid; gap: clamp(1.5rem, 4vw, 3rem); align-items: center; }
-	@media (min-width: 880px) { .det-intro:not(.det-intro--solo) { grid-template-columns: 1.05fr 0.95fr; } }
-	.det-intro--rev .det-intro-text { order: 2; }
-	.det-intro--solo { max-width: 50rem; text-align: center; }
-	.det-intro-text { text-align: left; }
-	.det-overview-text { font-size: clamp(1.05rem, 1.8vw, 1.3rem); font-weight: 500; line-height: 1.55; margin: 0 0 1.3rem; }
+	/* ── What it is ── */
+	.det-about { position: relative; max-width: 60rem; margin: clamp(2rem, 4vw, 3rem) auto clamp(1rem, 2vw, 1.4rem); display: flex; gap: 1.4rem; }
+	.det-about-line { flex-shrink: 0; width: 3px; border-radius: 3px; background: linear-gradient(180deg, var(--c), color-mix(in srgb, var(--c) 15%, transparent)); }
+	.det-about-body { flex: 1; }
+	.det-overview-text { font-size: clamp(1.05rem, 1.8vw, 1.28rem); font-weight: 500; line-height: 1.6; margin: 0 0 1.2rem; }
 	.det-outcome { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.98rem; font-weight: 700; color: var(--c); margin: 0; }
 	.det-outcome :global(svg) { color: var(--c); }
 
-	/* ── Lead band — the signature visual promoted to a showcase ── */
-	.det-band { max-width: 68rem; margin: 0 auto clamp(2rem, 5vw, 3.5rem); }
-	.det-band-inner { max-width: 46rem; margin: 0 auto; }
-
-	/* ── Media slot (drop a real screenshot / clip in later) ── */
-	.det-media-band { max-width: 72rem; margin: clamp(2.5rem, 6vw, 4rem) auto; }
+	/* ── Media slot — copy paired with the placeholder (never a lone empty box) ── */
+	.det-media-band { max-width: 76rem; margin: clamp(2.5rem, 6vw, 4rem) auto; }
+	.det-media-grid { display: grid; gap: clamp(1.5rem, 3vw, 2.5rem); align-items: center; }
+	@media (min-width: 820px) { .det-media-grid { grid-template-columns: 0.82fr 1.18fr; } }
+	.det-media-copy { text-align: left; }
+	.det-media-h { font-size: clamp(1.5rem, 3vw, 2.1rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.12; margin: 0.2rem 0 0.7rem; }
+	.det-media-p { font-size: 0.98rem; line-height: 1.6; color: var(--bd-muted); margin: 0 0 1.3rem; }
+	.det-media-cta { display: inline-flex; align-items: center; gap: 0.55rem; padding: 0.7rem 1.3rem; border-radius: 9999px; font-size: 0.92rem; font-weight: 700; color: var(--c); border: 1.5px solid color-mix(in srgb, var(--c) 50%, transparent); background: color-mix(in srgb, var(--c) 10%, transparent); cursor: pointer; transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease; }
+	.det-media-cta:hover { background: var(--c); color: #06121a; transform: translateY(-2px); }
+	.det-media-cta-ic { display: inline-grid; place-items: center; }
 	.det-media-slot {
 		position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.45rem;
-		aspect-ratio: 16 / 9; max-height: 460px; border-radius: 1.6rem; overflow: hidden; cursor: pointer;
-		border: 1.5px dashed color-mix(in srgb, var(--c) 38%, transparent);
-		background: radial-gradient(700px 320px at 50% 0%, color-mix(in srgb, var(--c) 16%, transparent), transparent 65%), linear-gradient(180deg, rgba(18, 22, 42, 0.62), rgba(5, 6, 13, 0.8));
+		aspect-ratio: 16 / 10; border-radius: 1.5rem; overflow: hidden; cursor: pointer;
+		border: 1.5px dashed color-mix(in srgb, var(--c) 40%, transparent);
+		background: radial-gradient(560px 280px at 50% 0%, color-mix(in srgb, var(--c) 18%, transparent), transparent 65%), linear-gradient(180deg, rgba(18, 22, 42, 0.6), rgba(5, 6, 13, 0.8));
 		color: var(--bd-muted); box-shadow: var(--bd-shadow);
 	}
-	:global(html:not(.dark)) .det-media-slot { background: radial-gradient(700px 320px at 50% 0%, color-mix(in srgb, var(--c) 14%, transparent), transparent 65%), linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.42)); }
-	.det-media-ic { display: grid; place-items: center; width: 72px; height: 72px; border-radius: 9999px; color: #fff; background: linear-gradient(180deg, color-mix(in srgb, var(--c) 90%, #fff), var(--c)); box-shadow: 0 18px 40px -14px color-mix(in srgb, var(--c) 70%, transparent); margin-bottom: 0.4rem; }
-	.det-media-label { font-size: 0.78rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
-	.det-media-sub { font-size: 0.82rem; color: color-mix(in srgb, var(--bd-muted) 80%, transparent); }
+	:global(html:not(.dark)) .det-media-slot { background: radial-gradient(560px 280px at 50% 0%, color-mix(in srgb, var(--c) 14%, transparent), transparent 65%), linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.44)); }
+	.det-media-grid-lines { position: absolute; inset: 0; pointer-events: none; opacity: 0.5; background-image: linear-gradient(color-mix(in srgb, var(--c) 14%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--c) 14%, transparent) 1px, transparent 1px); background-size: 38px 38px; -webkit-mask-image: radial-gradient(closest-side at 50% 50%, #000, transparent); mask-image: radial-gradient(closest-side at 50% 50%, #000, transparent); }
+	.det-media-ic { position: relative; display: grid; place-items: center; width: 62px; height: 62px; border-radius: 9999px; color: #fff; background: linear-gradient(180deg, color-mix(in srgb, var(--c) 90%, #fff), var(--c)); box-shadow: 0 16px 36px -12px color-mix(in srgb, var(--c) 70%, transparent); margin-bottom: 0.35rem; }
+	.det-media-ic::after { content: ''; position: absolute; inset: -8px; border-radius: 9999px; border: 1.5px solid color-mix(in srgb, var(--c) 45%, transparent); animation: det-ping 2.6s ease-out infinite; }
+	@keyframes det-ping { 0% { transform: scale(0.85); opacity: 0.8; } 100% { transform: scale(1.5); opacity: 0; } }
+	.det-media-label { position: relative; font-size: 0.76rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
 	.det-media-sheen { position: absolute; inset: 0; background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, 0.06) 50%, transparent 64%); transform: translateX(-100%); animation: det-sheen 6s ease-in-out infinite; pointer-events: none; }
 	@keyframes det-sheen { 0%, 55% { transform: translateX(-100%); } 85%, 100% { transform: translateX(100%); } }
 
@@ -547,7 +549,7 @@ const mediaIsVideo = d.media?.kind === 'video';
 	.bd-reveal.is-on { opacity: 1; transform: translateY(0); }
 	@media (prefers-reduced-motion: reduce) {
 		.bd-reveal { opacity: 1; transform: none; transition: none; }
-		.det-aurora, .det-media-sheen { animation: none; }
+		.det-aurora, .det-media-sheen, .det-media-ic::after { animation: none; }
 		.det-card:hover, .det-other:hover, .det-way:hover, .det-work-card:hover img { transform: none; }
 	}
 </style>
