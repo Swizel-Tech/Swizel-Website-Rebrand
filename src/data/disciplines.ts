@@ -40,6 +40,10 @@ export interface Discipline {
 	review: { quote: string; name: string; role: string; img: string };
 	/** punchy outcome line */
 	outcome: string;
+	/** relevant, straightforward FAQs for this discipline */
+	faqs?: { q: string; a: string }[];
+	/** which signature visual to render in the intro showcase */
+	visual: 'gallery' | 'code' | 'metrics' | 'roadmap' | 'status' | 'flow';
 }
 
 export const disciplines: Discipline[] = [
@@ -85,6 +89,12 @@ export const disciplines: Discipline[] = [
 			name: 'Cheta', role: 'Client, e-commerce', img: '/testimonial/cheta.jpeg',
 		},
 		outcome: 'A product that looks like it belongs at the top of its market.',
+		visual: 'gallery',
+		faqs: [
+			{ q: 'Do you only design, or can you build it too?', a: 'Both. We can hand dev-ready files to your team, or design and build the whole thing in-house.' },
+			{ q: 'Will I own the final files?', a: 'Yes — you own every final file, source and asset, no strings attached.' },
+			{ q: 'Can you refresh our brand instead of starting from scratch?', a: 'Absolutely. We can evolve what you have while keeping everything that already works.' },
+		],
 	},
 	{
 		slug: 'development',
@@ -129,6 +139,12 @@ export const disciplines: Discipline[] = [
 			name: 'Russell', role: 'Client, real estate', img: '/testimonial/russell.jpeg',
 		},
 		outcome: 'Software that holds up the day a thousand users show up at once.',
+		visual: 'code',
+		faqs: [
+			{ q: 'Do you build websites or apps?', a: 'Both — websites, web apps, mobile apps for iOS and Android, PWAs and e-commerce stores.' },
+			{ q: 'Do I have to build everything from scratch?', a: 'No. We build bespoke when it is worth it, or set up and tailor Shopify, WordPress and similar platforms for you.' },
+			{ q: 'Can you teach my team to run it?', a: 'Yes. We hand over and train your team to post news, update content and manage the product day to day.' },
+		],
 	},
 	{
 		slug: 'marketing',
@@ -172,6 +188,12 @@ export const disciplines: Discipline[] = [
 			name: 'Favour', role: 'Client, marketing', img: '/testimonial/favour.jpeg',
 		},
 		outcome: 'More of the right people finding you — and buying.',
+		visual: 'metrics',
+		faqs: [
+			{ q: 'Do you run our marketing, or coach our team?', a: 'Either — fully managed by us, or we set it up and train your team to keep it going.' },
+			{ q: 'How do you measure success?', a: 'By conversions and revenue, not vanity metrics — and we agree the targets with you up front.' },
+			{ q: 'Is there a minimum commitment?', a: 'No. We do one-off campaign pushes and ongoing retainers — we recommend whatever fits your goals.' },
+		],
 	},
 	{
 		slug: 'strategy',
@@ -215,6 +237,12 @@ export const disciplines: Discipline[] = [
 			name: 'Chidimma', role: 'Client, education', img: '/testimonial/chidima.jpeg',
 		},
 		outcome: 'A plan you can fund, build and measure — with no guesswork.',
+		visual: 'roadmap',
+		faqs: [
+			{ q: 'What do I actually get at the end?', a: 'A clear, prioritised roadmap and MVP scope you can fund and take to any build team.' },
+			{ q: 'How long does a discovery take?', a: 'A focused discovery sprint is usually one to two weeks, depending on scope.' },
+			{ q: 'Do you build what you plan?', a: 'We can — or you are free to take the plan elsewhere. The roadmap is yours either way.' },
+		],
 	},
 	{
 		slug: 'maintenance',
@@ -258,6 +286,12 @@ export const disciplines: Discipline[] = [
 			name: 'Russell', role: 'Client, real estate', img: '/testimonial/russell.jpeg',
 		},
 		outcome: 'Software you never have to worry about.',
+		visual: 'status',
+		faqs: [
+			{ q: 'Do you only maintain what you built?', a: 'No — we will happily adopt, stabilise and look after your existing product too.' },
+			{ q: 'What uptime and response time can I expect?', a: '99.9% uptime, round-the-clock monitoring, and same-day response when it matters.' },
+			{ q: 'Is it a fixed monthly cost?', a: 'We offer pay-as-you-go and monthly retainers — whichever suits how you work.' },
+		],
 	},
 	{
 		slug: 'ai-automation',
@@ -301,6 +335,12 @@ export const disciplines: Discipline[] = [
 			name: 'Cheta', role: 'Client, e-commerce', img: '/testimonial/cheta.jpeg',
 		},
 		outcome: 'Hours back every week — and a product that feels smart.',
+		visual: 'flow',
+		faqs: [
+			{ q: 'Do I need to rebuild my product to add AI?', a: 'No — we bolt AI and automation onto the product you already have.' },
+			{ q: 'What can you actually automate?', a: 'Repetitive workflows, customer support, data pipelines, and smart features like search and recommendations.' },
+			{ q: 'Will it really save us money?', a: 'That is the whole point — we track the hours saved and keep tuning the system for more.' },
+		],
 	},
 ];
 
