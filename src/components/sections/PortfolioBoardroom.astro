@@ -7,11 +7,17 @@ import { Icon } from 'astro-icon';
 import { projects, featuredProjects, sectorLabels, sectorOrder, type ProjectSector } from '../../data/projects';
 
 const sectors = sectorOrder;
+// the real number of cards shown for each sector (drives the actual filter)
 const sectorCount = (s: ProjectSector) => projects.filter((p) => p.sector === s).length;
+// what we tell visitors — we've shipped far more than the ~20 we showcase here
+const sectorShown: Record<ProjectSector, string> = {
+	agri: '12+', health: '6+', property: '14+', media: '9+', commerce: '8+', product: '18+',
+};
+const totalShown = '65+';
 
 const stats = [
-	{ to: projects.length, suffix: '+', label: 'Products shipped' },
-	{ to: sectors.length, suffix: '', label: 'Sectors served' },
+	{ to: 65, suffix: '+', label: 'Products shipped' },
+	{ to: 15, suffix: '+', label: 'Sectors served' },
 	{ to: 7, suffix: '+', label: 'Years building' },
 	{ to: 99.9, decimals: 1, suffix: '%', label: 'Uptime upheld' },
 ];
@@ -20,8 +26,15 @@ const stats = [
 const deckSlugs = ['binas-residence', 'jobblander', 'hemam-synergy', 'trueverdict', 'anchorstep'];
 const deck = deckSlugs.map((s) => projects.find((p) => p.slug === s)).filter(Boolean) as typeof projects;
 
+// the full-bleed scrolling wall under the hero — two rows, opposite directions
+const marquee = [...projects, ...projects];
+const rot = [...projects.slice(6), ...projects.slice(0, 6)];
+const marquee2 = [...rot, ...rot];
+
 // the project's destination: its case study, else the live site
 const dest = (p: (typeof projects)[number]) => (p.caseStudy ? `/work/${p.slug}` : p.url);
+// the custom cursor adapts to each project's sector (health ≠ briefcase)
+const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'pulse', property: 'layers', media: 'book', commerce: 'pkg', product: 'repo' };
 ---
 
 <div class="bdbody bd-services bd-portfolio view-body view-body-boardroom">
@@ -55,6 +68,27 @@ const dest = (p: (typeof projects)[number]) => (p.caseStudy ? `/work/${p.slug}` 
 		</div>
 	</header>
 
+	<!-- ── Full-bleed scrolling wall ───────────────────────── -->
+	<section class="pf-wall bd-reveal">
+		<p class="pf-wall-head">A wall of work, on loop.</p>
+		<div class="pf-marquee" aria-hidden="true">
+			<div class="pf-marquee-track">
+				{marquee.map((p) => (
+					<a href={dest(p) ?? undefined} class="pf-thumb" style={`--c:${p.color}`} tabindex="-1">
+						<img src={p.img} alt="" loading="eager" decoding="async" />
+					</a>
+				))}
+			</div>
+			<div class="pf-marquee-track pf-marquee-track--rev">
+				{marquee2.map((p) => (
+					<a href={dest(p) ?? undefined} class="pf-thumb" style={`--c:${p.color}`} tabindex="-1">
+						<img src={p.img} alt="" loading="eager" decoding="async" />
+					</a>
+				))}
+			</div>
+		</div>
+	</section>
+
 	<!-- ── Impact numbers ──────────────────────────────────── -->
 	<div class="bd-grid">
 		<section class="bd-tile bd-tile--full bd-tile--inverse bd-reveal" data-cursor="chart">
@@ -77,7 +111,7 @@ const dest = (p: (typeof projects)[number]) => (p.caseStudy ? `/work/${p.slug}` 
 	</section>
 	<div class="pf-feats">
 		{featuredProjects.map((p, i) => (
-			<article class:list={['pf-feat', 'bd-reveal', { 'pf-feat--rev': i % 2 === 1 }]} style={`--c:${p.color}`} data-cursor="repo">
+			<article class:list={['pf-feat', 'bd-reveal', { 'pf-feat--rev': i % 2 === 1 }]} style={`--c:${p.color}`} data-cursor={sectorCursor[p.sector]}>
 				<a class:list={['pf-shot', 'pf-shot--lg', { 'pf-shot--app': p.kind === 'app' }]} href={`/work/${p.slug}`} aria-label={`${p.name} case study`}>
 					{p.kind !== 'app' && <span class="pf-bar" aria-hidden="true"><i></i><i></i><i></i><span class="pf-url">{p.host}</span></span>}
 					<span class="pf-img"><img src={p.img} alt={`${p.name}`} loading={i === 0 ? 'eager' : 'lazy'} /></span>
@@ -144,11 +178,11 @@ const dest = (p: (typeof projects)[number]) => (p.caseStudy ? `/work/${p.slug}` 
 		</a>
 	</div>
 
-	<!-- ── All work — CSS-only sector filter ───────────────── -->
+	<!-- ── Featured work — CSS-only sector filter ──────────── -->
 	<section class="bd-head bd-reveal" id="pf-work">
-		<span class="bd-kicker">The full shelf</span>
-		<h2 class="bd-h bd-h--center">Every project.</h2>
-		<p class="bd-p bd-p--center">Filter by sector — {projects.length} products and counting.</p>
+		<span class="bd-kicker">A taste of the shelf</span>
+		<h2 class="bd-h bd-h--center">Featured work.</h2>
+		<p class="bd-p bd-p--center">We’ve shipped <strong>{totalShown}</strong> products across <strong>15+</strong> sectors. Here are ~{projects.length} of our favourites — filter by sector.</p>
 	</section>
 	<form class="pf-filter">
 		<input class="pf-radio" type="radio" name="pf" id="pf-all" checked />
@@ -156,9 +190,9 @@ const dest = (p: (typeof projects)[number]) => (p.caseStudy ? `/work/${p.slug}` 
 			<input class="pf-radio" type="radio" name="pf" id={`pf-${s}`} />
 		))}
 		<div class="pf-chips bd-reveal">
-			<label class="pf-chip" for="pf-all">All work <span>{projects.length}</span></label>
+			<label class="pf-chip pf-chip--all" for="pf-all">Featured work <span>{totalShown}</span></label>
 			{sectors.map((s) => (
-				<label class="pf-chip" for={`pf-${s}`}>{sectorLabels[s]} <span>{sectorCount(s)}</span></label>
+				<label class="pf-chip" for={`pf-${s}`}>{sectorLabels[s]} <span>{sectorShown[s]}</span></label>
 			))}
 		</div>
 		<div class="pf-grid">
@@ -167,7 +201,7 @@ const dest = (p: (typeof projects)[number]) => (p.caseStudy ? `/work/${p.slug}` 
 				const internal = !!p.caseStudy;
 				const Tag = href ? 'a' : 'div';
 				return (
-					<article class:list={['pf-card', 'bd-reveal', `s-${p.sector}`]} style={`--c:${p.color}`} data-cursor="repo">
+					<article class:list={['pf-card', 'bd-reveal', `s-${p.sector}`]} style={`--c:${p.color}`} data-cursor={sectorCursor[p.sector]}>
 						<Tag
 							class="pf-card-link"
 							href={href ?? undefined}
@@ -242,6 +276,32 @@ const dest = (p: (typeof projects)[number]) => (p.caseStudy ? `/work/${p.slug}` 
 			linear-gradient(180deg, #e4eaf2 0%, #dbe3ee 50%, #e4eaf2 100%);
 	}
 
+	/* living background — drifting light blobs + a slow-panning dot grid */
+	.bdbody::before {
+		content: ''; position: absolute; inset: -12%; z-index: -2; pointer-events: none;
+		background:
+			radial-gradient(440px 440px at 14% 18%, color-mix(in srgb, var(--bd-accent) 24%, transparent), transparent 60%),
+			radial-gradient(400px 400px at 86% 26%, rgba(139, 92, 246, 0.2), transparent 60%),
+			radial-gradient(480px 480px at 62% 88%, rgba(34, 211, 238, 0.18), transparent 62%);
+		filter: blur(60px); opacity: 0.7; animation: pf-bg-float 26s ease-in-out infinite;
+	}
+	:global(html:not(.dark)) .bdbody::before { opacity: 0.45; }
+	@keyframes pf-bg-float {
+		0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+		33% { transform: translate3d(3%, -2%, 0) scale(1.08); }
+		66% { transform: translate3d(-2%, 2%, 0) scale(1.04); }
+	}
+	.bdbody::after {
+		content: ''; position: absolute; inset: 0; z-index: -2; pointer-events: none; opacity: 0.5;
+		background-image: radial-gradient(circle, color-mix(in srgb, var(--bd-accent) 32%, transparent) 1px, transparent 1px);
+		background-size: 36px 36px;
+		-webkit-mask-image: radial-gradient(1300px 760px at 50% 2%, #000, transparent 72%);
+		mask-image: radial-gradient(1300px 760px at 50% 2%, #000, transparent 72%);
+		animation: pf-bg-pan 46s linear infinite;
+	}
+	:global(html:not(.dark)) .bdbody::after { opacity: 0.3; }
+	@keyframes pf-bg-pan { to { background-position: 360px 220px; } }
+
 	.bd-kicker { display: inline-block; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bd-accent); margin-bottom: 1rem; }
 	/* light-mode contrast: brighter accents wash out on the pale bg */
 	:global(html:not(.dark)) .bd-kicker { color: #1577b8; }
@@ -283,33 +343,47 @@ const dest = (p: (typeof projects)[number]) => (p.caseStudy ? `/work/${p.slug}` 
 	:global(html:not(.dark)) .pf-hero-aurora { opacity: 0.4; }
 	@keyframes pf-aurora { 0%,100%{ transform: translate3d(0,0,0) scale(1); } 50%{ transform: translate3d(2%,-2%,0) scale(1.08); } }
 	.pf-hero-grid { position: relative; z-index: 1; max-width: 80rem; margin-inline: auto; display: grid; gap: clamp(2rem, 4vw, 3.5rem); align-items: center; }
-	@media (min-width: 940px) { .pf-hero-grid { grid-template-columns: 1.02fr 0.98fr; } }
+	@media (min-width: 940px) { .pf-hero-grid { grid-template-columns: 0.82fr 1.18fr; } }
 	.pf-hero-copy { text-align: left; }
 	.pf-h1 { max-width: 11ch; font-size: clamp(2.9rem, 7vw, 5.2rem); }
 	.pf-hero-sub { margin: 0 0 1.6rem; }
 	.pf-hero-links { justify-content: flex-start; }
 
-	/* ── Shuffling card deck ── */
-	.pf-deck { position: relative; display: grid; place-items: center; min-height: clamp(340px, 42vw, 480px); }
-	.pf-deck-card { grid-area: 1 / 1; width: clamp(250px, 33vw, 400px); border-radius: 1rem; overflow: hidden; background: #0b0d16; border: 1px solid color-mix(in srgb, var(--c) 36%, var(--bd-glass-border)); box-shadow: 0 44px 90px -34px color-mix(in srgb, var(--c) 48%, rgba(0,0,0,0.85)); will-change: transform; animation: pf-deal 16s cubic-bezier(0.65, 0, 0.35, 1) infinite; animation-delay: calc(var(--i) * -3.2s); }
+	/* ── Shuffling card deck (big) ── */
+	.pf-deck { position: relative; display: grid; place-items: center; min-height: clamp(420px, 52vw, 640px); }
+	.pf-deck-card { grid-area: 1 / 1; width: clamp(320px, 46vw, 580px); border-radius: 1.2rem; overflow: hidden; background: #0b0d16; border: 1px solid color-mix(in srgb, var(--c) 38%, var(--bd-glass-border)); box-shadow: 0 54px 110px -40px color-mix(in srgb, var(--c) 50%, rgba(0,0,0,0.88)); will-change: transform; animation: pf-deal 16s cubic-bezier(0.65, 0, 0.35, 1) infinite; animation-delay: calc(var(--i) * -3.2s); }
 	:global(html:not(.dark)) .pf-deck-card { background: #f1f3f8; }
 	.pf-deck:hover .pf-deck-card { animation-play-state: paused; }
-	.pf-deck-bar { display: flex; align-items: center; gap: 0.35rem; padding: 0.5rem 0.7rem; background: color-mix(in srgb, var(--bd-ink) 8%, #11131c); }
+	.pf-deck-bar { display: flex; align-items: center; gap: 0.4rem; padding: 0.6rem 0.85rem; background: color-mix(in srgb, var(--bd-ink) 8%, #11131c); }
 	:global(html:not(.dark)) .pf-deck-bar { background: #e6eaf2; }
-	.pf-deck-bar i { width: 8px; height: 8px; border-radius: 50%; }
+	.pf-deck-bar i { width: 9px; height: 9px; border-radius: 50%; }
 	.pf-deck-bar i:first-child { background: #ff5f57; } .pf-deck-bar i:nth-child(2) { background: #febc2e; } .pf-deck-bar i:nth-child(3) { background: #28c840; }
 	.pf-deck-card img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; object-position: top; }
 	@keyframes pf-deal {
-		0%   { transform: translate(0, 0) rotate(-3deg) scale(1);          z-index: 50; }
-		6%   { transform: translate(-46px, -54px) rotate(-13deg) scale(1.05); z-index: 60; }
-		13%  { transform: translate(42px, 42px) rotate(11deg) scale(0.87);  z-index: 10; }
-		20%  { transform: translate(42px, 42px) rotate(11deg) scale(0.87);  z-index: 10; }
-		40%  { transform: translate(31px, 31px) rotate(7deg) scale(0.905);  z-index: 20; }
-		60%  { transform: translate(20px, 20px) rotate(4deg) scale(0.94);   z-index: 30; }
-		80%  { transform: translate(10px, 10px) rotate(0.5deg) scale(0.975); z-index: 40; }
-		100% { transform: translate(0, 0) rotate(-3deg) scale(1);           z-index: 50; }
+		0%   { transform: translate(0, 0) rotate(-3deg) scale(1);            z-index: 50; }
+		6%   { transform: translate(-66px, -78px) rotate(-13deg) scale(1.05); z-index: 60; }
+		13%  { transform: translate(60px, 60px) rotate(11deg) scale(0.86);   z-index: 10; }
+		20%  { transform: translate(60px, 60px) rotate(11deg) scale(0.86);   z-index: 10; }
+		40%  { transform: translate(44px, 44px) rotate(7deg) scale(0.90);    z-index: 20; }
+		60%  { transform: translate(29px, 29px) rotate(4deg) scale(0.94);    z-index: 30; }
+		80%  { transform: translate(14px, 14px) rotate(0.5deg) scale(0.975); z-index: 40; }
+		100% { transform: translate(0, 0) rotate(-3deg) scale(1);            z-index: 50; }
 	}
 	@media (max-width: 939px) { .pf-deck { margin-top: 1rem; min-height: clamp(300px, 72vw, 420px); } }
+
+	/* ── Full-bleed scrolling wall (two rows, opposite ways, zoom) ── */
+	.pf-wall { position: relative; margin: clamp(1rem, 3vw, 2.5rem) calc(-1 * clamp(1rem, 3vw, 2rem)) clamp(1rem, 3vw, 2rem); }
+	.pf-wall-head { text-align: center; font-size: 0.78rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--bd-muted); margin: 0 0 1.2rem; }
+	.pf-marquee { position: relative; z-index: 1; display: grid; gap: clamp(0.7rem, 1.6vw, 1.1rem); overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent); mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent); }
+	.pf-marquee-track { display: flex; gap: clamp(0.7rem, 1.6vw, 1.1rem); width: max-content; animation: pf-drift 60s linear infinite; }
+	.pf-marquee-track--rev { animation: pf-drift-rev 78s linear infinite; }
+	.pf-marquee:hover .pf-marquee-track { animation-play-state: paused; }
+	@keyframes pf-drift { to { transform: translateX(-50%); } }
+	@keyframes pf-drift-rev { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+	.pf-thumb { display: block; flex-shrink: 0; width: clamp(210px, 23vw, 320px); aspect-ratio: 16 / 10; border-radius: 0.9rem; overflow: hidden; border: 1px solid color-mix(in srgb, var(--c) 36%, var(--bd-glass-border)); box-shadow: 0 24px 50px -28px color-mix(in srgb, var(--c) 44%, rgba(0,0,0,0.8)); background: color-mix(in srgb, var(--c) 16%, var(--bd-glass-border)); transition: transform 0.5s cubic-bezier(0.22,1,0.36,1), box-shadow 0.5s ease; }
+	.pf-thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top; transition: transform 6s ease; }
+	.pf-thumb:hover { transform: scale(1.08); box-shadow: 0 34px 70px -28px color-mix(in srgb, var(--c) 55%, rgba(0,0,0,0.85)); z-index: 2; }
+	.pf-thumb:hover img { transform: scale(1.12); }
 
 	/* ── Browser-framed screenshot (shared) ── */
 	.pf-shot { position: relative; display: block; border-radius: 1.1rem; overflow: hidden; background: #0b0d16; border: 1px solid color-mix(in srgb, var(--c) 30%, var(--bd-glass-border)); box-shadow: var(--bd-shadow); }
@@ -328,7 +402,9 @@ const dest = (p: (typeof projects)[number]) => (p.caseStudy ? `/work/${p.slug}` 
 	.pf-shot--app .pf-img img { object-fit: contain; object-position: center; padding: 0.5rem; }
 
 	/* ── Featured rows ── */
-	.pf-feats { max-width: 82rem; margin: 0 auto; display: grid; gap: clamp(2.5rem, 6vw, 4.5rem); }
+	.pf-feats { position: relative; max-width: 82rem; margin: 0 auto; display: grid; gap: clamp(2.5rem, 6vw, 4.5rem); }
+	.pf-feats::before { content: ''; position: absolute; inset: -10% -14%; z-index: -1; pointer-events: none; background: radial-gradient(620px 420px at 8% 8%, rgba(34, 211, 238, 0.18), transparent 60%), radial-gradient(620px 420px at 92% 55%, rgba(139, 92, 246, 0.18), transparent 60%), radial-gradient(520px 420px at 50% 100%, color-mix(in srgb, var(--bd-accent) 22%, transparent), transparent 62%); filter: blur(60px); opacity: 0.85; animation: pf-bg-float 22s ease-in-out infinite reverse; }
+	:global(html:not(.dark)) .pf-feats::before { opacity: 0.5; }
 	.pf-feat { display: grid; gap: clamp(1.5rem, 4vw, 3rem); align-items: center; }
 	@media (min-width: 900px) { .pf-feat { grid-template-columns: 1.15fr 0.85fr; } .pf-feat--rev .pf-shot--lg { order: 2; } }
 	.pf-shot--lg { transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease; }
@@ -380,10 +456,12 @@ const dest = (p: (typeof projects)[number]) => (p.caseStudy ? `/work/${p.slug}` 
 	/* ── Filter (pure CSS via radios) ── */
 	.pf-filter { max-width: 84rem; margin: 0 auto; }
 	.pf-radio { position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0; }
-	.pf-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.55rem; margin-bottom: clamp(1.5rem, 3vw, 2.25rem); }
-	.pf-chip { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.55rem 1.05rem; border-radius: 9999px; font-size: 0.92rem; font-weight: 600; color: var(--bd-ink); background: var(--bd-glass); border: 1px solid var(--bd-glass-border); cursor: pointer; transition: transform 0.2s ease, border-color 0.25s ease, background 0.25s ease, color 0.25s ease; }
-	.pf-chip span { font-size: 0.72rem; font-weight: 800; padding: 0.05rem 0.4rem; border-radius: 9999px; color: var(--bd-muted); background: color-mix(in srgb, var(--bd-ink) 8%, transparent); }
-	.pf-chip:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--bd-accent) 45%, var(--bd-glass-border)); }
+	.pf-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6rem; margin-bottom: clamp(1.5rem, 3vw, 2.25rem); padding: clamp(0.9rem, 2vw, 1.3rem); border-radius: 1.5rem; background: color-mix(in srgb, var(--bd-accent) 6%, var(--bd-glass)); border: 1px solid color-mix(in srgb, var(--bd-accent) 18%, var(--bd-glass-border)); box-shadow: var(--bd-shadow); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); max-width: 64rem; margin-inline: auto; }
+	.pf-chip { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.62rem 1.15rem; border-radius: 9999px; font-size: 0.95rem; font-weight: 700; color: var(--bd-ink); background: var(--bd-glass); border: 1.5px solid color-mix(in srgb, var(--bd-ink) 16%, var(--bd-glass-border)); cursor: pointer; transition: transform 0.2s ease, border-color 0.25s ease, background 0.25s ease, color 0.25s ease, box-shadow 0.25s ease; }
+	.pf-chip span { font-size: 0.74rem; font-weight: 800; padding: 0.08rem 0.5rem; border-radius: 9999px; color: var(--bd-accent); background: color-mix(in srgb, var(--bd-accent) 16%, transparent); }
+	:global(html:not(.dark)) .pf-chip span { color: #1577b8; background: color-mix(in srgb, #1577b8 16%, transparent); }
+	.pf-chip:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--bd-accent) 55%, var(--bd-glass-border)); box-shadow: 0 12px 26px -14px color-mix(in srgb, var(--bd-accent) 50%, transparent); }
+	.pf-chip--all { border-color: color-mix(in srgb, var(--bd-accent) 40%, transparent); }
 
 	#pf-all:checked ~ .pf-chips label[for='pf-all'],
 	#pf-agri:checked ~ .pf-chips label[for='pf-agri'],
@@ -436,8 +514,10 @@ const dest = (p: (typeof projects)[number]) => (p.caseStudy ? `/work/${p.slug}` 
 	.bd-reveal.is-on { opacity: 1; transform: translateY(0); }
 	@media (prefers-reduced-motion: reduce) {
 		.bd-reveal { opacity: 1; transform: none; transition: none; }
-		.pf-hero-aurora, .bd-grad, .pf-reel-sheen, .pf-reel-play::after { animation: none; }
-		.pf-deck-card { animation: none; transform: translate(calc(var(--i) * 12px), calc(var(--i) * 12px)) rotate(calc(var(--i) * 3deg)) scale(calc(1 - var(--i) * 0.03)); z-index: calc(50 - var(--i) * 10); }
-		.pf-card:hover, .pf-shot--lg:hover, .pf-mag:hover { transform: none; }
+		.pf-hero-aurora, .bd-grad, .pf-reel-sheen, .pf-reel-play::after,
+		.pf-marquee-track, .bdbody::before, .bdbody::after, .pf-feats::before { animation: none; }
+		.pf-deck-card { animation: none; transform: translate(calc(var(--i) * 16px), calc(var(--i) * 16px)) rotate(calc(var(--i) * 3deg)) scale(calc(1 - var(--i) * 0.03)); z-index: calc(50 - var(--i) * 10); }
+		.pf-marquee { -webkit-mask-image: none; mask-image: none; overflow-x: auto; }
+		.pf-card:hover, .pf-shot--lg:hover, .pf-mag:hover, .pf-thumb:hover { transform: none; }
 	}
 </style>

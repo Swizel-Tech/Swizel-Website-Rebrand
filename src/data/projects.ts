@@ -103,15 +103,15 @@ export const projects: Project[] = [
 			quote: { text: 'The site did exactly what we needed — it made serious people take us seriously.', who: 'Hemam Synergy team' },
 			services: ['Brand & design', 'Web development', 'Content & copy', 'Hosting & maintenance'],
 			press: {
-				intro: 'The work landed where it mattered. Hemam’s push went on to attract roughly €850,000 in funding and real press attention — here’s the coverage (drop the live links and clippings in here).',
+				intro: 'The work landed where it mattered. Hemam went on to be selected for major grant funding — around €850,000 — and the story was picked up in the press. The coverage:',
 				items: [
-					{ outlet: 'Funding announcement', title: '~€850,000 secured to scale Hemam’s farmer programmes', date: '2023' },
-					{ outlet: 'Newspaper feature', title: 'Print coverage of the raise & the impact story', date: '2023' },
-					{ outlet: 'Broadcast / interview', title: 'Video feature — the team on the mission', date: '2023' },
+					{ outlet: 'BusinessDay', title: 'Firm to boost Nigeria’s rice production via €850,000 grant', date: '2024', url: 'https://businessday.ng/news/article/firm-to-boost-nigerias-rice-production-via-e850000-grant/' },
+					{ outlet: 'Fund for Youth Employment', title: 'Nigeria selection: Hemam Synergy Ltd', date: '2024', url: 'https://fundforyouthemployment.nl/nigeria-selection-hemam-synergy-ltd/' },
+					{ outlet: 'LinkedIn · Video', title: 'Food security & policy — the team on the mission', date: '2024', url: 'https://www.linkedin.com/posts/hemamsynergylimited_foodsecurity-nigeriaagriculture-policymatters-activity-7330954291009966080-eVs1/' },
 				],
 			},
 			gallery: [
-				{ kind: 'video', label: 'Field & impact reel', caption: 'Add a 60–90s film of the work on the ground.' },
+				{ kind: 'video', label: 'Field & impact reel', caption: 'Watch the team’s film on LinkedIn — or drop the MP4 in here.' },
 				{ kind: 'image', src: '/images/portfolio/shot-hemamsynergy.jpg', label: 'Homepage', caption: 'The landing experience funders see first.' },
 				{ kind: 'image', label: 'Programmes & impact', caption: 'Drop in a section shot.' },
 				{ kind: 'image', label: 'Infrastructure', caption: 'Warehouse / solar grain shots.' },
@@ -137,9 +137,9 @@ export const projects: Project[] = [
 			meta: { client: 'AnchorStep Physiotherapy', sector: 'Health & wellness · Physiotherapy', year: '2025', scope: 'Brand · Booking site · Multi-platform growth' },
 			liveUrl: 'https://anchorsteppt.com/',
 			intro:
-				'AnchorStep delivers expert, evidence-based physiotherapy — musculoskeletal, neurological, paediatric and therapeutic massage — in patients’ own homes across Abuja. When they came to us, none of that existed online. We took the brand from a blank page to a presence people find, trust and book.',
+				'AnchorStep Physiotherapy delivers expert, evidence-based physiotherapy — musculoskeletal, neurological, paediatric and therapeutic massage — in patients’ own homes across Abuja. When they came to us, none of that existed online: no brand, no website, no audience, no recognition. We took AnchorStep from a completely blank page to a presence people can find, trust and book — and then, crucially, we did the harder work of building the audience itself. This was not a one-off website project; it was an ongoing, multi-platform growth effort, and we grew it from absolute zero into a recognisable, bookable brand. The website is the anchor, but the brand now lives and grows across multiple channels, compounding month after month.',
 			challenge:
-				'A brand-new clinical practice with no digital footprint and no recognition. It needed to feel established and safe on day one, make booking effortless, and grow an audience from absolute zero — not just a website, but momentum.',
+				'A brand-new clinical practice carries a quiet, brutal problem: nobody knows you exist, and the people who need physiotherapy are choosing someone they already trust. AnchorStep had to feel established, safe and credible on day one, make booking an appointment effortless enough that intent never leaks away, and — the part most agencies skip — actually generate demand from nothing. Not just a launch, but momentum that keeps building.',
 			approach: [
 				{ title: 'A calm clinical brand', desc: 'An identity that signals expertise and warmth in the same breath — the kind that makes a brand-new practice feel safe and established.' },
 				{ title: 'A booking-first website', desc: 'Appointments scheduled in a couple of taps, with live chat — every visitor is one short step from becoming a patient.' },
@@ -161,10 +161,9 @@ export const projects: Project[] = [
 			gallery: [
 				{ kind: 'image', src: '/images/portfolio/shot-anchorstep.jpg', label: 'Homepage & booking', caption: 'Book-an-appointment, front and centre.' },
 				{ kind: 'image', label: 'Services & treatments', caption: 'Drop in a services shot.' },
-				{ kind: 'image', label: 'Social / Instagram', caption: 'Add the social grid we grew.' },
+				{ kind: 'image', label: 'Social grid', caption: 'The social presence we grew from zero.' },
 				{ kind: 'video', label: 'Brand reel', caption: 'Add a short brand or clinic reel.' },
 			],
-			extraLinks: [{ label: 'Instagram', url: 'https://www.instagram.com/anchorsteppt' }],
 		},
 	},
 	{
@@ -185,9 +184,9 @@ export const projects: Project[] = [
 			meta: { client: 'Binas Residence', sector: 'Hospitality · Luxury stays', year: '2024', scope: 'Brand · Website · Reservations' },
 			liveUrl: 'https://binasresidence.com/',
 			intro:
-				'Binas Residence is a premium residential hotel in Abuja — suites, a restaurant, a pool bar and the kind of anticipatory service that turns a stay into a memory. Our job was to make the website feel as considered as the property itself.',
+				'Binas Residence is a premium residential hotel in Abuja — beautifully appointed standard, deluxe and master suites, a restaurant that cooks with locally sourced ingredients, a signature pool bar, 24/7 power and fibre, and the kind of anticipatory service that quietly turns a stay into a memory. A property like this is sold long before a guest arrives — in the first few seconds of looking at it online. So our job was to make the website feel exactly as considered, calm and expensive as the residence itself: a digital front door that says "you have chosen well" and then makes booking the easiest part of the trip.',
 			challenge:
-				'Luxury hospitality lives or dies on first impressions. The site had to feel calm, expensive and effortless — and quietly do the commercial work of turning a curious visitor into a booked guest.',
+				'Luxury hospitality lives or dies on first impressions, and online that impression is unforgiving — a stock-photo grid, a clumsy form or a slow page, and a discerning traveller is gone. The site had to feel restrained and premium without ever shouting, let the property’s own photography carry the emotion, and quietly do the commercial work: surfacing the right suite, answering the unspoken questions, and turning a curious browser into a confirmed reservation without a single moment of friction.',
 			approach: [
 				{ title: 'A restrained, editorial brand', desc: 'Warm neutrals, generous white space and confident type — a brand that feels expensive and calm without ever shouting.' },
 				{ title: 'Room-and-suite architecture', desc: 'Structured to sell the experience, not just the nightly rate — every suite gets the staging it deserves.' },
@@ -230,9 +229,9 @@ export const projects: Project[] = [
 			meta: { client: 'JobbLander', sector: 'Careers · Job Application as a Service (JaaS)', year: '2025', scope: 'Product · Brand · Web app' },
 			liveUrl: 'https://jobblander.com/',
 			intro:
-				'JobbLander is a premium, end-to-end career service — JaaS, Job Application as a Service — that bridges technology and the human touch. It uses AI to read patterns and optimise for ATS algorithms, then has real professionals refine the CV, LinkedIn profile and career strategy so the story is authentic, sharp and designed to land the interview.',
+				'JobbLander is a premium end-to-end career service that bridges the gap between technology and the human touch. While we utilize advanced AI to identify patterns and optimize for ATS algorithms, every CV, LinkedIn profile, and career strategy is meticulously refined by our human professionals. From career mapping to JaaS (Job Application as a Service), we ensure your professional story is authentic, data-driven, and designed to land you the interview. Our role was to make all of that legible and irresistible — to take a layered, human-plus-AI service and give it a brand, a product experience and a story premium enough that a serious professional trusts it with the thing they care about most: their next role.',
 			challenge:
-				'"AI for your career" is a crowded, sceptical space. JobbLander needed to feel premium and trustworthy — clearly more than a résumé generator — and make a layered, human-plus-AI service feel simple and worth paying for.',
+				'"AI for your career" is a crowded, sceptical category, crowded with one-click résumé generators that promise the moon and deliver a template. JobbLander is the opposite — a genuinely human, expert-led service with AI underneath — but that nuance is hard to convey in a glance. The challenge was to make the product feel unmistakably premium and trustworthy, to communicate the human-plus-AI difference instantly, and to turn a multi-step, high-touch service (career mapping, CV, LinkedIn, ATS optimisation, strategy) into a journey that feels simple, safe and clearly worth paying for.',
 			approach: [
 				{ title: 'Positioned as JaaS', desc: 'We framed the product as Job Application as a Service — strategic career advancement, not another CV template — and built the whole story around that.' },
 				{ title: 'A premium, trustworthy brand', desc: 'An identity and site that sell the human-plus-AI difference and justify a premium price — "serious career partner", not gimmick.' },
@@ -275,9 +274,9 @@ export const projects: Project[] = [
 			meta: { client: 'African Energy Advocacy Initiative', sector: 'Energy · Oil & gas · Consultancy', year: '2024', scope: 'Brand · Website · Content' },
 			liveUrl: 'https://africaneai.org/',
 			intro:
-				'The African Energy Advocacy Initiative works across the energy spectrum — advocacy, consultancy and on-the-ground clean-energy projects like solar lighting and efficient cookstoves that improve safety, health and livelihoods for vulnerable communities.',
+				'The African Energy Advocacy Initiative works right across the energy spectrum — policy advocacy, energy and oil-and-gas consultancy, and on-the-ground clean-energy projects like solar lighting and efficient cookstoves that measurably improve safety, health and livelihoods for vulnerable communities. It is an unusually broad mandate: in one breath it speaks to ministries and industry, and in the next to a rural household choosing a cleaner stove. We were brought in to give all of that a single, coherent home — a brand and website that hold the policy, the consultancy and the grassroots impact together without any one of them feeling like an afterthought.',
 			challenge:
-				'An organisation spanning policy advocacy, energy and oil-and-gas consultancy, and grassroots clean-energy work needed one home that holds all of it together — credible to institutions, warm to communities, and clear about impact.',
+				'Most organisations do one thing; AEAI does several, for several very different audiences. A funder or government partner needs rigour, governance and credibility. A community partner needs warmth, clarity and proof that the work changes lives. The challenge was to build one home that serves both at once — institutional enough to be taken seriously in an energy-policy room, human enough to mean something in a village — and to make a sprawling, multi-mission organisation feel focused, legible and genuinely hopeful.',
 			approach: [
 				{ title: 'A vision-led narrative', desc: 'We found the thread that unifies advocacy, energy & oil-and-gas consultancy and grassroots clean-energy projects — one story, told with conviction.' },
 				{ title: 'A clean, optimistic brand', desc: 'An identity built around clean energy that reads credible to institutions and hopeful to the communities being served.' },
@@ -303,47 +302,50 @@ export const projects: Project[] = [
 		},
 	},
 	{
-		slug: 'tellasport',
-		name: 'TellaSport',
-		tagline: 'The wait is over — bet-code conversion, done.',
+		slug: 'betslipswitch',
+		name: 'Betslipswitch',
+		tagline: '100k+ downloads. No.2 sports app in Zambia.',
 		blurb:
-			'A sports platform (formerly Betslipswitch) that converts bet codes across bookmakers, with livescores, predictions and a community — on web and mobile.',
+			'A free sports platform that converts bet codes across bookmakers in seconds — with livescores, rated predictions and a community — that grew to over 100,000 downloads and became the No.2 most-used sports app in Zambia.',
 		img: '/images/portfolio/betslipswitch.jpg',
 		url: null,
-		host: 'TellaSport',
+		host: 'Betslipswitch',
 		sector: 'product',
 		tags: ['Mobile app', 'Web app', 'Sports'],
 		color: '#1f9d55',
-		year: '2024',
+		year: '2022',
 		featured: true,
 		kind: 'web',
 		caseStudy: {
-			meta: { client: 'TellaSport (Betslipswitch)', sector: 'Sports tech · Consumer app', year: '2024', scope: 'Product · Web + mobile app · Brand' },
+			meta: { client: 'Betslipswitch', sector: 'Sports tech · Consumer app', year: '2022', scope: 'Product strategy · Web + mobile app · Brand · Growth' },
 			intro:
-				'TellaSport — which grew out of Betslipswitch — is a free platform that converts bet codes across bookmakers in seconds. Beyond the converter it gives users livescores, rated predictions and a community of tipsters and sports fans, on the web and as a native app on the App Store and Play Store.',
+				'Betslipswitch began as a genuinely useful idea: punters lose time and money re-typing bet codes when they want to play a slip from one bookmaker on another. We turned that single, sharp utility into a full consumer product — a free bet-code converter that switches codes across bookmakers in seconds, wrapped in livescores, rated predictions and a community of tipsters and sports fans, on the web and as a native app on the App Store and Play Store. It worked. The product crossed 100,000+ downloads and, three years ago, became the No.2 most-used sports app in Zambia — a market it was never even originally built for. That is the kind of pull a tool gets when the core job is flawless and the experience earns a daily open.',
 			challenge:
-				'Take a genuinely useful utility — instant bet-code conversion — and turn it into a product people keep coming back to: fast, free, reliable across platforms, and sticky enough to build a community around.',
+				'The hard part of a utility is that people use it once and leave. The brief was to take instant bet-code conversion and make it so fast and so reliable that it became a habit — then surround it with enough reasons to stay that it could grow into a real community product, scale across markets, and stay rock-solid on the busiest match days when thousands of people hit it at once.',
 			approach: [
-				{ title: 'A converter that just works', desc: 'Sportybet to Nairabet and back in seconds — the core utility, made flawless and fast, because that is what brings people back.' },
-				{ title: 'Reasons to stay', desc: 'Livescores and rated predictions woven in to keep users in the app between bets — a tool that becomes a daily habit.' },
-				{ title: 'A community layer', desc: 'Tipsters, chat and shared codes — turning a one-off utility into a product with its own gravity and network effect.' },
-				{ title: 'Web + native, shipped & maintained', desc: 'One product across the web and native iOS and Android, launched on both stores and kept running.' },
+				{ title: 'A converter that just works', desc: 'We obsessed over the core job — Sportybet to Nairabet and back in seconds, accurate every time. Speed and trust here are the entire product; if the conversion is ever wrong or slow, nothing else matters. So we made it flawless first.' },
+				{ title: 'Reasons to come back daily', desc: 'A converter is a once-in-a-while tool; a sports companion is a daily one. We wove in livescores and rated predictions so the app earns an open even when there is no code to convert — turning a utility into a habit.' },
+				{ title: 'A community with its own gravity', desc: 'We added a community layer — tipsters, chat and shared codes — so the product stopped being a solo tool and became a place. That network effect is what powered word-of-mouth growth across a whole new market.' },
+				{ title: 'Web + native, built to scale', desc: 'One coherent product across the web and native iOS and Android, shipped to both stores, engineered to stay fast and reliable through spikes, and maintained — because an app at No.2 in a country cannot afford a bad match day.' },
 			],
 			highlights: [
-				{ title: 'Convert in seconds', desc: 'Transfer bet codes across platforms instantly — the core job, done flawlessly.' },
-				{ title: 'A reason to stay', desc: 'Livescores and rated predictions turn a one-off tool into a daily habit.' },
-				{ title: 'A community, not just a tool', desc: 'Tipsters, chat and shared codes give the product its own gravity.' },
+				{ title: 'Convert in seconds', desc: 'The core utility — transfer bet codes across bookmakers instantly and accurately — done so well it became the reason people told their friends.' },
+				{ title: 'A reason to stay', desc: 'Livescores and rated predictions turned a one-off converter into a daily sports companion, lifting retention and engagement.' },
+				{ title: 'A market-leading product', desc: 'The community, the speed and the polish compounded into 100k+ downloads and the No.2 spot among sports apps in Zambia.' },
 			],
 			results: [
-				{ stat: 'Free', label: 'and live on App Store + Play Store' },
+				{ stat: '100k+', label: 'downloads' },
+				{ stat: 'No.2', label: 'sports app in Zambia (3 yrs ago)' },
 				{ stat: 'Web + app', label: 'one product, every screen' },
-				{ stat: 'Convert · Predict · Connect', label: 'three jobs in one' },
 			],
-			services: ['Product strategy', 'Web & mobile development', 'Brand & design', 'Maintenance'],
+			quote: { text: 'It started as a converter and became the app everyone in the group chat was using.', who: 'Betslipswitch' },
+			services: ['Product strategy', 'Web & mobile development', 'Brand & design', 'Growth & maintenance'],
 			gallery: [
+				{ kind: 'video', label: 'App promo', caption: 'Add the "We are live" promo reel.' },
 				{ kind: 'image', src: '/images/portfolio/betslipswitch.jpg', label: 'Platform', caption: 'The bet-code converter.' },
-				{ kind: 'image', label: 'App screens', caption: 'Drop in the app store screens.' },
-				{ kind: 'video', label: 'App promo', caption: 'Add the "We are live" promo.' },
+				{ kind: 'image', label: 'App screens', caption: 'Drop in the App Store / Play Store screens.' },
+				{ kind: 'image', label: 'Community & predictions', caption: 'The community and predictions surfaces.' },
+				{ kind: 'image', label: 'Store listing', caption: 'The ranked store listing.' },
 			],
 		},
 	},
