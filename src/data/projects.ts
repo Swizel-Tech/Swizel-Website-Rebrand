@@ -9,10 +9,17 @@ export interface MediaSlot {
 	caption?: string;
 }
 
+export interface PressItem {
+	outlet: string;
+	title: string;
+	date?: string;
+	url?: string; // when present, links out; otherwise a "coming" slot
+}
+
 export interface CaseStudy {
 	intro: string; // the opening story
 	challenge: string;
-	approach: string[]; // what we did
+	approach: { title: string; desc: string }[]; // what we did — explained
 	highlights: { title: string; desc: string }[]; // solution feature blocks
 	results: { stat: string; label: string }[]; // impact numbers
 	quote?: { text: string; who: string };
@@ -21,6 +28,7 @@ export interface CaseStudy {
 	meta: { client: string; sector: string; year: string; scope: string };
 	liveUrl?: string;
 	extraLinks?: { label: string; url: string }[];
+	press?: { intro?: string; items: PressItem[] }; // news coverage / recognition
 }
 
 export interface Project {
@@ -56,9 +64,9 @@ export const projects: Project[] = [
 	{
 		slug: 'hemam-synergy',
 		name: 'Hemam Synergy',
-		tagline: 'The site that helped win €500,000 in funding.',
+		tagline: 'The site behind an ~€850,000 funding win.',
 		blurb:
-			'An agritech outfit empowering rural smallholder farmers — and a digital presence credible enough to unlock grant funding.',
+			'An agritech outfit empowering rural smallholder farmers — and a digital presence credible enough to help unlock major grant funding.',
 		img: '/images/portfolio/shot-hemamsynergy.jpg',
 		url: 'https://hemamsynergy.com/',
 		host: 'hemamsynergy.com',
@@ -68,34 +76,46 @@ export const projects: Project[] = [
 		year: '2023',
 		featured: true,
 		caseStudy: {
-			meta: { client: 'Hemam Synergy', sector: 'Agritech · Food security', year: '2023', scope: 'Brand site · Content · Hosting · Maintenance' },
+			meta: { client: 'Hemam Synergy', sector: 'Agritech · Food security', year: '2023', scope: 'Brand · Website · Content · Hosting · Maintenance' },
 			liveUrl: 'https://hemamsynergy.com/',
 			intro:
-				'Hemam Synergy set out to do something hard and important: lift rural smallholder farmers across Nigeria with quality inputs, training, market linkages and solar-powered grain infrastructure. We were part of the team that made the digital side of that ambition real — and the result helped open a very big door.',
+				'Hemam Synergy set out to do something hard and important: lift rural smallholder farmers across Nigeria with quality inputs, training, market linkages and solar-powered grain infrastructure. We were part of the team that made the digital side of that ambition real — and the result helped open a very big door, with the organisation going on to secure roughly €850,000 in funding.',
 			challenge:
-				'To win partners and serious funding, Hemam needed to look as credible online as the work was on the ground. The brief was unforgiving: communicate scale, climate-resilience and real impact to international stakeholders — without a single weak page or a moment of doubt about who they are.',
+				'To win partners and serious funding, Hemam had to look as credible online as the work was on the ground. The brief was unforgiving: communicate scale, climate-resilience and measurable impact to international funders and agro-industrial partners — clearly, quickly, and without a single weak page or a moment of doubt about who they are.',
 			approach: [
-				'Stakeholder discovery — we mapped what funders, agro-industrial partners and farmers each needed to see.',
-				'An impact-first content architecture: programmes, infrastructure, partners and proof, in that order.',
-				'A clean, earth-toned brand system that reads "serious operator", not "startup deck".',
-				'Hardened hosting and ongoing maintenance so it never blinks when a funder is watching.',
+				{ title: 'Stakeholder discovery & positioning', desc: 'We sat with the team and mapped exactly what each audience needed to believe — funders need scale and governance; partners need reliability; farmers need trust. Every page got a job.' },
+				{ title: 'A serious-operator brand system', desc: 'A clean, earth-toned identity — type, colour, photography rules and components — that reads "established agribusiness", not "startup deck". Confidence in every pixel.' },
+				{ title: 'Impact-first information architecture', desc: 'We structured the whole site the way a reviewer reads a proposal: the problem, the scale, the infrastructure, the partners, then the proof. Nothing buried, nothing wasted.' },
+				{ title: 'Funding-grade content & copy', desc: 'We wrote and shaped the story around the numbers that matter — warehouse capacity, programmes, reach — so a stakeholder skimming for two minutes still leaves convinced.' },
+				{ title: 'Engineering, speed & accessibility', desc: 'Built mobile-first and tuned to load fast on weak rural connections, accessible and crawlable, so it performs for a farmer on 3G and a funder in Berlin alike.' },
+				{ title: 'Hardened hosting & ongoing care', desc: 'Secure hosting, monitoring, backups and continuous maintenance — so the day a funder clicks the link, it never blinks, never breaks, never embarrasses.' },
 			],
 			highlights: [
-				{ title: 'Built to be believed', desc: 'Every section is engineered to build trust — warehouse capacity, programmes and partner logos front and centre.' },
-				{ title: 'Funding-grade storytelling', desc: 'We structured the narrative the way reviewers read it: problem, scale, traction, ask.' },
-				{ title: 'Field-first, always on', desc: 'Mobile-first and fast on poor connections, monitored and maintained around the clock.' },
+				{ title: 'Built to be believed', desc: 'Warehouse capacity, programmes and partner logos sit front and centre — the page earns trust before it ever asks for anything.' },
+				{ title: 'Funding-grade storytelling', desc: 'The narrative is sequenced the way reviewers actually read: problem → scale → traction → ask. It does the persuading for you.' },
+				{ title: 'Field-first, always on', desc: 'Fast on poor connections, accessible, and monitored around the clock — credible to a global funder and usable in the field.' },
 			],
 			results: [
-				{ stat: '€500K', label: 'in grant funding helped unlocked' },
+				{ stat: '~€850K', label: 'in funding the organisation went on to secure' },
 				{ stat: '150,000 MT', label: 'warehouse capacity showcased' },
 				{ stat: '99.9%', label: 'uptime since launch' },
 			],
 			quote: { text: 'The site did exactly what we needed — it made serious people take us seriously.', who: 'Hemam Synergy team' },
-			services: ['Brand & design', 'Web development', 'Content', 'Hosting & maintenance'],
+			services: ['Brand & design', 'Web development', 'Content & copy', 'Hosting & maintenance'],
+			press: {
+				intro: 'The work landed where it mattered. Hemam’s push went on to attract roughly €850,000 in funding and real press attention — here’s the coverage (drop the live links and clippings in here).',
+				items: [
+					{ outlet: 'Funding announcement', title: '~€850,000 secured to scale Hemam’s farmer programmes', date: '2023' },
+					{ outlet: 'Newspaper feature', title: 'Print coverage of the raise & the impact story', date: '2023' },
+					{ outlet: 'Broadcast / interview', title: 'Video feature — the team on the mission', date: '2023' },
+				],
+			},
 			gallery: [
+				{ kind: 'video', label: 'Field & impact reel', caption: 'Add a 60–90s film of the work on the ground.' },
 				{ kind: 'image', src: '/images/portfolio/shot-hemamsynergy.jpg', label: 'Homepage', caption: 'The landing experience funders see first.' },
 				{ kind: 'image', label: 'Programmes & impact', caption: 'Drop in a section shot.' },
-				{ kind: 'video', label: 'Field walkthrough', caption: 'Add a 60–90s impact reel.' },
+				{ kind: 'image', label: 'Infrastructure', caption: 'Warehouse / solar grain shots.' },
+				{ kind: 'image', label: 'Partners & proof', caption: 'Partner logos / metrics section.' },
 			],
 		},
 	},
@@ -121,10 +141,10 @@ export const projects: Project[] = [
 			challenge:
 				'A brand-new clinical practice with no digital footprint and no recognition. It needed to feel established and safe on day one, make booking effortless, and grow an audience from absolute zero — not just a website, but momentum.',
 			approach: [
-				'A calm, clinical brand that signals expertise and warmth in the same breath.',
-				'A booking-first website — appointments scheduled in a couple of taps, with live chat.',
-				'Clear service architecture so every condition finds its treatment fast.',
-				'A multi-platform growth engine — web plus a steady social presence — to build the audience from 0.',
+				{ title: 'A calm clinical brand', desc: 'An identity that signals expertise and warmth in the same breath — the kind that makes a brand-new practice feel safe and established.' },
+				{ title: 'A booking-first website', desc: 'Appointments scheduled in a couple of taps, with live chat — every visitor is one short step from becoming a patient.' },
+				{ title: 'Clear service architecture', desc: 'Musculoskeletal, neuro, paediatric, massage — structured so every condition finds its treatment fast, with zero confusion.' },
+				{ title: 'A multi-platform growth engine', desc: 'Web plus a steady social presence, growing together — we built the audience from absolute zero, not just a launch.' },
 			],
 			highlights: [
 				{ title: 'Book in two taps', desc: 'An appointment form and live chat that turn a visitor into a patient without friction.' },
@@ -169,10 +189,10 @@ export const projects: Project[] = [
 			challenge:
 				'Luxury hospitality lives or dies on first impressions. The site had to feel calm, expensive and effortless — and quietly do the commercial work of turning a curious visitor into a booked guest.',
 			approach: [
-				'A restrained, editorial brand — warm neutrals, generous space, confident type.',
-				'A room-and-suite architecture that sells the experience, not just the rate.',
-				'Reservations and enquiries placed exactly where intent peaks.',
-				'Photography-led layouts that let the property speak.',
+				{ title: 'A restrained, editorial brand', desc: 'Warm neutrals, generous white space and confident type — a brand that feels expensive and calm without ever shouting.' },
+				{ title: 'Room-and-suite architecture', desc: 'Structured to sell the experience, not just the nightly rate — every suite gets the staging it deserves.' },
+				{ title: 'Reservations where intent peaks', desc: 'Booking and enquiry calls-to-action placed at exactly the moments a guest decides — present, never pushy.' },
+				{ title: 'Photography-led layouts', desc: 'Full-bleed imagery and quiet typography that step back and let the property do the talking.' },
 			],
 			highlights: [
 				{ title: 'Quietly upscale', desc: 'Every detail says premium without shouting — the brand does the selling.' },
@@ -214,10 +234,10 @@ export const projects: Project[] = [
 			challenge:
 				'"AI for your career" is a crowded, sceptical space. JobbLander needed to feel premium and trustworthy — clearly more than a résumé generator — and make a layered, human-plus-AI service feel simple and worth paying for.',
 			approach: [
-				'Positioning the product as JaaS — strategic career advancement, not a CV template.',
-				'A confident brand and a site that sells the human-plus-AI difference.',
-				'Clear service tiers and a journey from upload to interview-ready.',
-				'A product experience tuned for trust at every step.',
+				{ title: 'Positioned as JaaS', desc: 'We framed the product as Job Application as a Service — strategic career advancement, not another CV template — and built the whole story around that.' },
+				{ title: 'A premium, trustworthy brand', desc: 'An identity and site that sell the human-plus-AI difference and justify a premium price — "serious career partner", not gimmick.' },
+				{ title: 'A clear path to interview-ready', desc: 'Service tiers and a guided journey from upload to CV, LinkedIn and strategy — every step legible and easy to commit to.' },
+				{ title: 'Trust, engineered in', desc: 'A product experience tuned to feel safe and credible at every step, because that is what makes someone pay for their career.' },
 			],
 			highlights: [
 				{ title: 'AI, then humans', desc: 'AI optimises for ATS; real experts make the story authentic — and we made that promise legible.' },
@@ -259,10 +279,10 @@ export const projects: Project[] = [
 			challenge:
 				'An organisation spanning policy advocacy, energy and oil-and-gas consultancy, and grassroots clean-energy work needed one home that holds all of it together — credible to institutions, warm to communities, and clear about impact.',
 			approach: [
-				'A vision-led narrative that unifies advocacy, consultancy and field projects.',
-				'A clean, optimistic brand built around clean energy.',
-				'Impact metrics and programmes structured for both funders and the public.',
-				'A content system the team can keep current.',
+				{ title: 'A vision-led narrative', desc: 'We found the thread that unifies advocacy, energy & oil-and-gas consultancy and grassroots clean-energy projects — one story, told with conviction.' },
+				{ title: 'A clean, optimistic brand', desc: 'An identity built around clean energy that reads credible to institutions and hopeful to the communities being served.' },
+				{ title: 'Impact, structured to be read', desc: 'Programmes and metrics organised for two audiences at once — funders skimming for rigour and the public looking for hope.' },
+				{ title: 'A content system that lasts', desc: 'Built so the team can keep advocacy, projects and news current without coming back to us for every change.' },
 			],
 			highlights: [
 				{ title: 'One home, many missions', desc: 'Advocacy, consultancy and clean-energy projects, coherently under one roof.' },
@@ -304,10 +324,10 @@ export const projects: Project[] = [
 			challenge:
 				'Take a genuinely useful utility — instant bet-code conversion — and turn it into a product people keep coming back to: fast, free, reliable across platforms, and sticky enough to build a community around.',
 			approach: [
-				'A converter that just works — Sportybet to Nairabet and back, in seconds.',
-				'Livescores and rated predictions to keep users in the app between bets.',
-				'A community layer — tipsters, chat and shared codes.',
-				'Web plus native iOS and Android, shipped and maintained.',
+				{ title: 'A converter that just works', desc: 'Sportybet to Nairabet and back in seconds — the core utility, made flawless and fast, because that is what brings people back.' },
+				{ title: 'Reasons to stay', desc: 'Livescores and rated predictions woven in to keep users in the app between bets — a tool that becomes a daily habit.' },
+				{ title: 'A community layer', desc: 'Tipsters, chat and shared codes — turning a one-off utility into a product with its own gravity and network effect.' },
+				{ title: 'Web + native, shipped & maintained', desc: 'One product across the web and native iOS and Android, launched on both stores and kept running.' },
 			],
 			highlights: [
 				{ title: 'Convert in seconds', desc: 'Transfer bet codes across platforms instantly — the core job, done flawlessly.' },
