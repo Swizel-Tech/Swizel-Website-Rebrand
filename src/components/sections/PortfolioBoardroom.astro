@@ -1,24 +1,25 @@
 ---
-// Portfolio — the Boardroom world. Real, shipped client work with live
-// screenshots, a featured case-study reel and a CSS-only sector filter.
-// Reuses the boardroom engine (initBoardroomBody → reveals/counters) and the
-// themed cursor; self-contained .bd-* base styles.
+// Portfolio — the Boardroom world. The grand showcase: real shipped work with
+// live screenshots, a featured case-study reel (each links to its own /work
+// page), the Brevarium magazines, a showreel slot, and a CSS-only sector
+// filter over every project. Reuses initBoardroomBody reveals/counters.
 import { Icon } from 'astro-icon';
-import { projects, sectorLabels, type ProjectSector } from '../../data/projects';
+import { projects, featuredProjects, sectorLabels, sectorOrder, type ProjectSector } from '../../data/projects';
 
-const featured = projects.filter((p) => p.featured);
-const sectors: ProjectSector[] = ['agri', 'media', 'property', 'commerce', 'product'];
+const sectors = sectorOrder;
 const sectorCount = (s: ProjectSector) => projects.filter((p) => p.sector === s).length;
 
 const stats = [
 	{ to: projects.length, suffix: '+', label: 'Products shipped' },
-	{ to: 5, suffix: '', label: 'Sectors served' },
+	{ to: sectors.length, suffix: '', label: 'Sectors served' },
 	{ to: 7, suffix: '+', label: 'Years building' },
 	{ to: 99.9, decimals: 1, suffix: '%', label: 'Uptime upheld' },
 ];
 
-// a doubled strip of shots for the hero marquee
 const marquee = [...projects, ...projects];
+
+// the project's destination: its case study, else the live site
+const dest = (p: (typeof projects)[number]) => (p.caseStudy ? `/work/${p.slug}` : p.url);
 ---
 
 <div class="bdbody bd-services bd-portfolio view-body view-body-boardroom">
@@ -26,22 +27,21 @@ const marquee = [...projects, ...projects];
 	<header class="pf-hero bd-reveal">
 		<span class="pf-hero-aurora" aria-hidden="true"></span>
 		<div class="pf-hero-copy">
-			<span class="bd-kicker">Our work</span>
+			<span class="bd-kicker">Our work · the receipts</span>
 			<h1 class="bd-display pf-h1">
 				Proof, not
 				<span class="bd-grad">promises.</span>
 			</h1>
 			<p class="bd-sub pf-hero-sub">
-				Real products, live on the internet — agritech, media, property,
-				commerce and platforms we designed, built and still look after.
+				Real products, live on the internet — agritech, health, media, property,
+				commerce and platforms we designed, built, launched and still look after.
+				Curtains open.
 			</p>
 			<div class="bd-links pf-hero-links">
-				<a href="#pf-work" class="bd-pill">Browse the work</a>
-				<a href="/contact" class="bd-link">Start your project <Icon width={15} name="mdi:arrow-right" /></a>
+				<a href="#pf-featured" class="bd-pill">See the headliners</a>
+				<a href="#pf-work" class="bd-link">Browse everything <Icon width={15} name="mdi:arrow-down" /></a>
 			</div>
 		</div>
-
-		<!-- drifting wall of real screenshots -->
 		<div class="pf-marquee" aria-hidden="true">
 			<div class="pf-marquee-track">
 				{marquee.map((p) => (
@@ -67,41 +67,84 @@ const marquee = [...projects, ...projects];
 		</section>
 	</div>
 
-	<!-- ── Featured case studies ───────────────────────────── -->
-	<section class="bd-head bd-reveal">
-		<h2 class="bd-h bd-h--center">Selected work.</h2>
-		<p class="bd-p bd-p--center">A few we’re especially proud of — go on, open them in a new tab.</p>
+	<!-- ── Featured case studies (each → its own page) ─────── -->
+	<section class="bd-head bd-reveal" id="pf-featured">
+		<span class="bd-kicker">Featured · drumroll</span>
+		<h2 class="bd-h bd-h--center">Stories worth the long read.</h2>
+		<p class="bd-p bd-p--center">A handful told in full — the brief, the build, the result. And this is just the tip.</p>
 	</section>
 	<div class="pf-feats">
-		{featured.map((p, i) => (
+		{featuredProjects.map((p, i) => (
 			<article class:list={['pf-feat', 'bd-reveal', { 'pf-feat--rev': i % 2 === 1 }]} style={`--c:${p.color}`} data-cursor="repo">
-				<a class:list={['pf-shot', 'pf-shot--lg', { 'pf-shot--app': p.kind === 'app' }]} href={p.url ?? undefined} target={p.url ? '_blank' : undefined} rel={p.url ? 'noopener noreferrer' : undefined} aria-label={p.url ? `Visit ${p.name}` : p.name}>
+				<a class:list={['pf-shot', 'pf-shot--lg', { 'pf-shot--app': p.kind === 'app' }]} href={`/work/${p.slug}`} aria-label={`${p.name} case study`}>
 					{p.kind !== 'app' && <span class="pf-bar" aria-hidden="true"><i></i><i></i><i></i><span class="pf-url">{p.host}</span></span>}
-					<span class="pf-img"><img src={p.img} alt={`${p.name} ${p.kind === 'app' ? 'app' : 'website'}`} loading={i === 0 ? 'eager' : 'lazy'} /></span>
+					<span class="pf-img"><img src={p.img} alt={`${p.name}`} loading={i === 0 ? 'eager' : 'lazy'} /></span>
 					<span class="pf-open" aria-hidden="true"><Icon width={16} name="mdi:arrow-top-right" /></span>
 				</a>
 				<div class="pf-feat-body">
-					<span class="pf-feat-eyebrow">Featured · {sectorLabels[p.sector]}</span>
+					<span class="pf-feat-eyebrow">{String(i + 1).padStart(2, '0')} · {sectorLabels[p.sector]}</span>
 					<h3 class="pf-feat-name">{p.name}</h3>
 					<p class="pf-feat-tagline">{p.tagline}</p>
 					<p class="pf-feat-blurb">{p.blurb}</p>
 					<ul class="pf-tags">
 						{p.tags.map((t) => <li>{t}</li>)}
 					</ul>
-					{p.url ? (
-						<a class="bd-link pf-feat-link" href={p.url} target="_blank" rel="noopener noreferrer">
-							Visit live site <Icon width={15} name="mdi:open-in-new" />
-						</a>
-					) : (
-						<span class="pf-feat-note">Private engagement</span>
-					)}
+					<a class="pf-feat-cta" href={`/work/${p.slug}`}>
+						Read the case study <Icon width={16} name="mdi:arrow-right" />
+					</a>
 				</div>
 			</article>
 		))}
 	</div>
 
+	<!-- ── Showreel — room for a video ─────────────────────── -->
+	<section class="pf-reel bd-reveal" data-cursor="play">
+		<div class="pf-reel-grid">
+			<div class="pf-reel-copy">
+				<span class="bd-kicker">Showreel</span>
+				<h2 class="bd-h">Watch the work move.</h2>
+				<p class="bd-p">Drop in a two-minute sizzle of the products, the builds and the launches — proof in motion.</p>
+				<a href="/contact" class="bd-link">Want this energy on your project? <Icon width={15} name="mdi:arrow-right" /></a>
+			</div>
+			<div class="pf-reel-frame">
+				<span class="pf-reel-sheen" aria-hidden="true"></span>
+				<span class="pf-reel-grid-lines" aria-hidden="true"></span>
+				<button type="button" class="pf-reel-play" aria-label="Play showreel"><Icon width={32} name="mdi:play" /></button>
+				<span class="pf-reel-label">Video placeholder</span>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── The Brevarium magazines ─────────────────────────── -->
+	<section class="bd-head bd-reveal">
+		<span class="bd-kicker">In print, too</span>
+		<h2 class="bd-h bd-h--center">The Brevarium.</h2>
+		<p class="bd-p bd-p--center">Our magazine — the products, the team and the thinking behind the work. Read it cover to cover.</p>
+	</section>
+	<div class="pf-mags">
+		<a class="pf-mag pf-mag--latest bd-reveal" href="/brevarium/the-brevarium-latest.pdf" download data-cursor="book">
+			<span class="pf-mag-cover"><img src="/images/portfolio/mag-latest-cover.jpg" alt="The Brevarium — latest edition" loading="lazy" /></span>
+			<span class="pf-mag-meta">
+				<span class="pf-mag-tag">Latest edition</span>
+				<strong>The Brevarium</strong>
+				<em>You Imagine. We Build. — featured projects, the team & how we ship.</em>
+				<span class="pf-mag-dl"><Icon width={16} name="mdi:download" /> Download PDF</span>
+			</span>
+		</a>
+		<a class="pf-mag bd-reveal" href="/The Brevarium by Swizel.pdf" download data-cursor="book">
+			<span class="pf-mag-cover"><img src="/images/portfolio/mag-v1-cover.jpg" alt="The Brevarium — Vol. 1" loading="lazy" /></span>
+			<span class="pf-mag-meta">
+				<span class="pf-mag-tag">Vol. 1</span>
+				<strong>The Brevarium</strong>
+				<em>The AppMan story — a full product, start to finish.</em>
+				<span class="pf-mag-dl"><Icon width={16} name="mdi:download" /> Download PDF</span>
+			</span>
+		</a>
+	</div>
+
 	<!-- ── All work — CSS-only sector filter ───────────────── -->
 	<section class="bd-head bd-reveal" id="pf-work">
+		<span class="bd-kicker">The full shelf</span>
 		<h2 class="bd-h bd-h--center">Every project.</h2>
 		<p class="bd-p bd-p--center">Filter by sector — {projects.length} products and counting.</p>
 	</section>
@@ -117,34 +160,40 @@ const marquee = [...projects, ...projects];
 			))}
 		</div>
 		<div class="pf-grid">
-			{projects.map((p) => (
-				<article class:list={['pf-card', 'bd-reveal', `s-${p.sector}`]} style={`--c:${p.color}`} data-cursor="repo">
-					<a
-						class="pf-card-link"
-						href={p.url ?? undefined}
-						target={p.url ? '_blank' : undefined}
-						rel={p.url ? 'noopener noreferrer' : undefined}
-						aria-label={p.url ? `Visit ${p.name}` : p.name}
-						aria-disabled={p.url ? undefined : 'true'}
-					>
-						<span class:list={['pf-shot', { 'pf-shot--app': p.kind === 'app' }]}>
-							{p.kind !== 'app' && <span class="pf-bar" aria-hidden="true"><i></i><i></i><i></i><span class="pf-url">{p.host}</span></span>}
-							<span class="pf-img"><img src={p.img} alt={`${p.name} ${p.kind === 'app' ? 'app' : 'website'}`} loading="lazy" /></span>
-							<span class="pf-open" aria-hidden="true"><Icon width={15} name={p.url ? 'mdi:arrow-top-right' : 'mdi:lock-outline'} /></span>
-						</span>
-						<div class="pf-card-body">
-							<div class="pf-card-head">
-								<h3 class="pf-card-name">{p.name}</h3>
-								<span class="pf-card-year">{p.year}</span>
+			{projects.map((p) => {
+				const href = dest(p);
+				const internal = !!p.caseStudy;
+				const Tag = href ? 'a' : 'div';
+				return (
+					<article class:list={['pf-card', 'bd-reveal', `s-${p.sector}`]} style={`--c:${p.color}`} data-cursor="repo">
+						<Tag
+							class="pf-card-link"
+							href={href ?? undefined}
+							target={href && !internal ? '_blank' : undefined}
+							rel={href && !internal ? 'noopener noreferrer' : undefined}
+							aria-label={p.name}
+							aria-disabled={href ? undefined : 'true'}
+						>
+							<span class:list={['pf-shot', { 'pf-shot--app': p.kind === 'app' }]}>
+								{p.kind !== 'app' && <span class="pf-bar" aria-hidden="true"><i></i><i></i><i></i><span class="pf-url">{p.host}</span></span>}
+								<span class="pf-img"><img src={p.img} alt={`${p.name}`} loading="lazy" /></span>
+								<span class="pf-open" aria-hidden="true"><Icon width={15} name={internal ? 'mdi:arrow-right' : p.url ? 'mdi:arrow-top-right' : 'mdi:lock-outline'} /></span>
+								{internal && <span class="pf-badge">Case study</span>}
+							</span>
+							<div class="pf-card-body">
+								<div class="pf-card-head">
+									<h3 class="pf-card-name">{p.name}</h3>
+									<span class="pf-card-year">{p.year}</span>
+								</div>
+								<p class="pf-card-tagline">{p.tagline}</p>
+								<ul class="pf-tags">
+									{p.tags.map((t) => <li>{t}</li>)}
+								</ul>
 							</div>
-							<p class="pf-card-tagline">{p.tagline}</p>
-							<ul class="pf-tags">
-								{p.tags.map((t) => <li>{t}</li>)}
-							</ul>
-						</div>
-					</a>
-				</article>
-			))}
+						</Tag>
+					</article>
+				);
+			})}
 		</div>
 	</form>
 
@@ -171,8 +220,7 @@ const marquee = [...projects, ...projects];
 		--bd-glass-border: rgba(255, 255, 255, 0.1);
 		--bd-shadow: 0 34px 80px -34px rgba(0, 0, 0, 0.8);
 		font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-		position: relative;
-		isolation: isolate;
+		position: relative; isolation: isolate; overflow: hidden;
 		background:
 			radial-gradient(1100px 540px at 78% -6%, color-mix(in srgb, var(--bd-accent) 13%, transparent), transparent 62%),
 			radial-gradient(900px 520px at 8% 38%, rgba(58, 90, 200, 0.1), transparent 60%),
@@ -180,7 +228,6 @@ const marquee = [...projects, ...projects];
 		color: var(--bd-ink);
 		padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 4rem);
 		transition: background 0.4s ease, color 0.4s ease;
-		overflow: hidden;
 	}
 	:global(html:not(.dark)) .bdbody {
 		--bd-ink: #14162a;
@@ -195,30 +242,18 @@ const marquee = [...projects, ...projects];
 
 	.bd-kicker { display: inline-block; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bd-accent); margin-bottom: 1rem; }
 	.bd-display { font-size: clamp(2.6rem, 6vw, 4.6rem); font-weight: 700; letter-spacing: -0.025em; line-height: 1.04; margin: 0 0 1.1rem; }
-	.bd-grad {
-		background: linear-gradient(110deg, #9bd8ff 0%, var(--bd-accent) 38%, #7ef0d2 64%, #9bd8ff 100%);
-		background-size: 220% 100%;
-		-webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-		animation: pf-grad 7s ease infinite;
-	}
+	.bd-grad { background: linear-gradient(110deg, #9bd8ff 0%, var(--bd-accent) 38%, #7ef0d2 64%, #9bd8ff 100%); background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; animation: pf-grad 7s ease infinite; }
 	@keyframes pf-grad { 0%,100%{ background-position:0% 50%; } 50%{ background-position:100% 50%; } }
-	.bd-sub { font-size: clamp(1.05rem, 2vw, 1.35rem); line-height: 1.5; color: var(--bd-muted); max-width: 40rem; margin: 0 auto 1.6rem; }
+	.bd-sub { font-size: clamp(1.05rem, 2vw, 1.35rem); line-height: 1.5; color: var(--bd-muted); max-width: 42rem; margin: 0 auto 1.6rem; }
 	.bd-h { font-size: clamp(1.7rem, 3.4vw, 2.5rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; margin: 0 0 0.7rem; }
 	.bd-h--center { text-align: center; }
-	.bd-p { font-size: 1.02rem; line-height: 1.6; color: var(--bd-muted); max-width: 34rem; margin: 0 auto 1.2rem; }
+	.bd-p { font-size: 1.02rem; line-height: 1.6; color: var(--bd-muted); max-width: 36rem; margin: 0 auto 1.2rem; }
 	.bd-p--center { margin-inline: auto; text-align: center; }
-	.bd-head { max-width: 56rem; margin: clamp(2.5rem, 6vw, 4rem) auto clamp(1.5rem, 3vw, 2rem); text-align: center; }
+	.bd-head { max-width: 56rem; margin: clamp(2.5rem, 7vw, 4.5rem) auto clamp(1.5rem, 3vw, 2rem); text-align: center; }
 
 	.bd-links { display: flex; align-items: center; justify-content: center; gap: 1.4rem; flex-wrap: wrap; }
 	.bd-links--center { justify-content: center; }
-	.bd-pill {
-		position: relative; display: inline-flex; align-items: center; padding: 0.78rem 1.5rem; border-radius: 9999px;
-		background: linear-gradient(180deg, color-mix(in srgb, var(--bd-accent) 88%, #fff), var(--bd-accent) 45%, color-mix(in srgb, var(--bd-accent) 72%, #03244a));
-		border: 1px solid color-mix(in srgb, var(--bd-accent) 60%, rgba(255, 255, 255, 0.4));
-		color: #fff; font-size: 0.95rem; font-weight: 600; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
-		box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 12px 28px -12px color-mix(in srgb, var(--bd-accent) 65%, transparent);
-		transition: transform 0.25s ease, box-shadow 0.25s ease;
-	}
+	.bd-pill { position: relative; display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.78rem 1.5rem; border-radius: 9999px; background: linear-gradient(180deg, color-mix(in srgb, var(--bd-accent) 88%, #fff), var(--bd-accent) 45%, color-mix(in srgb, var(--bd-accent) 72%, #03244a)); border: 1px solid color-mix(in srgb, var(--bd-accent) 60%, rgba(255, 255, 255, 0.4)); color: #fff; font-size: 0.95rem; font-weight: 600; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 12px 28px -12px color-mix(in srgb, var(--bd-accent) 65%, transparent); transition: transform 0.25s ease, box-shadow 0.25s ease; }
 	.bd-pill:hover { transform: translateY(-2px); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 18px 38px -12px color-mix(in srgb, var(--bd-accent) 80%, transparent); }
 	.bd-pill--light { background: linear-gradient(180deg, #ffffff, #dfe6f2); border-color: rgba(255, 255, 255, 0.8); color: #0b0d18; text-shadow: none; }
 	.bd-link { display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.98rem; font-weight: 600; color: var(--bd-accent); transition: gap 0.25s ease; }
@@ -239,20 +274,18 @@ const marquee = [...projects, ...projects];
 	.pf-hero-aurora { position: absolute; inset: -30% -10% auto; height: 90%; z-index: 0; pointer-events: none; background: radial-gradient(620px 440px at 30% 20%, rgba(34, 211, 238, 0.22), transparent 60%), radial-gradient(620px 460px at 78% 16%, rgba(139, 92, 246, 0.2), transparent 62%); filter: blur(54px); opacity: 0.6; animation: pf-aurora 18s ease-in-out infinite; }
 	:global(html:not(.dark)) .pf-hero-aurora { opacity: 0.38; }
 	@keyframes pf-aurora { 0%,100%{ transform: translate3d(0,0,0) scale(1); } 50%{ transform: translate3d(2%,-2%,0) scale(1.08); } }
-	.pf-hero-copy { position: relative; z-index: 1; max-width: 50rem; margin-inline: auto; }
+	.pf-hero-copy { position: relative; z-index: 1; max-width: 52rem; margin-inline: auto; }
 	.pf-h1 { max-width: 13ch; margin-inline: auto; }
 	.pf-hero-sub { margin-inline: auto; }
 	.pf-hero-links { justify-content: center; }
-
-	/* hero screenshot marquee */
 	.pf-marquee { position: relative; z-index: 1; margin-top: clamp(2.5rem, 5vw, 3.5rem); overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
-	.pf-marquee-track { display: flex; gap: clamp(0.8rem, 2vw, 1.3rem); width: max-content; animation: pf-drift 60s linear infinite; }
+	.pf-marquee-track { display: flex; gap: clamp(0.8rem, 2vw, 1.3rem); width: max-content; animation: pf-drift 70s linear infinite; }
 	.pf-marquee:hover .pf-marquee-track { animation-play-state: paused; }
 	@keyframes pf-drift { to { transform: translateX(-50%); } }
 	.pf-thumb { flex-shrink: 0; width: clamp(220px, 26vw, 340px); aspect-ratio: 16 / 10; border-radius: 1rem; overflow: hidden; border: 1px solid color-mix(in srgb, var(--c) 36%, var(--bd-glass-border)); box-shadow: 0 24px 50px -28px color-mix(in srgb, var(--c) 40%, rgba(0,0,0,0.8)); }
 	.pf-thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
 
-	/* ── Browser-framed screenshot ── */
+	/* ── Browser-framed screenshot (shared) ── */
 	.pf-shot { position: relative; display: block; border-radius: 1.1rem; overflow: hidden; background: #0b0d16; border: 1px solid color-mix(in srgb, var(--c) 30%, var(--bd-glass-border)); box-shadow: var(--bd-shadow); }
 	.pf-bar { display: flex; align-items: center; gap: 0.4rem; padding: 0.55rem 0.8rem; background: color-mix(in srgb, var(--bd-ink) 8%, #11131c); border-bottom: 1px solid var(--bd-glass-border); }
 	.pf-bar i { width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,0.25); }
@@ -263,14 +296,13 @@ const marquee = [...projects, ...projects];
 	.pf-img { display: block; aspect-ratio: 16 / 10; overflow: hidden; }
 	.pf-img img { width: 100%; height: 100%; object-fit: cover; object-position: top; transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
 	.pf-open { position: absolute; top: 0.6rem; right: 0.6rem; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 9999px; color: #fff; background: color-mix(in srgb, var(--c) 82%, transparent); opacity: 0; transform: translate(4px, -4px); transition: opacity 0.3s ease, transform 0.3s ease; }
-
-	/* app mockups — show the whole composition on a brand-tinted canvas, no browser chrome */
+	.pf-badge { position: absolute; top: 0.6rem; left: 0.6rem; font-size: 0.66rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.28rem 0.6rem; border-radius: 9999px; color: #fff; background: color-mix(in srgb, var(--c) 85%, transparent); box-shadow: 0 6px 16px -6px color-mix(in srgb, var(--c) 70%, transparent); }
 	.pf-shot--app .pf-img { background: radial-gradient(130% 130% at 50% 0%, color-mix(in srgb, var(--c) 22%, #0b0d16), #0b0d16); }
 	:global(html:not(.dark)) .pf-shot--app .pf-img { background: radial-gradient(130% 130% at 50% 0%, color-mix(in srgb, var(--c) 18%, #eef2f7), #eef2f7); }
 	.pf-shot--app .pf-img img { object-fit: contain; object-position: center; padding: 0.5rem; }
 
 	/* ── Featured rows ── */
-	.pf-feats { max-width: 80rem; margin: 0 auto; display: grid; gap: clamp(2rem, 5vw, 3.5rem); }
+	.pf-feats { max-width: 82rem; margin: 0 auto; display: grid; gap: clamp(2.5rem, 6vw, 4.5rem); }
 	.pf-feat { display: grid; gap: clamp(1.5rem, 4vw, 3rem); align-items: center; }
 	@media (min-width: 900px) { .pf-feat { grid-template-columns: 1.15fr 0.85fr; } .pf-feat--rev .pf-shot--lg { order: 2; } }
 	.pf-shot--lg { transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease; }
@@ -278,15 +310,46 @@ const marquee = [...projects, ...projects];
 	.pf-shot--lg:hover .pf-img img { transform: scale(1.04); }
 	.pf-shot--lg:hover .pf-open { opacity: 1; transform: translate(0, 0); }
 	.pf-feat-eyebrow { display: inline-block; font-size: 0.74rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--c); margin-bottom: 0.7rem; }
-	.pf-feat-name { font-size: clamp(1.6rem, 3.2vw, 2.3rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.08; margin: 0 0 0.5rem; }
-	.pf-feat-tagline { font-size: 1.05rem; font-weight: 600; color: color-mix(in srgb, var(--c) 72%, var(--bd-ink)); margin: 0 0 0.8rem; }
-	.pf-feat-blurb { font-size: 0.98rem; line-height: 1.6; color: var(--bd-muted); margin: 0 0 1.2rem; max-width: 34rem; }
-	.pf-feat-link { font-size: 1rem; }
-	.pf-feat-note { font-size: 0.85rem; font-weight: 600; color: var(--bd-muted); }
+	.pf-feat-name { font-size: clamp(1.7rem, 3.4vw, 2.5rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.06; margin: 0 0 0.5rem; }
+	.pf-feat-tagline { font-size: 1.08rem; font-weight: 600; color: color-mix(in srgb, var(--c) 72%, var(--bd-ink)); margin: 0 0 0.8rem; }
+	.pf-feat-blurb { font-size: 0.98rem; line-height: 1.6; color: var(--bd-muted); margin: 0 0 1.1rem; max-width: 34rem; }
+	.pf-feat-cta { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.7rem 1.4rem; border-radius: 9999px; font-size: 0.95rem; font-weight: 700; color: #fff; background: linear-gradient(180deg, color-mix(in srgb, var(--c) 88%, #fff), var(--c)); box-shadow: 0 14px 30px -12px color-mix(in srgb, var(--c) 70%, transparent); transition: transform 0.25s ease, gap 0.25s ease; }
+	.pf-feat-cta:hover { transform: translateY(-2px); gap: 0.7rem; }
 
-	/* ── Tag pills ── */
+	/* ── Tag pills (shared) ── */
 	.pf-tags { list-style: none; display: flex; flex-wrap: wrap; gap: 0.45rem; padding: 0; margin: 0 0 1.2rem; }
 	.pf-tags li { font-size: 0.76rem; font-weight: 600; padding: 0.3rem 0.7rem; border-radius: 9999px; color: color-mix(in srgb, var(--c) 80%, var(--bd-ink)); background: color-mix(in srgb, var(--c) 12%, transparent); border: 1px solid color-mix(in srgb, var(--c) 26%, transparent); }
+
+	/* ── Showreel ── */
+	.pf-reel { max-width: 80rem; margin: clamp(3rem, 7vw, 5rem) auto; }
+	.pf-reel-grid { display: grid; gap: clamp(1.5rem, 3vw, 2.75rem); align-items: center; }
+	@media (min-width: 860px) { .pf-reel-grid { grid-template-columns: 0.8fr 1.2fr; } }
+	.pf-reel-copy .bd-h { margin: 0.3rem 0 0.6rem; }
+	.pf-reel-copy .bd-p { margin: 0 0 1.2rem; max-width: 26rem; }
+	.pf-reel-frame { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; aspect-ratio: 16 / 9; border-radius: 1.75rem; overflow: hidden; cursor: pointer; border: 1.5px dashed color-mix(in srgb, var(--bd-accent) 38%, transparent); background: radial-gradient(700px 320px at 50% 0%, color-mix(in srgb, var(--bd-accent) 18%, transparent), transparent 65%), linear-gradient(180deg, rgba(18, 22, 42, 0.7), rgba(5, 6, 13, 0.85)); color: var(--bd-muted); box-shadow: var(--bd-shadow); }
+	:global(html:not(.dark)) .pf-reel-frame { background: radial-gradient(700px 320px at 50% 0%, color-mix(in srgb, var(--bd-accent) 14%, transparent), transparent 65%), linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.44)); }
+	.pf-reel-grid-lines { position: absolute; inset: 0; pointer-events: none; opacity: 0.5; background-image: linear-gradient(color-mix(in srgb, var(--bd-accent) 12%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--bd-accent) 12%, transparent) 1px, transparent 1px); background-size: 42px 42px; -webkit-mask-image: radial-gradient(closest-side at 50% 45%, #000, transparent); mask-image: radial-gradient(closest-side at 50% 45%, #000, transparent); }
+	.pf-reel-sheen { position: absolute; inset: 0; background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, 0.06) 50%, transparent 64%); transform: translateX(-100%); animation: pf-sheen 6s ease-in-out infinite; pointer-events: none; }
+	@keyframes pf-sheen { 0%, 55% { transform: translateX(-100%); } 85%, 100% { transform: translateX(100%); } }
+	.pf-reel-play { position: relative; display: grid; place-items: center; width: 78px; height: 78px; border-radius: 9999px; cursor: pointer; color: #fff; background: linear-gradient(180deg, color-mix(in srgb, var(--bd-accent) 90%, #fff), var(--bd-accent)); border: 1px solid color-mix(in srgb, var(--bd-accent) 60%, rgba(255, 255, 255, 0.4)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 20px 44px -14px color-mix(in srgb, var(--bd-accent) 70%, transparent); transition: transform 0.25s ease; margin-bottom: 0.3rem; }
+	.pf-reel-play::after { content: ''; position: absolute; inset: -10px; border-radius: 9999px; border: 1.5px solid color-mix(in srgb, var(--bd-accent) 45%, transparent); animation: pf-ping 2.6s ease-out infinite; }
+	@keyframes pf-ping { 0%{ transform: scale(0.85); opacity: 0.8; } 100%{ transform: scale(1.5); opacity: 0; } }
+	.pf-reel-frame:hover .pf-reel-play { transform: scale(1.08); }
+	.pf-reel-label { position: relative; font-size: 0.76rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
+
+	/* ── Magazines ── */
+	.pf-mags { max-width: 72rem; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1rem, 2.5vw, 1.6rem); }
+	@media (max-width: 720px) { .pf-mags { grid-template-columns: 1fr; } }
+	.pf-mag { display: flex; gap: clamp(1rem, 2.5vw, 1.5rem); padding: clamp(1.1rem, 2.5vw, 1.5rem); border-radius: 1.4rem; background: var(--bd-glass); border: 1px solid var(--bd-glass-border); box-shadow: var(--bd-shadow); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); transition: transform 0.35s ease, border-color 0.35s ease; }
+	.pf-mag:hover { transform: translateY(-5px); border-color: color-mix(in srgb, var(--bd-accent) 45%, var(--bd-glass-border)); }
+	.pf-mag-cover { flex-shrink: 0; width: clamp(96px, 22vw, 132px); border-radius: 0.7rem; overflow: hidden; box-shadow: 0 18px 40px -18px rgba(0,0,0,0.7); align-self: flex-start; }
+	.pf-mag-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+	.pf-mag-meta { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+	.pf-mag-tag { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--bd-accent); }
+	.pf-mag-meta strong { font-size: 1.3rem; font-weight: 700; letter-spacing: -0.01em; }
+	.pf-mag-meta em { font-style: normal; font-size: 0.9rem; line-height: 1.5; color: var(--bd-muted); }
+	.pf-mag-dl { margin-top: auto; display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.86rem; font-weight: 700; color: var(--bd-accent); padding-top: 0.6rem; }
+	.pf-mag--latest { background: radial-gradient(420px 220px at 90% 0%, color-mix(in srgb, var(--bd-accent) 16%, transparent), transparent 65%), var(--bd-glass); border-color: color-mix(in srgb, var(--bd-accent) 28%, var(--bd-glass-border)); }
 
 	/* ── Filter (pure CSS via radios) ── */
 	.pf-filter { max-width: 84rem; margin: 0 auto; }
@@ -296,28 +359,27 @@ const marquee = [...projects, ...projects];
 	.pf-chip span { font-size: 0.72rem; font-weight: 800; padding: 0.05rem 0.4rem; border-radius: 9999px; color: var(--bd-muted); background: color-mix(in srgb, var(--bd-ink) 8%, transparent); }
 	.pf-chip:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--bd-accent) 45%, var(--bd-glass-border)); }
 
-	/* active chip + filtering — one pair of rules per sector */
 	#pf-all:checked ~ .pf-chips label[for='pf-all'],
 	#pf-agri:checked ~ .pf-chips label[for='pf-agri'],
-	#pf-media:checked ~ .pf-chips label[for='pf-media'],
+	#pf-health:checked ~ .pf-chips label[for='pf-health'],
 	#pf-property:checked ~ .pf-chips label[for='pf-property'],
+	#pf-media:checked ~ .pf-chips label[for='pf-media'],
 	#pf-commerce:checked ~ .pf-chips label[for='pf-commerce'],
 	#pf-product:checked ~ .pf-chips label[for='pf-product'] {
-		color: #06121a;
-		background: linear-gradient(95deg, #8dfeea, #18debe, #28a6ec);
-		border-color: transparent;
-		box-shadow: 0 12px 26px -12px rgba(24, 222, 190, 0.5);
+		color: #06121a; background: linear-gradient(95deg, #8dfeea, #18debe, #28a6ec); border-color: transparent; box-shadow: 0 12px 26px -12px rgba(24, 222, 190, 0.5);
 	}
 	#pf-all:checked ~ .pf-chips label[for='pf-all'] span,
 	#pf-agri:checked ~ .pf-chips label[for='pf-agri'] span,
-	#pf-media:checked ~ .pf-chips label[for='pf-media'] span,
+	#pf-health:checked ~ .pf-chips label[for='pf-health'] span,
 	#pf-property:checked ~ .pf-chips label[for='pf-property'] span,
+	#pf-media:checked ~ .pf-chips label[for='pf-media'] span,
 	#pf-commerce:checked ~ .pf-chips label[for='pf-commerce'] span,
 	#pf-product:checked ~ .pf-chips label[for='pf-product'] span { color: #06121a; background: rgba(0, 0, 0, 0.14); }
 
 	#pf-agri:checked ~ .pf-grid .pf-card:not(.s-agri),
-	#pf-media:checked ~ .pf-grid .pf-card:not(.s-media),
+	#pf-health:checked ~ .pf-grid .pf-card:not(.s-health),
 	#pf-property:checked ~ .pf-grid .pf-card:not(.s-property),
+	#pf-media:checked ~ .pf-grid .pf-card:not(.s-media),
 	#pf-commerce:checked ~ .pf-grid .pf-card:not(.s-commerce),
 	#pf-product:checked ~ .pf-grid .pf-card:not(.s-product) { display: none; }
 
@@ -348,8 +410,8 @@ const marquee = [...projects, ...projects];
 	.bd-reveal.is-on { opacity: 1; transform: translateY(0); }
 	@media (prefers-reduced-motion: reduce) {
 		.bd-reveal { opacity: 1; transform: none; transition: none; }
-		.pf-hero-aurora, .pf-marquee-track, .bd-grad { animation: none; }
+		.pf-hero-aurora, .pf-marquee-track, .bd-grad, .pf-reel-sheen, .pf-reel-play::after { animation: none; }
 		.pf-marquee { -webkit-mask-image: none; mask-image: none; overflow-x: auto; }
-		.pf-card:hover, .pf-shot--lg:hover { transform: none; }
+		.pf-card:hover, .pf-shot--lg:hover, .pf-mag:hover { transform: none; }
 	}
 </style>
