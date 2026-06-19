@@ -17,6 +17,8 @@ const stats = [
 ];
 
 const marquee = [...projects, ...projects];
+const rot = [...projects.slice(7), ...projects.slice(0, 7)];
+const marquee2 = [...rot, ...rot];
 
 // the project's destination: its case study, else the live site
 const dest = (p: (typeof projects)[number]) => (p.caseStudy ? `/work/${p.slug}` : p.url);
@@ -46,7 +48,14 @@ const dest = (p: (typeof projects)[number]) => (p.caseStudy ? `/work/${p.slug}` 
 			<div class="pf-marquee-track">
 				{marquee.map((p) => (
 					<span class="pf-thumb" style={`--c:${p.color}`}>
-						<img src={p.img} alt="" loading="lazy" />
+						<img src={p.img} alt="" loading="eager" decoding="async" />
+					</span>
+				))}
+			</div>
+			<div class="pf-marquee-track pf-marquee-track--rev">
+				{marquee2.map((p) => (
+					<span class="pf-thumb" style={`--c:${p.color}`}>
+						<img src={p.img} alt="" loading="eager" decoding="async" />
 					</span>
 				))}
 			</div>
@@ -231,9 +240,9 @@ const dest = (p: (typeof projects)[number]) => (p.caseStudy ? `/work/${p.slug}` 
 	}
 	:global(html:not(.dark)) .bdbody {
 		--bd-ink: #14162a;
-		--bd-muted: rgba(20, 22, 40, 0.64);
+		--bd-muted: rgba(20, 22, 40, 0.74);
 		--bd-glass: linear-gradient(160deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.55) 55%);
-		--bd-glass-border: rgba(20, 22, 40, 0.1);
+		--bd-glass-border: rgba(20, 22, 40, 0.12);
 		--bd-shadow: 0 30px 70px -34px rgba(20, 22, 40, 0.25);
 		background:
 			radial-gradient(1100px 540px at 78% -6%, color-mix(in srgb, var(--bd-accent) 10%, transparent), transparent 62%),
@@ -241,6 +250,12 @@ const dest = (p: (typeof projects)[number]) => (p.caseStudy ? `/work/${p.slug}` 
 	}
 
 	.bd-kicker { display: inline-block; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bd-accent); margin-bottom: 1rem; }
+	/* light-mode contrast: brighter accents wash out on the pale bg */
+	:global(html:not(.dark)) .bd-kicker { color: #1577b8; }
+	:global(html:not(.dark)) .bd-link { color: #1577b8; }
+	:global(html:not(.dark)) .pf-tags li { color: color-mix(in srgb, var(--c) 40%, #14162a); background: color-mix(in srgb, var(--c) 15%, transparent); border-color: color-mix(in srgb, var(--c) 38%, transparent); }
+	:global(html:not(.dark)) .pf-card-year { color: color-mix(in srgb, var(--c) 55%, #14162a); }
+	:global(html:not(.dark)) .pf-feat-tagline { color: color-mix(in srgb, var(--c) 55%, #14162a); }
 	.bd-display { font-size: clamp(2.6rem, 6vw, 4.6rem); font-weight: 700; letter-spacing: -0.025em; line-height: 1.04; margin: 0 0 1.1rem; }
 	.bd-grad { background: linear-gradient(110deg, #9bd8ff 0%, var(--bd-accent) 38%, #7ef0d2 64%, #9bd8ff 100%); background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; animation: pf-grad 7s ease infinite; }
 	@keyframes pf-grad { 0%,100%{ background-position:0% 50%; } 50%{ background-position:100% 50%; } }
@@ -274,16 +289,19 @@ const dest = (p: (typeof projects)[number]) => (p.caseStudy ? `/work/${p.slug}` 
 	.pf-hero-aurora { position: absolute; inset: -30% -10% auto; height: 90%; z-index: 0; pointer-events: none; background: radial-gradient(620px 440px at 30% 20%, rgba(34, 211, 238, 0.22), transparent 60%), radial-gradient(620px 460px at 78% 16%, rgba(139, 92, 246, 0.2), transparent 62%); filter: blur(54px); opacity: 0.6; animation: pf-aurora 18s ease-in-out infinite; }
 	:global(html:not(.dark)) .pf-hero-aurora { opacity: 0.38; }
 	@keyframes pf-aurora { 0%,100%{ transform: translate3d(0,0,0) scale(1); } 50%{ transform: translate3d(2%,-2%,0) scale(1.08); } }
-	.pf-hero-copy { position: relative; z-index: 1; max-width: 52rem; margin-inline: auto; }
-	.pf-h1 { max-width: 13ch; margin-inline: auto; }
+	.pf-hero-copy { position: relative; z-index: 1; max-width: 54rem; margin-inline: auto; }
+	.pf-h1 { max-width: 13ch; margin-inline: auto; font-size: clamp(2.9rem, 7.5vw, 5.4rem); }
 	.pf-hero-sub { margin-inline: auto; }
 	.pf-hero-links { justify-content: center; }
-	.pf-marquee { position: relative; z-index: 1; margin-top: clamp(2.5rem, 5vw, 3.5rem); overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
-	.pf-marquee-track { display: flex; gap: clamp(0.8rem, 2vw, 1.3rem); width: max-content; animation: pf-drift 70s linear infinite; }
+	.pf-marquee { position: relative; z-index: 1; margin-top: clamp(2.5rem, 5vw, 3.5rem); display: grid; gap: clamp(0.8rem, 2vw, 1.3rem); overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+	.pf-marquee-track { display: flex; gap: clamp(0.8rem, 2vw, 1.3rem); width: max-content; animation: pf-drift 75s linear infinite; }
+	.pf-marquee-track--rev { animation: pf-drift-rev 95s linear infinite; }
 	.pf-marquee:hover .pf-marquee-track { animation-play-state: paused; }
 	@keyframes pf-drift { to { transform: translateX(-50%); } }
-	.pf-thumb { flex-shrink: 0; width: clamp(220px, 26vw, 340px); aspect-ratio: 16 / 10; border-radius: 1rem; overflow: hidden; border: 1px solid color-mix(in srgb, var(--c) 36%, var(--bd-glass-border)); box-shadow: 0 24px 50px -28px color-mix(in srgb, var(--c) 40%, rgba(0,0,0,0.8)); }
+	@keyframes pf-drift-rev { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+	.pf-thumb { flex-shrink: 0; width: clamp(200px, 24vw, 320px); aspect-ratio: 16 / 10; border-radius: 1rem; overflow: hidden; border: 1px solid color-mix(in srgb, var(--c) 36%, var(--bd-glass-border)); box-shadow: 0 24px 50px -28px color-mix(in srgb, var(--c) 40%, rgba(0,0,0,0.8)); background: color-mix(in srgb, var(--c) 16%, var(--bd-glass-border)); }
 	.pf-thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+	@media (max-width: 640px) { .pf-marquee-track--rev { display: none; } }
 
 	/* ── Browser-framed screenshot (shared) ── */
 	.pf-shot { position: relative; display: block; border-radius: 1.1rem; overflow: hidden; background: #0b0d16; border: 1px solid color-mix(in srgb, var(--c) 30%, var(--bd-glass-border)); box-shadow: var(--bd-shadow); }

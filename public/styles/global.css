@@ -902,3 +902,12 @@ html[data-view="founder"] .alt-view-only,
 html[data-view="campus"] .alt-view-only,
 html[data-view="studio"] .alt-view-only,
 html[data-view="legacy"] .alt-view-only { display: block; }
+
+/* =========================================================
+   Boardroom light-mode contrast: the gradient text (.bd-grad)
+   uses pale cyans that vanish on the light background. Deepen
+   it for light mode only — applies across all boardroom pages.
+   ========================================================= */
+html:not(.dark) .bd-grad {
+  background-image: linear-gradient(110deg, #1583c7 0%, #1264c4 38%, #0e9e7a 70%, #1583c7 100%) !important;
+}
