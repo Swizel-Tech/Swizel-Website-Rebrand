@@ -319,34 +319,35 @@ const phones = [
 	.ft-social:hover .ft-social-go { color: var(--view-accent, #18debe); transform: translate(2px, -2px); }
 
 	/* Horizontal pill nav */
-	/* Footer nav — a tidy 2-column list on phones, a single pill row on wider
-	   screens (the wrapping pill read as scattered on mobile). */
+	/* Footer nav — compact dot-separated row on phones (tight, not scattered);
+	   a single pill row on wider screens. */
 	.ft-nav {
 		position: relative;
 		z-index: 1;
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 0.2rem 1.2rem;
-		max-width: 360px;
-		margin: 0 auto 1.8rem;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		align-items: center;
+		row-gap: 0.3rem;
+		max-width: 26rem;
+		margin: 0 auto 1.4rem;
 	}
 	.ft-nav-item {
-		padding: 0.6rem 0.4rem;
-		border-radius: 0.6rem;
-		font-size: 0.92rem;
+		display: inline-flex;
+		align-items: center;
+		font-size: 0.85rem;
 		font-weight: 600;
 		color: var(--ft-muted);
-		border-bottom: 1px solid var(--ft-border);
-		transition: color 0.25s ease, padding-left 0.25s ease;
+		transition: color 0.25s ease;
 	}
-	.ft-nav-item:hover { color: var(--ft-ink); padding-left: 0.7rem; }
+	.ft-nav-item::after { content: '·'; margin: 0 0.6rem; color: var(--ft-faint); }
+	.ft-nav-item:last-child::after { content: ''; margin: 0; }
+	.ft-nav-item:hover { color: var(--ft-ink); }
 	.ft-nav-item.active { color: var(--view-accent, #18debe); }
 	@media (min-width: 720px) {
 		.ft-nav {
-			display: flex;
-			flex-wrap: wrap;
-			justify-content: center;
 			gap: 0.3rem;
+			row-gap: 0.3rem;
 			width: fit-content;
 			max-width: 100%;
 			padding: 0.4rem;
@@ -354,8 +355,9 @@ const phones = [
 			background: var(--ft-card);
 			border-radius: 9999px;
 		}
-		.ft-nav-item { padding: 0.55rem 1.15rem; border-radius: 9999px; border-bottom: none; }
-		.ft-nav-item:hover { background: var(--ft-card); padding-left: 1.15rem; }
+		.ft-nav-item { padding: 0.55rem 1.15rem; border-radius: 9999px; }
+		.ft-nav-item::after { content: ''; margin: 0; }
+		.ft-nav-item:hover { background: var(--ft-card); }
 		.ft-nav-item.active { color: #0b0d18; background: var(--view-accent, #18debe); }
 	}
 
