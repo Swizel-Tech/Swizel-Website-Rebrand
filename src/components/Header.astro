@@ -7,7 +7,13 @@ import { formatLink, links } from '../consts';
 import { disciplines } from '../data/disciplines';
 
 // Keep "Services" highlighted across the hub AND every /services/<slug> page.
-const onServices = Astro.url.pathname.startsWith('/services');
+const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
+const onServices = pathname.startsWith('/services');
+// Active when the current path is the link's page (or a child of it).
+const isActive = (href: string) => {
+	if (href === '/') return pathname === '/';
+	return pathname === href || pathname.startsWith(href + '/');
+};
 ---
 
 <header
@@ -166,135 +172,214 @@ const onServices = Astro.url.pathname.startsWith('/services');
 		</div>
 	</div>
 
-	<div
-		id="mobile-wrapper"
-		role="dialog"
-		class="fixed z-[15] xl:hidden inset-0 overflow-x-hidden"
-	>
-		<div id="close-overlay" class="fixed inset-0 bg-black/40"></div>
-		<div
-			id="mobile-menu"
-			class="fixed left-0 h-full top-0 bg-swizelDark shadow-[-4px_0px_3px_1px_rgba(0,0,0,0.2)] border-l border-swizelDark"
-		>
-			<div class="py-4 px-5">
-				<div class="flex items-center justify-between gap-4">
-					<Link
-						class="text-white w-fit block"
-						aria-label="Swizel"
-						href="/"
-					>
-						<Logo width={120} />
-					</Link>
-					<button
-						id="toggler-hide"
-						aria-label="show menu"
-						type="button"
-					>
-						<Icon size={35} name="close" />
-					</button>
-				</div>
-
-				<nav class="mt-16">
-					<ul
-						class="grid gap-8 pl-2 text-white my-8 duration-300 apitalize whitespace-nowrap"
-					>
-						<Link class="whitespace-nowrap" href="/">Home</Link>
-						{
-							links.map((link) =>
-								link === 'services' ? (
-									<li class="capitalize">
-										<details class="nav-m-dd" open={onServices}>
-											<summary>
-												<Link class:list={[{ active: onServices }]} href="/services">{formatLink(link)}</Link>
-												<svg class="nav-m-caret" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9" /></svg>
-											</summary>
-											<ul class="nav-m-sub">
-												<li><a href="/services">Services Overview</a></li>
-												{disciplines.map((d) => (
-													<li><a href={`/services/${d.slug}`}>{d.title}</a></li>
-												))}
-											</ul>
-										</details>
-									</li>
-								) : (
-									<li class="capitalize">
-										<Link class="hover:text-white/60" href={`/${link}`}>
-											{formatLink(link)}
-										</Link>
-									</li>
-								)
-							)
-						}
-						<!-- <Link
-							download="The Brevarium by Swizel"
-							href="/The Brevarium by Swizel.pdf"
-						>
-							The Brevarium
-						</Link> -->
-						<li>
-							<CustomButton
-								elementType="a"
-								class="block max-w-[140px] mt-14 !border-white/60"
-								variant="outline"
-								href="/contact"
-								notRounded
-							>
-								Contact
-							</CustomButton>
-						</li>
-					</ul>
-				</nav>
+	<div id="mobile-wrapper" role="dialog" aria-modal="true" aria-label="Menu" class="xl:hidden">
+		<div id="close-overlay"></div>
+		<aside id="mobile-menu">
+			<div class="m-nav-head">
+				<Link class="text-white w-fit block" aria-label="Swizel" href="/">
+					<Logo width={114} />
+				</Link>
+				<button id="toggler-hide" class="m-nav-x" aria-label="Close menu" type="button">
+					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18" /></svg>
+				</button>
 			</div>
-		</div>
+
+			<nav class="m-nav-links">
+				<a href="/" class:list={['m-nav-link', { active: isActive('/') }]}>
+					<span>Home</span>
+					<svg class="m-nav-go" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6" /></svg>
+				</a>
+				{links.map((link) =>
+					link === 'services' ? (
+						<details class="m-nav-dd" open={onServices}>
+							<summary class:list={['m-nav-link', { active: onServices }]}>
+								<span>{formatLink(link)}</span>
+								<svg class="m-nav-caret" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9" /></svg>
+							</summary>
+							<div class="m-nav-sub">
+								<a href="/services">Services overview</a>
+								{disciplines.map((d) => (
+									<a href={`/services/${d.slug}`} style={`--c:${d.color}`}>
+										<span class="m-nav-dot" />
+										{d.title}
+									</a>
+								))}
+							</div>
+						</details>
+					) : (
+						<a href={`/${link}`} class:list={['m-nav-link', { active: isActive('/' + link) }]}>
+							<span>{formatLink(link)}</span>
+							<svg class="m-nav-go" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6" /></svg>
+						</a>
+					)
+				)}
+			</nav>
+
+			<div class="m-nav-foot">
+				<CustomButton elementType="a" class="m-nav-cta" variant="primary" href="/contact" notRounded>
+					Start a project
+				</CustomButton>
+				<div class="m-nav-social">
+					<a href="https://wa.me/2348100204570" aria-label="WhatsApp" target="_blank" rel="noopener"><Icon width={18} name="mdi:whatsapp" /></a>
+					<a href="https://www.linkedin.com/company/swizel-technologies" aria-label="LinkedIn" target="_blank" rel="noopener"><Icon width={18} name="mdi:linkedin" /></a>
+					<a href="https://www.instagram.com/swizelhq" aria-label="Instagram" target="_blank" rel="noopener"><Icon width={18} name="mdi:instagram" /></a>
+				</div>
+			</div>
+		</aside>
 	</div>
 </header>
 
 <style>
+	/* ── Mobile drawer (transform-based slide — smooth, GPU-friendly) ── */
 	#mobile-wrapper {
-		width: 0;
+		position: fixed;
+		inset: 0;
+		z-index: 70;
+		pointer-events: none;
 	}
-
-	#mobile-wrapper[data-expanded='true'] {
-		width: auto;
-		transition: 0.5s;
-		/* transition-timing-function: linear;t */
-	}
-	#mobile-wrapper > div {
-		width: 0;
-		transition: 0.7s ease;
-		/* transition-timing-function: linear; */
-		overflow-x: hidden;
-	}
-	#mobile-wrapper #close-overlay {
-		width: 0;
-		transition: opacity 0.5s;
-		/* transition-timing-function: linear; */
+	#mobile-wrapper[data-expanded='true'] { pointer-events: auto; }
+	#close-overlay {
+		position: absolute;
+		inset: 0;
+		background: rgba(4, 6, 14, 0.55);
+		backdrop-filter: blur(3px);
+		-webkit-backdrop-filter: blur(3px);
 		opacity: 0;
+		transition: opacity 0.4s ease;
 	}
-	#mobile-wrapper[data-expanded='true'] #close-overlay {
-		width: 100vw;
-		transform-origin: right;
-		opacity: 1;
+	#mobile-wrapper[data-expanded='true'] #close-overlay { opacity: 1; cursor: pointer; }
+
+	#mobile-menu {
+		position: absolute;
+		top: 0;
+		right: 0;
+		height: 100%;
+		width: min(86vw, 360px);
+		display: flex;
+		flex-direction: column;
+		background: linear-gradient(195deg, #11142a 0%, #0a0c1a 60%, #070810 100%);
+		border-left: 1px solid rgba(255, 255, 255, 0.08);
+		box-shadow: -24px 0 60px -24px rgba(0, 0, 0, 0.7);
+		transform: translateX(102%);
+		transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+		will-change: transform;
+	}
+	#mobile-wrapper[data-expanded='true'] #mobile-menu { transform: translateX(0); }
+
+	.m-nav-head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 1.1rem 1.25rem;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+	}
+	.m-nav-x {
+		display: grid;
+		place-items: center;
+		width: 40px;
+		height: 40px;
+		border-radius: 9999px;
+		color: #fff;
+		background: rgba(255, 255, 255, 0.06);
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		transition: background 0.2s ease, transform 0.2s ease;
+	}
+	.m-nav-x:hover { background: rgba(255, 255, 255, 0.12); transform: rotate(90deg); }
+
+	.m-nav-links {
+		flex: 1;
+		overflow-y: auto;
+		-webkit-overflow-scrolling: touch;
+		padding: 1rem 0.9rem 0.5rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.15rem;
+	}
+	.m-nav-link {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.75rem;
+		padding: 0.95rem 1rem;
+		border-radius: 0.85rem;
+		color: rgba(244, 246, 251, 0.86);
+		font-size: 1.18rem;
+		font-weight: 600;
+		letter-spacing: -0.01em;
+		text-transform: capitalize;
+		list-style: none;
 		cursor: pointer;
+		transition: background 0.2s ease, color 0.2s ease;
 	}
-	#mobile-wrapper #mobile-menu > * {
-		display: none;
+	/* the desktop nav underline (.site-header nav a::after) must not leak into the drawer */
+	.m-nav-links a::after, .m-nav-link::after { content: none !important; display: none !important; }
+	.m-nav-link::-webkit-details-marker { display: none; }
+	.m-nav-link:hover { background: rgba(255, 255, 255, 0.05); color: #fff; }
+	.m-nav-link.active {
+		color: #18debe;
+		background: rgba(24, 222, 190, 0.1);
+		font-weight: 700;
+		box-shadow: inset 3px 0 0 #18debe;
 	}
-	#mobile-wrapper[data-expanded='true'] #mobile-menu {
-		width: 350px;
+	.m-nav-link.active .m-nav-go { opacity: 1; transform: translateX(2px); color: #18debe; }
+	.m-nav-go { opacity: 0.4; transition: opacity 0.2s ease, transform 0.2s ease; flex-shrink: 0; }
+	.m-nav-link:hover .m-nav-go { opacity: 0.9; transform: translateX(3px); }
+	.m-nav-caret { opacity: 0.65; transition: transform 0.25s ease; flex-shrink: 0; }
+
+	/* Services accordion */
+	.m-nav-dd { border-radius: 0.85rem; }
+	.m-nav-dd[open] > summary { background: rgba(255, 255, 255, 0.04); border-radius: 0.85rem 0.85rem 0 0; }
+	.m-nav-dd[open] > summary:not(.active) { color: #fff; }
+	.m-nav-dd[open] .m-nav-caret { transform: rotate(180deg); }
+	.m-nav-sub {
+		display: grid;
+		gap: 0.1rem;
+		padding: 0.35rem 0.5rem 0.6rem 0.9rem;
+		margin: 0 0.4rem 0.2rem;
+		border-left: 2px solid rgba(255, 255, 255, 0.1);
 	}
-	#mobile-wrapper[data-expanded='true'] #mobile-menu > * {
-		display: block;
+	.m-nav-sub a {
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		padding: 0.6rem 0.7rem;
+		border-radius: 0.6rem;
+		font-size: 0.98rem;
+		color: rgba(244, 246, 251, 0.66);
+		transition: color 0.2s ease, background 0.2s ease;
 	}
+	.m-nav-sub a:hover { color: #fff; background: rgba(255, 255, 255, 0.05); }
+	.m-nav-dot { width: 7px; height: 7px; border-radius: 9999px; background: var(--c, #28a6ec); flex-shrink: 0; }
+
+	.m-nav-foot {
+		padding: 1rem 1.25rem 1.4rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.07);
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+	.m-nav-cta { display: block; text-align: center; }
+	.m-nav-social { display: flex; gap: 0.6rem; }
+	.m-nav-social a {
+		display: grid;
+		place-items: center;
+		width: 40px;
+		height: 40px;
+		border-radius: 9999px;
+		color: rgba(244, 246, 251, 0.8);
+		background: rgba(255, 255, 255, 0.05);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		transition: color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+	}
+	.m-nav-social a:hover { color: #18debe; background: rgba(24, 222, 190, 0.12); transform: translateY(-2px); }
 
 	.header-sticky {
 		box-shadow: 0 2px 3px 4px rgba(0, 0, 0, 0.19);
 	}
 
-	@media (max-width: 380px) {
-		#mobile-wrapper[data-expanded='true'] #mobile-menu {
-			width: 300px;
-		}
+	@media (prefers-reduced-motion: reduce) {
+		#mobile-menu { transition: transform 0.2s ease; }
+		.m-nav-x:hover { transform: none; }
 	}
 
 	/* ── Desktop Services dropdown ── */

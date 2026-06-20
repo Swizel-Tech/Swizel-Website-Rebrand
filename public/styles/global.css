@@ -9,15 +9,16 @@
    break them once the page is scrolled. The transform/filter below only apply
    during an active transition, when no such overlay is open. */
 .transition-main {
-  transition: opacity 0.22s ease, transform 0.22s ease;
+  transition: opacity 0.22s ease;
 }
+/* Hide the page for the WHOLE swap, not just the animation phases. Astro's
+   scoped <style> tags live in the body and get torn out/re-inserted when swup
+   replaces it, so for a beat the new page renders naked — keeping opacity 0
+   across is-changing masks that flash; it fades back in only once swup is done. */
+html.is-changing .transition-main,
 html.is-animating .transition-main { opacity: 0; }
-html.is-leaving .transition-main { transform: translateY(-6px); }
-html.is-rendering .transition-main { transform: translateY(8px); }
 @media (prefers-reduced-motion: reduce) {
-  .transition-main { transition: opacity 0.14s ease; }
-  html.is-leaving .transition-main,
-  html.is-rendering .transition-main { transform: none; }
+  .transition-main { transition: opacity 0.12s ease; }
 }
 
 @import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Epilogue:wght@400;500;600;700;800;900&display=swap");
@@ -351,19 +352,23 @@ html.dark .text-darker\/50 { color: rgba(233, 234, 242, 0.5); }
    Theme-aware site header (rhymes with the hero) + refined toggle
    ========================================================= */
 :root {
-  /* a touch translucent so the bar always frosts/blends with what's behind it */
-  --nav-bg: rgba(247, 250, 252, 0.72);
+  /* a touch translucent so the bar always frosts/blends with what's behind it.
+     Light mode: keep it close to opaque white so the bar reads as a clean,
+     deliberate surface (not a muddy frost) over the always-dark hero. */
+  --nav-bg: rgba(255, 255, 255, 0.9);
   --nav-ink: #0f1120;
-  --nav-border: rgba(20, 22, 40, 0.12);
-  --nav-cta-border: rgba(20, 22, 40, 0.28);
+  --nav-border: rgba(20, 22, 40, 0.14);
+  --nav-cta-border: rgba(20, 22, 40, 0.3);
   --nav-active-grad: linear-gradient(95deg, #0b8e7c, #14589b);
+  --nav-shadow: 0 6px 24px -16px rgba(15, 20, 45, 0.5);
 }
 html.dark {
-  --nav-bg: rgba(10, 12, 22, 0.68);
+  --nav-bg: rgba(10, 12, 22, 0.72);
   --nav-ink: #ffffff;
   --nav-border: rgba(255, 255, 255, 0.1);
   --nav-cta-border: rgba(255, 255, 255, 0.45);
   --nav-active-grad: linear-gradient(95deg, #2ee6c6, #56bbf6);
+  --nav-shadow: 0 6px 24px -16px rgba(0, 0, 0, 0.6);
 }
 .site-header {
   --nav-h: 92px;
@@ -373,6 +378,7 @@ html.dark {
   -webkit-backdrop-filter: blur(22px) saturate(150%);
   backdrop-filter: blur(22px) saturate(150%);
   border-bottom: 1px solid var(--nav-border);
+  box-shadow: var(--nav-shadow);
   transition: background 0.4s ease, color 0.4s ease, border-color 0.4s ease,
     box-shadow 0.4s ease, backdrop-filter 0.4s ease;
 }
@@ -729,6 +735,51 @@ html.dark { --nav-active: #86e2ef; }
 }
 #back-to-top.is-visible { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
 #back-to-top:hover { border-color: var(--view-accent, #18debe); color: var(--view-accent, #18debe); transform: translateY(-3px); }
+
+/* Live-chat launcher (drives Tawk, which is kept hidden) — compact icon only,
+   pinned bottom-right on every page so it never covers content. */
+#swizel-chat-fab {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 901;
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  border-radius: 9999px;
+  border: none;
+  color: #06121a;
+  background: linear-gradient(135deg, #8dfeea, #18debe 55%, #28a6ec);
+  box-shadow: 0 16px 34px -12px rgba(24, 222, 190, 0.55), 0 4px 10px -4px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
+  animation: chatfab-in 0.4s 0.6s both;
+}
+#swizel-chat-fab:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 22px 44px -14px rgba(24, 222, 190, 0.65); }
+#swizel-chat-fab:active { transform: scale(0.96); }
+#swizel-chat-fab svg { filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.15)); }
+.chat-fab-dot {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 13px;
+  height: 13px;
+  border-radius: 9999px;
+  background: #ff4d5e;
+  border: 2px solid #f3fdfb;
+  box-shadow: 0 0 0 0 rgba(255, 77, 94, 0.55);
+  animation: chatfab-pulse 2.4s ease-out infinite;
+}
+@keyframes chatfab-in { from { opacity: 0; transform: translateY(16px) scale(0.8); } to { opacity: 1; transform: none; } }
+@keyframes chatfab-pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 77, 94, 0.5); } 70%, 100% { box-shadow: 0 0 0 9px rgba(255, 77, 94, 0); } }
+@media (max-width: 640px) {
+  #swizel-chat-fab { width: 50px; height: 50px; right: 14px; bottom: 14px; }
+  #back-to-top { left: 14px; bottom: 14px; width: 42px; height: 42px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #swizel-chat-fab, .chat-fab-dot { animation: none; }
+}
 
 /* Tour: end (x) button */
 .tour-pop__close {
