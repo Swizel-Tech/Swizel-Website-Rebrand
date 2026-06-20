@@ -348,9 +348,9 @@ const cur = sectorCursor[p.sector] ?? 'repo';
 	.cs-approach { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: clamp(0.9rem, 2vw, 1.4rem); }
 	@media (max-width: 760px) { .cs-approach { grid-template-columns: 1fr; } }
 	.cs-approach-item { position: relative; display: flex; flex-direction: column; gap: 0.9rem; padding: clamp(1.5rem, 3vw, 2.1rem); border-radius: 1.4rem; background: var(--bd-glass); border: 1px solid var(--bd-glass-border); box-shadow: var(--bd-shadow); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); overflow: hidden; transition: transform 0.35s ease, border-color 0.35s ease; }
-	.cs-approach-item::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--c); opacity: 0; transition: opacity 0.3s ease; }
+	.cs-approach-item::before { content: ''; position: absolute; left: clamp(1.5rem, 3vw, 2.1rem); top: 0; width: 28px; height: 3px; border-radius: 0 0 3px 3px; background: var(--c); opacity: 0; transition: opacity 0.3s ease; }
 	.cs-approach-item:hover { transform: translateY(-5px); border-color: color-mix(in srgb, var(--c) 42%, var(--bd-glass-border)); }
-	.cs-approach-item:hover::before { opacity: 0.9; }
+	.cs-approach-item:hover::before { opacity: 1; }
 	.cs-approach-n { flex-shrink: 0; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 0.9rem; font-size: 1rem; font-weight: 800; color: var(--c); background: color-mix(in srgb, var(--c) 14%, transparent); border: 1px solid color-mix(in srgb, var(--c) 28%, transparent); font-variant-numeric: tabular-nums; }
 	.cs-approach-body { min-width: 0; }
 	.cs-approach-t { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.01em; margin: 0.1rem 0 0.4rem; }
@@ -360,7 +360,7 @@ const cur = sectorCursor[p.sector] ?? 'repo';
 	.cs-highlights { max-width: 76rem; margin: 0 auto; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1rem, 2vw, 1.5rem); }
 	@media (max-width: 820px) { .cs-highlights { grid-template-columns: 1fr; } }
 	.cs-highlight { position: relative; padding: clamp(1.6rem, 3vw, 2.2rem); border-radius: 1.5rem; background: var(--bd-glass); border: 1px solid var(--bd-glass-border); box-shadow: var(--bd-shadow); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); overflow: hidden; transition: transform 0.35s ease, border-color 0.35s ease; }
-	.cs-highlight::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--c); }
+	.cs-highlight::before { content: ''; position: absolute; left: clamp(1.6rem, 3vw, 2.2rem); top: 0; width: 28px; height: 3px; border-radius: 0 0 3px 3px; background: var(--c); }
 	.cs-highlight:hover { transform: translateY(-5px); border-color: color-mix(in srgb, var(--c) 45%, var(--bd-glass-border)); }
 	.cs-highlight-n { display: block; font-size: 0.95rem; font-weight: 800; color: color-mix(in srgb, var(--c) 75%, transparent); margin-bottom: 0.8rem; }
 	.cs-highlight-t { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.01em; margin: 0 0 0.5rem; }
