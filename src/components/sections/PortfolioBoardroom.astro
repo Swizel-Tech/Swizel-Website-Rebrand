@@ -484,6 +484,14 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 	:global(html:not(.dark)) .pf-chip span { color: #1577b8; background: color-mix(in srgb, #1577b8 16%, transparent); }
 	.pf-chip:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--bd-accent) 55%, var(--bd-glass-border)); box-shadow: 0 12px 26px -14px color-mix(in srgb, var(--bd-accent) 50%, transparent); }
 	.pf-chip--all { border-color: color-mix(in srgb, var(--bd-accent) 40%, transparent); }
+	/* On phones, 7 stacked chips ate the screen — make it one compact, swipeable
+	   row that scrolls horizontally (fades at the right edge to hint there's more). */
+	@media (max-width: 760px) {
+		.pf-chips { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; gap: 0.45rem; padding: 0.7rem; scrollbar-width: none; -webkit-overflow-scrolling: touch; -webkit-mask-image: linear-gradient(90deg, #000 86%, transparent); mask-image: linear-gradient(90deg, #000 86%, transparent); }
+		.pf-chips::-webkit-scrollbar { display: none; }
+		.pf-chip { flex-shrink: 0; padding: 0.5rem 0.9rem; font-size: 0.85rem; }
+		.pf-chip span { font-size: 0.68rem; }
+	}
 
 	#pf-all:checked ~ .pf-chips label[for='pf-all'],
 	#pf-agri:checked ~ .pf-chips label[for='pf-agri'],
