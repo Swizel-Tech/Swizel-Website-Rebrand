@@ -962,3 +962,31 @@ html[data-view="legacy"] .alt-view-only { display: block; }
 html:not(.dark) .bd-grad {
   background-image: linear-gradient(110deg, #1583c7 0%, #1264c4 38%, #0e9e7a 70%, #1583c7 100%) !important;
 }
+
+/* =========================================================
+   Mobile performance budget
+   Phones have a tight GPU/memory budget. Frosted backdrop-blur across dozens
+   of glass tiles plus large animated blur "blobs" can stutter badly or crash
+   the tab while scrolling (esp. the portfolio). On small screens we drop the
+   most expensive effects — translucent fills stay, so the look holds up.
+   ========================================================= */
+@media (max-width: 820px) {
+  *,
+  *::before,
+  *::after {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  /* Pause the big animated background blobs/grids that every boardroom world
+     paints with .bdbody::before / ::after (and common decorative layers). */
+  .bdbody::before,
+  .bdbody::after,
+  .pf-feats::before,
+  .pf-next-glow,
+  .svc-hero-aurora,
+  .svc-journey-aurora,
+  .bd-reader::before,
+  .bd-reader::after {
+    animation: none !important;
+  }
+}
