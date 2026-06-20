@@ -61,9 +61,13 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 				{deck.map((p, i) => (
 					<span class="pf-deck-card" style={`--c:${p.color}; --i:${i}`}>
 						<span class="pf-deck-bar"><i></i><i></i><i></i></span>
-						<img src={p.img} alt="" loading="eager" decoding="async" />
+						<img src={p.img} alt="" loading={i === 0 ? 'eager' : 'lazy'} decoding="async" />
 					</span>
 				))}
+				<span class="pf-deck-hint">
+					<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 5l7 7-7 7M3 12h18" /></svg>
+					Swipe to shuffle
+				</span>
 			</div>
 		</div>
 	</header>
@@ -373,9 +377,12 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 
 	/* ── Shuffling card deck (big, scales with the screen) ── */
 	.pf-deck { position: relative; display: grid; place-items: center; min-height: clamp(380px, 50vw, 880px); }
-	.pf-deck-card { grid-area: 1 / 1; width: clamp(320px, 46vw, 840px); border-radius: 1.3rem; overflow: hidden; background: #0b0d16; border: 1px solid color-mix(in srgb, var(--c) 38%, var(--bd-glass-border)); box-shadow: 0 60px 130px -44px color-mix(in srgb, var(--c) 52%, rgba(0,0,0,0.9)); will-change: transform; animation: pf-deal 16s cubic-bezier(0.65, 0, 0.35, 1) infinite; animation-delay: calc(var(--i) * -3.2s); }
+	.pf-deck-card { grid-area: 1 / 1; width: clamp(320px, 46vw, 840px); border-radius: 1.3rem; overflow: hidden; background: #0b0d16; border: 1px solid color-mix(in srgb, var(--c) 38%, var(--bd-glass-border)); box-shadow: 0 60px 130px -44px color-mix(in srgb, var(--c) 52%, rgba(0,0,0,0.9)); will-change: transform; cursor: grab; touch-action: pan-y; transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1); }
 	:global(html:not(.dark)) .pf-deck-card { background: #f1f3f8; }
-	.pf-deck:hover .pf-deck-card { animation-play-state: paused; }
+	.pf-deck-card.is-front { cursor: grab; }
+	.pf-deck-card.is-dragging { cursor: grabbing; transition: none; }
+	/* a subtle "swipe me" hint pinned to the deck */
+	.pf-deck-hint { position: absolute; bottom: 0.2rem; left: 50%; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--bd-muted); pointer-events: none; opacity: 0.75; z-index: 70; }
 	.pf-deck-bar { display: flex; align-items: center; gap: 0.4rem; padding: 0.6rem 0.85rem; background: color-mix(in srgb, var(--bd-ink) 8%, #11131c); }
 	:global(html:not(.dark)) .pf-deck-bar { background: #e6eaf2; }
 	.pf-deck-bar i { width: 9px; height: 9px; border-radius: 50%; }
