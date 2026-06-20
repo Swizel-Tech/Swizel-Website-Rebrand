@@ -3,6 +3,9 @@ title: "The Recent Fintech Landscape and the Average Nigerian"
 description: 'In May 2024, the term "Fintech" has become a buzzword in Nigeria, with companies like Opay, Palmpay, Piggyvest, and Moniepoint gaining widespread popularity for their financial services. However, recent directives from the Central Bank of Nigeria (CBN) to halt new customer registrations for these fintech firms have caused concern among Nigerians who rely on their services. This move, aimed at curbing illegal foreign exchange transactions, highlights the tension between the rapid growth of fintech and the need for regulatory oversight. Despite these challenges, the fintech sector in Nigeria continues to show promise, driven by a tech-savvy youth population and increasing smartphone usage, suggesting a potentially bright future if balanced regulations are implemented.'
 pubDate: "Jun 17 2024"
 heroImage: "/blogpost/fintech.jpg"
+category: 'Fintech'
+author: 'Swizel Team'
+featured: true
 ---
 
 It’s the beginning of May in 2024. I have heard the word “Fintech” thrown about my immediate surroundings more times than I can count. It was always one of those trendy words that I paid little attention to previously because I felt no direct implication from what I vaguely considered to be some obscure tech companies that aided my financial transactions to some indefinite extent. However, that recently changed. Now it is now nearly impossible to find a Nigerian who has failed to sing the praises of Opay, Palmpay, Piggyvest or Moniepoint.

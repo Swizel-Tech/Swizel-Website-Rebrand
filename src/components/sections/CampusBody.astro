@@ -652,6 +652,9 @@ const voices = [
 			grid-template-columns: 1fr 1.05fr;
 		}
 	}
+	/* allow columns to shrink below the video frame's intrinsic width
+	   (aspect-ratio + min-height would otherwise force ~427px) */
+	.cp-open > * { min-width: 0; }
 	.cp-stats {
 		display: grid;
 		grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -729,8 +732,10 @@ const voices = [
 		align-items: center;
 		justify-content: center;
 		gap: 0.4rem;
+		width: 100%;
+		min-width: 0;
 		aspect-ratio: 16 / 9;
-		min-height: clamp(240px, 26vw, 380px);
+		min-height: clamp(200px, 26vw, 380px);
 		border: 2px dashed rgba(29, 78, 216, 0.35);
 		border-radius: 0.7rem;
 		color: #475569;

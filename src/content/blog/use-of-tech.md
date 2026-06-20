@@ -3,6 +3,8 @@ title: 'Use of Technology in Digitalizing Education in Nigeria'
 description: 'We envision a time when self learning can be encouraged, practiced and rewarded. A time when we can achieve equitable access to learning material and content to every individual'
 pubDate: 'Jul 08 2022'
 heroImage: '/blogpost/tech-edu-nigeria.jpg'
+category: 'Technology'
+author: 'Swizel Team'
 ---
 
 The state of education in Nigeria is dismal, especially in rural areas. Access to good education is scarce, and where it isn’t, it’s ridiculously expensive. This is due to the enormous amount of resources that go into setting up a school.

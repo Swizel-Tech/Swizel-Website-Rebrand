@@ -3,6 +3,8 @@ title: 'The Role of Online Advertising in the development of Nigerian SMEs 2020 
 description: 'Post-2010, online ads have become so efficient and profitable that almost every major service provider pays for some form of online marketing. But that’s not all, small and medium scale enterprises have gotten in on the act and arguably stand to gain more from modern online advertising, by being able to compete on the same platform with giants like Coca-Cola'
 pubDate: 'Jul 22 2020'
 heroImage: '/blogpost/online-advertisment.jpg'
+category: 'Marketing'
+author: 'Swizel Team'
 ---
 
 <q>2020 will definitely be the year!<q>

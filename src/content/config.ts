@@ -15,6 +15,11 @@ const blog = defineCollection({
 			.optional()
 			.transform((str) => (str ? new Date(str) : undefined)),
 		heroImage: z.string(),
+		// — added for the redesigned blog + /admin CMS —
+		category: z.string().default('Insights'),
+		author: z.string().default('Swizel Team'),
+		featured: z.boolean().default(false),
+		draft: z.boolean().default(false),
 	}),
 });
 

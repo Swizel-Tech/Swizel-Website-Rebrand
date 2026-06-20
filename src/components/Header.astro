@@ -1,6 +1,7 @@
 ---
 import Icon from 'astro-icon';
 import CustomButton from './CustomButton.astro';
+import Logo from './Logo.astro';
 import Link from './Link.astro';
 import { formatLink, links } from '../consts';
 import { disciplines } from '../data/disciplines';
@@ -16,11 +17,12 @@ const onServices = Astro.url.pathname.startsWith('/services');
 	<div class="container flex items-center justify-between mx-auto">
 		<div class="flex-[0.2]">
 			<Link
-				class="site-logo text-swizelGreen w-fit block"
+				class="site-logo w-fit block"
 				aria-label="Swizel"
 				href="/"
+				style="color: var(--nav-ink);"
 			>
-				<Icon width={124} name="swizel" />
+				<Logo width={120} />
 			</Link>
 		</div>
 		<div class="flex items-center justify-between col-span-2 flex-[0.8]">
@@ -177,11 +179,11 @@ const onServices = Astro.url.pathname.startsWith('/services');
 			<div class="py-4 px-5">
 				<div class="flex items-center justify-between gap-4">
 					<Link
-						class="text-swizelGreen w-fit block"
+						class="text-white w-fit block"
 						aria-label="Swizel"
 						href="/"
 					>
-						<Icon width={123} name="swizel" />
+						<Logo width={120} />
 					</Link>
 					<button
 						id="toggler-hide"

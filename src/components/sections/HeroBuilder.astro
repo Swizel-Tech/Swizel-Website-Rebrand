@@ -255,6 +255,10 @@ const buildTypes = [
 		min-height: calc(100vh - 90px);
 		padding-top: 2rem;
 	}
+	/* let grid columns shrink below their content's intrinsic width so the
+	   IDE panel (nowrap code) scrolls internally instead of forcing the whole
+	   hero wider than the phone viewport */
+	.builder--layout > * { min-width: 0; }
 	@media (min-width: 1024px) {
 		.builder--layout {
 			grid-template-columns: 0.92fr 1.08fr;

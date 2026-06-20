@@ -561,6 +561,9 @@ const chat = [
 			grid-template-columns: 1fr 1fr;
 		}
 	}
+	/* allow columns to shrink below the film frame's intrinsic width
+	   (aspect-ratio + min-height would otherwise force ~480px) */
+	.fd-open > * { min-width: 0; }
 	.fd-stats {
 		display: grid;
 		grid-template-columns: repeat(2, auto);
@@ -613,8 +616,10 @@ const chat = [
 		align-items: center;
 		justify-content: center;
 		gap: 0.4rem;
+		width: 100%;
+		min-width: 0;
 		aspect-ratio: 16 / 10;
-		min-height: clamp(300px, 30vw, 440px);
+		min-height: clamp(240px, 30vw, 440px);
 		border-radius: 1.25rem;
 		border: 1.5px dashed color-mix(in srgb, var(--fd-ink) 22%, transparent);
 		background:

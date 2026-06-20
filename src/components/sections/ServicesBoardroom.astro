@@ -354,7 +354,8 @@ const sectors = [
 	}
 	.svc-hero-grid { position: relative; z-index: 1; max-width: 78rem; margin-inline: auto; display: grid; gap: clamp(2.5rem, 5vw, 4rem); align-items: center; }
 	@media (min-width: 940px) { .svc-hero-grid { grid-template-columns: 1.05fr 0.95fr; } }
-	.svc-hero-copy { text-align: left; }
+	.svc-hero-grid > * { min-width: 0; }
+	.svc-hero-copy { text-align: left; min-width: 0; }
 	.svc-h1 { max-width: 14ch; margin: 0 0 1.1rem; }
 	.svc-hero-sub { margin: 0 0 1.6rem; }
 	.svc-hero-links { justify-content: flex-start; }
@@ -379,7 +380,8 @@ const sectors = [
 	.svc-hero-panel-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--bd-accent); box-shadow: 0 0 0 0 color-mix(in srgb, var(--bd-accent) 55%, transparent); animation: svc-dot 2.4s ease-out infinite; }
 	@keyframes svc-dot { 0%{ box-shadow: 0 0 0 0 color-mix(in srgb, var(--bd-accent) 50%, transparent); } 70%,100%{ box-shadow: 0 0 0 8px transparent; } }
 	.svc-hero-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
-	@media (max-width: 380px) { .svc-hero-tiles { grid-template-columns: 1fr; } }
+	@media (max-width: 600px) { .svc-hero-tiles { grid-template-columns: 1fr; } }
+	.svc-hero-tile { min-width: 0; }
 	.svc-hero-tile {
 		position: relative; display: flex; align-items: center; gap: 0.6rem; padding: 0.75rem 0.85rem; border-radius: 1rem;
 		background: color-mix(in srgb, var(--c) 8%, transparent); border: 1px solid color-mix(in srgb, var(--c) 22%, var(--bd-glass-border));

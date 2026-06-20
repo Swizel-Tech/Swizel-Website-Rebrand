@@ -1,0 +1,272 @@
+---
+// Blog index — the Boardroom world. The Swizel journal: a featured lead
+// article, a CSS-only category filter, a grid of posts, a newsletter band and
+// a Brevarium cross-promo. Reuses initBoardroomBody reveals + the themed cursor.
+import { Icon } from 'astro-icon';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props { posts: CollectionEntry<'blog'>[]; }
+const { posts } = Astro.props;
+
+const featured = posts.find((p) => p.data.featured) ?? posts[0];
+const cats = [...new Set(posts.map((p) => p.data.category))];
+const catSlug = (c: string) => c.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+const catCount = (c: string) => posts.filter((p) => p.data.category === c).length;
+const readTime = (body: string) => Math.max(1, Math.round((body?.trim().split(/\s+/).length || 0) / 200));
+const fmtDate = (d: Date) => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+// a small accent per category, for variety
+const catColor: Record<string, string> = { EdTech: '#2bb3c0', Fintech: '#6366f1', Marketing: '#ec4899', Technology: '#28a6ec', Insights: '#28a6ec' };
+const col = (c: string) => catColor[c] ?? '#28a6ec';
+
+// Categories are data-driven, so emit the CSS-only filter rules at build time:
+// when a category radio is checked, hide cards that aren't in it and light up
+// that chip in the category's own colour.
+const filterCss = cats
+	.map((c) => {
+		const s = catSlug(c);
+		const cc = col(c);
+		return [
+			`#bl-${s}:checked ~ .bl-grid .bl-card:not(.c-${s}){display:none}`,
+			`#bl-${s}:checked ~ .bl-chips label[for="bl-${s}"]{color:#fff;background:${cc};border-color:transparent;box-shadow:0 12px 26px -12px ${cc}}`,
+			`#bl-${s}:checked ~ .bl-chips label[for="bl-${s}"] span{color:#fff;background:rgba(255,255,255,.28)}`,
+		].join('');
+	})
+	.join('');
+---
+
+<div class="bdbody bd-services bd-blog view-body view-body-boardroom" data-cursor="pen">
+	<!-- ── Hero ───────────────────────────────────────────── -->
+	<header class="bl-hero bd-reveal">
+		<span class="bd-kicker">The Swizel journal</span>
+		<h1 class="bd-display bl-h1">Ideas, <span class="bd-grad">in the open.</span></h1>
+		<p class="bd-sub bl-hero-sub">Field notes on technology, design, fintech, edtech and growth — what we’re building, learning and seeing across the African digital landscape.</p>
+	</header>
+
+	<!-- ── Featured article ────────────────────────────────── -->
+	{featured && (
+		<a href={`/blog/${featured.slug}`} class="bl-feature bd-reveal" style={`--c:${col(featured.data.category)}`} data-cursor="book">
+			<span class="bl-feature-media">
+				<img src={featured.data.heroImage} alt={featured.data.title} loading="eager" />
+				<span class="bl-feature-veil" aria-hidden="true"></span>
+			</span>
+			<div class="bl-feature-body">
+				<span class="bl-feature-tag">Featured · {featured.data.category}</span>
+				<h2 class="bl-feature-title">{featured.data.title}</h2>
+				<p class="bl-feature-desc">{featured.data.description}</p>
+				<div class="bl-meta">
+					<span>{featured.data.author}</span>
+					<span class="bl-dot">•</span>
+					<span>{fmtDate(featured.data.pubDate)}</span>
+					<span class="bl-dot">•</span>
+					<span>{readTime(featured.body)} min read</span>
+				</div>
+				<span class="bl-feature-cta">Read the article <Icon width={16} name="mdi:arrow-right" /></span>
+			</div>
+		</a>
+	)}
+
+	<!-- ── All posts — CSS category filter ─────────────────── -->
+	<section class="bd-head bd-reveal" id="bl-all">
+		<span class="bd-kicker">Latest writing</span>
+		<h2 class="bd-h bd-h--center">From the journal.</h2>
+		<p class="bd-p bd-p--center">{posts.length} {posts.length === 1 ? 'article' : 'articles'} — more on the way. Filter by topic.</p>
+	</section>
+	<form class="bl-filter">
+		<input class="bl-radio" type="radio" name="bl" id="bl-all-r" checked />
+		{cats.map((c) => <input class="bl-radio" type="radio" name="bl" id={`bl-${catSlug(c)}`} />)}
+		<div class="bl-chips bd-reveal">
+			<label class="bl-chip" for="bl-all-r">All <span>{posts.length}</span></label>
+			{cats.map((c) => <label class="bl-chip" for={`bl-${catSlug(c)}`}>{c} <span>{catCount(c)}</span></label>)}
+		</div>
+		<div class="bl-grid">
+			{posts.map((p) => (
+				<article class:list={['bl-card', 'bd-reveal', `c-${catSlug(p.data.category)}`]} style={`--c:${col(p.data.category)}`} data-cursor="book">
+					<a href={`/blog/${p.slug}`} class="bl-card-link">
+						<span class="bl-card-media">
+							<img src={p.data.heroImage} alt={p.data.title} loading="lazy" />
+							<span class="bl-card-cat">{p.data.category}</span>
+						</span>
+						<div class="bl-card-body">
+							<h3 class="bl-card-title">{p.data.title}</h3>
+							<p class="bl-card-desc">{p.data.description}</p>
+							<div class="bl-meta">
+								<span>{fmtDate(p.data.pubDate)}</span>
+								<span class="bl-dot">•</span>
+								<span>{readTime(p.body)} min read</span>
+							</div>
+						</div>
+					</a>
+				</article>
+			))}
+		</div>
+	</form>
+
+	<!-- ── Newsletter ──────────────────────────────────────── -->
+	<section class="bl-news bd-reveal" data-cursor="phone">
+		<span class="bl-news-glow" aria-hidden="true"></span>
+		<div class="bl-news-inner">
+			<span class="bd-kicker">Stay in the loop</span>
+			<h2 class="bd-display bl-news-h">Get the next one in your inbox.</h2>
+			<p class="bd-sub">No spam, no fluff — just our sharpest thinking on building for the African market, when it’s worth your time.</p>
+			<form class="bl-news-form" name="newsletter" method="post" data-netlify="true" netlify-honeypot="bot-field">
+				<input type="hidden" name="form-name" value="newsletter" />
+				<p class="bl-hp"><label>Don’t fill this out: <input name="bot-field" /></label></p>
+				<input class="bl-news-input" type="email" name="email" placeholder="you@company.com" required aria-label="Email address" />
+				<button class="bl-news-btn" type="submit">Subscribe <Icon width={16} name="mdi:arrow-right" /></button>
+			</form>
+			<span class="bl-news-note">Wire this to your provider whenever you’re ready — it posts to Netlify Forms by default.</span>
+		</div>
+	</section>
+
+	<!-- ── Brevarium cross-promo ───────────────────────────── -->
+	<a class="bl-mag bd-reveal" href="/brevarium/the-brevarium-latest.pdf" download data-cursor="book">
+		<span class="bl-mag-cover"><img src="/images/portfolio/mag-latest-cover.jpg" alt="The Brevarium magazine" loading="lazy" /></span>
+		<span class="bl-mag-meta">
+			<span class="bd-kicker">Long-form, in print</span>
+			<strong>Prefer the magazine? Read The Brevarium.</strong>
+			<em>Our featured projects, the team and the thinking behind the work — cover to cover.</em>
+			<span class="bl-mag-dl"><Icon width={16} name="mdi:download" /> Download the latest edition</span>
+		</span>
+	</a>
+</div>
+
+<style>
+	/* ════ Boardroom base (self-contained), boardroom blue ════ */
+	.bdbody {
+		--bd-accent: #28a6ec;
+		--bd-ink: #f4f6fb;
+		--bd-muted: rgba(244, 246, 251, 0.62);
+		--bd-glass: linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02) 55%);
+		--bd-glass-border: rgba(255, 255, 255, 0.1);
+		--bd-shadow: 0 34px 80px -34px rgba(0, 0, 0, 0.8);
+		font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+		position: relative; isolation: isolate; overflow: hidden;
+		background:
+			radial-gradient(1100px 540px at 78% -6%, color-mix(in srgb, var(--bd-accent) 13%, transparent), transparent 62%),
+			radial-gradient(900px 520px at 8% 38%, rgba(58, 90, 200, 0.1), transparent 60%),
+			linear-gradient(180deg, #070910 0%, #0a0d1c 45%, #05060d 100%);
+		color: var(--bd-ink);
+		padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 4rem);
+		transition: background 0.4s ease, color 0.4s ease;
+	}
+	:global(html:not(.dark)) .bdbody {
+		--bd-ink: #0f1120;
+		--bd-muted: rgba(28, 32, 52, 0.82);
+		--bd-glass: linear-gradient(160deg, #ffffff, #f3f6fb 60%);
+		--bd-glass-border: rgba(18, 22, 45, 0.16);
+		--bd-shadow: 0 26px 60px -32px rgba(20, 28, 60, 0.4);
+		background:
+			radial-gradient(1100px 540px at 78% -6%, color-mix(in srgb, var(--bd-accent) 12%, transparent), transparent 62%),
+			linear-gradient(180deg, #e4eaf2 0%, #dbe3ee 50%, #e4eaf2 100%);
+	}
+	/* living background */
+	.bdbody::before { content: ''; position: absolute; inset: -12%; z-index: -2; pointer-events: none; background: radial-gradient(440px 440px at 14% 16%, color-mix(in srgb, var(--bd-accent) 22%, transparent), transparent 60%), radial-gradient(400px 400px at 86% 26%, rgba(139, 92, 246, 0.18), transparent 60%), radial-gradient(480px 480px at 60% 90%, rgba(34, 211, 238, 0.16), transparent 62%); filter: blur(60px); opacity: 0.65; animation: bl-bg 26s ease-in-out infinite; }
+	:global(html:not(.dark)) .bdbody::before { opacity: 0.42; }
+	@keyframes bl-bg { 0%,100%{ transform: translate3d(0,0,0) scale(1); } 33%{ transform: translate3d(3%,-2%,0) scale(1.08); } 66%{ transform: translate3d(-2%,2%,0) scale(1.04); } }
+	.bdbody::after { content: ''; position: absolute; inset: 0; z-index: -2; pointer-events: none; opacity: 0.45; background-image: radial-gradient(circle, color-mix(in srgb, var(--bd-accent) 30%, transparent) 1px, transparent 1px); background-size: 36px 36px; -webkit-mask-image: radial-gradient(1300px 760px at 50% 2%, #000, transparent 72%); mask-image: radial-gradient(1300px 760px at 50% 2%, #000, transparent 72%); animation: bl-pan 46s linear infinite; }
+	:global(html:not(.dark)) .bdbody::after { opacity: 0.28; }
+	@keyframes bl-pan { to { background-position: 360px 220px; } }
+
+	.bd-kicker { display: inline-block; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bd-accent); margin-bottom: 1rem; }
+	:global(html:not(.dark)) .bd-kicker { color: #1577b8; }
+	.bd-display { font-size: clamp(2.6rem, 6vw, 4.6rem); font-weight: 700; letter-spacing: -0.025em; line-height: 1.04; margin: 0 0 1.1rem; }
+	.bd-grad { background: linear-gradient(110deg, #9bd8ff 0%, var(--bd-accent) 38%, #7ef0d2 64%, #9bd8ff 100%); background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; animation: bl-grad 7s ease infinite; }
+	@keyframes bl-grad { 0%,100%{ background-position:0% 50%; } 50%{ background-position:100% 50%; } }
+	.bd-sub { font-size: clamp(1.05rem, 2vw, 1.35rem); line-height: 1.5; color: var(--bd-muted); max-width: 42rem; margin: 0 auto 1.6rem; }
+	.bd-h { font-size: clamp(1.7rem, 3.4vw, 2.5rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; margin: 0 0 0.7rem; }
+	.bd-h--center { text-align: center; }
+	.bd-p { font-size: 1.02rem; line-height: 1.6; color: var(--bd-muted); max-width: 36rem; margin: 0 auto 1.2rem; }
+	.bd-p--center { margin-inline: auto; text-align: center; }
+	.bd-head { max-width: 56rem; margin: clamp(2.5rem, 7vw, 4.5rem) auto clamp(1.5rem, 3vw, 2rem); text-align: center; }
+
+	/* ── Hero ── */
+	.bl-hero { text-align: center; max-width: 52rem; margin: clamp(1rem, 3vw, 2rem) auto clamp(2.5rem, 5vw, 3.5rem); position: relative; z-index: 1; }
+	.bl-h1 { max-width: 14ch; margin-inline: auto; }
+	.bl-hero-sub { margin-inline: auto; }
+
+	/* ── Featured article ── */
+	.bl-feature { display: grid; gap: 0; max-width: 84rem; margin: 0 auto; border-radius: 1.75rem; overflow: hidden; background: var(--bd-glass); border: 1px solid color-mix(in srgb, var(--c) 26%, var(--bd-glass-border)); box-shadow: var(--bd-shadow); backdrop-filter: blur(22px) saturate(130%); -webkit-backdrop-filter: blur(22px) saturate(130%); transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), border-color 0.4s ease, box-shadow 0.4s ease; }
+	@media (min-width: 880px) { .bl-feature { grid-template-columns: 1.05fr 0.95fr; } }
+	.bl-feature:hover { transform: translateY(-6px); border-color: color-mix(in srgb, var(--c) 48%, var(--bd-glass-border)); box-shadow: 0 50px 100px -40px color-mix(in srgb, var(--c) 42%, rgba(0,0,0,0.85)); }
+	.bl-feature-media { position: relative; overflow: hidden; min-height: 260px; }
+	.bl-feature-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s cubic-bezier(0.22,1,0.36,1); }
+	.bl-feature:hover .bl-feature-media img { transform: scale(1.05); }
+	.bl-feature-veil { position: absolute; inset: 0; background: linear-gradient(120deg, transparent 55%, color-mix(in srgb, var(--c) 22%, transparent)); }
+	.bl-feature-body { padding: clamp(1.8rem, 4vw, 3rem); display: flex; flex-direction: column; justify-content: center; }
+	.bl-feature-tag { font-size: 0.74rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--c); margin-bottom: 0.9rem; }
+	:global(html:not(.dark)) .bl-feature-tag { color: color-mix(in srgb, var(--c) 55%, #14162a); }
+	.bl-feature-title { font-size: clamp(1.6rem, 3.2vw, 2.4rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.12; margin: 0 0 0.8rem; }
+	.bl-feature-desc { font-size: 1rem; line-height: 1.6; color: var(--bd-muted); margin: 0 0 1.2rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+	.bl-feature-cta { display: inline-flex; align-items: center; gap: 0.45rem; margin-top: 1.2rem; font-size: 0.98rem; font-weight: 700; color: var(--c); transition: gap 0.25s ease; }
+	:global(html:not(.dark)) .bl-feature-cta { color: color-mix(in srgb, var(--c) 55%, #14162a); }
+	.bl-feature:hover .bl-feature-cta { gap: 0.7rem; }
+
+	/* ── Meta line ── */
+	.bl-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--bd-muted); }
+	.bl-dot { opacity: 0.5; }
+
+	/* ── Filter ── */
+	.bl-filter { max-width: 84rem; margin: 0 auto; }
+	.bl-radio { position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0; }
+	.bl-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6rem; margin-bottom: clamp(1.5rem, 3vw, 2.25rem); padding: clamp(0.9rem, 2vw, 1.2rem); border-radius: 1.5rem; background: color-mix(in srgb, var(--bd-accent) 6%, var(--bd-glass)); border: 1px solid color-mix(in srgb, var(--bd-accent) 18%, var(--bd-glass-border)); box-shadow: var(--bd-shadow); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); max-width: 52rem; margin-inline: auto; }
+	.bl-chip { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.15rem; border-radius: 9999px; font-size: 0.95rem; font-weight: 700; color: var(--bd-ink); background: var(--bd-glass); border: 1.5px solid color-mix(in srgb, var(--bd-ink) 16%, var(--bd-glass-border)); cursor: pointer; transition: transform 0.2s ease, border-color 0.25s ease, background 0.25s ease, color 0.25s ease, box-shadow 0.25s ease; }
+	.bl-chip span { font-size: 0.74rem; font-weight: 800; padding: 0.08rem 0.5rem; border-radius: 9999px; color: var(--bd-accent); background: color-mix(in srgb, var(--bd-accent) 16%, transparent); }
+	:global(html:not(.dark)) .bl-chip span { color: #1577b8; background: color-mix(in srgb, #1577b8 16%, transparent); }
+	.bl-chip:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--bd-accent) 55%, var(--bd-glass-border)); }
+
+	#bl-all-r:checked ~ .bl-chips label[for='bl-all-r'] { color: #06121a; background: linear-gradient(95deg, #8dfeea, #18debe, #28a6ec); border-color: transparent; box-shadow: 0 12px 26px -12px rgba(24, 222, 190, 0.5); }
+	#bl-all-r:checked ~ .bl-chips label[for='bl-all-r'] span { color: #06121a; background: rgba(0,0,0,0.14); }
+
+	.bl-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1rem, 2.2vw, 1.6rem); }
+	@media (max-width: 900px) { .bl-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+	@media (max-width: 580px) { .bl-grid { grid-template-columns: 1fr; } }
+	.bl-card { border-radius: 1.3rem; overflow: hidden; background: var(--bd-glass); border: 1px solid var(--bd-glass-border); box-shadow: var(--bd-shadow); backdrop-filter: blur(18px) saturate(130%); -webkit-backdrop-filter: blur(18px) saturate(130%); transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), border-color 0.4s ease, box-shadow 0.4s ease; }
+	.bl-card:hover { transform: translateY(-7px); border-color: color-mix(in srgb, var(--c) 50%, var(--bd-glass-border)); box-shadow: 0 44px 90px -34px color-mix(in srgb, var(--c) 40%, rgba(0,0,0,0.85)); }
+	.bl-card-link { display: block; }
+	.bl-card-media { position: relative; display: block; aspect-ratio: 16 / 9; overflow: hidden; }
+	.bl-card-media img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.22,1,0.36,1); }
+	.bl-card:hover .bl-card-media img { transform: scale(1.06); }
+	.bl-card-cat { position: absolute; top: 0.7rem; left: 0.7rem; font-size: 0.68rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.3rem 0.65rem; border-radius: 9999px; color: #fff; background: color-mix(in srgb, var(--c) 85%, transparent); box-shadow: 0 6px 16px -6px color-mix(in srgb, var(--c) 70%, transparent); }
+	.bl-card-body { padding: 1.1rem 1.25rem 1.35rem; }
+	.bl-card-title { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.25; margin: 0 0 0.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+	.bl-card-desc { font-size: 0.9rem; line-height: 1.55; color: var(--bd-muted); margin: 0 0 0.9rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+	/* ── Newsletter ── */
+	.bl-news { position: relative; overflow: hidden; max-width: 72rem; margin: clamp(3rem, 7vw, 5rem) auto; border-radius: 2rem; text-align: center; padding: clamp(2.5rem, 6vw, 4rem) clamp(1.5rem, 4vw, 3rem); background: radial-gradient(820px 380px at 50% -20%, color-mix(in srgb, var(--bd-accent) 30%, transparent), transparent 70%), linear-gradient(180deg, rgba(18, 22, 42, 0.92), rgba(5, 6, 13, 0.96)); color: #f5f5f7; border: 1px solid color-mix(in srgb, var(--bd-accent) 28%, rgba(255, 255, 255, 0.1)); }
+	.bl-news .bd-kicker { color: color-mix(in srgb, var(--bd-accent) 70%, #fff); }
+	.bl-news .bd-sub { color: rgba(245, 245, 247, 0.66); margin-inline: auto; }
+	.bl-news-glow { position: absolute; inset: -40% 20% auto; height: 120%; background: radial-gradient(closest-side, color-mix(in srgb, var(--bd-accent) 35%, transparent), transparent 70%); filter: blur(50px); opacity: 0.5; animation: bl-bg 18s ease-in-out infinite; pointer-events: none; }
+	.bl-news-inner { position: relative; z-index: 1; }
+	.bl-news-h { font-size: clamp(1.8rem, 4vw, 3rem); color: #fff; }
+	.bl-news-form { display: flex; flex-wrap: wrap; gap: 0.7rem; justify-content: center; max-width: 32rem; margin: 1.5rem auto 0; }
+	.bl-news-input { flex: 1; min-width: 220px; padding: 0.85rem 1.2rem; border-radius: 9999px; border: 1px solid rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.08); color: #fff; font-size: 0.98rem; }
+	.bl-news-input::placeholder { color: rgba(255, 255, 255, 0.5); }
+	.bl-news-input:focus { outline: none; border-color: color-mix(in srgb, var(--bd-accent) 70%, #fff); background: rgba(255, 255, 255, 0.12); }
+	.bl-news-btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.85rem 1.6rem; border-radius: 9999px; font-size: 0.95rem; font-weight: 700; color: #06121a; background: linear-gradient(95deg, #8dfeea, #18debe, #28a6ec); border: none; cursor: pointer; transition: transform 0.25s ease, gap 0.25s ease; }
+	.bl-news-btn:hover { transform: translateY(-2px); gap: 0.6rem; }
+	.bl-news-note { display: block; margin-top: 1rem; font-size: 0.78rem; color: rgba(245, 245, 247, 0.45); }
+	.bl-hp { position: absolute; left: -9999px; }
+
+	/* ── Brevarium cross-promo ── */
+	.bl-mag { display: flex; gap: clamp(1rem, 2.5vw, 1.6rem); align-items: center; max-width: 60rem; margin: 0 auto; padding: clamp(1.1rem, 2.5vw, 1.6rem); border-radius: 1.4rem; background: var(--bd-glass); border: 1px solid var(--bd-glass-border); box-shadow: var(--bd-shadow); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); transition: transform 0.35s ease, border-color 0.35s ease; }
+	.bl-mag:hover { transform: translateY(-5px); border-color: color-mix(in srgb, var(--bd-accent) 45%, var(--bd-glass-border)); }
+	.bl-mag-cover { flex-shrink: 0; width: clamp(80px, 18vw, 120px); border-radius: 0.7rem; overflow: hidden; box-shadow: 0 18px 40px -18px rgba(0,0,0,0.6); }
+	.bl-mag-cover img { width: 100%; display: block; }
+	.bl-mag-meta { display: flex; flex-direction: column; gap: 0.3rem; }
+	.bl-mag-meta .bd-kicker { margin-bottom: 0.2rem; }
+	.bl-mag-meta strong { font-size: clamp(1.1rem, 2.2vw, 1.4rem); font-weight: 700; letter-spacing: -0.01em; }
+	.bl-mag-meta em { font-style: normal; font-size: 0.92rem; line-height: 1.5; color: var(--bd-muted); }
+	.bl-mag-dl { margin-top: 0.4rem; display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.86rem; font-weight: 700; color: var(--bd-accent); }
+	:global(html:not(.dark)) .bl-mag-dl { color: #1577b8; }
+
+	/* ── Reveal ── */
+	.bd-reveal { opacity: 0; transform: translateY(26px); transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
+	.bd-reveal.is-on { opacity: 1; transform: translateY(0); }
+	@media (prefers-reduced-motion: reduce) {
+		.bd-reveal { opacity: 1; transform: none; transition: none; }
+		.bdbody::before, .bdbody::after, .bd-grad, .bl-news-glow { animation: none; }
+		.bl-card:hover, .bl-feature:hover, .bl-mag:hover { transform: none; }
+	}
+</style>
+
+<style is:global set:html={filterCss}></style>

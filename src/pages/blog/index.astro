@@ -6,25 +6,33 @@ import BlogPostCard from '../../components/elements/BlogPostCard.astro';
 import Section from '../../components/HTML/Section.astro';
 import FooterCTA from '../../components/blocks/FooterCTA.astro';
 import NewsLetterAndContact from '../../components/sections/NewsLetterAndContact.astro';
+import BlogBoardroom from '../../components/sections/BlogBoardroom.astro';
 
-export const posts = (await getCollection('blog')).sort(
+// Published posts, newest first. Drafts (draft: true) are kept out of the build.
+export const posts = (await getCollection('blog', ({ data }) => data.draft !== true)).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
 ---
 
 <MainLayout>
-	<Breadcrumb title="Articles" desc="" />
-	<Section divClass="py-20">
-		<ul
-			class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 pb-20 border-b border-swizelBrown"
-		>
-			{
-				posts.map((post) => (
-					<BlogPostCard as="li" to={`/blog/${post.slug}`} {...post} />
-				))
-			}
-		</ul>
-	</Section>
-	<NewsLetterAndContact hideContact />
-	<FooterCTA />
+	<!-- Boardroom world (also the default). Hidden in the other views. -->
+	<BlogBoardroom posts={posts} />
+
+	<!-- Fallback for the other worlds. -->
+	<div class="alt-view-only">
+		<Breadcrumb title="Articles" desc="" />
+		<Section divClass="py-20">
+			<ul
+				class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 pb-20 border-b border-swizelBrown"
+			>
+				{
+					posts.map((post) => (
+						<BlogPostCard as="li" to={`/blog/${post.slug}`} {...post} />
+					))
+				}
+			</ul>
+		</Section>
+		<NewsLetterAndContact hideContact />
+		<FooterCTA />
+	</div>
 </MainLayout>

@@ -3,6 +3,8 @@ title: 'E- Learning - Prospects In The Nigerian Educational Sector'
 description: 'The internet has become a popular tool among the world’s young population. It’s safe to say “we all use the internet” in one way or the other, and for several reasons too'
 pubDate: 'Jul 15 2022'
 heroImage: '/blogpost/e-learning.jpg'
+category: 'EdTech'
+author: 'Swizel Team'
 ---
 
 The internet has become a popular tool among the world’s young population. It’s safe to say “we all use the internet” in one way or the other, and for several reasons too. Yes we research, download movies, pictures and applications, send and receive emails, messages, and get important news updates from the internet but internet technology has proven over the years to be more than that.
