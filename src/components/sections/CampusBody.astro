@@ -1754,7 +1754,7 @@ const voices = [
 		line-height: 1.7;
 		color: rgba(233, 244, 246, 0.72);
 		max-width: 42rem;
-		margin: 0 auto 1.5rem;
+		margin: 0 auto 2rem;
 	}
 	.cp-biz-p strong {
 		color: #8dfeea;
@@ -1790,13 +1790,18 @@ const voices = [
 			0 22px 48px -14px rgba(31, 143, 214, 0.75);
 	}
 	.cp-biz-call {
-		font-size: 0.95rem;
+		display: inline-flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.15rem;
+		font-size: 0.88rem;
 		color: rgba(233, 244, 246, 0.66);
 	}
 	.cp-biz-call strong {
 		font-family: ui-monospace, monospace;
 		font-weight: 800;
-		font-size: 1.3rem;
+		font-size: clamp(1.2rem, 5.5vw, 1.4rem);
+		white-space: nowrap;
 		color: #ffffff;
 	}
 	.cp-biz-call:hover strong {
