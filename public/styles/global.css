@@ -352,10 +352,9 @@ html.dark .text-darker\/50 { color: rgba(233, 234, 242, 0.5); }
    Theme-aware site header (rhymes with the hero) + refined toggle
    ========================================================= */
 :root {
-  /* a touch translucent so the bar always frosts/blends with what's behind it.
-     Light mode: keep it close to opaque white so the bar reads as a clean,
-     deliberate surface (not a muddy frost) over the always-dark hero. */
-  --nav-bg: rgba(255, 255, 255, 0.9);
+  /* Light mode: a clean, fully-opaque white bar (translucency picked up the dark
+     hero behind it and read as a grey gradient). */
+  --nav-bg: #ffffff;
   --nav-ink: #0f1120;
   --nav-border: rgba(20, 22, 40, 0.14);
   --nav-cta-border: rgba(20, 22, 40, 0.3);
@@ -412,6 +411,20 @@ html:not(.dark) .site-header.at-hero-top::before {
     rgba(8, 10, 20, 0) 100%
   );
 }
+/* LIGHT MODE: never go transparent. The "blend" assumes a dark hero with white
+   ink — over a light page (e.g. light service-detail heroes) that white logo/
+   links vanish, and over the dark home hero the translucency reads grey. Keep a
+   clean, solid white bar with dark ink at every scroll position instead. */
+html:not(.dark) .site-header.at-hero-top {
+  background: var(--nav-bg);
+  --nav-ink: #0f1120;
+  --nav-cta-border: rgba(20, 22, 40, 0.3);
+  border-bottom-color: var(--nav-border);
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+  backdrop-filter: blur(22px) saturate(150%);
+  box-shadow: var(--nav-shadow);
+}
+html:not(.dark) .site-header.at-hero-top::before { content: none; }
 /* lift the live hero up so its dark canvas fills behind the floating bar.
    margin/padding cancel for content, so nothing moves — the hero bg just
    extends up under the nav. */
