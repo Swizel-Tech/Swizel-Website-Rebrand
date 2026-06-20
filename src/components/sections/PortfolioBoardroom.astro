@@ -32,10 +32,10 @@ const rot = [...projects.slice(6), ...projects.slice(0, 6)];
 const marquee2 = [...rot, ...rot];
 
 // the project's destination: its case study, else the live site
-// Keep visitors on our site: case studies open their /work page; everything
-// else points back to the featured case studies on this page (never straight
-// off-site — the live-site links live inside each case study instead).
-const dest = (p: (typeof projects)[number]) => (p.caseStudy ? `/work/${p.slug}` : '/portfolio#pf-featured');
+// Case studies open their on-site /work page; other products link to the live
+// site — but those external clicks pass through a "you're leaving Swizel"
+// confirmation (see [data-leaving]) so people can bounce back and keep exploring.
+const dest = (p: (typeof projects)[number]) => (p.caseStudy ? `/work/${p.slug}` : p.url);
 // the custom cursor adapts to each project's sector (health ≠ briefcase)
 const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'pulse', property: 'layers', media: 'book', commerce: 'pkg', product: 'repo' };
 ---
@@ -68,7 +68,7 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 					</span>
 				))}
 				<span class="pf-deck-hint">
-					<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 5l7 7-7 7M3 12h18" /></svg>
+					<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8l-4 4 4 4M17 8l4 4-4 4M4 12h16" /></svg>
 					<span class="pf-hint-touch">Swipe to shuffle</span>
 					<span class="pf-hint-mouse">Drag to shuffle</span>
 				</span>
@@ -82,14 +82,14 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 		<div class="pf-marquee" aria-hidden="true">
 			<div class="pf-marquee-track">
 				{marquee.map((p) => (
-					<a href={dest(p) ?? undefined} class="pf-thumb" style={`--c:${p.color}`} tabindex="-1">
+					<a href={dest(p) ?? undefined} data-leaving={p.caseStudy ? undefined : p.host} data-leaving-name={p.caseStudy ? undefined : p.name} class="pf-thumb" style={`--c:${p.color}`} tabindex="-1">
 						<img src={p.img} alt="" loading="eager" decoding="async" />
 					</a>
 				))}
 			</div>
 			<div class="pf-marquee-track pf-marquee-track--rev">
 				{marquee2.map((p) => (
-					<a href={dest(p) ?? undefined} class="pf-thumb" style={`--c:${p.color}`} tabindex="-1">
+					<a href={dest(p) ?? undefined} data-leaving={p.caseStudy ? undefined : p.host} data-leaving-name={p.caseStudy ? undefined : p.name} class="pf-thumb" style={`--c:${p.color}`} tabindex="-1">
 						<img src={p.img} alt="" loading="eager" decoding="async" />
 					</a>
 				))}
@@ -207,14 +207,15 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 			{projects.map((p) => {
 				const href = dest(p);
 				const hasCase = !!p.caseStudy;
-				const internal = true; // every destination is now on-site
+				const internal = hasCase; // case study = on-site; otherwise a live product
 				const Tag = href ? 'a' : 'div';
 				return (
 					<article class:list={['pf-card', 'bd-reveal', `s-${p.sector}`]} style={`--c:${p.color}`} data-cursor={sectorCursor[p.sector]}>
 						<Tag
 							class="pf-card-link"
 							href={href ?? undefined}
-							target={href && !internal ? '_blank' : undefined}
+							data-leaving={href && !internal ? p.host : undefined}
+							data-leaving-name={href && !internal ? p.name : undefined}
 							rel={href && !internal ? 'noopener noreferrer' : undefined}
 							aria-label={p.name}
 							aria-disabled={href ? undefined : 'true'}
@@ -383,7 +384,7 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 	/* ── Shuffling card deck (big, scales with the screen) ── */
 	.pf-deck { position: relative; display: grid; place-items: center; min-height: clamp(380px, 50vw, 880px); }
 	.pf-deck-card { grid-area: 1 / 1; width: clamp(320px, 46vw, 840px); border-radius: 1.3rem; overflow: hidden; background: #0b0d16; border: 1px solid color-mix(in srgb, var(--c) 38%, var(--bd-glass-border)); box-shadow: 0 60px 130px -44px color-mix(in srgb, var(--c) 52%, rgba(0,0,0,0.9)); will-change: transform; cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none; transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1); }
-	.pf-deck-card img { -webkit-user-drag: none; user-select: none; pointer-events: none; }
+	.pf-deck-card img { -webkit-user-drag: none; user-select: none; }
 	:global(html:not(.dark)) .pf-deck-card { background: #f1f3f8; }
 	.pf-deck-card.is-front { cursor: grab; }
 	.pf-deck-card.is-dragging { cursor: grabbing; transition: none; }
@@ -407,7 +408,7 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 		80%  { transform: translate(20px, 20px) rotate(0.5deg) scale(0.975);  z-index: 40; }
 		100% { transform: translate(0, 0) rotate(-3deg) scale(1);             z-index: 50; }
 	}
-	@media (max-width: 939px) { .pf-deck { margin-top: 1rem; min-height: clamp(300px, 76vw, 460px); } }
+	@media (max-width: 939px) { .pf-deck { margin-top: 1rem; min-height: clamp(300px, 76vw, 460px); padding-bottom: 2.4rem; } .pf-deck-hint { bottom: 0.4rem; } }
 
 	/* ── Full-bleed scrolling wall (two rows, opposite ways, zoom) ── */
 	.pf-wall { position: relative; margin: clamp(1rem, 3vw, 2.5rem) calc(-1 * clamp(1rem, 3vw, 2rem)) clamp(1rem, 3vw, 2rem); }

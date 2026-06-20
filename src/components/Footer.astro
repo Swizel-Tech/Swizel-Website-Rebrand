@@ -78,6 +78,7 @@ const phones = [
 			<Link href="/" class="ft-logo" aria-label="Swizel home">
 				<Icon name="swizel" width={150} />
 			</Link>
+			<p class="ft-tagline">You Imagine, <span class="gradient-text">We Build.</span></p>
 			<p class="ft-pitch">
 				A global product studio. We design, build, market and maintain
 				software people love, across every sector.
@@ -273,7 +274,8 @@ const phones = [
 
 	.ft-logo { display: inline-block; color: var(--ft-ink); }
 	.ft-logo :global(svg path) { fill: var(--ft-ink); }
-	.ft-pitch { color: var(--ft-muted); font-size: 0.92rem; line-height: 1.6; margin: 1rem 0 1.4rem; max-width: 24rem; }
+	.ft-tagline { font-size: clamp(1.25rem, 2.4vw, 1.6rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; margin: 0.9rem 0 0.4rem; color: var(--ft-ink); }
+	.ft-pitch { color: var(--ft-muted); font-size: 0.92rem; line-height: 1.6; margin: 0.4rem 0 1.4rem; max-width: 24rem; }
 	.ft-h { display: block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ft-faint); margin-bottom: 1rem; }
 	.ft-h-2 { margin-top: 1.8rem; }
 
