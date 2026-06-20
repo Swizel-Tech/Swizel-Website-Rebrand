@@ -217,7 +217,7 @@ const phones = [
 	</nav>
 
 	<div class="ft-bottom">
-		<span>&copy; <span id="footer-year"></span> Swizel Tech LTD</span>
+		<span>&copy; <span id="footer-year"></span> <span class="ft-co-full">Swizel Technologies Limited</span><span class="ft-co-short">Swizel Tech LTD</span></span>
 		<span class="ft-bottom-globe">Built across the world <span class="ft-globe">🌍</span></span>
 	</div>
 </footer>
@@ -362,6 +362,10 @@ const phones = [
 	/* Bottom */
 	.ft-bottom { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding-top: 1.5rem; border-top: 1px solid var(--ft-border); display: flex; flex-wrap: wrap; gap: 0.4rem 1.2rem; align-items: center; justify-content: space-between; font-size: 0.72rem; font-style: italic; color: var(--ft-faint); }
 	.ft-globe { display: inline-block; animation: ft-spin 6s linear infinite; }
+	/* full legal name on desktop, compact on mobile */
+	.ft-co-full { display: none; }
+	.ft-co-short { display: inline; }
+	@media (min-width: 720px) { .ft-co-full { display: inline; } .ft-co-short { display: none; } }
 	@keyframes ft-spin { to { transform: rotate(360deg); } }
 
 	@media (prefers-reduced-motion: reduce) {

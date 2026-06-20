@@ -32,7 +32,10 @@ const rot = [...projects.slice(6), ...projects.slice(0, 6)];
 const marquee2 = [...rot, ...rot];
 
 // the project's destination: its case study, else the live site
-const dest = (p: (typeof projects)[number]) => (p.caseStudy ? `/work/${p.slug}` : p.url);
+// Keep visitors on our site: case studies open their /work page; everything
+// else points back to the featured case studies on this page (never straight
+// off-site — the live-site links live inside each case study instead).
+const dest = (p: (typeof projects)[number]) => (p.caseStudy ? `/work/${p.slug}` : '/portfolio#pf-featured');
 // the custom cursor adapts to each project's sector (health ≠ briefcase)
 const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'pulse', property: 'layers', media: 'book', commerce: 'pkg', product: 'repo' };
 ---
@@ -202,7 +205,8 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 		<div class="pf-grid">
 			{projects.map((p) => {
 				const href = dest(p);
-				const internal = !!p.caseStudy;
+				const hasCase = !!p.caseStudy;
+				const internal = true; // every destination is now on-site
 				const Tag = href ? 'a' : 'div';
 				return (
 					<article class:list={['pf-card', 'bd-reveal', `s-${p.sector}`]} style={`--c:${p.color}`} data-cursor={sectorCursor[p.sector]}>
@@ -217,8 +221,8 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 							<span class:list={['pf-shot', { 'pf-shot--app': p.kind === 'app' }]}>
 								{p.kind !== 'app' && <span class="pf-bar" aria-hidden="true"><i></i><i></i><i></i><span class="pf-url">{p.host}</span></span>}
 								<span class="pf-img"><img src={p.img} alt={`${p.name}`} loading="lazy" /></span>
-								<span class="pf-open" aria-hidden="true"><Icon width={15} name={internal ? 'mdi:arrow-right' : p.url ? 'mdi:arrow-top-right' : 'mdi:lock-outline'} /></span>
-								{internal && <span class="pf-badge">Case study</span>}
+								<span class="pf-open" aria-hidden="true"><Icon width={15} name="mdi:arrow-right" /></span>
+								{hasCase && <span class="pf-badge">Case study</span>}
 							</span>
 							<div class="pf-card-body">
 								<div class="pf-card-head">
@@ -438,6 +442,17 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 	.pf-feat::before { content: ''; position: absolute; inset: 0 0 auto 0; height: 3px; background: linear-gradient(90deg, transparent, var(--c), transparent); opacity: 0.7; }
 	.pf-feat:hover { border-color: color-mix(in srgb, var(--c) 38%, var(--bd-glass-border)); }
 	@media (min-width: 900px) { .pf-feat { grid-template-columns: 1.05fr 0.95fr; } .pf-feat--rev .pf-shot--lg { order: 2; } }
+	/* Break the "every card identical / AI-ish" feel: alternate the accent sheen
+	   side, and on mobile alternate whether the copy or the mockup leads. */
+	.pf-feat:nth-child(even)::before { background: linear-gradient(90deg, var(--c), transparent 72%); }
+	.pf-feat:nth-child(odd)::before { background: linear-gradient(90deg, transparent 28%, var(--c)); }
+	@media (max-width: 899px) {
+		.pf-feat { gap: 1.2rem; padding: 1.1rem 1.1rem 1.3rem; }
+		.pf-feat--rev .pf-feat-body { order: -1; }
+		.pf-feat-name { font-size: clamp(1.55rem, 6.5vw, 2rem); margin-bottom: 0.4rem; }
+		.pf-feat-tagline { font-size: 1rem; }
+		.pf-feat-blurb { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 0.95rem; }
+	}
 	.pf-shot--lg { transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease; }
 	.pf-shot--lg:hover { transform: translateY(-6px); box-shadow: 0 50px 100px -40px color-mix(in srgb, var(--c) 45%, rgba(0,0,0,0.85)); }
 	.pf-shot--lg:hover .pf-img img { transform: scale(1.04); }
@@ -538,9 +553,9 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 	.pf-card:hover .pf-open { opacity: 1; transform: translate(0, 0); }
 	.pf-card-body { padding: 1.1rem 1.25rem 1.35rem; }
 	.pf-card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.6rem; }
-	.pf-card-name { font-size: 1.18rem; font-weight: 700; letter-spacing: -0.01em; margin: 0; }
-	.pf-card-year { font-size: 0.78rem; font-weight: 700; color: color-mix(in srgb, var(--c) 70%, transparent); flex-shrink: 0; }
-	.pf-card-tagline { font-size: 0.9rem; line-height: 1.5; color: var(--bd-muted); margin: 0.3rem 0 0.9rem; }
+	.pf-card-name { font-size: 1.05rem; font-weight: 700; letter-spacing: -0.01em; margin: 0; }
+	.pf-card-year { font-size: 0.74rem; font-weight: 700; color: color-mix(in srgb, var(--c) 70%, transparent); flex-shrink: 0; }
+	.pf-card-tagline { font-size: 0.86rem; line-height: 1.5; color: var(--bd-muted); margin: 0.3rem 0 0.85rem; }
 	.pf-card .pf-tags { margin-bottom: 0; }
 
 	/* ── "Yours could be next" card (fills the last grid cell) ── */

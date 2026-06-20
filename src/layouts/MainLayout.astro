@@ -400,8 +400,21 @@ const {
 		};
 		layout();
 		const advance = () => { order.push(order.shift()!); layout(); };
+		// elegant ambient deal: lift the top card, then let it settle to the back
+		// while the rest glide forward — mirrors the original keyframe motion.
+		const dealFront = () => {
+			const f = order[0];
+			f.style.zIndex = '70';
+			f.style.transition = 'transform 0.5s cubic-bezier(0.45, 0, 0.2, 1)';
+			f.style.transform = 'translate(-48px, -66px) rotate(-9deg) scale(1.05)';
+			window.setTimeout(() => {
+				if (dragging) return;
+				f.style.transition = 'transform 0.66s cubic-bezier(0.22, 1, 0.36, 1)';
+				advance();
+			}, 540);
+		};
 		let timer = 0;
-		const start = () => { if (!timer && !reduce) timer = window.setInterval(advance, 3600); };
+		const start = () => { if (!timer && !reduce) timer = window.setInterval(dealFront, 4200); };
 		const stop = () => { if (timer) { clearInterval(timer); timer = 0; } };
 		start();
 		deck.addEventListener('pointerenter', stop);
