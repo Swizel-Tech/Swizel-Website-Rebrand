@@ -493,8 +493,8 @@ const voices = [
 				START — join the bootcamp
 			</a>
 			<p class="cp-alt">
-				Questions before you enroll? Call
-				<a href="tel:+2348100204570" class="cp-phone">+234 810 020 4570</a>
+				<span>Questions before you enroll?</span>
+				<a href="tel:+2348100204570" class="cp-phone">+234&nbsp;810&nbsp;020&nbsp;4570</a>
 			</p>
 		</div>
 	</section>
@@ -1495,13 +1495,19 @@ const voices = [
 	}
 	.cp-alt {
 		margin: 1.4rem 0 0;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.45rem;
 		font-size: 0.92rem;
 		color: var(--cp-muted);
 	}
 	.cp-phone {
 		font-family: ui-monospace, monospace;
 		font-weight: 800;
-		font-size: 1.15rem;
+		font-size: clamp(1.4rem, 6.5vw, 1.85rem);
+		letter-spacing: -0.01em;
+		white-space: nowrap;
 		color: var(--cp-ink);
 		transition: color 0.25s ease;
 	}
