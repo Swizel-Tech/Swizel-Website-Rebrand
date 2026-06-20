@@ -368,6 +368,10 @@ const buildTypes = [
 		padding-top: 1.5rem;
 		border-top: 1px solid rgba(255, 255, 255, 0.08);
 	}
+	@media (max-width: 600px) {
+		.builder--stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem 1rem; }
+		.builder--stat { min-width: 0; }
+	}
 	.builder--statnum {
 		font-family: 'Bebas Neue', sans-serif;
 		font-size: clamp(2.2rem, 4vw, 3rem);

@@ -258,6 +258,7 @@ const launched = [
 	}
 
 	.founder--stats { display: flex; gap: clamp(1.5rem, 4vw, 3rem); flex-wrap: wrap; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.08); }
+	@media (max-width: 600px) { .founder--stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem 1rem; } .founder--stat { min-width: 0; } }
 	.founder--statnum {
 		font-family: 'Bebas Neue', sans-serif;
 		font-size: clamp(2.2rem, 4vw, 3rem);
