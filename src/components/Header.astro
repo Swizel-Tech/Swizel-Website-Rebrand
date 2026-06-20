@@ -176,7 +176,7 @@ const isActive = (href: string) => {
 		<div id="close-overlay"></div>
 		<aside id="mobile-menu">
 			<div class="m-nav-head">
-				<Link class="text-white w-fit block" aria-label="Swizel" href="/">
+				<Link class="m-nav-logo w-fit block" aria-label="Swizel" href="/">
 					<Logo width={114} />
 				</Link>
 				<button id="toggler-hide" class="m-nav-x" aria-label="Close menu" type="button">
@@ -197,13 +197,17 @@ const isActive = (href: string) => {
 								<svg class="m-nav-caret" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9" /></svg>
 							</summary>
 							<div class="m-nav-sub">
-								<a href="/services">Services overview</a>
 								{disciplines.map((d) => (
-									<a href={`/services/${d.slug}`} style={`--c:${d.color}`}>
-										<span class="m-nav-dot" />
-										{d.title}
+									<a href={`/services/${d.slug}`} class="m-sub-item" style={`--c:${d.color}`}>
+										<span class="m-sub-ic"><Icon width={16} name={d.icon} /></span>
+										<span class="m-sub-t">{d.title}</span>
+										<svg class="m-sub-go" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6" /></svg>
 									</a>
 								))}
+								<a href="/services" class="m-sub-all">
+									All services overview
+									<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6" /></svg>
+								</a>
 							</div>
 						</details>
 					) : (
@@ -216,6 +220,13 @@ const isActive = (href: string) => {
 			</nav>
 
 			<div class="m-nav-foot">
+				<div class="m-nav-pref">
+					<span>Appearance</span>
+					<button class="theme-toggle" type="button" role="switch" aria-checked="false" aria-label="Toggle dark mode" data-theme-toggle>
+						<svg class="tt-ico tt-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2" /><path d="M12 1.5v2.5M12 20v2.5M3.5 3.5l1.8 1.8M18.7 18.7l1.8 1.8M1.5 12h2.5M20 12h2.5M3.5 20.5l1.8-1.8M18.7 5.3l1.8-1.8" /></svg>
+						<svg class="tt-ico tt-moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" /></svg>
+					</button>
+				</div>
 				<CustomButton elementType="a" class="m-nav-cta" variant="primary" href="/contact" notRounded>
 					Start a project
 				</CustomButton>
@@ -223,6 +234,7 @@ const isActive = (href: string) => {
 					<a href="https://wa.me/2348100204570" aria-label="WhatsApp" target="_blank" rel="noopener"><Icon width={18} name="mdi:whatsapp" /></a>
 					<a href="https://www.linkedin.com/company/swizel-technologies" aria-label="LinkedIn" target="_blank" rel="noopener"><Icon width={18} name="mdi:linkedin" /></a>
 					<a href="https://www.instagram.com/swizelhq" aria-label="Instagram" target="_blank" rel="noopener"><Icon width={18} name="mdi:instagram" /></a>
+					<a href="https://www.tiktok.com/@swizelhq" aria-label="TikTok" target="_blank" rel="noopener"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.21v12.67a2.59 2.59 0 1 1-2.59-2.59c.27 0 .53.04.78.12v-3.3a5.88 5.88 0 0 0-.78-.05 5.85 5.85 0 1 0 5.85 5.85V8.66a7.5 7.5 0 0 0 4.37 1.4V6.85a4.28 4.28 0 0 1-3.36-1.03z" /></svg></a>
 				</div>
 			</div>
 		</aside>
@@ -257,12 +269,29 @@ const isActive = (href: string) => {
 		width: min(86vw, 360px);
 		display: flex;
 		flex-direction: column;
-		background: linear-gradient(195deg, #11142a 0%, #0a0c1a 60%, #070810 100%);
-		border-left: 1px solid rgba(255, 255, 255, 0.08);
-		box-shadow: -24px 0 60px -24px rgba(0, 0, 0, 0.7);
+		background: var(--m-bg);
+		border-left: 1px solid var(--m-border);
+		box-shadow: -24px 0 60px -24px rgba(0, 0, 0, 0.5);
 		transform: translateX(102%);
 		transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
 		will-change: transform;
+		/* theme-aware drawer tokens (dark default, light override below) */
+		--m-bg: linear-gradient(195deg, #11142a 0%, #0a0c1a 60%, #070810 100%);
+		--m-ink: #f4f6fb;
+		--m-muted: rgba(244, 246, 251, 0.62);
+		--m-border: rgba(255, 255, 255, 0.08);
+		--m-hover: rgba(255, 255, 255, 0.06);
+		--m-surface: rgba(255, 255, 255, 0.04);
+		--m-accent: #18debe;
+	}
+	:global(html:not(.dark)) #mobile-menu {
+		--m-bg: linear-gradient(195deg, #ffffff 0%, #f3f6fb 55%, #eaeff7 100%);
+		--m-ink: #11142a;
+		--m-muted: rgba(20, 22, 40, 0.6);
+		--m-border: rgba(20, 22, 40, 0.1);
+		--m-hover: rgba(20, 22, 40, 0.05);
+		--m-surface: rgba(20, 22, 40, 0.035);
+		--m-accent: #0c9a83;
 	}
 	#mobile-wrapper[data-expanded='true'] #mobile-menu { transform: translateX(0); }
 
@@ -271,20 +300,21 @@ const isActive = (href: string) => {
 		align-items: center;
 		justify-content: space-between;
 		padding: 1.1rem 1.25rem;
-		border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+		border-bottom: 1px solid var(--m-border);
 	}
+	.m-nav-logo { color: var(--m-ink); }
 	.m-nav-x {
 		display: grid;
 		place-items: center;
 		width: 40px;
 		height: 40px;
 		border-radius: 9999px;
-		color: #fff;
-		background: rgba(255, 255, 255, 0.06);
-		border: 1px solid rgba(255, 255, 255, 0.12);
+		color: var(--m-ink);
+		background: var(--m-surface);
+		border: 1px solid var(--m-border);
 		transition: background 0.2s ease, transform 0.2s ease;
 	}
-	.m-nav-x:hover { background: rgba(255, 255, 255, 0.12); transform: rotate(90deg); }
+	.m-nav-x:hover { background: var(--m-hover); transform: rotate(90deg); }
 
 	.m-nav-links {
 		flex: 1;
@@ -293,17 +323,17 @@ const isActive = (href: string) => {
 		padding: 1rem 0.9rem 0.5rem;
 		display: flex;
 		flex-direction: column;
-		gap: 0.15rem;
+		gap: 0.12rem;
 	}
 	.m-nav-link {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		gap: 0.75rem;
-		padding: 0.95rem 1rem;
+		padding: 0.9rem 1rem;
 		border-radius: 0.85rem;
-		color: rgba(244, 246, 251, 0.86);
-		font-size: 1.18rem;
+		color: var(--m-ink);
+		font-size: 1.15rem;
 		font-weight: 600;
 		letter-spacing: -0.01em;
 		text-transform: capitalize;
@@ -314,64 +344,96 @@ const isActive = (href: string) => {
 	/* the desktop nav underline (.site-header nav a::after) must not leak into the drawer */
 	.m-nav-links a::after, .m-nav-link::after { content: none !important; display: none !important; }
 	.m-nav-link::-webkit-details-marker { display: none; }
-	.m-nav-link:hover { background: rgba(255, 255, 255, 0.05); color: #fff; }
+	.m-nav-link:hover { background: var(--m-hover); }
+	/* clearly visible active state — a filled accent pill with dark, legible text.
+	   Note: must override the desktop ".site-header nav a.active" rule, which clips
+	   text to a gradient (-webkit-text-fill-color: transparent) and would otherwise
+	   blank this label out. */
 	.m-nav-link.active {
-		color: #18debe;
-		background: rgba(24, 222, 190, 0.1);
+		color: #05221d;
+		-webkit-text-fill-color: #05221d;
+		-webkit-background-clip: border-box;
+		background: linear-gradient(95deg, #8dfeea, #18debe 58%, #28a6ec);
 		font-weight: 700;
-		box-shadow: inset 3px 0 0 #18debe;
+		box-shadow: 0 12px 26px -14px rgba(24, 222, 190, 0.55);
 	}
-	.m-nav-link.active .m-nav-go { opacity: 1; transform: translateX(2px); color: #18debe; }
-	.m-nav-go { opacity: 0.4; transition: opacity 0.2s ease, transform 0.2s ease; flex-shrink: 0; }
+	.m-nav-link.active .m-nav-go { opacity: 1; transform: translateX(2px); color: #05221d; -webkit-text-fill-color: #05221d; }
+	.m-nav-go { opacity: 0.45; transition: opacity 0.2s ease, transform 0.2s ease; flex-shrink: 0; }
 	.m-nav-link:hover .m-nav-go { opacity: 0.9; transform: translateX(3px); }
-	.m-nav-caret { opacity: 0.65; transition: transform 0.25s ease; flex-shrink: 0; }
+	.m-nav-caret { opacity: 0.7; transition: transform 0.25s ease; flex-shrink: 0; }
 
-	/* Services accordion */
+	/* Services accordion — clean icon rows inside an inset panel */
 	.m-nav-dd { border-radius: 0.85rem; }
-	.m-nav-dd[open] > summary { background: rgba(255, 255, 255, 0.04); border-radius: 0.85rem 0.85rem 0 0; }
-	.m-nav-dd[open] > summary:not(.active) { color: #fff; }
+	.m-nav-dd[open] > summary:not(.active) { background: var(--m-surface); }
 	.m-nav-dd[open] .m-nav-caret { transform: rotate(180deg); }
 	.m-nav-sub {
 		display: grid;
-		gap: 0.1rem;
-		padding: 0.35rem 0.5rem 0.6rem 0.9rem;
-		margin: 0 0.4rem 0.2rem;
-		border-left: 2px solid rgba(255, 255, 255, 0.1);
+		gap: 0.15rem;
+		margin: 0.25rem 0.2rem 0.4rem;
+		padding: 0.45rem;
+		border-radius: 0.95rem;
+		background: var(--m-surface);
 	}
-	.m-nav-sub a {
+	.m-sub-item, .m-sub-all {
 		display: flex;
 		align-items: center;
-		gap: 0.6rem;
-		padding: 0.6rem 0.7rem;
-		border-radius: 0.6rem;
+		gap: 0.7rem;
+		padding: 0.6rem 0.65rem;
+		border-radius: 0.65rem;
 		font-size: 0.98rem;
-		color: rgba(244, 246, 251, 0.66);
-		transition: color 0.2s ease, background 0.2s ease;
+		font-weight: 600;
+		color: var(--m-ink);
+		transition: background 0.2s ease, color 0.2s ease;
 	}
-	.m-nav-sub a:hover { color: #fff; background: rgba(255, 255, 255, 0.05); }
-	.m-nav-dot { width: 7px; height: 7px; border-radius: 9999px; background: var(--c, #28a6ec); flex-shrink: 0; }
+	.m-sub-item:hover { background: color-mix(in srgb, var(--c, #28a6ec) 16%, transparent); }
+	.m-sub-ic {
+		display: grid;
+		place-items: center;
+		width: 30px;
+		height: 30px;
+		flex-shrink: 0;
+		border-radius: 0.55rem;
+		color: var(--c, #28a6ec);
+		background: color-mix(in srgb, var(--c, #28a6ec) 16%, transparent);
+		border: 1px solid color-mix(in srgb, var(--c, #28a6ec) 30%, transparent);
+	}
+	.m-sub-t { flex: 1; min-width: 0; }
+	.m-sub-go { opacity: 0.4; flex-shrink: 0; }
+	.m-sub-all { justify-content: center; margin-top: 0.1rem; font-size: 0.84rem; font-weight: 700; color: var(--m-muted); }
+	.m-sub-all:hover { background: var(--m-hover); color: var(--m-ink); }
 
 	.m-nav-foot {
 		padding: 1rem 1.25rem 1.4rem;
-		border-top: 1px solid rgba(255, 255, 255, 0.07);
+		border-top: 1px solid var(--m-border);
 		display: flex;
 		flex-direction: column;
-		gap: 1rem;
+		gap: 0.9rem;
+	}
+	.m-nav-pref {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0.5rem 0.5rem 0.5rem 0.95rem;
+		border-radius: 0.85rem;
+		background: var(--m-surface);
+		font-size: 0.92rem;
+		font-weight: 600;
+		color: var(--m-muted);
 	}
 	.m-nav-cta { display: block; text-align: center; }
-	.m-nav-social { display: flex; gap: 0.6rem; }
+	.m-nav-social { display: flex; gap: 0.55rem; }
 	.m-nav-social a {
 		display: grid;
 		place-items: center;
 		width: 40px;
 		height: 40px;
 		border-radius: 9999px;
-		color: rgba(244, 246, 251, 0.8);
-		background: rgba(255, 255, 255, 0.05);
-		border: 1px solid rgba(255, 255, 255, 0.1);
+		color: var(--m-ink);
+		background: var(--m-surface);
+		border: 1px solid var(--m-border);
 		transition: color 0.2s ease, background 0.2s ease, transform 0.2s ease;
 	}
-	.m-nav-social a:hover { color: #18debe; background: rgba(24, 222, 190, 0.12); transform: translateY(-2px); }
+	.m-nav-social a:hover { color: var(--m-accent); background: color-mix(in srgb, var(--m-accent) 14%, transparent); transform: translateY(-2px); }
 
 	.header-sticky {
 		box-shadow: 0 2px 3px 4px rgba(0, 0, 0, 0.19);
