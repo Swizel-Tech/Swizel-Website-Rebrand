@@ -217,7 +217,7 @@ const phones = [
 	</nav>
 
 	<div class="ft-bottom">
-		<span>&copy; <span id="footer-year"></span> Swizel Technologies Limited. All rights reserved.</span>
+		<span>&copy; <span id="footer-year"></span> Swizel Tech LTD</span>
 		<span class="ft-bottom-globe">Built across the world <span class="ft-globe">🌍</span></span>
 	</div>
 </footer>
@@ -319,35 +319,48 @@ const phones = [
 	.ft-social:hover .ft-social-go { color: var(--view-accent, #18debe); transform: translate(2px, -2px); }
 
 	/* Horizontal pill nav */
+	/* Footer nav — a tidy 2-column list on phones, a single pill row on wider
+	   screens (the wrapping pill read as scattered on mobile). */
 	.ft-nav {
 		position: relative;
 		z-index: 1;
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: center;
-		gap: 0.3rem;
-		width: fit-content;
-		max-width: 100%;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 0.2rem 1.2rem;
+		max-width: 360px;
 		margin: 0 auto 1.8rem;
-		padding: 0.4rem;
-		border: 1px solid var(--ft-border);
-		background: var(--ft-card);
-		border-radius: 9999px;
-		backdrop-filter: blur(10px);
 	}
 	.ft-nav-item {
-		padding: 0.55rem 1.15rem;
-		border-radius: 9999px;
-		font-size: 0.88rem;
+		padding: 0.6rem 0.4rem;
+		border-radius: 0.6rem;
+		font-size: 0.92rem;
 		font-weight: 600;
 		color: var(--ft-muted);
-		transition: color 0.25s ease, background 0.25s ease;
+		border-bottom: 1px solid var(--ft-border);
+		transition: color 0.25s ease, padding-left 0.25s ease;
 	}
-	.ft-nav-item:hover { color: var(--ft-ink); background: var(--ft-card); }
-	.ft-nav-item.active { color: #0b0d18; background: var(--view-accent, #18debe); }
+	.ft-nav-item:hover { color: var(--ft-ink); padding-left: 0.7rem; }
+	.ft-nav-item.active { color: var(--view-accent, #18debe); }
+	@media (min-width: 720px) {
+		.ft-nav {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;
+			gap: 0.3rem;
+			width: fit-content;
+			max-width: 100%;
+			padding: 0.4rem;
+			border: 1px solid var(--ft-border);
+			background: var(--ft-card);
+			border-radius: 9999px;
+		}
+		.ft-nav-item { padding: 0.55rem 1.15rem; border-radius: 9999px; border-bottom: none; }
+		.ft-nav-item:hover { background: var(--ft-card); padding-left: 1.15rem; }
+		.ft-nav-item.active { color: #0b0d18; background: var(--view-accent, #18debe); }
+	}
 
 	/* Bottom */
-	.ft-bottom { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding-top: 1.5rem; border-top: 1px solid var(--ft-border); display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: space-between; font-size: 0.8rem; color: var(--ft-faint); }
+	.ft-bottom { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding-top: 1.5rem; border-top: 1px solid var(--ft-border); display: flex; flex-wrap: wrap; gap: 0.4rem 1.2rem; align-items: center; justify-content: space-between; font-size: 0.72rem; font-style: italic; color: var(--ft-faint); }
 	.ft-globe { display: inline-block; animation: ft-spin 6s linear infinite; }
 	@keyframes ft-spin { to { transform: rotate(360deg); } }
 
