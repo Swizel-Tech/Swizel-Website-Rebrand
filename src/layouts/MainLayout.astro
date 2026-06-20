@@ -455,6 +455,7 @@ const {
 			front = order[0];
 			const t = (e.target as HTMLElement).closest('.pf-deck-card');
 			if (t !== front) return;
+				e.preventDefault();
 			dragging = true; horiz = false; startX = e.clientX; startY = e.clientY; dx = 0;
 			stop();
 			front.classList.add('is-dragging');
