@@ -422,7 +422,15 @@ const cur = sectorCursor[p.sector] ?? 'repo';
 	.cs-results-head .cs-eyebrow { color: color-mix(in srgb, var(--c) 70%, #fff); }
 	.cs-results-head .bd-h { color: #fff; }
 	.cs-results-grid { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1rem, 3vw, 2rem); text-align: center; }
-	@media (max-width: 720px) { .cs-results-grid { grid-template-columns: 1fr; gap: 1.5rem; } }
+	/* On phones, 3 big stacked numbers with wide gaps read as scattered — tie them
+	   together as one clean divided list. */
+	@media (max-width: 720px) {
+		.cs-results-grid { grid-template-columns: 1fr; gap: 0; max-width: 24rem; margin-inline: auto; }
+		.cs-result { padding: 1.05rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.12); }
+		.cs-result:last-child { border-bottom: none; }
+		.cs-result strong { font-size: clamp(2rem, 9vw, 2.6rem); }
+		.cs-result span { margin-top: 0.35rem; }
+	}
 	.cs-result strong { display: block; font-size: clamp(2.2rem, 5vw, 3.4rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1; background: linear-gradient(135deg, #fff, color-mix(in srgb, var(--c) 60%, #fff)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 	.cs-result span { display: block; margin-top: 0.5rem; font-size: 0.9rem; color: rgba(245, 245, 247, 0.66); }
 
