@@ -258,11 +258,11 @@ const launched = [
 		background: rgba(139, 92, 246, 0.1);
 	}
 
-	.founder--stats { display: flex; gap: clamp(1.5rem, 4vw, 3rem); flex-wrap: wrap; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.08); }
+	.founder--stats { display: flex; gap: clamp(0.8rem, 2vw, 1.6rem); flex-wrap: wrap; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.08); }
 	@media (max-width: 600px) { .founder--stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem 1rem; } .founder--stat { min-width: 0; } }
 	.founder--statnum {
 		font-family: 'Bebas Neue', sans-serif;
-		font-size: clamp(2.2rem, 4vw, 3rem);
+		font-size: clamp(1.6rem, 2.4vw, 2.2rem);
 		line-height: 1;
 		background: linear-gradient(135deg, #c4b5fd, var(--view-accent, #8b5cf6));
 		-webkit-background-clip: text;
@@ -313,8 +313,8 @@ const launched = [
 		stroke-dasharray: 326.7;
 		stroke-dashoffset: 326.7;
 	}
-	.fw--pct { position: absolute; font-family: 'Bebas Neue', sans-serif; font-size: 2.6rem; color: #fff; line-height: 1; }
-	.fw--ringlabel { position: absolute; margin-top: 4rem; font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(237, 233, 251, 0.5); }
+	.fw--pct { position: absolute; font-family: 'Bebas Neue', sans-serif; font-size: 2.4rem; color: #fff; line-height: 1; transform: translateY(-0.5rem); }
+	.fw--ringlabel { position: absolute; margin-top: 1.5rem; font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(237, 233, 251, 0.5); }
 
 	.fw--stages { display: grid; gap: 0.55rem; flex: 1; }
 	.fw--stage {

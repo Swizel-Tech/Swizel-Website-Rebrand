@@ -33,14 +33,14 @@ const cur = sectorCursor[p.sector] ?? 'repo';
 				<p class="cs-tagline">{p.tagline}</p>
 				<div class="bd-links cs-hero-links">
 					{cs.liveUrl && (
-						<a href={cs.liveUrl} target="_blank" rel="noopener noreferrer" class="bd-pill">Visit live site <Icon width={15} name="mdi:open-in-new" /></a>
+						<a href={cs.liveUrl} target="_blank" rel="noopener noreferrer" data-leaving="" data-leaving-name={p.name} class="bd-pill">Visit live site <Icon width={15} name="mdi:open-in-new" /></a>
 					)}
 					{cs.extraLinks?.map((l) => (
-						<a href={l.url} target="_blank" rel="noopener noreferrer" class="bd-link">{l.label} <Icon width={15} name="mdi:arrow-top-right" /></a>
+						<a href={l.url} target="_blank" rel="noopener noreferrer" data-leaving="" data-leaving-name={l.label} class="bd-link">{l.label} <Icon width={15} name="mdi:arrow-top-right" /></a>
 					))}
 				</div>
 			</div>
-			<a class:list={['cs-shot', { 'cs-shot--app': p.kind === 'app' }]} href={cs.liveUrl ?? undefined} target={cs.liveUrl ? '_blank' : undefined} rel={cs.liveUrl ? 'noopener noreferrer' : undefined}>
+			<a class:list={['cs-shot', { 'cs-shot--app': p.kind === 'app' }]} href={cs.liveUrl ?? undefined} target={cs.liveUrl ? '_blank' : undefined} rel={cs.liveUrl ? 'noopener noreferrer' : undefined} data-leaving={cs.liveUrl ? '' : undefined} data-leaving-name={cs.liveUrl ? p.name : undefined}>
 				{p.kind !== 'app' && <span class="cs-bar" aria-hidden="true"><i></i><i></i><i></i><span class="cs-url">{p.host}</span></span>}
 				<span class="cs-img"><img src={p.img} alt={`${p.name}`} width="1280" height="800" /></span>
 			</a>
@@ -174,7 +174,7 @@ const cur = sectorCursor[p.sector] ?? 'repo';
 				{cs.press.items.map((it) => {
 					const Tag = it.url ? 'a' : 'div';
 					return (
-						<Tag class="cs-press-card bd-reveal" href={it.url ?? undefined} target={it.url ? '_blank' : undefined} rel={it.url ? 'noopener noreferrer' : undefined} data-cursor="repo">
+						<Tag class="cs-press-card bd-reveal" href={it.url ?? undefined} target={it.url ? '_blank' : undefined} rel={it.url ? 'noopener noreferrer' : undefined} data-leaving={it.url ? '' : undefined} data-leaving-name={it.url ? it.outlet : undefined} data-cursor="repo">
 							<span class="cs-press-clip" aria-hidden="true">
 								<span class="cs-press-mast"></span>
 								<span class="cs-press-cols"><i></i><i></i><i></i><i></i><i></i></span>

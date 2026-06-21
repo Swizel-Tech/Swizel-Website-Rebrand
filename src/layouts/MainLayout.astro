@@ -72,10 +72,10 @@ const {
 			<div class="leave-card">
 				<span class="leave-ic" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
 				<h2 id="leave-title" class="leave-title">Heading off our turf</h2>
-				<p class="leave-desc">You're about to visit <strong id="leave-name">the live product</strong> at <span id="leave-host" class="leave-host"></span>. It opens in this tab — tap <b>back</b> any time to return and keep exploring our work.</p>
+				<p class="leave-desc">You're about to visit <strong id="leave-name">the live product</strong> at <span id="leave-host" class="leave-host"></span>. It opens in a new tab, so this page stays right here for you to keep exploring.</p>
 				<div class="leave-actions">
 					<button type="button" class="leave-stay" data-leave-close>Stay here</button>
-					<a id="leave-go" class="leave-go" href="#" rel="noopener noreferrer">Visit the site <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+					<a id="leave-go" class="leave-go" href="#" target="_blank" rel="noopener noreferrer">Visit the site <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
 				</div>
 			</div>
 		</div>
@@ -634,11 +634,15 @@ const {
 				const link = (e.target as HTMLElement).closest('a[data-leaving]') as HTMLAnchorElement | null;
 				if (link && link.getAttribute('href')) {
 					e.preventDefault();
-					openLeave(link.href, link.getAttribute('data-leaving') || '', link.getAttribute('data-leaving-name') || '');
+					let host = link.getAttribute('data-leaving') || '';
+					if (!host) { try { host = new URL(link.href).hostname; } catch (err) { host = ''; } }
+					openLeave(link.href, host, link.getAttribute('data-leaving-name') || '');
 				}
 			});
 			leaveModal.querySelectorAll('[data-leave-close]').forEach((el) => el.addEventListener('click', closeLeave));
-			if (goEl) goEl.addEventListener('click', () => { document.body.style.overflow = ''; });
+			// "Visit the site" opens in a new tab — close the modal here so the
+			// current tab is clean when the visitor switches back.
+			if (goEl) goEl.addEventListener('click', () => { window.setTimeout(closeLeave, 60); });
 			document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !leaveModal.hidden) closeLeave(); });
 		}
 
