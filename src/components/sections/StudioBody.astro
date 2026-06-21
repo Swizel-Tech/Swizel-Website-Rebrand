@@ -625,6 +625,7 @@ const logos = ['betslipswitch.svg', 'trueverdict.png', 'brix market logo.svg', '
 		gap: 0.5rem;
 		aspect-ratio: 21 / 9;
 		max-height: 520px;
+		min-height: 200px;
 		border-radius: 0.4rem;
 		/* a hung canvas: thick mat + frame line */
 		border: 1px solid var(--sd-line);
@@ -637,16 +638,24 @@ const logos = ['betslipswitch.svg', 'trueverdict.png', 'brix market logo.svg', '
 		color: var(--sd-muted);
 	}
 	.sd-cp-name {
-		font-size: 0.82rem;
+		font-size: 0.74rem;
 		font-weight: 800;
-		letter-spacing: 0.08em;
+		letter-spacing: 0.07em;
 		text-transform: uppercase;
+		text-align: center;
+		padding-inline: 0.5rem;
 	}
 	.sd-cp-sub {
 		font-family: var(--sd-serif);
 		font-style: italic;
-		font-size: 0.92rem;
+		font-size: 0.85rem;
+		text-align: center;
 		color: var(--sd-faint);
+	}
+	/* On phones the cinematic 21:9 strip is too short — give the placeholder real
+	   presence (taller crop) so it reads as the centerpiece it's meant to be. */
+	@media (max-width: 720px) {
+		.sd-centerpiece-media { aspect-ratio: 16 / 11; }
 	}
 	/* the gallery label — sleek dark glass, not white tape */
 	.sd-plaque {
