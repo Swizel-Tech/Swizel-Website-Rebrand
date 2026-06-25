@@ -5,10 +5,10 @@ import Section from '../HTML/Section.astro';
 import RotatingHeadline from '../RotatingHeadline.astro';
 
 const stats = [
-	{ to: 7, suffix: '+', label: 'Years shipping' },
-	{ to: 25, suffix: '+', label: 'Engineers & designers' },
-	{ to: 65, suffix: '+', label: 'Products live' },
-	{ to: 10, suffix: '+', label: 'Countries shipped' },
+	{ to: 7, suffix: '+', label: 'Years' },
+	{ to: 25, suffix: '+', label: 'Engineers' },
+	{ to: 65, suffix: '+', label: 'Products' },
+	{ to: 10, suffix: '+', label: 'Countries' },
 ];
 
 const tokens = ['React', 'Flutter', 'Node', 'TypeScript', 'Python', 'Swift', 'Go', 'Figma'];
@@ -364,6 +364,7 @@ const buildTypes = [
 
 	.builder--stats {
 		display: flex;
+		justify-content: space-between;
 		gap: clamp(0.8rem, 2vw, 1.6rem);
 		flex-wrap: wrap;
 		padding-top: 1.5rem;
@@ -386,6 +387,7 @@ const buildTypes = [
 	.builder--statlabel {
 		display: block;
 		font-size: 0.74rem;
+		white-space: nowrap;
 		text-transform: uppercase;
 		letter-spacing: 0.08em;
 		color: rgba(232, 240, 244, 0.5);

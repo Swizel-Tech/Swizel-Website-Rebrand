@@ -6,9 +6,9 @@ import RotatingHeadline from '../RotatingHeadline.astro';
 import TeamChip from '../TeamChip.astro';
 
 const stats = [
-	{ to: 3, suffix: ' mo', label: 'Free bootcamp' },
-	{ to: 65, suffix: '+', label: 'Real products built' },
-	{ to: 7, suffix: '+', label: 'Years mentoring' },
+	{ to: 3, suffix: ' mo', label: 'Bootcamp' },
+	{ to: 65, suffix: '+', label: 'Products' },
+	{ to: 7, suffix: '+', label: 'Mentoring' },
 	{ to: 100, suffix: '%', label: 'Hands-on' },
 ];
 
@@ -222,10 +222,10 @@ const builds = [
 	.campus--cta { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem; }
 	.campus--tour { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; font-weight: 600; color: #fdf3e3; padding: 0.85rem 1.2rem; border-radius: 9999px; border: 1px dashed rgba(252, 211, 77, 0.5); transition: 0.25s ease; }
 	.campus--tour:hover { border-color: #f59e0b; color: #fcd34d; background: rgba(245, 158, 11, 0.1); }
-	.campus--stats { display: flex; gap: clamp(0.8rem, 2vw, 1.6rem); flex-wrap: wrap; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.08); }
+	.campus--stats { display: flex; justify-content: space-between; gap: clamp(0.8rem, 2vw, 1.6rem); flex-wrap: wrap; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.08); }
 	@media (max-width: 600px) { .campus--stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem 1rem; } .campus--stat { min-width: 0; } }
 	.campus--statnum { font-family: 'Bebas Neue', sans-serif; font-size: clamp(1.6rem, 2.4vw, 2.2rem); line-height: 1; background: linear-gradient(135deg, #fde68a, #f59e0b); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
-	.campus--statlabel { display: block; font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(253, 243, 227, 0.5); margin-top: 0.3rem; max-width: 9rem; }
+	.campus--statlabel { display: block; font-size: 0.74rem; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(253, 243, 227, 0.5); margin-top: 0.3rem; max-width: 9rem; }
 
 	/* ===== gamified widget ===== */
 	.campus--widget { position: relative; border-radius: 1.25rem; padding: 1.4rem; background: rgba(29, 22, 6, 0.6); border: 1px solid rgba(245, 158, 11, 0.25); backdrop-filter: blur(14px); box-shadow: 0 40px 90px -40px rgba(0, 0, 0, 0.85); overflow: hidden; }

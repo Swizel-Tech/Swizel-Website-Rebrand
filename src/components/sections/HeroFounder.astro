@@ -7,8 +7,8 @@ import TeamChip from '../TeamChip.astro';
 
 const stats = [
 	{ to: 6, suffix: ' wks', label: 'Idea to MVP' },
-	{ to: 65, suffix: '+', label: 'Products launched' },
-	{ to: 7, suffix: '+', label: 'Years building' },
+	{ to: 65, suffix: '+', label: 'Products' },
+	{ to: 7, suffix: '+', label: 'Years' },
 	{ to: 10, suffix: '+', label: 'Countries' },
 ];
 
@@ -258,7 +258,7 @@ const launched = [
 		background: rgba(139, 92, 246, 0.1);
 	}
 
-	.founder--stats { display: flex; gap: clamp(0.8rem, 2vw, 1.6rem); flex-wrap: wrap; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.08); }
+	.founder--stats { display: flex; justify-content: space-between; gap: clamp(0.8rem, 2vw, 1.6rem); flex-wrap: wrap; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.08); }
 	@media (max-width: 600px) { .founder--stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem 1rem; } .founder--stat { min-width: 0; } }
 	.founder--statnum {
 		font-family: 'Bebas Neue', sans-serif;
@@ -270,7 +270,7 @@ const launched = [
 		-webkit-text-fill-color: transparent;
 		color: transparent;
 	}
-	.founder--statlabel { display: block; font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(237, 233, 251, 0.5); margin-top: 0.3rem; }
+	.founder--statlabel { display: block; font-size: 0.72rem; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(237, 233, 251, 0.5); margin-top: 0.3rem; }
 
 	/* ===== Launch pipeline widget ===== */
 	.founder--widget {
@@ -300,9 +300,9 @@ const launched = [
 	}
 	.fw--launch:hover { transform: translateY(-1px); filter: brightness(1.05); }
 
-	.fw--body { display: flex; gap: 1.25rem; align-items: center; }
-	.fw--ring { position: relative; width: 150px; height: 150px; flex-shrink: 0; display: grid; place-items: center; }
-	.fw--ringsvg { width: 150px; height: 150px; transform: rotate(-90deg); }
+	.fw--body { display: flex; gap: 1rem; align-items: center; }
+	.fw--ring { position: relative; width: 174px; height: 174px; flex-shrink: 0; display: grid; place-items: center; }
+	.fw--ringsvg { width: 174px; height: 174px; transform: rotate(-90deg); }
 	.fw--ringbg { fill: none; stroke: rgba(255, 255, 255, 0.08); stroke-width: 9; }
 	.fw--ringfg {
 		fill: none;
@@ -313,15 +313,15 @@ const launched = [
 		stroke-dasharray: 326.7;
 		stroke-dashoffset: 326.7;
 	}
-	.fw--pct { position: absolute; font-family: 'Bebas Neue', sans-serif; font-size: 2.4rem; color: #fff; line-height: 1; transform: translateY(-0.5rem); }
-	.fw--ringlabel { position: absolute; margin-top: 1.5rem; font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(237, 233, 251, 0.5); }
+	.fw--pct { position: absolute; font-family: 'Bebas Neue', sans-serif; font-size: 2.6rem; color: #fff; line-height: 1; transform: translateY(-0.85rem); }
+	.fw--ringlabel { position: absolute; margin-top: 2.2rem; font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(237, 233, 251, 0.5); }
 
 	.fw--stages { display: grid; gap: 0.55rem; flex: 1; }
 	.fw--stage {
 		display: flex;
 		align-items: center;
 		gap: 0.7rem;
-		padding: 0.5rem 0.6rem;
+		padding: 0.5rem 0.95rem;
 		border-radius: 0.7rem;
 		border: 1px solid rgba(255, 255, 255, 0.07);
 		background: rgba(255, 255, 255, 0.02);
@@ -373,8 +373,8 @@ const launched = [
 		.founder--head { font-size: clamp(2.2rem, 9.5vw, 3.2rem); }
 		.founder--sub { font-size: 1rem; margin-bottom: 1.4rem; }
 		.fw--body { flex-direction: column; }
-		.fw--ring { width: 104px; height: 104px; }
-		.fw--ringsvg { width: 104px; height: 104px; }
+		.fw--ring { width: 128px; height: 128px; }
+		.fw--ringsvg { width: 128px; height: 128px; }
 	}
 	@media (prefers-reduced-motion: reduce) {
 		.founder--rise { animation: none !important; }

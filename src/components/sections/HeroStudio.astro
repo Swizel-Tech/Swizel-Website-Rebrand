@@ -6,10 +6,10 @@ import RotatingHeadline from '../RotatingHeadline.astro';
 import TeamChip from '../TeamChip.astro';
 
 const stats = [
-	{ to: 65, suffix: '+', label: 'Products designed' },
-	{ to: 9, suffix: '', label: 'Sectors served' },
-	{ to: 7, suffix: '+', label: 'Years crafting' },
-	{ to: 40, suffix: '+', label: 'Brands shaped' },
+	{ to: 65, suffix: '+', label: 'Products' },
+	{ to: 9, suffix: '', label: 'Sectors' },
+	{ to: 7, suffix: '+', label: 'Years' },
+	{ to: 40, suffix: '+', label: 'Brands' },
 ];
 
 const projects = [
@@ -151,10 +151,10 @@ const projects = [
 	.studio--cta { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem; }
 	.studio--tour { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; font-weight: 600; color: #fbeaf4; padding: 0.85rem 1.2rem; border-radius: 9999px; border: 1px dashed rgba(249, 168, 212, 0.5); transition: 0.25s ease; }
 	.studio--tour:hover { border-color: #ec4899; color: #f9a8d4; background: rgba(236, 72, 153, 0.1); }
-	.studio--stats { display: flex; gap: clamp(0.8rem, 2vw, 1.6rem); flex-wrap: wrap; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.08); }
+	.studio--stats { display: flex; justify-content: space-between; gap: clamp(0.8rem, 2vw, 1.6rem); flex-wrap: wrap; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.08); }
 	@media (max-width: 600px) { .studio--stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem 1rem; } .studio--stat { min-width: 0; } }
 	.studio--statnum { font-family: 'Bebas Neue', sans-serif; font-size: clamp(1.6rem, 2.4vw, 2.2rem); line-height: 1; background: linear-gradient(135deg, #f9a8d4, #ec4899); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
-	.studio--statlabel { display: block; font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(251, 234, 244, 0.5); margin-top: 0.3rem; }
+	.studio--statlabel { display: block; font-size: 0.74rem; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(251, 234, 244, 0.5); margin-top: 0.3rem; }
 
 	/* ===== gallery ===== */
 	.studio--gallery { width: 100%; }
