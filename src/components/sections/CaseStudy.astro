@@ -16,6 +16,12 @@ const next = others[0];
 // gallery: one big video on the left, the images as a grid on the right
 const galVideo = cs.gallery.find((g) => g.kind === 'video');
 const galImages = cs.gallery.filter((g) => g.kind !== 'video');
+// Keep the right-hand 2-col grid balanced: when the video is present and the
+// image count is odd, pad one placeholder slot so no box is left orphaned.
+const galGrid: typeof galImages =
+	galVideo && galImages.length % 2 === 1
+		? [...galImages, { kind: 'image', label: 'More shots', caption: 'Drop another screen in here.' }]
+		: galImages;
 // the custom cursor adapts to the sector (health ≠ briefcase)
 const sectorCursor: Record<string, string> = { agri: 'branch', health: 'pulse', property: 'layers', media: 'book', commerce: 'pkg', product: 'repo' };
 const cur = sectorCursor[p.sector] ?? 'repo';
@@ -109,7 +115,7 @@ const cur = sectorCursor[p.sector] ?? 'repo';
 	<!-- ── Gallery: a big walkthrough video + a grid of shots ── -->
 	<section class="bd-head bd-reveal">
 		<h2 class="bd-h bd-h--center">Inside the build.</h2>
-		<p class="bd-p bd-p--center">A closer look — the walkthrough on the left, the shots on the right.</p>
+		<p class="bd-p bd-p--center">A closer look: the walkthrough on the left, the shots on the right.</p>
 	</section>
 	<div class="cs-gallery-split">
 		{galVideo && (
@@ -124,11 +130,11 @@ const cur = sectorCursor[p.sector] ?? 'repo';
 					)}
 					{!galVideo.src && <span class="cs-gslot-label">Video placeholder</span>}
 				</span>
-				<figcaption><strong>{galVideo.label}</strong>{galVideo.caption && <em> — {galVideo.caption}</em>}</figcaption>
+				<figcaption><strong>{galVideo.label}</strong>{galVideo.caption && <em> · {galVideo.caption}</em>}</figcaption>
 			</figure>
 		)}
 		<div class:list={['cs-gimgs', { 'cs-gimgs--solo': !galVideo }]}>
-			{galImages.map((g) => (
+			{galGrid.map((g) => (
 				<figure class="cs-gitem bd-reveal" data-cursor="repo">
 					{g.src ? (
 						<span class="cs-gimg"><img src={g.src} alt={g.label} loading="lazy" /></span>
@@ -139,7 +145,7 @@ const cur = sectorCursor[p.sector] ?? 'repo';
 							<span class="cs-gslot-label">Image</span>
 						</span>
 					)}
-					<figcaption>{g.label}{g.caption && <em> — {g.caption}</em>}</figcaption>
+					<figcaption>{g.label}{g.caption && <em> · {g.caption}</em>}</figcaption>
 				</figure>
 			))}
 		</div>
