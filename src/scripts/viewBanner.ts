@@ -13,7 +13,6 @@ export function initViewBanner() {
 	const cards = Array.from(
 		banner.querySelectorAll<HTMLButtonElement>('[data-switch-view]')
 	);
-	const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 	const sync = () => {
 		const id =
@@ -30,9 +29,7 @@ export function initViewBanner() {
 		c.addEventListener('click', () => {
 			const id = c.dataset.switchView;
 			if (!id || c.classList.contains('is-current')) return;
-			applyView(id);
-			// land the visitor at the top of their new world
-			window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+			applyView(id); // applyView now handles the scroll-to-top
 		})
 	);
 

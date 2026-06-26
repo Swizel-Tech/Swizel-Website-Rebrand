@@ -142,7 +142,7 @@ const projects = [
 	.studio--glow-1 { width: 40vw; height: 40vw; top: -12%; right: -6%; background: radial-gradient(circle, rgba(236, 72, 153, 0.3), transparent 65%); }
 	.studio--glow-2 { width: 32vw; height: 32vw; bottom: -16%; left: -8%; background: radial-gradient(circle, rgba(139, 92, 246, 0.22), transparent 65%); }
 
-	.studio--layout { position: relative; z-index: 1; display: grid; gap: 2.5rem; align-items: center; min-height: calc(100vh - 90px); padding-top: 2rem; }
+	.studio--layout { position: relative; z-index: 1; display: grid; gap: 2.5rem; align-items: start; min-height: calc(100vh - 90px); padding-top: 2rem; }
 	@media (min-width: 1024px) { .studio--layout { grid-template-columns: 0.86fr 1.14fr; gap: 3rem; } }
 
 	.studio--eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: #f9a8d4; border: 1.5px solid rgba(249, 168, 212, 0.4); padding: 0.35rem 0.85rem; border-radius: 9999px; margin-bottom: 1.3rem; }
@@ -158,6 +158,13 @@ const projects = [
 
 	/* ===== gallery ===== */
 	.studio--gallery { width: 100%; }
+	@media (min-width: 1024px) {
+		/* let the copy column drive the row height, then stretch the gallery to
+		   match it so the two columns line up top and bottom */
+		.studio--layout { min-height: auto; align-items: stretch; }
+		.studio--gallery { display: flex; flex-direction: column; }
+		.sg--stage { flex: 1 1 auto; aspect-ratio: auto; min-height: 360px; }
+	}
 	.sg--stage {
 		position: relative;
 		aspect-ratio: 16 / 11;

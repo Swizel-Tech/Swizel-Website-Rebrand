@@ -20,6 +20,10 @@ export function applyView(id: string) {
 		localStorage.setItem(VIEW_KEY, id);
 		localStorage.setItem(ONBOARDED_KEY, '1');
 	} catch (e) {}
+	// Switching worlds should always land you at the top, so the new view is
+	// seen from its hero rather than wherever you happened to be scrolled.
+	const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+	window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
 	window.dispatchEvent(new CustomEvent('swizel:viewchange', { detail: id }));
 }
 
