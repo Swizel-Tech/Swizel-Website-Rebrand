@@ -162,18 +162,27 @@ const projects = [
 		/* Top-align the columns. Rather than over-stretching the big stage to
 		   fill the copy height, keep it a natural size and let the thumbnails
 		   grow to take up the rest — bigger thumbs, a calmer hero. */
-		.studio--layout { min-height: auto; align-items: start; }
-		.studio--gallery { display: flex; flex-direction: column; }
-		/* Keep the stage a natural size (no heavy stretch) and lay the thumbs out
-		   as two rows of bigger landscape tiles, so the column roughly matches the
-		   copy height without portrait-cropping the screenshots. */
+		.studio--layout { min-height: auto; align-items: stretch; }
+		/* The gallery starts at the headline ("YOU"), not the eyebrow chip above
+		   it: drop it by the eyebrow's footprint and let it stretch to the bottom
+		   of the copy, so it spans exactly the headline-down block. */
+		.studio--gallery {
+			display: flex;
+			flex-direction: column;
+			margin-top: 3.6rem;
+		}
+		/* Share the height: the stage isn't over-stretched and the thumbnails sit
+		   in two rows of bigger landscape tiles that fill the rest. */
+		.studio--gallery .sg--stage { flex: 1.7 1 0; aspect-ratio: auto; min-height: 240px; }
 		.studio--gallery .sg--thumbs {
+			flex: 1 1 0;
+			min-height: 0;
 			display: grid;
 			grid-template-columns: repeat(3, 1fr);
+			grid-auto-rows: 1fr;
 			gap: 0.6rem;
-			margin-top: 0.9rem;
 		}
-		.studio--gallery .sg--thumb { aspect-ratio: 16 / 10; }
+		.studio--gallery .sg--thumb { aspect-ratio: auto; }
 	}
 	.sg--stage {
 		position: relative;
