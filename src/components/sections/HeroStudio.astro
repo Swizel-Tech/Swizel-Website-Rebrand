@@ -159,11 +159,21 @@ const projects = [
 	/* ===== gallery ===== */
 	.studio--gallery { width: 100%; }
 	@media (min-width: 1024px) {
-		/* let the copy column drive the row height, then stretch the gallery to
-		   match it so the two columns line up top and bottom */
-		.studio--layout { min-height: auto; align-items: stretch; }
+		/* Top-align the columns. Rather than over-stretching the big stage to
+		   fill the copy height, keep it a natural size and let the thumbnails
+		   grow to take up the rest — bigger thumbs, a calmer hero. */
+		.studio--layout { min-height: auto; align-items: start; }
 		.studio--gallery { display: flex; flex-direction: column; }
-		.sg--stage { flex: 1 1 auto; aspect-ratio: auto; min-height: 360px; }
+		/* Keep the stage a natural size (no heavy stretch) and lay the thumbs out
+		   as two rows of bigger landscape tiles, so the column roughly matches the
+		   copy height without portrait-cropping the screenshots. */
+		.studio--gallery .sg--thumbs {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 0.6rem;
+			margin-top: 0.9rem;
+		}
+		.studio--gallery .sg--thumb { aspect-ratio: 16 / 10; }
 	}
 	.sg--stage {
 		position: relative;

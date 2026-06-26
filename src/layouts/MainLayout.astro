@@ -167,9 +167,18 @@ const {
 				if (a) toggleMenu('false');
 			});
 		}
-		document.addEventListener('keydown', (e) => {
-			if (e.key === 'Escape' && menuWrapper?.dataset.expanded === 'true') toggleMenu('false');
-		});
+		// Bind the Escape-to-close once on the persistent document, querying the
+		// wrapper live so it survives swup navigations without stacking handlers.
+		if (!(window as any).__navEscBound) {
+			(window as any).__navEscBound = true;
+			document.addEventListener('keydown', (e) => {
+				const w = document.querySelector<HTMLElement>('#mobile-wrapper');
+				if (e.key === 'Escape' && w?.dataset.expanded === 'true') {
+					w.dataset.expanded = 'false';
+					document.body.style.overflow = '';
+				}
+			});
+		}
 	};
 
 	const handleTeamDialog = () => {
@@ -481,21 +490,29 @@ const {
 		toaster();
 		handleThemeToggle();
 		handleHero();
-		initPortfolioDeck();
-		initViewExperience();
-		initViewBanner();
-		initBuilderView();
-		initBuilderBody();
-		initFounderBody();
-		initCampusBody();
-		initStudioBody();
-		initBoardroomBody();
-		initFounderView();
-		initCampusView();
-		initStudioView();
-		initBoardroomView();
-		initLegacyView();
-		handleFooter();
+		// Per-view widget scripts are wrapped so a failure in any one of them
+		// can never block the nav / menu / scroll bindings that run afterwards
+		// (which would otherwise leave the navbar dead until a hard refresh).
+		const safe = (fn: () => void) => {
+			try { fn(); } catch (err) { console.error('[init]', err); }
+		};
+		[
+			initPortfolioDeck,
+			initViewExperience,
+			initViewBanner,
+			initBuilderView,
+			initBuilderBody,
+			initFounderBody,
+			initCampusBody,
+			initStudioBody,
+			initBoardroomBody,
+			initFounderView,
+			initCampusView,
+			initStudioView,
+			initBoardroomView,
+			initLegacyView,
+			handleFooter,
+		].forEach(safe);
 
 		if (document.querySelector('#newsletter')) {
 			const newsletterForm = document.getElementById('newsletter') as HTMLFormElement;
@@ -572,28 +589,40 @@ const {
 
 		if (document.querySelector('#navbar--header')) {
 			const backTop = document.getElementById('back-to-top');
-			const header = document.querySelector('#navbar--header');
-			const hasHero = !!document.querySelector('.hero-view');
+			if (backTop) {
+				backTop.onclick = () =>
+					window.scrollTo({ top: 0, behavior: 'smooth' });
+			}
+			// The header lives inside the swup container, so it is replaced on
+			// every navigation. Re-query it live inside the handler and bind the
+			// scroll listener only once — otherwise each navigation stacks another
+			// scroll handler on window, which makes the nav progressively laggier
+			// until a hard refresh.
 			const onScrollNav = () => {
+				const header = document.querySelector('#navbar--header');
+				if (!header) return;
+				const back = document.getElementById('back-to-top');
+				const hasHero = !!document.querySelector('.hero-view');
 				const y =
 					window.scrollY ||
 					window.pageYOffset ||
 					document.documentElement.scrollTop ||
 					0;
-				if (!header) return;
 				header.classList.toggle('header-sticky', y > 120);
 				// blend onto the hero only while parked near the very top
 				header.classList.toggle('at-hero-top', hasHero && y < 40);
-				if (backTop) backTop.classList.toggle('is-visible', y > 600);
+				if (back) back.classList.toggle('is-visible', y > 600);
 			};
-			// passive listener is reliable across scroll containers
-			window.addEventListener('scroll', onScrollNav, { passive: true });
-			window.onscroll = onScrollNav;
-			onScrollNav();
-			if (backTop) {
-				backTop.onclick = () =>
-					window.scrollTo({ top: 0, behavior: 'smooth' });
+			(window as any).__navOnScroll = onScrollNav;
+			if (!(window as any).__navScrollBound) {
+				(window as any).__navScrollBound = true;
+				window.addEventListener(
+					'scroll',
+					() => (window as any).__navOnScroll?.(),
+					{ passive: true }
+				);
 			}
+			onScrollNav(); // set the correct state for the freshly-loaded page
 		}
 
 		// Our own compact chat launcher drives Tawk (which we keep hidden).
