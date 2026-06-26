@@ -103,7 +103,7 @@ export const projects: Project[] = [
 			quote: { text: 'The site did exactly what we needed — it made serious people take us seriously.', who: 'Hemam Synergy team' },
 			services: ['Brand & design', 'Web development', 'Content & copy', 'Hosting & maintenance'],
 			press: {
-				intro: 'The work landed where it mattered. Hemam went on to be selected for major grant funding — around €850,000 — and the story was picked up in the press. The coverage:',
+				intro: 'The work landed where it mattered. Hemam went on to be selected for major grant funding, around €850,000, and the story was picked up in the press. The coverage:',
 				items: [
 					{ outlet: 'BusinessDay', title: 'Firm to boost Nigeria’s rice production via €850,000 grant', date: '2024', url: 'https://businessday.ng/news/article/firm-to-boost-nigerias-rice-production-via-e850000-grant/' },
 					{ outlet: 'Fund for Youth Employment', title: 'Nigeria selection: Hemam Synergy Ltd', date: '2024', url: 'https://fundforyouthemployment.nl/nigeria-selection-hemam-synergy-ltd/' },
@@ -122,7 +122,7 @@ export const projects: Project[] = [
 	{
 		slug: 'anchorstep',
 		name: 'AnchorStep Physiotherapy',
-		tagline: 'From zero to a booking brand — across every platform.',
+		tagline: 'From zero to a booking brand, across every platform.',
 		blurb:
 			'A home-based physiotherapy practice in Abuja we grew from nothing into a recognisable, bookable brand on the web and beyond.',
 		img: '/images/portfolio/shot-anchorstep.jpg',
@@ -214,7 +214,7 @@ export const projects: Project[] = [
 	{
 		slug: 'jobblander',
 		name: 'JobbLander',
-		tagline: 'Job Application as a Service — AI-enhanced, human-perfected.',
+		tagline: 'Job Application as a Service, AI-enhanced, human-perfected.',
 		blurb:
 			'A career-acceleration platform (JaaS) that pairs AI with human expertise to optimise CVs, LinkedIn and ATS — and land the interview.',
 		img: '/images/portfolio/shot-jobblander.jpg',
@@ -259,7 +259,7 @@ export const projects: Project[] = [
 	{
 		slug: 'african-energy',
 		name: 'African Energy Advocacy Initiative',
-		tagline: 'Energy, oil & gas and consultancy — with a conscience.',
+		tagline: 'Energy, oil & gas and consultancy, with a conscience.',
 		blurb:
 			'A mission-driven platform for clean-energy advocacy and energy consultancy — solar lighting and efficient cookstoves for vulnerable communities.',
 		img: '/images/portfolio/shot-africaneai.jpg',

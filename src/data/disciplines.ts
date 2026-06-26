@@ -59,7 +59,7 @@ export const disciplines: Discipline[] = [
 		clarifier: 'Logos & brand, UI/UX, prototypes and design systems.',
 		items: ['Brand identity', 'UI/UX design', 'Prototyping', 'Design systems', 'Motion'],
 		heroDesc:
-			'From a blank page to a brand people trust — and interfaces they barely have to think about.',
+			'From a blank page to a brand people trust, and interfaces they barely have to think about.',
 		overview:
 			"Great design isn't decoration. It's how your product earns trust in the first three seconds and keeps it long after. We shape identity, interface and motion into one coherent experience that feels obvious to your customers and unmistakable in your market.",
 		included: [
@@ -108,7 +108,7 @@ export const disciplines: Discipline[] = [
 		clarifier: 'Websites, web & mobile apps, PWAs, proofs of concept, e-commerce and APIs.',
 		items: ['Websites', 'Web apps', 'Mobile apps', 'PWA', 'POC / MVP', 'E-commerce'],
 		heroDesc:
-			'Websites, web apps and mobile apps — engineered to ship fast, scale cleanly and run for years.',
+			'Websites, web apps and mobile apps, engineered to ship fast, scale cleanly and run for years.',
 		overview:
 			"When people say “development” it can mean a hundred things — so let’s be clear: we build websites, web applications and mobile apps. Fast, reliable software on modern, battle-tested stacks, mobile-first by default, architected to keep performing as your numbers grow. And if you’d rather not build from scratch, we’ll set up and tailor Shopify, WordPress and the like instead.",
 		included: [
@@ -125,7 +125,7 @@ export const disciplines: Discipline[] = [
 			{ n: '03', title: 'Launch & hand over', desc: 'Deployed, monitored, and — if you want — we teach your team to run it.' },
 		],
 		ways: [
-			{ icon: 'mdi:hammer-wrench', title: 'From scratch — or not', desc: 'Bespoke software built for you, or we set up and tailor Shopify, WordPress and more.' },
+			{ icon: 'mdi:hammer-wrench', title: 'From scratch, or not', desc: 'Bespoke software built for you, or we set up and tailor Shopify, WordPress and more.' },
 			{ icon: 'mdi:account-switch-outline', title: 'Hands-on or hands-off', desc: 'We carry you along through every decision, or build and deploy while you focus on the business.' },
 			{ icon: 'mdi:school-outline', title: 'Build & train', desc: 'We hand it over and teach your team to run it — post news, update content, manage the store.' },
 		],
@@ -156,10 +156,10 @@ export const disciplines: Discipline[] = [
 		title: 'Marketing',
 		tagline: 'Growth across every platform that matters.',
 		desc: 'Data-driven campaigns that deliver conversions, not just clicks — and grow the audience around your product.',
-		clarifier: 'SEO, paid ads, social, content and email — done for you or with you.',
+		clarifier: 'SEO, paid ads, social, content and email, done for you or with you.',
 		items: ['SEO', 'Paid ads', 'Social', 'Content', 'Email'],
 		heroDesc:
-			'We grow the audience around your product — and turn attention into customers.',
+			'We grow the audience around your product, and turn attention into customers.',
 		overview:
 			"Shipping a great product is half the job; the other half is being found and chosen. We run data-driven marketing that delivers conversions, not vanity metrics — across search, social, content and paid — and we can run it for you or coach your team to run it themselves.",
 		included: [
@@ -188,7 +188,7 @@ export const disciplines: Discipline[] = [
 			quote: '“Conversions, not clicks — exactly as promised. Our numbers climbed within weeks.”',
 			name: 'Favour', role: 'Client, marketing', img: '/testimonial/favour.jpeg',
 		},
-		outcome: 'More of the right people finding you — and buying.',
+		outcome: 'More of the right people finding you, and buying.',
 		visual: 'metrics',
 		faqs: [
 			{ q: 'Do you run our marketing, or coach our team?', a: 'Either — fully managed by us, or we set it up and train your team to keep it going.' },
@@ -208,7 +208,7 @@ export const disciplines: Discipline[] = [
 		clarifier: 'Discovery, product roadmaps, UX research and MVP scoping.',
 		items: ['Discovery', 'Product roadmap', 'UX research', 'MVP scoping', 'Analytics'],
 		heroDesc:
-			'We turn a big idea into a clear, fundable plan — before a single pixel is drawn.',
+			'We turn a big idea into a clear, fundable plan, before a single pixel is drawn.',
 		overview:
 			'The most expensive mistakes happen before anyone writes code. We pressure-test the idea, define the audience and scope the smallest version worth shipping — together, in the room with you — so you build the right thing, once.',
 		included: [
@@ -237,7 +237,7 @@ export const disciplines: Discipline[] = [
 			quote: '“They saved us from building the wrong thing. The plan paid for itself before we wrote a line of code.”',
 			name: 'Chidimma', role: 'Client, education', img: '/testimonial/chidima.jpeg',
 		},
-		outcome: 'A plan you can fund, build and measure — with no guesswork.',
+		outcome: 'A plan you can fund, build and measure, with no guesswork.',
 		visual: 'roadmap',
 		faqs: [
 			{ q: 'What do I actually get at the end?', a: 'A clear, prioritised roadmap and MVP scope you can fund and take to any build team.' },
@@ -257,7 +257,7 @@ export const disciplines: Discipline[] = [
 		clarifier: 'Hosting, monitoring, security, backups and ongoing support.',
 		items: ['Hosting & DevOps', 'Monitoring', '24/7 support', 'Security', 'Backups'],
 		heroDesc:
-			'We stay after launch — keeping your product secure, fast and online, year after year.',
+			'We stay after launch, keeping your product secure, fast and online, year after year.',
 		overview:
 			"Launch day isn't the finish line. We host, monitor and improve what we ship — patching, scaling and securing it so the board never has to ask twice. And we don't only look after what we built; we'll happily adopt your existing product too. 99.9% uptime, watched around the clock.",
 		included: [
@@ -337,7 +337,7 @@ export const disciplines: Discipline[] = [
 			quote: '“The automations gave us back hours every week. Quietly brilliant.”',
 			name: 'Cheta', role: 'Client, e-commerce', img: '/testimonial/cheta.jpeg',
 		},
-		outcome: 'Hours back every week — and a product that feels smart.',
+		outcome: 'Hours back every week, and a product that feels smart.',
 		visual: 'flow',
 		faqs: [
 			{ q: 'Do I need to rebuild my product to add AI?', a: 'No — we bolt AI and automation onto the product you already have.' },
