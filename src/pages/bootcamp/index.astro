@@ -1,164 +1,283 @@
 ---
 import { Icon } from 'astro-icon/components';
 import CustomButton from '../../components/CustomButton.astro';
-import AccentHeader from '../../components/HTML/AccentHeader.astro';
-import Heading from '../../components/HTML/Heading.astro';
-import Section from '../../components/HTML/Section.astro';
-import Breadcrumb from '../../components/blocks/Breadcrumb.astro';
-import { bootCampFaq } from '../../consts';
 import MainLayout from '../../layouts/MainLayout.astro';
+import { bootCampFaq } from '../../consts';
+
+const facts = [
+	{ icon: 'mdi:calendar-month-outline', k: '3 months', v: 'of structured training' },
+	{ icon: 'mdi:gift-outline', k: '100% free', v: 'pay only for the exam' },
+	{ icon: 'mdi:laptop', k: 'Online + in-person', v: 'flexible schedules' },
+	{ icon: 'mdi:rocket-launch-outline', k: "Cohort '26", v: 'admissions open' },
+];
+
+const programs = [
+	{
+		icon: 'mdi:code-tags',
+		title: 'Software Development',
+		blurb: 'From your first line of code to apps people can actually use.',
+		items: ['Programming & algorithms', 'Python for beginners', 'Interactive apps & GUIs', 'Real projects you ship'],
+	},
+	{
+		icon: 'mdi:palette-outline',
+		title: 'Visual Design',
+		blurb: 'Learn to design interfaces and brands that feel effortless.',
+		items: ['Design principles', 'UI/UX design', 'Graphics design', 'Portfolio & project management'],
+	},
+	{
+		icon: 'mdi:bullhorn-outline',
+		title: 'Digital Marketing',
+		blurb: 'Get products found, chosen and growing across every channel.',
+		items: ['Marketing foundations', 'Strategy & customer experience', 'SEO & social media', 'Measurement & analytics'],
+	},
+];
+
+const perks = [
+	{ icon: 'mdi:school-outline', title: '3 months of training', desc: 'Live, hands-on classes taught by engineers and designers who ship real products.' },
+	{ icon: 'mdi:account-heart-outline', title: '+3 months mentorship', desc: 'Keep your mentors after class, free, while you build your first real portfolio.' },
+	{ icon: 'mdi:briefcase-outline', title: '+3 months paid internship', desc: 'Qualify and you intern with us on real client work, and get paid for it.' },
+	{ icon: 'mdi:certificate-outline', title: 'A recognised certificate', desc: 'The program is free; you only pay an affordable fee for the certification exam.' },
+];
+
+const SEO_TITLE = 'Free Tech Bootcamp in Nigeria | Swizel Technologies';
+const SEO_DESC =
+	"Swizel's free 3-month tech bootcamp takes you from zero to job-ready in software development, design or digital marketing, with mentorship, a paid internship for qualifiers and a certificate. Admissions open for Cohort '26.";
+
+const courseSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'Course',
+	name: 'Swizel Free Tech Bootcamp',
+	description: SEO_DESC,
+	provider: { '@type': 'Organization', name: 'Swizel Technologies Limited', sameAs: 'https://swizel.co' },
+	isAccessibleForFree: true,
+	educationalCredentialAwarded: 'Certificate of Completion',
+	hasCourseInstance: {
+		'@type': 'CourseInstance',
+		courseMode: ['online', 'onsite'],
+		name: "Swizel Bootcamp Cohort '26",
+	},
+	offers: { '@type': 'Offer', price: '0', priceCurrency: 'NGN', category: 'Free' },
+};
+
+const faqSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'FAQPage',
+	mainEntity: bootCampFaq.map((f) => ({
+		'@type': 'Question',
+		name: f.question.replace(/\s+\?/g, '?').trim(),
+		acceptedAnswer: { '@type': 'Answer', text: f.answer.trim() },
+	})),
+};
 ---
 
-<MainLayout>
-	<Breadcrumb desc="" title="Swizel Bootcamp" />
-	<Section sectionClass="my-24">
-		<div class="grid md:grid-cols-2 gap-10">
-			<div class="flex items-center sm:justify-center">
-				<div class="max-w-lg text-swizelDark/60 space-y-4">
-					<AccentHeader>A 3 - MONTHS PROGRAM</AccentHeader>
-					<Heading className="sm:!leading-[1.125]" type="h2">
-						+ 3 months mentorship and paid internship
-					</Heading>
-					<p>
-						Also featuring Q & A session with tech giants employees
-						from Google, Tesla, Youverify, M&P O'Sullivan Ltd, Udemy
-						etc...
-					</p>
-					<p class="text-swizelDark">Requirement:</p>
-					<p>A laptop and a strong internet connection</p>
-					<p>
-						Is it free? YES! our boot camp program is completely
-						free however there's an affordable fee attached to the
-						certification exam at the end of the program.
-					</p>
+<MainLayout title={SEO_TITLE} description={SEO_DESC} image="/images/bootcamp.jpg">
+	<script type="application/ld+json" set:html={JSON.stringify(courseSchema)} />
+	<script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
 
-					<CustomButton
-						class="text-swizelGreen px-8"
-						variant="outline"
-						elementType="a"
-						href="/bootcamp/register"
-					>
-						Register Now
-					</CustomButton>
-				</div>
+	<article class="bdbody bc">
+		<!-- ── Hero ── -->
+		<header class="bc-hero">
+			<span class="bc-eyebrow"><span class="bc-dot"></span> Admissions open · Cohort '26 · Free</span>
+			<h1 class="bc-title">Go from zero to <span class="bc-grad">job-ready.</span></h1>
+			<p class="bc-lead">
+				A free, three-month tech bootcamp where you learn by building real things,
+				with the same team that ships products across Africa. Pick a track, show up,
+				and leave with skills, a portfolio and a shot at a paid internship.
+			</p>
+			<div class="bc-cta">
+				<CustomButton variant="accent" elementType="a" href="/bootcamp/register" class="flex items-center justify-center gap-2">
+					Register now
+					<Icon width={18} name="mdi:arrow-right" />
+				</CustomButton>
+				<a class="bc-ghost" href="#bc-programs">See the tracks <Icon width={16} name="mdi:arrow-down" /></a>
 			</div>
-			<div class="">
-				<img
-					src="/images/bootcamp.jpg"
-					alt="the swizel bootcamp"
-					class="mx-auto h-full object-cover rounded-md"
-				/>
-			</div>
-		</div>
-	</Section>
-	<Section sectionClass="my-24">
-		<Heading type="h2" className="text-center">Our Programs</Heading>
-		<div
-			class="grid md:grid-cols-2 mt-24 gap-7 max-w-7xl mx-auto text-swizelDark/60"
-		>
-			<div
-				class="flex xl:flex-row md:flex-col gap-3 gap-y-10 border py-10 px-5 border-swizelDark/60 rounded-md"
-			>
-				<img
-					src="/images/software-dev-illustration.svg"
-					alt=""
-					class="flex-1 md:block hidden"
-				/>
-				<div class="space-y-2">
-					<p
-						class="text-swizelDark text-lg xl:text-left md:text-center"
-					>
-						Software Development
-					</p>
-					<ul class="list-disc sm:pl-10 pl-3">
-						<li>
-							Fundamentals of Programming and Algorithms using
-							Scratch
-						</li>
-						<li>Coding for Beginners using Python</li>
-						<li>Building interactive GUI with python Tkinter</li>
-					</ul>
-				</div>
-			</div>
-			<div
-				class="space-y-2 flex flex-col justify-center py-10 bg-[#EEF8F6] rounded-md px-5"
-			>
-				<p class="text-swizelDark text-lg">Visual Design</p>
-				<ul class="list-disc sm:pl-10 pl-3">
-					<li>Basic principles of design</li>
-					<li>Introduction to user interface design</li>
-					<li>Introduction to graphics design</li>
-					<li>Project & portfolio management</li>
-				</ul>
-			</div>
-			<div
-				class="md:col-span-2 bg-[#FEF5F1] py-10 px-5 grid place-items-center md:grid-cols-2 gap-y-16"
-			>
-				<img
-					src="/images/digital-marketing-illustration.svg"
-					class="md:max-w-full sm:max-w-[420px]"
-					alt=""
-				/>
-				{
-					/* 420px is the total width of the ul element, this is to prevent the image from being larger than the text content */
-				}
-
-				<div class="space-y-2">
-					<p class="text-swizelDark text-lg">Digital Marketing</p>
-					<ul class="list-disc sm:pl-10 pl-3">
-						<li>Introduction to Digital Marketing</li>
-						<li>Building a Digital Marketing Strategy</li>
-						<li>Customer Experience (Your Brand, Your Website)</li>
-						<li>Introduction to SEO</li>
-						<li>Social Media (Video Content - Easy graphics</li>
-						<li>Measurement and Analytics</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-	</Section>
-	<Section divClass="max-w-7xl mx-auto space-y-10 my-24">
-		<Heading type="h2">FAQ</Heading>
-		<ul id="bootcamp--faq" class="grid md:grid-cols-2 md:gap-10 gap-y-5">
-			{
-				bootCampFaq.map(({ answer, question }, idx) => (
-					<li
-						class="space-y-7 py-7 px-5 shadow-md border faq--item"
-						data-expanded={idx === 0 ? 'true' : 'false'}
-					>
-						<button
-							type="button"
-							class="flex w-full text-left md:items-center justify-between gap-4"
-						>
-							<Heading className="!text-lg" type="h4">
-								{question}
-							</Heading>
-							<div class="h-[32px] w-[32px] icon">
-								<Icon size={28} name="faq--dropdown" />
-							</div>
-						</button>
-						<p class="text-darker/60 faq--content">{answer}</p>
+			<ul class="bc-facts">
+				{facts.map((f) => (
+					<li class="bc-fact">
+						<span class="bc-fact-ic"><Icon width={20} name={f.icon} /></span>
+						<span class="bc-fact-k">{f.k}</span>
+						<span class="bc-fact-v">{f.v}</span>
 					</li>
-				))
-			}
-		</ul>
-	</Section>
+				))}
+			</ul>
+		</header>
+
+		<!-- ── Programs ── -->
+		<section class="bc-sec" id="bc-programs">
+			<div class="bc-head">
+				<span class="bc-kicker">Three tracks</span>
+				<h2 class="bc-h">Pick the path that fits you.</h2>
+				<p class="bc-p">Every track is beginner-friendly, project-led and taught by people who do this for a living.</p>
+			</div>
+			<div class="bc-grid">
+				{programs.map((p) => (
+					<article class="bc-card">
+						<span class="bc-card-ic"><Icon width={24} name={p.icon} /></span>
+						<h3 class="bc-card-t">{p.title}</h3>
+						<p class="bc-card-d">{p.blurb}</p>
+						<ul class="bc-list">
+							{p.items.map((it) => (
+								<li><Icon width={15} name="mdi:check" /> {it}</li>
+							))}
+						</ul>
+					</article>
+				))}
+			</div>
+		</section>
+
+		<!-- ── What you get ── -->
+		<section class="bc-sec">
+			<div class="bc-head">
+				<span class="bc-kicker">What you get</span>
+				<h2 class="bc-h">More than a course.</h2>
+				<p class="bc-p">We do not stop at teaching. We mentor you, put you on real work, and back you until you land.</p>
+			</div>
+			<div class="bc-perks">
+				{perks.map((p, i) => (
+					<article class="bc-perk">
+						<span class="bc-perk-n">{String(i + 1).padStart(2, '0')}</span>
+						<span class="bc-perk-ic"><Icon width={22} name={p.icon} /></span>
+						<h3 class="bc-perk-t">{p.title}</h3>
+						<p class="bc-perk-d">{p.desc}</p>
+					</article>
+				))}
+			</div>
+			<p class="bc-note">
+				Featuring live Q&amp;A sessions with engineers from Google, Tesla, Youverify,
+				M&amp;P O'Sullivan and Udemy. All you need is a laptop and a steady internet connection.
+			</p>
+		</section>
+
+		<!-- ── FAQ ── -->
+		<section class="bc-sec">
+			<div class="bc-head">
+				<span class="bc-kicker">Good to know</span>
+				<h2 class="bc-h">Questions, answered.</h2>
+			</div>
+			<div class="bc-faq">
+				{bootCampFaq.map((f, i) => (
+					<details class="bc-faq-item" open={i === 0}>
+						<summary>
+							<span>{f.question.replace(/\s+\?/g, '?').trim()}</span>
+							<Icon class="bc-faq-caret" width={20} name="mdi:chevron-down" />
+						</summary>
+						<p>{f.answer.trim()}</p>
+					</details>
+				))}
+			</div>
+		</section>
+
+		<!-- ── Final CTA ── -->
+		<section class="bc-final">
+			<span class="bc-final-badge">New semester</span>
+			<h2 class="bc-final-h">Your seat is waiting.</h2>
+			<p class="bc-final-p">The next cohort is forming now. Three months from today, you could be shipping, for free.</p>
+			<CustomButton variant="accent" elementType="a" href="/bootcamp/register" class="flex items-center justify-center gap-2">
+				Join the bootcamp
+				<Icon width={18} name="mdi:arrow-right" />
+			</CustomButton>
+		</section>
+	</article>
 </MainLayout>
 
 <style>
-	.faq--content {
-		/* display: none; */
+	.bc {
+		--bd-accent: #28a6ec;
+		--bd-ink: #f4f6fb;
+		--bd-muted: rgba(244, 246, 251, 0.62);
+		--bd-glass: linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02) 55%);
+		--bd-glass-border: rgba(255, 255, 255, 0.1);
+		--bd-shadow: 0 34px 80px -34px rgba(0, 0, 0, 0.8);
+	}
+	:global(html:not(.dark)) .bc {
+		--bd-ink: #14162a;
+		--bd-muted: rgba(20, 22, 40, 0.64);
+		--bd-glass: linear-gradient(160deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.55) 55%);
+		--bd-glass-border: rgba(20, 22, 40, 0.1);
+		--bd-shadow: 0 30px 70px -34px rgba(20, 22, 40, 0.25);
 	}
 
-	.faq--item[data-expanded='true'] {
-		/* background-color: #428876; */
+	.bc-hero { max-width: 60rem; margin: 0 auto; text-align: center; padding-top: clamp(1rem, 3vw, 2.5rem); }
+	.bc-eyebrow {
+		display: inline-flex; align-items: center; gap: 0.5rem;
+		font-size: 0.74rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;
+		color: var(--bd-accent);
+		border: 1px solid color-mix(in srgb, var(--bd-accent) 35%, transparent);
+		background: color-mix(in srgb, var(--bd-accent) 9%, transparent);
+		padding: 0.4rem 0.95rem; border-radius: 9999px; margin-bottom: 1.4rem;
 	}
+	.bc-dot { width: 7px; height: 7px; border-radius: 9999px; background: var(--bd-accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--bd-accent) 22%, transparent); }
+	.bc-title { font-family: 'Bebas Neue', sans-serif; font-weight: 400; line-height: 0.95; letter-spacing: 0.5px; font-size: clamp(2.8rem, 8vw, 5.5rem); margin-bottom: 1.2rem; }
+	.bc-grad { background: linear-gradient(120deg, var(--bd-accent), #8dfeea); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+	.bc-lead { max-width: 42rem; margin: 0 auto 2rem; font-size: clamp(1rem, 1.6vw, 1.18rem); line-height: 1.7; color: var(--bd-muted); }
+	.bc-cta { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; align-items: center; margin-bottom: 2.6rem; }
+	.bc-ghost { display: inline-flex; align-items: center; gap: 0.45rem; font-size: 0.92rem; font-weight: 700; color: var(--bd-ink); padding: 0.85rem 1.2rem; border-radius: 9999px; border: 1px solid var(--bd-glass-border); transition: border-color 0.25s ease, transform 0.2s ease; }
+	.bc-ghost:hover { border-color: color-mix(in srgb, var(--bd-accent) 45%, transparent); transform: translateY(-2px); }
 
-	.faq--item[data-expanded='true'] .faq--content {
-		/* display: block; */
+	.bc-facts { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(0.6rem, 1.4vw, 1rem); }
+	.bc-fact {
+		display: flex; flex-direction: column; align-items: center; gap: 0.2rem;
+		padding: 1.1rem 0.8rem; border-radius: 1.1rem;
+		background: var(--bd-glass); border: 1px solid var(--bd-glass-border);
+		box-shadow: var(--bd-shadow); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
 	}
-	.faq--item .icon {
-		/* transform: scaleY(-1); */
-		display: none;
+	.bc-fact-ic { color: var(--bd-accent); margin-bottom: 0.25rem; }
+	.bc-fact-k { font-weight: 800; font-size: 1.02rem; color: var(--bd-ink); text-align: center; }
+	.bc-fact-v { font-size: 0.78rem; color: var(--bd-muted); text-align: center; }
+
+	.bc-sec { max-width: 72rem; margin: clamp(3.5rem, 8vw, 6rem) auto 0; }
+	.bc-head { text-align: center; max-width: 42rem; margin: 0 auto clamp(2rem, 4vw, 3rem); }
+	.bc-kicker { display: inline-block; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--bd-accent); margin-bottom: 0.7rem; }
+	.bc-h { font-family: 'Bebas Neue', sans-serif; font-weight: 400; font-size: clamp(2rem, 4.5vw, 3.1rem); line-height: 1; letter-spacing: 0.5px; margin-bottom: 0.8rem; }
+	.bc-p { color: var(--bd-muted); font-size: 1rem; line-height: 1.65; }
+
+	.bc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(1rem, 2vw, 1.5rem); }
+	.bc-card {
+		padding: clamp(1.5rem, 2.6vw, 2rem); border-radius: 1.4rem;
+		background: var(--bd-glass); border: 1px solid var(--bd-glass-border);
+		box-shadow: var(--bd-shadow); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+		transition: transform 0.35s ease, border-color 0.35s ease;
+	}
+	.bc-card:hover { transform: translateY(-5px); border-color: color-mix(in srgb, var(--bd-accent) 45%, var(--bd-glass-border)); }
+	.bc-card-ic { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 0.9rem; color: var(--bd-accent); background: color-mix(in srgb, var(--bd-accent) 14%, transparent); border: 1px solid color-mix(in srgb, var(--bd-accent) 28%, transparent); margin-bottom: 1.1rem; }
+	.bc-card-t { font-size: 1.3rem; font-weight: 800; margin-bottom: 0.4rem; }
+	.bc-card-d { color: var(--bd-muted); font-size: 0.95rem; line-height: 1.55; margin-bottom: 1.1rem; }
+	.bc-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.55rem; }
+	.bc-list li { display: flex; align-items: center; gap: 0.55rem; font-size: 0.9rem; font-weight: 600; color: color-mix(in srgb, var(--bd-ink) 78%, transparent); }
+	.bc-list :global(svg) { color: var(--bd-accent); flex-shrink: 0; }
+
+	.bc-perks { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(1rem, 2vw, 1.5rem); }
+	.bc-perk { position: relative; padding: clamp(1.4rem, 2.4vw, 1.9rem); border-radius: 1.3rem; background: var(--bd-glass); border: 1px solid var(--bd-glass-border); box-shadow: var(--bd-shadow); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+	.bc-perk-n { position: absolute; top: 1.2rem; right: 1.4rem; font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: color-mix(in srgb, var(--bd-accent) 55%, transparent); }
+	.bc-perk-ic { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 0.8rem; color: var(--bd-accent); background: color-mix(in srgb, var(--bd-accent) 14%, transparent); border: 1px solid color-mix(in srgb, var(--bd-accent) 26%, transparent); margin-bottom: 0.9rem; }
+	.bc-perk-t { font-size: 1.12rem; font-weight: 800; margin-bottom: 0.35rem; }
+	.bc-perk-d { color: var(--bd-muted); font-size: 0.92rem; line-height: 1.6; }
+	.bc-note { max-width: 44rem; margin: clamp(1.6rem, 3vw, 2.2rem) auto 0; text-align: center; font-size: 0.92rem; font-style: italic; color: var(--bd-muted); }
+
+	.bc-faq { max-width: 46rem; margin: 0 auto; display: grid; gap: 0.7rem; }
+	.bc-faq-item { border: 1px solid var(--bd-glass-border); border-radius: 1rem; background: var(--bd-glass); box-shadow: var(--bd-shadow); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); overflow: hidden; }
+	.bc-faq-item summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.1rem 1.3rem; font-weight: 700; font-size: 1rem; color: var(--bd-ink); }
+	.bc-faq-item summary::-webkit-details-marker { display: none; }
+	.bc-faq-caret { color: var(--bd-accent); flex-shrink: 0; transition: transform 0.3s ease; }
+	.bc-faq-item[open] .bc-faq-caret { transform: rotate(180deg); }
+	.bc-faq-item p { margin: 0; padding: 0 1.3rem 1.2rem; color: var(--bd-muted); font-size: 0.95rem; line-height: 1.65; }
+
+	.bc-final { max-width: 48rem; margin: clamp(4rem, 9vw, 7rem) auto 0; text-align: center; padding: clamp(2.5rem, 5vw, 4rem) clamp(1.5rem, 4vw, 3rem); border-radius: 1.8rem; background: var(--bd-glass); border: 1px solid var(--bd-glass-border); box-shadow: var(--bd-shadow); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+	.bc-final-badge { display: inline-block; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--bd-accent); margin-bottom: 0.8rem; }
+	.bc-final-h { font-family: 'Bebas Neue', sans-serif; font-weight: 400; font-size: clamp(2.2rem, 5vw, 3.4rem); line-height: 1; letter-spacing: 0.5px; margin-bottom: 0.7rem; }
+	.bc-final-p { max-width: 32rem; margin: 0 auto 1.8rem; color: var(--bd-muted); line-height: 1.65; }
+
+	/* ── tablet ── */
+	@media (max-width: 880px) {
+		.bc-grid { grid-template-columns: 1fr 1fr; }
+		.bc-grid .bc-card:last-child { grid-column: 1 / -1; }
+	}
+	/* ── mobile ── */
+	@media (max-width: 600px) {
+		.bc-facts { grid-template-columns: 1fr 1fr; }
+		.bc-grid, .bc-perks { grid-template-columns: 1fr; }
+		.bc-grid .bc-card:last-child { grid-column: auto; }
+		.bc-cta { flex-direction: column; align-items: stretch; }
+		.bc-cta :global(a) { width: 100%; }
 	}
 </style>
