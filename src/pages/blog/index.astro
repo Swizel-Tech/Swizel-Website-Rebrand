@@ -14,7 +14,10 @@ export const posts = (await getCollection('blog', ({ data }) => data.draft !== t
 );
 ---
 
-<MainLayout>
+<MainLayout
+	title="The Swizel Journal | Insights on Software, Design & Marketing"
+	description="Ideas, build notes and insights from the Swizel team on software, design, AI and digital marketing for businesses across Africa and beyond."
+>
 	<!-- Boardroom world (also the default). Hidden in the other views. -->
 	<BlogBoardroom posts={posts} />
 

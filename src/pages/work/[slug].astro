@@ -12,9 +12,12 @@ export async function getStaticPaths() {
 }
 
 const { project, others } = Astro.props;
+
+const seoTitle = `${project.name} Case Study | Swizel Technologies`;
+const seoDesc = project.tagline || project.caseStudy?.intro || '';
 ---
 
-<MainLayout>
+<MainLayout title={seoTitle} description={seoDesc} image={project.img}>
 	<CaseStudy project={project} others={others} />
 
 	<!-- Fallback for the other worlds: a simple summary + link out. -->
