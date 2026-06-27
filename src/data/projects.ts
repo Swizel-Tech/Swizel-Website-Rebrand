@@ -83,17 +83,17 @@ export const projects: Project[] = [
 			challenge:
 				'To win partners and serious funding, Hemam had to look as credible online as the work was on the ground. The brief was unforgiving: communicate scale, climate-resilience and measurable impact to international funders and agro-industrial partners — clearly, quickly, and without a single weak page or a moment of doubt about who they are.',
 			approach: [
-				{ title: 'Stakeholder discovery & positioning', desc: 'We sat with the team and mapped exactly what each audience needed to believe — funders need scale and governance; partners need reliability; farmers need trust. Every page got a job.' },
-				{ title: 'A serious-operator brand system', desc: 'A clean, earth-toned identity — type, colour, photography rules and components — that reads "established agribusiness", not "startup deck". Confidence in every pixel.' },
+				{ title: 'Stakeholder discovery & positioning', desc: 'We sat with the team and mapped exactly what each audience needed to believe, funders need scale and governance; partners need reliability; farmers need trust. Every page got a job.' },
+				{ title: 'A serious-operator brand system', desc: 'A clean, earth-toned identity, type, colour, photography rules and components, that reads "established agribusiness", not "startup deck". Confidence in every pixel.' },
 				{ title: 'Impact-first information architecture', desc: 'We structured the whole site the way a reviewer reads a proposal: the problem, the scale, the infrastructure, the partners, then the proof. Nothing buried, nothing wasted.' },
-				{ title: 'Funding-grade content & copy', desc: 'We wrote and shaped the story around the numbers that matter — warehouse capacity, programmes, reach — so a stakeholder skimming for two minutes still leaves convinced.' },
+				{ title: 'Funding-grade content & copy', desc: 'We wrote and shaped the story around the numbers that matter, warehouse capacity, programmes, reach, so a stakeholder skimming for two minutes still leaves convinced.' },
 				{ title: 'Engineering, speed & accessibility', desc: 'Built mobile-first and tuned to load fast on weak rural connections, accessible and crawlable, so it performs for a farmer on 3G and a funder in Berlin alike.' },
-				{ title: 'Hardened hosting & ongoing care', desc: 'Secure hosting, monitoring, backups and continuous maintenance — so the day a funder clicks the link, it never blinks, never breaks, never embarrasses.' },
+				{ title: 'Hardened hosting & ongoing care', desc: 'Secure hosting, monitoring, backups and continuous maintenance, so the day a funder clicks the link, it never blinks, never breaks, never embarrasses.' },
 			],
 			highlights: [
-				{ title: 'Built to be believed', desc: 'Warehouse capacity, programmes and partner logos sit front and centre — the page earns trust before it ever asks for anything.' },
+				{ title: 'Built to be believed', desc: 'Warehouse capacity, programmes and partner logos sit front and centre, the page earns trust before it ever asks for anything.' },
 				{ title: 'Funding-grade storytelling', desc: 'The narrative is sequenced the way reviewers actually read: problem → scale → traction → ask. It does the persuading for you.' },
-				{ title: 'Field-first, always on', desc: 'Fast on poor connections, accessible, and monitored around the clock — credible to a global funder and usable in the field.' },
+				{ title: 'Field-first, always on', desc: 'Fast on poor connections, accessible, and monitored around the clock, credible to a global funder and usable in the field.' },
 			],
 			results: [
 				{ stat: '~€850K', label: 'in funding the organisation went on to secure' },
@@ -141,15 +141,15 @@ export const projects: Project[] = [
 			challenge:
 				'A brand-new clinical practice carries a quiet, brutal problem: nobody knows you exist, and the people who need physiotherapy are choosing someone they already trust. AnchorStep had to feel established, safe and credible on day one, make booking an appointment effortless enough that intent never leaks away, and — the part most agencies skip — actually generate demand from nothing. Not just a launch, but momentum that keeps building.',
 			approach: [
-				{ title: 'A calm clinical brand', desc: 'An identity that signals expertise and warmth in the same breath — the kind that makes a brand-new practice feel safe and established.' },
-				{ title: 'A booking-first website', desc: 'Appointments scheduled in a couple of taps, with live chat — every visitor is one short step from becoming a patient.' },
-				{ title: 'Clear service architecture', desc: 'Musculoskeletal, neuro, paediatric, massage — structured so every condition finds its treatment fast, with zero confusion.' },
-				{ title: 'A multi-platform growth engine', desc: 'Web plus a steady social presence, growing together — we built the audience from absolute zero, not just a launch.' },
+				{ title: 'A calm clinical brand', desc: 'An identity that signals expertise and warmth in the same breath, the kind that makes a brand-new practice feel safe and established.' },
+				{ title: 'A booking-first website', desc: 'Appointments scheduled in a couple of taps, with live chat, every visitor is one short step from becoming a patient.' },
+				{ title: 'Clear service architecture', desc: 'Musculoskeletal, neuro, paediatric, massage, structured so every condition finds its treatment fast, with zero confusion.' },
+				{ title: 'A multi-platform growth engine', desc: 'Web plus a steady social presence, growing together, we built the audience from absolute zero, not just a launch.' },
 			],
 			highlights: [
 				{ title: 'Book in two taps', desc: 'An appointment form and live chat that turn a visitor into a patient without friction.' },
 				{ title: 'Trust on first glance', desc: 'Evidence-based copy and a considered brand that make a new practice feel safe and established.' },
-				{ title: 'Growth, not just a launch', desc: 'We grew this across multiple platforms — the website is one piece of a wider, compounding presence.' },
+				{ title: 'Growth, not just a launch', desc: 'We grew this across multiple platforms, the website is one piece of a wider, compounding presence.' },
 			],
 			results: [
 				{ stat: '0 → live', label: 'from nothing to a booking brand' },
@@ -188,13 +188,13 @@ export const projects: Project[] = [
 			challenge:
 				'Luxury hospitality lives or dies on first impressions, and online that impression is unforgiving — a stock-photo grid, a clumsy form or a slow page, and a discerning traveller is gone. The site had to feel restrained and premium without ever shouting, let the property’s own photography carry the emotion, and quietly do the commercial work: surfacing the right suite, answering the unspoken questions, and turning a curious browser into a confirmed reservation without a single moment of friction.',
 			approach: [
-				{ title: 'A restrained, editorial brand', desc: 'Warm neutrals, generous white space and confident type — a brand that feels expensive and calm without ever shouting.' },
-				{ title: 'Room-and-suite architecture', desc: 'Structured to sell the experience, not just the nightly rate — every suite gets the staging it deserves.' },
-				{ title: 'Reservations where intent peaks', desc: 'Booking and enquiry calls-to-action placed at exactly the moments a guest decides — present, never pushy.' },
+				{ title: 'A restrained, editorial brand', desc: 'Warm neutrals, generous white space and confident type, a brand that feels expensive and calm without ever shouting.' },
+				{ title: 'Room-and-suite architecture', desc: 'Structured to sell the experience, not just the nightly rate, every suite gets the staging it deserves.' },
+				{ title: 'Reservations where intent peaks', desc: 'Booking and enquiry calls-to-action placed at exactly the moments a guest decides, present, never pushy.' },
 				{ title: 'Photography-led layouts', desc: 'Full-bleed imagery and quiet typography that step back and let the property do the talking.' },
 			],
 			highlights: [
-				{ title: 'Quietly upscale', desc: 'Every detail says premium without shouting — the brand does the selling.' },
+				{ title: 'Quietly upscale', desc: 'Every detail says premium without shouting, the brand does the selling.' },
 				{ title: 'Made to book', desc: 'Reservation calls-to-action sit at every decision point, never in the way.' },
 				{ title: 'Photography first', desc: 'Full-bleed imagery that makes the suites and spaces the hero.' },
 			],
@@ -233,13 +233,13 @@ export const projects: Project[] = [
 			challenge:
 				'"AI for your career" is a crowded, sceptical category, crowded with one-click résumé generators that promise the moon and deliver a template. JobbLander is the opposite — a genuinely human, expert-led service with AI underneath — but that nuance is hard to convey in a glance. The challenge was to make the product feel unmistakably premium and trustworthy, to communicate the human-plus-AI difference instantly, and to turn a multi-step, high-touch service (career mapping, CV, LinkedIn, ATS optimisation, strategy) into a journey that feels simple, safe and clearly worth paying for.',
 			approach: [
-				{ title: 'Positioned as JaaS', desc: 'We framed the product as Job Application as a Service — strategic career advancement, not another CV template — and built the whole story around that.' },
-				{ title: 'A premium, trustworthy brand', desc: 'An identity and site that sell the human-plus-AI difference and justify a premium price — "serious career partner", not gimmick.' },
-				{ title: 'A clear path to interview-ready', desc: 'Service tiers and a guided journey from upload to CV, LinkedIn and strategy — every step legible and easy to commit to.' },
+				{ title: 'Positioned as JaaS', desc: 'We framed the product as Job Application as a Service, strategic career advancement, not another CV template, and built the whole story around that.' },
+				{ title: 'A premium, trustworthy brand', desc: 'An identity and site that sell the human-plus-AI difference and justify a premium price, "serious career partner", not gimmick.' },
+				{ title: 'A clear path to interview-ready', desc: 'Service tiers and a guided journey from upload to CV, LinkedIn and strategy, every step legible and easy to commit to.' },
 				{ title: 'Trust, engineered in', desc: 'A product experience tuned to feel safe and credible at every step, because that is what makes someone pay for their career.' },
 			],
 			highlights: [
-				{ title: 'AI, then humans', desc: 'AI optimises for ATS; real experts make the story authentic — and we made that promise legible.' },
+				{ title: 'AI, then humans', desc: 'AI optimises for ATS; real experts make the story authentic, and we made that promise legible.' },
 				{ title: 'Premium, not generic', desc: 'A brand that justifies a premium price and signals "serious career partner".' },
 				{ title: 'From upload to interview', desc: 'A guided journey across CV, LinkedIn and strategy, end to end.' },
 			],
@@ -278,9 +278,9 @@ export const projects: Project[] = [
 			challenge:
 				'Most organisations do one thing; AEAI does several, for several very different audiences. A funder or government partner needs rigour, governance and credibility. A community partner needs warmth, clarity and proof that the work changes lives. The challenge was to build one home that serves both at once — institutional enough to be taken seriously in an energy-policy room, human enough to mean something in a village — and to make a sprawling, multi-mission organisation feel focused, legible and genuinely hopeful.',
 			approach: [
-				{ title: 'A vision-led narrative', desc: 'We found the thread that unifies advocacy, energy & oil-and-gas consultancy and grassroots clean-energy projects — one story, told with conviction.' },
+				{ title: 'A vision-led narrative', desc: 'We found the thread that unifies advocacy, energy & oil-and-gas consultancy and grassroots clean-energy projects, one story, told with conviction.' },
 				{ title: 'A clean, optimistic brand', desc: 'An identity built around clean energy that reads credible to institutions and hopeful to the communities being served.' },
-				{ title: 'Impact, structured to be read', desc: 'Programmes and metrics organised for two audiences at once — funders skimming for rigour and the public looking for hope.' },
+				{ title: 'Impact, structured to be read', desc: 'Programmes and metrics organised for two audiences at once, funders skimming for rigour and the public looking for hope.' },
 				{ title: 'A content system that lasts', desc: 'Built so the team can keep advocacy, projects and news current without coming back to us for every change.' },
 			],
 			highlights: [
@@ -323,13 +323,13 @@ export const projects: Project[] = [
 			challenge:
 				'The hard part of a utility is that people use it once and leave. The brief was to take instant bet-code conversion and make it so fast and so reliable that it became a habit — then surround it with enough reasons to stay that it could grow into a real community product, scale across markets, and stay rock-solid on the busiest match days when thousands of people hit it at once.',
 			approach: [
-				{ title: 'A converter that just works', desc: 'We obsessed over the core job — Sportybet to Nairabet and back in seconds, accurate every time. Speed and trust here are the entire product; if the conversion is ever wrong or slow, nothing else matters. So we made it flawless first.' },
-				{ title: 'Reasons to come back daily', desc: 'A converter is a once-in-a-while tool; a sports companion is a daily one. We wove in livescores and rated predictions so the app earns an open even when there is no code to convert — turning a utility into a habit.' },
-				{ title: 'A community with its own gravity', desc: 'We added a community layer — tipsters, chat and shared codes — so the product stopped being a solo tool and became a place. That network effect is what powered word-of-mouth growth across a whole new market.' },
-				{ title: 'Web + native, built to scale', desc: 'One coherent product across the web and native iOS and Android, shipped to both stores, engineered to stay fast and reliable through spikes, and maintained — because an app at No.2 in a country cannot afford a bad match day.' },
+				{ title: 'A converter that just works', desc: 'We obsessed over the core job, Sportybet to Nairabet and back in seconds, accurate every time. Speed and trust here are the entire product; if the conversion is ever wrong or slow, nothing else matters. So we made it flawless first.' },
+				{ title: 'Reasons to come back daily', desc: 'A converter is a once-in-a-while tool; a sports companion is a daily one. We wove in livescores and rated predictions so the app earns an open even when there is no code to convert, turning a utility into a habit.' },
+				{ title: 'A community with its own gravity', desc: 'We added a community layer, tipsters, chat and shared codes, so the product stopped being a solo tool and became a place. That network effect is what powered word-of-mouth growth across a whole new market.' },
+				{ title: 'Web + native, built to scale', desc: 'One coherent product across the web and native iOS and Android, shipped to both stores, engineered to stay fast and reliable through spikes, and maintained, because an app at No.2 in a country cannot afford a bad match day.' },
 			],
 			highlights: [
-				{ title: 'Convert in seconds', desc: 'The core utility — transfer bet codes across bookmakers instantly and accurately — done so well it became the reason people told their friends.' },
+				{ title: 'Convert in seconds', desc: 'The core utility, transfer bet codes across bookmakers instantly and accurately, done so well it became the reason people told their friends.' },
 				{ title: 'A reason to stay', desc: 'Livescores and rated predictions turned a one-off converter into a daily sports companion, lifting retention and engagement.' },
 				{ title: 'A market-leading product', desc: 'The community, the speed and the polish compounded into 100k+ downloads and the No.2 spot among sports apps in Zambia.' },
 			],
