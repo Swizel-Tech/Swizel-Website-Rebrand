@@ -434,9 +434,11 @@ const mediaIsVideo = d.media?.kind === 'video';
 	.det-card:hover { transform: translateY(-5px); border-color: color-mix(in srgb, var(--c) 50%, var(--bd-glass-border)); box-shadow: 0 40px 90px -36px color-mix(in srgb, var(--c) 34%, rgba(0,0,0,0.85)); }
 	.det-card-t { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.01em; margin: 0 0 0.4rem; }
 	.det-card-d { font-size: 0.95rem; line-height: 1.55; color: var(--bd-muted); margin: 0 0 1rem; }
-	.det-card-items { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.4rem 0.9rem; }
-	.det-card-items li { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.82rem; font-weight: 600; color: color-mix(in srgb, var(--bd-ink) 70%, transparent); }
-	.det-card-items :global(svg) { color: var(--c); }
+	/* A calm vertical checklist (one item per row) reads as an organised list
+	   rather than a packed, ragged cloud of wrapping chips. */
+	.det-card-items { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.55rem; }
+	.det-card-items li { display: flex; align-items: center; gap: 0.55rem; font-size: 0.85rem; font-weight: 600; color: color-mix(in srgb, var(--bd-ink) 72%, transparent); }
+	.det-card-items :global(svg) { color: var(--c); flex-shrink: 0; }
 
 	/* ── Ways we can work ── */
 	.det-ways { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1rem, 2vw, 1.4rem); max-width: 72rem; margin: 0 auto; }
