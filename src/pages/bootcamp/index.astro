@@ -77,6 +77,8 @@ const faqSchema = {
 	<article class="bdbody bc">
 		<!-- ── Hero ── -->
 		<header class="bc-hero">
+			<div class="bc-hero-grid">
+			<div class="bc-hero-copy">
 			<span class="bc-eyebrow"><span class="bc-dot"></span> Admissions open · Cohort '26 · Free</span>
 			<h1 class="bc-title">Go from zero to <span class="bc-grad">job-ready.</span></h1>
 			<p class="bc-lead">
@@ -90,6 +92,18 @@ const faqSchema = {
 					<Icon width={18} name="mdi:arrow-right" />
 				</CustomButton>
 				<a class="bc-ghost" href="#bc-programs">See the tracks <Icon width={16} name="mdi:arrow-down" /></a>
+			</div>
+			</div>
+			<figure class="bc-flier">
+				<span class="bc-flier-tag"><span class="bc-flier-pin"></span> Registration ongoing</span>
+				<img
+					src="/images/bootcamp.jpg"
+					alt="Swizel Bootcamp flier — a free three-month program in software development, design and digital marketing, with mentorship and a paid internship."
+					width="471"
+					height="574"
+					loading="eager"
+				/>
+			</figure>
 			</div>
 			<ul class="bc-facts">
 				{facts.map((f) => (
@@ -197,7 +211,23 @@ const faqSchema = {
 		--bd-shadow: 0 30px 70px -34px rgba(20, 22, 40, 0.25);
 	}
 
-	.bc-hero { max-width: 60rem; margin: 0 auto; text-align: center; padding-top: clamp(1rem, 3vw, 2.5rem); }
+	.bc-hero { max-width: 74rem; margin: 0 auto; text-align: center; padding-top: clamp(1rem, 3vw, 2.5rem); }
+	.bc-hero-grid { display: grid; gap: clamp(2rem, 4vw, 3.5rem); align-items: center; margin-bottom: clamp(2rem, 4vw, 3rem); }
+
+	/* the original bootcamp flier, framed like a pinned poster with a soft glow */
+	.bc-flier { position: relative; margin: 0 auto; width: min(100%, 23rem); transform: rotate(1.4deg); }
+	.bc-flier::before { content: ''; position: absolute; inset: -14% -10% -8%; background: radial-gradient(58% 55% at 50% 32%, color-mix(in srgb, var(--bd-accent) 40%, transparent), transparent 70%); filter: blur(36px); z-index: -1; }
+	.bc-flier img { display: block; width: 100%; height: auto; border-radius: 1rem; border: 1px solid var(--bd-glass-border); box-shadow: 0 44px 95px -32px rgba(0, 0, 0, 0.72), 0 0 0 6px color-mix(in srgb, var(--bd-ink) 4%, transparent); }
+	.bc-flier-tag { position: absolute; top: -0.85rem; left: 50%; transform: translateX(-50%) rotate(-2.6deg); display: inline-flex; align-items: center; gap: 0.45rem; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: #fff; -webkit-text-fill-color: #fff; background: linear-gradient(95deg, var(--bd-accent), #1f8fd0); padding: 0.42rem 0.95rem; border-radius: 9999px; box-shadow: 0 12px 26px -10px color-mix(in srgb, var(--bd-accent) 75%, transparent); white-space: nowrap; }
+	.bc-flier-pin { width: 7px; height: 7px; border-radius: 9999px; background: #fff; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.35); }
+
+	@media (min-width: 900px) {
+		.bc-hero { text-align: left; }
+		.bc-hero-grid { grid-template-columns: 1.05fr 0.95fr; }
+		.bc-hero-copy .bc-lead { margin-left: 0; margin-right: 0; }
+		.bc-hero-copy .bc-cta { justify-content: flex-start; }
+	}
+
 	.bc-eyebrow {
 		display: inline-flex; align-items: center; gap: 0.5rem;
 		font-size: 0.74rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;
