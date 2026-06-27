@@ -70,7 +70,7 @@ export const disciplines: Discipline[] = [
 		],
 		approach: [
 			{ n: '01', title: 'Understand', desc: 'We dig into your users, market and goals before sketching anything.' },
-			{ n: '02', title: 'Design', desc: 'Identity, flows and screens — explored fast, then refined with you.' },
+			{ n: '02', title: 'Design', desc: 'Identity, flows and screens, explored fast, then refined with you.' },
 			{ n: '03', title: 'Validate', desc: 'We test with real people and hand off pixel-perfect, dev-ready files.' },
 		],
 		ways: [
@@ -92,7 +92,7 @@ export const disciplines: Discipline[] = [
 		visual: 'gallery',
 		faqs: [
 			{ q: 'Do you only design, or can you build it too?', a: 'Both. We can hand dev-ready files to your team, or design and build the whole thing in-house.' },
-			{ q: 'Will I own the final files?', a: 'Yes — you own every final file, source and asset, no strings attached.' },
+			{ q: 'Will I own the final files?', a: 'Yes, you own every final file, source and asset, no strings attached.' },
 			{ q: 'Can you refresh our brand instead of starting from scratch?', a: 'Absolutely. We can evolve what you have while keeping everything that already works.' },
 		],
 	},
@@ -104,13 +104,13 @@ export const disciplines: Discipline[] = [
 		color: '#3b82f6',
 		title: 'Development',
 		tagline: 'Websites and apps, built to last.',
-		desc: 'Websites, web apps and mobile apps — engineered on modern stacks, tested and shipped fast.',
+		desc: 'Websites, web apps and mobile apps, engineered on modern stacks, tested and shipped fast.',
 		clarifier: 'Websites, web & mobile apps, PWAs, proofs of concept, e-commerce and APIs.',
 		items: ['Websites', 'Web apps', 'Mobile apps', 'PWA', 'POC / MVP', 'E-commerce'],
 		heroDesc:
 			'Websites, web apps and mobile apps, engineered to ship fast, scale cleanly and run for years.',
 		overview:
-			"When people say “development” it can mean a hundred things — so let’s be clear: we build websites, web applications and mobile apps. Fast, reliable software on modern, battle-tested stacks, mobile-first by default, architected to keep performing as your numbers grow. And if you’d rather not build from scratch, we’ll set up and tailor Shopify, WordPress and the like instead.",
+			"When people say “development” it can mean a hundred things, so let’s be clear: we build websites, web applications and mobile apps. Fast, reliable software on modern, battle-tested stacks, mobile-first by default, architected to keep performing as your numbers grow. And if you’d rather not build from scratch, we’ll set up and tailor Shopify, WordPress and the like instead.",
 		included: [
 			{ title: 'Websites', desc: 'Fast, beautiful marketing sites, blogs and landing pages.', items: ['Marketing sites', 'Blogs', 'Landing pages'] },
 			{ title: 'Web apps & PWAs', desc: 'Dashboards, portals and installable progressive web apps that do real work.', items: ['React / Next.js', 'Vue', 'PWA', 'PHP / Python'] },
@@ -121,13 +121,13 @@ export const disciplines: Discipline[] = [
 		],
 		approach: [
 			{ n: '01', title: 'Talk it through', desc: 'We sit with you, explore your idea and look at samples and options together.' },
-			{ n: '02', title: 'Build & test', desc: 'Shipped in tight, visible loops — you can follow along every week or step back.' },
-			{ n: '03', title: 'Launch & hand over', desc: 'Deployed, monitored, and — if you want — we teach your team to run it.' },
+			{ n: '02', title: 'Build & test', desc: 'Shipped in tight, visible loops, you can follow along every week or step back.' },
+			{ n: '03', title: 'Launch & hand over', desc: 'Deployed, monitored, and, if you want, we teach your team to run it.' },
 		],
 		ways: [
 			{ icon: 'mdi:hammer-wrench', title: 'From scratch, or not', desc: 'Bespoke software built for you, or we set up and tailor Shopify, WordPress and more.' },
 			{ icon: 'mdi:account-switch-outline', title: 'Hands-on or hands-off', desc: 'We carry you along through every decision, or build and deploy while you focus on the business.' },
-			{ icon: 'mdi:school-outline', title: 'Build & train', desc: 'We hand it over and teach your team to run it — post news, update content, manage the store.' },
+			{ icon: 'mdi:school-outline', title: 'Build & train', desc: 'We hand it over and teach your team to run it, post news, update content, manage the store.' },
 		],
 		projects: [
 			{ name: 'Brixmarket', sector: 'Real estate marketplace', img: '/images/portfolio/brix%20marketplace.jpg' },
@@ -142,7 +142,7 @@ export const disciplines: Discipline[] = [
 		outcome: 'Software that holds up the day a thousand users show up at once.',
 		visual: 'code',
 		faqs: [
-			{ q: 'Do you build websites or apps?', a: 'Both — websites, web apps, mobile apps for iOS and Android, PWAs and e-commerce stores.' },
+			{ q: 'Do you build websites or apps?', a: 'Both, websites, web apps, mobile apps for iOS and Android, PWAs and e-commerce stores.' },
 			{ q: 'Do I have to build everything from scratch?', a: 'No. We build bespoke when it is worth it, or set up and tailor Shopify, WordPress and similar platforms for you.' },
 			{ q: 'Can you teach my team to run it?', a: 'Yes. We hand over and train your team to post news, update content and manage the product day to day.' },
 		],
@@ -155,13 +155,13 @@ export const disciplines: Discipline[] = [
 		color: '#8b5cf6',
 		title: 'Marketing',
 		tagline: 'Growth across every platform that matters.',
-		desc: 'Data-driven campaigns that deliver conversions, not just clicks — and grow the audience around your product.',
+		desc: 'Data-driven campaigns that deliver conversions, not just clicks, and grow the audience around your product.',
 		clarifier: 'SEO, paid ads, social, content and email, done for you or with you.',
 		items: ['SEO', 'Paid ads', 'Social', 'Content', 'Email'],
 		heroDesc:
 			'We grow the audience around your product, and turn attention into customers.',
 		overview:
-			"Shipping a great product is half the job; the other half is being found and chosen. We run data-driven marketing that delivers conversions, not vanity metrics — across search, social, content and paid — and we can run it for you or coach your team to run it themselves.",
+			"Shipping a great product is half the job; the other half is being found and chosen. We run data-driven marketing that delivers conversions, not vanity metrics, across search, social, content and paid, and we can run it for you or coach your team to run it themselves.",
 		included: [
 			{ title: 'Search (SEO & SEM)', desc: 'Get found by people already looking for what you do.', items: ['SEO', 'Search ads', 'Content marketing'] },
 			{ title: 'Social media', desc: 'Build an audience and keep them engaged.', items: ['Instagram', 'Facebook', 'YouTube / TikTok'] },
@@ -191,9 +191,9 @@ export const disciplines: Discipline[] = [
 		outcome: 'More of the right people finding you, and buying.',
 		visual: 'metrics',
 		faqs: [
-			{ q: 'Do you run our marketing, or coach our team?', a: 'Either — fully managed by us, or we set it up and train your team to keep it going.' },
-			{ q: 'How do you measure success?', a: 'By conversions and revenue, not vanity metrics — and we agree the targets with you up front.' },
-			{ q: 'Is there a minimum commitment?', a: 'No. We do one-off campaign pushes and ongoing retainers — we recommend whatever fits your goals.' },
+			{ q: 'Do you run our marketing, or coach our team?', a: 'Either, fully managed by us, or we set it up and train your team to keep it going.' },
+			{ q: 'How do you measure success?', a: 'By conversions and revenue, not vanity metrics, and we agree the targets with you up front.' },
+			{ q: 'Is there a minimum commitment?', a: 'No. We do one-off campaign pushes and ongoing retainers, we recommend whatever fits your goals.' },
 		],
 	},
 	{
@@ -210,12 +210,12 @@ export const disciplines: Discipline[] = [
 		heroDesc:
 			'We turn a big idea into a clear, fundable plan, before a single pixel is drawn.',
 		overview:
-			'The most expensive mistakes happen before anyone writes code. We pressure-test the idea, define the audience and scope the smallest version worth shipping — together, in the room with you — so you build the right thing, once.',
+			'The most expensive mistakes happen before anyone writes code. We pressure-test the idea, define the audience and scope the smallest version worth shipping, together, in the room with you, so you build the right thing, once.',
 		included: [
 			{ title: 'Discovery & research', desc: 'Understand the problem, the users and the competition.', items: ['User research', 'Market analysis', 'Workshops'] },
 			{ title: 'Product strategy', desc: 'Define what to build, for whom, and why now.', items: ['Positioning', 'Feature priority', 'Success metrics'] },
 			{ title: 'Roadmap & MVP', desc: 'Scope the smallest version that proves the idea.', items: ['MVP scoping', 'Roadmap', 'Estimates'] },
-			{ title: 'Analytics & measurement', desc: 'Decide how you’ll know it’s working — from day one.', items: ['KPIs', 'Tracking plan', 'Dashboards'] },
+			{ title: 'Analytics & measurement', desc: 'Decide how you’ll know it’s working, from day one.', items: ['KPIs', 'Tracking plan', 'Dashboards'] },
 		],
 		approach: [
 			{ n: '01', title: 'Listen', desc: 'We learn your goals, constraints and the people you serve.' },
@@ -224,7 +224,7 @@ export const disciplines: Discipline[] = [
 		],
 		ways: [
 			{ icon: 'mdi:timer-sand', title: 'A sprint or a partnership', desc: 'A focused discovery sprint, or ongoing strategy as you grow.' },
-			{ icon: 'mdi:account-group-outline', title: 'Workshops with your team', desc: 'We plan with you, not at you — your people in the room, deciding together.' },
+			{ icon: 'mdi:account-group-outline', title: 'Workshops with your team', desc: 'We plan with you, not at you, your people in the room, deciding together.' },
 			{ icon: 'mdi:hand-heart', title: 'Plan only, or plan + build', desc: 'Take the roadmap to any team, or let us build exactly what we mapped.' },
 		],
 		projects: [
@@ -242,7 +242,7 @@ export const disciplines: Discipline[] = [
 		faqs: [
 			{ q: 'What do I actually get at the end?', a: 'A clear, prioritised roadmap and MVP scope you can fund and take to any build team.' },
 			{ q: 'How long does a discovery take?', a: 'A focused discovery sprint is usually one to two weeks, depending on scope.' },
-			{ q: 'Do you build what you plan?', a: 'We can — or you are free to take the plan elsewhere. The roadmap is yours either way.' },
+			{ q: 'Do you build what you plan?', a: 'We can, or you are free to take the plan elsewhere. The roadmap is yours either way.' },
 		],
 	},
 	{
@@ -253,17 +253,17 @@ export const disciplines: Discipline[] = [
 		color: '#10b981',
 		title: 'Maintenance',
 		tagline: 'It keeps running while you sleep.',
-		desc: 'Hosting, monitoring and support that keep complex systems secure, fast and online — year after year.',
+		desc: 'Hosting, monitoring and support that keep complex systems secure, fast and online, year after year.',
 		clarifier: 'Hosting, monitoring, security, backups and ongoing support.',
 		items: ['Hosting & DevOps', 'Monitoring', '24/7 support', 'Security', 'Backups'],
 		heroDesc:
 			'We stay after launch, keeping your product secure, fast and online, year after year.',
 		overview:
-			"Launch day isn't the finish line. We host, monitor and improve what we ship — patching, scaling and securing it so the board never has to ask twice. And we don't only look after what we built; we'll happily adopt your existing product too. 99.9% uptime, watched around the clock.",
+			"Launch day isn't the finish line. We host, monitor and improve what we ship, patching, scaling and securing it so the board never has to ask twice. And we don't only look after what we built; we'll happily adopt your existing product too. 99.9% uptime, watched around the clock.",
 		included: [
 			{ title: 'Hosting & DevOps', desc: 'Reliable infrastructure that scales with your traffic.', items: ['Cloud hosting', 'CI/CD', 'Scaling'] },
 			{ title: 'Monitoring & uptime', desc: 'We see problems before your users do.', items: ['24/7 monitoring', 'Alerts', '99.9% uptime'] },
-			{ title: 'Security & backups', desc: 'Hardened, patched and recoverable — always.', items: ['Security audits', 'Automated backups', 'Patching'] },
+			{ title: 'Security & backups', desc: 'Hardened, patched and recoverable, always.', items: ['Security audits', 'Automated backups', 'Patching'] },
 			{ title: 'Support & improvements', desc: 'A team on call to fix, tune and add what you need.', items: ['Same-day response', 'Bug fixes', 'New features'] },
 		],
 		approach: [
@@ -272,7 +272,7 @@ export const disciplines: Discipline[] = [
 			{ n: '03', title: 'Improve', desc: 'Steady upgrades so the product keeps getting better.' },
 		],
 		ways: [
-			{ icon: 'mdi:account-switch-outline', title: 'We built it, or you did', desc: 'We maintain what we shipped — or adopt and stabilise your existing product.' },
+			{ icon: 'mdi:account-switch-outline', title: 'We built it, or you did', desc: 'We maintain what we shipped, or adopt and stabilise your existing product.' },
 			{ icon: 'mdi:sleep', title: 'Hands-off cover', desc: 'We watch, patch and fix while you focus on the rest of the business.' },
 			{ icon: 'mdi:calendar-check-outline', title: 'On-call or retainer', desc: 'Pay as you go when you need us, or a steady monthly partnership.' },
 		],
@@ -289,9 +289,9 @@ export const disciplines: Discipline[] = [
 		outcome: 'Software you never have to worry about.',
 		visual: 'status',
 		faqs: [
-			{ q: 'Do you only maintain what you built?', a: 'No — we will happily adopt, stabilise and look after your existing product too.' },
+			{ q: 'Do you only maintain what you built?', a: 'No, we will happily adopt, stabilise and look after your existing product too.' },
 			{ q: 'What uptime and response time can I expect?', a: '99.9% uptime, round-the-clock monitoring, and same-day response when it matters.' },
-			{ q: 'Is it a fixed monthly cost?', a: 'We offer pay-as-you-go and monthly retainers — whichever suits how you work.' },
+			{ q: 'Is it a fixed monthly cost?', a: 'We offer pay-as-you-go and monthly retainers, whichever suits how you work.' },
 		],
 	},
 	{
@@ -302,13 +302,13 @@ export const disciplines: Discipline[] = [
 		color: '#ec4899',
 		title: 'AI & Automation',
 		tagline: 'Put the busywork on autopilot.',
-		desc: 'Smart features and automations that save hours — chat, workflows and data working for you.',
+		desc: 'Smart features and automations that save hours, chat, workflows and data working for you.',
 		clarifier: 'AI features, chatbots, workflow automation and data pipelines.',
 		items: ['AI features', 'Chatbots', 'Workflow automation', 'Data pipelines'],
 		heroDesc:
 			'We weave AI and automation into your product so the busywork runs itself.',
 		overview:
-			'The hours your team spends on repetitive work are hours you could spend growing. We build AI features and automations — assistants, workflows and data pipelines — that quietly do the heavy lifting, and we can bolt them onto the product you already have.',
+			'The hours your team spends on repetitive work are hours you could spend growing. We build AI features and automations, assistants, workflows and data pipelines, that quietly do the heavy lifting, and we can bolt them onto the product you already have.',
 		included: [
 			{ title: 'AI features', desc: 'Smart search, recommendations and assistants built into your product.', items: ['LLM integration', 'Smart search', 'Recommendations'] },
 			{ title: 'Chatbots & assistants', desc: 'Answer customers and staff instantly, around the clock.', items: ['Support bots', 'Internal copilots', 'Voice / chat'] },
@@ -323,7 +323,7 @@ export const disciplines: Discipline[] = [
 			{ n: '03', title: 'Measure', desc: 'We track the hours saved and tune for more.' },
 		],
 		ways: [
-			{ icon: 'mdi:puzzle-outline', title: 'Add to what you have', desc: 'Bolt AI and automation onto your existing product — no rebuild required.' },
+			{ icon: 'mdi:puzzle-outline', title: 'Add to what you have', desc: 'Bolt AI and automation onto your existing product, no rebuild required.' },
 			{ icon: 'mdi:account-switch-outline', title: 'Hands-on or hands-off', desc: 'Co-build with your team, or we deliver it done and ready to run.' },
 			{ icon: 'mdi:school-outline', title: 'Build & train', desc: 'We ship it and teach your team to run and extend it.' },
 		],
@@ -340,9 +340,9 @@ export const disciplines: Discipline[] = [
 		outcome: 'Hours back every week, and a product that feels smart.',
 		visual: 'flow',
 		faqs: [
-			{ q: 'Do I need to rebuild my product to add AI?', a: 'No — we bolt AI and automation onto the product you already have.' },
+			{ q: 'Do I need to rebuild my product to add AI?', a: 'No, we bolt AI and automation onto the product you already have.' },
 			{ q: 'What can you actually automate?', a: 'Repetitive workflows, customer support, data pipelines, and smart features like search and recommendations.' },
-			{ q: 'Will it really save us money?', a: 'That is the whole point — we track the hours saved and keep tuning the system for more.' },
+			{ q: 'Will it really save us money?', a: 'That is the whole point, we track the hours saved and keep tuning the system for more.' },
 		],
 	},
 ];
