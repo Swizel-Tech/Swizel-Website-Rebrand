@@ -1,165 +1,204 @@
 ---
 import { Icon } from 'astro-icon/components';
-import Section from '../components/HTML/Section.astro';
-import Link from '../components/Link.astro';
-import BaseHead from '../components/BaseHead.astro';
-import { SITE_DESCRIPTION, SITE_TITLE, faq } from '../consts';
-import ContactDetails from '../components/elements/ContactDetails.astro';
-import AccentHeader from '../components/HTML/AccentHeader.astro';
-import Heading from '../components/HTML/Heading.astro';
+import MainLayout from '../layouts/MainLayout.astro';
 import ContactForm from '../components/blocks/ContactForm.astro';
 import ToastContainer from '../components/elements/ToastContainer.astro';
+import { faq } from '../consts';
+
+const SEO_TITLE = 'Contact Swizel Technologies | Start Your Project';
+const SEO_DESC =
+	'Get in touch with Swizel Technologies. Tell us about your project and our team will help you turn your idea into a successful product, usually with a reply within one business day.';
+
+const contactFaq = faq.slice(0, 6);
+
+const channels = [
+	{ icon: 'mdi:phone-outline', label: 'Call us', value: '+234 810 020 4570', href: 'tel:+2348100204570' },
+	{ icon: 'mdi:email-outline', label: 'Email us', value: 'contact@swizel.co', href: 'mailto:contact@swizel.co' },
+	{ icon: 'mdi:map-marker-outline', label: 'Visit us', value: '2155 Peculiar Estate, Lokogoma, Abuja', href: undefined },
+];
 ---
 
-<!DOCTYPE html>
-{
-/* prettier-ignore */
-}
-<html lang="en">
-	<head>
-		<BaseHead
-			title="Contact Swizel Technologies | Start Your Project"
-			description="Get in touch with Swizel Technologies. Tell us about your project and our team will help you turn your idea into a successful product."
-		/>
-	</head>
-	<body class="grid min-h-screen items-center bg-swizelDark text-white">
-		<script is:inline type="text/javascript">
-			var Tawk_API = Tawk_API || {},
-				Tawk_LoadStart = new Date();
-			(function () {
-				var s1 = document.createElement('script'),
-					s0 = document.getElementsByTagName('script')[0];
-				s1.async = true;
-				s1.src = 'https://embed.tawk.to/6415ce6d31ebfa0fe7f359e9/1grqisntk';
-				s1.charset = 'UTF-8';
-				s1.setAttribute('crossorigin', '*');
-				s0.parentNode.insertBefore(s1, s0);
-			})();
-		</script>
-		<main class="py-10">
-			<Section sectionClass="bg-swizelDark -mb-8" divClass="my-16">
-				<div class="w-fit">
-					<Link
-						href="/"
-						class="flex items-center gap-4 text-white uppercase text-xs font-bold"
-					>
-						<Icon name="icon--back" size={18} />
-						<span class="text-white">Back to Home</span>
-					</Link>
+<MainLayout title={SEO_TITLE} description={SEO_DESC}>
+	<article class="bdbody ct">
+		<!-- animated ambience: drifting glow orbs + a faint signal grid -->
+		<div class="ct-bg" aria-hidden="true">
+			<span class="ct-orb ct-orb--1"></span>
+			<span class="ct-orb ct-orb--2"></span>
+			<span class="ct-orb ct-orb--3"></span>
+			<span class="ct-grid-lines"></span>
+			{Array.from({ length: 9 }).map((_, i) => <span class="ct-spark" style={`--i:${i}`}></span>)}
+		</div>
+
+		<header class="ct-hero">
+			<a class="ct-back" href="/"><Icon width={16} name="mdi:arrow-left" /> Back home</a>
+			<span class="ct-eyebrow"><span class="ct-dot"></span> Let's build something</span>
+			<h1 class="ct-title">Tell us about your <span class="ct-grad">project.</span></h1>
+			<p class="ct-lead">
+				Whether it is a fully formed brief or a rough idea, tell us where you want to go.
+				We will get back to you, usually within one business day.
+			</p>
+		</header>
+
+		<div class="ct-grid">
+			<div class="ct-formcard">
+				<span class="ct-form-k">Send us a message</span>
+				<ContactForm />
+			</div>
+
+			<aside class="ct-aside">
+				<span class="ct-aside-k">Or reach us directly</span>
+				<ul class="ct-channels">
+					{channels.map((c) => (
+						<li class="ct-channel">
+							<span class="ct-channel-ic"><Icon width={20} name={c.icon} /></span>
+							<span class="ct-channel-txt">
+								<span class="ct-channel-l">{c.label}</span>
+								{c.href ? (
+									<a class="ct-channel-v" href={c.href}>{c.value}</a>
+								) : (
+									<span class="ct-channel-v">{c.value}</span>
+								)}
+							</span>
+						</li>
+					))}
+				</ul>
+				<div class="ct-promise">
+					<Icon width={18} name="mdi:clock-fast" />
+					<span>We reply within <strong>one business day</strong>, every day of the week.</span>
 				</div>
-				<div class="grid md:grid-cols-2 gap-y-10 gap-x-5">
-					<div class="md:space-y-20 space-y-10 md:mt-12">
-						<Link
-							href="/"
-							class="block md:mx-0 mx-auto md:w-[300px] w-[150px]"
-							aria-label="back to home"
-						>
-							<Icon name="logo-alt" />
-						</Link>
-						<h1
-							class="text--header sm:text-[56px] text-5xl leading-snug sm:leading-[1.25] max-md:w-fit max-md:mx-auto md:text-left text-center"
-						>
-							<span> Tell us about your project.</span>
-						</h1>
-					</div>
-					<ContactForm />
-				</div>
-			</Section>
-			<Section sectionClass="my-16">
-				<ContactDetails email="contact@swizel.co" textColor="text-white" />
-			</Section>
-			<Section sectionClass="py-16">
-				<div class="md:flex space-y-10 md:space-y-0 justify-between">
-					<div class="space-y-5 max-w-lg flex-[0.4]">
-						<AccentHeader class="!text-white">FAQ</AccentHeader>
-						<Heading className="!text-white" type="h3">
-							Frequently Asked Questions
-						</Heading>
-					</div>
-					<ul class="grid flex-[0.6] max-w-2xl">
-						{
-							faq.map(({ answer, question }, idx) => (
-								<li
-									class="space-y-7 py-7 px-5 first-of-type:rounded-t-lg last-of-type:rounded-b-lg border-swizelBrown faq--item"
-									data-expanded={idx === 0 ? 'true' : 'false'}
-								>
-									<button
-										type="button"
-										class="flex w-full text-left md:items-center justify-between gap-4"
-									>
-										<Heading className="!text-white !text-lg" type="h4">
-											{question}
-										</Heading>
-										<div class="h-[32px] w-[32px] icon">
-											<Icon size={28} name="faq--dropdown" />
-										</div>
-									</button>
-									<p class="text-white/60 faq--content">{answer}</p>
-								</li>
-							))
-						}
-					</ul>
-				</div>
-			</Section>
-			<ToastContainer />
-		</main>
-	</body>
-</html>
+			</aside>
+		</div>
+
+		<section class="ct-faq-sec">
+			<div class="ct-faq-head">
+				<span class="ct-kicker">Before you ask</span>
+				<h2 class="ct-h">Common questions.</h2>
+			</div>
+			<div class="ct-faq">
+				{contactFaq.map((f, i) => (
+					<details class="ct-faq-item" open={i === 0}>
+						<summary>
+							<span>{f.question.replace(/\s+\?/g, '?').trim()}</span>
+							<Icon class="ct-faq-caret" width={20} name="mdi:chevron-down" />
+						</summary>
+						<p>{f.answer.trim()}</p>
+					</details>
+				))}
+			</div>
+		</section>
+	</article>
+	<ToastContainer />
+</MainLayout>
 
 <style>
-	.text--header {
-		max-width: 419px;
-		/* min-height: 128px; */
-
-		font-family: 'Epilogue';
-		font-style: normal;
-		font-weight: 800;
-
-		/* or 114% */
-		letter-spacing: -1px;
-		text-transform: uppercase;
-
-		/* gradient */
-		background: linear-gradient(264.34deg, #8dfeea 0.47%, #18debe 45%, #28a6ec 93.6%);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-clip: text;
-		text-fill-color: transparent;
+	.ct {
+		--bd-accent: #28a6ec;
+		--bd-ink: #f4f6fb;
+		--bd-muted: rgba(244, 246, 251, 0.62);
+		--bd-glass: linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02) 55%);
+		--bd-glass-border: rgba(255, 255, 255, 0.1);
+		--bd-shadow: 0 34px 80px -34px rgba(0, 0, 0, 0.8);
+	}
+	:global(html:not(.dark)) .ct {
+		--bd-ink: #14162a;
+		--bd-muted: rgba(20, 22, 40, 0.64);
+		--bd-glass: linear-gradient(160deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.55) 55%);
+		--bd-glass-border: rgba(20, 22, 40, 0.1);
+		--bd-shadow: 0 30px 70px -34px rgba(20, 22, 40, 0.25);
 	}
 
-	.faq--item {
-		border-inline: 1px solid #f3d1bf;
-		box-shadow: 0px 32px 64px rgba(57, 20, 0, 0.04);
-	}
-	.faq--item:nth-child(even) {
-		border-block: 1px solid #f3d1bf;
-	}
-	.faq--item:first-child {
-		border-top: 1px solid #f3d1bf;
-	}
-	.faq--item:last-child {
-		border-bottom: 1px solid #f3d1bf;
+	.ct { position: relative; overflow: hidden; }
+
+	/* ── animated ambience ── */
+	.ct-bg { position: absolute; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+	.ct-orb { position: absolute; border-radius: 50%; filter: blur(64px); opacity: 0.5; will-change: transform; }
+	:global(html:not(.dark)) .ct-orb { opacity: 0.26; }
+	.ct-orb--1 { width: 460px; height: 460px; top: -130px; left: -90px; background: radial-gradient(circle, color-mix(in srgb, var(--bd-accent) 60%, transparent), transparent 70%); animation: ct-drift1 19s ease-in-out infinite; }
+	.ct-orb--2 { width: 380px; height: 380px; top: 28%; right: -110px; background: radial-gradient(circle, rgba(141, 254, 234, 0.5), transparent 70%); animation: ct-drift2 23s ease-in-out infinite; }
+	.ct-orb--3 { width: 340px; height: 340px; bottom: -140px; left: 34%; background: radial-gradient(circle, rgba(99, 102, 241, 0.42), transparent 70%); animation: ct-drift3 21s ease-in-out infinite; }
+	@keyframes ct-drift1 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(46px, 34px); } }
+	@keyframes ct-drift2 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-54px, 42px); } }
+	@keyframes ct-drift3 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(34px, -44px); } }
+
+	.ct-grid-lines { position: absolute; inset: 0; background-image: linear-gradient(color-mix(in srgb, var(--bd-ink) 6%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--bd-ink) 6%, transparent) 1px, transparent 1px); background-size: 54px 54px; mask-image: radial-gradient(ellipse 72% 58% at 50% 26%, #000 18%, transparent 76%); -webkit-mask-image: radial-gradient(ellipse 72% 58% at 50% 26%, #000 18%, transparent 76%); }
+	.ct-spark { position: absolute; width: 4px; height: 4px; border-radius: 50%; background: var(--bd-accent); left: calc((var(--i) + 1) * 10%); bottom: -12px; opacity: 0; box-shadow: 0 0 8px 1px color-mix(in srgb, var(--bd-accent) 70%, transparent); animation: ct-rise 9s linear infinite; animation-delay: calc(var(--i) * -1.25s); }
+	@keyframes ct-rise { 0% { transform: translateY(0); opacity: 0; } 12% { opacity: 1; } 88% { opacity: 1; } 100% { transform: translateY(-92vh); opacity: 0; } }
+
+	/* ── entrance ── */
+	.ct-hero > *, .ct-grid, .ct-faq-sec { animation: ct-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) both; }
+	.ct-hero > *:nth-child(1) { animation-delay: 0.05s; }
+	.ct-hero > *:nth-child(2) { animation-delay: 0.13s; }
+	.ct-hero > *:nth-child(3) { animation-delay: 0.21s; }
+	.ct-hero > *:nth-child(4) { animation-delay: 0.29s; }
+	.ct-grid { animation-delay: 0.34s; }
+	.ct-faq-sec { animation-delay: 0.42s; }
+	@keyframes ct-up { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: translateY(0); } }
+
+	/* animated headline gradient + pulsing presence dot */
+	.ct-grad { background-size: 220% 100%; animation: ct-grad 6.5s ease infinite; }
+	@keyframes ct-grad { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+	.ct-dot { animation: ct-pulse 2.2s ease-in-out infinite; }
+	@keyframes ct-pulse { 0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--bd-accent) 45%, transparent); } 50% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--bd-accent) 0%, transparent); } }
+
+	@media (prefers-reduced-motion: reduce) {
+		.ct-orb, .ct-spark, .ct-grad, .ct-dot, .ct-hero > *, .ct-grid, .ct-faq-sec { animation: none !important; }
+		.ct-spark { display: none; }
 	}
 
-	/* styles to handle toggle */
-	.faq--content {
-		display: none;
-	}
+	.ct-hero { max-width: 46rem; margin: 0 auto; text-align: center; padding-top: clamp(0.5rem, 2vw, 1.5rem); }
+	.ct-back { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; font-weight: 700; color: var(--bd-muted); margin-bottom: 1.4rem; transition: color 0.2s ease; }
+	.ct-back:hover { color: var(--bd-accent); }
+	.ct-eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.74rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--bd-accent); border: 1px solid color-mix(in srgb, var(--bd-accent) 35%, transparent); background: color-mix(in srgb, var(--bd-accent) 9%, transparent); padding: 0.4rem 0.95rem; border-radius: 9999px; margin-bottom: 1.3rem; }
+	.ct-dot { width: 7px; height: 7px; border-radius: 9999px; background: var(--bd-accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--bd-accent) 22%, transparent); }
+	.ct-title { font-family: 'Bebas Neue', sans-serif; font-weight: 400; line-height: 0.95; letter-spacing: 0.5px; font-size: clamp(2.6rem, 7vw, 4.6rem); margin-bottom: 1rem; }
+	.ct-grad { background: linear-gradient(120deg, var(--bd-accent), #8dfeea); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+	.ct-lead { max-width: 36rem; margin: 0 auto; color: var(--bd-muted); font-size: 1.02rem; line-height: 1.65; }
 
-	.faq--item[data-expanded='true'] {
-		background-color: #428876;
-	}
+	.ct-grid { max-width: 64rem; margin: clamp(2rem, 4vw, 3rem) auto 0; display: grid; gap: clamp(1.2rem, 2.5vw, 1.8rem); align-items: start; }
+	@media (min-width: 880px) { .ct-grid { grid-template-columns: 1.35fr 0.85fr; } }
 
-	.faq--item[data-expanded='true'] .faq--content {
-		display: block;
+	/* the form lives in an always-dark card so the white-text inputs read in both themes */
+	.ct-formcard {
+		padding: clamp(1.5rem, 3.5vw, 2.4rem);
+		border-radius: 1.5rem;
+		background: linear-gradient(165deg, #141b2e, #0c1020);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		box-shadow: var(--bd-shadow);
 	}
-	.faq--item[data-expanded='false'] .icon {
-		transform: scaleY(-1);
+	.ct-form-k { display: block; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #8dfeea; margin-bottom: 1.3rem; }
+
+	.ct-aside { padding: clamp(1.5rem, 3vw, 2rem); border-radius: 1.5rem; background: var(--bd-glass); border: 1px solid var(--bd-glass-border); box-shadow: var(--bd-shadow); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+	.ct-aside-k { display: block; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bd-accent); margin-bottom: 1.2rem; }
+	.ct-channels { list-style: none; padding: 0; margin: 0 0 1.4rem; display: grid; gap: 1.1rem; }
+	.ct-channel { display: flex; align-items: center; gap: 0.8rem; }
+	.ct-channel-ic { display: grid; place-items: center; width: 42px; height: 42px; flex-shrink: 0; border-radius: 0.7rem; color: var(--bd-accent); background: color-mix(in srgb, var(--bd-accent) 14%, transparent); border: 1px solid color-mix(in srgb, var(--bd-accent) 26%, transparent); }
+	.ct-channel-txt { display: grid; min-width: 0; }
+	.ct-channel-l { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--bd-muted); }
+	.ct-channel-v { font-weight: 700; color: var(--bd-ink); word-break: break-word; transition: color 0.2s ease; }
+	a.ct-channel-v:hover { color: var(--bd-accent); }
+	.ct-channel { transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1); }
+	.ct-channel:hover { transform: translateX(5px); }
+	.ct-channel-ic { transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.28s ease; }
+	.ct-channel:hover .ct-channel-ic { transform: scale(1.08) rotate(-5deg); box-shadow: 0 8px 20px -8px color-mix(in srgb, var(--bd-accent) 60%, transparent); }
+	.ct-promise { display: flex; align-items: center; gap: 0.6rem; padding-top: 1.2rem; border-top: 1px solid var(--bd-glass-border); font-size: 0.9rem; line-height: 1.5; color: var(--bd-muted); }
+	.ct-promise :global(svg) { color: var(--bd-accent); flex-shrink: 0; }
+	.ct-promise strong { color: var(--bd-ink); }
+
+	.ct-faq-sec { max-width: 48rem; margin: clamp(3.5rem, 7vw, 5.5rem) auto 0; }
+	.ct-faq-head { text-align: center; margin-bottom: clamp(1.6rem, 3vw, 2.4rem); }
+	.ct-kicker { display: inline-block; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--bd-accent); margin-bottom: 0.6rem; }
+	.ct-h { font-family: 'Bebas Neue', sans-serif; font-weight: 400; font-size: clamp(1.9rem, 4vw, 2.8rem); line-height: 1; letter-spacing: 0.5px; }
+	.ct-faq { display: grid; gap: 0.7rem; }
+	.ct-faq-item { border: 1px solid var(--bd-glass-border); border-radius: 1rem; background: var(--bd-glass); box-shadow: var(--bd-shadow); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); overflow: hidden; }
+	.ct-faq-item summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.05rem 1.3rem; font-weight: 700; font-size: 0.98rem; color: var(--bd-ink); }
+	.ct-faq-item summary::-webkit-details-marker { display: none; }
+	.ct-faq-caret { color: var(--bd-accent); flex-shrink: 0; transition: transform 0.3s ease; }
+	.ct-faq-item[open] .ct-faq-caret { transform: rotate(180deg); }
+	.ct-faq-item p { margin: 0; padding: 0 1.3rem 1.2rem; color: var(--bd-muted); font-size: 0.94rem; line-height: 1.65; }
+
+	/* keep the emailjs form's CustomButton aligned full-width on the card */
+	.ct-formcard :global(#contact-form button) { margin-left: 0; }
+	@media (max-width: 560px) {
+		.ct-formcard :global(#contact-form button) { width: 100%; }
 	}
 </style>
-
-<script>
-	import { handleDropDown } from '../scripts/handleDropDown';
-
-	handleDropDown('faq--item');
-</script>
