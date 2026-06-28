@@ -626,15 +626,52 @@ const {
 		}
 
 		// Our own compact chat launcher drives Tawk (which we keep hidden).
+		const openTawk = () => {
+			const api = (window as any).Tawk_API;
+			if (api && api.maximize) {
+				if (api.showWidget) api.showWidget();
+				api.maximize();
+			}
+		};
 		const chatFab = document.getElementById('swizel-chat-fab');
-		if (chatFab) {
-			chatFab.onclick = () => {
-				const api = (window as any).Tawk_API;
-				if (api && api.maximize) {
-					if (api.showWidget) api.showWidget();
-					api.maximize();
-				}
-			};
+		if (chatFab) chatFab.onclick = openTawk;
+
+		// Anything tagged [data-open-chat] (e.g. the contact page's "Live chat" row)
+		// opens the same Tawk widget. Bound once on the persistent document so it
+		// keeps working across swup navigations without stacking handlers.
+		if (!(window as any).__chatOpenBound) {
+			(window as any).__chatOpenBound = true;
+			document.addEventListener('click', (e) => {
+				if ((e.target as HTMLElement).closest('[data-open-chat]')) openTawk();
+			});
+		}
+
+		// 3D cursor-tilt for cards tagged .ct-tilt (contact page). Bound once on the
+		// window, queries live so it survives swup; skipped under reduced motion.
+		if (
+			!(window as any).__tiltBound &&
+			!window.matchMedia('(prefers-reduced-motion: reduce)').matches &&
+			window.matchMedia('(hover: hover) and (min-width: 880px)').matches
+		) {
+			(window as any).__tiltBound = true;
+			window.addEventListener(
+				'mousemove',
+				(e) => {
+					const cards = document.querySelectorAll<HTMLElement>('.ct-tilt');
+					cards.forEach((card) => {
+						const r = card.getBoundingClientRect();
+						const px = (e.clientX - r.left) / r.width - 0.5;
+						const py = (e.clientY - r.top) / r.height - 0.5;
+						if (px < -0.75 || px > 0.75 || py < -0.75 || py > 0.75) {
+							card.style.transform = '';
+							return;
+						}
+						card.style.transform =
+							'rotateX(' + (-py * 4.5).toFixed(2) + 'deg) rotateY(' + (px * 4.5).toFixed(2) + 'deg)';
+					});
+				},
+				{ passive: true }
+			);
 		}
 
 		// "Leaving Swizel" interstitial for outbound product links ([data-leaving]).

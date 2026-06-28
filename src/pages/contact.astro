@@ -12,9 +12,10 @@ const SEO_DESC =
 const contactFaq = faq.slice(0, 6);
 
 const channels = [
-	{ icon: 'mdi:phone-outline', label: 'Call us', value: '+234 810 020 4570', href: 'tel:+2348100204570' },
-	{ icon: 'mdi:email-outline', label: 'Email us', value: 'contact@swizel.co', href: 'mailto:contact@swizel.co' },
-	{ icon: 'mdi:map-marker-outline', label: 'Visit us', value: '2155 Peculiar Estate, Lokogoma, Abuja', href: undefined },
+	{ icon: 'mdi:phone-outline', label: 'Call us', value: '+234 810 020 4570', href: 'tel:+2348100204570', accent: '#28a6ec' },
+	{ icon: 'mdi:whatsapp', label: 'WhatsApp', value: 'Message us instantly', href: 'https://wa.me/2348100204570', accent: '#25d366', external: true },
+	{ icon: 'mdi:email-outline', label: 'Email us', value: 'contact@swizel.co', href: 'mailto:contact@swizel.co', accent: '#28a6ec' },
+	{ icon: 'mdi:map-marker-outline', label: 'Visit us', value: '2155 Peculiar Estate, Lokogoma, Abuja', href: undefined, accent: '#f59e0b' },
 ];
 ---
 
@@ -31,7 +32,7 @@ const channels = [
 
 		<header class="ct-hero">
 			<a class="ct-back" href="/"><Icon width={16} name="mdi:arrow-left" /> Back home</a>
-			<span class="ct-eyebrow"><span class="ct-dot"></span> Let's build something</span>
+			<span class="ct-eyebrow"><span class="ct-dot"></span> Say hello</span>
 			<h1 class="ct-title">Tell us about your <span class="ct-grad">project.</span></h1>
 			<p class="ct-lead">
 				Whether it is a fully formed brief or a rough idea, tell us where you want to go.
@@ -40,27 +41,34 @@ const channels = [
 		</header>
 
 		<div class="ct-grid">
-			<div class="ct-formcard">
+			<div class="ct-formcard ct-tilt">
 				<span class="ct-form-k">Send us a message</span>
 				<ContactForm />
 			</div>
 
-			<aside class="ct-aside">
+			<aside class="ct-aside ct-tilt">
 				<span class="ct-aside-k">Or reach us directly</span>
 				<ul class="ct-channels">
 					{channels.map((c) => (
-						<li class="ct-channel">
+						<li class="ct-channel" style={`--c:${c.accent}`}>
 							<span class="ct-channel-ic"><Icon width={20} name={c.icon} /></span>
 							<span class="ct-channel-txt">
 								<span class="ct-channel-l">{c.label}</span>
 								{c.href ? (
-									<a class="ct-channel-v" href={c.href}>{c.value}</a>
+									<a class="ct-channel-v" href={c.href} target={c.external ? '_blank' : undefined} rel={c.external ? 'noopener noreferrer' : undefined}>{c.value}</a>
 								) : (
 									<span class="ct-channel-v">{c.value}</span>
 								)}
 							</span>
 						</li>
 					))}
+					<li class="ct-channel ct-channel--live" style="--c:#18debe">
+						<span class="ct-channel-ic"><span class="ct-live-dot"></span><Icon width={20} name="mdi:message-text-outline" /></span>
+						<span class="ct-channel-txt">
+							<span class="ct-channel-l">Live chat <span class="ct-online">online</span></span>
+							<button class="ct-channel-v ct-livebtn" type="button" data-open-chat>Chat with us now</button>
+						</span>
+					</li>
 				</ul>
 				<div class="ct-promise">
 					<Icon width={18} name="mdi:clock-fast" />
@@ -146,7 +154,8 @@ const channels = [
 	}
 
 	.ct-hero { max-width: 46rem; margin: 0 auto; text-align: center; padding-top: clamp(0.5rem, 2vw, 1.5rem); }
-	.ct-back { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; font-weight: 700; color: var(--bd-muted); margin-bottom: 1.4rem; transition: color 0.2s ease; }
+	.ct-back { display: flex; width: fit-content; align-items: center; gap: 0.4rem; font-size: 0.85rem; font-weight: 700; color: var(--bd-muted); margin: 0 auto 1.9rem; transition: color 0.2s ease, transform 0.2s ease; }
+	.ct-back:hover { transform: translateX(-3px); }
 	.ct-back:hover { color: var(--bd-accent); }
 	.ct-eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.74rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--bd-accent); border: 1px solid color-mix(in srgb, var(--bd-accent) 35%, transparent); background: color-mix(in srgb, var(--bd-accent) 9%, transparent); padding: 0.4rem 0.95rem; border-radius: 9999px; margin-bottom: 1.3rem; }
 	.ct-dot { width: 7px; height: 7px; border-radius: 9999px; background: var(--bd-accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--bd-accent) 22%, transparent); }
@@ -154,8 +163,14 @@ const channels = [
 	.ct-grad { background: linear-gradient(120deg, var(--bd-accent), #8dfeea); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 	.ct-lead { max-width: 36rem; margin: 0 auto; color: var(--bd-muted); font-size: 1.02rem; line-height: 1.65; }
 
-	.ct-grid { max-width: 64rem; margin: clamp(2rem, 4vw, 3rem) auto 0; display: grid; gap: clamp(1.2rem, 2.5vw, 1.8rem); align-items: start; }
+	.ct-grid { max-width: 64rem; margin: clamp(2rem, 4vw, 3rem) auto 0; display: grid; gap: clamp(1.2rem, 2.5vw, 1.8rem); align-items: start; perspective: 1500px; }
 	@media (min-width: 880px) { .ct-grid { grid-template-columns: 1.35fr 0.85fr; } }
+
+	/* 3D: cards tilt toward the cursor (JS sets the transform) and lift on hover */
+	.ct-tilt { transform-style: preserve-3d; transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease; will-change: transform; }
+	@media (hover: hover) and (min-width: 880px) {
+		.ct-tilt:hover { box-shadow: 0 50px 100px -30px rgba(0, 0, 0, 0.6), 0 0 60px -20px color-mix(in srgb, var(--bd-accent) 50%, transparent); }
+	}
 
 	/* the form lives in an always-dark card so the white-text inputs read in both themes */
 	.ct-formcard {
@@ -171,7 +186,16 @@ const channels = [
 	.ct-aside-k { display: block; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bd-accent); margin-bottom: 1.2rem; }
 	.ct-channels { list-style: none; padding: 0; margin: 0 0 1.4rem; display: grid; gap: 1.1rem; }
 	.ct-channel { display: flex; align-items: center; gap: 0.8rem; }
-	.ct-channel-ic { display: grid; place-items: center; width: 42px; height: 42px; flex-shrink: 0; border-radius: 0.7rem; color: var(--bd-accent); background: color-mix(in srgb, var(--bd-accent) 14%, transparent); border: 1px solid color-mix(in srgb, var(--bd-accent) 26%, transparent); }
+	.ct-channel-ic { position: relative; display: grid; place-items: center; width: 42px; height: 42px; flex-shrink: 0; border-radius: 0.7rem; color: var(--c, var(--bd-accent)); background: color-mix(in srgb, var(--c, var(--bd-accent)) 14%, transparent); border: 1px solid color-mix(in srgb, var(--c, var(--bd-accent)) 28%, transparent); }
+	a.ct-channel-v { color: var(--bd-ink); }
+	.ct-channel:hover .ct-channel-v:not(.ct-livebtn) { color: var(--c, var(--bd-accent)); }
+
+	/* live chat row: presence dot, online badge, button styled as a link */
+	.ct-channel--live .ct-live-dot { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; border-radius: 50%; background: #18debe; box-shadow: 0 0 0 0 rgba(24, 222, 190, 0.5); animation: ct-livepulse 1.8s ease-out infinite; }
+	@keyframes ct-livepulse { 0% { box-shadow: 0 0 0 0 rgba(24, 222, 190, 0.55); } 100% { box-shadow: 0 0 0 7px rgba(24, 222, 190, 0); } }
+	.ct-online { display: inline-block; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: #18debe; background: rgba(24, 222, 190, 0.14); border-radius: 9999px; padding: 0.05rem 0.45rem; margin-left: 0.4rem; vertical-align: middle; }
+	.ct-livebtn { font: inherit; font-weight: 700; color: var(--bd-ink); background: none; border: 0; padding: 0; cursor: pointer; text-align: left; transition: color 0.2s ease; }
+	.ct-livebtn:hover { color: #18debe; }
 	.ct-channel-txt { display: grid; min-width: 0; }
 	.ct-channel-l { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--bd-muted); }
 	.ct-channel-v { font-weight: 700; color: var(--bd-ink); word-break: break-word; transition: color 0.2s ease; }
@@ -184,7 +208,7 @@ const channels = [
 	.ct-promise :global(svg) { color: var(--bd-accent); flex-shrink: 0; }
 	.ct-promise strong { color: var(--bd-ink); }
 
-	.ct-faq-sec { max-width: 48rem; margin: clamp(3.5rem, 7vw, 5.5rem) auto 0; }
+	.ct-faq-sec { max-width: 48rem; margin: clamp(3.5rem, 7vw, 5.5rem) auto clamp(2.5rem, 6vw, 5rem); }
 	.ct-faq-head { text-align: center; margin-bottom: clamp(1.6rem, 3vw, 2.4rem); }
 	.ct-kicker { display: inline-block; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--bd-accent); margin-bottom: 0.6rem; }
 	.ct-h { font-family: 'Bebas Neue', sans-serif; font-weight: 400; font-size: clamp(1.9rem, 4vw, 2.8rem); line-height: 1; letter-spacing: 0.5px; }
