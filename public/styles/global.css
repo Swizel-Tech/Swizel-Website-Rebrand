@@ -1,27 +1,72 @@
 /* global css */
-
-/* ── Page transition (swup): a smooth lift + fade, replaces the heavy
-   overlay wipe. Old content fades/slides up & blurs out; new content
-   rises in from below. ── */
-/* NOTE: do NOT add will-change/transform/filter to this element in its resting
-   state — it would become a containing block for position:fixed descendants
-   (the view-switcher modal, mobile menu, toasts all live inside #swup) and
-   break them once the page is scrolled. The transform/filter below only apply
-   during an active transition, when no such overlay is open. */
-.transition-main {
-  transition: opacity 0.22s ease;
-}
-/* Hide the page for the WHOLE swap, not just the animation phases. Astro's
-   scoped <style> tags live in the body and get torn out/re-inserted when swup
-   replaces it, so for a beat the new page renders naked — keeping opacity 0
-   across is-changing masks that flash; it fades back in only once swup is done. */
-html.is-changing .transition-main,
-html.is-animating .transition-main { opacity: 0; }
-@media (prefers-reduced-motion: reduce) {
-  .transition-main { transition: opacity 0.12s ease; }
-}
-
 @import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Epilogue:wght@400;500;600;700;800;900&display=swap");
+
+/* ── Page transition (swup): a branded "curtain" wipe. ─────────────────────
+   On navigation a full-screen curtain sweeps UP to cover the viewport; swup
+   swaps the page BEHIND it (so Astro's scoped <style> re-insert never flashes);
+   then the curtain sweeps further up and away to reveal the fresh page.
+   The curtain's transform transition is what swup waits on (animationSelector).
+   NOTE: keep transform/filter off .transition-main at rest — it would become a
+   containing block for the position:fixed overlays that live inside #swup. */
+.transition-main { transition: opacity 0.25s ease; }
+/* old page fades out behind the covering curtain; the new page is fully opaque
+   as the curtain lifts to reveal it (so the reveal shows real content). */
+html.is-leaving .transition-main { opacity: 0; }
+
+.page-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 9990;
+  pointer-events: none;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(70% 60% at 50% 42%, rgba(40, 166, 236, 0.3), transparent 70%),
+    linear-gradient(135deg, #090b16 0%, #11254a 50%, #090b16 100%);
+  transform: translateY(101%);
+  transition: transform 0.55s cubic-bezier(0.76, 0, 0.24, 1);
+  will-change: transform;
+}
+.page-curtain__mark {
+  position: relative;
+  z-index: 1;
+  color: #fff;
+  opacity: 0;
+  transform: translateY(16px) scale(0.94);
+  transition: opacity 0.35s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.page-curtain__mark svg { width: clamp(132px, 22vw, 196px); height: auto; }
+/* a soft light-beam that sweeps across while the curtain holds */
+.page-curtain__sheen {
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 55%;
+  height: 100%;
+  background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+  transform: skewX(-18deg);
+}
+
+/* cover (out phase + the swap gap) */
+html.is-changing .page-curtain { transform: translateY(0); }
+html.is-changing .page-curtain__mark { opacity: 1; transform: translateY(0) scale(1); }
+html.is-changing .page-curtain__sheen { animation: curtain-sheen 0.85s cubic-bezier(0.4, 0, 0.2, 1) 0.1s; }
+/* reveal (in phase) — sweep the curtain off the top */
+html.is-rendering .page-curtain { transform: translateY(-101%); }
+/* snap back below the fold when idle, with no animation */
+html:not(.is-changing) .page-curtain { transition: none; transform: translateY(101%); }
+
+@keyframes curtain-sheen {
+  from { left: -60%; }
+  to { left: 160%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-curtain { display: none; }
+  html.is-changing .transition-main,
+  html.is-rendering .transition-main { opacity: 0; }
+}
 
 body {
   font-family: "Epilogue", sans-serif;

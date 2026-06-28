@@ -5,6 +5,7 @@ import Header from '../components/Header.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 import ToastContainer from '../components/elements/ToastContainer.astro';
 import ViewOnboarding from '../components/ViewOnboarding.astro';
+import Logo from '../components/Logo.astro';
 
 export interface Props {
 	title?: string;
@@ -102,6 +103,12 @@ const {
 			<svg class="cur-pkg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5v8l9 5 9-5z"></path><path d="M3 8l9 5 9-5M12 13v8"></path></svg>
 			<svg class="cur-branch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="6.5" cy="6" r="2.3"></circle><circle cx="6.5" cy="18" r="2.3"></circle><circle cx="17.5" cy="8" r="2.3"></circle><path d="M6.5 8.3v7.4M9.6 7.2c5 .6 7.9 2.6 7.9 7.3"></path></svg>
 			<svg class="cur-repo" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l2.7 5.5 6 .9-4.3 4.2 1 6L12 16.9 6.6 19.6l1-6L3.3 9.4l6-.9z"></path></svg>
+		</div>
+		<!-- Branded page-transition curtain: sweeps up to cover the screen while
+		     swup swaps the page behind it, then sweeps away to reveal the new one. -->
+		<div class="page-curtain" aria-hidden="true">
+			<span class="page-curtain__mark"><Logo /></span>
+			<span class="page-curtain__sheen" aria-hidden="true"></span>
 		</div>
 	</body>
 </html>
@@ -732,7 +739,9 @@ const {
 	const swup = new Swup({
 		plugins: [new SwupA11yPlugin(), new SwupHeadPlugin(), new SwupScrollPlugin()],
 		linkSelector: 'a[href]',
-		animationSelector: '.transition-main',
+		// The curtain drives the transition timing: swup waits for its transform
+		// transition, swapping the page while it fully covers the screen.
+		animationSelector: '.page-curtain',
 	});
 	// expose so the view picker can navigate home when a world is chosen off-home
 	(window as any).swup = swup;
