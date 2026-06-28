@@ -31,7 +31,7 @@ const channels = [
 		</div>
 
 		<header class="ct-hero">
-			<span class="ct-eyebrow"><span class="ct-dot"></span> Say hello</span>
+			<span class="ct-eyebrow"><span class="ct-wave">👋</span> Say hello</span>
 			<h1 class="ct-title">Tell us about your <span class="ct-grad">project.</span></h1>
 			<p class="ct-lead">
 				Whether it is a fully formed brief or a rough idea, tell us where you want to go.
@@ -144,17 +144,17 @@ const channels = [
 	/* animated headline gradient + pulsing presence dot */
 	.ct-grad { background-size: 220% 100%; animation: ct-grad 6.5s ease infinite; }
 	@keyframes ct-grad { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
-	.ct-dot { animation: ct-pulse 2.2s ease-in-out infinite; }
-	@keyframes ct-pulse { 0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--bd-accent) 45%, transparent); } 50% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--bd-accent) 0%, transparent); } }
+	.ct-wave { display: inline-block; transform-origin: 72% 78%; animation: ct-wave 2.6s ease-in-out infinite; }
+	@keyframes ct-wave { 0%, 60%, 100% { transform: rotate(0); } 10% { transform: rotate(15deg); } 20% { transform: rotate(-9deg); } 30% { transform: rotate(15deg); } 40% { transform: rotate(-5deg); } 50% { transform: rotate(11deg); } }
 
 	@media (prefers-reduced-motion: reduce) {
-		.ct-orb, .ct-spark, .ct-grad, .ct-dot, .ct-hero > *, .ct-grid, .ct-faq-sec { animation: none !important; }
+		.ct-orb, .ct-spark, .ct-grad, .ct-wave, .ct-hero > *, .ct-grid, .ct-faq-sec { animation: none !important; }
 		.ct-spark { display: none; }
 	}
 
 	.ct-hero { max-width: 46rem; margin: 0 auto; text-align: center; padding-top: clamp(0.5rem, 2vw, 1.5rem); }
 	.ct-eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.74rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--bd-accent); border: 1px solid color-mix(in srgb, var(--bd-accent) 35%, transparent); background: color-mix(in srgb, var(--bd-accent) 9%, transparent); padding: 0.4rem 0.95rem; border-radius: 9999px; margin-bottom: 1.3rem; }
-	.ct-dot { width: 7px; height: 7px; border-radius: 9999px; background: var(--bd-accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--bd-accent) 22%, transparent); }
+	.ct-wave { font-size: 1.05em; line-height: 1; }
 	.ct-title { font-family: 'Bebas Neue', sans-serif; font-weight: 400; line-height: 0.95; letter-spacing: 0.5px; font-size: clamp(2.6rem, 7vw, 4.6rem); margin-bottom: 1rem; }
 	.ct-grad { background: linear-gradient(120deg, var(--bd-accent), #8dfeea); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 	.ct-lead { max-width: 36rem; margin: 0 auto; color: var(--bd-muted); font-size: 1.02rem; line-height: 1.65; }
