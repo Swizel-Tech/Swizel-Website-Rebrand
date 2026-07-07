@@ -16,11 +16,12 @@ const [, mainUrl, ...rest] = pathname.split('/');
 <div
 	class="bg-swizelDark min-h-[300px] grid place-content-center text-center gap-5"
 >
-	<h1
+	<!-- h2: the boardroom section on these pages owns the single h1. -->
+	<h2
 		class="text-6xl sm:text-7xl tracking-tighter font-extrabold capitalize text-white"
 	>
 		{title ?? formatLink(mainUrl ?? '')}
-	</h1>
+	</h2>
 	<div class="px-3">
 		<p class:list={['max-w-lg mx-auto text-white/60', overrideDescStyle]}>
 			{desc ?? breadCrumbDesc}

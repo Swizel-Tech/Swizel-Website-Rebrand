@@ -4,7 +4,6 @@ import MainLayout from './MainLayout.astro';
 import FooterCTA from '../components/blocks/FooterCTA.astro';
 import Section from '../components/HTML/Section.astro';
 import Link from '../components/Link.astro';
-import Heading from '../components/HTML/Heading.astro';
 import { Icon } from 'astro-icon/components';
 import AccentHeader from '../components/HTML/AccentHeader.astro';
 // import OurBlogSection from '../components/sections/OurBlogSection.astro';
@@ -36,7 +35,12 @@ const {
 				<Icon name="arrow-left" size={18} />
 				<span class="text-darker">Back to portfolio</span>
 			</Link>
-			<Heading className="!leading-tight" type="h2">{title}</Heading>
+			<!-- Real h1: these project pages previously had no h1 at all (SEO). -->
+			<h1
+				class="md:text-6xl text-4xl font-extrabold text-darker !leading-tight"
+			>
+				{title}
+			</h1>
 			<div
 				class="flex items-center flex-wrap justify-between max-w-xl text-lg md:text-xl text-darker"
 			>

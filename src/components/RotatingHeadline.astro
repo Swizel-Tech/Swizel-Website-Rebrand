@@ -8,7 +8,9 @@ const { class: className = '' } = Astro.props;
 const words = ['Build.', 'Design.', 'Scale.', 'Launch.'];
 ---
 
-<h1 class:list={['rhead font-bebas', className]}>
+<!-- h2 (not h1): every view hero is in the DOM at once, and only the default
+     Boardroom hero should own the page's single h1 for SEO. -->
+<h2 class:list={['rhead font-bebas', className]}>
 	<span class="rhead__l1">You Imagine.</span>
 	<span class="rhead__l2">
 		<span>We</span>

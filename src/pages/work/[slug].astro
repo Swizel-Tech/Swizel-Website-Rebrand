@@ -23,7 +23,7 @@ const seoDesc = project.tagline || project.caseStudy?.intro || '';
 	<!-- Fallback for the other worlds: a simple summary + link out. -->
 	<div class="alt-view-only" style="max-width:48rem;margin:0 auto;padding:5rem 1.5rem;">
 		<a href="/portfolio" style="font-size:.9rem;font-weight:600;">← All work</a>
-		<h1 style="font-size:2.2rem;font-weight:800;margin:1.5rem 0 1rem;">{project.name}</h1>
+		<h2 style="font-size:2.2rem;font-weight:800;margin:1.5rem 0 1rem;">{project.name}</h2>
 		<p style="font-size:1.1rem;line-height:1.6;opacity:.75;">{project.caseStudy?.intro}</p>
 		{project.caseStudy?.liveUrl && (
 			<p style="margin-top:1.5rem;"><a href={project.caseStudy.liveUrl} target="_blank" rel="noopener" style="font-weight:700;">Visit live site →</a></p>

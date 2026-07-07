@@ -1,0 +1,178 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+
+const title = 'Page Not Found (404) | Swizel Technologies';
+const description =
+	'This page has moved or never existed. Head back to the Swizel home page, or explore our services, work and free bootcamp.';
+---
+
+<MainLayout title={title} description={description}>
+	<section class="nf">
+		<div class="nf__bg" aria-hidden="true">
+			<span class="nf__orb nf__orb--a"></span>
+			<span class="nf__orb nf__orb--b"></span>
+		</div>
+
+		<div class="nf__inner">
+			<p class="nf__eyebrow">Error 404</p>
+			<h1 class="nf__code font-bebas" aria-hidden="true">
+				4<span class="nf__zero">0</span>4
+			</h1>
+			<h2 class="nf__title">This page shipped somewhere else.</h2>
+			<p class="nf__lead">
+				The link may be old, or the page moved during our redesign. No
+				worries, everything you're looking for is one click away.
+			</p>
+
+			<div class="nf__actions">
+				<a href="/" class="nf__btn nf__btn--primary">Back to home</a>
+				<a href="/contact" class="nf__btn nf__btn--ghost">Talk to us</a>
+			</div>
+
+			<nav class="nf__links" aria-label="Popular pages">
+				<a href="/services">Services</a>
+				<a href="/portfolio">Our work</a>
+				<a href="/about">About</a>
+				<a href="/blog">Blog</a>
+				<a href="/bootcamp">Free bootcamp</a>
+			</nav>
+		</div>
+	</section>
+</MainLayout>
+
+<style>
+	.nf {
+		position: relative;
+		overflow: hidden;
+		min-height: 72vh;
+		display: grid;
+		place-items: center;
+		padding: 7rem 1.5rem 5rem;
+		text-align: center;
+	}
+	.nf__bg {
+		position: absolute;
+		inset: 0;
+		z-index: 0;
+		pointer-events: none;
+	}
+	.nf__orb {
+		position: absolute;
+		border-radius: 50%;
+		filter: blur(70px);
+		opacity: 0.35;
+		animation: nf-drift 14s ease-in-out infinite alternate;
+	}
+	.nf__orb--a {
+		width: 380px;
+		height: 380px;
+		left: -120px;
+		top: -80px;
+		background: radial-gradient(circle, #13b6a0, transparent 70%);
+	}
+	.nf__orb--b {
+		width: 420px;
+		height: 420px;
+		right: -140px;
+		bottom: -120px;
+		background: radial-gradient(circle, #1f8fd6, transparent 70%);
+		animation-delay: -7s;
+	}
+	@keyframes nf-drift {
+		to {
+			transform: translate3d(40px, 30px, 0) scale(1.08);
+		}
+	}
+	.nf__inner {
+		position: relative;
+		z-index: 1;
+		max-width: 40rem;
+	}
+	.nf__eyebrow {
+		text-transform: uppercase;
+		letter-spacing: 0.3em;
+		font-size: 0.78rem;
+		font-weight: 700;
+		opacity: 0.6;
+	}
+	.nf__code {
+		font-size: clamp(6rem, 22vw, 12rem);
+		line-height: 0.9;
+		margin: 0.5rem 0 0;
+		background: linear-gradient(95deg, #13b6a0, #13a8bf, #1f8fd6);
+		-webkit-background-clip: text;
+		background-clip: text;
+		color: transparent;
+		user-select: none;
+	}
+	.nf__zero {
+		display: inline-block;
+		animation: nf-spin 6s linear infinite;
+		transform-origin: 50% 54%;
+	}
+	@keyframes nf-spin {
+		to {
+			transform: rotateY(360deg);
+		}
+	}
+	.nf__title {
+		font-size: clamp(1.4rem, 4vw, 2rem);
+		font-weight: 800;
+		margin-top: 0.75rem;
+	}
+	.nf__lead {
+		margin: 0.9rem auto 0;
+		max-width: 30rem;
+		opacity: 0.7;
+		line-height: 1.7;
+	}
+	.nf__actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.8rem;
+		justify-content: center;
+		margin-top: 1.8rem;
+	}
+	.nf__btn {
+		display: inline-block;
+		padding: 0.8rem 1.7rem;
+		border-radius: 999px;
+		font-weight: 700;
+		font-size: 0.95rem;
+		transition: transform 0.2s ease, box-shadow 0.2s ease;
+	}
+	.nf__btn--primary {
+		background: linear-gradient(95deg, #13b6a0, #13a8bf, #1f8fd6);
+		color: #03231d;
+	}
+	.nf__btn--ghost {
+		border: 1px solid currentColor;
+	}
+	.nf__btn:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 10px 26px rgba(19, 168, 191, 0.28);
+	}
+	.nf__links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem 1.4rem;
+		justify-content: center;
+		margin-top: 2.2rem;
+		font-size: 0.92rem;
+		font-weight: 600;
+	}
+	.nf__links a {
+		opacity: 0.65;
+		transition: opacity 0.15s ease;
+	}
+	.nf__links a:hover {
+		opacity: 1;
+		text-decoration: underline;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.nf__orb,
+		.nf__zero {
+			animation: none !important;
+		}
+	}
+</style>

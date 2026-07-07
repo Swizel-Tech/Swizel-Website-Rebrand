@@ -73,6 +73,10 @@ body {
   background-color: #f4fcf966;
   line-height: 2;
   font-size: 1rem;
+  /* Guard: decorative glows/orbs that poke past the viewport edge must never
+     create a horizontal scrollbar on any page (clip, not hidden, so no new
+     scroll container is created and position:sticky keeps working). */
+  overflow-x: clip;
 }
 .clamp-2 {
   display: -webkit-box;
