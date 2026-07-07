@@ -8,6 +8,7 @@ import QuickInfo from '../components/blocks/QuickInfo.astro';
 import SplideImageCarousel from '../components/blocks/SplideImageCarousel.astro';
 import NewsLetterAndContact from '../components/sections/NewsLetterAndContact.astro';
 import AboutBoardroom from '../components/sections/AboutBoardroom.astro';
+import AboutFounder from '../components/sections/AboutFounder.astro';
 import MainLayout from '../layouts/MainLayout.astro';
 
 const pageTitle = 'About Swizel | The team behind the software';
@@ -23,8 +24,11 @@ const pageDescription =
 	<!-- Boardroom world (also the default). Hidden in other views. -->
 	<AboutBoardroom />
 
-	<!-- Fallback About for the other worlds until each gets its own. -->
-	<div class="alt-view-only">
+	<!-- Founder world: the story told founder to founder. -->
+	<AboutFounder />
+
+	<!-- Fallback About for the remaining worlds until each gets its own. -->
+	<div class="alt-view-only about-fallback">
 		<Section sectionClass="my-24">
 			<div class="grid md:grid-cols-2 gap-2 gap-y-5 my-5 items-center">
 				<div class="space-y-5">
@@ -148,3 +152,10 @@ const pageDescription =
 		</div>
 	</div>
 </MainLayout>
+
+<style is:global>
+	/* Founder view has its own About now — suppress the generic fallback. */
+	html[data-view='founder'] .about-fallback {
+		display: none !important;
+	}
+</style>

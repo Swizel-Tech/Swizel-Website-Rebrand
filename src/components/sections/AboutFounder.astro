@@ -1,0 +1,518 @@
+---
+// About page · Founder world — the Swizel story told founder to founder.
+// Root carries `fbody` so the shared founderBody.ts engine (reveals via
+// .fd-rev, counters via [data-count]) animates this page for free.
+import { Icon } from 'astro-icon/components';
+
+const stats = [
+	{ to: 7, suffix: '+', label: 'years shipping' },
+	{ to: 25, suffix: '+', label: 'builders on the crew' },
+	{ to: 65, suffix: '+', label: 'products live' },
+	{ to: 10, suffix: '+', label: 'countries' },
+];
+
+const journey = [
+	{
+		tag: 'Day 0',
+		title: 'A conviction, not a company.',
+		desc: 'African businesses deserve world-class software. A small crew starts building for clients who dream big.',
+	},
+	{
+		tag: 'First launches',
+		title: 'Products ship. Clients stay.',
+		desc: 'Early builds turn into long-term partnerships. The rule is set early: we win when your product wins.',
+	},
+	{
+		tag: 'The crew grows',
+		title: 'Every discipline, one roof.',
+		desc: 'Designers, engineers and growth marketers working as one senior team, so founders never juggle agencies.',
+	},
+	{
+		tag: 'Today',
+		title: '65+ products, 10+ countries.',
+		desc: 'From Abuja to London to New York, with a free bootcamp raising the next generation of builders.',
+	},
+];
+
+const values = [
+	{
+		icon: 'mdi:account-star-outline',
+		title: 'Senior hands only',
+		desc: 'The people in the first call are the people who build your product. No hand-offs to juniors.',
+	},
+	{
+		icon: 'mdi:eye-outline',
+		title: 'You see everything',
+		desc: 'Weekly demos, shared boards and honest status. No black box between you and your build.',
+	},
+	{
+		icon: 'mdi:file-sign',
+		title: 'Honest numbers',
+		desc: 'Scope, timeline and price in writing before Week 1. If something changes, you hear it first.',
+	},
+	{
+		icon: 'mdi:lifebuoy',
+		title: 'We stay after launch',
+		desc: 'Maintenance, growth and a team on call. Launch day is the starting gun, not the goodbye.',
+	},
+];
+---
+
+<div class="fabout fbody view-body view-body-founder">
+	<!-- ── A · who we are ─────────────────────────────────── -->
+	<section class="fa-sec">
+		<div class="fa-wrap fa-open">
+			<div class="fa-copy fd-rev">
+				<span class="fa-stamp">About Swizel · Founder mode</span>
+				<h2 class="fa-h fa-h--xl">Built by builders, <em>for builders.</em></h2>
+				<p class="fa-p">
+					Swizel is the senior product team founders call when the idea
+					is bigger than the runway. Design, engineering and growth under
+					one roof, shipping for seven years and counting.
+				</p>
+				<ul class="fa-stats">
+					{
+						stats.map((s) => (
+							<li>
+								<strong data-count={s.to} data-suffix={s.suffix}>
+									0{s.suffix}
+								</strong>
+								<span>{s.label}</span>
+							</li>
+						))
+					}
+				</ul>
+			</div>
+
+			<figure class="fa-photo fd-rev">
+				<img
+					src="/images/hero-team.jpg"
+					alt="The Swizel team"
+					loading="lazy"
+					width="640"
+					height="480"
+				/>
+				<figcaption class="fa-photo-tag">
+					The crew behind 65+ launches
+				</figcaption>
+			</figure>
+		</div>
+	</section>
+
+	<!-- ── B · mission ────────────────────────────────────── -->
+	<section class="fa-sec">
+		<blockquote class="fa-mission fd-rev">
+			<p>
+				We exist to drive the digitalisation of
+				<em>African business.</em>
+			</p>
+		</blockquote>
+	</section>
+
+	<!-- ── C · the journey ────────────────────────────────── -->
+	<section class="fa-sec">
+		<div class="fa-wrap">
+			<div class="fa-head fd-rev">
+				<span class="fa-stamp">The journey</span>
+				<h2 class="fa-h">Founder to founder, <em>the short version.</em></h2>
+			</div>
+
+			<ol class="fa-journey">
+				{
+					journey.map((j, i) => (
+						<li class="fa-stop fd-rev" style={`--i:${i}`}>
+							<span class="fa-stop-node" aria-hidden="true" />
+							<span class="fa-stop-tag">{j.tag}</span>
+							<h3 class="fa-stop-t">{j.title}</h3>
+							<p class="fa-stop-d">{j.desc}</p>
+						</li>
+					))
+				}
+				<li class="fa-stop fa-stop--next fd-rev" style="--i:4">
+					<span class="fa-stop-node" aria-hidden="true"></span>
+					<span class="fa-stop-tag">Next stop</span>
+					<h3 class="fa-stop-t">Your product.</h3>
+					<p class="fa-stop-d">
+						This chapter is yours to write. We bring the crew.
+					</p>
+					<a href="/contact" class="fa-link">
+						Start Week 1
+						<Icon width={15} name="mdi:arrow-right" />
+					</a>
+				</li>
+			</ol>
+		</div>
+	</section>
+
+	<!-- ── D · how we work ────────────────────────────────── -->
+	<section class="fa-sec">
+		<div class="fa-wrap">
+			<div class="fa-head fd-rev">
+				<span class="fa-stamp">How we work</span>
+				<h2 class="fa-h">What founders <em>feel on day one.</em></h2>
+			</div>
+
+			<div class="fa-values">
+				{
+					values.map((v, i) => (
+						<article class="fa-val fd-rev" style={`--i:${i}`}>
+							<span class="fa-val-ic">
+								<Icon width={22} name={v.icon} />
+							</span>
+							<h3 class="fa-val-t">{v.title}</h3>
+							<p class="fa-val-d">{v.desc}</p>
+						</article>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── E · CTA ────────────────────────────────────────── -->
+	<section class="fa-sec fa-sec--last">
+		<div class="fa-cta-box fd-rev">
+			<h2 class="fa-h">Bring us <em>your Day 0.</em></h2>
+			<p class="fa-p fa-p--center">
+				Tell us what you imagine. Six weeks later, founders demo their
+				product.
+			</p>
+			<div class="fa-cta-row">
+				<a href="/contact" class="fa-cta">
+					Start Week 1
+					<Icon width={17} name="mdi:rocket-launch-outline" />
+				</a>
+				<a href="/portfolio" class="fa-link">
+					See the launches
+					<Icon width={15} name="mdi:arrow-right" />
+				</a>
+			</div>
+		</div>
+	</section>
+</div>
+
+<style>
+	/* ── Founder world tokens (mirrors FounderBody) ── */
+	.fabout {
+		--fa-ink: #f1edfb;
+		--fa-muted: rgba(241, 237, 251, 0.62);
+		--fa-acc: var(--view-accent, #8b5cf6);
+		--fa-acc2: #ec4899;
+		--fa-line: rgba(255, 255, 255, 0.09);
+		--fa-card: rgba(255, 255, 255, 0.035);
+		font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+			Roboto, sans-serif;
+		position: relative;
+		isolation: isolate;
+		background:
+			radial-gradient(1000px 540px at 82% -6%, rgba(139, 92, 246, 0.16), transparent 62%),
+			radial-gradient(820px 480px at 6% 44%, rgba(236, 72, 153, 0.08), transparent 60%),
+			linear-gradient(180deg, #0a0714 0%, #0d0a18 50%, #080610 100%);
+		color: var(--fa-ink);
+		padding: clamp(3rem, 7vw, 5.5rem) clamp(1rem, 3vw, 2rem)
+			clamp(2.5rem, 5vw, 4rem);
+		transition: background 0.4s ease, color 0.4s ease;
+	}
+	:global(html:not(.dark)) .fabout {
+		--fa-ink: #1d1430;
+		--fa-muted: rgba(29, 20, 48, 0.66);
+		--fa-acc: #6d3fe0;
+		--fa-line: rgba(29, 20, 48, 0.1);
+		--fa-card: rgba(29, 20, 48, 0.04);
+		background:
+			radial-gradient(1000px 540px at 82% -6%, rgba(139, 92, 246, 0.12), transparent 62%),
+			linear-gradient(180deg, #f4f1fb 0%, #ece7f8 55%, #f4f1fb 100%);
+	}
+
+	.fa-sec { padding-block: clamp(2rem, 5vw, 3.5rem); }
+	.fa-sec--last { padding-bottom: clamp(3rem, 6vw, 5rem); }
+	.fa-wrap { max-width: 74rem; margin: 0 auto; }
+
+	/* ── Shared type ── */
+	.fa-stamp {
+		display: inline-block;
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--fa-acc);
+		border: 1.5px dashed color-mix(in srgb, var(--fa-acc) 55%, transparent);
+		padding: 0.35rem 0.8rem;
+		border-radius: 0.5rem;
+		transform: rotate(-2deg);
+		margin-bottom: 1rem;
+	}
+	:global(html:not(.dark)) .fabout .fa-stamp { color: #5d34c4; }
+	.fa-h {
+		font-size: clamp(1.9rem, 4.2vw, 3rem);
+		font-weight: 850;
+		letter-spacing: -0.025em;
+		line-height: 1.06;
+		margin: 0 0 1rem;
+	}
+	.fa-h--xl { font-size: clamp(2.2rem, 4.4vw, 3.4rem); }
+	.fa-h em {
+		font-style: italic;
+		background: linear-gradient(95deg, var(--fa-acc), var(--fa-acc2));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+		padding-right: 0.06em;
+	}
+	:global(html:not(.dark)) .fabout .fa-h em {
+		background: linear-gradient(95deg, #5d34c4, #b81d68);
+		-webkit-background-clip: text;
+		background-clip: text;
+	}
+	.fa-p {
+		font-size: 1.02rem;
+		line-height: 1.65;
+		color: var(--fa-muted);
+		max-width: 34rem;
+		margin: 0 0 1.4rem;
+	}
+	.fa-p--center { margin-inline: auto; text-align: center; }
+	.fa-head {
+		text-align: center;
+		max-width: 46rem;
+		margin: 0 auto clamp(1.5rem, 3vw, 2.25rem);
+	}
+	.fa-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		font-weight: 700;
+		color: var(--fa-acc);
+		transition: gap 0.25s ease;
+	}
+	.fa-link:hover { gap: 0.75rem; }
+	:global(html:not(.dark)) .fabout .fa-link { color: #5d34c4; }
+
+	/* ── Reveal states (queried by founderBody.ts as .fd-rev) ── */
+	.fd-rev {
+		opacity: 0;
+		transform: translateY(22px);
+		transition: opacity 0.6s ease calc(var(--i, 0) * 90ms),
+			transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i, 0) * 90ms);
+	}
+	.fd-rev.is-on { opacity: 1; transform: none; }
+	@media (prefers-reduced-motion: reduce) {
+		.fd-rev { opacity: 1; transform: none; transition: none; }
+	}
+
+	/* ── A · opening ── */
+	.fa-open {
+		display: grid;
+		grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+		gap: clamp(2rem, 4vw, 3.5rem);
+		align-items: center;
+	}
+	.fa-stats {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1rem 1.6rem;
+		margin: 1.6rem 0 0;
+		padding: 0;
+		list-style: none;
+	}
+	.fa-stats strong {
+		display: block;
+		font-size: clamp(1.7rem, 3vw, 2.2rem);
+		font-weight: 850;
+		letter-spacing: -0.02em;
+		background: linear-gradient(95deg, var(--fa-acc), var(--fa-acc2));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	.fa-stats span {
+		font-size: 0.85rem;
+		color: var(--fa-muted);
+	}
+	.fa-photo {
+		position: relative;
+		margin: 0;
+		transform: rotate(1.6deg);
+	}
+	.fa-photo img {
+		display: block;
+		width: 100%;
+		height: auto;
+		border-radius: 1.1rem;
+		border: 1px solid var(--fa-line);
+		box-shadow: 0 40px 90px -32px rgba(0, 0, 0, 0.65),
+			0 0 0 6px color-mix(in srgb, var(--fa-acc) 8%, transparent);
+	}
+	.fa-photo-tag {
+		position: absolute;
+		bottom: -0.85rem;
+		left: 50%;
+		transform: translateX(-50%) rotate(-1.8deg);
+		white-space: nowrap;
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: #fff;
+		background: linear-gradient(95deg, var(--fa-acc), var(--fa-acc2));
+		padding: 0.42rem 0.95rem;
+		border-radius: 9999px;
+		box-shadow: 0 12px 26px -10px color-mix(in srgb, var(--fa-acc) 75%, transparent);
+	}
+
+	/* ── B · mission ── */
+	.fa-mission {
+		max-width: 54rem;
+		margin: 0 auto;
+		padding: clamp(1.6rem, 4vw, 2.6rem);
+		border: 1px solid var(--fa-line);
+		border-radius: 1.4rem;
+		background: var(--fa-card);
+		text-align: center;
+	}
+	.fa-mission p {
+		font-size: clamp(1.4rem, 3vw, 2.1rem);
+		font-weight: 800;
+		letter-spacing: -0.02em;
+		line-height: 1.25;
+		margin: 0;
+	}
+	.fa-mission em {
+		font-style: italic;
+		background: linear-gradient(95deg, var(--fa-acc), var(--fa-acc2));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	:global(html:not(.dark)) .fabout .fa-mission em {
+		background: linear-gradient(95deg, #5d34c4, #b81d68);
+		-webkit-background-clip: text;
+		background-clip: text;
+	}
+
+	/* ── C · journey ── */
+	.fa-journey {
+		position: relative;
+		list-style: none;
+		margin: 0 auto;
+		padding: 0 0 0 1.6rem;
+		max-width: 44rem;
+		border-left: 2px dashed color-mix(in srgb, var(--fa-acc) 40%, transparent);
+	}
+	.fa-stop { position: relative; padding: 0 0 2rem 1rem; }
+	.fa-stop:last-child { padding-bottom: 0; }
+	.fa-stop-node {
+		position: absolute;
+		left: -2.22rem;
+		top: 0.2rem;
+		width: 1rem;
+		height: 1rem;
+		border-radius: 9999px;
+		background: linear-gradient(95deg, var(--fa-acc), var(--fa-acc2));
+		box-shadow: 0 0 0 4px color-mix(in srgb, var(--fa-acc) 22%, transparent);
+	}
+	.fa-stop--next .fa-stop-node {
+		background: transparent;
+		border: 2px dashed var(--fa-acc);
+		box-shadow: none;
+	}
+	.fa-stop-tag {
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--fa-acc);
+	}
+	:global(html:not(.dark)) .fabout .fa-stop-tag { color: #5d34c4; }
+	.fa-stop-t {
+		font-size: 1.18rem;
+		font-weight: 800;
+		margin: 0.3rem 0 0.35rem;
+	}
+	.fa-stop-d {
+		font-size: 0.95rem;
+		line-height: 1.6;
+		color: var(--fa-muted);
+		max-width: 36rem;
+		margin: 0 0 0.5rem;
+	}
+
+	/* ── D · values ── */
+	.fa-values {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 1rem;
+	}
+	.fa-val {
+		border: 1px solid var(--fa-line);
+		border-radius: 1.1rem;
+		background: var(--fa-card);
+		padding: 1.3rem 1.2rem;
+		transition: transform 0.25s ease, border-color 0.25s ease;
+	}
+	.fa-val:hover {
+		transform: translateY(-4px);
+		border-color: color-mix(in srgb, var(--fa-acc) 45%, transparent);
+	}
+	.fa-val-ic {
+		display: grid;
+		place-items: center;
+		width: 42px;
+		height: 42px;
+		border-radius: 0.8rem;
+		color: var(--fa-acc);
+		background: color-mix(in srgb, var(--fa-acc) 14%, transparent);
+		margin-bottom: 0.8rem;
+	}
+	:global(html:not(.dark)) .fabout .fa-val-ic { color: #5d34c4; }
+	.fa-val-t { font-size: 1.02rem; font-weight: 800; margin: 0 0 0.35rem; }
+	.fa-val-d {
+		font-size: 0.9rem;
+		line-height: 1.55;
+		color: var(--fa-muted);
+		margin: 0;
+	}
+
+	/* ── E · CTA ── */
+	.fa-cta-box {
+		max-width: 46rem;
+		margin: 0 auto;
+		text-align: center;
+	}
+	.fa-cta-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem 1.6rem;
+		justify-content: center;
+		align-items: center;
+	}
+	.fa-cta {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+		font-weight: 800;
+		font-size: 0.98rem;
+		color: #fff;
+		background: linear-gradient(95deg, var(--fa-acc), var(--fa-acc2));
+		padding: 0.85rem 1.7rem;
+		border-radius: 9999px;
+		box-shadow: 0 16px 38px -14px color-mix(in srgb, var(--fa-acc) 80%, transparent);
+		transition: transform 0.22s ease, box-shadow 0.22s ease;
+	}
+	.fa-cta:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 22px 48px -14px color-mix(in srgb, var(--fa-acc) 85%, transparent);
+	}
+
+	/* ── Responsive ── */
+	@media (max-width: 900px) {
+		.fa-open { grid-template-columns: minmax(0, 1fr); }
+		.fa-photo { max-width: 28rem; margin: 0.5rem auto 0; }
+		.fa-values { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	}
+	@media (max-width: 560px) {
+		.fa-values { grid-template-columns: minmax(0, 1fr); }
+		.fa-journey { padding-left: 1.2rem; }
+		.fa-stop { padding-left: 0.8rem; }
+		.fa-stop-node { left: -1.82rem; }
+	}
+</style>
