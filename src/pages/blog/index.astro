@@ -7,6 +7,7 @@ import Section from '../../components/HTML/Section.astro';
 import FooterCTA from '../../components/blocks/FooterCTA.astro';
 import NewsLetterAndContact from '../../components/sections/NewsLetterAndContact.astro';
 import BlogBoardroom from '../../components/sections/BlogBoardroom.astro';
+import BlogFounder from '../../components/sections/BlogFounder.astro';
 
 // Published posts, newest first. Drafts (draft: true) are kept out of the build.
 export const posts = (await getCollection('blog', ({ data }) => data.draft !== true)).sort(
@@ -23,8 +24,11 @@ export const posts = (await getCollection('blog', ({ data }) => data.draft !== t
 	<!-- Boardroom world (also the default). Hidden in the other views. -->
 	<BlogBoardroom posts={posts} />
 
-	<!-- Fallback for the other worlds. -->
-	<div class="alt-view-only">
+	<!-- Founder world: the same journal, founder momentum. -->
+	<BlogFounder posts={posts} />
+
+	<!-- Fallback for the remaining worlds. -->
+	<div class="alt-view-only blog-fallback">
 		<Breadcrumb title="Articles" desc="" />
 		<Section divClass="py-20">
 			<ul
@@ -41,3 +45,10 @@ export const posts = (await getCollection('blog', ({ data }) => data.draft !== t
 		<FooterCTA />
 	</div>
 </MainLayout>
+
+<style is:global>
+	/* Founder view has its own Blog now — hide the generic fallback. */
+	html[data-view='founder'] .blog-fallback {
+		display: none !important;
+	}
+</style>
