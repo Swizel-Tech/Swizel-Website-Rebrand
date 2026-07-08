@@ -101,7 +101,7 @@ const filterCss = cats
 				</p>
 			</div>
 
-			<form class="fb-filter">
+			<form class="fb-filter" autocomplete="off">
 				<input class="fb-radio" type="radio" name="fbl" id="fbl-all" checked />
 				{cats.map((c) => <input class="fb-radio" type="radio" name="fbl" id={`fbl-${catSlug(c)}`} />)}
 				<div class="fb-chips fd-rev">

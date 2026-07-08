@@ -71,7 +71,7 @@ const filterCss = cats
 		<h2 class="bd-h bd-h--center">From the journal.</h2>
 		<p class="bd-p bd-p--center">{posts.length} {posts.length === 1 ? 'article' : 'articles'} — more on the way. Filter by topic.</p>
 	</section>
-	<form class="bl-filter">
+	<form class="bl-filter" autocomplete="off">
 		<input class="bl-radio" type="radio" name="bl" id="bl-all-r" checked />
 		{cats.map((c) => <input class="bl-radio" type="radio" name="bl" id={`bl-${catSlug(c)}`} />)}
 		<div class="bl-chips bd-reveal">

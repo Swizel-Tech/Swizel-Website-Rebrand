@@ -248,7 +248,7 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 				</p>
 			</div>
 
-			<form class="fp-filter">
+			<form class="fp-filter" autocomplete="off">
 				<input class="fp-radio" type="radio" name="fpf" id="fpf-all" checked />
 				{sectors.map((s) => <input class="fp-radio" type="radio" name="fpf" id={`fpf-${s}`} />)}
 				<div class="fp-chips fd-rev">

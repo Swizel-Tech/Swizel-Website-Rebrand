@@ -192,7 +192,7 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 		<h2 class="bd-h bd-h--center">Featured work.</h2>
 		<p class="bd-p bd-p--center">We’ve shipped <strong>{totalShown}</strong> products across <strong>15+</strong> sectors. Here are ~{projects.length} of our favourites, filter by sector.</p>
 	</section>
-	<form class="pf-filter">
+	<form class="pf-filter" autocomplete="off">
 		<input class="pf-radio" type="radio" name="pf" id="pf-all" checked />
 		{sectors.map((s) => (
 			<input class="pf-radio" type="radio" name="pf" id={`pf-${s}`} />
