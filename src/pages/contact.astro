@@ -223,10 +223,84 @@ const channels = [
 	.ct-faq-item[open] .ct-faq-caret { transform: rotate(180deg); }
 	.ct-faq-item p { margin: 0; padding: 0 1.3rem 1.2rem; color: var(--bd-muted); font-size: 0.94rem; line-height: 1.65; }
 
-	/* keep the emailjs form's CustomButton aligned full-width on the card */
-	.ct-formcard :global(#contact-form button) { margin-left: 0; }
-	@media (max-width: 560px) {
-		.ct-formcard :global(#contact-form button) { width: 100%; }
+	/* ── the form, dressed properly (accent-driven: works in every view) ── */
+	.ct { --ct-cta2: #18debe; }
+	.ct-formcard { position: relative; overflow: hidden; }
+	/* accent keyline across the top of the card */
+	.ct-formcard::before {
+		content: '';
+		position: absolute; top: 0; left: 0; right: 0; height: 3px;
+		background: linear-gradient(90deg, var(--bd-accent), var(--ct-cta2), transparent 85%);
+	}
+	.ct-formcard :global(#contact-form label) {
+		font-size: 0.86rem;
+		font-weight: 700;
+		letter-spacing: 0.01em;
+	}
+	.ct-formcard :global(#contact-form input),
+	.ct-formcard :global(#contact-form textarea) {
+		border-radius: 0.9rem !important;
+		border: 1px solid color-mix(in srgb, var(--bd-ink) 16%, transparent) !important;
+		background: rgba(255, 255, 255, 0.045) !important;
+		padding: 0.9rem 1.1rem !important;
+		transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+	}
+	.ct-formcard :global(#contact-form input:focus),
+	.ct-formcard :global(#contact-form textarea:focus) {
+		outline: none !important;
+		border-color: var(--bd-accent) !important;
+		box-shadow: 0 0 0 4px color-mix(in srgb, var(--bd-accent) 22%, transparent);
+		background: rgba(255, 255, 255, 0.07) !important;
+	}
+	/* the submit: a proper gradient pill with glow, sheen and lift */
+	.ct-formcard :global(#contact-form button) {
+		position: relative;
+		overflow: hidden;
+		width: 100%;
+		margin-left: 0;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.6rem;
+		font-weight: 800;
+		font-size: 1rem;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+		color: #fff !important;
+		background: linear-gradient(95deg, var(--bd-accent), var(--ct-cta2)) !important;
+		border: 0 !important;
+		border-radius: 9999px !important;
+		padding: 1.05rem 2rem !important;
+		box-shadow: 0 18px 44px -16px color-mix(in srgb, var(--bd-accent) 85%, transparent);
+		transition: transform 0.22s ease, box-shadow 0.22s ease, filter 0.22s ease;
+	}
+	.ct-formcard :global(#contact-form button::after) {
+		content: '→';
+		font-size: 1.1rem;
+		transition: transform 0.25s ease;
+	}
+	.ct-formcard :global(#contact-form button:hover) {
+		transform: translateY(-2px);
+		box-shadow: 0 26px 54px -16px color-mix(in srgb, var(--bd-accent) 90%, transparent);
+		filter: brightness(1.06);
+	}
+	.ct-formcard :global(#contact-form button:hover::after) { transform: translateX(4px); }
+	.ct-formcard :global(#contact-form button:active) { transform: translateY(0); }
+	/* sweeping sheen across the pill */
+	.ct-formcard :global(#contact-form button::before) {
+		content: '';
+		position: absolute; inset: 0;
+		background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, 0.25) 50%, transparent 65%);
+		background-size: 250% 100%;
+		background-position: 120% 0;
+		animation: ct-btn-sheen 3.6s ease-in-out infinite;
+	}
+	@keyframes ct-btn-sheen {
+		0%, 55% { background-position: 120% 0; }
+		100% { background-position: -130% 0; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.ct-formcard :global(#contact-form button::before) { animation: none; }
 	}
 </style>
 
@@ -254,5 +328,14 @@ const channels = [
 		border-radius: 0.5rem;
 		transform: rotate(-2deg);
 		background: transparent;
+	}
+	/* founder submit pairs violet with pink */
+	html[data-view='founder'] .ct {
+		--ct-cta2: #ec4899;
+	}
+	/* light mode: translucent-white inputs read as fields, not voids */
+	html:not(.dark) .ct .ct-formcard #contact-form input,
+	html:not(.dark) .ct .ct-formcard #contact-form textarea {
+		background: rgba(255, 255, 255, 0.75) !important;
 	}
 </style>
