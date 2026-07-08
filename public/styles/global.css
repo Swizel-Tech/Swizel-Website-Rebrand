@@ -956,24 +956,29 @@ html[data-view="builder"] .default-body { display: none; }
 #swizel-cursor[data-icon="palette"] .cur-palette,
 #swizel-cursor[data-icon="vector"] .cur-vector { display: block !important; }
 
-/* Tailor the cursor to the page's world: the About page is the Boardroom
-   world, so force the boardroom blue + boardroom base icon there regardless
-   of the visitor's last-selected view. Per-section data-icon cursors still win
-   on hover (handled above). */
-body:has(.bd-about) #swizel-cursor,
-body:has(.bd-services) #swizel-cursor { color: #28a6ec; }
-body:has(.bd-about) #swizel-cursor .cur-builder,
-body:has(.bd-about) #swizel-cursor .cur-founder,
-body:has(.bd-about) #swizel-cursor .cur-campus,
-body:has(.bd-about) #swizel-cursor .cur-studio,
-body:has(.bd-about) #swizel-cursor .cur-legacy,
-body:has(.bd-services) #swizel-cursor .cur-builder,
-body:has(.bd-services) #swizel-cursor .cur-founder,
-body:has(.bd-services) #swizel-cursor .cur-campus,
-body:has(.bd-services) #swizel-cursor .cur-studio,
-body:has(.bd-services) #swizel-cursor .cur-legacy { display: none; }
-body:has(.bd-about) #swizel-cursor:not([data-icon]) .cur-boardroom,
-body:has(.bd-services) #swizel-cursor:not([data-icon]) .cur-boardroom { display: block; }
+/* Tailor the cursor to the page's world — but ONLY while the Boardroom
+   world is actually active. Pages carry every view's sections in the DOM
+   (hidden), so these rules must be scoped by the active data-view or the
+   boardroom briefcase leaks into the other views (founder gets its rocket,
+   builder its brackets, and so on). Per-section data-icon still wins. */
+html:not([data-view]) body:has(.bd-about) #swizel-cursor,
+html[data-view='boardroom'] body:has(.bd-about) #swizel-cursor,
+html:not([data-view]) body:has(.bd-services) #swizel-cursor,
+html[data-view='boardroom'] body:has(.bd-services) #swizel-cursor { color: #28a6ec; }
+html:not([data-view]) body:has(.bd-about) #swizel-cursor .cur-builder,
+html:not([data-view]) body:has(.bd-about) #swizel-cursor .cur-founder,
+html:not([data-view]) body:has(.bd-about) #swizel-cursor .cur-campus,
+html:not([data-view]) body:has(.bd-about) #swizel-cursor .cur-studio,
+html:not([data-view]) body:has(.bd-about) #swizel-cursor .cur-legacy,
+html:not([data-view]) body:has(.bd-services) #swizel-cursor .cur-builder,
+html:not([data-view]) body:has(.bd-services) #swizel-cursor .cur-founder,
+html:not([data-view]) body:has(.bd-services) #swizel-cursor .cur-campus,
+html:not([data-view]) body:has(.bd-services) #swizel-cursor .cur-studio,
+html:not([data-view]) body:has(.bd-services) #swizel-cursor .cur-legacy { display: none; }
+html:not([data-view]) body:has(.bd-about) #swizel-cursor:not([data-icon]) .cur-boardroom,
+html[data-view='boardroom'] body:has(.bd-about) #swizel-cursor:not([data-icon]) .cur-boardroom,
+html:not([data-view]) body:has(.bd-services) #swizel-cursor:not([data-icon]) .cur-boardroom,
+html[data-view='boardroom'] body:has(.bd-services) #swizel-cursor:not([data-icon]) .cur-boardroom { display: block; }
 
 /* Boardroom view body visibility — boardroom is the default view, so it
    also shows when no view has been chosen yet */
