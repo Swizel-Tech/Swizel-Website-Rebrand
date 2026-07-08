@@ -77,8 +77,10 @@ function bindFounderMotion(root: HTMLElement) {
 		});
 	}
 
-	// ── team profile modal (same data contract as the Boardroom About) ──
-	const modal = root.querySelector<HTMLElement>('#fa-member-modal');
+	// ── team profile modal (same data contract in every world) ──
+	const modal = root.querySelector<HTMLElement>(
+		'#fa-member-modal, .fa-member-modal'
+	);
 	if (modal) {
 		const photo = modal.querySelector<HTMLImageElement>('#fa-modal-photo')!;
 		const name = modal.querySelector<HTMLElement>('#fa-modal-name')!;
