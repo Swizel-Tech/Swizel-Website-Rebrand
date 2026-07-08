@@ -31,9 +31,16 @@ const {
 } = Astro.props;
 
 // Absolute URL for the social share image (required by Facebook/Twitter).
-const socialImageURL = new URL(image, Astro.site);
+// Canonicals stay on Astro.site (swizel.co), but share images must live on a
+// domain that actually serves this build — otherwise WhatsApp/X fetch a 404
+// and show no preview. On Vercel, VERCEL_PROJECT_PRODUCTION_URL is the
+// project's shortest production domain (the vercel.app URL today, and
+// swizel.co automatically once that domain is attached).
+const deployedHost = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+const shareBase = deployedHost ? `https://${deployedHost}` : Astro.site;
+const socialImageURL = new URL(image, shareBase);
 const socialImageSquareURL = imageSquare
-	? new URL(imageSquare, Astro.site)
+	? new URL(imageSquare, shareBase)
 	: undefined;
 
 // Organization structured data for rich results in Google.
