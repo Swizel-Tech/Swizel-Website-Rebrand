@@ -32,7 +32,10 @@ const channels = [
 
 		<header class="ct-hero">
 			<span class="ct-eyebrow"><span class="ct-wave">👋</span> Say hello</span>
-			<h1 class="ct-title">Tell us about your <span class="ct-grad">project.</span></h1>
+			<h1 class="ct-title">
+				<span class="ct-t ct-t--default">Tell us about your <span class="ct-grad">project.</span></span>
+				<span class="ct-t ct-t--founder">Tell us what you <span class="ct-grad">imagine.</span></span>
+			</h1>
 			<p class="ct-lead">
 				Whether it is a fully formed brief or a rough idea, tell us where you want to go.
 				We will get back to you, usually within one business day.
@@ -157,6 +160,10 @@ const channels = [
 	.ct-wave { font-size: 1.05em; line-height: 1; }
 	.ct-title { font-family: 'Bebas Neue', sans-serif; font-weight: 400; line-height: 0.95; letter-spacing: 0.5px; font-size: clamp(2.6rem, 7vw, 4.6rem); margin-bottom: 1rem; }
 	.ct-grad { background: linear-gradient(120deg, var(--bd-accent), #8dfeea); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+	/* per-view headline: founder reads "Tell us what you imagine." */
+	.ct-t--founder { display: none; }
+	:global(html[data-view='founder']) .ct-t--default { display: none; }
+	:global(html[data-view='founder']) .ct-t--founder { display: inline; }
 	.ct-lead { max-width: 36rem; margin: 0 auto; color: var(--bd-muted); font-size: 1.02rem; line-height: 1.65; }
 
 	.ct-grid { max-width: 64rem; margin: clamp(2rem, 4vw, 3rem) auto 0; display: grid; gap: clamp(1.2rem, 2.5vw, 1.8rem); align-items: start; perspective: 1500px; }
@@ -220,5 +227,32 @@ const channels = [
 	.ct-formcard :global(#contact-form button) { margin-left: 0; }
 	@media (max-width: 560px) {
 		.ct-formcard :global(#contact-form button) { width: 100%; }
+	}
+</style>
+
+<style is:global>
+	/* ── Founder world skin for the contact page ─────────────────
+	   Same page, founder dress: violet accent leads, pink secondary,
+	   the eyebrow becomes the dashed rotated founder stamp. */
+	html[data-view='founder'] .ct {
+		--bd-accent: #8b5cf6;
+	}
+	html[data-view='founder']:not(.dark) .ct {
+		--bd-accent: #6d3fe0;
+	}
+	html[data-view='founder'] .ct .ct-grad {
+		background: linear-gradient(120deg, var(--bd-accent), #ec4899);
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	html[data-view='founder'] .ct .ct-orb--2 {
+		background: radial-gradient(circle, rgba(236, 72, 153, 0.42), transparent 70%);
+	}
+	html[data-view='founder'] .ct .ct-eyebrow {
+		border: 1.5px dashed color-mix(in srgb, var(--bd-accent) 55%, transparent);
+		border-radius: 0.5rem;
+		transform: rotate(-2deg);
+		background: transparent;
 	}
 </style>
