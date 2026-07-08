@@ -10,6 +10,7 @@ import HowWeDoIt from '../components/sections/HowWeDoIt.astro';
 import ServicesDropDown from '../components/sections/ServicesDropDown.astro';
 import FooterCTA from '../components/blocks/FooterCTA.astro';
 import ServicesBoardroom from '../components/sections/ServicesBoardroom.astro';
+import ServicesFounder from '../components/sections/ServicesFounder.astro';
 ---
 
 <MainLayout
@@ -21,8 +22,11 @@ import ServicesBoardroom from '../components/sections/ServicesBoardroom.astro';
 	<!-- Boardroom world (also the default). Hidden in other views. -->
 	<ServicesBoardroom />
 
-	<!-- Fallback Services for the other worlds until each gets its own. -->
-	<div class="alt-view-only">
+	<!-- Founder world: the launch-crew telling of the same services. -->
+	<ServicesFounder />
+
+	<!-- Fallback Services for the remaining worlds until each gets its own. -->
+	<div class="alt-view-only services-fallback">
 	<Breadcrumb />
 	<Section>
 		<div class="py-20 grid md:grid-cols-2 gap-10">
@@ -88,3 +92,10 @@ import ServicesBoardroom from '../components/sections/ServicesBoardroom.astro';
 	<FooterCTA />
 	</div>
 </MainLayout>
+
+<style is:global>
+	/* Founder view has its own Services hub now — hide the generic fallback. */
+	html[data-view='founder'] .services-fallback {
+		display: none !important;
+	}
+</style>

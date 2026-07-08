@@ -1,0 +1,503 @@
+---
+// Service detail · Founder world — same discipline data as the Boardroom
+// detail page (overview, included, approach, ways, projects, review, FAQs),
+// told with founder momentum and tinted by the discipline's own colour.
+import { Icon } from 'astro-icon/components';
+import type { Discipline } from '../../data/disciplines';
+
+interface Props {
+	discipline: Discipline;
+	others: Discipline[];
+}
+const { discipline: d, others } = Astro.props;
+---
+
+<div class="fsd fbody view-body view-body-founder" style={`--c:${d.color}`}>
+	<div class="fsd-bg" aria-hidden="true">
+		<span class="fsd-orb fsd-orb--a"></span>
+		<span class="fsd-orb fsd-orb--b"></span>
+	</div>
+
+	<!-- ── hero ── -->
+	<section class="fsd-sec" data-cursor={d.cursor}>
+		<div class="fsd-wrap fsd-hero">
+			<div class="fd-rev">
+				<nav class="fsd-crumb" aria-label="Breadcrumb">
+					<a href="/services">Services</a>
+					<Icon width={14} name="mdi:chevron-right" />
+					<span>{d.title}</span>
+				</nav>
+				<span class="fsd-stamp">
+					{d.n} · Founder mode
+				</span>
+				<h1 class="fsd-h fsd-h--xl">{d.tagline.replace(/\.$/, '')}<em>.</em></h1>
+				<p class="fsd-p">{d.heroDesc}</p>
+				<p class="fsd-clarify">
+					<Icon width={16} name="mdi:information-outline" />
+					{d.clarifier}
+				</p>
+				<div class="fsd-row">
+					<a href="/contact" class="fsd-cta fs-cta">
+						Start Week 1
+						<Icon width={17} name="mdi:rocket-launch-outline" />
+					</a>
+					<a href="#fsd-included" class="fsd-link">
+						What's included
+						<Icon width={15} name="mdi:chevron-down" />
+					</a>
+				</div>
+			</div>
+			<div class="fsd-heropanel fd-rev" data-fa-tilt="7">
+				<span class="fsd-glare" aria-hidden="true"></span>
+				<span class="fsd-heropanel-ic">
+					<Icon width={44} name={d.icon} />
+				</span>
+				<p class="fsd-overview">{d.overview}</p>
+				<span class="fsd-heropanel-tag">{d.outcome}</span>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── what's included ── -->
+	<section class="fsd-sec" id="fsd-included" data-cursor="repo">
+		<div class="fsd-wrap">
+			<div class="fsd-head fd-rev">
+				<span class="fsd-stamp">What's included</span>
+				<h2 class="fsd-h">Everything the discipline <em>covers.</em></h2>
+			</div>
+			<div class="fsd-inc">
+				{
+					d.included.map((s, i) => (
+						<article class="fsd-inc-card fd-rev" style={`--i:${i % 3}`} data-fa-tilt="9">
+							<span class="fsd-glare" aria-hidden="true" />
+							<h3>{s.title}</h3>
+							<p>{s.desc}</p>
+							<span class="fsd-inc-items">
+								{s.items.map((it) => (
+									<i>
+										<Icon width={12} name="mdi:check" />
+										{it}
+									</i>
+								))}
+							</span>
+						</article>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── how we approach it ── -->
+	<section class="fsd-sec" data-cursor="clock">
+		<div class="fsd-wrap">
+			<div class="fsd-head fd-rev">
+				<span class="fsd-stamp">The approach</span>
+				<h2 class="fsd-h">How we <em>run it.</em></h2>
+			</div>
+			<ol class="fs-steps fsd-steps fd-rev">
+				<span class="fsd-steps-line" aria-hidden="true"></span>
+				{
+					d.approach.map((p, i) => (
+						<li class="fsd-step" style={`--i:${i}`}>
+							<span class="fsd-step-n">{p.n}</span>
+							<h3>{p.title}</h3>
+							<p>{p.desc}</p>
+						</li>
+					))
+				}
+			</ol>
+		</div>
+	</section>
+
+	<!-- ── ways to work together ── -->
+	<section class="fsd-sec">
+		<div class="fsd-wrap">
+			<div class="fsd-head fd-rev">
+				<span class="fsd-stamp">Ways to work together</span>
+				<h2 class="fsd-h">Pick your <em>lane.</em></h2>
+			</div>
+			<div class="fsd-ways">
+				{
+					d.ways.map((w, i) => (
+						<article class="fsd-way fd-rev" style={`--i:${i}`} data-fa-tilt="10">
+							<span class="fsd-glare" aria-hidden="true" />
+							<span class="fsd-way-ic">
+								<Icon width={22} name={w.icon} />
+							</span>
+							<h3>{w.title}</h3>
+							<p>{w.desc}</p>
+						</article>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── proof: projects + review ── -->
+	<section class="fsd-sec" data-cursor="repo">
+		<div class="fsd-wrap">
+			<div class="fsd-head fd-rev">
+				<span class="fsd-stamp">Receipts</span>
+				<h2 class="fsd-h">We've done this <em>before.</em></h2>
+			</div>
+			<div class="fsd-proof">
+				{
+					d.projects.map((p, i) => (
+						<figure class="fsd-proj fd-rev" style={`--i:${i}`} data-fa-tilt="8">
+							{p.img ? (
+								<img src={p.img} alt={p.name} loading="lazy" />
+							) : (
+								<span class="fsd-proj-ph">
+									<Icon width={22} name="mdi:image-outline" />
+								</span>
+							)}
+							<figcaption>
+								<strong>{p.name}</strong>
+								<em>{p.sector}</em>
+							</figcaption>
+						</figure>
+					))
+				}
+			</div>
+			<figure class="fsd-review fd-rev" data-cursor="quote">
+				<span class="fsd-review-mark" aria-hidden="true">“</span>
+				<blockquote>“{d.review.quote}”</blockquote>
+				<figcaption>
+					<img src={d.review.img} alt={d.review.name} loading="lazy" width="44" height="44" />
+					<span>
+						<strong>{d.review.name}</strong>
+						<em>{d.review.role}</em>
+					</span>
+				</figcaption>
+			</figure>
+		</div>
+	</section>
+
+	<!-- ── FAQs ── -->
+	{
+		d.faqs && d.faqs.length > 0 && (
+			<section class="fsd-sec" data-cursor="quote">
+				<div class="fsd-wrap fsd-wrap--narrow">
+					<div class="fsd-head fd-rev">
+						<span class="fsd-stamp">Good to know</span>
+						<h2 class="fsd-h">Questions, <em>answered.</em></h2>
+					</div>
+					<div class="fsd-faq fd-rev">
+						{d.faqs.map((f, i) => (
+							<details class="fsd-faq-item" open={i === 0}>
+								<summary>
+									<span>{f.q}</span>
+									<Icon class="fsd-faq-caret" width={20} name="mdi:chevron-down" />
+								</summary>
+								<p>{f.a}</p>
+							</details>
+						))}
+					</div>
+				</div>
+			</section>
+		)
+	}
+
+	<!-- ── other disciplines + CTA ── -->
+	<section class="fsd-sec fsd-sec--last" data-cursor="phone">
+		<div class="fsd-wrap">
+			<div class="fsd-others fd-rev">
+				<span class="fsd-others-h">Explore the other disciplines</span>
+				<div class="fsd-others-row">
+					{
+						others.map((o) => (
+							<a
+								href={`/services/${o.slug}`}
+								class="fsd-other"
+								style={`--oc:${o.color}`}
+								data-cursor={o.cursor}
+							>
+								<Icon width={16} name={o.icon} />
+								{o.title}
+							</a>
+						))
+					}
+				</div>
+			</div>
+
+			<div class="fsd-ctabox fd-rev">
+				<h2 class="fsd-h">Bring us <em>your Day 0.</em></h2>
+				<p class="fsd-p fsd-p--center">
+					Tell us what you imagine. You'll have a clear plan, timeline
+					and estimate within one business day.
+				</p>
+				<div class="fsd-row fsd-row--center">
+					<a href="/contact" class="fsd-cta fs-cta">
+						Talk to a project manager
+						<Icon width={17} name="mdi:rocket-launch-outline" />
+					</a>
+					<a href="/portfolio" class="fsd-link">
+						See the launches
+						<Icon width={15} name="mdi:arrow-right" />
+					</a>
+				</div>
+			</div>
+		</div>
+	</section>
+</div>
+
+<style>
+	.fsd {
+		--fa-ink: #f1edfb;
+		--fa-muted: rgba(241, 237, 251, 0.62);
+		--fa-acc: var(--c, #8b5cf6);
+		--fa-acc2: #ec4899;
+		--fa-line: rgba(255, 255, 255, 0.09);
+		--fa-card: rgba(255, 255, 255, 0.035);
+		font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+			Roboto, sans-serif;
+		position: relative;
+		isolation: isolate;
+		background:
+			radial-gradient(900px 500px at 85% -8%, color-mix(in srgb, var(--c, #8b5cf6) 14%, transparent), transparent 62%),
+			radial-gradient(760px 440px at 4% 46%, rgba(236, 72, 153, 0.07), transparent 60%),
+			linear-gradient(180deg, #0a0714 0%, #0d0a18 50%, #080610 100%);
+		color: var(--fa-ink);
+		padding: clamp(3rem, 7vw, 5rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 4rem);
+	}
+	:global(html:not(.dark)) .fsd {
+		--fa-ink: #1d1430;
+		--fa-muted: rgba(29, 20, 48, 0.66);
+		--fa-line: rgba(29, 20, 48, 0.1);
+		--fa-card: rgba(29, 20, 48, 0.04);
+		background:
+			radial-gradient(900px 500px at 85% -8%, color-mix(in srgb, var(--c, #8b5cf6) 10%, transparent), transparent 62%),
+			linear-gradient(180deg, #f4f1fb 0%, #ece7f8 55%, #f4f1fb 100%);
+	}
+	.fsd-sec { position: relative; z-index: 1; padding-block: clamp(1.8rem, 4.5vw, 3.2rem); }
+	.fsd-sec--last { padding-bottom: clamp(3rem, 6vw, 4.5rem); }
+	.fsd-wrap { max-width: 74rem; margin: 0 auto; }
+	.fsd-wrap--narrow { max-width: 52rem; }
+
+	.fsd-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+	.fsd-orb { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.45; animation: fsd-drift 15s ease-in-out infinite alternate; }
+	.fsd-orb--a { width: 440px; height: 440px; left: -140px; top: 5%; background: radial-gradient(circle, color-mix(in srgb, var(--c, #8b5cf6) 40%, transparent), transparent 70%); }
+	.fsd-orb--b { width: 500px; height: 500px; right: -170px; top: 40%; background: radial-gradient(circle, rgba(236, 72, 153, 0.16), transparent 70%); animation-delay: -7s; }
+	@keyframes fsd-drift { to { transform: translate3d(50px, -36px, 0) scale(1.1); } }
+	@media (prefers-reduced-motion: reduce) { .fsd-orb { animation: none; } }
+
+	.fsd-stamp {
+		display: inline-block; font-size: 0.72rem; font-weight: 800;
+		letter-spacing: 0.14em; text-transform: uppercase; color: var(--c);
+		border: 1.5px dashed color-mix(in srgb, var(--c) 55%, transparent);
+		padding: 0.35rem 0.8rem; border-radius: 0.5rem; transform: rotate(-2deg);
+		margin-bottom: 1rem;
+	}
+	.fsd-h { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 850; letter-spacing: -0.025em; line-height: 1.06; margin: 0 0 1rem; }
+	.fsd-h--xl { font-size: clamp(2.1rem, 4.4vw, 3.3rem); }
+	.fsd-h em {
+		font-style: italic;
+		background: linear-gradient(95deg, var(--c), var(--fa-acc2));
+		-webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+		padding-right: 0.06em;
+	}
+	.fsd-p { font-size: 1.02rem; line-height: 1.65; color: var(--fa-muted); max-width: 34rem; margin: 0 0 1.2rem; }
+	.fsd-p--center { margin-inline: auto; text-align: center; }
+	.fsd-head { text-align: center; max-width: 46rem; margin: 0 auto clamp(1.4rem, 3vw, 2rem); }
+	.fsd-link { display: inline-flex; align-items: center; gap: 0.45rem; font-weight: 700; color: var(--c); transition: gap 0.25s ease; }
+	.fsd-link:hover { gap: 0.75rem; }
+	.fsd-row { display: flex; align-items: center; gap: 1.3rem; flex-wrap: wrap; }
+	.fsd-row--center { justify-content: center; }
+	.fsd-cta {
+		display: inline-flex; align-items: center; gap: 0.55rem;
+		font-weight: 800; font-size: 0.96rem; color: #fff;
+		background: linear-gradient(95deg, var(--c), var(--fa-acc2));
+		padding: 0.85rem 1.6rem; border-radius: 9999px;
+		box-shadow: 0 16px 38px -14px color-mix(in srgb, var(--c) 80%, transparent);
+		transition: transform 0.22s ease, box-shadow 0.22s ease;
+	}
+	.fsd-cta:hover { transform: translateY(-2px); }
+
+	.fd-rev {
+		opacity: 0; transform: translateY(22px);
+		transition: opacity 0.6s ease calc(var(--i, 0) * 90ms),
+			transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i, 0) * 90ms);
+	}
+	.fd-rev.is-on { opacity: 1; transform: none; }
+	@media (prefers-reduced-motion: reduce) { .fd-rev { opacity: 1; transform: none; transition: none; } }
+
+	.fsd-glare {
+		position: absolute; inset: 0;
+		background: radial-gradient(320px 210px at var(--gx, 50%) var(--gy, 0%), rgba(255, 255, 255, 0.09), transparent 60%);
+		opacity: 0; transition: opacity 0.3s ease; pointer-events: none;
+	}
+	:is(.fsd-heropanel, .fsd-inc-card, .fsd-way):hover .fsd-glare { opacity: 1; }
+
+	/* hero */
+	.fsd-hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: clamp(2rem, 4vw, 3.2rem); align-items: center; }
+	.fsd-crumb { display: flex; align-items: center; gap: 0.4rem; font-size: 0.82rem; font-weight: 600; color: var(--fa-muted); margin-bottom: 1rem; }
+	.fsd-crumb a { color: var(--c); }
+	.fsd-clarify { display: flex; align-items: center; gap: 0.5rem; font-size: 0.88rem; color: var(--fa-muted); margin: -0.4rem 0 1.3rem; }
+	.fsd-clarify svg { color: var(--c); flex-shrink: 0; }
+	.fsd-heropanel {
+		position: relative; overflow: hidden;
+		border: 1px solid color-mix(in srgb, var(--c) 30%, rgba(255, 255, 255, 0.1));
+		border-radius: 1.3rem;
+		background:
+			linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 55%),
+			radial-gradient(120% 90% at 85% -20%, color-mix(in srgb, var(--c) 14%, transparent), transparent 60%),
+			var(--fa-card);
+		padding: 1.6rem;
+		transform-style: preserve-3d; will-change: transform;
+	}
+	.fsd-heropanel-ic {
+		display: grid; place-items: center; width: 72px; height: 72px;
+		border-radius: 1.1rem; color: var(--c);
+		background: linear-gradient(135deg, color-mix(in srgb, var(--c) 32%, transparent), color-mix(in srgb, var(--c) 10%, transparent));
+		box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, 0.22), 0 10px 22px -10px color-mix(in srgb, var(--c) 80%, transparent);
+		margin-bottom: 1rem;
+		animation: fsd-bob 5s ease-in-out infinite;
+	}
+	@keyframes fsd-bob { 0%, 100% { margin-top: 0; } 50% { margin-top: -7px; } }
+	@media (prefers-reduced-motion: reduce) { .fsd-heropanel-ic { animation: none; } }
+	.fsd-overview { font-size: 0.98rem; line-height: 1.65; color: var(--fa-muted); margin: 0 0 1rem; }
+	.fsd-heropanel-tag {
+		display: inline-block; font-size: 0.78rem; font-weight: 800;
+		letter-spacing: 0.06em; text-transform: uppercase; color: var(--c);
+	}
+
+	/* included */
+	.fsd-inc { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+	.fsd-inc-card {
+		position: relative; overflow: hidden;
+		border: 1px solid var(--fa-line); border-radius: 1.1rem;
+		background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 55%), var(--fa-card);
+		padding: 1.3rem 1.2rem;
+		transform-style: preserve-3d; will-change: transform;
+		transition: border-color 0.3s ease;
+	}
+	.fsd-inc-card:hover { border-color: color-mix(in srgb, var(--c) 50%, transparent); }
+	.fsd-inc-card h3 { font-size: 1.05rem; font-weight: 800; margin: 0 0 0.35rem; }
+	.fsd-inc-card p { font-size: 0.9rem; line-height: 1.6; color: var(--fa-muted); margin: 0 0 0.8rem; }
+	.fsd-inc-items { display: grid; gap: 0.35rem; }
+	.fsd-inc-items i { display: flex; align-items: center; gap: 0.45rem; font-style: normal; font-size: 0.82rem; color: var(--fa-muted); }
+	.fsd-inc-items svg { color: var(--c); flex-shrink: 0; }
+
+	/* steps */
+	.fsd-steps { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.2rem; list-style: none; margin: 0; padding: 0; }
+	.fsd-steps-line {
+		position: absolute; top: 1.45rem; left: 4%; right: 4%; height: 2.5px; border-radius: 2px;
+		background: linear-gradient(90deg, var(--c), var(--fa-acc2));
+		box-shadow: 0 0 12px color-mix(in srgb, var(--c) 55%, transparent);
+		transform: scaleX(0); transform-origin: left;
+		transition: transform 2s cubic-bezier(0.22, 1, 0.36, 1) 0.2s;
+	}
+	.fsd-steps.is-on .fsd-steps-line { transform: scaleX(1); }
+	.fsd-step { position: relative; text-align: center; padding-top: 3.4rem; }
+	.fsd-step-n {
+		position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+		display: grid; place-items: center; width: 2.9rem; height: 2.9rem;
+		border-radius: 50%; font-size: 0.82rem; font-weight: 800; color: #fff;
+		background: linear-gradient(135deg, var(--c), var(--fa-acc2));
+		box-shadow: 0 0 0 6px color-mix(in srgb, var(--c) 18%, transparent);
+		z-index: 1;
+	}
+	.fsd-step h3 { font-size: 1.1rem; font-weight: 800; margin: 0 0 0.3rem; }
+	.fsd-step p { font-size: 0.9rem; line-height: 1.6; color: var(--fa-muted); max-width: 20rem; margin: 0 auto; }
+
+	/* ways */
+	.fsd-ways { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1rem; }
+	.fsd-way {
+		position: relative; overflow: hidden;
+		border: 1px solid var(--fa-line); border-radius: 1.1rem;
+		background: var(--fa-card); padding: 1.3rem 1.2rem;
+		transform-style: preserve-3d; will-change: transform;
+		transition: border-color 0.3s ease;
+	}
+	.fsd-way:hover { border-color: color-mix(in srgb, var(--c) 50%, transparent); }
+	.fsd-way-ic {
+		display: grid; place-items: center; width: 44px; height: 44px;
+		border-radius: 0.8rem; color: var(--c);
+		background: color-mix(in srgb, var(--c) 14%, transparent);
+		margin-bottom: 0.8rem;
+	}
+	.fsd-way h3 { font-size: 1rem; font-weight: 800; margin: 0 0 0.3rem; }
+	.fsd-way p { font-size: 0.88rem; line-height: 1.55; color: var(--fa-muted); margin: 0; }
+
+	/* proof */
+	.fsd-proof { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin-bottom: 1.2rem; }
+	.fsd-proj {
+		margin: 0; border: 1px solid var(--fa-line); border-radius: 1rem;
+		overflow: hidden; background: var(--fa-card);
+		transform-style: preserve-3d; will-change: transform;
+		transition: border-color 0.3s ease;
+	}
+	.fsd-proj:hover { border-color: color-mix(in srgb, var(--c) 50%, transparent); }
+	.fsd-proj img { display: block; width: 100%; height: 150px; object-fit: cover; }
+	.fsd-proj-ph { display: grid; place-items: center; height: 150px; color: var(--c); background: color-mix(in srgb, var(--c) 7%, transparent); }
+	.fsd-proj figcaption { padding: 0.7rem 0.9rem; }
+	.fsd-proj strong { display: block; font-size: 0.92rem; font-weight: 800; }
+	.fsd-proj em { display: block; font-style: normal; font-size: 0.76rem; color: var(--fa-muted); }
+	.fsd-review {
+		position: relative; overflow: hidden; margin: 0;
+		border: 1px solid var(--fa-line); border-radius: 1.2rem;
+		background: var(--fa-card); padding: 1.5rem 1.5rem 1.3rem;
+		display: grid; gap: 1rem; max-width: 44rem; margin-inline: auto;
+	}
+	.fsd-review-mark {
+		position: absolute; top: -1.6rem; right: 0.5rem;
+		font-family: Georgia, serif; font-size: 7rem; line-height: 1;
+		color: color-mix(in srgb, var(--c) 18%, transparent); pointer-events: none;
+	}
+	.fsd-review blockquote { margin: 0; font-size: 1rem; line-height: 1.65; color: var(--fa-muted); }
+	.fsd-review figcaption { display: flex; align-items: center; gap: 0.65rem; }
+	.fsd-review figcaption img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid color-mix(in srgb, var(--c) 40%, transparent); }
+	.fsd-review strong { display: block; font-size: 0.9rem; font-weight: 800; }
+	.fsd-review em { display: block; font-style: normal; font-size: 0.76rem; color: var(--fa-muted); }
+
+	/* faq */
+	.fsd-faq { display: grid; gap: 0.6rem; }
+	.fsd-faq-item {
+		border: 1px solid var(--fa-line); border-radius: 0.9rem;
+		background: var(--fa-card); padding: 0 1.1rem;
+		transition: border-color 0.25s ease;
+	}
+	.fsd-faq-item[open] { border-color: color-mix(in srgb, var(--c) 45%, transparent); }
+	.fsd-faq-item summary {
+		display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+		padding: 0.95rem 0; cursor: pointer; list-style: none;
+		font-size: 0.95rem; font-weight: 700;
+	}
+	.fsd-faq-item summary::-webkit-details-marker { display: none; }
+	.fsd-faq-caret { color: var(--c); transition: transform 0.25s ease; flex-shrink: 0; }
+	.fsd-faq-item[open] .fsd-faq-caret { transform: rotate(180deg); }
+	.fsd-faq-item p { font-size: 0.9rem; line-height: 1.65; color: var(--fa-muted); margin: 0; padding: 0 0 1rem; }
+
+	/* others + cta */
+	.fsd-others { text-align: center; margin-bottom: clamp(1.8rem, 4vw, 2.6rem); }
+	.fsd-others-h {
+		display: block; font-size: 0.72rem; font-weight: 800;
+		letter-spacing: 0.12em; text-transform: uppercase;
+		color: var(--fa-muted); margin-bottom: 0.8rem;
+	}
+	.fsd-others-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
+	.fsd-other {
+		display: inline-flex; align-items: center; gap: 0.45rem;
+		font-size: 0.85rem; font-weight: 700;
+		padding: 0.5rem 0.95rem; border-radius: 999px;
+		border: 1px solid color-mix(in srgb, var(--oc, #8b5cf6) 40%, transparent);
+		background: color-mix(in srgb, var(--oc, #8b5cf6) 9%, transparent);
+		color: var(--fa-ink);
+		transition: transform 0.22s ease, background 0.22s ease;
+	}
+	.fsd-other:hover { transform: translateY(-2px); background: color-mix(in srgb, var(--oc) 18%, transparent); }
+	.fsd-other svg { color: var(--oc); }
+	.fsd-ctabox { text-align: center; max-width: 46rem; margin: 0 auto; }
+
+	@media (max-width: 980px) {
+		.fsd-hero { grid-template-columns: minmax(0, 1fr); }
+		.fsd-inc { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+		.fsd-proof { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	}
+	@media (max-width: 640px) {
+		.fsd-inc { grid-template-columns: minmax(0, 1fr); }
+		.fsd-proof { grid-template-columns: minmax(0, 1fr); }
+		.fsd-steps { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
+		.fsd-steps-line { display: none; }
+	}
+</style>

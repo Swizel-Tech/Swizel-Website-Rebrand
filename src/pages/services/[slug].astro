@@ -1,6 +1,7 @@
 ---
 import MainLayout from '../../layouts/MainLayout.astro';
 import ServiceDetail from '../../components/sections/ServiceDetail.astro';
+import ServiceDetailFounder from '../../components/sections/ServiceDetailFounder.astro';
 import CustomButton from '../../components/CustomButton.astro';
 import { Icon } from 'astro-icon/components';
 import { disciplines } from '../../data/disciplines';
@@ -26,8 +27,11 @@ const pageDescription = discipline.heroDesc;
 	<!-- Boardroom world (also the default). Hidden in other views. -->
 	<ServiceDetail discipline={discipline} others={others} />
 
-	<!-- Minimal fallback for the other worlds. -->
-	<div class="alt-view-only">
+	<!-- Founder world: same discipline, founder telling. -->
+	<ServiceDetailFounder discipline={discipline} others={others} />
+
+	<!-- Minimal fallback for the remaining worlds. -->
+	<div class="alt-view-only svc-detail-fallback">
 		<section class="px-[5%] py-24 max-w-3xl mx-auto text-center space-y-6">
 			<p class="uppercase tracking-widest text-sm text-swizelGreen font-semibold">
 				Services
@@ -52,3 +56,10 @@ const pageDescription = discipline.heroDesc;
 		</section>
 	</div>
 </MainLayout>
+
+<style is:global>
+	/* Founder view has its own service detail now — hide the generic fallback. */
+	html[data-view='founder'] .svc-detail-fallback {
+		display: none !important;
+	}
+</style>

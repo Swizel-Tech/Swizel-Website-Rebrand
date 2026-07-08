@@ -2,8 +2,14 @@
 // journey line that draws itself, floating chips parallax, and magnetic CTA.
 // Idempotent: safe to call on every swup navigation.
 export function initAboutFounder() {
-	const root = document.querySelector<HTMLElement>('.fabout');
-	if (!root || root.dataset.faBound) return;
+	// Binds every founder-world page body (About, Services hub, details, …).
+	document
+		.querySelectorAll<HTMLElement>('.fabout, .fsvc, .fsd')
+		.forEach((root) => bindFounderMotion(root));
+}
+
+function bindFounderMotion(root: HTMLElement) {
+	if (root.dataset.faBound) return;
 	root.dataset.faBound = '1';
 	const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -123,17 +129,18 @@ export function initAboutFounder() {
 		});
 	}
 
-	// ── magnetic CTA button ──
-	const cta = root.querySelector<HTMLElement>('.fa-cta');
-	if (cta && !reduce) {
-		cta.addEventListener('pointermove', (e) => {
-			const r = cta.getBoundingClientRect();
-			const px = (e.clientX - r.left) / r.width - 0.5;
-			const py = (e.clientY - r.top) / r.height - 0.5;
-			cta.style.transform = `translate(${px * 8}px, ${py * 6 - 2}px)`;
-		});
-		cta.addEventListener('pointerleave', () => {
-			cta.style.transform = '';
+	// ── magnetic CTA buttons ──
+	if (!reduce) {
+		root.querySelectorAll<HTMLElement>('.fa-cta, .fs-cta').forEach((cta) => {
+			cta.addEventListener('pointermove', (e) => {
+				const r = cta.getBoundingClientRect();
+				const px = (e.clientX - r.left) / r.width - 0.5;
+				const py = (e.clientY - r.top) / r.height - 0.5;
+				cta.style.transform = `translate(${px * 8}px, ${py * 6 - 2}px)`;
+			});
+			cta.addEventListener('pointerleave', () => {
+				cta.style.transform = '';
+			});
 		});
 	}
 }
