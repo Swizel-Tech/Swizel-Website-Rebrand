@@ -2,13 +2,14 @@
 import { Icon } from 'astro-icon/components';
 import { views, viewQuiz } from '../consts';
 
+// Six services, each with its own accent hue for the glossy cards.
 const services = [
-	{ icon: 'mdi:code-tags', label: 'Software development', sub: 'Web & mobile apps' },
-	{ icon: 'mdi:palette-outline', label: 'Design & branding', sub: 'UI/UX that converts' },
-	{ icon: 'mdi:bullhorn-outline', label: 'Marketing & growth', sub: 'SEO, ads, content' },
-	{ icon: 'mdi:compass-outline', label: 'Product strategy', sub: 'From idea to roadmap' },
-	{ icon: 'mdi:server', label: 'Hosting & maintenance', sub: 'We stay after launch' },
-	{ icon: 'mdi:school-outline', label: 'Free tech bootcamp', sub: 'Learn, build, get hired' },
+	{ icon: 'mdi:code-tags', label: 'Software development', sub: 'Web & mobile apps', hue: '#14b8a6' },
+	{ icon: 'mdi:palette-outline', label: 'Design & branding', sub: 'UI/UX that converts', hue: '#ec4899' },
+	{ icon: 'mdi:bullhorn-outline', label: 'Marketing & growth', sub: 'SEO, ads, content', hue: '#f59e0b' },
+	{ icon: 'mdi:compass-outline', label: 'Product strategy', sub: 'From idea to roadmap', hue: '#8b5cf6' },
+	{ icon: 'mdi:server', label: 'Hosting & maintenance', sub: 'We stay after launch', hue: '#3b82f6' },
+	{ icon: 'mdi:school-outline', label: 'Free tech bootcamp', sub: 'Learn, build, get hired', hue: '#22c55e' },
 ];
 
 const proof = [
@@ -59,7 +60,7 @@ const proof = [
 			<ul class="vo__services">
 				{
 					services.map((s) => (
-						<li class="vo__service">
+						<li class="vo__service" style={`--svc:${s.hue}`}>
 							<span class="vo__service-ico">
 								<Icon width={18} name={s.icon} />
 							</span>
@@ -465,11 +466,39 @@ const proof = [
 		}
 	}
 	.vo__service {
-		transition: border-color 0.25s ease, transform 0.25s ease;
+		transition: border-color 0.3s ease, transform 0.3s ease,
+			box-shadow 0.3s ease;
 	}
 	.vo__service:hover {
-		border-color: #13b6a0;
-		transform: translateY(-2px);
+		border-color: color-mix(in srgb, var(--svc, #13b6a0) 65%, transparent);
+		transform: translateY(-3px);
+		box-shadow:
+			0 14px 30px -14px color-mix(in srgb, var(--svc, #13b6a0) 55%, transparent),
+			inset 0 1px 0 rgba(255, 255, 255, 0.16);
+	}
+	/* sheen sweep on hover */
+	.vo__service::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		border-radius: inherit;
+		background: linear-gradient(
+			115deg,
+			transparent 30%,
+			rgba(255, 255, 255, 0.14) 46%,
+			rgba(255, 255, 255, 0.03) 54%,
+			transparent 70%
+		);
+		background-size: 240% 100%;
+		background-position: 120% 0;
+		pointer-events: none;
+	}
+	.vo__service:hover::after {
+		animation: vo-sheen 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+	@keyframes vo-sheen {
+		from { background-position: 120% 0; }
+		to { background-position: -120% 0; }
 	}
 	@media (max-width: 880px) {
 		.vo__services { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -478,26 +507,47 @@ const proof = [
 		.vo__services { grid-template-columns: 1fr; }
 	}
 	.vo__service {
+		position: relative;
+		overflow: hidden;
 		display: flex;
 		align-items: center;
 		gap: 0.55rem;
-		padding: 0.5rem 0.65rem;
-		border-radius: 0.8rem;
+		padding: 0.55rem 0.7rem;
+		border-radius: 0.85rem;
 		border: 1px solid var(--ob-card-border);
-		background: var(--ob-card);
+		/* glassy: soft top-light + a whisper of the card's own hue */
+		background:
+			linear-gradient(180deg, rgba(255, 255, 255, 0.07), transparent 55%),
+			radial-gradient(120% 90% at 85% -20%, color-mix(in srgb, var(--svc, #13b6a0) 10%, transparent), transparent 60%),
+			var(--ob-card);
+		box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.09);
+	}
+	:global(html:not(.dark)) .vo .vo__service {
+		background:
+			linear-gradient(180deg, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.25) 55%),
+			radial-gradient(120% 90% at 85% -20%, color-mix(in srgb, var(--svc, #13b6a0) 8%, transparent), transparent 60%),
+			var(--ob-card);
+		box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
 	}
 	.vo__service-ico {
 		display: grid;
 		place-items: center;
-		width: 30px;
-		height: 30px;
+		width: 32px;
+		height: 32px;
 		flex-shrink: 0;
-		border-radius: 0.6rem;
-		background: linear-gradient(135deg, rgba(19, 182, 160, 0.16), rgba(31, 143, 214, 0.14));
-		color: #0e9c8b;
+		border-radius: 0.65rem;
+		background: linear-gradient(
+			135deg,
+			color-mix(in srgb, var(--svc, #13b6a0) 32%, transparent),
+			color-mix(in srgb, var(--svc, #13b6a0) 12%, transparent)
+		);
+		color: var(--svc, #0e9c8b);
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.25),
+			0 6px 14px -8px color-mix(in srgb, var(--svc, #13b6a0) 70%, transparent);
 	}
-	:global(html.dark) .vo .vo__service-ico {
-		color: #5eead4;
+	:global(html:not(.dark)) .vo .vo__service-ico {
+		color: color-mix(in srgb, var(--svc, #0e9c8b) 75%, #000);
 	}
 	.vo__service-txt {
 		display: flex;
