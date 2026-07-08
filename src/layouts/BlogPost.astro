@@ -46,9 +46,11 @@ const wa = `https://wa.me/?text=${encodeURIComponent(title + ' ' + shareUrl)}`;
 	<!-- Reading progress -->
 	<div class="br-progress" aria-hidden="true"><span></span></div>
 
-	<!-- ══ Boardroom reading world ══ -->
+	<!-- ══ The rich reader — serves BOTH the Boardroom and Founder worlds
+	     (dual view-body classes); founder skin via the html[data-view]
+	     overrides at the bottom of this file. ══ -->
 	<article
-		class="bdbody bd-services bd-reader view-body view-body-boardroom"
+		class="bdbody bd-services bd-reader view-body view-body-boardroom view-body-founder"
 		style={`--c:${c}`}
 		data-cursor="book"
 	>
@@ -146,8 +148,8 @@ const wa = `https://wa.me/?text=${encodeURIComponent(title + ' ' + shareUrl)}`;
 		)}
 	</article>
 
-	<!-- ══ Fallback for the other worlds (legacy reading page) ══ -->
-	<div class="alt-view-only">
+	<!-- ══ Fallback for the remaining worlds (legacy reading page) ══ -->
+	<div class="alt-view-only post-fallback">
 		<Section divClass="py-20 blog--post">
 			<div class="max-w-2xl mx-auto space-y-6 md:pb-16">
 				<Link href="/blog" class="flex items-center gap-4 text-darker uppercase text-xs font-bold">
@@ -345,5 +347,34 @@ const wa = `https://wa.me/?text=${encodeURIComponent(title + ' ' + shareUrl)}`;
 	@media (prefers-reduced-motion: reduce) {
 		.bd-reveal { opacity: 1; transform: none; transition: none; }
 		.bd-reader::before, .bd-reader::after { animation: none; }
+	}
+</style>
+
+<style is:global>
+	/* ── Founder world skin for the reader ─────────────────────────
+	   Same article, founder dress: the violet stage, Inter type and a
+	   pink secondary accent. The category colour (--c) still leads. */
+	html[data-view='founder'] .bd-reader {
+		font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+			Roboto, sans-serif;
+		background:
+			radial-gradient(1000px 540px at 82% -6%, color-mix(in srgb, var(--c) 15%, transparent), transparent 62%),
+			radial-gradient(820px 480px at 6% 34%, rgba(139, 92, 246, 0.12), transparent 60%),
+			linear-gradient(180deg, #0a0714 0%, #0d0a18 50%, #080610 100%);
+	}
+	html[data-view='founder']:not(.dark) .bd-reader {
+		background:
+			radial-gradient(1000px 540px at 82% -6%, color-mix(in srgb, var(--c) 11%, transparent), transparent 62%),
+			linear-gradient(180deg, #f4f1fb 0%, #ece7f8 55%, #f4f1fb 100%);
+	}
+	/* founder stamps: the dashed, slightly-rotated badge language */
+	html[data-view='founder'] .bd-reader .br-cat {
+		border: 1.5px dashed color-mix(in srgb, var(--c) 60%, transparent);
+		border-radius: 0.5rem;
+		transform: rotate(-2deg);
+	}
+	/* Founder view has the rich reader — hide the legacy fallback there. */
+	html[data-view='founder'] .post-fallback {
+		display: none !important;
 	}
 </style>
