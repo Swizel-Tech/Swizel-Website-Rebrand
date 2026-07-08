@@ -28,14 +28,17 @@ export function initFounderBody() {
 		const run = (el: HTMLElement) => {
 			const t = Number(el.dataset.count || '0');
 			const sfx = el.dataset.suffix || '';
+			// respect data-decimals so 99.9% doesn't round up to 100%
+			const dec = Number(el.dataset.decimals || '0');
 			if (reduce) {
-				el.textContent = t + sfx;
+				el.textContent = t.toFixed(dec) + sfx;
 				return;
 			}
 			const start = performance.now();
 			const tick = (now: number) => {
 				const p = Math.min((now - start) / 1200, 1);
-				el.textContent = Math.round((1 - Math.pow(1 - p, 3)) * t) + sfx;
+				el.textContent =
+					((1 - Math.pow(1 - p, 3)) * t).toFixed(dec) + sfx;
 				if (p < 1) requestAnimationFrame(tick);
 			};
 			requestAnimationFrame(tick);

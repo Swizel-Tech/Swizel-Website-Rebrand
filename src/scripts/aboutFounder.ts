@@ -4,7 +4,7 @@
 export function initAboutFounder() {
 	// Binds every founder-world page body (About, Services hub, details, …).
 	document
-		.querySelectorAll<HTMLElement>('.fabout, .fsvc, .fsd')
+		.querySelectorAll<HTMLElement>('.fabout, .fsvc, .fsd, .fpf')
 		.forEach((root) => bindFounderMotion(root));
 }
 

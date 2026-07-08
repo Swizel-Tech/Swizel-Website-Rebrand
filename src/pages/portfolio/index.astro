@@ -6,6 +6,7 @@ import PortfolioInnerContent from '../../components/elements/PortfolioInnerConte
 import { portfolio } from '../../consts';
 import MainLayout from '../../layouts/MainLayout.astro';
 import PortfolioBoardroom from '../../components/sections/PortfolioBoardroom.astro';
+import PortfolioFounder from '../../components/sections/PortfolioFounder.astro';
 
 const getImageClass = (idx: number) =>
 	idx === 0 ? 'md:h-[600px] h-[250px]' : 'md:h-[420px] h-[280px]';
@@ -20,8 +21,11 @@ const getImageClass = (idx: number) =>
 	<!-- Boardroom world (also the default). Hidden in other views. -->
 	<PortfolioBoardroom />
 
-	<!-- Fallback portfolio for the other worlds. -->
-	<div class="alt-view-only">
+	<!-- Founder world: the same receipts, founder momentum. -->
+	<PortfolioFounder />
+
+	<!-- Fallback portfolio for the remaining worlds. -->
+	<div class="alt-view-only portfolio-fallback">
 		<Breadcrumb />
 		<Section>
 			<div class="py-20 space-y-10">
@@ -71,3 +75,10 @@ const getImageClass = (idx: number) =>
 		<FooterCTA />
 	</div>
 </MainLayout>
+
+<style is:global>
+	/* Founder view has its own Portfolio now — hide the generic fallback. */
+	html[data-view='founder'] .portfolio-fallback {
+		display: none !important;
+	}
+</style>

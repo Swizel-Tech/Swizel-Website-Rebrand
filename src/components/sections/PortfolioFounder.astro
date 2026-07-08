@@ -1,0 +1,739 @@
+---
+// Portfolio · Founder world — the same receipts as the Boardroom portfolio
+// (marquee wall, numbers, featured case studies, showreel, Brevarium, the
+// full sector-filtered grid, CTA) told with founder momentum. Root carries
+// `fbody` for the shared founder engine; `fpf` is bound by aboutFounder.ts
+// for tilt + magnetic CTAs.
+import { Icon } from 'astro-icon/components';
+import { projects, featuredProjects, sectorLabels, sectorOrder, type ProjectSector } from '../../data/projects';
+
+const sectors = sectorOrder;
+const sectorShown: Record<ProjectSector, string> = {
+	agri: '12+', health: '6+', property: '14+', media: '9+', commerce: '8+', product: '18+',
+};
+const totalShown = '65+';
+
+const stats = [
+	{ to: 65, suffix: '+', label: 'products shipped' },
+	{ to: 15, suffix: '+', label: 'sectors served' },
+	{ to: 7, suffix: '+', label: 'years building' },
+	{ to: 99.9, decimals: 1, suffix: '%', label: 'uptime upheld' },
+];
+
+// fanned hero stack — a colour-varied hand of real work
+const fanSlugs = ['binas-residence', 'jobblander', 'hemam-synergy', 'trueverdict', 'anchorstep'];
+const fan = fanSlugs.map((s) => projects.find((p) => p.slug === s)).filter(Boolean) as typeof projects;
+
+// full-bleed scrolling wall — two rows, opposite directions
+const marquee = [...projects, ...projects];
+const rot = [...projects.slice(6), ...projects.slice(0, 6)];
+const marquee2 = [...rot, ...rot];
+
+const dest = (p: (typeof projects)[number]) => (p.caseStudy ? `/work/${p.slug}` : p.url);
+const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'pulse', property: 'layers', media: 'book', commerce: 'pkg', product: 'repo' };
+---
+
+<div class="fpf fbody view-body view-body-founder">
+	<!-- ambient stage -->
+	<div class="fp-bg" aria-hidden="true">
+		<span class="fp-orb fp-orb--a"></span>
+		<span class="fp-orb fp-orb--b"></span>
+		{Array.from({ length: 8 }).map((_, i) => (
+			<i class="fp-spark" style={`--s:${i}`}></i>
+		))}
+	</div>
+
+	<!-- ── A · hero ─────────────────────────────────────────── -->
+	<section class="fp-sec">
+		<div class="fp-wrap fp-hero">
+			<div class="fd-rev">
+				<span class="fp-stamp">Our work · Founder mode</span>
+				<h1 class="fp-h fp-h--xl">Proof, not <em>promises.</em></h1>
+				<p class="fp-p">
+					Real products, live on the internet. Designed, built, launched
+					and still looked after, across every sector that moves.
+				</p>
+				<ul class="fp-stats">
+					{
+						stats.map((s) => (
+							<li>
+								<strong
+									data-count={s.to}
+									data-suffix={s.suffix}
+									data-decimals={s.decimals || 0}
+								>
+									0{s.suffix}
+								</strong>
+								<span>{s.label}</span>
+							</li>
+						))
+					}
+				</ul>
+				<div class="fp-row">
+					<a href="#fp-featured" class="fp-cta fs-cta">
+						See the headliners
+						<Icon width={17} name="mdi:rocket-launch-outline" />
+					</a>
+					<a href="#fp-work" class="fp-link">
+						Browse everything
+						<Icon width={15} name="mdi:arrow-down" />
+					</a>
+				</div>
+			</div>
+
+			<!-- fanned hand of real work — spreads on hover -->
+			<div class="fp-fan fd-rev" aria-hidden="true">
+				{
+					fan.map((p, i) => (
+						<span class="fp-fan-card" style={`--c:${p.color}; --i:${i}; --n:${fan.length}`}>
+							<span class="fp-fan-bar"><i></i><i></i><i></i></span>
+							<img src={p.img} alt="" loading={i === 0 ? 'eager' : 'lazy'} decoding="async" draggable={false} />
+						</span>
+					))
+				}
+				<span class="fp-fan-hint">Hover to fan the deck</span>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── B · full-bleed scrolling wall ───────────────────── -->
+	<section class="fp-sec fp-sec--flush" data-cursor="repo">
+		<p class="fp-wall-head fd-rev">A wall of work, on loop.</p>
+		<div class="fp-marquee" aria-hidden="true">
+			<div class="fp-marquee-track">
+				{
+					marquee.map((p) => (
+						<a href={dest(p) ?? undefined} data-leaving={p.caseStudy ? undefined : p.host} data-leaving-name={p.caseStudy ? undefined : p.name} class="fp-thumb" style={`--c:${p.color}`} tabindex="-1">
+							<img src={p.img} alt="" loading="eager" decoding="async" />
+						</a>
+					))
+				}
+			</div>
+			<div class="fp-marquee-track fp-marquee-track--rev">
+				{
+					marquee2.map((p) => (
+						<a href={dest(p) ?? undefined} data-leaving={p.caseStudy ? undefined : p.host} data-leaving-name={p.caseStudy ? undefined : p.name} class="fp-thumb" style={`--c:${p.color}`} tabindex="-1">
+							<img src={p.img} alt="" loading="eager" decoding="async" />
+						</a>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── C · featured case studies ───────────────────────── -->
+	<section class="fp-sec" id="fp-featured" data-cursor="repo">
+		<div class="fp-wrap">
+			<div class="fp-head fd-rev">
+				<span class="fp-stamp">Featured · receipts</span>
+				<h2 class="fp-h">Stories worth <em>the long read.</em></h2>
+				<p class="fp-p fp-p--center">
+					A handful told in full. The brief, the build, the result. And
+					this is just the tip.
+				</p>
+			</div>
+
+			<div class="fp-feats">
+				{
+					featuredProjects.map((p, i) => (
+						<article
+							class:list={['fp-feat', 'fd-rev', { 'fp-feat--rev': i % 2 === 1 }]}
+							style={`--c:${p.color}`}
+							data-cursor={sectorCursor[p.sector]}
+						>
+							<a
+								class:list={['fp-shot', 'fp-shot--lg', { 'fp-shot--app': p.kind === 'app' }]}
+								href={`/work/${p.slug}`}
+								aria-label={`${p.name} case study`}
+								data-fa-tilt="6"
+							>
+								{p.kind !== 'app' && (
+									<span class="fp-bar" aria-hidden="true">
+										<i></i><i></i><i></i>
+										<span class="fp-url">{p.host}</span>
+									</span>
+								)}
+								<span class="fp-img"><img src={p.img} alt={p.name} loading={i === 0 ? 'eager' : 'lazy'} /></span>
+								<span class="fp-open" aria-hidden="true"><Icon width={16} name="mdi:arrow-top-right" /></span>
+							</a>
+							<div class="fp-feat-body">
+								<span class="fp-feat-eyebrow">{String(i + 1).padStart(2, '0')} · {sectorLabels[p.sector]}</span>
+								<h3 class="fp-feat-name">{p.name}</h3>
+								<p class="fp-feat-tagline">{p.tagline}</p>
+								<p class="fp-feat-blurb">{p.blurb}</p>
+								<span class="fp-tags">
+									{p.tags.map((t) => <i>{t}</i>)}
+								</span>
+								<a class="fp-link" href={`/work/${p.slug}`}>
+									Read the case study
+									<Icon width={15} name="mdi:arrow-right" />
+								</a>
+							</div>
+						</article>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── D · showreel ────────────────────────────────────── -->
+	<section class="fp-sec" data-cursor="play">
+		<div class="fp-wrap fp-reel fd-rev" data-fa-tilt="5">
+			<span class="fa-val-glare" aria-hidden="true"></span>
+			<div>
+				<span class="fp-stamp">Showreel</span>
+				<h2 class="fp-h">Watch the work <em>move.</em></h2>
+				<p class="fp-p">
+					A two-minute sizzle of the products, the builds and the
+					launches. Proof in motion.
+				</p>
+				<a href="/contact" class="fp-link">
+					Want this energy on your project?
+					<Icon width={15} name="mdi:arrow-right" />
+				</a>
+			</div>
+			<div class="fp-media">
+				<span class="fa-media-sheen fp-media-sheen" aria-hidden="true"></span>
+				<Icon width={36} name="mdi:play-circle-outline" />
+				<span class="fp-media-label">Video placeholder</span>
+				<span class="fp-media-sub">2:00 · the launches, on loop</span>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── E · the Brevarium ───────────────────────────────── -->
+	<section class="fp-sec" data-cursor="repo">
+		<div class="fp-wrap">
+			<div class="fp-head fd-rev">
+				<span class="fp-stamp">In print, too</span>
+				<h2 class="fp-h">The <em>Brevarium.</em></h2>
+				<p class="fp-p fp-p--center">
+					Our magazine: the products, the team and the thinking behind
+					the work. Free, cover to cover.
+				</p>
+			</div>
+			<div class="fp-mags">
+				<a class="fp-mag fd-rev" href="/brevarium/the-brevarium-latest.pdf" download data-fa-tilt="8">
+					<span class="fp-mag-cover"><img src="/images/portfolio/mag-latest-cover.jpg" alt="The Brevarium — latest edition" loading="lazy" /></span>
+					<span class="fp-mag-meta">
+						<span class="fp-mag-tag">Latest edition</span>
+						<strong>The Brevarium</strong>
+						<em>You Imagine. We Build. Featured projects, the team & how we ship.</em>
+						<span class="fp-mag-dl"><Icon width={16} name="mdi:download" /> Download PDF</span>
+					</span>
+				</a>
+				<a class="fp-mag fd-rev" style="--i:1" href="/The Brevarium by Swizel.pdf" download data-fa-tilt="8">
+					<span class="fp-mag-cover"><img src="/images/portfolio/mag-v1-cover.jpg" alt="The Brevarium — Vol. 1" loading="lazy" /></span>
+					<span class="fp-mag-meta">
+						<span class="fp-mag-tag">Vol. 1</span>
+						<strong>The Brevarium</strong>
+						<em>The AppMan story, a full product, start to finish.</em>
+						<span class="fp-mag-dl"><Icon width={16} name="mdi:download" /> Download PDF</span>
+					</span>
+				</a>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── F · featured work, sector filter ────────────────── -->
+	<section class="fp-sec" id="fp-work" data-cursor="repo">
+		<div class="fp-wrap">
+			<div class="fp-head fd-rev">
+				<span class="fp-stamp">A taste of the shelf</span>
+				<h2 class="fp-h">Featured <em>work.</em></h2>
+				<p class="fp-p fp-p--center">
+					We've shipped <strong>{totalShown}</strong> products across
+					<strong>15+</strong> sectors. Here are ~{projects.length} of
+					our favourites, filter by sector.
+				</p>
+			</div>
+
+			<form class="fp-filter">
+				<input class="fp-radio" type="radio" name="fpf" id="fpf-all" checked />
+				{sectors.map((s) => <input class="fp-radio" type="radio" name="fpf" id={`fpf-${s}`} />)}
+				<div class="fp-chips fd-rev">
+					<label class="fp-chip fp-chip--all" for="fpf-all">Featured work <span>{totalShown}</span></label>
+					{
+						sectors.map((s) => (
+							<label class="fp-chip" for={`fpf-${s}`}>
+								{sectorLabels[s]} <span>{sectorShown[s]}</span>
+							</label>
+						))
+					}
+				</div>
+				<div class="fp-grid">
+					{
+						projects.map((p) => {
+							const href = dest(p);
+							const hasCase = !!p.caseStudy;
+							const Tag = href ? 'a' : 'div';
+							return (
+								<article class:list={['fp-card', 'fd-rev', `s-${p.sector}`]} style={`--c:${p.color}`} data-cursor={sectorCursor[p.sector]}>
+									<Tag
+										class="fp-card-link"
+										href={href ?? undefined}
+										data-leaving={href && !hasCase ? p.host : undefined}
+										data-leaving-name={href && !hasCase ? p.name : undefined}
+										rel={href && !hasCase ? 'noopener noreferrer' : undefined}
+										aria-label={p.name}
+									>
+										<span class:list={['fp-shot', { 'fp-shot--app': p.kind === 'app' }]}>
+											{p.kind !== 'app' && (
+												<span class="fp-bar" aria-hidden="true">
+													<i></i><i></i><i></i>
+													<span class="fp-url">{p.host}</span>
+												</span>
+											)}
+											<span class="fp-img"><img src={p.img} alt={p.name} loading="lazy" /></span>
+											{hasCase && <span class="fp-badge">Case study</span>}
+										</span>
+										<span class="fp-card-body">
+											<span class="fp-card-head">
+												<strong>{p.name}</strong>
+												<em>{p.year}</em>
+											</span>
+											<span class="fp-card-tagline">{p.tagline}</span>
+											<span class="fp-tags">
+												{p.tags.map((t) => <i>{t}</i>)}
+											</span>
+										</span>
+									</Tag>
+								</article>
+							);
+						})
+					}
+					<a class="fp-card fp-next s-agri s-health s-property s-media s-commerce s-product" href="/contact" data-cursor="phone">
+						<span class="fp-next-ic"><Icon width={26} name="mdi:rocket-launch-outline" /></span>
+						<span class="fp-next-kicker">There's so much more</span>
+						<strong class="fp-next-h">Yours could be next.</strong>
+						<span class="fp-next-p">We've shipped <b>65+</b> products across <b>15+</b> sectors. Let's make yours the one we show off.</span>
+						<span class="fp-link">Start your project <Icon width={16} name="mdi:arrow-right" /></span>
+					</a>
+				</div>
+			</form>
+		</div>
+	</section>
+
+	<!-- ── G · CTA ─────────────────────────────────────────── -->
+	<section class="fp-sec fp-sec--last" data-cursor="phone">
+		<div class="fp-ctabox fd-rev">
+			<span class="fa-cta-orbit fp-orbit" aria-hidden="true">
+				<i></i><i></i><i></i>
+			</span>
+			<h2 class="fp-h">Your project, <em>next on this page.</em></h2>
+			<p class="fp-p fp-p--center">
+				Tell us what you have in mind. You'll have a reply within one
+				business day.
+			</p>
+			<div class="fp-row fp-row--center">
+				<a href="/contact" class="fp-cta fs-cta">
+					Start your project
+					<Icon width={17} name="mdi:rocket-launch-outline" />
+				</a>
+				<a href="/services" class="fp-link">
+					See what we do
+					<Icon width={15} name="mdi:chevron-right" />
+				</a>
+			</div>
+		</div>
+	</section>
+</div>
+
+<style>
+	/* ── founder tokens ── */
+	.fpf {
+		--fa-ink: #f1edfb;
+		--fa-muted: rgba(241, 237, 251, 0.62);
+		--fa-acc: var(--view-accent, #8b5cf6);
+		--fa-acc2: #ec4899;
+		--fa-line: rgba(255, 255, 255, 0.09);
+		--fa-card: rgba(255, 255, 255, 0.035);
+		font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+			Roboto, sans-serif;
+		position: relative;
+		isolation: isolate;
+		background:
+			radial-gradient(1000px 540px at 82% -6%, rgba(139, 92, 246, 0.16), transparent 62%),
+			radial-gradient(820px 480px at 6% 44%, rgba(236, 72, 153, 0.08), transparent 60%),
+			linear-gradient(180deg, #0a0714 0%, #0d0a18 50%, #080610 100%);
+		color: var(--fa-ink);
+		padding: clamp(3rem, 7vw, 5.5rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 4rem);
+	}
+	:global(html:not(.dark)) .fpf {
+		--fa-ink: #1d1430;
+		--fa-muted: rgba(29, 20, 48, 0.66);
+		--fa-acc: #6d3fe0;
+		--fa-line: rgba(29, 20, 48, 0.1);
+		--fa-card: rgba(29, 20, 48, 0.04);
+		background:
+			radial-gradient(1000px 540px at 82% -6%, rgba(139, 92, 246, 0.12), transparent 62%),
+			linear-gradient(180deg, #f4f1fb 0%, #ece7f8 55%, #f4f1fb 100%);
+	}
+	.fp-sec { position: relative; z-index: 1; padding-block: clamp(2rem, 5vw, 3.5rem); }
+	.fp-sec--flush { padding-block: clamp(1rem, 2.5vw, 1.8rem); }
+	.fp-sec--last { padding-bottom: clamp(3rem, 6vw, 5rem); }
+	.fp-wrap { max-width: 74rem; margin: 0 auto; }
+
+	.fp-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+	.fp-orb { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.5; animation: fp-drift 16s ease-in-out infinite alternate; }
+	.fp-orb--a { width: 460px; height: 460px; left: -140px; top: 4%; background: radial-gradient(circle, rgba(139, 92, 246, 0.32), transparent 70%); }
+	.fp-orb--b { width: 520px; height: 520px; right: -180px; top: 36%; background: radial-gradient(circle, rgba(236, 72, 153, 0.18), transparent 70%); animation-delay: -6s; }
+	@keyframes fp-drift { to { transform: translate3d(60px, -44px, 0) scale(1.12); } }
+	.fp-spark {
+		position: absolute; bottom: -12px; left: calc(8% + var(--s) * 11%);
+		width: 4px; height: 4px; border-radius: 50%;
+		background: color-mix(in srgb, var(--fa-acc) 85%, #fff);
+		box-shadow: 0 0 10px 2px color-mix(in srgb, var(--fa-acc) 55%, transparent);
+		opacity: 0;
+		animation: fp-rise calc(9s + var(--s) * 1.3s) linear infinite;
+		animation-delay: calc(var(--s) * -1.9s);
+	}
+	@keyframes fp-rise {
+		0% { transform: translateY(0); opacity: 0; }
+		8% { opacity: 0.8; }
+		92% { opacity: 0.25; }
+		100% { transform: translateY(-105vh) translateX(28px); opacity: 0; }
+	}
+	@media (prefers-reduced-motion: reduce) { .fp-orb { animation: none; } .fp-spark { display: none; } }
+
+	/* type */
+	.fp-stamp {
+		display: inline-block; font-size: 0.72rem; font-weight: 800;
+		letter-spacing: 0.14em; text-transform: uppercase; color: var(--fa-acc);
+		border: 1.5px dashed color-mix(in srgb, var(--fa-acc) 55%, transparent);
+		padding: 0.35rem 0.8rem; border-radius: 0.5rem; transform: rotate(-2deg);
+		margin-bottom: 1rem;
+	}
+	:global(html:not(.dark)) .fpf .fp-stamp { color: #5d34c4; }
+	.fp-h { font-size: clamp(1.9rem, 4.2vw, 3rem); font-weight: 850; letter-spacing: -0.025em; line-height: 1.06; margin: 0 0 1rem; }
+	.fp-h--xl { font-size: clamp(2.2rem, 4.4vw, 3.4rem); }
+	.fp-h em {
+		font-style: italic;
+		background: linear-gradient(95deg, var(--fa-acc), var(--fa-acc2), var(--fa-acc));
+		background-size: 220% 100%;
+		-webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+		padding-right: 0.06em;
+		animation: fp-shimmer 5.5s ease-in-out infinite;
+	}
+	@keyframes fp-shimmer { 0%, 100% { background-position: 0% 0; } 50% { background-position: 100% 0; } }
+	:global(html:not(.dark)) .fpf .fp-h em { background: linear-gradient(95deg, #5d34c4, #b81d68, #5d34c4); background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; }
+	.fp-p { font-size: 1.02rem; line-height: 1.65; color: var(--fa-muted); max-width: 34rem; margin: 0 0 1.4rem; }
+	.fp-p--center { margin-inline: auto; text-align: center; }
+	.fp-head { text-align: center; max-width: 46rem; margin: 0 auto clamp(1.5rem, 3vw, 2.25rem); }
+	.fp-link { display: inline-flex; align-items: center; gap: 0.45rem; font-weight: 700; color: var(--fa-acc); transition: gap 0.25s ease; }
+	.fp-link:hover { gap: 0.75rem; }
+	:global(html:not(.dark)) .fpf .fp-link { color: #5d34c4; }
+	.fp-row { display: flex; align-items: center; gap: 1.4rem; flex-wrap: wrap; }
+	.fp-row--center { justify-content: center; }
+	.fp-cta {
+		display: inline-flex; align-items: center; gap: 0.55rem;
+		font-weight: 800; font-size: 0.98rem; color: #fff;
+		background: linear-gradient(95deg, var(--fa-acc), var(--fa-acc2));
+		padding: 0.85rem 1.7rem; border-radius: 9999px;
+		box-shadow: 0 16px 38px -14px color-mix(in srgb, var(--fa-acc) 80%, transparent);
+		transition: transform 0.22s ease, box-shadow 0.22s ease;
+	}
+	.fp-cta:hover { transform: translateY(-2px); }
+
+	.fd-rev {
+		opacity: 0; transform: translateY(22px);
+		transition: opacity 0.6s ease calc(var(--i, 0) * 90ms),
+			transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i, 0) * 90ms);
+	}
+	.fd-rev.is-on { opacity: 1; transform: none; }
+	@media (prefers-reduced-motion: reduce) { .fd-rev { opacity: 1; transform: none; transition: none; } }
+
+	.fa-val-glare {
+		position: absolute; inset: 0;
+		background: radial-gradient(340px 220px at var(--gx, 50%) var(--gy, 0%), rgba(255, 255, 255, 0.09), transparent 60%);
+		opacity: 0; transition: opacity 0.3s ease; pointer-events: none;
+	}
+	.fp-reel:hover .fa-val-glare { opacity: 1; }
+	.fa-cta-orbit { position: absolute; inset: 0; pointer-events: none; }
+
+	/* ── hero ── */
+	.fp-hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 4vw, 3.5rem); align-items: center; }
+	.fp-stats { display: flex; align-items: stretch; margin: 1.6rem 0 1.5rem; padding: 0; list-style: none; }
+	.fp-stats li { flex: 1; min-width: 0; padding: 0.2rem 1rem; border-left: 1px solid color-mix(in srgb, var(--fa-acc) 26%, transparent); transition: transform 0.25s ease; }
+	.fp-stats li:first-child { padding-left: 0; border-left: 0; }
+	.fp-stats li:hover { transform: translateY(-3px); }
+	.fp-stats strong {
+		display: block; font-size: clamp(1.4rem, 2.2vw, 1.9rem); font-weight: 850;
+		letter-spacing: -0.02em; white-space: nowrap;
+		background: linear-gradient(95deg, var(--fa-acc), var(--fa-acc2));
+		-webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+	}
+	.fp-stats span { display: block; font-size: 0.74rem; line-height: 1.3; color: var(--fa-muted); margin-top: 0.2rem; }
+
+	/* fanned deck — spreads on hover */
+	.fp-fan { position: relative; height: 330px; }
+	.fp-fan-card {
+		position: absolute; left: 50%; top: 50%;
+		width: min(64%, 300px); border-radius: 0.9rem; overflow: hidden;
+		border: 1px solid color-mix(in srgb, var(--c, #8b5cf6) 45%, rgba(255, 255, 255, 0.15));
+		background: #14101f;
+		box-shadow: 0 30px 60px -24px rgba(0, 0, 0, 0.7);
+		transform: translate(-50%, -50%) rotate(calc((var(--i) - (var(--n) - 1) / 2) * 4deg)) translateY(calc(var(--i) * 2px));
+		transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+		animation: fp-deal 0.7s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i) * 120ms) both;
+	}
+	@keyframes fp-deal { from { opacity: 0; transform: translate(-50%, -30%) rotate(0deg); } }
+	.fp-fan:hover .fp-fan-card {
+		transform: translate(-50%, -50%) rotate(calc((var(--i) - (var(--n) - 1) / 2) * 10deg))
+			translateX(calc((var(--i) - (var(--n) - 1) / 2) * 62px)) translateY(calc(var(--i) * 2px));
+	}
+	.fp-fan-bar { display: flex; gap: 4px; padding: 7px 9px; background: rgba(255, 255, 255, 0.06); }
+	.fp-fan-bar i { width: 7px; height: 7px; border-radius: 50%; background: color-mix(in srgb, var(--c) 70%, #fff); opacity: 0.7; }
+	.fp-fan-card img { display: block; width: 100%; height: 190px; object-fit: cover; object-position: top; }
+	.fp-fan-hint {
+		position: absolute; bottom: -0.6rem; left: 50%; transform: translateX(-50%);
+		font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+		color: var(--fa-muted); white-space: nowrap;
+	}
+	@media (prefers-reduced-motion: reduce) { .fp-fan-card { animation: none; } }
+
+	/* ── marquee wall ── */
+	.fp-wall-head { text-align: center; font-size: 0.78rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fa-muted); margin: 0 0 1rem; }
+	.fp-marquee {
+		display: grid; gap: 0.8rem;
+		margin-inline: calc(50% - 50vw);
+		-webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+		mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+		overflow: hidden;
+	}
+	.fp-marquee-track { display: flex; gap: 0.8rem; width: max-content; animation: fp-scroll 60s linear infinite; }
+	.fp-marquee-track--rev { animation-direction: reverse; }
+	.fp-marquee:hover .fp-marquee-track { animation-play-state: paused; }
+	@keyframes fp-scroll { to { transform: translateX(-50%); } }
+	.fp-thumb {
+		flex-shrink: 0; width: 200px; height: 120px; border-radius: 0.7rem; overflow: hidden;
+		border: 1px solid color-mix(in srgb, var(--c, #8b5cf6) 40%, rgba(255, 255, 255, 0.12));
+		transition: transform 0.25s ease, box-shadow 0.25s ease;
+	}
+	.fp-thumb:hover { transform: translateY(-4px) scale(1.03); box-shadow: 0 18px 36px -16px color-mix(in srgb, var(--c) 70%, transparent); }
+	.fp-thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+	@media (prefers-reduced-motion: reduce) { .fp-marquee-track { animation: none; } }
+
+	/* ── featured ── */
+	.fp-feats { display: grid; gap: clamp(1.6rem, 4vw, 2.6rem); }
+	.fp-feat {
+		display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+		gap: clamp(1.4rem, 3vw, 2.4rem); align-items: center;
+		border: 1px solid var(--fa-line); border-radius: 1.4rem;
+		background:
+			linear-gradient(180deg, rgba(255, 255, 255, 0.045), transparent 55%),
+			radial-gradient(120% 90% at 85% -20%, color-mix(in srgb, var(--c, #8b5cf6) 10%, transparent), transparent 60%),
+			var(--fa-card);
+		padding: clamp(1.2rem, 2.6vw, 2rem);
+		transition: border-color 0.3s ease;
+	}
+	.fp-feat:hover { border-color: color-mix(in srgb, var(--c) 50%, transparent); }
+	.fp-feat--rev { direction: rtl; }
+	.fp-feat--rev > * { direction: ltr; }
+	.fp-feat-eyebrow { font-size: 0.74rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--c); }
+	.fp-feat-name { font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 850; margin: 0.35rem 0 0.2rem; }
+	.fp-feat-tagline { font-size: 0.95rem; font-weight: 700; color: var(--c); margin: 0 0 0.6rem; }
+	.fp-feat-blurb { font-size: 0.95rem; line-height: 1.65; color: var(--fa-muted); margin: 0 0 0.9rem; }
+	.fp-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 1rem; }
+	.fp-tags i {
+		font-style: normal; font-size: 0.7rem; font-weight: 700;
+		padding: 0.26rem 0.6rem; border-radius: 999px;
+		border: 1px solid color-mix(in srgb, var(--c, #8b5cf6) 40%, transparent);
+		background: color-mix(in srgb, var(--c, #8b5cf6) 10%, transparent);
+		color: var(--fa-ink);
+	}
+
+	/* browser-frame screenshots */
+	.fp-shot {
+		position: relative; display: block; border-radius: 1rem; overflow: hidden;
+		border: 1px solid color-mix(in srgb, var(--c, #8b5cf6) 40%, rgba(255, 255, 255, 0.12));
+		background: #14101f;
+		box-shadow: 0 30px 60px -26px rgba(0, 0, 0, 0.65);
+		transform-style: preserve-3d; will-change: transform;
+		transition: border-color 0.3s ease, box-shadow 0.3s ease;
+	}
+	.fp-shot:hover { border-color: color-mix(in srgb, var(--c) 65%, transparent); box-shadow: 0 34px 70px -26px color-mix(in srgb, var(--c) 55%, transparent); }
+	.fp-bar { display: flex; align-items: center; gap: 4px; padding: 8px 10px; background: rgba(255, 255, 255, 0.05); }
+	.fp-bar i { width: 8px; height: 8px; border-radius: 50%; background: color-mix(in srgb, var(--c) 70%, #fff); opacity: 0.65; }
+	.fp-url { margin-left: 0.5rem; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.04em; color: var(--fa-muted); }
+	.fp-img { display: block; overflow: hidden; }
+	.fp-img img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; transition: transform 0.5s ease; }
+	.fp-shot--lg .fp-img { height: 300px; }
+	.fp-shot:hover .fp-img img { transform: scale(1.05); }
+	.fp-shot--app .fp-img { height: 320px; }
+	.fp-shot--app .fp-img img { object-fit: contain; background: color-mix(in srgb, var(--c) 8%, transparent); }
+	.fp-open {
+		position: absolute; top: 0.7rem; right: 0.7rem;
+		display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%;
+		background: color-mix(in srgb, var(--c) 80%, #000); color: #fff;
+		opacity: 0; transform: translateY(-4px);
+		transition: opacity 0.25s ease, transform 0.25s ease;
+	}
+	.fp-shot:hover .fp-open { opacity: 1; transform: none; }
+	.fp-badge {
+		position: absolute; left: 0.7rem; bottom: 0.7rem;
+		font-size: 0.66rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
+		color: #fff; background: linear-gradient(95deg, var(--c), var(--fa-acc2));
+		padding: 0.3rem 0.7rem; border-radius: 999px;
+	}
+
+	/* ── showreel ── */
+	.fp-reel {
+		position: relative; overflow: hidden;
+		display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+		gap: clamp(1.4rem, 3vw, 2.4rem); align-items: center;
+		border: 1px solid var(--fa-line); border-radius: 1.4rem;
+		background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 55%), var(--fa-card);
+		padding: clamp(1.4rem, 3vw, 2.2rem);
+		transform-style: preserve-3d; will-change: transform;
+	}
+	.fp-media {
+		position: relative; overflow: hidden;
+		display: grid; place-content: center; justify-items: center; gap: 0.3rem;
+		min-height: 250px; border-radius: 1rem;
+		border: 1.5px dashed color-mix(in srgb, var(--fa-acc) 40%, transparent);
+		background: color-mix(in srgb, var(--fa-acc) 7%, transparent);
+		color: var(--fa-acc);
+	}
+	.fp-media-label { font-size: 0.85rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; }
+	.fp-media-sub { font-size: 0.8rem; color: var(--fa-muted); }
+	.fp-media-sheen {
+		position: absolute; inset: 0;
+		background: linear-gradient(115deg, transparent 42%, rgba(255, 255, 255, 0.08) 50%, transparent 60%);
+		background-size: 250% 100%;
+		animation: fp-sheen 4.5s ease-in-out infinite;
+	}
+	@keyframes fp-sheen { 0% { background-position: 120% 0; } 60%, 100% { background-position: -130% 0; } }
+	@media (prefers-reduced-motion: reduce) { .fp-media-sheen { animation: none; } }
+
+	/* ── mags ── */
+	.fp-mags { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.2rem; max-width: 60rem; margin-inline: auto; }
+	.fp-mag {
+		display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 1.1rem; align-items: center;
+		border: 1px solid var(--fa-line); border-radius: 1.2rem;
+		background: var(--fa-card); padding: 1.1rem;
+		color: var(--fa-ink);
+		transform-style: preserve-3d; will-change: transform;
+		transition: border-color 0.3s ease;
+	}
+	.fp-mag:hover { border-color: color-mix(in srgb, var(--fa-acc) 50%, transparent); }
+	.fp-mag-cover { border-radius: 0.7rem; overflow: hidden; box-shadow: 0 18px 36px -16px rgba(0, 0, 0, 0.6); transform: rotate(-2deg); }
+	.fp-mag-cover img { display: block; width: 100%; height: auto; }
+	.fp-mag-tag {
+		display: inline-block; font-size: 0.64rem; font-weight: 800; letter-spacing: 0.1em;
+		text-transform: uppercase; color: #fff;
+		background: linear-gradient(95deg, var(--fa-acc), var(--fa-acc2));
+		padding: 0.25rem 0.6rem; border-radius: 999px; margin-bottom: 0.4rem;
+	}
+	.fp-mag-meta strong { display: block; font-size: 1.05rem; font-weight: 850; }
+	.fp-mag-meta em { display: block; font-style: normal; font-size: 0.82rem; line-height: 1.5; color: var(--fa-muted); margin: 0.25rem 0 0.55rem; }
+	.fp-mag-dl { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.82rem; font-weight: 800; color: var(--fa-acc); }
+	:global(html:not(.dark)) .fpf .fp-mag-dl { color: #5d34c4; }
+
+	/* ── filter grid ── */
+	.fp-filter { position: relative; }
+	.fp-radio { position: absolute; opacity: 0; pointer-events: none; }
+	.fp-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin-bottom: 1.6rem; }
+	.fp-chip {
+		display: inline-flex; align-items: center; gap: 0.45rem;
+		font-size: 0.85rem; font-weight: 700; cursor: pointer;
+		padding: 0.5rem 0.95rem; border-radius: 999px;
+		border: 1px solid var(--fa-line); background: var(--fa-card);
+		color: var(--fa-muted);
+		transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+	}
+	.fp-chip:hover { transform: translateY(-2px); color: var(--fa-ink); }
+	.fp-chip span { font-size: 0.68rem; font-weight: 800; color: var(--fa-acc); }
+	#fpf-all:checked ~ .fp-chips .fp-chip--all,
+	#fpf-agri:checked ~ .fp-chips [for='fpf-agri'],
+	#fpf-health:checked ~ .fp-chips [for='fpf-health'],
+	#fpf-property:checked ~ .fp-chips [for='fpf-property'],
+	#fpf-media:checked ~ .fp-chips [for='fpf-media'],
+	#fpf-commerce:checked ~ .fp-chips [for='fpf-commerce'],
+	#fpf-product:checked ~ .fp-chips [for='fpf-product'] {
+		color: #fff;
+		background: linear-gradient(95deg, var(--fa-acc), var(--fa-acc2));
+		border-color: transparent;
+	}
+	#fpf-all:checked ~ .fp-chips .fp-chip--all span,
+	#fpf-agri:checked ~ .fp-chips [for='fpf-agri'] span,
+	#fpf-health:checked ~ .fp-chips [for='fpf-health'] span,
+	#fpf-property:checked ~ .fp-chips [for='fpf-property'] span,
+	#fpf-media:checked ~ .fp-chips [for='fpf-media'] span,
+	#fpf-commerce:checked ~ .fp-chips [for='fpf-commerce'] span,
+	#fpf-product:checked ~ .fp-chips [for='fpf-product'] span { color: #fff; }
+
+	.fp-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+	.fp-card { display: none; }
+	#fpf-all:checked ~ .fp-grid .fp-card { display: block; }
+	#fpf-agri:checked ~ .fp-grid .s-agri,
+	#fpf-health:checked ~ .fp-grid .s-health,
+	#fpf-property:checked ~ .fp-grid .s-property,
+	#fpf-media:checked ~ .fp-grid .s-media,
+	#fpf-commerce:checked ~ .fp-grid .s-commerce,
+	#fpf-product:checked ~ .fp-grid .s-product { display: block; }
+	.fp-card-link { display: block; color: inherit; }
+	.fp-card .fp-img { height: 170px; }
+	.fp-card-body { display: block; padding: 0.85rem 0.3rem 0.3rem; }
+	.fp-card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.6rem; }
+	.fp-card-head strong { font-size: 1rem; font-weight: 800; }
+	.fp-card-head em { font-style: normal; font-size: 0.72rem; font-weight: 700; color: var(--fa-muted); }
+	.fp-card-tagline { display: block; font-size: 0.85rem; color: var(--fa-muted); margin: 0.2rem 0 0.55rem; }
+
+	/* "yours could be next" card */
+	.fp-next {
+		display: grid !important; align-content: center; justify-items: center; text-align: center; gap: 0.4rem;
+		border: 1.5px dashed color-mix(in srgb, var(--fa-acc) 50%, transparent);
+		border-radius: 1rem; padding: 1.6rem 1.2rem;
+		background: color-mix(in srgb, var(--fa-acc) 6%, transparent);
+		color: var(--fa-ink);
+		transition: transform 0.25s ease, background 0.25s ease;
+	}
+	.fp-next:hover { transform: translateY(-4px); background: color-mix(in srgb, var(--fa-acc) 12%, transparent); }
+	.fp-next-ic {
+		display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%;
+		color: #fff; background: linear-gradient(135deg, var(--fa-acc), var(--fa-acc2));
+		box-shadow: 0 14px 30px -12px color-mix(in srgb, var(--fa-acc) 80%, transparent);
+		animation: fp-bob 4.5s ease-in-out infinite;
+	}
+	@keyframes fp-bob { 0%, 100% { margin-top: 0; } 50% { margin-top: -6px; } }
+	.fp-next-kicker { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fa-muted); }
+	.fp-next-h { font-size: 1.2rem; font-weight: 850; }
+	.fp-next-p { font-size: 0.85rem; line-height: 1.55; color: var(--fa-muted); max-width: 16rem; }
+
+	/* ── CTA ── */
+	.fp-ctabox { position: relative; max-width: 46rem; margin: 0 auto; text-align: center; }
+	.fp-orbit i {
+		position: absolute; left: 50%; top: 50%; width: 8px; height: 8px; margin: -4px;
+		border-radius: 50%;
+		background: linear-gradient(95deg, var(--fa-acc), var(--fa-acc2));
+		box-shadow: 0 0 12px color-mix(in srgb, var(--fa-acc) 70%, transparent);
+		animation: fp-orbit 11s linear infinite;
+	}
+	.fp-orbit i:nth-child(2) { animation-delay: -3.66s; width: 5px; height: 5px; }
+	.fp-orbit i:nth-child(3) { animation-delay: -7.33s; width: 6px; height: 6px; }
+	@keyframes fp-orbit {
+		from { transform: rotate(0deg) translateX(min(21rem, 44vw)) rotate(0deg); }
+		to { transform: rotate(360deg) translateX(min(21rem, 44vw)) rotate(-360deg); }
+	}
+	@media (prefers-reduced-motion: reduce) { .fp-orbit { display: none; } }
+
+	/* ── responsive ── */
+	@media (max-width: 980px) {
+		.fp-hero { grid-template-columns: minmax(0, 1fr); }
+		.fp-fan { height: 280px; }
+		.fp-feat { grid-template-columns: minmax(0, 1fr); }
+		.fp-feat--rev { direction: ltr; }
+		.fp-reel { grid-template-columns: minmax(0, 1fr); }
+		.fp-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+		.fp-mags { grid-template-columns: minmax(0, 1fr); }
+	}
+	@media (max-width: 640px) {
+		.fp-grid { grid-template-columns: minmax(0, 1fr); }
+		.fp-stats li { padding: 0.1rem 0.55rem; }
+		.fp-stats strong { font-size: 1.1rem; }
+		.fp-stats span { font-size: 0.6rem; }
+		.fp-thumb { width: 150px; height: 92px; }
+		.fp-mag { grid-template-columns: 100px minmax(0, 1fr); }
+	}
+</style>
