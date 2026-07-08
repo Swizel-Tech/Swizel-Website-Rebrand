@@ -2,7 +2,51 @@
 // About page · Founder world — the Swizel story told founder to founder.
 // Root carries `fbody` so the shared founderBody.ts engine (reveals via
 // .fd-rev, counters via [data-count]) animates this page for free.
+// Foundational content mirrors AboutBoardroom (same team, same years,
+// same client voices) — only the telling changes per view.
 import { Icon } from 'astro-icon/components';
+import { teamDetails } from '../../consts';
+
+// Same crew as the Boardroom About, founder-style presentation.
+const teamOrder = [
+	{ name: 'Azoro', role: 'Business Development Lead' },
+	{ name: 'Ruke', role: 'Product Manager' },
+	{ name: 'Dennis', role: 'UI/UX Designer' },
+	{ name: 'Mary', role: 'Software Engineer' },
+	{ name: 'Stephen', role: 'Fullstack Developer' },
+	{ name: 'Nathaniel', role: 'Frontend Developer' },
+	{ name: 'Precious', role: 'Mobile Developer' },
+	{ name: 'Linda', role: 'Marketing Lead' },
+];
+const team = teamOrder.map((m) => {
+	const d = (teamDetails as any[]).find((t) => t.name === m.name) || {};
+	return {
+		...m,
+		linkedin: d.linkedinURL && d.linkedinURL !== '#' ? d.linkedinURL : '',
+	};
+});
+
+// Same client voices as the Boardroom About.
+const quotes = [
+	{
+		text: 'Warm, responsive and a true extension of our team. They took the worry out of shipping software.',
+		name: 'Chidimma',
+		role: 'Client, education sector',
+		img: '/testimonial/chidima.jpeg',
+	},
+	{
+		text: 'Geniuses, honestly. Working with them was effortless from the first call to launch day.',
+		name: 'Favour',
+		role: 'Client, marketing',
+		img: '/testimonial/favour.jpeg',
+	},
+	{
+		text: 'Thorough, polite and always on time. They make hard things feel easy.',
+		name: 'Cheta',
+		role: 'Client, e-commerce',
+		img: '/testimonial/cheta.jpeg',
+	},
+];
 
 const stats = [
 	{ to: 7, suffix: '+', label: 'years shipping' },
@@ -11,26 +55,32 @@ const stats = [
 	{ to: 10, suffix: '+', label: 'countries' },
 ];
 
+// Same real milestones as the Boardroom timeline, compressed founder-style.
 const journey = [
 	{
-		tag: 'Day 0',
+		tag: 'Day 0 · 2019',
 		title: 'A conviction, not a company.',
-		desc: 'African businesses deserve world-class software. A small crew starts building for clients who dream big.',
+		desc: 'Swizel starts in Nigeria. African businesses deserve world-class software, and a small stubborn crew starts building it.',
 	},
 	{
-		tag: 'First launches',
+		tag: '2020',
 		title: 'Products ship. Clients stay.',
-		desc: 'Early builds turn into long-term partnerships. The rule is set early: we win when your product wins.',
+		desc: 'We stop thinking in projects and start thinking in products. Early builds turn into long-term partnerships.',
 	},
 	{
-		tag: 'The crew grows',
+		tag: '2022 – 2023',
 		title: 'Every discipline, one roof.',
-		desc: 'Designers, engineers and growth marketers working as one senior team, so founders never juggle agencies.',
+		desc: 'Mobile joins the practice and the work spreads across fintech, real estate, sports, education and logistics. One senior team, no juggling agencies.',
+	},
+	{
+		tag: '2025',
+		title: 'Teaching the next ones.',
+		desc: 'We open a free tech bootcamp, training new engineers, designers and marketers on real products.',
 	},
 	{
 		tag: 'Today',
 		title: '65+ products, 10+ countries.',
-		desc: 'From Abuja to London to New York, with a free bootcamp raising the next generation of builders.',
+		desc: 'From Abuja to Cork to London to New York, and we are only warming up.',
 	},
 ];
 
@@ -128,7 +178,7 @@ const values = [
 						</li>
 					))
 				}
-				<li class="fa-stop fa-stop--next fd-rev" style="--i:4">
+				<li class="fa-stop fa-stop--next fd-rev" style="--i:5">
 					<span class="fa-stop-node" aria-hidden="true"></span>
 					<span class="fa-stop-tag">Next stop</span>
 					<h3 class="fa-stop-t">Your product.</h3>
@@ -168,7 +218,68 @@ const values = [
 		</div>
 	</section>
 
-	<!-- ── E · CTA ────────────────────────────────────────── -->
+	<!-- ── E · the team (same crew as the Boardroom About) ── -->
+	<section class="fa-sec">
+		<div class="fa-wrap">
+			<div class="fa-head fd-rev">
+				<span class="fa-stamp">The crew</span>
+				<h2 class="fa-h">The people who'll <em>build with you.</em></h2>
+				<p class="fa-p fa-p--center">
+					No hand-offs, no mystery contractors. These are the builders
+					on your product.
+				</p>
+			</div>
+
+			<ul class="fa-team">
+				{
+					team.map((t, i) => (
+						<li class="fa-mate fd-rev" style={`--i:${i % 4}`}>
+							<span class="fa-mate-photo">
+								<img
+									src={`/teammates/${t.name}.jpg`}
+									alt={t.name}
+									loading="lazy"
+									width="240"
+									height="240"
+								/>
+							</span>
+							<strong class="fa-mate-name">{t.name}</strong>
+							<span class="fa-mate-role">{t.role}</span>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+	</section>
+
+	<!-- ── F · client voices (same voices as the Boardroom About) ── -->
+	<section class="fa-sec">
+		<div class="fa-wrap">
+			<div class="fa-head fd-rev">
+				<span class="fa-stamp">Founder to founder</span>
+				<h2 class="fa-h">In their <em>words.</em></h2>
+			</div>
+
+			<div class="fa-quotes">
+				{
+					quotes.map((q, i) => (
+						<figure class="fa-quote fd-rev" style={`--i:${i}`}>
+							<blockquote>“{q.text}”</blockquote>
+							<figcaption>
+								<img src={q.img} alt={q.name} loading="lazy" width="44" height="44" />
+								<span>
+									<strong>{q.name}</strong>
+									<em>{q.role}</em>
+								</span>
+							</figcaption>
+						</figure>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── G · CTA ────────────────────────────────────────── -->
 	<section class="fa-sec fa-sec--last">
 		<div class="fa-cta-box fd-rev">
 			<h2 class="fa-h">Bring us <em>your Day 0.</em></h2>
@@ -472,7 +583,103 @@ const values = [
 		margin: 0;
 	}
 
-	/* ── E · CTA ── */
+	/* ── E · team ── */
+	.fa-team {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 1.2rem;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	.fa-mate {
+		text-align: center;
+		border: 1px solid var(--fa-line);
+		border-radius: 1.1rem;
+		background: var(--fa-card);
+		padding: 1.2rem 0.9rem 1.1rem;
+		transition: transform 0.25s ease, border-color 0.25s ease;
+	}
+	.fa-mate:hover {
+		transform: translateY(-4px);
+		border-color: color-mix(in srgb, var(--fa-acc) 45%, transparent);
+	}
+	.fa-mate-photo {
+		display: block;
+		width: 92px;
+		height: 92px;
+		margin: 0 auto 0.75rem;
+		border-radius: 50%;
+		overflow: hidden;
+		border: 2px solid color-mix(in srgb, var(--fa-acc) 45%, transparent);
+		box-shadow: 0 14px 30px -16px color-mix(in srgb, var(--fa-acc) 60%, transparent);
+	}
+	.fa-mate-photo img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+	}
+	.fa-mate-name {
+		display: block;
+		font-size: 1rem;
+		font-weight: 800;
+	}
+	.fa-mate-role {
+		display: block;
+		font-size: 0.8rem;
+		color: var(--fa-muted);
+		margin-top: 0.15rem;
+	}
+
+	/* ── F · client voices ── */
+	.fa-quotes {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 1rem;
+	}
+	.fa-quote {
+		margin: 0;
+		border: 1px solid var(--fa-line);
+		border-radius: 1.1rem;
+		background: var(--fa-card);
+		padding: 1.3rem 1.2rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+	.fa-quote blockquote {
+		margin: 0;
+		font-size: 0.96rem;
+		line-height: 1.6;
+		color: var(--fa-muted);
+		flex: 1;
+	}
+	.fa-quote figcaption {
+		display: flex;
+		align-items: center;
+		gap: 0.65rem;
+	}
+	.fa-quote figcaption img {
+		width: 40px;
+		height: 40px;
+		border-radius: 50%;
+		object-fit: cover;
+		border: 2px solid color-mix(in srgb, var(--fa-acc) 40%, transparent);
+	}
+	.fa-quote figcaption strong {
+		display: block;
+		font-size: 0.9rem;
+		font-weight: 800;
+	}
+	.fa-quote figcaption em {
+		display: block;
+		font-style: normal;
+		font-size: 0.76rem;
+		color: var(--fa-muted);
+	}
+
+	/* ── G · CTA ── */
 	.fa-cta-box {
 		max-width: 46rem;
 		margin: 0 auto;
@@ -508,11 +715,15 @@ const values = [
 		.fa-open { grid-template-columns: minmax(0, 1fr); }
 		.fa-photo { max-width: 28rem; margin: 0.5rem auto 0; }
 		.fa-values { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+		.fa-team { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+		.fa-quotes { grid-template-columns: minmax(0, 1fr); }
 	}
 	@media (max-width: 560px) {
 		.fa-values { grid-template-columns: minmax(0, 1fr); }
 		.fa-journey { padding-left: 1.2rem; }
 		.fa-stop { padding-left: 0.8rem; }
 		.fa-stop-node { left: -1.82rem; }
+		.fa-team { gap: 0.8rem; }
+		.fa-mate-photo { width: 76px; height: 76px; }
 	}
 </style>
