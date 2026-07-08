@@ -605,6 +605,26 @@ const proof = [
 		gap: 1rem;
 		flex-wrap: wrap;
 	}
+	/* Mobile: the CTAs pin to the bottom of the modal — no scrolling to act.
+	   The list above compacts so the whole intro breathes in one screen. */
+	@media (max-width: 640px) {
+		.vo__actions {
+			position: sticky;
+			bottom: calc(-1 * clamp(1.4rem, 2.5vw, 2rem));
+			margin: 0.6rem calc(-1 * clamp(1.4rem, 3vw, 2.5rem)) calc(-1 * clamp(1.4rem, 2.5vw, 2rem));
+			padding: 0.85rem clamp(1.4rem, 3vw, 2.5rem) 1rem;
+			background: var(--ob-panel);
+			box-shadow: 0 -14px 20px -14px rgba(0, 0, 0, 0.55);
+			border-top: 1px solid var(--ob-card-border);
+			z-index: 4;
+			gap: 0.6rem;
+		}
+		.vo__service { padding: 0.42rem 0.6rem; }
+		.vo__service-ico { width: 28px; height: 28px; }
+		.vo__service-txt strong { font-size: 0.76rem; }
+		.vo__service-txt em { font-size: 0.66rem; }
+		.vo__services { gap: 0.4rem; margin-bottom: 0.7rem; }
+	}
 	.vo__cta {
 		display: inline-flex;
 		align-items: center;

@@ -1773,10 +1773,10 @@ const reviews = [
 
 	/* ambient stage */
 	.bb-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
-	.bb-orb { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.4; animation: bb-drift 17s ease-in-out infinite alternate; }
+	.bb-orb { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.4; animation: bb-orb-drift 17s ease-in-out infinite alternate; }
 	.bb-orb--a { width: 460px; height: 460px; left: -150px; top: 6%; background: radial-gradient(circle, rgba(24, 222, 190, 0.3), transparent 70%); }
 	.bb-orb--b { width: 520px; height: 520px; right: -180px; top: 44%; background: radial-gradient(circle, rgba(40, 166, 236, 0.2), transparent 70%); animation-delay: -7s; }
-	@keyframes bb-drift { to { transform: translate3d(56px, -40px, 0) scale(1.1); } }
+	@keyframes bb-orb-drift { to { transform: translate3d(56px, -40px, 0) scale(1.1); } }
 	.bb-spark-up {
 		position: absolute; bottom: -12px; left: calc(9% + var(--s) * 11.5%);
 		width: 3.5px; height: 3.5px; border-radius: 50%;

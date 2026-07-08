@@ -1647,6 +1647,9 @@ const values = [
 	@media (max-width: 900px) {
 		.fa-open { grid-template-columns: minmax(0, 1fr); }
 		.fa-visual { max-width: 28rem; margin: 0.5rem auto 0; }
+		/* the huge conic aura reads as a stray ring over content on
+		   small screens — desktop only */
+		.fa-aura { display: none; }
 		.fa-values { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 		.fa-team { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 		.fa-quotes { grid-template-columns: minmax(0, 1fr); }
@@ -1672,9 +1675,11 @@ const values = [
 		.fa-stats strong { font-size: 1.15rem; }
 		.fa-stats span { font-size: 0.62rem; }
 		.fa-chip { font-size: 0.68rem; padding: 0.35rem 0.65rem; }
-		/* keep the floating chips inside the viewport on phones */
-		.fa-chip--a { left: 0.3rem; top: -0.9rem; }
-		.fa-chip--b { right: 0.3rem; }
-		.fa-chip--c { left: 10%; bottom: -0.9rem; }
+		/* phones: explicit, non-conflicting corners for every chip (the
+		   desktop rules set the opposite offsets, so reset them here) */
+		.fa-chip--a { top: -0.9rem; bottom: auto; left: 0.3rem; right: auto; }
+		.fa-chip--b { top: 30%; bottom: auto; right: 0.3rem; left: auto; }
+		/* c keeps clear of the pink crew tag that owns the bottom edge */
+		.fa-chip--c { top: 62%; bottom: auto; left: 0.3rem; right: auto; }
 	}
 </style>

@@ -94,6 +94,9 @@ function bindFounderMotion(root: HTMLElement) {
 				modal.hidden = true;
 			}, 250);
 			document.documentElement.style.overflow = '';
+			// drop the root back under the sticky header
+			root.style.zIndex = '';
+			root.style.position = '';
 		};
 
 		root.querySelectorAll<HTMLElement>('[data-fa-member]').forEach((btn) => {
@@ -121,6 +124,11 @@ function bindFounderMotion(root: HTMLElement) {
 				modal.hidden = false;
 				requestAnimationFrame(() => modal.classList.add('is-open'));
 				document.documentElement.style.overflow = 'hidden';
+				// the root is an isolated stacking context that normally sits
+				// BELOW the sticky header (z-50) — lift it while the modal is
+				// open so the close button is never buried under the nav
+				root.style.position = 'relative';
+				root.style.zIndex = '130';
 			});
 		});
 		modal
