@@ -11,6 +11,8 @@ export interface Props {
 	title?: string;
 	description?: string;
 	image?: string;
+	/** Optional 1200x1200 og:image variant for mobile chat apps. */
+	imageSquare?: string;
 	/** Pages that ship their own footer (e.g. About) suppress the global one. */
 	hideFooter?: boolean;
 }
@@ -19,6 +21,7 @@ const {
 	title = SITE_TITLE,
 	description = SITE_DESCRIPTION,
 	image,
+	imageSquare,
 	hideFooter = false,
 } = Astro.props;
 ---
@@ -29,7 +32,12 @@ const {
 }
 <html lang="en">
 	<head>
-		<BaseHead title={title} description={description} image={image} />
+		<BaseHead
+			title={title}
+			description={description}
+			image={image}
+			imageSquare={imageSquare}
+		/>
 	</head>
 	<body class="leading-loose">
 		<script is:inline type="text/javascript">
