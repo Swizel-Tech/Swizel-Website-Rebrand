@@ -3,6 +3,7 @@
 // detail page (overview, included, approach, ways, projects, review, FAQs),
 // told with founder momentum and tinted by the discipline's own colour.
 import { Icon } from 'astro-icon/components';
+import ServiceVisual from './ServiceVisual.astro';
 import type { Discipline } from '../../data/disciplines';
 
 interface Props {
@@ -10,6 +11,16 @@ interface Props {
 	others: Discipline[];
 }
 const { discipline: d, others } = Astro.props;
+
+// The clarifier as scannable chips instead of another sentence to read.
+const clarifierChips = d.clarifier
+	.replace(/\.$/, '')
+	.split(/,\s*|\s+and\s+/)
+	.map((c) => c.trim())
+	.filter(Boolean);
+
+// 4 included cards → one line of four (2x2 on tablet); 6 → clean 3x2.
+const incCols = d.included.length % 4 === 0 ? 4 : 3;
 ---
 
 <div class="fsd fbody view-body view-body-founder" style={`--c:${d.color}`}>
@@ -32,10 +43,9 @@ const { discipline: d, others } = Astro.props;
 				</span>
 				<h1 class="fsd-h fsd-h--xl">{d.tagline.replace(/\.$/, '')}<em>.</em></h1>
 				<p class="fsd-p">{d.heroDesc}</p>
-				<p class="fsd-clarify">
-					<Icon width={16} name="mdi:information-outline" />
-					{d.clarifier}
-				</p>
+				<span class="fsd-chips">
+					{clarifierChips.map((c) => <i>{c}</i>)}
+				</span>
 				<div class="fsd-row">
 					<a href="/contact" class="fsd-cta fs-cta">
 						Start Week 1
@@ -47,13 +57,14 @@ const { discipline: d, others } = Astro.props;
 					</a>
 				</div>
 			</div>
-			<div class="fsd-heropanel fd-rev" data-fa-tilt="7">
-				<span class="fsd-glare" aria-hidden="true"></span>
-				<span class="fsd-heropanel-ic">
-					<Icon width={44} name={d.icon} />
+
+			<!-- the discipline's living, animated signature visual -->
+			<div class="fsd-viz fd-rev" data-fa-tilt="6">
+				<ServiceVisual d={d} />
+				<span class="fsd-viz-tag">
+					<Icon width={15} name="mdi:flash" />
+					{d.outcome}
 				</span>
-				<p class="fsd-overview">{d.overview}</p>
-				<span class="fsd-heropanel-tag">{d.outcome}</span>
 			</div>
 		</div>
 	</section>
@@ -65,10 +76,10 @@ const { discipline: d, others } = Astro.props;
 				<span class="fsd-stamp">What's included</span>
 				<h2 class="fsd-h">Everything the discipline <em>covers.</em></h2>
 			</div>
-			<div class="fsd-inc">
+			<div class="fsd-inc" style={`--inc-cols:${incCols}`}>
 				{
 					d.included.map((s, i) => (
-						<article class="fsd-inc-card fd-rev" style={`--i:${i % 3}`} data-fa-tilt="9">
+						<article class="fsd-inc-card fd-rev" style={`--i:${i % incCols}`} data-fa-tilt="9">
 							<span class="fsd-glare" aria-hidden="true" />
 							<h3>{s.title}</h3>
 							<p>{s.desc}</p>
@@ -329,40 +340,50 @@ const { discipline: d, others } = Astro.props;
 	:is(.fsd-heropanel, .fsd-inc-card, .fsd-way):hover .fsd-glare { opacity: 1; }
 
 	/* hero */
-	.fsd-hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: clamp(2rem, 4vw, 3.2rem); align-items: center; }
+	.fsd-hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 4vw, 3.2rem); align-items: center; }
 	.fsd-crumb { display: flex; align-items: center; gap: 0.4rem; font-size: 0.82rem; font-weight: 600; color: var(--fa-muted); margin-bottom: 1rem; }
 	.fsd-crumb a { color: var(--c); }
-	.fsd-clarify { display: flex; align-items: center; gap: 0.5rem; font-size: 0.88rem; color: var(--fa-muted); margin: -0.4rem 0 1.3rem; }
-	.fsd-clarify svg { color: var(--c); flex-shrink: 0; }
-	.fsd-heropanel {
-		position: relative; overflow: hidden;
-		border: 1px solid color-mix(in srgb, var(--c) 30%, rgba(255, 255, 255, 0.1));
-		border-radius: 1.3rem;
-		background:
-			linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 55%),
-			radial-gradient(120% 90% at 85% -20%, color-mix(in srgb, var(--c) 14%, transparent), transparent 60%),
-			var(--fa-card);
-		padding: 1.6rem;
-		transform-style: preserve-3d; will-change: transform;
+	/* the clarifier as chips, not another sentence */
+	.fsd-chips { display: flex; flex-wrap: wrap; gap: 0.45rem; margin: -0.2rem 0 1.4rem; }
+	.fsd-chips i {
+		font-style: normal; font-size: 0.78rem; font-weight: 700;
+		padding: 0.35rem 0.75rem; border-radius: 999px;
+		border: 1px solid color-mix(in srgb, var(--c) 42%, transparent);
+		background: color-mix(in srgb, var(--c) 10%, transparent);
+		color: var(--fa-ink);
 	}
-	.fsd-heropanel-ic {
-		display: grid; place-items: center; width: 72px; height: 72px;
-		border-radius: 1.1rem; color: var(--c);
-		background: linear-gradient(135deg, color-mix(in srgb, var(--c) 32%, transparent), color-mix(in srgb, var(--c) 10%, transparent));
-		box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, 0.22), 0 10px 22px -10px color-mix(in srgb, var(--c) 80%, transparent);
-		margin-bottom: 1rem;
+	/* the animated signature visual + a one-line outcome badge */
+	.fsd-viz {
+		position: relative;
+		display: grid;
+		gap: 0.9rem;
+		justify-items: center;
+		transform-style: preserve-3d;
+		will-change: transform;
+		/* map the boardroom tokens ServiceVisual expects onto founder ink */
+		--bd-ink: var(--fa-ink);
+		--bd-muted: var(--fa-muted);
+		--bd-glass: var(--fa-card);
+		--bd-glass-border: color-mix(in srgb, var(--c) 30%, rgba(255, 255, 255, 0.12));
+		--bd-shadow: 0 34px 70px -28px rgba(0, 0, 0, 0.65);
+	}
+	.fsd-viz :global(.det-viz-wrap) { width: 100%; }
+	.fsd-viz-tag {
+		display: inline-flex; align-items: center; gap: 0.45rem;
+		font-size: 0.76rem; font-weight: 800; letter-spacing: 0.07em;
+		text-transform: uppercase; color: #fff;
+		background: linear-gradient(95deg, var(--c), var(--fa-acc2));
+		padding: 0.5rem 1rem; border-radius: 9999px;
+		box-shadow: 0 14px 30px -12px color-mix(in srgb, var(--c) 75%, transparent);
+		transform: rotate(-1.2deg);
 		animation: fsd-bob 5s ease-in-out infinite;
+		text-align: center;
 	}
 	@keyframes fsd-bob { 0%, 100% { margin-top: 0; } 50% { margin-top: -7px; } }
-	@media (prefers-reduced-motion: reduce) { .fsd-heropanel-ic { animation: none; } }
-	.fsd-overview { font-size: 0.98rem; line-height: 1.65; color: var(--fa-muted); margin: 0 0 1rem; }
-	.fsd-heropanel-tag {
-		display: inline-block; font-size: 0.78rem; font-weight: 800;
-		letter-spacing: 0.06em; text-transform: uppercase; color: var(--c);
-	}
+	@media (prefers-reduced-motion: reduce) { .fsd-viz-tag { animation: none; } }
 
-	/* included */
-	.fsd-inc { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+	/* included — column count adapts to the card count (4 → one line of 4) */
+	.fsd-inc { display: grid; grid-template-columns: repeat(var(--inc-cols, 3), minmax(0, 1fr)); gap: 1rem; }
 	.fsd-inc-card {
 		position: relative; overflow: hidden;
 		border: 1px solid var(--fa-line); border-radius: 1.1rem;
@@ -489,9 +510,12 @@ const { discipline: d, others } = Astro.props;
 	.fsd-other svg { color: var(--oc); }
 	.fsd-ctabox { text-align: center; max-width: 46rem; margin: 0 auto; }
 
+	@media (max-width: 1180px) {
+		/* a line of 4 becomes a clean 2x2 before it gets cramped */
+		.fsd-inc { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	}
 	@media (max-width: 980px) {
 		.fsd-hero { grid-template-columns: minmax(0, 1fr); }
-		.fsd-inc { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 		.fsd-proof { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 	}
 	@media (max-width: 640px) {
