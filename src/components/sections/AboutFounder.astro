@@ -22,9 +22,18 @@ const team = teamOrder.map((m) => {
 	const d = (teamDetails as any[]).find((t) => t.name === m.name) || {};
 	return {
 		...m,
+		bio: d.bio || '',
+		experience: (d.experience || []) as { company: string; jobDesc: string }[],
 		linkedin: d.linkedinURL && d.linkedinURL !== '#' ? d.linkedinURL : '',
 	};
 });
+
+// The Brevarium — same editions as the Boardroom About, free to download.
+const brevariumEditions = [
+	{ vol: 'Vol. 3', date: 'Latest · 2026', latest: true, href: '/brevarium/the-brevarium-latest.pdf' },
+	{ vol: 'Vol. 2', date: '2025', latest: false, href: '/The Brevarium by Swizel.pdf' },
+	{ vol: 'Vol. 1', date: '2024', latest: false, href: '/The Brevarium by Swizel.pdf' },
+];
 
 // Same client voices as the Boardroom About.
 const quotes = [
@@ -109,8 +118,19 @@ const values = [
 ---
 
 <div class="fabout fbody view-body view-body-founder">
+	<!-- ── ambient stage: drifting orbs + rising sparks + aura ── -->
+	<div class="fa-bg" aria-hidden="true">
+		<span class="fa-orb fa-orb--a"></span>
+		<span class="fa-orb fa-orb--b"></span>
+		<span class="fa-orb fa-orb--c"></span>
+		<span class="fa-aura"></span>
+		{Array.from({ length: 9 }).map((_, i) => (
+			<i class="fa-spark" style={`--s:${i}`}></i>
+		))}
+	</div>
+
 	<!-- ── A · who we are ─────────────────────────────────── -->
-	<section class="fa-sec">
+	<section class="fa-sec" data-cursor="layers">
 		<div class="fa-wrap fa-open">
 			<div class="fa-copy fd-rev">
 				<span class="fa-stamp">About Swizel · Founder mode</span>
@@ -134,33 +154,59 @@ const values = [
 				</ul>
 			</div>
 
-			<figure class="fa-photo fd-rev">
-				<img
-					src="/images/hero-team.jpg"
-					alt="The Swizel team"
-					loading="lazy"
-					width="640"
-					height="480"
-				/>
-				<figcaption class="fa-photo-tag">
-					The crew behind 65+ launches
-				</figcaption>
-			</figure>
+			<div class="fa-visual fd-rev">
+				<figure class="fa-photo" data-fa-tilt="9">
+					<img
+						src="/images/hero-team.jpg"
+						alt="The Swizel team"
+						loading="lazy"
+						width="640"
+						height="480"
+					/>
+					<span class="fa-photo-glare" aria-hidden="true"></span>
+					<figcaption class="fa-photo-tag">
+						The crew behind 65+ launches
+					</figcaption>
+				</figure>
+				<span class="fa-chip fa-chip--a">🚀 6 wks to MVP</span>
+				<span class="fa-chip fa-chip--b">🌍 10+ countries</span>
+				<span class="fa-chip fa-chip--c">⚡ Weekly demos</span>
+			</div>
+		</div>
+
+		<!-- kinetic proof marquee -->
+		<div class="fa-marquee fd-rev" aria-hidden="true">
+			<div class="fa-marquee-track">
+				{
+					Array.from({ length: 2 }).map(() => (
+						<span class="fa-marquee-seq">
+							<i>Zero to MVP in 6 weeks</i><b>✦</b>
+							<i>65+ products live</i><b>✦</b>
+							<i>10+ countries</i><b>✦</b>
+							<i>Senior team only</i><b>✦</b>
+							<i>You imagine, we build</i><b>✦</b>
+							<i>Weekly demos, no black box</i><b>✦</b>
+						</span>
+					))
+				}
+			</div>
 		</div>
 	</section>
 
 	<!-- ── B · mission ────────────────────────────────────── -->
-	<section class="fa-sec">
-		<blockquote class="fa-mission fd-rev">
-			<p>
-				We exist to drive the digitalisation of
-				<em>African business.</em>
-			</p>
-		</blockquote>
+	<section class="fa-sec" data-cursor="pulse">
+		<div class="fa-mission-ring fd-rev">
+			<blockquote class="fa-mission">
+				<p>
+					We exist to drive the digitalisation of
+					<em>African business.</em>
+				</p>
+			</blockquote>
+		</div>
 	</section>
 
 	<!-- ── C · the journey ────────────────────────────────── -->
-	<section class="fa-sec">
+	<section class="fa-sec" data-cursor="clock">
 		<div class="fa-wrap">
 			<div class="fa-head fd-rev">
 				<span class="fa-stamp">The journey</span>
@@ -168,6 +214,7 @@ const values = [
 			</div>
 
 			<ol class="fa-journey">
+				<span class="fa-journey-line" aria-hidden="true"></span>
 				{
 					journey.map((j, i) => (
 						<li class="fa-stop fd-rev" style={`--i:${i}`}>
@@ -195,7 +242,7 @@ const values = [
 	</section>
 
 	<!-- ── D · how we work ────────────────────────────────── -->
-	<section class="fa-sec">
+	<section class="fa-sec" data-cursor="shield">
 		<div class="fa-wrap">
 			<div class="fa-head fd-rev">
 				<span class="fa-stamp">How we work</span>
@@ -205,7 +252,8 @@ const values = [
 			<div class="fa-values">
 				{
 					values.map((v, i) => (
-						<article class="fa-val fd-rev" style={`--i:${i}`}>
+						<article class="fa-val fd-rev" style={`--i:${i}`} data-fa-tilt="12">
+							<span class="fa-val-glare" aria-hidden="true" />
 							<span class="fa-val-ic">
 								<Icon width={22} name={v.icon} />
 							</span>
@@ -219,7 +267,7 @@ const values = [
 	</section>
 
 	<!-- ── E · the team (same crew as the Boardroom About) ── -->
-	<section class="fa-sec">
+	<section class="fa-sec" data-cursor="play">
 		<div class="fa-wrap">
 			<div class="fa-head fd-rev">
 				<span class="fa-stamp">The crew</span>
@@ -233,27 +281,183 @@ const values = [
 			<ul class="fa-team">
 				{
 					team.map((t, i) => (
-						<li class="fa-mate fd-rev" style={`--i:${i % 4}`}>
-							<span class="fa-mate-photo">
-								<img
-									src={`/teammates/${t.name}.jpg`}
-									alt={t.name}
-									loading="lazy"
-									width="240"
-									height="240"
-								/>
-							</span>
-							<strong class="fa-mate-name">{t.name}</strong>
-							<span class="fa-mate-role">{t.role}</span>
+						<li class="fa-mate-cell" style={`--i:${i % 4}`}>
+							<button
+								type="button"
+								class="fa-mate fd-rev"
+								style={`--i:${i % 4}`}
+								data-fa-tilt="14"
+								data-fa-member
+								data-name={t.name}
+								data-role={t.role}
+								data-bio={t.bio}
+								data-linkedin={t.linkedin}
+								data-exp={JSON.stringify(t.experience)}
+								aria-label={`View ${t.name}'s profile`}
+							>
+								<span class="fa-mate-ring" aria-hidden="true" />
+								<span class="fa-mate-photo">
+									<img
+										src={`/teammates/${t.name}.jpg`}
+										alt={t.name}
+										loading="lazy"
+										width="240"
+										height="240"
+									/>
+								</span>
+								<strong class="fa-mate-name">{t.name}</strong>
+								<span class="fa-mate-role">{t.role}</span>
+								<span class="fa-mate-view">
+									View profile
+									<Icon width={13} name="mdi:arrow-top-right" />
+								</span>
+							</button>
 						</li>
 					))
 				}
 			</ul>
+
+			<div class="fa-join fd-rev">
+				<div>
+					<strong>We're always hiring builders.</strong>
+					<span>Designers, engineers and marketers, come build real products with us.</span>
+				</div>
+				<a href="/contact" class="fa-cta fa-cta--sm">
+					Join the team
+					<Icon width={15} name="mdi:arrow-right" />
+				</a>
+			</div>
+		</div>
+	</section>
+
+	<!-- Team profile modal (filled on click) -->
+	<div class="fa-modal" id="fa-member-modal" hidden>
+		<div class="fa-modal-overlay" data-fa-modal-close></div>
+		<div class="fa-modal-card" role="dialog" aria-modal="true" aria-labelledby="fa-modal-name">
+			<button type="button" class="fa-modal-x" data-fa-modal-close aria-label="Close">
+				<Icon width={20} name="mdi:close" />
+			</button>
+			<div class="fa-modal-body">
+				<div class="fa-modal-side">
+					<div class="fa-modal-photo"><img id="fa-modal-photo" src="" alt="" /></div>
+					<h3 class="fa-modal-name" id="fa-modal-name"></h3>
+					<p class="fa-modal-role" id="fa-modal-role"></p>
+					<a class="fa-modal-linkedin" id="fa-modal-linkedin" href="#" target="_blank" rel="noopener noreferrer" hidden>
+						<Icon width={18} name="linkedin" />
+						Connect on LinkedIn
+					</a>
+				</div>
+				<div class="fa-modal-main">
+					<span class="fa-stamp fa-stamp--sm">Bio</span>
+					<p class="fa-modal-bio" id="fa-modal-bio"></p>
+					<div id="fa-modal-exp-wrap" hidden>
+						<span class="fa-stamp fa-stamp--sm">Experience</span>
+						<ul class="fa-modal-exp" id="fa-modal-exp"></ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- ── E2 · inside Swizel: video + pictures (same as Boardroom) ── -->
+	<section class="fa-sec" data-cursor="play">
+		<div class="fa-wrap fa-inside">
+			<div class="fa-inside-main fd-rev" data-fa-tilt="6">
+				<div class="fa-media fa-media--tall">
+					<span class="fa-media-sheen" aria-hidden="true"></span>
+					<Icon width={36} name="mdi:play-circle-outline" />
+					<span class="fa-media-label">Video placeholder</span>
+					<span class="fa-media-sub">A day at the studio</span>
+				</div>
+				<div class="fa-inside-copy">
+					<span class="fa-stamp">Inside Swizel</span>
+					<h2 class="fa-h">A studio, <em>not a factory.</em></h2>
+					<p class="fa-p">
+						We share one room, one standard and a lot of coffee.
+						Designers sit with engineers, marketers sit with both, so
+						the thing we ship is the thing we all believed in.
+					</p>
+					<a href="/contact" class="fa-link">
+						Work with us
+						<Icon width={15} name="mdi:chevron-right" />
+					</a>
+				</div>
+			</div>
+			<div class="fa-inside-aside fd-rev" style="--i:1" data-fa-tilt="6">
+				<div class="fa-media">
+					<span class="fa-media-sheen" aria-hidden="true"></span>
+					<Icon width={26} name="mdi:image-outline" />
+					<span class="fa-media-label">Image placeholder</span>
+					<span class="fa-media-sub">Bootcamp, in session</span>
+				</div>
+				<div class="fa-inside-copy">
+					<h3 class="fa-h fa-h--sm">Education <em>at heart.</em></h3>
+					<p class="fa-p">
+						From our free bootcamp to The Brevarium, we put real skills
+						in the hands of the next generation of builders.
+					</p>
+					<a href="/bootcamp" class="fa-link">
+						See the bootcamp
+						<Icon width={15} name="mdi:chevron-right" />
+					</a>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── E3 · The Brevarium, our magazine (same as Boardroom) ── -->
+	<section class="fa-sec" data-cursor="book">
+		<div class="fa-wrap">
+			<div class="fa-brev fd-rev">
+				<div class="fa-brev-cover" data-fa-tilt="10">
+					<img
+						src="/images/brevarium-cover.jpg"
+						alt="The Brevarium by Swizel — latest edition"
+						loading="lazy"
+					/>
+					<span class="fa-brev-shine" aria-hidden="true"></span>
+				</div>
+				<div class="fa-brev-copy">
+					<span class="fa-stamp">The Brevarium</span>
+					<h2 class="fa-h">Our magazine. <em>On us.</em></h2>
+					<p class="fa-p">
+						The Brevarium is Swizel's own publication, ideas, builds and
+						lessons from the front line of African tech. We release a
+						fresh edition at intervals, and every one is free to read.
+					</p>
+					<div class="fa-brev-actions">
+						<a href="/brevarium/the-brevarium-latest.pdf" class="fa-cta fa-cta--sm" download>
+							<Icon width={17} name="mdi:download" />
+							Download latest edition
+						</a>
+						<span class="fa-brev-meta">PDF · free · new editions at intervals</span>
+					</div>
+					<div class="fa-brev-back">
+						<span class="fa-brev-back-h">Back issues</span>
+						<ul class="fa-brev-eds">
+							{
+								brevariumEditions.map((ed) => (
+									<li>
+										<a href={ed.href} download class="fa-brev-ed">
+											<Icon width={18} name="mdi:file-document-outline" />
+											<span class="fa-brev-ed-meta">
+												<strong>The Brevarium · {ed.vol}</strong>
+												<em>{ed.date}</em>
+											</span>
+											<Icon class="fa-brev-ed-dl" width={16} name="mdi:download" />
+										</a>
+									</li>
+								))
+							}
+						</ul>
+					</div>
+				</div>
+			</div>
 		</div>
 	</section>
 
 	<!-- ── F · client voices (same voices as the Boardroom About) ── -->
-	<section class="fa-sec">
+	<section class="fa-sec" data-cursor="quote">
 		<div class="fa-wrap">
 			<div class="fa-head fd-rev">
 				<span class="fa-stamp">Founder to founder</span>
@@ -263,7 +467,8 @@ const values = [
 			<div class="fa-quotes">
 				{
 					quotes.map((q, i) => (
-						<figure class="fa-quote fd-rev" style={`--i:${i}`}>
+						<figure class="fa-quote fd-rev" style={`--i:${i}`} data-fa-tilt="8">
+							<span class="fa-quote-mark" aria-hidden="true">“</span>
 							<blockquote>“{q.text}”</blockquote>
 							<figcaption>
 								<img src={q.img} alt={q.name} loading="lazy" width="44" height="44" />
@@ -282,6 +487,9 @@ const values = [
 	<!-- ── G · CTA ────────────────────────────────────────── -->
 	<section class="fa-sec fa-sec--last">
 		<div class="fa-cta-box fd-rev">
+			<span class="fa-cta-orbit" aria-hidden="true">
+				<i></i><i></i><i></i>
+			</span>
 			<h2 class="fa-h">Bring us <em>your Day 0.</em></h2>
 			<p class="fa-p fa-p--center">
 				Tell us what you imagine. Six weeks later, founders demo their
@@ -290,7 +498,7 @@ const values = [
 			<div class="fa-cta-row">
 				<a href="/contact" class="fa-cta">
 					Start Week 1
-					<Icon width={17} name="mdi:rocket-launch-outline" />
+					<Icon width={17} name="mdi:rocket-launch-outline" class="fa-cta-rocket" />
 				</a>
 				<a href="/portfolio" class="fa-link">
 					See the launches
@@ -334,9 +542,63 @@ const values = [
 			linear-gradient(180deg, #f4f1fb 0%, #ece7f8 55%, #f4f1fb 100%);
 	}
 
-	.fa-sec { padding-block: clamp(2rem, 5vw, 3.5rem); }
+	.fa-sec { position: relative; z-index: 1; padding-block: clamp(2rem, 5vw, 3.5rem); }
 	.fa-sec--last { padding-bottom: clamp(3rem, 6vw, 5rem); }
 	.fa-wrap { max-width: 74rem; margin: 0 auto; }
+
+	/* ── ambient stage: orbs drift, aura breathes, sparks rise ── */
+	.fa-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+	.fa-orb {
+		position: absolute;
+		border-radius: 50%;
+		filter: blur(70px);
+		opacity: 0.5;
+		animation: fa-drift 16s ease-in-out infinite alternate;
+	}
+	.fa-orb--a { width: 460px; height: 460px; left: -140px; top: 4%; background: radial-gradient(circle, rgba(139, 92, 246, 0.34), transparent 70%); }
+	.fa-orb--b { width: 520px; height: 520px; right: -180px; top: 32%; background: radial-gradient(circle, rgba(236, 72, 153, 0.2), transparent 70%); animation-delay: -6s; }
+	.fa-orb--c { width: 420px; height: 420px; left: 28%; bottom: -6%; background: radial-gradient(circle, rgba(99, 102, 241, 0.24), transparent 70%); animation-delay: -11s; }
+	@keyframes fa-drift {
+		to { transform: translate3d(60px, -44px, 0) scale(1.12); }
+	}
+	.fa-aura {
+		position: absolute;
+		width: 1200px; height: 1200px;
+		left: 50%; top: -420px;
+		transform: translateX(-50%);
+		background: conic-gradient(from 0deg, transparent, rgba(139, 92, 246, 0.07), transparent 32%, rgba(236, 72, 153, 0.05), transparent 65%);
+		border-radius: 50%;
+		animation: fa-spin 40s linear infinite;
+	}
+	@keyframes fa-spin { to { transform: translateX(-50%) rotate(360deg); } }
+	.fa-spark {
+		position: absolute;
+		bottom: -12px;
+		left: calc(6% + var(--s) * 10.5%);
+		width: 4px; height: 4px;
+		border-radius: 50%;
+		background: color-mix(in srgb, var(--fa-acc) 85%, #fff);
+		box-shadow: 0 0 10px 2px color-mix(in srgb, var(--fa-acc) 55%, transparent);
+		opacity: 0;
+		animation: fa-rise calc(9s + var(--s) * 1.3s) linear infinite;
+		animation-delay: calc(var(--s) * -1.7s);
+	}
+	@keyframes fa-rise {
+		0% { transform: translateY(0) translateX(0); opacity: 0; }
+		8% { opacity: 0.8; }
+		92% { opacity: 0.25; }
+		100% { transform: translateY(-105vh) translateX(28px); opacity: 0; }
+	}
+	:global(html:not(.dark)) .fabout .fa-spark { opacity: 0; animation-name: fa-rise-light; }
+	@keyframes fa-rise-light {
+		0% { transform: translateY(0); opacity: 0; }
+		8% { opacity: 0.5; }
+		100% { transform: translateY(-105vh) translateX(28px); opacity: 0; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.fa-orb, .fa-aura, .fa-spark { animation: none !important; }
+		.fa-spark { display: none; }
+	}
 
 	/* ── Shared type ── */
 	.fa-stamp {
@@ -363,11 +625,20 @@ const values = [
 	.fa-h--xl { font-size: clamp(2.2rem, 4.4vw, 3.4rem); }
 	.fa-h em {
 		font-style: italic;
-		background: linear-gradient(95deg, var(--fa-acc), var(--fa-acc2));
+		background: linear-gradient(95deg, var(--fa-acc), var(--fa-acc2), var(--fa-acc));
+		background-size: 220% 100%;
 		-webkit-background-clip: text;
 		background-clip: text;
 		-webkit-text-fill-color: transparent;
 		padding-right: 0.06em;
+		animation: fa-shimmer 5.5s ease-in-out infinite;
+	}
+	@keyframes fa-shimmer {
+		0%, 100% { background-position: 0% 0; }
+		50% { background-position: 100% 0; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.fa-h em { animation: none; }
 	}
 	:global(html:not(.dark)) .fabout .fa-h em {
 		background: linear-gradient(95deg, #5d34c4, #b81d68);
@@ -417,32 +688,49 @@ const values = [
 		gap: clamp(2rem, 4vw, 3.5rem);
 		align-items: center;
 	}
+	/* stats: ONE line, divided, numbers pop on hover */
 	.fa-stats {
-		display: grid;
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: 1rem 1.6rem;
-		margin: 1.6rem 0 0;
+		display: flex;
+		align-items: stretch;
+		gap: 0;
+		margin: 1.7rem 0 0;
 		padding: 0;
 		list-style: none;
 	}
+	.fa-stats li {
+		flex: 1;
+		min-width: 0;
+		padding: 0.2rem 1.1rem;
+		border-left: 1px solid color-mix(in srgb, var(--fa-acc) 26%, transparent);
+		transition: transform 0.25s ease;
+	}
+	.fa-stats li:first-child { padding-left: 0; border-left: 0; }
+	.fa-stats li:hover { transform: translateY(-3px); }
 	.fa-stats strong {
 		display: block;
-		font-size: clamp(1.7rem, 3vw, 2.2rem);
+		font-size: clamp(1.5rem, 2.4vw, 2.1rem);
 		font-weight: 850;
 		letter-spacing: -0.02em;
+		white-space: nowrap;
 		background: linear-gradient(95deg, var(--fa-acc), var(--fa-acc2));
 		-webkit-background-clip: text;
 		background-clip: text;
 		-webkit-text-fill-color: transparent;
 	}
 	.fa-stats span {
-		font-size: 0.85rem;
+		display: block;
+		font-size: 0.78rem;
+		line-height: 1.3;
 		color: var(--fa-muted);
+		margin-top: 0.2rem;
 	}
+	.fa-visual { position: relative; }
 	.fa-photo {
 		position: relative;
 		margin: 0;
-		transform: rotate(1.6deg);
+		transform-style: preserve-3d;
+		transition: transform 0.35s ease;
+		will-change: transform;
 	}
 	.fa-photo img {
 		display: block;
@@ -452,6 +740,55 @@ const values = [
 		border: 1px solid var(--fa-line);
 		box-shadow: 0 40px 90px -32px rgba(0, 0, 0, 0.65),
 			0 0 0 6px color-mix(in srgb, var(--fa-acc) 8%, transparent);
+	}
+	/* pointer-following glare on the tilting photo */
+	.fa-photo-glare {
+		position: absolute;
+		inset: 0;
+		border-radius: 1.1rem;
+		background: radial-gradient(
+			420px 300px at var(--gx, 50%) var(--gy, 30%),
+			rgba(255, 255, 255, 0.16),
+			transparent 60%
+		);
+		opacity: 0;
+		transition: opacity 0.3s ease;
+		pointer-events: none;
+	}
+	.fa-photo:hover .fa-photo-glare { opacity: 1; }
+	/* floating proof chips orbiting the photo */
+	.fa-chip {
+		--drift: translate(0, 0);
+		position: absolute;
+		display: inline-block;
+		font-size: 0.78rem;
+		font-weight: 700;
+		padding: 0.45rem 0.85rem;
+		border-radius: 999px;
+		border: 1px solid color-mix(in srgb, var(--fa-acc) 40%, transparent);
+		background: color-mix(in srgb, var(--fa-acc) 14%, rgba(10, 7, 20, 0.75));
+		color: #fff;
+		backdrop-filter: blur(6px);
+		-webkit-backdrop-filter: blur(6px);
+		box-shadow: 0 14px 30px -14px color-mix(in srgb, var(--fa-acc) 70%, transparent);
+		transform: var(--drift);
+		animation: fa-bob 5s ease-in-out infinite;
+		pointer-events: none;
+		z-index: 2;
+	}
+	:global(html:not(.dark)) .fabout .fa-chip {
+		background: color-mix(in srgb, var(--fa-acc) 12%, rgba(255, 255, 255, 0.85));
+		color: #1d1430;
+	}
+	.fa-chip--a { top: -1.1rem; left: -1.4rem; animation-delay: -1.2s; }
+	.fa-chip--b { top: 38%; right: -1.6rem; animation-delay: -2.6s; }
+	.fa-chip--c { top: -1rem; right: 8%; animation-delay: -4s; }
+	@keyframes fa-bob {
+		0%, 100% { margin-top: 0; }
+		50% { margin-top: -9px; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.fa-chip { animation: none; }
 	}
 	.fa-photo-tag {
 		position: absolute;
@@ -477,8 +814,12 @@ const values = [
 		padding: clamp(1.6rem, 4vw, 2.6rem);
 		border: 1px solid var(--fa-line);
 		border-radius: 1.4rem;
-		background: var(--fa-card);
+		/* solid backdrop: the rotating ring behind must not bleed through */
+		background: linear-gradient(180deg, #17112a, #0e0a1c);
 		text-align: center;
+	}
+	:global(html:not(.dark)) .fabout .fa-mission {
+		background: linear-gradient(180deg, #f7f4fd, #ede8f9);
 	}
 	.fa-mission p {
 		font-size: clamp(1.4rem, 3vw, 2.1rem);
@@ -583,7 +924,7 @@ const values = [
 		margin: 0;
 	}
 
-	/* ── E · team ── */
+	/* ── E · team (clickable profiles) ── */
 	.fa-team {
 		display: grid;
 		grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -592,23 +933,54 @@ const values = [
 		margin: 0;
 		padding: 0;
 	}
+	.fa-mate-cell { min-width: 0; }
 	.fa-mate {
+		position: relative;
+		width: 100%;
 		text-align: center;
 		border: 1px solid var(--fa-line);
 		border-radius: 1.1rem;
-		background: var(--fa-card);
-		padding: 1.2rem 0.9rem 1.1rem;
-		transition: transform 0.25s ease, border-color 0.25s ease;
+		background:
+			linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 55%),
+			var(--fa-card);
+		padding: 1.3rem 0.9rem 1.2rem;
+		cursor: pointer;
+		transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+		animation: fa-mate-idle 6s ease-in-out calc(var(--i, 0) * -1.6s) infinite;
+		will-change: transform;
+	}
+	@keyframes fa-mate-idle {
+		0%, 100% { margin-top: 0; }
+		50% { margin-top: -6px; }
 	}
 	.fa-mate:hover {
-		transform: translateY(-4px);
-		border-color: color-mix(in srgb, var(--fa-acc) 45%, transparent);
+		border-color: color-mix(in srgb, var(--fa-acc) 55%, transparent);
+		box-shadow: 0 24px 50px -24px color-mix(in srgb, var(--fa-acc) 70%, transparent);
+		animation-play-state: paused;
 	}
+	/* orbiting accent ring behind the portrait */
+	.fa-mate-ring {
+		position: absolute;
+		top: 0.9rem;
+		left: 50%;
+		width: 112px;
+		height: 112px;
+		margin-left: -56px;
+		border-radius: 50%;
+		background: conic-gradient(from 0deg, var(--fa-acc), var(--fa-acc2), transparent 65%, var(--fa-acc));
+		-webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
+		mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
+		animation: fa-spin 5s linear infinite;
+		opacity: 0.55;
+		pointer-events: none;
+	}
+	.fa-mate:hover .fa-mate-ring { opacity: 1; animation-duration: 1.6s; }
 	.fa-mate-photo {
+		position: relative;
 		display: block;
-		width: 92px;
-		height: 92px;
-		margin: 0 auto 0.75rem;
+		width: 96px;
+		height: 96px;
+		margin: 0.45rem auto 0.8rem;
 		border-radius: 50%;
 		overflow: hidden;
 		border: 2px solid color-mix(in srgb, var(--fa-acc) 45%, transparent);
@@ -619,11 +991,14 @@ const values = [
 		height: 100%;
 		object-fit: cover;
 		display: block;
+		transition: transform 0.4s ease;
 	}
+	.fa-mate:hover .fa-mate-photo img { transform: scale(1.12); }
 	.fa-mate-name {
 		display: block;
 		font-size: 1rem;
 		font-weight: 800;
+		color: var(--fa-ink);
 	}
 	.fa-mate-role {
 		display: block;
@@ -631,6 +1006,331 @@ const values = [
 		color: var(--fa-muted);
 		margin-top: 0.15rem;
 	}
+	.fa-mate-view {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3rem;
+		margin-top: 0.6rem;
+		font-size: 0.72rem;
+		font-weight: 800;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		color: var(--fa-acc);
+		opacity: 0.55;
+		transition: opacity 0.25s ease, gap 0.25s ease;
+	}
+	.fa-mate:hover .fa-mate-view { opacity: 1; gap: 0.5rem; }
+	:global(html:not(.dark)) .fabout .fa-mate-view { color: #5d34c4; }
+	.fa-join {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		flex-wrap: wrap;
+		margin-top: 1.6rem;
+		padding: 1.1rem 1.4rem;
+		border-radius: 1.1rem;
+		border: 1px dashed color-mix(in srgb, var(--fa-acc) 45%, transparent);
+		background: var(--fa-card);
+	}
+	.fa-join strong { display: block; font-weight: 800; }
+	.fa-join span { font-size: 0.9rem; color: var(--fa-muted); }
+
+	/* ── team profile modal ── */
+	.fa-modal {
+		position: fixed;
+		inset: 0;
+		z-index: 90;
+		display: grid;
+		place-items: center;
+		padding: 1.2rem;
+	}
+	/* the display:grid above must NOT defeat the hidden attribute */
+	.fa-modal[hidden] { display: none; }
+	.fa-modal-overlay {
+		position: absolute;
+		inset: 0;
+		background: rgba(6, 4, 14, 0.7);
+		backdrop-filter: blur(6px);
+		-webkit-backdrop-filter: blur(6px);
+		opacity: 0;
+		transition: opacity 0.25s ease;
+		cursor: pointer;
+	}
+	.fa-modal-card {
+		position: relative;
+		width: min(46rem, 100%);
+		max-height: 86vh;
+		overflow: auto;
+		border-radius: 1.3rem;
+		border: 1px solid color-mix(in srgb, var(--fa-acc) 35%, rgba(255, 255, 255, 0.12));
+		background:
+			radial-gradient(120% 90% at 85% -20%, color-mix(in srgb, var(--fa-acc) 14%, transparent), transparent 60%),
+			linear-gradient(180deg, #171129, #0d0a18);
+		color: #f1edfb;
+		padding: 1.8rem;
+		transform: translateY(22px) scale(0.97);
+		opacity: 0;
+		transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
+		box-shadow: 0 50px 120px -40px rgba(0, 0, 0, 0.9);
+	}
+	.fa-modal.is-open .fa-modal-overlay { opacity: 1; }
+	.fa-modal.is-open .fa-modal-card { transform: none; opacity: 1; }
+	.fa-modal-x {
+		position: sticky;
+		top: 0;
+		float: right;
+		display: grid;
+		place-items: center;
+		width: 38px;
+		height: 38px;
+		border-radius: 999px;
+		border: 1px solid rgba(255, 255, 255, 0.16);
+		background: rgba(255, 255, 255, 0.06);
+		color: #fff;
+		cursor: pointer;
+		transition: transform 0.2s ease, background 0.2s ease;
+		z-index: 2;
+	}
+	.fa-modal-x:hover { transform: rotate(90deg); background: rgba(255, 255, 255, 0.14); }
+	.fa-modal-body {
+		display: grid;
+		grid-template-columns: 200px minmax(0, 1fr);
+		gap: 1.6rem;
+	}
+	.fa-modal-photo {
+		width: 148px;
+		height: 148px;
+		border-radius: 50%;
+		overflow: hidden;
+		border: 3px solid color-mix(in srgb, var(--fa-acc) 55%, transparent);
+		box-shadow: 0 22px 44px -20px color-mix(in srgb, var(--fa-acc) 75%, transparent);
+	}
+	.fa-modal-photo img { width: 100%; height: 100%; object-fit: cover; }
+	.fa-modal-name { font-size: 1.35rem; font-weight: 850; margin: 0.9rem 0 0.15rem; }
+	.fa-modal-role { font-size: 0.9rem; color: rgba(241, 237, 251, 0.62); margin: 0; }
+	.fa-modal-linkedin {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		margin-top: 0.9rem;
+		font-size: 0.85rem;
+		font-weight: 700;
+		color: var(--fa-acc);
+	}
+	.fa-modal-bio { font-size: 0.97rem; line-height: 1.7; color: rgba(241, 237, 251, 0.78); margin: 0.5rem 0 1.2rem; }
+	.fa-modal-exp { list-style: none; margin: 0.5rem 0 0; padding: 0; display: grid; gap: 0.6rem; }
+	.fa-modal-exp li {
+		border: 1px solid rgba(255, 255, 255, 0.09);
+		border-radius: 0.8rem;
+		background: rgba(255, 255, 255, 0.035);
+		padding: 0.7rem 0.9rem;
+	}
+	.fa-modal-exp strong { display: block; font-size: 0.92rem; font-weight: 800; }
+	.fa-modal-exp em { display: block; font-style: normal; font-size: 0.82rem; color: rgba(241, 237, 251, 0.6); margin-top: 0.1rem; }
+	.fa-stamp--sm { font-size: 0.62rem; padding: 0.25rem 0.6rem; transform: none; }
+	.fa-h--sm { font-size: clamp(1.3rem, 2.6vw, 1.7rem); }
+
+	/* ── kinetic marquee under the hero ── */
+	.fa-marquee {
+		margin-top: clamp(1.8rem, 4vw, 2.8rem);
+		overflow: hidden;
+		border-block: 1px solid color-mix(in srgb, var(--fa-acc) 22%, transparent);
+		padding-block: 0.8rem;
+		-webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+		mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+	}
+	.fa-marquee-track {
+		display: flex;
+		width: max-content;
+		animation: fa-marquee 26s linear infinite;
+	}
+	.fa-marquee:hover .fa-marquee-track { animation-play-state: paused; }
+	@keyframes fa-marquee { to { transform: translateX(-50%); } }
+	.fa-marquee-seq { display: flex; align-items: center; }
+	.fa-marquee-seq i {
+		font-style: normal;
+		font-size: 0.95rem;
+		font-weight: 700;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: var(--fa-muted);
+		white-space: nowrap;
+		padding: 0 1.4rem;
+	}
+	.fa-marquee-seq b { color: var(--fa-acc); font-weight: 400; }
+	@media (prefers-reduced-motion: reduce) {
+		.fa-marquee-track { animation: none; }
+	}
+
+	/* ── mission: rotating gradient border + float ── */
+	.fa-mission-ring {
+		max-width: 54rem;
+		margin: 0 auto;
+		padding: 1.5px;
+		border-radius: 1.45rem;
+		background: conic-gradient(from var(--fa-ang, 0deg), color-mix(in srgb, var(--fa-acc) 60%, transparent), transparent 30%, color-mix(in srgb, var(--fa-acc2) 50%, transparent) 55%, transparent 80%, color-mix(in srgb, var(--fa-acc) 60%, transparent));
+		animation: fa-ang 7s linear infinite;
+	}
+	@property --fa-ang { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+	@keyframes fa-ang { to { --fa-ang: 360deg; } }
+	@media (prefers-reduced-motion: reduce) { .fa-mission-ring { animation: none; } }
+
+	/* ── journey: the line draws itself, nodes pulse ── */
+	.fa-journey { border-left-color: transparent; }
+	.fa-journey-line {
+		position: absolute;
+		left: -2px;
+		top: 0;
+		width: 3px;
+		height: 100%;
+		border-radius: 2px;
+		background: linear-gradient(180deg, var(--fa-acc), var(--fa-acc2));
+		transform: scaleY(0);
+		transform-origin: top;
+		transition: transform 2.4s cubic-bezier(0.22, 1, 0.36, 1);
+		box-shadow: 0 0 14px color-mix(in srgb, var(--fa-acc) 55%, transparent);
+	}
+	.fa-journey { position: relative; }
+	.fa-journey.is-drawing .fa-journey-line { transform: scaleY(1); }
+	.fa-stop-node::after {
+		content: '';
+		position: absolute;
+		inset: -6px;
+		border-radius: 9999px;
+		border: 2px solid color-mix(in srgb, var(--fa-acc) 45%, transparent);
+		animation: fa-node-pulse 2.6s ease-out infinite;
+	}
+	@keyframes fa-node-pulse {
+		0% { transform: scale(0.6); opacity: 1; }
+		70%, 100% { transform: scale(1.5); opacity: 0; }
+	}
+	@media (prefers-reduced-motion: reduce) { .fa-stop-node::after { animation: none; opacity: 0; } }
+
+	/* ── values: glare + floating icons ── */
+	.fa-val { position: relative; overflow: hidden; transform-style: preserve-3d; will-change: transform; }
+	.fa-val-glare {
+		position: absolute;
+		inset: 0;
+		background: radial-gradient(300px 200px at var(--gx, 50%) var(--gy, 0%), rgba(255, 255, 255, 0.1), transparent 60%);
+		opacity: 0;
+		transition: opacity 0.3s ease;
+		pointer-events: none;
+	}
+	.fa-val:hover .fa-val-glare { opacity: 1; }
+	.fa-val-ic { animation: fa-bob 4.5s ease-in-out calc(var(--i, 0) * -1.1s) infinite; }
+	@media (prefers-reduced-motion: reduce) { .fa-val-ic { animation: none; } }
+
+	/* ── inside Swizel: media placeholders w/ sweeping sheen ── */
+	.fa-inside {
+		display: grid;
+		grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+		gap: 1.2rem;
+		align-items: stretch;
+	}
+	.fa-inside-main,
+	.fa-inside-aside {
+		border: 1px solid var(--fa-line);
+		border-radius: 1.3rem;
+		background:
+			linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 55%),
+			var(--fa-card);
+		padding: 1.4rem;
+		display: grid;
+		gap: 1.2rem;
+		transform-style: preserve-3d;
+		will-change: transform;
+		transition: border-color 0.3s ease;
+	}
+	.fa-inside-main { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; }
+	.fa-inside-main:hover, .fa-inside-aside:hover { border-color: color-mix(in srgb, var(--fa-acc) 45%, transparent); }
+	.fa-media {
+		position: relative;
+		overflow: hidden;
+		display: grid;
+		place-content: center;
+		justify-items: center;
+		gap: 0.3rem;
+		min-height: 200px;
+		border-radius: 1rem;
+		border: 1.5px dashed color-mix(in srgb, var(--fa-acc) 40%, transparent);
+		background: color-mix(in srgb, var(--fa-acc) 7%, transparent);
+		color: var(--fa-acc);
+	}
+	.fa-media--tall { min-height: 260px; }
+	.fa-media-label { font-size: 0.85rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; }
+	.fa-media-sub { font-size: 0.8rem; color: var(--fa-muted); }
+	.fa-media-sheen {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(115deg, transparent 42%, rgba(255, 255, 255, 0.08) 50%, transparent 60%);
+		background-size: 250% 100%;
+		animation: fa-sheen 4.5s ease-in-out infinite;
+	}
+	@keyframes fa-sheen {
+		0% { background-position: 120% 0; }
+		60%, 100% { background-position: -130% 0; }
+	}
+	@media (prefers-reduced-motion: reduce) { .fa-media-sheen { animation: none; } }
+
+	/* ── The Brevarium ── */
+	.fa-brev {
+		display: grid;
+		grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+		gap: clamp(1.4rem, 3vw, 2.4rem);
+		align-items: center;
+		border: 1px solid var(--fa-line);
+		border-radius: 1.4rem;
+		background:
+			radial-gradient(110% 100% at 10% -20%, color-mix(in srgb, var(--fa-acc) 12%, transparent), transparent 60%),
+			var(--fa-card);
+		padding: clamp(1.4rem, 3vw, 2.2rem);
+	}
+	.fa-brev-cover {
+		position: relative;
+		overflow: hidden;
+		border-radius: 1rem;
+		transform: rotate(-1.6deg);
+		transform-style: preserve-3d;
+		will-change: transform;
+		box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.7), 0 0 0 6px color-mix(in srgb, var(--fa-acc) 10%, transparent);
+	}
+	.fa-brev-cover img { display: block; width: 100%; height: auto; }
+	.fa-brev-shine {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.14) 50%, transparent 62%);
+		background-size: 240% 100%;
+		animation: fa-sheen 5.5s ease-in-out infinite;
+	}
+	.fa-brev-actions { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.1rem; }
+	.fa-brev-meta { font-size: 0.8rem; color: var(--fa-muted); }
+	.fa-brev-back-h {
+		display: block;
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--fa-muted);
+		margin-bottom: 0.55rem;
+	}
+	.fa-brev-eds { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
+	.fa-brev-ed {
+		display: flex;
+		align-items: center;
+		gap: 0.7rem;
+		padding: 0.6rem 0.85rem;
+		border-radius: 0.85rem;
+		border: 1px solid var(--fa-line);
+		background: var(--fa-card);
+		color: var(--fa-ink);
+		transition: border-color 0.25s ease, transform 0.25s ease;
+	}
+	.fa-brev-ed:hover { border-color: color-mix(in srgb, var(--fa-acc) 50%, transparent); transform: translateX(4px); }
+	.fa-brev-ed-meta { flex: 1; min-width: 0; }
+	.fa-brev-ed-meta strong { display: block; font-size: 0.88rem; font-weight: 700; }
+	.fa-brev-ed-meta em { display: block; font-style: normal; font-size: 0.75rem; color: var(--fa-muted); }
+	.fa-brev-ed-dl { color: var(--fa-acc); flex-shrink: 0; }
 
 	/* ── F · client voices ── */
 	.fa-quotes {
@@ -639,6 +1339,8 @@ const values = [
 		gap: 1rem;
 	}
 	.fa-quote {
+		position: relative;
+		overflow: hidden;
 		margin: 0;
 		border: 1px solid var(--fa-line);
 		border-radius: 1.1rem;
@@ -647,6 +1349,21 @@ const values = [
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
+		transform-style: preserve-3d;
+		will-change: transform;
+		transition: border-color 0.3s ease;
+	}
+	.fa-quote:hover { border-color: color-mix(in srgb, var(--fa-acc) 45%, transparent); }
+	.fa-quote-mark {
+		position: absolute;
+		top: -1.6rem;
+		right: 0.4rem;
+		font-family: Georgia, serif;
+		font-size: 7rem;
+		line-height: 1;
+		color: color-mix(in srgb, var(--fa-acc) 18%, transparent);
+		pointer-events: none;
+		animation: fa-bob 6s ease-in-out calc(var(--i, 0) * -2s) infinite;
 	}
 	.fa-quote blockquote {
 		margin: 0;
@@ -681,10 +1398,41 @@ const values = [
 
 	/* ── G · CTA ── */
 	.fa-cta-box {
+		position: relative;
 		max-width: 46rem;
 		margin: 0 auto;
 		text-align: center;
 	}
+	/* orbiting dots around the CTA */
+	.fa-cta-orbit {
+		/* inset 0: the dots orbit from the centre via transform, so the box
+		   itself must not extend past the viewport (mobile overflow guard) */
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+	}
+	.fa-cta-orbit i {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		width: 8px;
+		height: 8px;
+		margin: -4px;
+		border-radius: 50%;
+		background: linear-gradient(95deg, var(--fa-acc), var(--fa-acc2));
+		box-shadow: 0 0 12px color-mix(in srgb, var(--fa-acc) 70%, transparent);
+		animation: fa-orbit 11s linear infinite;
+	}
+	.fa-cta-orbit i:nth-child(2) { animation-delay: -3.66s; width: 5px; height: 5px; }
+	.fa-cta-orbit i:nth-child(3) { animation-delay: -7.33s; width: 6px; height: 6px; }
+	@keyframes fa-orbit {
+		from { transform: rotate(0deg) translateX(min(21rem, 44vw)) rotate(0deg); }
+		to { transform: rotate(360deg) translateX(min(21rem, 44vw)) rotate(-360deg); }
+	}
+	@media (prefers-reduced-motion: reduce) { .fa-cta-orbit { display: none; } }
+	.fa-cta-rocket { transition: transform 0.3s ease; }
+	.fa-cta:hover :global(.fa-cta-rocket) { transform: translate(3px, -3px) rotate(8deg); }
+	.fa-cta--sm { padding: 0.65rem 1.3rem; font-size: 0.9rem; }
 	.fa-cta-row {
 		display: flex;
 		flex-wrap: wrap;
@@ -713,10 +1461,15 @@ const values = [
 	/* ── Responsive ── */
 	@media (max-width: 900px) {
 		.fa-open { grid-template-columns: minmax(0, 1fr); }
-		.fa-photo { max-width: 28rem; margin: 0.5rem auto 0; }
+		.fa-visual { max-width: 28rem; margin: 0.5rem auto 0; }
 		.fa-values { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 		.fa-team { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 		.fa-quotes { grid-template-columns: minmax(0, 1fr); }
+		.fa-inside { grid-template-columns: minmax(0, 1fr); }
+		.fa-inside-main { grid-template-columns: minmax(0, 1fr); }
+		.fa-brev { grid-template-columns: minmax(0, 1fr); }
+		.fa-brev-cover { max-width: 20rem; margin: 0 auto; }
+		.fa-modal-body { grid-template-columns: minmax(0, 1fr); }
 	}
 	@media (max-width: 560px) {
 		.fa-values { grid-template-columns: minmax(0, 1fr); }
@@ -725,5 +1478,15 @@ const values = [
 		.fa-stop-node { left: -1.82rem; }
 		.fa-team { gap: 0.8rem; }
 		.fa-mate-photo { width: 76px; height: 76px; }
+		.fa-mate-ring { width: 92px; height: 92px; margin-left: -46px; }
+		/* stats stay on ONE line on mobile too — tighter type */
+		.fa-stats li { padding: 0.1rem 0.55rem; }
+		.fa-stats strong { font-size: 1.15rem; }
+		.fa-stats span { font-size: 0.62rem; }
+		.fa-chip { font-size: 0.68rem; padding: 0.35rem 0.65rem; }
+		/* keep the floating chips inside the viewport on phones */
+		.fa-chip--a { left: 0.3rem; top: -0.9rem; }
+		.fa-chip--b { right: 0.3rem; }
+		.fa-chip--c { left: 10%; bottom: -0.9rem; }
 	}
 </style>
