@@ -82,6 +82,11 @@ const journey = [
 		desc: 'Mobile joins the practice and the work spreads across fintech, real estate, sports, education and logistics. One senior team, no juggling agencies.',
 	},
 	{
+		tag: '2024',
+		title: 'Crossing borders.',
+		desc: 'The work goes global. ConvertMyBetCode serves users in 10+ countries, and we publish the first edition of The Brevarium.',
+	},
+	{
 		tag: '2025',
 		title: 'Teaching the next ones.',
 		desc: 'We open a free tech bootcamp, training new engineers, designers and marketers on real products.',
@@ -90,6 +95,66 @@ const journey = [
 		tag: 'Today',
 		title: '65+ products, 10+ countries.',
 		desc: 'From Abuja to Cork to London to New York, and we are only warming up.',
+	},
+];
+
+// Mission · Vision · Core values — the same foundations as every view.
+const mvv = [
+	{
+		icon: 'mdi:flag-outline',
+		title: 'Our mission',
+		desc: 'To drive the digitalisation of African business, turning bold ideas into software people love.',
+	},
+	{
+		icon: 'mdi:telescope',
+		title: 'Our vision',
+		desc: 'A world where every ambitious African business runs on world-class software, built at home.',
+	},
+	{
+		icon: 'mdi:diamond-stone',
+		title: 'Core values',
+		desc: 'The three things we never trade away, on any build, for any client.',
+		chips: ['Innovative products', 'Client-centric culture', 'Timely delivery'],
+	},
+];
+
+// What we do — the same six disciplines as the Boardroom About.
+const services = [
+	{
+		icon: 'mdi:palette-outline',
+		title: 'Design',
+		desc: 'Brand identity, graphics and product design, interfaces your customers find effortless.',
+		tag: 'Brand · UI/UX · Motion',
+	},
+	{
+		icon: 'mdi:code-tags',
+		title: 'Development',
+		desc: 'Web and mobile engineering built to scale. We build, test and ship fast, without breaking things.',
+		tag: 'Web · iOS · Android · APIs',
+	},
+	{
+		icon: 'mdi:bullhorn-outline',
+		title: 'Marketing',
+		desc: 'We grow your audience across every platform that matters, and co-market the products we ship.',
+		tag: 'SEO · Ads · Social · Content',
+	},
+	{
+		icon: 'mdi:compass-outline',
+		title: 'Strategy',
+		desc: 'Research, define and lock the goal, a tailored product roadmap before a line of code is written.',
+		tag: 'Research · Roadmaps · MVP',
+	},
+	{
+		icon: 'mdi:wrench-outline',
+		title: 'Maintenance',
+		desc: 'Improving existing products and keeping complex systems healthy, secure and online, year after year.',
+		tag: 'Support · DevOps · Uptime',
+	},
+	{
+		icon: 'mdi:school-outline',
+		title: 'Education',
+		desc: 'A free bootcamp and The Brevarium, putting real, job-ready skills in the hands of the next builders.',
+		tag: 'Bootcamp · Brevarium · Mentoring',
 	},
 ];
 
@@ -193,7 +258,7 @@ const values = [
 		</div>
 	</section>
 
-	<!-- ── B · mission ────────────────────────────────────── -->
+	<!-- ── B · mission / vision / core values ─────────────── -->
 	<section class="fa-sec" data-cursor="chart">
 		<div class="fa-mission-ring fd-rev">
 			<blockquote class="fa-mission">
@@ -202,6 +267,67 @@ const values = [
 					<em>African business.</em>
 				</p>
 			</blockquote>
+		</div>
+
+		<div class="fa-wrap">
+			<div class="fa-mvv">
+				{
+					mvv.map((m, i) => (
+						<article class="fa-mvv-card fd-rev" style={`--i:${i}`} data-fa-tilt="10">
+							<span class="fa-val-glare" aria-hidden="true" />
+							<span class="fa-val-ic" style={`--i:${i}`}>
+								<Icon width={22} name={m.icon} />
+							</span>
+							<h3 class="fa-val-t">{m.title}</h3>
+							<p class="fa-val-d">{m.desc}</p>
+							{m.chips && (
+								<span class="fa-mvv-chips">
+									{m.chips.map((c) => (
+										<i>{c}</i>
+									))}
+								</span>
+							)}
+						</article>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── B2 · what we do: everything under one roof ─────── -->
+	<section class="fa-sec" data-cursor="repo">
+		<div class="fa-wrap">
+			<div class="fa-head fd-rev">
+				<span class="fa-stamp">What we do</span>
+				<h2 class="fa-h">Everything under <em>one roof.</em></h2>
+				<p class="fa-p fa-p--center">
+					Six disciplines, one senior team. You never juggle agencies
+					again.
+				</p>
+			</div>
+
+			<div class="fa-svcs">
+				{
+					services.map((s, i) => (
+						<article class="fa-svc fd-rev" style={`--i:${i % 3}`} data-fa-tilt="10">
+							<span class="fa-val-glare" aria-hidden="true" />
+							<span class="fa-val-ic" style={`--i:${i}`}>
+								<Icon width={22} name={s.icon} />
+							</span>
+							<h3 class="fa-val-t">{s.title}</h3>
+							<p class="fa-val-d">{s.desc}</p>
+							<span class="fa-svc-tag">{s.tag}</span>
+						</article>
+					))
+				}
+			</div>
+
+			<div class="fa-svcs-cta fd-rev">
+				<a href="/services" class="fa-link">
+					Explore all services
+					<Icon width={15} name="mdi:arrow-right" />
+				</a>
+			</div>
 		</div>
 	</section>
 
@@ -1176,6 +1302,65 @@ const values = [
 	@keyframes fa-ang { to { --fa-ang: 360deg; } }
 	@media (prefers-reduced-motion: reduce) { .fa-mission-ring { animation: none; } }
 
+	/* ── mission/vision/core values + what we do ── */
+	.fa-mvv {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 1rem;
+		margin-top: clamp(1.4rem, 3vw, 2rem);
+	}
+	.fa-mvv-card,
+	.fa-svc {
+		position: relative;
+		overflow: hidden;
+		border: 1px solid var(--fa-line);
+		border-radius: 1.1rem;
+		background:
+			linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 55%),
+			var(--fa-card);
+		padding: 1.3rem 1.2rem;
+		transform-style: preserve-3d;
+		will-change: transform;
+		transition: border-color 0.3s ease;
+	}
+	.fa-mvv-card:hover,
+	.fa-svc:hover {
+		border-color: color-mix(in srgb, var(--fa-acc) 50%, transparent);
+	}
+	.fa-mvv-chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		margin-top: 0.8rem;
+	}
+	.fa-mvv-chips i {
+		font-style: normal;
+		font-size: 0.72rem;
+		font-weight: 700;
+		padding: 0.3rem 0.7rem;
+		border-radius: 999px;
+		border: 1px solid color-mix(in srgb, var(--fa-acc) 45%, transparent);
+		background: color-mix(in srgb, var(--fa-acc) 12%, transparent);
+		color: var(--fa-ink);
+	}
+	.fa-svcs {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 1rem;
+	}
+	.fa-svc-tag {
+		display: inline-block;
+		margin-top: 0.75rem;
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--fa-acc);
+		opacity: 0.85;
+	}
+	:global(html:not(.dark)) .fabout .fa-svc-tag { color: #5d34c4; }
+	.fa-svcs-cta { text-align: center; margin-top: 1.4rem; }
+
 	/* ── journey: the line draws itself, nodes pulse ── */
 	.fa-journey { border-left-color: transparent; }
 	.fa-journey-line {
@@ -1466,6 +1651,8 @@ const values = [
 		.fa-team { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 		.fa-quotes { grid-template-columns: minmax(0, 1fr); }
 		.fa-inside { grid-template-columns: minmax(0, 1fr); }
+		.fa-mvv { grid-template-columns: minmax(0, 1fr); }
+		.fa-svcs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 		.fa-inside-main { grid-template-columns: minmax(0, 1fr); }
 		.fa-brev { grid-template-columns: minmax(0, 1fr); }
 		.fa-brev-cover { max-width: 20rem; margin: 0 auto; }
@@ -1478,6 +1665,7 @@ const values = [
 		.fa-stop-node { left: -1.82rem; }
 		.fa-team { gap: 0.8rem; }
 		.fa-mate-photo { width: 76px; height: 76px; }
+		.fa-svcs { grid-template-columns: minmax(0, 1fr); }
 		.fa-mate-ring { width: 92px; height: 92px; margin-left: -46px; }
 		/* stats stay on ONE line on mobile too — tighter type */
 		.fa-stats li { padding: 0.1rem 0.55rem; }

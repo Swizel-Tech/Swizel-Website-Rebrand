@@ -78,6 +78,11 @@ const milestones = [
 		desc: 'Fintech, real estate, sports, education, logistics, the work spreads across the industries that move Africa.',
 	},
 	{
+		year: '2024',
+		title: 'Crossing borders.',
+		desc: 'The work goes global. ConvertMyBetCode serves users in 10+ countries, and the first Brevarium is published.',
+	},
+	{
 		year: '2025',
 		title: 'Teaching the next ones.',
 		desc: 'We open a free tech bootcamp, training new engineers, designers and marketers on real products.',
@@ -450,6 +455,21 @@ const currentYear = new Date().getFullYear();
 				</section>
 			))
 		}
+	</div>
+
+	<!-- ── Core values — the three we never trade away ──────── -->
+	<div class="bd-corevals bd-reveal" data-cursor="shield">
+		<span class="bd-eyebrow">Core values</span>
+		<div class="bd-corevals-row">
+			{
+				['Innovative products', 'Client-centric culture', 'Timely delivery'].map((c, i) => (
+					<span class="bd-coreval">
+						<i>{String(i + 1).padStart(2, '0')}</i>
+						{c}
+					</span>
+				))
+			}
+		</div>
 	</div>
 
 	<!-- ── Timeline — the road so far (animated aurora bg) ──── -->
@@ -1378,6 +1398,43 @@ const currentYear = new Date().getFullYear();
 	}
 	.bd-tile--svc .bd-h--sm { margin: 1.2rem 0 0.5rem; }
 	.bd-svc-p { margin: 0; margin-inline: 0; max-width: 34rem; }
+
+	/* ── Core values strip ── */
+	.bd-corevals {
+		max-width: 74rem;
+		margin: 1.2rem auto 0;
+		padding: 1.3rem clamp(1.2rem, 3vw, 2rem);
+		border: 1px solid var(--bd-line, rgba(255, 255, 255, 0.09));
+		border-radius: 1.2rem;
+		background: var(--bd-card, rgba(255, 255, 255, 0.03));
+		text-align: center;
+	}
+	.bd-corevals-row {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0.8rem 2.6rem;
+		margin-top: 0.9rem;
+	}
+	.bd-coreval {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 0.6rem;
+		font-size: clamp(1.05rem, 2vw, 1.35rem);
+		font-weight: 800;
+		letter-spacing: -0.01em;
+	}
+	.bd-coreval i {
+		font-style: normal;
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		color: var(--bd-accent, #28a6ec);
+	}
+	@media (max-width: 700px) {
+		.bd-corevals-row { flex-direction: column; gap: 0.7rem; align-items: center; }
+	}
+
 	.bd-svc-ic {
 		display: grid;
 		place-items: center;
