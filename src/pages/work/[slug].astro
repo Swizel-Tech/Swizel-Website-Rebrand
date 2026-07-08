@@ -1,6 +1,7 @@
 ---
 import MainLayout from '../../layouts/MainLayout.astro';
 import CaseStudy from '../../components/sections/CaseStudy.astro';
+import CaseStudyFounder from '../../components/sections/CaseStudyFounder.astro';
 import { featuredProjects, projects } from '../../data/projects';
 
 export async function getStaticPaths() {
@@ -20,8 +21,11 @@ const seoDesc = project.tagline || project.caseStudy?.intro || '';
 <MainLayout title={seoTitle} description={seoDesc} image={project.img}>
 	<CaseStudy project={project} others={others} />
 
-	<!-- Fallback for the other worlds: a simple summary + link out. -->
-	<div class="alt-view-only" style="max-width:48rem;margin:0 auto;padding:5rem 1.5rem;">
+	<!-- Founder world: the whole launch story, founder momentum. -->
+	<CaseStudyFounder project={project} others={others} />
+
+	<!-- Fallback for the remaining worlds: a simple summary + link out. -->
+	<div class="alt-view-only case-fallback" style="max-width:48rem;margin:0 auto;padding:5rem 1.5rem;">
 		<a href="/portfolio" style="font-size:.9rem;font-weight:600;">← All work</a>
 		<h2 style="font-size:2.2rem;font-weight:800;margin:1.5rem 0 1rem;">{project.name}</h2>
 		<p style="font-size:1.1rem;line-height:1.6;opacity:.75;">{project.caseStudy?.intro}</p>
@@ -30,3 +34,10 @@ const seoDesc = project.tagline || project.caseStudy?.intro || '';
 		)}
 	</div>
 </MainLayout>
+
+<style is:global>
+	/* Founder view has its own case study now — hide the generic fallback. */
+	html[data-view='founder'] .case-fallback {
+		display: none !important;
+	}
+</style>

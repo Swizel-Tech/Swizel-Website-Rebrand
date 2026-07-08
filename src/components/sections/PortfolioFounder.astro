@@ -91,7 +91,7 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 						</span>
 					))
 				}
-				<span class="fp-fan-hint">Hover to fan the deck</span>
+				<span class="fp-fan-hint">Shuffles on its own · hover to fan</span>
 			</div>
 		</div>
 	</section>
@@ -465,28 +465,34 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 	}
 	.fp-stats span { display: block; font-size: 0.74rem; line-height: 1.3; color: var(--fa-muted); margin-top: 0.2rem; }
 
-	/* fanned deck — spreads on hover */
-	.fp-fan { position: relative; height: 330px; }
+	/* fanned deck — BIG, auto-shuffles on its own, fans wide on hover */
+	.fp-fan { position: relative; height: 430px; }
 	.fp-fan-card {
 		position: absolute; left: 50%; top: 50%;
-		width: min(64%, 300px); border-radius: 0.9rem; overflow: hidden;
+		width: min(82%, 400px); border-radius: 1rem; overflow: hidden;
 		border: 1px solid color-mix(in srgb, var(--c, #8b5cf6) 45%, rgba(255, 255, 255, 0.15));
 		background: #14101f;
-		box-shadow: 0 30px 60px -24px rgba(0, 0, 0, 0.7);
-		transform: translate(-50%, -50%) rotate(calc((var(--i) - (var(--n) - 1) / 2) * 4deg)) translateY(calc(var(--i) * 2px));
-		transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+		box-shadow: 0 36px 70px -26px rgba(0, 0, 0, 0.75);
+		transform: translate(-50%, -50%) rotate(calc((var(--i) - (var(--n) - 1) / 2) * 5deg)) translateY(calc(var(--i) * 2px));
+		transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 		animation: fp-deal 0.7s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i) * 120ms) both;
 	}
 	@keyframes fp-deal { from { opacity: 0; transform: translate(-50%, -30%) rotate(0deg); } }
 	.fp-fan:hover .fp-fan-card {
-		transform: translate(-50%, -50%) rotate(calc((var(--i) - (var(--n) - 1) / 2) * 10deg))
-			translateX(calc((var(--i) - (var(--n) - 1) / 2) * 62px)) translateY(calc(var(--i) * 2px));
+		transform: translate(-50%, -50%) rotate(calc((var(--i) - (var(--n) - 1) / 2) * 11deg))
+			translateX(calc((var(--i) - (var(--n) - 1) / 2) * 86px)) translateY(calc(var(--i) * 2px));
 	}
-	.fp-fan-bar { display: flex; gap: 4px; padding: 7px 9px; background: rgba(255, 255, 255, 0.06); }
-	.fp-fan-bar i { width: 7px; height: 7px; border-radius: 50%; background: color-mix(in srgb, var(--c) 70%, #fff); opacity: 0.7; }
-	.fp-fan-card img { display: block; width: 100%; height: 190px; object-fit: cover; object-position: top; }
+	/* the auto-shuffle: the top card flies out right, dives under the deck */
+	.fp-fan-card.fp-fly {
+		transition: transform 0.62s cubic-bezier(0.5, -0.1, 0.3, 1.2), opacity 0.62s ease;
+		transform: translate(20%, -58%) rotate(16deg) scale(0.96);
+		opacity: 0.35;
+	}
+	.fp-fan-bar { display: flex; gap: 4px; padding: 8px 10px; background: rgba(255, 255, 255, 0.06); }
+	.fp-fan-bar i { width: 8px; height: 8px; border-radius: 50%; background: color-mix(in srgb, var(--c) 70%, #fff); opacity: 0.7; }
+	.fp-fan-card img { display: block; width: 100%; height: 252px; object-fit: cover; object-position: top; }
 	.fp-fan-hint {
-		position: absolute; bottom: -0.6rem; left: 50%; transform: translateX(-50%);
+		position: absolute; bottom: -0.9rem; left: 50%; transform: translateX(-50%);
 		font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
 		color: var(--fa-muted); white-space: nowrap;
 	}

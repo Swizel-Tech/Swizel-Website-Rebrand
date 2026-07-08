@@ -4,7 +4,7 @@
 export function initAboutFounder() {
 	// Binds every founder-world page body (About, Services hub, details, …).
 	document
-		.querySelectorAll<HTMLElement>('.fabout, .fsvc, .fsd, .fpf')
+		.querySelectorAll<HTMLElement>('.fabout, .fsvc, .fsd, .fpf, .fcs')
 		.forEach((root) => bindFounderMotion(root));
 }
 
@@ -127,6 +127,37 @@ function bindFounderMotion(root: HTMLElement) {
 		document.addEventListener('keydown', (e) => {
 			if (e.key === 'Escape' && !modal.hidden) close();
 		});
+	}
+
+	// ── the portfolio fan auto-shuffles (top card dives under the deck) ──
+	const fan = root.querySelector<HTMLElement>('.fp-fan');
+	if (fan && !reduce) {
+		const shuffle = () => {
+			if (fan.matches(':hover')) return; // hover = fanned out, don't fight it
+			const cards = Array.from(
+				fan.querySelectorAll<HTMLElement>('.fp-fan-card')
+			);
+			if (cards.length < 2) return;
+			const top = cards[cards.length - 1];
+			top.classList.add('fp-fly');
+			window.setTimeout(() => {
+				// dive under: repaint at the bottom of the stack, re-slot everyone
+				fan.insertBefore(top, cards[0]);
+				top.classList.remove('fp-fly');
+				Array.from(
+					fan.querySelectorAll<HTMLElement>('.fp-fan-card')
+				).forEach((c, i) => c.style.setProperty('--i', String(i)));
+			}, 600);
+		};
+		const iv = window.setInterval(shuffle, 3000);
+		// stop looping if the fan leaves the DOM (swup navigation)
+		const mo = new MutationObserver(() => {
+			if (!document.contains(fan)) {
+				window.clearInterval(iv);
+				mo.disconnect();
+			}
+		});
+		mo.observe(document.body, { childList: true, subtree: true });
 	}
 
 	// ── magnetic CTA buttons ──
