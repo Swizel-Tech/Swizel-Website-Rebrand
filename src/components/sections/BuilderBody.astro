@@ -145,6 +145,15 @@ const reviews = [
 ---
 
 <div class="bbody view-body view-body-builder">
+	<!-- ambient stage: drifting teal orbs + rising sparks -->
+	<div class="bb-bg" aria-hidden="true">
+		<span class="bb-orb bb-orb--a"></span>
+		<span class="bb-orb bb-orb--b"></span>
+		{Array.from({ length: 8 }).map((_, i) => (
+			<i class="bb-spark-up" style={`--s:${i}`}></i>
+		))}
+	</div>
+
 	<!-- ── 01 · whoami ─────────────────────────────────────── -->
 	<section class="bb-sec" data-cursor="term">
 		<div class="bb-wrap bb-about">
@@ -166,13 +175,23 @@ const reviews = [
 						))
 					}
 				</ul>
+				<!-- seven years of commits, as a living contribution graph -->
+				<div class="bb-heat" aria-hidden="true">
+					<span class="bb-heat-label">// commit activity · always shipping</span>
+					<span class="bb-heat-grid">
+						{Array.from({ length: 112 }).map((_, i) => (
+							<i style={`--i:${i}; --r:${(i * 7919) % 100}`}></i>
+						))}
+					</span>
+				</div>
 				<a href="/about" class="bb-link">
 					The humans behind the commits
 					<Icon width={16} name="mdi:arrow-right" />
 				</a>
 			</div>
 
-			<div class="bb-term bb-rev" id="bb-term">
+			<div class="bb-term bb-rev" id="bb-term" data-fa-tilt="4">
+				<span class="bb-glare" aria-hidden="true"></span>
 				<div class="bb-winbar">
 					<span class="bb-dot bb-dot--r"></span>
 					<span class="bb-dot bb-dot--y"></span>
@@ -228,7 +247,8 @@ const reviews = [
 			</div>
 
 			<!-- the idea compiler — a tiny game: hit build, watch it ship -->
-			<div class="bb-game bb-rev" id="bb-game">
+			<div class="bb-game bb-rev" id="bb-game" data-fa-tilt="4">
+				<span class="bb-glare" aria-hidden="true"></span>
 				<div class="bb-game-head">
 					<span class="bb-game-title">// got_an_idea? compile it:</span>
 					<span class="bb-game-status" id="bb-game-status">ready</span>
@@ -262,7 +282,8 @@ const reviews = [
 				</p>
 			</div>
 
-			<div class="bb-editor bb-rev" id="bb-editor">
+			<div class="bb-editor bb-rev" id="bb-editor" data-fa-tilt="3">
+				<span class="bb-glare" aria-hidden="true"></span>
 				<div class="bb-tabs" role="tablist" aria-label="Services">
 					{
 						files.map((f, i) => (
@@ -314,6 +335,7 @@ const reviews = [
 			</div>
 
 			<ol class="bb-git" id="bb-git">
+				<span class="bb-git-line" aria-hidden="true"></span>
 				{
 					commits.map((c) => (
 						<li class="bb-commit bb-rev">
@@ -429,7 +451,8 @@ const reviews = [
 				</p>
 			</div>
 
-			<div class="bb-pkg bb-rev">
+			<div class="bb-pkg bb-rev" data-fa-tilt="4">
+				<span class="bb-glare" aria-hidden="true"></span>
 				<div class="bb-winbar">
 					<span class="bb-dot bb-dot--r"></span>
 					<span class="bb-dot bb-dot--y"></span>
@@ -494,7 +517,8 @@ const reviews = [
 			<div class="bb-prs">
 				{
 					reviews.map((r) => (
-						<article class="bb-pr bb-rev">
+						<article class="bb-pr bb-rev" data-fa-tilt="8">
+							<span class="bb-glare" aria-hidden="true" />
 							<div class="bb-pr-top">
 								<img src={r.img} alt="" loading="lazy" />
 								<span class="bb-pr-who">
@@ -564,6 +588,7 @@ const reviews = [
 	<!-- ── 07 · merge CTA ──────────────────────────────────── -->
 	<section class="bb-sec bb-sec--cta" data-cursor="phone">
 		<div class="bb-wrap bb-cta bb-rev">
+			<span class="bb-orbit" aria-hidden="true"><i></i><i></i><i></i></span>
 			<p class="bb-cta-cmd">$ git checkout -b <span class="bb-acc">your-product</span></p>
 			<h2 class="bb-h bb-h--xl">Ready to merge?</h2>
 			<p class="bb-p bb-p--center">
@@ -571,7 +596,7 @@ const reviews = [
 				message — reply within one business day.
 			</p>
 			<div class="bb-cta-row">
-				<a href="/contact" class="bb-merge">
+				<a href="/contact" class="bb-merge fs-cta">
 					<Icon width={18} name="mdi:source-merge" />
 					Merge into production
 				</a>
@@ -1742,4 +1767,145 @@ const reviews = [
 			animation: none;
 		}
 	}
+
+	/* ═══ v2 motion pass — the builder world, alive ═══ */
+	.bb-sec { position: relative; z-index: 1; }
+
+	/* ambient stage */
+	.bb-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+	.bb-orb { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.4; animation: bb-drift 17s ease-in-out infinite alternate; }
+	.bb-orb--a { width: 460px; height: 460px; left: -150px; top: 6%; background: radial-gradient(circle, rgba(24, 222, 190, 0.3), transparent 70%); }
+	.bb-orb--b { width: 520px; height: 520px; right: -180px; top: 44%; background: radial-gradient(circle, rgba(40, 166, 236, 0.2), transparent 70%); animation-delay: -7s; }
+	@keyframes bb-drift { to { transform: translate3d(56px, -40px, 0) scale(1.1); } }
+	.bb-spark-up {
+		position: absolute; bottom: -12px; left: calc(9% + var(--s) * 11.5%);
+		width: 3.5px; height: 3.5px; border-radius: 50%;
+		background: color-mix(in srgb, var(--bu-acc) 85%, #fff);
+		box-shadow: 0 0 10px 2px color-mix(in srgb, var(--bu-acc) 55%, transparent);
+		opacity: 0;
+		animation: bb-rise-up calc(9s + var(--s) * 1.4s) linear infinite;
+		animation-delay: calc(var(--s) * -1.8s);
+	}
+	@keyframes bb-rise-up {
+		0% { transform: translateY(0); opacity: 0; }
+		8% { opacity: 0.75; }
+		92% { opacity: 0.2; }
+		100% { transform: translateY(-105vh) translateX(24px); opacity: 0; }
+	}
+	@media (prefers-reduced-motion: reduce) { .bb-orb { animation: none; } .bb-spark-up { display: none; } }
+
+	/* stats: ONE line, divided (overrides the grid above) */
+	.bb-stats {
+		display: flex !important;
+		align-items: stretch;
+		gap: 0 !important;
+	}
+	.bb-stats li { flex: 1; min-width: 0; padding: 0.2rem 0.9rem; border-left: 1px solid color-mix(in srgb, var(--bu-acc) 25%, transparent); transition: transform 0.25s ease; }
+	.bb-stats li:first-child { padding-left: 0; border-left: 0; }
+	.bb-stats li:hover { transform: translateY(-3px); }
+	.bb-stats strong { white-space: nowrap; font-size: clamp(1.3rem, 2.2vw, 1.8rem) !important; }
+	.bb-stats span { font-size: 0.72rem !important; line-height: 1.3; }
+
+	/* commit-activity heatmap — waves of green, like a good week */
+	.bb-heat { margin: 1.2rem 0 1.4rem; }
+	.bb-heat-label {
+		display: block;
+		font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+		font-size: 0.7rem; color: var(--bu-faint); margin-bottom: 0.5rem;
+	}
+	.bb-heat-grid {
+		display: grid;
+		grid-template-rows: repeat(7, 9px);
+		grid-auto-flow: column;
+		grid-auto-columns: 9px;
+		gap: 3px;
+		width: max-content; max-width: 100%; overflow: hidden;
+	}
+	.bb-heat-grid i {
+		border-radius: 2px;
+		background: color-mix(in srgb, var(--bu-acc) 14%, transparent);
+		animation: bb-heat 6s ease-in-out infinite;
+		animation-delay: calc((var(--i) * 53ms) + (var(--r) * -18ms));
+	}
+	@keyframes bb-heat {
+		0%, 100% { background: color-mix(in srgb, var(--bu-acc) 12%, transparent); }
+		35% { background: color-mix(in srgb, var(--bu-acc) 55%, transparent); }
+		55% { background: color-mix(in srgb, var(--bu-acc) 90%, transparent); box-shadow: 0 0 6px color-mix(in srgb, var(--bu-acc) 50%, transparent); }
+		75% { background: color-mix(in srgb, var(--bu-acc) 30%, transparent); }
+	}
+	@media (prefers-reduced-motion: reduce) { .bb-heat-grid i { animation: none; background: color-mix(in srgb, var(--bu-acc) 35%, transparent); } }
+
+	/* pointer glare on the tilting windows */
+	.bb-term, .bb-editor, .bb-game, .bb-pkg, .bb-pr { transform-style: preserve-3d; will-change: transform; position: relative; }
+	.bb-glare {
+		position: absolute; inset: 0; border-radius: inherit; z-index: 3;
+		background: radial-gradient(380px 240px at var(--gx, 50%) var(--gy, 0%), rgba(255, 255, 255, 0.08), transparent 60%);
+		opacity: 0; transition: opacity 0.3s ease; pointer-events: none;
+	}
+	:is(.bb-term, .bb-editor, .bb-game, .bb-pkg, .bb-pr):hover .bb-glare { opacity: 1; }
+
+	/* git graph: the branch line draws itself, nodes pulse */
+	.bb-git { position: relative; }
+	.bb-git-line {
+		position: absolute; left: 7px; top: 0.6rem; bottom: 0.6rem; width: 2.5px; border-radius: 2px;
+		background: linear-gradient(180deg, #8dfeea, var(--bu-acc), #28a6ec);
+		box-shadow: 0 0 12px color-mix(in srgb, var(--bu-acc) 55%, transparent);
+		transform: scaleY(0); transform-origin: top;
+		transition: transform 2.2s cubic-bezier(0.22, 1, 0.36, 1) 0.2s;
+		z-index: 0;
+	}
+	.bb-git.is-drawn .bb-git-line { transform: scaleY(1); }
+	.bb-node { position: relative; }
+	.bb-node::after {
+		content: '';
+		position: absolute; inset: -5px; border-radius: 9999px;
+		border: 2px solid color-mix(in srgb, var(--bu-acc) 45%, transparent);
+		animation: bb-node-pulse 2.6s ease-out infinite;
+	}
+	@keyframes bb-node-pulse {
+		0% { transform: scale(0.6); opacity: 1; }
+		70%, 100% { transform: scale(1.5); opacity: 0; }
+	}
+	@media (prefers-reduced-motion: reduce) { .bb-node::after { animation: none; opacity: 0; } }
+
+	/* deployments: live dots breathe, hover slides */
+	.bb-deploy { transition: transform 0.25s ease, background 0.25s ease; }
+	.bb-deploy:hover { transform: translateX(5px); }
+	.bb-live { animation: bb-live-pulse 2s ease-in-out infinite; }
+	@keyframes bb-live-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(24, 222, 190, 0.5); } 50% { box-shadow: 0 0 0 5px rgba(24, 222, 190, 0); } }
+
+	/* PR approvals: the badge stamps itself on reveal */
+	.bb-pr.is-on .bb-pr-badge { animation: bb-stamp 0.5s cubic-bezier(0.2, 1.6, 0.4, 1) 0.35s both; }
+	@keyframes bb-stamp {
+		0% { transform: scale(2.2) rotate(-14deg); opacity: 0; }
+		100% { transform: scale(1) rotate(0deg); opacity: 1; }
+	}
+
+	/* merge CTA: orbiting dots + glow sheen on the button */
+	.bb-cta { position: relative; }
+	.bb-orbit { position: absolute; inset: 0; pointer-events: none; }
+	.bb-orbit i {
+		position: absolute; left: 50%; top: 50%; width: 7px; height: 7px; margin: -3.5px;
+		border-radius: 50%;
+		background: linear-gradient(95deg, #8dfeea, var(--bu-acc));
+		box-shadow: 0 0 12px color-mix(in srgb, var(--bu-acc) 70%, transparent);
+		animation: bb-orbit 11s linear infinite;
+	}
+	.bb-orbit i:nth-child(2) { animation-delay: -3.66s; width: 5px; height: 5px; }
+	.bb-orbit i:nth-child(3) { animation-delay: -7.33s; width: 6px; height: 6px; }
+	@keyframes bb-orbit {
+		from { transform: rotate(0deg) translateX(min(21rem, 44vw)) rotate(0deg); }
+		to { transform: rotate(360deg) translateX(min(21rem, 44vw)) rotate(-360deg); }
+	}
+	@media (prefers-reduced-motion: reduce) { .bb-orbit { display: none; } }
+	.bb-merge { position: relative; overflow: hidden; }
+	.bb-merge::after {
+		content: '';
+		position: absolute; inset: 0;
+		background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, 0.22) 50%, transparent 65%);
+		background-size: 250% 100%; background-position: 120% 0;
+		animation: bb-merge-sheen 3.8s ease-in-out infinite;
+	}
+	@keyframes bb-merge-sheen { 0%, 55% { background-position: 120% 0; } 100% { background-position: -130% 0; } }
+	@media (prefers-reduced-motion: reduce) { .bb-merge::after { animation: none; } }
 </style>

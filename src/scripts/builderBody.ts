@@ -214,21 +214,62 @@ export function initBuilderBody() {
 		}
 	}
 
-	// ── service files: tab switching ──
+	// ── service files: tab switching + auto-cycle until touched ──
 	const editor = body.querySelector<HTMLElement>('#bb-editor');
 	if (editor) {
 		const tabs = Array.from(editor.querySelectorAll<HTMLButtonElement>('.bb-tab'));
 		const panes = Array.from(editor.querySelectorAll<HTMLElement>('.bb-file'));
+		const select = (tab: HTMLButtonElement) => {
+			const id = tab.dataset.tab;
+			tabs.forEach((t) => {
+				const on = t === tab;
+				t.classList.toggle('is-on', on);
+				t.setAttribute('aria-selected', String(on));
+			});
+			panes.forEach((p) => p.classList.toggle('is-on', p.dataset.file === id));
+		};
+		let auto = 0;
 		tabs.forEach((tab) =>
 			tab.addEventListener('click', () => {
-				const id = tab.dataset.tab;
-				tabs.forEach((t) => {
-					const on = t === tab;
-					t.classList.toggle('is-on', on);
-					t.setAttribute('aria-selected', String(on));
-				});
-				panes.forEach((p) => p.classList.toggle('is-on', p.dataset.file === id));
+				window.clearInterval(auto); // the visitor took the wheel
+				auto = 0;
+				select(tab);
 			})
 		);
+		// flip through the files on a loop until the visitor clicks
+		if (!reduce) {
+			const io = new IntersectionObserver(
+				(entries) =>
+					entries.forEach((e) => {
+						if (e.isIntersecting && !auto) {
+							auto = window.setInterval(() => {
+								const i = tabs.findIndex((t) => t.classList.contains('is-on'));
+								select(tabs[(i + 1) % tabs.length]);
+							}, 3200);
+						} else if (!e.isIntersecting && auto) {
+							window.clearInterval(auto);
+							auto = 0;
+						}
+					}),
+				{ threshold: 0.35 }
+			);
+			io.observe(editor);
+		}
+	}
+
+	// ── git graph: the branch line draws itself into view ──
+	const git = body.querySelector<HTMLElement>('#bb-git');
+	if (git) {
+		const io = new IntersectionObserver(
+			(entries) =>
+				entries.forEach((e) => {
+					if (e.isIntersecting) {
+						git.classList.add('is-drawn');
+						io.unobserve(git);
+					}
+				}),
+			{ threshold: 0.25 }
+		);
+		io.observe(git);
 	}
 }
