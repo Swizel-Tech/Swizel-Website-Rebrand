@@ -50,7 +50,7 @@ const wa = `https://wa.me/?text=${encodeURIComponent(title + ' ' + shareUrl)}`;
 	     (dual view-body classes); founder skin via the html[data-view]
 	     overrides at the bottom of this file. ══ -->
 	<article
-		class="bdbody bd-services bd-reader view-body view-body-boardroom view-body-founder view-body-builder"
+		class="bdbody bd-services bd-reader view-body view-body-boardroom view-body-founder view-body-builder view-body-studio"
 		style={`--c:${c}`}
 		data-cursor="book"
 	>
@@ -398,10 +398,38 @@ const wa = `https://wa.me/?text=${encodeURIComponent(title + ' ' + shareUrl)}`;
 		content: '// ';
 	}
 
-	/* Founder and Builder views have the rich reader — hide the legacy
-	   fallback there. */
+	/* ── Studio reading skin: the gallery's reading room. Warm plum stage,
+	   Playfair serif category label — an essay under good light. ── */
+	html[data-view='studio'] .bd-reader {
+		font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+			Roboto, sans-serif;
+		background:
+			radial-gradient(1000px 540px at 82% -6%, color-mix(in srgb, var(--c) 13%, transparent), transparent 62%),
+			radial-gradient(820px 480px at 6% 34%, rgba(168, 85, 247, 0.07), transparent 60%),
+			linear-gradient(180deg, #0f0a0d 0%, #130c11 50%, #0b0709 100%);
+	}
+	html[data-view='studio']:not(.dark) .bd-reader {
+		background:
+			radial-gradient(1000px 540px at 82% -6%, color-mix(in srgb, var(--c) 9%, transparent), transparent 62%),
+			linear-gradient(180deg, #f3ece6 0%, #ece2da 55%, #f3ece6 100%);
+	}
+	html[data-view='studio'] .bd-reader .br-cat {
+		font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+		font-style: italic;
+		font-weight: 500;
+		text-transform: none;
+		letter-spacing: 0.02em;
+		border-radius: 0 0.5rem 0.5rem 0;
+	}
+	html[data-view='studio'] .bd-reader .br-cat::before {
+		content: 'Essay · ';
+	}
+
+	/* Founder, Builder and Studio views have the rich reader — hide the
+	   legacy fallback there. */
 	html[data-view='founder'] .post-fallback,
-	html[data-view='builder'] .post-fallback {
+	html[data-view='builder'] .post-fallback,
+	html[data-view='studio'] .post-fallback {
 		display: none !important;
 	}
 </style>

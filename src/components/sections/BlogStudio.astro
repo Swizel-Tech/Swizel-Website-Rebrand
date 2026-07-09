@@ -1,0 +1,642 @@
+---
+// Blog index · Studio world — the Reading Room of The Swizel Gallery. The
+// same journal (featured lead, category filter, all posts, newsletter,
+// Brevarium promo) told as essays hung and shelved in a quiet room. Root
+// carries `sbody` (studio engine: .sd-rev reveals) and `sbl` (motion
+// engine: tilt / glare / magnetic).
+import { Icon } from 'astro-icon/components';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props { posts: CollectionEntry<'blog'>[]; }
+const { posts } = Astro.props;
+
+const featured = posts.find((p) => p.data.featured) ?? posts[0];
+const cats = [...new Set(posts.map((p) => p.data.category))];
+const catSlug = (c: string) => c.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+const catCount = (c: string) => posts.filter((p) => p.data.category === c).length;
+const readTime = (body: string) => Math.max(1, Math.round((body?.trim().split(/\s+/).length || 0) / 200));
+const fmtDate = (d: Date) => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+const catColor: Record<string, string> = { EdTech: '#2bb3c0', Fintech: '#6366f1', Marketing: '#ec4899', Technology: '#18debe', Insights: '#a855f7' };
+const col = (c: string) => catColor[c] ?? '#ec4899';
+
+const filterCss = cats
+	.map((c) => {
+		const s = catSlug(c);
+		const cc = col(c);
+		return [
+			`#sbl-${s}:checked ~ .sb-shelf .sb-essay:not(.c-${s}){display:none}`,
+			`#sbl-${s}:checked ~ .sb-tabs label[for="sbl-${s}"]{color:#fff;background:${cc};border-color:transparent}`,
+			`#sbl-${s}:checked ~ .sb-tabs label[for="sbl-${s}"] em{color:rgba(255,255,255,0.85)}`,
+		].join('');
+	})
+	.join('');
+---
+
+<div class="sbl sbody view-body view-body-studio">
+	<!-- ── A · the reading room entrance ───────────────────── -->
+	<section class="sb-sec sb-entry">
+		<div class="sb-wrap">
+			<div class="sb-folio sd-rev">
+				<span>The Swizel Gallery — Reading Room</span>
+				<span>Essays & field notes from the house</span>
+				<span>Quiet, please</span>
+			</div>
+			<div class="sb-open">
+				<h1 class="sb-display sd-rev">
+					The reading<br />
+					<em>room.</em>
+				</h1>
+				<div class="sb-open-side sd-rev">
+					<p class="sb-lead">
+						Field notes on technology, design, fintech, edtech and
+						growth — what the house is building, learning and seeing
+						across the African digital landscape. Take a seat.
+					</p>
+					<a href="#sb-shelf" class="sb-link">
+						Browse the shelf
+						<Icon width={15} name="mdi:arrow-down" />
+					</a>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── B · on the lectern (featured essay) ─────────────── -->
+	{
+		featured && (
+			<section class="sb-sec" data-cursor="pen">
+				<div class="sb-wrap">
+					<div class="sb-rule sd-rev">
+						<span>On the lectern</span>
+						<span>The essay of the moment</span>
+					</div>
+					<a
+						href={`/blog/${featured.slug}`}
+						class="sb-lectern sd-rev"
+						style={`--c:${col(featured.data.category)}`}
+						data-fa-tilt="4"
+					>
+						<span class="sa-glare" aria-hidden="true" />
+						<span class="sb-lectern-media">
+							<img src={featured.data.heroImage} alt={featured.data.title} loading="eager" />
+							<span class="sb-lectern-cat">{featured.data.category}</span>
+						</span>
+						<span class="sb-lectern-body">
+							<span class="sb-kick">Essay · {featured.data.category} · {fmtDate(featured.data.pubDate)}</span>
+							<strong class="sb-lectern-title">{featured.data.title}</strong>
+							<span class="sb-lectern-desc">{featured.data.description}</span>
+							<span class="sb-meta">By {featured.data.author} · {readTime(featured.body)} min read</span>
+							<span class="sb-link">
+								Read the essay
+								<Icon width={15} name="mdi:arrow-right" />
+							</span>
+						</span>
+					</a>
+				</div>
+			</section>
+		)
+	}
+
+	<!-- ── C · the shelf (all essays, filterable) ──────────── -->
+	<section class="sb-sec" id="sb-shelf" data-cursor="pen">
+		<div class="sb-wrap">
+			<div class="sb-rule sd-rev">
+				<span>The shelf</span>
+				<span>{posts.length} {posts.length === 1 ? 'essay' : 'essays'} · more being written</span>
+			</div>
+			<form class="sb-filter" autocomplete="off">
+				<input class="sb-radio" type="radio" name="sbl" id="sbl-all" checked />
+				{cats.map((c) => <input class="sb-radio" type="radio" name="sbl" id={`sbl-${catSlug(c)}`} />)}
+				<div class="sb-tabs sd-rev">
+					<label class="sb-tab" for="sbl-all">All essays <em>{posts.length}</em></label>
+					{
+						cats.map((c) => (
+							<label class="sb-tab" for={`sbl-${catSlug(c)}`}>
+								{c} <em>{catCount(c)}</em>
+							</label>
+						))
+					}
+				</div>
+				<div class="sb-shelf">
+					{
+						posts.map((p, i) => (
+							<figure
+								class:list={['sb-essay', 'sd-rev', `c-${catSlug(p.data.category)}`]}
+								style={`--c:${col(p.data.category)}; --i:${i % 3}`}
+							>
+								<a href={`/blog/${p.slug}`} class="sb-essay-link" data-fa-tilt="6">
+									<span class="sa-glare" aria-hidden="true" />
+									<span class="sb-essay-frame">
+										<img src={p.data.heroImage} alt={p.data.title} loading="lazy" />
+										<span class="sb-essay-cat">{p.data.category}</span>
+									</span>
+									<figcaption class="sb-essay-plaque">
+										<strong>{p.data.title}</strong>
+										<span class="sb-essay-desc">{p.data.description}</span>
+										<em>{fmtDate(p.data.pubDate)} · {readTime(p.body)} min read</em>
+									</figcaption>
+								</a>
+							</figure>
+						))
+					}
+				</div>
+			</form>
+		</div>
+	</section>
+
+	<!-- ── D · private view invitations (newsletter) ───────── -->
+	<section class="sb-sec" data-cursor="phone">
+		<div class="sb-wrap">
+			<div class="sb-invite sd-rev">
+				<span class="sb-invite-k">Private view invitations</span>
+				<h2 class="sb-h2">The next essay, <em>hand-delivered.</em></h2>
+				<p class="sb-lead sb-lead--center">
+					No spam, no fluff. Just our sharpest thinking on building for
+					the African market — when it's worth your time.
+				</p>
+				<form class="sb-invite-form" name="newsletter" method="post" data-netlify="true" netlify-honeypot="bot-field">
+					<input type="hidden" name="form-name" value="newsletter" />
+					<p class="sb-hp"><label>Don't fill this out: <input name="bot-field" /></label></p>
+					<input class="sb-invite-input" type="email" name="email" placeholder="you@company.com" required aria-label="Email address" />
+					<button class="sb-invite-btn fa-cta" type="submit">
+						Request an invite
+						<Icon width={16} name="mdi:arrow-right" />
+					</button>
+				</form>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── E · the catalogue (Brevarium promo) ─────────────── -->
+	<section class="sb-sec sb-sec--last" data-cursor="repo">
+		<div class="sb-wrap">
+			<a class="sb-mag sd-rev" href="/brevarium/the-brevarium-latest.pdf" download data-fa-tilt="5">
+				<span class="sa-glare" aria-hidden="true"></span>
+				<span class="sb-mag-cover">
+					<img src="/images/portfolio/mag-latest-cover.jpg" alt="The Brevarium magazine" loading="lazy" />
+				</span>
+				<span class="sb-mag-meta">
+					<span class="sb-kick">The catalogue · long-form, in print</span>
+					<strong>Prefer the magazine? Read The Brevarium.</strong>
+					<em>Our featured projects, the team and the thinking behind the work — cover to cover.</em>
+					<span class="sb-link"><Icon width={15} name="mdi:download" /> Download the latest edition</span>
+				</span>
+			</a>
+		</div>
+	</section>
+</div>
+
+<style is:global set:html={filterCss}></style>
+
+<style>
+	/* ── Studio Blog — the gallery dress. ── */
+	.sbl {
+		--sa-ink: #f3edf0;
+		--sa-muted: rgba(243, 237, 240, 0.64);
+		--sa-faint: rgba(243, 237, 240, 0.42);
+		--sa-acc: var(--view-accent, #ec4899);
+		--sa-line: rgba(243, 237, 240, 0.14);
+		--sa-card: rgba(255, 255, 255, 0.04);
+		--sa-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+		font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+		position: relative;
+		isolation: isolate;
+		overflow: hidden;
+		background:
+			radial-gradient(1100px 560px at 84% -6%, rgba(236, 72, 153, 0.13), transparent 60%),
+			radial-gradient(820px 480px at 8% 50%, rgba(168, 85, 247, 0.07), transparent 60%),
+			linear-gradient(180deg, #0f0a0d 0%, #130c11 50%, #0b0709 100%);
+		color: var(--sa-ink);
+		padding: clamp(1.25rem, 2.5vw, 2rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 4rem);
+		transition: background 0.4s ease, color 0.4s ease;
+	}
+	:global(html:not(.dark)) .sbl {
+		--sa-ink: #1c151a;
+		--sa-muted: rgba(28, 21, 26, 0.7);
+		--sa-faint: rgba(28, 21, 26, 0.48);
+		--sa-acc: #cf2570;
+		--sa-line: rgba(28, 21, 26, 0.14);
+		--sa-card: rgba(28, 21, 26, 0.035);
+		background:
+			radial-gradient(1100px 560px at 84% -6%, rgba(236, 72, 153, 0.07), transparent 60%),
+			linear-gradient(180deg, #f3ece6 0%, #ece2da 55%, #f3ece6 100%);
+	}
+
+	.sb-sec { padding-block: clamp(2rem, 4.5vw, 3.5rem); }
+	.sb-entry { padding-top: clamp(0.5rem, 1.5vw, 1rem); padding-bottom: clamp(1rem, 2vw, 1.5rem); }
+	.sb-sec--last { padding-bottom: clamp(1.5rem, 3vw, 2.5rem); }
+	.sb-wrap { max-width: 80rem; margin: 0 auto; }
+
+	.sb-folio {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+		flex-wrap: wrap;
+		padding: 0.6rem 0;
+		border-top: 2px solid var(--sa-ink);
+		border-bottom: 1px solid var(--sa-line);
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--sa-faint);
+		margin-bottom: clamp(1.75rem, 4vw, 3rem);
+	}
+	.sb-folio span:first-child { color: var(--sa-ink); }
+	.sb-rule {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 1rem;
+		padding-bottom: 0.5rem;
+		border-bottom: 1px solid var(--sa-line);
+		margin-bottom: clamp(1.5rem, 3.5vw, 2.5rem);
+		font-size: 0.74rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+	}
+	.sb-rule span:first-child { color: var(--sa-acc); }
+	.sb-rule span:last-child {
+		color: var(--sa-faint);
+		font-style: italic;
+		font-family: var(--sa-serif);
+		letter-spacing: 0.02em;
+		text-transform: none;
+		font-size: 0.98rem;
+		font-weight: 400;
+	}
+
+	.sb-display {
+		font-size: clamp(2.8rem, 7vw, 5.6rem);
+		font-weight: 850;
+		letter-spacing: -0.03em;
+		line-height: 0.98;
+		margin: 0;
+	}
+	.sb-display em {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-weight: 500;
+		letter-spacing: -0.01em;
+		color: var(--sa-acc);
+	}
+	.sb-h2 {
+		font-size: clamp(1.9rem, 4vw, 3rem);
+		font-weight: 850;
+		letter-spacing: -0.02em;
+		line-height: 1.02;
+		margin: 0.3rem 0 1rem;
+	}
+	.sb-h2 em {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-weight: 500;
+		color: var(--sa-acc);
+	}
+	.sb-kick {
+		display: block;
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--c, var(--sa-acc));
+		margin-bottom: 0.55rem;
+	}
+	.sb-lead {
+		font-size: clamp(1.02rem, 1.6vw, 1.22rem);
+		line-height: 1.65;
+		color: var(--sa-muted);
+		margin: 0 0 1.3rem;
+	}
+	.sb-lead--center { text-align: center; margin-inline: auto; max-width: 36rem; }
+	.sb-meta {
+		display: block;
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 0.86rem;
+		color: var(--sa-faint);
+	}
+	.sb-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		font-weight: 800;
+		font-size: 0.92rem;
+		color: var(--c, var(--sa-acc));
+		border-bottom: 2px solid color-mix(in srgb, var(--c, var(--sa-acc)) 45%, transparent);
+		padding-bottom: 0.15rem;
+		transition: border-color 0.25s ease, gap 0.25s ease;
+		max-width: fit-content;
+	}
+	.sb-link:hover { gap: 0.7rem; border-color: var(--c, var(--sa-acc)); }
+
+	.sa-glare {
+		position: absolute;
+		inset: 0;
+		border-radius: inherit;
+		background: radial-gradient(340px 220px at var(--gx, 50%) var(--gy, 20%), color-mix(in srgb, var(--c, var(--sa-acc)) 12%, transparent), transparent 70%);
+		opacity: 0;
+		transition: opacity 0.3s ease;
+		pointer-events: none;
+		z-index: 2;
+	}
+	[data-fa-tilt]:hover .sa-glare { opacity: 1; }
+
+	/* ── A · entrance ── */
+	.sb-open {
+		display: grid;
+		gap: clamp(1.5rem, 4vw, 3.5rem);
+		align-items: end;
+	}
+	@media (min-width: 920px) {
+		.sb-open { grid-template-columns: 1.15fr 0.85fr; }
+	}
+	.sb-open-side { max-width: 34rem; }
+
+	/* ── B · the lectern ── */
+	.sb-lectern {
+		position: relative;
+		display: grid;
+		gap: clamp(1.25rem, 3vw, 2.5rem);
+		align-items: center;
+		padding: clamp(1.1rem, 2.5vw, 1.8rem);
+		border-radius: 0.4rem;
+		border: 1px solid color-mix(in srgb, var(--c) 32%, var(--sa-line));
+		background: var(--sa-card);
+		box-shadow:
+			inset 0 0 0 10px color-mix(in srgb, var(--sa-ink) 4%, transparent),
+			0 36px 80px -34px rgba(0, 0, 0, 0.7);
+		color: var(--sa-ink);
+		transition: border-color 0.3s ease, box-shadow 0.3s ease;
+	}
+	.sb-lectern:hover {
+		border-color: color-mix(in srgb, var(--c) 60%, transparent);
+		box-shadow:
+			inset 0 0 0 10px color-mix(in srgb, var(--sa-ink) 4%, transparent),
+			0 40px 90px -32px color-mix(in srgb, var(--c) 40%, transparent);
+	}
+	@media (min-width: 880px) {
+		.sb-lectern { grid-template-columns: 1fr 1.05fr; }
+	}
+	.sb-lectern-media {
+		position: relative;
+		display: block;
+		overflow: hidden;
+		border-radius: 0.35rem;
+		aspect-ratio: 16 / 10;
+		border: 1px solid var(--sa-line);
+	}
+	.sb-lectern-media img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.sb-lectern:hover .sb-lectern-media img { transform: scale(1.05); }
+	.sb-lectern-cat,
+	.sb-essay-cat {
+		position: absolute;
+		left: 0.7rem;
+		bottom: 0.7rem;
+		font-size: 0.64rem;
+		font-weight: 800;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: #fff;
+		padding: 0.26rem 0.7rem;
+		border-radius: 9999px;
+		background: color-mix(in srgb, var(--c) 80%, #000);
+	}
+	.sb-lectern-body { display: grid; gap: 0.55rem; align-content: center; }
+	.sb-lectern-title {
+		font-size: clamp(1.4rem, 2.8vw, 2.1rem);
+		font-weight: 850;
+		letter-spacing: -0.02em;
+		line-height: 1.15;
+	}
+	.sb-lectern-desc {
+		font-size: 0.95rem;
+		line-height: 1.65;
+		color: var(--sa-muted);
+		display: -webkit-box;
+		-webkit-line-clamp: 3;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	/* ── C · the shelf ── */
+	.sb-filter { display: block; }
+	.sb-radio { position: absolute; opacity: 0; pointer-events: none; }
+	.sb-tabs {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.55rem;
+		margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
+	}
+	.sb-tab {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 0.45rem;
+		padding: 0.5rem 1rem;
+		border-radius: 9999px;
+		border: 1px solid var(--sa-line);
+		font-size: 0.78rem;
+		font-weight: 800;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--sa-muted);
+		cursor: pointer;
+		transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+	}
+	.sb-tab:hover { transform: translateY(-2px); color: var(--sa-ink); }
+	.sb-tab em {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 0.82rem;
+		text-transform: none;
+		letter-spacing: 0;
+		color: var(--sa-acc);
+	}
+	#sbl-all:checked ~ .sb-tabs [for='sbl-all'] {
+		color: #fff;
+		background: linear-gradient(95deg, var(--sa-acc), #a855f7);
+		border-color: transparent;
+	}
+	#sbl-all:checked ~ .sb-tabs [for='sbl-all'] em { color: rgba(255, 255, 255, 0.85); }
+
+	.sb-shelf {
+		display: grid;
+		gap: 1.3rem;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+	@media (max-width: 980px) {
+		.sb-shelf { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	}
+	@media (max-width: 560px) {
+		.sb-shelf { grid-template-columns: 1fr; }
+	}
+	.sb-essay { margin: 0; }
+	.sb-essay-link {
+		position: relative;
+		display: block;
+		color: inherit;
+		border-radius: 0.4rem;
+	}
+	.sb-essay-frame {
+		position: relative;
+		display: block;
+		aspect-ratio: 16 / 10;
+		overflow: hidden;
+		border-radius: 0.4rem;
+		border: 1px solid var(--sa-line);
+		box-shadow: inset 0 0 0 8px color-mix(in srgb, var(--sa-ink) 5%, transparent), 0 26px 60px -30px rgba(0, 0, 0, 0.7);
+		background: var(--sa-card);
+		transition: border-color 0.3s ease, box-shadow 0.3s ease;
+	}
+	.sb-essay:hover .sb-essay-frame {
+		border-color: color-mix(in srgb, var(--c) 55%, transparent);
+		box-shadow:
+			inset 0 0 0 8px color-mix(in srgb, var(--sa-ink) 5%, transparent),
+			0 30px 70px -28px color-mix(in srgb, var(--c) 42%, transparent);
+	}
+	.sb-essay-frame img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.sb-essay:hover .sb-essay-frame img { transform: scale(1.05); }
+	.sb-essay-plaque { display: grid; gap: 0.3rem; padding: 0.75rem 0.2rem 0; }
+	.sb-essay-plaque strong {
+		font-size: 1.02rem;
+		font-weight: 800;
+		letter-spacing: -0.01em;
+		line-height: 1.3;
+	}
+	.sb-essay-desc {
+		font-size: 0.88rem;
+		line-height: 1.6;
+		color: var(--sa-muted);
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+	.sb-essay-plaque em {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 0.8rem;
+		color: var(--sa-faint);
+	}
+
+	/* ── D · the invite ── */
+	.sb-invite {
+		max-width: 46rem;
+		margin: 0 auto;
+		text-align: center;
+		padding: clamp(1.75rem, 4vw, 2.75rem);
+		border-radius: 0.4rem;
+		border: 1.5px dashed color-mix(in srgb, var(--sa-acc) 45%, transparent);
+		background: color-mix(in srgb, var(--sa-acc) 5%, transparent);
+	}
+	.sb-invite-k {
+		display: inline-block;
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--sa-acc);
+	}
+	.sb-invite-form {
+		display: flex;
+		gap: 0.6rem;
+		justify-content: center;
+		flex-wrap: wrap;
+		margin-top: 1.2rem;
+	}
+	.sb-hp { position: absolute; left: -9999px; }
+	.sb-invite-input {
+		flex: 1 1 16rem;
+		max-width: 22rem;
+		padding: 0.85rem 1.15rem;
+		border-radius: 9999px;
+		border: 1px solid var(--sa-line);
+		background: color-mix(in srgb, var(--sa-ink) 5%, transparent);
+		color: var(--sa-ink);
+		font-size: 0.95rem;
+		transition: border-color 0.25s ease, box-shadow 0.25s ease;
+	}
+	.sb-invite-input::placeholder { color: var(--sa-faint); }
+	.sb-invite-input:focus {
+		outline: none;
+		border-color: var(--sa-acc);
+		box-shadow: 0 0 0 4px color-mix(in srgb, var(--sa-acc) 20%, transparent);
+	}
+	.sb-invite-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.85rem 1.6rem;
+		border-radius: 9999px;
+		border: 0;
+		cursor: pointer;
+		font-weight: 800;
+		font-size: 0.92rem;
+		color: #fff;
+		background: linear-gradient(95deg, var(--sa-acc), #a855f7);
+		box-shadow: 0 18px 44px -16px color-mix(in srgb, var(--sa-acc) 80%, transparent);
+		transition: box-shadow 0.25s ease, filter 0.25s ease;
+		will-change: transform;
+	}
+	.sb-invite-btn:hover { filter: brightness(1.07); }
+
+	/* ── E · the catalogue ── */
+	.sb-mag {
+		position: relative;
+		display: grid;
+		gap: clamp(1.25rem, 3vw, 2.25rem);
+		align-items: center;
+		padding: clamp(1.1rem, 2.5vw, 1.8rem);
+		border-radius: 0.4rem;
+		border: 1px solid var(--sa-line);
+		background: var(--sa-card);
+		box-shadow: inset 0 0 0 10px color-mix(in srgb, var(--sa-ink) 4%, transparent), 0 30px 70px -32px rgba(0, 0, 0, 0.7);
+		color: var(--sa-ink);
+		transition: border-color 0.3s ease;
+	}
+	.sb-mag:hover { border-color: color-mix(in srgb, var(--sa-acc) 50%, transparent); }
+	@media (min-width: 760px) {
+		.sb-mag { grid-template-columns: 0.55fr 1.45fr; }
+	}
+	.sb-mag-cover {
+		display: block;
+		overflow: hidden;
+		border-radius: 0.35rem;
+		border: 1px solid var(--sa-line);
+		max-width: 16rem;
+	}
+	.sb-mag-cover img { display: block; width: 100%; transition: transform 0.5s ease; }
+	.sb-mag:hover .sb-mag-cover img { transform: scale(1.04); }
+	.sb-mag-meta { display: grid; gap: 0.5rem; }
+	.sb-mag-meta strong { font-size: clamp(1.15rem, 2.2vw, 1.55rem); font-weight: 850; letter-spacing: -0.01em; }
+	.sb-mag-meta em {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 0.94rem;
+		color: var(--sa-muted);
+	}
+
+	/* ── reveals ── */
+	.sd-rev {
+		opacity: 0;
+		transform: translateY(22px);
+		transition: opacity 0.65s ease, transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+		transition-delay: calc(var(--i, 0) * 0.06s);
+	}
+	.sd-rev.is-on { opacity: 1; transform: translateY(0); }
+
+	@media (prefers-reduced-motion: reduce) {
+		.sd-rev { opacity: 1; transform: none; transition: none; }
+	}
+</style>
