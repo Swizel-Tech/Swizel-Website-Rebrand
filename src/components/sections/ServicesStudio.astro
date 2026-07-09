@@ -1,0 +1,516 @@
+---
+// Services hub · Studio world — the Ateliers Wing of The Swizel Gallery.
+// Same disciplines data as every other view, told as six atelier doors you
+// can walk through. Root carries `sbody` (studio engine: .sd-rev reveals)
+// and `ssvc` (motion engine: tilt / glare / magnetic / .fa-journey draw).
+import { Icon } from 'astro-icon/components';
+import { disciplines } from '../../data/disciplines';
+
+const process = [
+	{ n: 'I', title: 'Research', desc: 'We learn the market, the user and the goal before anything is sketched.' },
+	{ n: 'II', title: 'Concept', desc: 'Directions explored boldly — you see the thinking, not just the result.' },
+	{ n: 'III', title: 'Craft', desc: 'Design and engineering in the same room, refined until it sings.' },
+	{ n: 'IV', title: 'Ship & grow', desc: 'Launched, polished, alive — then marketed and maintained by the same hands.' },
+];
+
+const sectors = ['fintech', 'real estate', 'sports', 'e-commerce', 'education', 'healthcare', 'beauty', 'media', 'travel', 'energy'];
+---
+
+<div class="ssvc sbody view-body view-body-studio">
+	<!-- ── A · the wing entrance ───────────────────────────── -->
+	<section class="sv-sec sv-entry">
+		<div class="sv-wrap">
+			<div class="sv-folio sd-rev">
+				<span>The Swizel Gallery — Ateliers Wing</span>
+				<span>What the studio is commissioned for</span>
+				<span>Six ateliers · One house</span>
+			</div>
+			<div class="sv-open">
+				<h1 class="sv-display sd-rev">
+					Six ateliers.<br />
+					<em>One house.</em>
+				</h1>
+				<div class="sv-open-side sd-rev">
+					<p class="sv-lead">
+						Design, development, marketing, strategy, maintenance and
+						education — every craft your product needs, practised under
+						one roof by the same hands. Walk into any room.
+					</p>
+					<a href="/contact" class="sv-link">
+						Commission the studio
+						<Icon width={15} name="mdi:arrow-right" />
+					</a>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── B · the atelier doors ───────────────────────────── -->
+	<section class="sv-sec" data-cursor="vector">
+		<div class="sv-wrap">
+			<div class="sv-rule sd-rev">
+				<span>The ateliers</span>
+				<span>Choose a door · every room is open</span>
+			</div>
+			<div class="sv-doors">
+				{
+					disciplines.map((d, i) => (
+						<a
+							href={`/services/${d.slug}`}
+							class="sv-door sd-rev"
+							style={`--c:${d.color}; --i:${i}`}
+							data-cursor={d.cursor}
+							data-fa-tilt="6"
+						>
+							<span class="sa-glare" aria-hidden="true" />
+							<span class="sv-door-top">
+								<span class="sv-door-ic"><Icon width={24} name={d.icon} /></span>
+								<span class="sv-door-n">No. {d.n}</span>
+							</span>
+							<h2 class="sv-door-t">{d.title}</h2>
+							<p class="sv-door-tag">{d.tagline}</p>
+							<p class="sv-door-d">{d.desc}</p>
+							<span class="sv-door-chips">
+								{d.items.slice(0, 4).map((it) => <i>{it}</i>)}
+							</span>
+							<span class="sv-door-enter">
+								Enter the room
+								<Icon width={14} name="mdi:arrow-right" />
+							</span>
+						</a>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── C · behind the glass (how a commission runs) ────── -->
+	<section class="sv-sec" data-cursor="pen">
+		<div class="sv-wrap">
+			<div class="sv-rule sd-rev">
+				<span>Behind the glass</span>
+				<span>How a commission runs</span>
+			</div>
+			<div class="sv-process fa-journey">
+				<span class="sv-spine" aria-hidden="true"></span>
+				{
+					process.map((p, i) => (
+						<article class="sv-step sd-rev" style={`--i:${i}`}>
+							<span class="sv-step-node" aria-hidden="true" />
+							<span class="sv-step-n">{p.n}</span>
+							<div>
+								<h3 class="sv-step-t">{p.title}</h3>
+								<p class="sv-step-d">{p.desc}</p>
+							</div>
+						</article>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── D · the index belt ──────────────────────────────── -->
+	<section class="sv-sec sv-sec--belt">
+		<div class="sv-wrap">
+			<div class="sv-rule sd-rev">
+				<span>The index</span>
+				<span>Sectors the ateliers have served</span>
+			</div>
+		</div>
+		<div class="sv-belt" aria-hidden="true">
+			<div class="sv-belt-track">
+				{
+					[0, 1].map(() =>
+						sectors.map((x) => <span class="sv-bword"><em>{x}</em>&nbsp;✦&nbsp;</span>)
+					)
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── E · the commission desk ─────────────────────────── -->
+	<section class="sv-sec sv-sec--cta" data-cursor="phone">
+		<div class="sv-wrap sv-cta sd-rev">
+			<h2 class="sv-display sv-display--cta">
+				Which room<br />
+				does <em>your idea</em> need?
+			</h2>
+			<p class="sv-lead sv-lead--center">
+				Not sure? Bring the brief and we'll walk the wing together — most
+				commissions end up touching more than one atelier anyway.
+			</p>
+			<div class="sv-cta-row">
+				<a href="/contact" class="sv-btn fa-cta">
+					Talk to a project manager
+					<Icon width={17} name="mdi:arrow-right" />
+				</a>
+				<a href="/portfolio" class="sv-call">
+					or <strong>see the collection first</strong>
+				</a>
+			</div>
+		</div>
+	</section>
+</div>
+
+<style>
+	/* ── Studio Services — the gallery dress. ── */
+	.ssvc {
+		--sa-ink: #f3edf0;
+		--sa-muted: rgba(243, 237, 240, 0.64);
+		--sa-faint: rgba(243, 237, 240, 0.42);
+		--sa-acc: var(--view-accent, #ec4899);
+		--sa-line: rgba(243, 237, 240, 0.14);
+		--sa-card: rgba(255, 255, 255, 0.04);
+		--sa-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+		font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+		position: relative;
+		isolation: isolate;
+		overflow: hidden;
+		background:
+			radial-gradient(1100px 560px at 84% -6%, rgba(236, 72, 153, 0.13), transparent 60%),
+			radial-gradient(820px 480px at 8% 50%, rgba(168, 85, 247, 0.07), transparent 60%),
+			linear-gradient(180deg, #0f0a0d 0%, #130c11 50%, #0b0709 100%);
+		color: var(--sa-ink);
+		padding: clamp(1.25rem, 2.5vw, 2rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 4rem);
+		transition: background 0.4s ease, color 0.4s ease;
+	}
+	:global(html:not(.dark)) .ssvc {
+		--sa-ink: #1c151a;
+		--sa-muted: rgba(28, 21, 26, 0.7);
+		--sa-faint: rgba(28, 21, 26, 0.48);
+		--sa-acc: #cf2570;
+		--sa-line: rgba(28, 21, 26, 0.14);
+		--sa-card: rgba(28, 21, 26, 0.035);
+		background:
+			radial-gradient(1100px 560px at 84% -6%, rgba(236, 72, 153, 0.07), transparent 60%),
+			linear-gradient(180deg, #f3ece6 0%, #ece2da 55%, #f3ece6 100%);
+	}
+
+	.sv-sec { padding-block: clamp(2.25rem, 5vw, 3.75rem); }
+	.sv-entry { padding-top: clamp(0.5rem, 1.5vw, 1rem); }
+	.sv-wrap { max-width: 80rem; margin: 0 auto; }
+
+	.sv-folio {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+		flex-wrap: wrap;
+		padding: 0.6rem 0;
+		border-top: 2px solid var(--sa-ink);
+		border-bottom: 1px solid var(--sa-line);
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--sa-faint);
+		margin-bottom: clamp(1.75rem, 4vw, 3rem);
+	}
+	.sv-folio span:first-child { color: var(--sa-ink); }
+	.sv-rule {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 1rem;
+		padding-bottom: 0.5rem;
+		border-bottom: 1px solid var(--sa-line);
+		margin-bottom: clamp(1.5rem, 3.5vw, 2.5rem);
+		font-size: 0.74rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+	}
+	.sv-rule span:first-child { color: var(--sa-acc); }
+	.sv-rule span:last-child {
+		color: var(--sa-faint);
+		font-style: italic;
+		font-family: var(--sa-serif);
+		letter-spacing: 0.02em;
+		text-transform: none;
+		font-size: 0.98rem;
+		font-weight: 400;
+	}
+
+	.sv-display {
+		font-size: clamp(2.8rem, 7vw, 5.6rem);
+		font-weight: 850;
+		letter-spacing: -0.03em;
+		line-height: 0.98;
+		margin: 0;
+	}
+	.sv-display em {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-weight: 500;
+		letter-spacing: -0.01em;
+		color: var(--sa-acc);
+	}
+	.sv-lead {
+		font-size: clamp(1.05rem, 1.7vw, 1.25rem);
+		line-height: 1.6;
+		color: var(--sa-muted);
+		margin: 0 0 1.4rem;
+	}
+	.sv-lead--center { text-align: center; margin-inline: auto; max-width: 38rem; margin-bottom: 1.6rem; }
+	.sv-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		font-weight: 800;
+		font-size: 0.95rem;
+		color: var(--sa-acc);
+		border-bottom: 2px solid color-mix(in srgb, var(--sa-acc) 45%, transparent);
+		padding-bottom: 0.15rem;
+		transition: border-color 0.25s ease, gap 0.25s ease;
+	}
+	.sv-link:hover { gap: 0.7rem; border-color: var(--sa-acc); }
+
+	.sa-glare {
+		position: absolute;
+		inset: 0;
+		border-radius: inherit;
+		background: radial-gradient(340px 220px at var(--gx, 50%) var(--gy, 20%), color-mix(in srgb, var(--c, var(--sa-acc)) 12%, transparent), transparent 70%);
+		opacity: 0;
+		transition: opacity 0.3s ease;
+		pointer-events: none;
+	}
+	[data-fa-tilt]:hover .sa-glare { opacity: 1; }
+
+	/* ── A · entrance ── */
+	.sv-open {
+		display: grid;
+		gap: clamp(1.5rem, 4vw, 3.5rem);
+		align-items: end;
+	}
+	@media (min-width: 920px) {
+		.sv-open { grid-template-columns: 1.15fr 0.85fr; }
+	}
+	.sv-open-side { max-width: 34rem; }
+
+	/* ── B · the doors ── */
+	.sv-doors {
+		display: grid;
+		gap: 1.2rem;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+	@media (max-width: 980px) {
+		.sv-doors { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	}
+	@media (max-width: 560px) {
+		.sv-doors { grid-template-columns: 1fr; }
+	}
+	.sv-door {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		padding: 1.4rem 1.4rem 1.5rem;
+		border-radius: 0.4rem;
+		border: 1px solid var(--sa-line);
+		background: var(--sa-card);
+		box-shadow: inset 0 0 0 8px color-mix(in srgb, var(--sa-ink) 4%, transparent);
+		color: var(--sa-ink);
+		transition: border-color 0.25s ease, box-shadow 0.3s ease;
+	}
+	.sv-door:hover {
+		border-color: color-mix(in srgb, var(--c) 55%, transparent);
+		box-shadow:
+			inset 0 0 0 8px color-mix(in srgb, var(--sa-ink) 4%, transparent),
+			0 30px 70px -30px color-mix(in srgb, var(--c) 40%, transparent);
+	}
+	.sv-door-top {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 1rem;
+	}
+	.sv-door-ic {
+		display: grid;
+		place-items: center;
+		width: 46px;
+		height: 46px;
+		border-radius: 0.6rem;
+		color: var(--c);
+		background: color-mix(in srgb, var(--c) 13%, transparent);
+		border: 1px solid color-mix(in srgb, var(--c) 30%, transparent);
+	}
+	.sv-door-n {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 0.95rem;
+		color: var(--sa-faint);
+	}
+	.sv-door-t {
+		margin: 0 0 0.2rem;
+		font-size: 1.35rem;
+		font-weight: 850;
+		letter-spacing: -0.01em;
+	}
+	.sv-door-tag {
+		margin: 0 0 0.55rem;
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 0.95rem;
+		color: var(--c);
+	}
+	.sv-door-d {
+		margin: 0 0 0.9rem;
+		font-size: 0.92rem;
+		line-height: 1.6;
+		color: var(--sa-muted);
+	}
+	.sv-door-chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		margin-bottom: 1.1rem;
+	}
+	.sv-door-chips i {
+		font-style: normal;
+		font-size: 0.72rem;
+		font-weight: 700;
+		padding: 0.25rem 0.6rem;
+		border-radius: 9999px;
+		border: 1px solid var(--sa-line);
+		color: var(--sa-muted);
+	}
+	.sv-door-enter {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		margin-top: auto;
+		font-size: 0.85rem;
+		font-weight: 800;
+		color: var(--c);
+		transition: gap 0.25s ease;
+	}
+	.sv-door:hover .sv-door-enter { gap: 0.75rem; }
+
+	/* ── C · process ── */
+	.sv-process {
+		position: relative;
+		display: grid;
+		gap: clamp(1.4rem, 3vw, 2rem);
+		padding-left: clamp(1.6rem, 4vw, 2.6rem);
+	}
+	.sv-spine {
+		position: absolute;
+		top: 0.4rem;
+		bottom: 0.4rem;
+		left: 8px;
+		width: 2px;
+		background: linear-gradient(180deg, var(--sa-acc), color-mix(in srgb, var(--sa-acc) 25%, transparent));
+		transform: scaleY(0);
+		transform-origin: top;
+		transition: transform 1.6s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.sv-process.is-drawing .sv-spine { transform: scaleY(1); }
+	.sv-step { position: relative; display: grid; grid-template-columns: auto 1fr; gap: 1rem; align-items: start; }
+	.sv-step-node {
+		position: absolute;
+		left: calc(-1 * clamp(1.6rem, 4vw, 2.6rem) + 3px);
+		top: 0.45rem;
+		width: 12px;
+		height: 12px;
+		border-radius: 50%;
+		background: var(--sa-acc);
+		box-shadow: 0 0 0 4px color-mix(in srgb, var(--sa-acc) 22%, transparent);
+	}
+	.sv-step-n {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: clamp(1.5rem, 3vw, 2.1rem);
+		line-height: 1;
+		color: var(--sa-acc);
+		min-width: 2.4rem;
+	}
+	.sv-step-t {
+		margin: 0.1rem 0 0.25rem;
+		font-size: clamp(1.1rem, 2vw, 1.4rem);
+		font-weight: 800;
+		letter-spacing: -0.01em;
+	}
+	.sv-step-d {
+		margin: 0;
+		max-width: 44rem;
+		font-size: 0.95rem;
+		line-height: 1.6;
+		color: var(--sa-muted);
+	}
+
+	/* ── D · the belt ── */
+	.sv-sec--belt { padding-bottom: clamp(1.5rem, 3vw, 2.5rem); }
+	.sv-belt {
+		overflow: hidden;
+		border-block: 1px solid var(--sa-line);
+		padding-block: 0.55rem;
+	}
+	.sv-belt-track {
+		display: flex;
+		width: max-content;
+		animation: sv-belt 30s linear infinite;
+	}
+	.sv-bword {
+		font-size: clamp(1.5rem, 3.5vw, 2.6rem);
+		font-weight: 850;
+		letter-spacing: -0.02em;
+		white-space: nowrap;
+		color: color-mix(in srgb, var(--sa-ink) 26%, transparent);
+	}
+	.sv-bword em {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-weight: 500;
+	}
+	@keyframes sv-belt {
+		from { transform: translateX(0); }
+		to { transform: translateX(-50%); }
+	}
+
+	/* ── E · commission desk ── */
+	.sv-sec--cta { padding-bottom: clamp(1.5rem, 3vw, 2.5rem); }
+	.sv-cta { text-align: center; }
+	.sv-display--cta { font-size: clamp(2.4rem, 6vw, 4.6rem); margin-bottom: 1.25rem; }
+	.sv-cta-row {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 1.4rem;
+		flex-wrap: wrap;
+	}
+	.sv-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.6rem;
+		padding: 1rem 1.9rem;
+		border-radius: 9999px;
+		font-weight: 800;
+		font-size: 0.95rem;
+		color: #fff;
+		background: linear-gradient(95deg, var(--sa-acc), #a855f7);
+		box-shadow: 0 18px 44px -16px color-mix(in srgb, var(--sa-acc) 80%, transparent);
+		transition: box-shadow 0.25s ease, filter 0.25s ease;
+		will-change: transform;
+	}
+	.sv-btn:hover { filter: brightness(1.07); }
+	.sv-call { font-size: 0.95rem; color: var(--sa-muted); }
+	.sv-call strong {
+		font-weight: 850;
+		color: var(--sa-ink);
+		transition: color 0.25s ease;
+	}
+	.sv-call:hover strong { color: var(--sa-acc); }
+
+	/* ── reveals ── */
+	.sd-rev {
+		opacity: 0;
+		transform: translateY(22px);
+		transition: opacity 0.65s ease, transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+		transition-delay: calc(var(--i, 0) * 0.06s);
+	}
+	.sd-rev.is-on { opacity: 1; transform: translateY(0); }
+
+	@media (prefers-reduced-motion: reduce) {
+		.sd-rev { opacity: 1; transform: none; transition: none; }
+		.sv-belt-track { animation: none; }
+		.sv-spine { transform: none; transition: none; }
+	}
+</style>

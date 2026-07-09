@@ -1,0 +1,828 @@
+---
+// Service detail · Studio world — the discipline as a room in the Ateliers
+// Wing. Same data as every other view, tinted by the discipline's colour.
+// The animated ServiceVisual hangs on the wall like a piece. Root carries
+// `sbody` (studio engine: .sd-rev) and `ssd` (motion engine: tilt / glare /
+// magnetic / .fa-journey draw).
+import { Icon } from 'astro-icon/components';
+import ServiceVisual from './ServiceVisual.astro';
+import type { Discipline } from '../../data/disciplines';
+
+interface Props {
+	discipline: Discipline;
+	others: Discipline[];
+}
+const { discipline: d, others } = Astro.props;
+
+const clarifierChips = d.clarifier
+	.replace(/\.$/, '')
+	.split(/,\s*|\s+and\s+/)
+	.map((c) => c.trim())
+	.filter(Boolean);
+
+const incCols = d.included.length % 4 === 0 ? 4 : 3;
+const roman = ['I', 'II', 'III', 'IV', 'V', 'VI'];
+---
+
+<div class="ssd sbody view-body view-body-studio" style={`--c:${d.color}`}>
+	<!-- ── A · the room entrance ───────────────────────────── -->
+	<section class="sr-sec sr-entry" data-cursor={d.cursor}>
+		<div class="sr-wrap">
+			<div class="sr-folio sd-rev">
+				<span>Ateliers Wing — Room {d.n}</span>
+				<span>{d.title}</span>
+				<span><a href="/services" class="sr-folio-back">← All rooms</a></span>
+			</div>
+			<div class="sr-open">
+				<div class="sr-open-copy">
+					<h1 class="sr-display sd-rev">
+						{d.tagline.replace(/\.$/, '').split(' ').slice(0, -1).join(' ')}
+						<em>{d.tagline.replace(/\.$/, '').split(' ').slice(-1)}.</em>
+					</h1>
+					<p class="sr-lead sd-rev">{d.heroDesc}</p>
+					<div class="sr-chips sd-rev">
+						{clarifierChips.map((c) => <i>{c}</i>)}
+					</div>
+					<div class="sr-open-cues sd-rev">
+						<a href="/contact" class="sr-btn fa-cta">
+							Commission this atelier
+							<Icon width={16} name="mdi:arrow-right" />
+						</a>
+						<a href="#sr-included" class="sr-link">
+							What hangs in this room
+							<Icon width={15} name="mdi:chevron-down" />
+						</a>
+					</div>
+				</div>
+
+				<!-- the discipline's living visual, hung on the wall -->
+				<figure class="sr-piece sd-rev" data-fa-tilt="4">
+					<span class="sr-wire" aria-hidden="true"></span>
+					<span class="sa-glare" aria-hidden="true"></span>
+					<div class="sr-viz">
+						<ServiceVisual d={d} />
+					</div>
+					<figcaption class="sr-plaque">
+						<strong>{d.title}, at work</strong>
+						<span><Icon width={12} name="mdi:flash" /> {d.outcome}</span>
+					</figcaption>
+				</figure>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── B · what's included (in this room) ──────────────── -->
+	<section class="sr-sec" id="sr-included" data-cursor="vector">
+		<div class="sr-wrap">
+			<div class="sr-rule sd-rev">
+				<span>In this room</span>
+				<span>Everything the atelier practises</span>
+			</div>
+			<div class="sr-inc" style={`--inc-cols:${incCols}`}>
+				{
+					d.included.map((s, i) => (
+						<article class="sr-inc-card sd-rev" style={`--i:${i % incCols}`} data-fa-tilt="7">
+							<span class="sa-glare" aria-hidden="true" />
+							<h3>{s.title}</h3>
+							<p>{s.desc}</p>
+							<span class="sr-inc-items">
+								{s.items.map((it) => (
+									<i>
+										<Icon width={12} name="mdi:check" />
+										{it}
+									</i>
+								))}
+							</span>
+						</article>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── C · behind the glass (the approach) ─────────────── -->
+	<section class="sr-sec" data-cursor="pen">
+		<div class="sr-wrap">
+			<div class="sr-rule sd-rev">
+				<span>Behind the glass</span>
+				<span>How this room works a commission</span>
+			</div>
+			<div class="sr-steps fa-journey">
+				<span class="sr-spine" aria-hidden="true"></span>
+				{
+					d.approach.map((p, i) => (
+						<article class="sr-step sd-rev" style={`--i:${i}`}>
+							<span class="sr-step-node" aria-hidden="true" />
+							<span class="sr-step-n">{roman[i] || p.n}</span>
+							<div>
+								<h3 class="sr-step-t">{p.title}</h3>
+								<p class="sr-step-d">{p.desc}</p>
+							</div>
+						</article>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── D · commission options ──────────────────────────── -->
+	<section class="sr-sec" data-cursor="palette">
+		<div class="sr-wrap">
+			<div class="sr-rule sd-rev">
+				<span>Commission options</span>
+				<span>Ways to engage the atelier</span>
+			</div>
+			<div class="sr-ways">
+				{
+					d.ways.map((w, i) => (
+						<article class="sr-way sd-rev" style={`--i:${i}`} data-fa-tilt="8">
+							<span class="sa-glare" aria-hidden="true" />
+							<span class="sr-way-ic"><Icon width={20} name={w.icon} /></span>
+							<h3>{w.title}</h3>
+							<p>{w.desc}</p>
+						</article>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── E · hung from this atelier + the guest note ─────── -->
+	<section class="sr-sec" data-cursor="repo">
+		<div class="sr-wrap">
+			<div class="sr-rule sd-rev">
+				<span>Hung from this atelier</span>
+				<span>Real commissions, on real walls</span>
+			</div>
+			<div class="sr-proof">
+				{
+					d.projects.map((p, i) => (
+						<figure class="sr-proj sd-rev" style={`--i:${i}`} data-fa-tilt="6">
+							<span class="sr-proj-frame">
+								{p.img ? (
+									<img src={p.img} alt={p.name} loading="lazy" />
+								) : (
+									<span class="sr-proj-ph"><Icon width={22} name="mdi:image-outline" /></span>
+								)}
+							</span>
+							<figcaption class="sr-plaque sr-plaque--tight">
+								<strong>{p.name}</strong>
+								<span>{p.sector}</span>
+							</figcaption>
+						</figure>
+					))
+				}
+			</div>
+			<figure class="sr-note sd-rev" data-cursor="quote">
+				<span class="sr-note-mark" aria-hidden="true">“</span>
+				<blockquote>
+					<p>{d.review.quote.replace(/^“|”$/g, '')}</p>
+					<footer>
+						<img src={d.review.img} alt={d.review.name} loading="lazy" width="38" height="38" />
+						<span>— {d.review.name}, <em>{d.review.role}</em></span>
+					</footer>
+				</blockquote>
+			</figure>
+		</div>
+	</section>
+
+	<!-- ── F · visitor questions ───────────────────────────── -->
+	{
+		d.faqs && d.faqs.length > 0 && (
+			<section class="sr-sec" data-cursor="quote">
+				<div class="sr-wrap sr-wrap--narrow">
+					<div class="sr-rule sd-rev">
+						<span>Visitor questions</span>
+						<span>Asked at the desk, answered here</span>
+					</div>
+					<div class="sr-faq sd-rev">
+						{d.faqs.map((f, i) => (
+							<details class="sr-faq-item" open={i === 0}>
+								<summary>
+									<span>{f.q}</span>
+									<Icon class="sr-faq-caret" width={20} name="mdi:chevron-down" />
+								</summary>
+								<p>{f.a}</p>
+							</details>
+						))}
+					</div>
+				</div>
+			</section>
+		)
+	}
+
+	<!-- ── G · other rooms + the desk ──────────────────────── -->
+	<section class="sr-sec sr-sec--last" data-cursor="phone">
+		<div class="sr-wrap">
+			<div class="sr-others sd-rev">
+				<span class="sr-others-h">Other rooms in the wing</span>
+				<div class="sr-others-row">
+					{
+						others.map((o) => (
+							<a href={`/services/${o.slug}`} class="sr-other" style={`--oc:${o.color}`} data-cursor={o.cursor}>
+								<Icon width={15} name={o.icon} />
+								{o.title}
+							</a>
+						))
+					}
+				</div>
+			</div>
+			<div class="sr-ctabox sd-rev">
+				<span class="sr-cta-k">Commissions open</span>
+				<h2 class="sr-h2">Reserve this <em>atelier.</em></h2>
+				<p class="sr-lead sr-lead--center">
+					Tell us what you're making. A project manager reads every
+					message — reply within one business day.
+				</p>
+				<div class="sr-open-cues sr-open-cues--center">
+					<a href="/contact" class="sr-btn fa-cta">
+						Talk to a project manager
+						<Icon width={17} name="mdi:arrow-right" />
+					</a>
+					<a href="/portfolio" class="sr-link">
+						See the collection
+						<Icon width={15} name="mdi:arrow-right" />
+					</a>
+				</div>
+			</div>
+		</div>
+	</section>
+</div>
+
+<style>
+	/* ── Studio service room — gallery dress, tinted by the discipline. ── */
+	.ssd {
+		--sa-ink: #f3edf0;
+		--sa-muted: rgba(243, 237, 240, 0.64);
+		--sa-faint: rgba(243, 237, 240, 0.42);
+		--sa-acc: var(--c, #ec4899);
+		--sa-line: rgba(243, 237, 240, 0.14);
+		--sa-card: rgba(255, 255, 255, 0.04);
+		--sa-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+		/* the ServiceVisual reads these (same contract as the other worlds) */
+		--bd-ink: var(--sa-ink);
+		--bd-muted: var(--sa-muted);
+		--bd-glass: linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02) 55%);
+		--bd-glass-border: rgba(255, 255, 255, 0.12);
+		--bd-shadow: 0 30px 70px -30px rgba(0, 0, 0, 0.7);
+		font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+		position: relative;
+		isolation: isolate;
+		overflow: hidden;
+		background:
+			radial-gradient(1100px 560px at 84% -6%, color-mix(in srgb, var(--c) 12%, transparent), transparent 60%),
+			radial-gradient(820px 480px at 8% 55%, rgba(168, 85, 247, 0.06), transparent 60%),
+			linear-gradient(180deg, #0f0a0d 0%, #130c11 50%, #0b0709 100%);
+		color: var(--sa-ink);
+		padding: clamp(1.25rem, 2.5vw, 2rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 4rem);
+		transition: background 0.4s ease, color 0.4s ease;
+	}
+	:global(html:not(.dark)) .ssd {
+		--sa-ink: #1c151a;
+		--sa-muted: rgba(28, 21, 26, 0.7);
+		--sa-faint: rgba(28, 21, 26, 0.48);
+		--sa-line: rgba(28, 21, 26, 0.14);
+		--sa-card: rgba(28, 21, 26, 0.035);
+		--bd-glass: linear-gradient(160deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.55) 55%);
+		--bd-glass-border: rgba(28, 21, 26, 0.12);
+		--bd-shadow: 0 24px 60px -30px rgba(28, 21, 26, 0.3);
+		background:
+			radial-gradient(1100px 560px at 84% -6%, color-mix(in srgb, var(--c) 8%, transparent), transparent 60%),
+			linear-gradient(180deg, #f3ece6 0%, #ece2da 55%, #f3ece6 100%);
+	}
+
+	.sr-sec { padding-block: clamp(2.25rem, 5vw, 3.75rem); }
+	.sr-entry { padding-top: clamp(0.5rem, 1.5vw, 1rem); }
+	.sr-wrap { max-width: 80rem; margin: 0 auto; }
+	.sr-wrap--narrow { max-width: 52rem; }
+
+	.sr-folio {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+		flex-wrap: wrap;
+		padding: 0.6rem 0;
+		border-top: 2px solid var(--sa-ink);
+		border-bottom: 1px solid var(--sa-line);
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--sa-faint);
+		margin-bottom: clamp(1.75rem, 4vw, 2.75rem);
+	}
+	.sr-folio span:first-child { color: var(--sa-ink); }
+	.sr-folio-back { color: var(--sa-faint); transition: color 0.2s ease; }
+	.sr-folio-back:hover { color: var(--c); }
+	.sr-rule {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 1rem;
+		padding-bottom: 0.5rem;
+		border-bottom: 1px solid var(--sa-line);
+		margin-bottom: clamp(1.5rem, 3.5vw, 2.5rem);
+		font-size: 0.74rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+	}
+	.sr-rule span:first-child { color: var(--c); }
+	.sr-rule span:last-child {
+		color: var(--sa-faint);
+		font-style: italic;
+		font-family: var(--sa-serif);
+		letter-spacing: 0.02em;
+		text-transform: none;
+		font-size: 0.98rem;
+		font-weight: 400;
+	}
+
+	.sr-display {
+		font-size: clamp(2.4rem, 5.5vw, 4.4rem);
+		font-weight: 850;
+		letter-spacing: -0.03em;
+		line-height: 1;
+		margin: 0 0 1.1rem;
+	}
+	.sr-display em {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-weight: 500;
+		color: var(--c);
+	}
+	.sr-h2 {
+		font-size: clamp(2rem, 4.5vw, 3.4rem);
+		font-weight: 850;
+		letter-spacing: -0.02em;
+		line-height: 1;
+		margin: 0.3rem 0 1rem;
+	}
+	.sr-h2 em {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-weight: 500;
+		color: var(--c);
+	}
+	.sr-lead {
+		font-size: clamp(1rem, 1.6vw, 1.18rem);
+		line-height: 1.65;
+		color: var(--sa-muted);
+		max-width: 34rem;
+		margin: 0 0 1.2rem;
+	}
+	.sr-lead--center { text-align: center; margin-inline: auto; max-width: 36rem; }
+	.sr-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		font-weight: 800;
+		font-size: 0.92rem;
+		color: var(--c);
+		border-bottom: 2px solid color-mix(in srgb, var(--c) 45%, transparent);
+		padding-bottom: 0.15rem;
+		transition: border-color 0.25s ease, gap 0.25s ease;
+	}
+	.sr-link:hover { gap: 0.7rem; border-color: var(--c); }
+	.sr-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+		padding: 0.9rem 1.7rem;
+		border-radius: 9999px;
+		font-weight: 800;
+		font-size: 0.92rem;
+		color: #fff;
+		background: linear-gradient(95deg, var(--c), color-mix(in srgb, var(--c) 55%, #a855f7));
+		box-shadow: 0 18px 44px -16px color-mix(in srgb, var(--c) 75%, transparent);
+		transition: box-shadow 0.25s ease, filter 0.25s ease;
+		will-change: transform;
+	}
+	.sr-btn:hover { filter: brightness(1.07); }
+
+	.sa-glare {
+		position: absolute;
+		inset: 0;
+		border-radius: inherit;
+		background: radial-gradient(340px 220px at var(--gx, 50%) var(--gy, 20%), color-mix(in srgb, var(--c) 12%, transparent), transparent 70%);
+		opacity: 0;
+		transition: opacity 0.3s ease;
+		pointer-events: none;
+	}
+	[data-fa-tilt]:hover .sa-glare { opacity: 1; }
+
+	/* ── A · entrance ── */
+	.sr-open {
+		display: grid;
+		gap: clamp(1.75rem, 4vw, 3.5rem);
+		align-items: center;
+	}
+	@media (min-width: 960px) {
+		.sr-open { grid-template-columns: 1.02fr 0.98fr; }
+	}
+	.sr-chips { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-bottom: 1.4rem; }
+	.sr-chips i {
+		font-style: normal;
+		font-size: 0.76rem;
+		font-weight: 700;
+		padding: 0.32rem 0.75rem;
+		border-radius: 9999px;
+		border: 1px solid color-mix(in srgb, var(--c) 40%, transparent);
+		background: color-mix(in srgb, var(--c) 8%, transparent);
+		color: var(--sa-ink);
+	}
+	.sr-open-cues { display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap; }
+	.sr-open-cues--center { justify-content: center; }
+
+	/* the hung piece */
+	.sr-piece {
+		position: relative;
+		margin: 0;
+		border-radius: 0.4rem;
+		transform: rotate(1.2deg);
+	}
+	@media (max-width: 959px) {
+		.sr-piece { transform: none; margin-top: 1.6rem; }
+	}
+	.sr-wire {
+		position: absolute;
+		left: 50%;
+		top: -2.1rem;
+		width: 9px;
+		height: 9px;
+		transform: translateX(-50%);
+		border-radius: 50%;
+		background: var(--c);
+		box-shadow: 0 0 0 3px color-mix(in srgb, var(--c) 25%, transparent);
+		pointer-events: none;
+		z-index: 2;
+	}
+	.sr-wire::before,
+	.sr-wire::after {
+		content: '';
+		position: absolute;
+		top: 4px;
+		width: 1.5px;
+		height: 2.4rem;
+		background: linear-gradient(180deg, color-mix(in srgb, var(--sa-ink) 45%, transparent), color-mix(in srgb, var(--sa-ink) 18%, transparent));
+	}
+	.sr-wire::before { left: 3px; transform-origin: top center; transform: rotate(58deg); }
+	.sr-wire::after { right: 3px; transform-origin: top center; transform: rotate(-58deg); }
+	.sr-viz {
+		border-radius: 0.4rem;
+		border: 1px solid var(--sa-line);
+		box-shadow:
+			inset 0 0 0 10px color-mix(in srgb, var(--sa-ink) 5%, transparent),
+			0 40px 90px -36px rgba(0, 0, 0, 0.7);
+		background: var(--sa-card);
+		padding: clamp(1rem, 2.5vw, 1.6rem);
+	}
+	/* the visual's decorative glow must never poke past small screens */
+	@media (max-width: 980px) {
+		.sr-viz :global(.det-viz-glow) { left: 0; right: 0; }
+	}
+
+	/* the plaque */
+	.sr-plaque {
+		display: inline-flex;
+		flex-direction: column;
+		gap: 0.15rem;
+		margin-top: 0.85rem;
+		padding: 0.6rem 0.95rem;
+		background: rgba(12, 8, 11, 0.66);
+		-webkit-backdrop-filter: blur(12px) saturate(130%);
+		backdrop-filter: blur(12px) saturate(130%);
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		border-left: 3px solid var(--c);
+		border-radius: 0 0.5rem 0.5rem 0;
+		box-shadow: 0 14px 30px -14px rgba(0, 0, 0, 0.6);
+		max-width: fit-content;
+	}
+	.sr-plaque strong {
+		font-size: 0.82rem;
+		font-weight: 850;
+		color: #fff;
+	}
+	.sr-plaque span {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 0.76rem;
+		color: rgba(255, 255, 255, 0.65);
+	}
+	.sr-plaque span :global(svg) { color: var(--c); }
+	.sr-plaque--tight { margin-top: 0.6rem; padding: 0.45rem 0.8rem; }
+
+	/* ── B · included ── */
+	.sr-inc {
+		display: grid;
+		gap: 1.1rem;
+		grid-template-columns: repeat(var(--inc-cols, 3), minmax(0, 1fr));
+	}
+	@media (max-width: 1080px) {
+		.sr-inc { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	}
+	@media (max-width: 560px) {
+		.sr-inc { grid-template-columns: 1fr; }
+	}
+	.sr-inc-card {
+		position: relative;
+		padding: 1.25rem 1.25rem 1.35rem;
+		border-radius: 0.4rem;
+		border: 1px solid var(--sa-line);
+		background: var(--sa-card);
+		box-shadow: inset 0 0 0 8px color-mix(in srgb, var(--sa-ink) 4%, transparent);
+		transition: border-color 0.25s ease;
+	}
+	.sr-inc-card:hover { border-color: color-mix(in srgb, var(--c) 50%, transparent); }
+	.sr-inc-card h3 {
+		margin: 0 0 0.4rem;
+		font-size: 1.02rem;
+		font-weight: 800;
+		letter-spacing: -0.01em;
+	}
+	.sr-inc-card p {
+		margin: 0 0 0.8rem;
+		font-size: 0.88rem;
+		line-height: 1.6;
+		color: var(--sa-muted);
+	}
+	.sr-inc-items { display: flex; flex-direction: column; gap: 0.35rem; }
+	.sr-inc-items i {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		font-style: normal;
+		font-size: 0.8rem;
+		font-weight: 600;
+		color: var(--sa-muted);
+	}
+	.sr-inc-items i :global(svg) { color: var(--c); flex-shrink: 0; }
+
+	/* ── C · approach ── */
+	.sr-steps {
+		position: relative;
+		display: grid;
+		gap: clamp(1.4rem, 3vw, 2rem);
+		padding-left: clamp(1.6rem, 4vw, 2.6rem);
+	}
+	.sr-spine {
+		position: absolute;
+		top: 0.4rem;
+		bottom: 0.4rem;
+		left: 8px;
+		width: 2px;
+		background: linear-gradient(180deg, var(--c), color-mix(in srgb, var(--c) 25%, transparent));
+		transform: scaleY(0);
+		transform-origin: top;
+		transition: transform 1.6s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.sr-steps.is-drawing .sr-spine { transform: scaleY(1); }
+	.sr-step { position: relative; display: grid; grid-template-columns: auto 1fr; gap: 1rem; align-items: start; }
+	.sr-step-node {
+		position: absolute;
+		left: calc(-1 * clamp(1.6rem, 4vw, 2.6rem) + 3px);
+		top: 0.45rem;
+		width: 12px;
+		height: 12px;
+		border-radius: 50%;
+		background: var(--c);
+		box-shadow: 0 0 0 4px color-mix(in srgb, var(--c) 22%, transparent);
+	}
+	.sr-step-n {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: clamp(1.4rem, 2.8vw, 2rem);
+		line-height: 1;
+		color: var(--c);
+		min-width: 2.4rem;
+	}
+	.sr-step-t {
+		margin: 0.1rem 0 0.25rem;
+		font-size: clamp(1.1rem, 2vw, 1.35rem);
+		font-weight: 800;
+	}
+	.sr-step-d {
+		margin: 0;
+		max-width: 44rem;
+		font-size: 0.94rem;
+		line-height: 1.6;
+		color: var(--sa-muted);
+	}
+
+	/* ── D · ways ── */
+	.sr-ways {
+		display: grid;
+		gap: 1.1rem;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+	@media (max-width: 980px) {
+		.sr-ways { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	}
+	@media (max-width: 560px) {
+		.sr-ways { grid-template-columns: 1fr; }
+	}
+	.sr-way {
+		position: relative;
+		padding: 1.25rem;
+		border-radius: 0.4rem;
+		border: 1px solid var(--sa-line);
+		background: var(--sa-card);
+		box-shadow: inset 0 0 0 8px color-mix(in srgb, var(--sa-ink) 4%, transparent);
+		transition: border-color 0.25s ease;
+	}
+	.sr-way:hover { border-color: color-mix(in srgb, var(--c) 50%, transparent); }
+	.sr-way-ic {
+		display: grid;
+		place-items: center;
+		width: 42px;
+		height: 42px;
+		border-radius: 0.6rem;
+		color: var(--c);
+		background: color-mix(in srgb, var(--c) 12%, transparent);
+		border: 1px solid color-mix(in srgb, var(--c) 28%, transparent);
+		margin-bottom: 0.8rem;
+	}
+	.sr-way h3 { margin: 0 0 0.35rem; font-size: 1rem; font-weight: 800; }
+	.sr-way p { margin: 0; font-size: 0.88rem; line-height: 1.6; color: var(--sa-muted); }
+
+	/* ── E · proof ── */
+	.sr-proof {
+		display: grid;
+		gap: 1.2rem;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		margin-bottom: clamp(1.75rem, 4vw, 2.5rem);
+	}
+	@media (max-width: 860px) {
+		.sr-proof { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	}
+	@media (max-width: 560px) {
+		.sr-proof { grid-template-columns: 1fr; }
+	}
+	.sr-proj { position: relative; margin: 0; display: grid; justify-items: start; }
+	.sr-proj-frame,
+	.sr-proj .sr-proj-frame {
+		position: relative;
+		display: block;
+		width: 100%;
+		aspect-ratio: 16 / 10;
+		overflow: hidden;
+		border-radius: 0.4rem;
+		border: 1px solid var(--sa-line);
+		box-shadow: inset 0 0 0 8px color-mix(in srgb, var(--sa-ink) 5%, transparent), 0 26px 60px -30px rgba(0, 0, 0, 0.7);
+		background: var(--sa-card);
+	}
+	.sr-proj-frame img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.sr-proj:hover .sr-proj-frame img { transform: scale(1.05); }
+	.sr-proj-ph {
+		display: grid;
+		place-items: center;
+		width: 100%;
+		height: 100%;
+		color: var(--sa-faint);
+	}
+
+	/* the guest note */
+	.sr-note {
+		position: relative;
+		margin: 0 auto;
+		max-width: 56rem;
+		padding: clamp(1.5rem, 3vw, 2.25rem) clamp(1.5rem, 5vw, 4rem);
+	}
+	.sr-note-mark {
+		position: absolute;
+		top: -1.4rem;
+		left: 0;
+		font-family: var(--sa-serif);
+		font-size: clamp(4.5rem, 9vw, 7rem);
+		line-height: 1;
+		color: var(--c);
+		opacity: 0.85;
+		pointer-events: none;
+	}
+	.sr-note blockquote { margin: 0; }
+	.sr-note p {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: clamp(1.3rem, 2.6vw, 1.9rem);
+		line-height: 1.4;
+		margin: 0 0 1rem;
+	}
+	.sr-note footer {
+		display: flex;
+		align-items: center;
+		gap: 0.7rem;
+		font-size: 0.85rem;
+		font-weight: 800;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--sa-faint);
+	}
+	.sr-note footer img {
+		width: 38px;
+		height: 38px;
+		border-radius: 50%;
+		object-fit: cover;
+		border: 2px solid color-mix(in srgb, var(--c) 50%, transparent);
+	}
+	.sr-note footer em {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		text-transform: none;
+		letter-spacing: 0;
+		font-weight: 400;
+	}
+
+	/* ── F · FAQ ── */
+	.sr-faq { display: grid; gap: 0.7rem; }
+	.sr-faq-item {
+		border: 1px solid var(--sa-line);
+		border-radius: 0.4rem;
+		background: var(--sa-card);
+		box-shadow: inset 0 0 0 6px color-mix(in srgb, var(--sa-ink) 3%, transparent);
+		overflow: hidden;
+	}
+	.sr-faq-item summary {
+		list-style: none;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 1rem 1.2rem;
+		font-weight: 700;
+		font-size: 0.96rem;
+		color: var(--sa-ink);
+	}
+	.sr-faq-item summary::-webkit-details-marker { display: none; }
+	.sr-faq-caret { color: var(--c); flex-shrink: 0; transition: transform 0.3s ease; }
+	.sr-faq-item[open] .sr-faq-caret { transform: rotate(180deg); }
+	.sr-faq-item p {
+		margin: 0;
+		padding: 0 1.2rem 1.1rem;
+		color: var(--sa-muted);
+		font-size: 0.92rem;
+		line-height: 1.65;
+	}
+
+	/* ── G · others + desk ── */
+	.sr-sec--last { padding-bottom: clamp(1.5rem, 3vw, 2.5rem); }
+	.sr-others { margin-bottom: clamp(2rem, 4vw, 3rem); }
+	.sr-others-h {
+		display: block;
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--sa-faint);
+		margin-bottom: 0.8rem;
+	}
+	.sr-others-row { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+	.sr-other {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		padding: 0.5rem 0.95rem;
+		border-radius: 9999px;
+		border: 1px solid var(--sa-line);
+		font-size: 0.85rem;
+		font-weight: 700;
+		color: var(--sa-ink);
+		transition: border-color 0.25s ease, color 0.25s ease, background 0.25s ease;
+	}
+	.sr-other :global(svg) { color: var(--oc); }
+	.sr-other:hover {
+		border-color: color-mix(in srgb, var(--oc) 55%, transparent);
+		background: color-mix(in srgb, var(--oc) 8%, transparent);
+	}
+	.sr-ctabox { text-align: center; }
+	.sr-cta-k {
+		display: inline-block;
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--c);
+	}
+
+	/* ── reveals ── */
+	.sd-rev {
+		opacity: 0;
+		transform: translateY(22px);
+		transition: opacity 0.65s ease, transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+		transition-delay: calc(var(--i, 0) * 0.06s);
+	}
+	.sd-rev.is-on { opacity: 1; transform: translateY(0); }
+
+	@media (prefers-reduced-motion: reduce) {
+		.sd-rev { opacity: 1; transform: none; transition: none; }
+		.sr-spine { transform: none; transition: none; }
+	}
+</style>
