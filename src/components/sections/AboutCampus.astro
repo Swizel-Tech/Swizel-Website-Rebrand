@@ -1,0 +1,1172 @@
+---
+// About page · Campus world — Open Day at the school that ships. Same
+// foundational content as every other About (story, mission / vision /
+// core values, what we do, real timeline incl 2024, clickable team, media,
+// Brevarium, client words) told as a school: whiteboard, syllabus, charter
+// posters, school history, the faculty, class photos, the free textbook
+// and a report card. Root carries `cbody` so the campus engine (.cp-rev
+// reveals + [data-count] counters) binds, and `cabout` so the motion
+// engine (tilt / glare / team modal / magnetic / journey draw) binds too.
+import { Icon } from 'astro-icon/components';
+import { teamDetails } from '../../consts';
+
+const stats = [
+	{ to: 65, suffix: '+', label: 'products shipped' },
+	{ to: 25, suffix: '+', label: 'mentors & makers' },
+	{ to: 7, suffix: '+', label: 'years teaching by doing' },
+	{ to: 10, suffix: '+', label: 'countries reached' },
+];
+
+// six disciplines as the course catalogue — same content as every view
+const courses = [
+	{ code: 'SWZ 101', icon: 'mdi:palette-outline', title: 'Design', desc: 'Brand identity, graphics and product design — interfaces your customers find effortless.' },
+	{ code: 'SWZ 102', icon: 'mdi:code-tags', title: 'Development', desc: 'Web and mobile engineering built to scale. We build, test and ship fast, without breaking things.' },
+	{ code: 'SWZ 103', icon: 'mdi:bullhorn-outline', title: 'Marketing', desc: 'We grow your audience across every platform that matters, and co-market the products we ship.' },
+	{ code: 'SWZ 104', icon: 'mdi:compass-outline', title: 'Strategy', desc: 'Research, define, lock the goal — a tailored product roadmap before a line of code is written.' },
+	{ code: 'SWZ 105', icon: 'mdi:wrench-outline', title: 'Maintenance', desc: 'Improving existing products and keeping complex systems healthy, secure and online, year after year.' },
+	{ code: 'SWZ 106', icon: 'mdi:school-outline', title: 'Education', desc: 'A free bootcamp and The Brevarium, putting real, job-ready skills in the hands of the next class.' },
+];
+
+// the real road — same milestones as every About world, as school years
+const history = [
+	{ year: '2019', term: 'Founding class', title: 'The school opens.', desc: 'Swizel starts in Nigeria — a small, stubborn team taking on its first builds for local businesses.' },
+	{ year: '2020', term: 'Second session', title: 'Products, not projects.', desc: 'We stop thinking in deliverables and start thinking in products — software meant to live and grow.' },
+	{ year: '2022', term: 'New department', title: 'Mobile joins the timetable.', desc: 'Native iOS and Android join the practice. The same team now ships across web and phone.' },
+	{ year: '2023', term: 'Field work', title: 'At home in every sector.', desc: 'Fintech, real estate, sports, education, logistics — the work spreads across the industries that move Africa.' },
+	{ year: '2024', term: 'Exchange year', title: 'Crossing borders.', desc: 'The work goes global. ConvertMyBetCode serves users in 10+ countries, and the first Brevarium is published.' },
+	{ year: '2025', term: 'Open enrolment', title: 'The bootcamp begins.', desc: 'We open a free tech bootcamp — training new engineers, designers and marketers on real products.' },
+	{ year: '2026', term: 'Present day', title: '65+ and counting.', desc: 'Seven years in, more than sixty-five products live in the market, and we are only warming up.' },
+];
+
+// same crew, same order, same modal data as the other About worlds
+const teamOrder = [
+	{ name: 'Azoro', role: 'Business Development Lead' },
+	{ name: 'Ruke', role: 'Product Manager' },
+	{ name: 'Dennis', role: 'UI/UX Designer' },
+	{ name: 'Mary', role: 'Software Engineer' },
+	{ name: 'Stephen', role: 'Fullstack Developer' },
+	{ name: 'Nathaniel', role: 'Frontend Developer' },
+	{ name: 'Precious', role: 'Mobile Developer' },
+	{ name: 'Linda', role: 'Marketing Lead' },
+];
+const team = teamOrder.map((m) => {
+	const d = (teamDetails as any[]).find((t) => t.name === m.name) || {};
+	return {
+		...m,
+		bio: d.bio || '',
+		experience: (d.experience || []) as { company: string; jobDesc: string }[],
+		linkedin: d.linkedinURL && d.linkedinURL !== '#' ? d.linkedinURL : '',
+	};
+});
+
+const brevariumEditions = [
+	{ vol: 'Third edition', date: 'Latest · 2026', href: '/brevarium/the-brevarium-latest.pdf' },
+	{ vol: 'Second edition', date: '2025', href: '/The Brevarium by Swizel.pdf' },
+	{ vol: 'First edition', date: '2024', href: '/The Brevarium by Swizel.pdf' },
+];
+
+// the clients grade us — same voices as the other About worlds
+const reportCard = [
+	{ name: 'Chidimma', img: '/testimonial/chidima.jpeg', grade: 'A+', body: 'Warm, responsive and a true extension of our team. They took the worry out of shipping software.' },
+	{ name: 'Favour', img: '/testimonial/favour.jpeg', grade: 'A+', body: 'Geniuses, honestly. Working with them was effortless from the first call to launch day.' },
+	{ name: 'Cheta', img: '/testimonial/cheta.jpeg', grade: 'A+', body: 'Thorough, polite and always on time. They make hard things feel easy.' },
+];
+
+const classPhotos = [
+	{ wide: true, video: true, name: 'a-day-at-swizel.mp4 — video placeholder', sub: 'Walk the halls with us' },
+	{ video: false, name: 'demo-friday.jpg' },
+	{ video: false, name: 'the-lab.jpg' },
+	{ video: true, name: 'launch-night.mp4 — video' },
+	{ video: false, name: 'field-trip.jpg' },
+];
+---
+
+<div class="cabout cbody view-body view-body-campus">
+	<!-- ── A · open day ────────────────────────────────────── -->
+	<section class="ca-sec">
+		<div class="ca-wrap ca-open">
+			<div class="ca-copy cp-rev">
+				<span class="ca-badge">🏫 Open day · Est. 2019</span>
+				<h1 class="ca-h ca-h--xl">Meet the school <em>that ships.</em></h1>
+				<p class="ca-p">
+					Swizel isn't just a classroom — it's a real product studio.
+					The people who'll teach you design, code and marketing are the
+					same hands behind 65+ products in the market. Come look around.
+				</p>
+				<ul class="ca-stats">
+					{
+						stats.map((s) => (
+							<li>
+								<strong data-count={s.to} data-suffix={s.suffix}>0{s.suffix}</strong>
+								<span>{s.label}</span>
+							</li>
+						))
+					}
+				</ul>
+				<div class="ca-row">
+					<a href="/bootcamp" class="ca-cta fa-cta">
+						Enroll free
+						<Icon width={17} name="mdi:school-outline" />
+					</a>
+					<a href="/contact" class="ca-link">
+						Or hire the team
+						<Icon width={15} name="mdi:arrow-right" />
+					</a>
+				</div>
+			</div>
+
+			<!-- the whiteboard: white in every theme, like real life -->
+			<div class="ca-board cp-rev" data-cursor="pen" data-fa-tilt="3">
+				<span class="ca-board-date">About us</span>
+				<p class="ca-board-title">who is swizel, really? <span class="ca-board-swish" aria-hidden="true"></span></p>
+				<div class="ca-board-video">
+					<Icon width={30} name="mdi:play-circle-outline" />
+					<span class="ca-board-vname">meet-swizel.mp4 — video placeholder</span>
+					<span class="ca-board-vsub">The team, projected here</span>
+				</div>
+				<span class="ca-sticky ca-sticky--y">est. 2019 ✏️</span>
+				<span class="ca-sticky ca-sticky--p">we ship!</span>
+				<span class="ca-marker-tray" aria-hidden="true">
+					<i class="ca-marker ca-marker--r"></i>
+					<i class="ca-marker ca-marker--b"></i>
+					<i class="ca-marker ca-marker--g"></i>
+					<i class="ca-eraser"></i>
+				</span>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── B · the syllabus (what we do) ───────────────────── -->
+	<section class="ca-sec" data-cursor="book">
+		<div class="ca-wrap">
+			<div class="ca-head cp-rev">
+				<span class="ca-kick">📚 The syllabus</span>
+				<h2 class="ca-h">Everything under <em>one roof.</em></h2>
+				<p class="ca-p ca-p--center">
+					Six departments, one campus. Every skill your product needs —
+					and every skill the bootcamp teaches — practised in-house.
+				</p>
+			</div>
+			<div class="ca-courses">
+				{
+					courses.map((c, i) => (
+						<article class="ca-course cp-rev" style={`--i:${i % 3}`} data-fa-tilt="6">
+							<span class="ca-glare" aria-hidden="true" />
+							<span class="ca-course-code">{c.code}</span>
+							<span class="ca-course-ic"><Icon width={24} name={c.icon} /></span>
+							<h3 class="ca-course-t">{c.title}</h3>
+							<p class="ca-course-d">{c.desc}</p>
+						</article>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── C · the school charter (MVV) ────────────────────── -->
+	<section class="ca-sec" data-cursor="layers">
+		<div class="ca-wrap">
+			<div class="ca-head cp-rev">
+				<span class="ca-kick">📌 The school charter</span>
+				<h2 class="ca-h">Pinned to <em>every wall.</em></h2>
+			</div>
+			<div class="ca-charter">
+				<article class="ca-poster cp-rev" data-fa-tilt="6" style="--r:-1.2deg">
+					<span class="ca-pin" aria-hidden="true"></span>
+					<span class="ca-poster-k">Our mission</span>
+					<p class="ca-poster-t">
+						To drive the digitalisation of African business — turning
+						bold ideas into software people love.
+					</p>
+				</article>
+				<article class="ca-poster cp-rev" data-fa-tilt="6" style="--i:1; --r:1.4deg">
+					<span class="ca-pin" aria-hidden="true"></span>
+					<span class="ca-poster-k">Our vision</span>
+					<p class="ca-poster-t">
+						A world where every ambitious African business runs on
+						world-class software, built at home.
+					</p>
+				</article>
+			</div>
+			<div class="ca-values cp-rev">
+				<span class="ca-values-label">Core values — school rules</span>
+				<ul class="ca-values-row">
+					<li><Icon width={16} name="mdi:lightbulb-on-outline" /> Innovative products</li>
+					<li><Icon width={16} name="mdi:handshake-outline" /> Client-centric culture</li>
+					<li><Icon width={16} name="mdi:clock-check-outline" /> Timely delivery</li>
+				</ul>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── D · school history (the journey, incl 2024) ─────── -->
+	<section class="ca-sec" data-cursor="repo">
+		<div class="ca-wrap">
+			<div class="ca-head cp-rev">
+				<span class="ca-kick">🗓️ School history</span>
+				<h2 class="ca-h">From first bell <em>to today.</em></h2>
+			</div>
+			<div class="ca-history fa-journey">
+				<span class="ca-spine" aria-hidden="true"></span>
+				{
+					history.map((h, i) => (
+						<article class="ca-year cp-rev" style={`--i:${i}`}>
+							<span class="ca-year-node" aria-hidden="true"></span>
+							<span class="ca-year-n">{h.year}</span>
+							<div class="ca-year-body">
+								<span class="ca-year-k">{h.term}</span>
+								<h3 class="ca-year-t">{h.title}</h3>
+								<p class="ca-year-d">{h.desc}</p>
+							</div>
+						</article>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── E · meet the faculty (clickable team) ───────────── -->
+	<section class="ca-sec" data-cursor="book">
+		<div class="ca-wrap">
+			<div class="ca-head cp-rev">
+				<span class="ca-kick">🧑‍🏫 Meet the faculty</span>
+				<h2 class="ca-h">Your mentors <em>ship for a living.</em></h2>
+				<p class="ca-p ca-p--center">Tap any staff card for the full profile.</p>
+			</div>
+			<div class="ca-staff">
+				{
+					team.map((m, i) => (
+						<button
+							type="button"
+							class="ca-card cp-rev"
+							style={`--i:${i % 4}`}
+							data-fa-member
+							data-name={m.name}
+							data-role={m.role}
+							data-bio={m.bio}
+							data-linkedin={m.linkedin}
+							data-exp={JSON.stringify(m.experience)}
+						>
+							<span class="ca-card-clip" aria-hidden="true"></span>
+							<span class="ca-card-photo">
+								<img src={`/teammates/${m.name}.jpg`} alt={m.name} loading="lazy" />
+							</span>
+							<span class="ca-card-body">
+								<strong>{m.name}</strong>
+								<em>{m.role}</em>
+								<span class="ca-card-open">View staff profile <Icon width={13} name="mdi:arrow-right" /></span>
+							</span>
+						</button>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── F · class photos (media) ────────────────────────── -->
+	<section class="ca-sec" data-cursor="play">
+		<div class="ca-wrap">
+			<div class="ca-head cp-rev">
+				<span class="ca-kick">📸 Class photos & field trips</span>
+				<h2 class="ca-h">Life on <em>campus.</em></h2>
+			</div>
+			<div class="ca-media cp-rev">
+				{
+					classPhotos.map((f) => (
+						<div class:list={['ca-frame', { 'ca-frame--wide': f.wide }]}>
+							<Icon width={f.wide ? 34 : 24} name={f.video ? 'mdi:play-circle-outline' : 'mdi:image-outline'} />
+							<span class="ca-frame-name">{f.name}</span>
+							{f.sub && <span class="ca-frame-sub">{f.sub}</span>}
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── G · the free textbook (Brevarium) ───────────────── -->
+	<section class="ca-sec" data-cursor="book">
+		<div class="ca-wrap">
+			<div class="ca-book">
+				<a
+					class="ca-book-cover cp-rev"
+					href="/brevarium/the-brevarium-latest.pdf"
+					download="The Brevarium by Swizel"
+					aria-label="Download The Brevarium"
+					data-fa-tilt="5"
+				>
+					<span class="ca-glare" aria-hidden="true"></span>
+					<img src="/images/brevarium-cover.jpg" alt="The Brevarium by Swizel — latest edition" loading="lazy" />
+				</a>
+				<div class="ca-book-copy cp-rev">
+					<span class="ca-kick">📖 The set text — free</span>
+					<h2 class="ca-h">The Brevarium is <em>your textbook.</em></h2>
+					<p class="ca-p">
+						Everything the studio learns on the floor — design, code,
+						growth, the business of shipping — written down and given
+						away. Education has never been easier, or smarter.
+					</p>
+					<ul class="ca-book-eds">
+						{
+							brevariumEditions.map((e) => (
+								<li>
+									<a href={e.href} download="The Brevarium by Swizel">
+										<Icon width={16} name="mdi:book-open-page-variant-outline" />
+										<strong>{e.vol}</strong>
+										<span>{e.date}</span>
+										<Icon width={15} name="mdi:download-outline" />
+									</a>
+								</li>
+							))
+						}
+					</ul>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── H · the report card (client words) ──────────────── -->
+	<section class="ca-sec" data-cursor="quote">
+		<div class="ca-wrap">
+			<div class="ca-head cp-rev">
+				<span class="ca-kick">📝 The report card</span>
+				<h2 class="ca-h">Clients grade <em>the school.</em></h2>
+			</div>
+			<div class="ca-grades">
+				{
+					reportCard.map((r, i) => (
+						<figure class="ca-grade cp-rev" style={`--i:${i}`} data-fa-tilt="7">
+							<span class="ca-glare" aria-hidden="true" />
+							<span class="ca-grade-mark" aria-hidden="true">{r.grade}</span>
+							<blockquote>“{r.body}”</blockquote>
+							<figcaption>
+								<img src={r.img} alt={r.name} loading="lazy" width="36" height="36" />
+								<span>— {r.name}</span>
+							</figcaption>
+						</figure>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── I · the final bell ──────────────────────────────── -->
+	<section class="ca-sec ca-sec--cta" data-cursor="phone">
+		<div class="ca-wrap ca-cta-box cp-rev">
+			<span class="ca-badge">🔔 The final bell</span>
+			<h2 class="ca-h ca-h--cta">Join the next <em>cohort.</em></h2>
+			<p class="ca-p ca-p--center">
+				Learn for free with the team that ships — or bring us your
+				project and watch the faculty build it.
+			</p>
+			<div class="ca-cta-row">
+				<a href="/bootcamp" class="ca-cta fa-cta">
+					Enroll free
+					<Icon width={17} name="mdi:school-outline" />
+				</a>
+				<a href="/contact" class="ca-call">
+					or <strong>start a project</strong>
+				</a>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── the staff profile modal (shared engine contract) ── -->
+	<div class="fa-member-modal ca-modal" hidden>
+		<div class="ca-modal-overlay" data-fa-modal-close></div>
+		<div class="ca-modal-card" role="dialog" aria-modal="true">
+			<button type="button" class="ca-modal-x" data-fa-modal-close aria-label="Close">
+				<Icon width={20} name="mdi:close" />
+			</button>
+			<div class="ca-modal-body">
+				<div class="ca-modal-side">
+					<div class="ca-modal-photo"><img id="fa-modal-photo" src="" alt="" /></div>
+					<h3 class="ca-modal-name" id="fa-modal-name"></h3>
+					<p class="ca-modal-role" id="fa-modal-role"></p>
+					<a class="ca-modal-linkedin" id="fa-modal-linkedin" href="#" target="_blank" rel="noopener noreferrer" hidden>
+						<Icon width={18} name="linkedin" />
+						Connect on LinkedIn
+					</a>
+				</div>
+				<div class="ca-modal-main">
+					<span class="ca-modal-k">Staff profile</span>
+					<p class="ca-modal-bio" id="fa-modal-bio"></p>
+					<div id="fa-modal-exp-wrap" hidden>
+						<span class="ca-modal-k">Previous schools</span>
+						<ul class="ca-modal-exp" id="fa-modal-exp"></ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+	/* ── Campus About — the school dress (amber, warm, playful). ── */
+	.cabout {
+		--cp-ink: #fdf6ea;
+		--cp-muted: rgba(253, 246, 234, 0.62);
+		--cp-faint: rgba(253, 246, 234, 0.4);
+		--cp-acc: var(--view-accent, #f59e0b);
+		--cp-acc2: #fb7185;
+		--cp-line: rgba(255, 255, 255, 0.09);
+		--cp-card: rgba(255, 255, 255, 0.035);
+		--cp-marker: 'Bradley Hand', 'Segoe Print', 'Comic Sans MS', cursive;
+		font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+		position: relative;
+		isolation: isolate;
+		overflow: hidden;
+		background:
+			radial-gradient(1000px 540px at 82% -6%, rgba(245, 158, 11, 0.13), transparent 62%),
+			radial-gradient(820px 480px at 6% 44%, rgba(251, 113, 133, 0.07), transparent 60%),
+			linear-gradient(180deg, #120c04 0%, #160f08 50%, #0e0903 100%);
+		color: var(--cp-ink);
+		padding: clamp(2rem, 4vw, 3rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 4rem);
+		transition: background 0.4s ease, color 0.4s ease;
+	}
+	:global(html:not(.dark)) .cabout {
+		--cp-ink: #2b1c08;
+		--cp-muted: rgba(43, 28, 8, 0.68);
+		--cp-faint: rgba(43, 28, 8, 0.46);
+		--cp-acc: #b45309;
+		--cp-line: rgba(43, 28, 8, 0.1);
+		--cp-card: rgba(43, 28, 8, 0.045);
+		background:
+			radial-gradient(1000px 540px at 82% -6%, rgba(245, 158, 11, 0.14), transparent 62%),
+			linear-gradient(180deg, #fdf4e3 0%, #faecd4 55%, #fdf4e3 100%);
+	}
+
+	.ca-sec { padding-block: clamp(2rem, 4.5vw, 3.5rem); }
+	.ca-sec--cta { padding-bottom: clamp(1.5rem, 3vw, 2.5rem); }
+	.ca-wrap { max-width: 76rem; margin: 0 auto; }
+
+	.ca-badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		font-family: ui-monospace, monospace;
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--cp-acc);
+		border: 1px solid color-mix(in srgb, var(--cp-acc) 40%, transparent);
+		background: color-mix(in srgb, var(--cp-acc) 9%, transparent);
+		padding: 0.4rem 0.9rem;
+		border-radius: 9999px;
+		margin-bottom: 1.1rem;
+	}
+	.ca-kick {
+		display: block;
+		font-family: ui-monospace, monospace;
+		font-size: 0.74rem;
+		font-weight: 800;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--cp-acc);
+		margin-bottom: 0.6rem;
+	}
+	.ca-h {
+		font-size: clamp(1.9rem, 4vw, 3rem);
+		font-weight: 850;
+		letter-spacing: -0.02em;
+		line-height: 1.05;
+		margin: 0 0 0.9rem;
+	}
+	.ca-h--xl { font-size: clamp(2.4rem, 5.5vw, 4.2rem); line-height: 1; }
+	.ca-h--cta { font-size: clamp(2.2rem, 5vw, 3.8rem); }
+	.ca-h em {
+		font-style: normal;
+		background: linear-gradient(95deg, var(--cp-acc), var(--cp-acc2));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	.ca-p {
+		font-size: clamp(0.98rem, 1.5vw, 1.12rem);
+		line-height: 1.7;
+		color: var(--cp-muted);
+		max-width: 34rem;
+		margin: 0 0 1.4rem;
+	}
+	.ca-p--center { text-align: center; margin-inline: auto; max-width: 38rem; }
+	.ca-head { text-align: center; margin-bottom: clamp(1.5rem, 3vw, 2.25rem); }
+	.ca-head .ca-kick { text-align: center; }
+
+	.ca-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		font-weight: 800;
+		font-size: 0.92rem;
+		color: var(--cp-acc);
+		border-bottom: 2px solid color-mix(in srgb, var(--cp-acc) 45%, transparent);
+		padding-bottom: 0.15rem;
+		transition: border-color 0.25s ease, gap 0.25s ease;
+	}
+	.ca-link:hover { gap: 0.7rem; border-color: var(--cp-acc); }
+	.ca-cta {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+		padding: 0.95rem 1.8rem;
+		border-radius: 9999px;
+		font-weight: 800;
+		font-size: 0.95rem;
+		color: #2b1500;
+		background: linear-gradient(95deg, #fbbf24, var(--cp-acc));
+		box-shadow: 0 18px 44px -16px color-mix(in srgb, var(--cp-acc) 80%, transparent);
+		transition: box-shadow 0.25s ease, filter 0.25s ease;
+		will-change: transform;
+	}
+	.ca-cta:hover { filter: brightness(1.06); }
+	.ca-row { display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap; }
+	.ca-call { font-size: 0.95rem; color: var(--cp-muted); }
+	.ca-call strong { font-weight: 850; color: var(--cp-ink); transition: color 0.25s ease; }
+	.ca-call:hover strong { color: var(--cp-acc); }
+
+	.ca-glare {
+		position: absolute;
+		inset: 0;
+		border-radius: inherit;
+		background: radial-gradient(320px 200px at var(--gx, 50%) var(--gy, 20%), color-mix(in srgb, var(--cp-acc) 12%, transparent), transparent 70%);
+		opacity: 0;
+		transition: opacity 0.3s ease;
+		pointer-events: none;
+	}
+	[data-fa-tilt]:hover .ca-glare { opacity: 1; }
+
+	/* ── A · open day ── */
+	.ca-open {
+		display: grid;
+		gap: clamp(1.75rem, 4vw, 3.5rem);
+		align-items: center;
+	}
+	@media (min-width: 960px) {
+		.ca-open { grid-template-columns: 1.05fr 0.95fr; }
+	}
+	.ca-stats {
+		display: flex;
+		gap: 0;
+		list-style: none;
+		margin: 0 0 1.5rem;
+		padding: 0;
+	}
+	.ca-stats li {
+		display: grid;
+		gap: 0.1rem;
+		flex: 1;
+		padding-inline: 0.9rem;
+		border-left: 1px solid var(--cp-line);
+	}
+	.ca-stats li:first-child { padding-left: 0; border-left: 0; }
+	.ca-stats strong {
+		font-size: clamp(1.4rem, 2.6vw, 2rem);
+		font-weight: 850;
+		letter-spacing: -0.02em;
+		background: linear-gradient(135deg, #fbbf24, var(--cp-acc));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	.ca-stats span { font-size: 0.76rem; color: var(--cp-faint); line-height: 1.35; }
+	@media (max-width: 560px) {
+		.ca-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 1rem; }
+		.ca-stats li { padding-inline: 0; border-left: 0; }
+	}
+
+	/* the whiteboard */
+	.ca-board {
+		position: relative;
+		background: #fdfdfb;
+		border-radius: 0.9rem;
+		border: 10px solid #e7e2d8;
+		box-shadow: 0 34px 80px -30px rgba(0, 0, 0, 0.55);
+		padding: 1.3rem 1.3rem 2.4rem;
+		color: #44403c;
+		transform: rotate(0.8deg);
+	}
+	@media (max-width: 959px) { .ca-board { transform: none; margin-top: 1rem; } }
+	.ca-board-date {
+		position: absolute;
+		top: 0.9rem;
+		right: 1.1rem;
+		font-family: var(--cp-marker);
+		font-size: 0.9rem;
+		color: #78716c;
+	}
+	.ca-board-title {
+		font-family: var(--cp-marker);
+		font-size: clamp(1.2rem, 2.4vw, 1.6rem);
+		font-weight: 700;
+		color: #1c1917;
+		margin: 0 0 0.9rem;
+		position: relative;
+		display: inline-block;
+	}
+	.ca-board-swish {
+		position: absolute;
+		left: 0;
+		right: -6px;
+		bottom: -4px;
+		height: 5px;
+		border-radius: 999px;
+		background: color-mix(in srgb, var(--cp-acc) 55%, transparent);
+	}
+	.ca-board-video {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.4rem;
+		aspect-ratio: 16 / 9;
+		border-radius: 0.5rem;
+		border: 1.5px dashed #d6d0c4;
+		background: #f6f4ee;
+		color: #a8a29e;
+		text-align: center;
+		padding: 0.8rem;
+	}
+	.ca-board-vname {
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.07em;
+		text-transform: uppercase;
+	}
+	.ca-board-vsub { font-family: var(--cp-marker); font-size: 0.85rem; }
+	.ca-sticky {
+		position: absolute;
+		font-family: var(--cp-marker);
+		font-size: 0.92rem;
+		font-weight: 700;
+		color: #44403c;
+		padding: 0.75rem 0.85rem 0.95rem;
+		box-shadow: 0 10px 22px -8px rgba(0, 0, 0, 0.35);
+	}
+	.ca-sticky--y { top: -0.9rem; left: 1.4rem; background: #fef08a; transform: rotate(-4deg); }
+	.ca-sticky--p { bottom: 1rem; right: -0.7rem; background: #fbcfe8; transform: rotate(3deg); }
+	@media (max-width: 560px) {
+		.ca-sticky--p { right: 0.4rem; }
+	}
+	.ca-marker-tray {
+		position: absolute;
+		left: 1.2rem;
+		bottom: 0.55rem;
+		display: flex;
+		gap: 0.45rem;
+		align-items: center;
+	}
+	.ca-marker { width: 44px; height: 8px; border-radius: 999px; }
+	.ca-marker--r { background: #ef4444; }
+	.ca-marker--b { background: #3b82f6; }
+	.ca-marker--g { background: #22c55e; }
+	.ca-eraser { width: 30px; height: 14px; border-radius: 3px; background: #d6d3d1; }
+
+	/* ── B · the syllabus ── */
+	.ca-courses {
+		display: grid;
+		gap: 1.1rem;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+	@media (max-width: 980px) {
+		.ca-courses { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	}
+	@media (max-width: 560px) {
+		.ca-courses { grid-template-columns: 1fr; }
+	}
+	.ca-course {
+		position: relative;
+		padding: 1.3rem;
+		border-radius: 0.9rem;
+		border: 1px solid var(--cp-line);
+		background: var(--cp-card);
+		transition: border-color 0.25s ease, transform 0.25s ease;
+	}
+	.ca-course:hover { border-color: color-mix(in srgb, var(--cp-acc) 50%, transparent); }
+	.ca-course-code {
+		position: absolute;
+		top: 1rem;
+		right: 1.1rem;
+		font-family: ui-monospace, monospace;
+		font-size: 0.68rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		color: var(--cp-faint);
+	}
+	.ca-course-ic {
+		display: grid;
+		place-items: center;
+		width: 44px;
+		height: 44px;
+		border-radius: 0.7rem;
+		color: var(--cp-acc);
+		background: color-mix(in srgb, var(--cp-acc) 12%, transparent);
+		border: 1px solid color-mix(in srgb, var(--cp-acc) 28%, transparent);
+		margin-bottom: 0.9rem;
+	}
+	.ca-course-t { margin: 0 0 0.35rem; font-size: 1.08rem; font-weight: 800; }
+	.ca-course-d { margin: 0; font-size: 0.9rem; line-height: 1.6; color: var(--cp-muted); }
+
+	/* ── C · the charter ── */
+	.ca-charter {
+		display: grid;
+		gap: 1.2rem;
+		margin-bottom: 1.4rem;
+	}
+	@media (min-width: 760px) {
+		.ca-charter { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	}
+	.ca-poster {
+		position: relative;
+		padding: clamp(1.4rem, 3vw, 2rem);
+		border-radius: 0.6rem;
+		background: var(--cp-card);
+		border: 1px solid var(--cp-line);
+		box-shadow: 0 24px 55px -28px rgba(0, 0, 0, 0.55);
+		transform: rotate(var(--r, 0deg));
+	}
+	.ca-pin {
+		position: absolute;
+		top: -7px;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 14px;
+		height: 14px;
+		border-radius: 50%;
+		background: radial-gradient(circle at 35% 30%, #fda4af, #e11d48 65%);
+		box-shadow: 0 3px 6px rgba(0, 0, 0, 0.45);
+	}
+	.ca-poster-k {
+		display: inline-block;
+		font-family: ui-monospace, monospace;
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--cp-acc);
+		margin-bottom: 0.7rem;
+	}
+	.ca-poster-t {
+		margin: 0;
+		font-family: var(--cp-marker);
+		font-size: clamp(1.15rem, 2vw, 1.45rem);
+		line-height: 1.5;
+		color: var(--cp-ink);
+	}
+	.ca-values { display: grid; gap: 0.7rem; justify-items: center; }
+	.ca-values-label {
+		font-family: ui-monospace, monospace;
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--cp-faint);
+	}
+	.ca-values-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.7rem;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		justify-content: center;
+	}
+	.ca-values-row li {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.55rem 1rem;
+		border: 1px solid color-mix(in srgb, var(--cp-acc) 40%, transparent);
+		border-radius: 9999px;
+		font-size: 0.88rem;
+		font-weight: 700;
+		color: var(--cp-ink);
+		background: color-mix(in srgb, var(--cp-acc) 8%, transparent);
+	}
+	.ca-values-row li :global(svg) { color: var(--cp-acc); }
+
+	/* ── D · school history ── */
+	.ca-history {
+		position: relative;
+		display: grid;
+		gap: clamp(1.4rem, 3vw, 2rem);
+		padding-left: clamp(1.6rem, 4vw, 2.6rem);
+	}
+	.ca-spine {
+		position: absolute;
+		top: 0.4rem;
+		bottom: 0.4rem;
+		left: 8px;
+		width: 2px;
+		background: linear-gradient(180deg, var(--cp-acc), color-mix(in srgb, var(--cp-acc) 25%, transparent));
+		transform: scaleY(0);
+		transform-origin: top;
+		transition: transform 1.6s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.ca-history.is-drawing .ca-spine { transform: scaleY(1); }
+	.ca-year { position: relative; display: grid; gap: 0.3rem; }
+	.ca-year-node {
+		position: absolute;
+		left: calc(-1 * clamp(1.6rem, 4vw, 2.6rem) + 3px);
+		top: 0.5rem;
+		width: 12px;
+		height: 12px;
+		border-radius: 50%;
+		background: var(--cp-acc);
+		box-shadow: 0 0 0 4px color-mix(in srgb, var(--cp-acc) 22%, transparent);
+	}
+	.ca-year-n {
+		font-family: var(--cp-marker);
+		font-size: clamp(1.4rem, 2.8vw, 2rem);
+		line-height: 1;
+		color: var(--cp-acc);
+	}
+	.ca-year-k {
+		font-family: ui-monospace, monospace;
+		font-size: 0.66rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--cp-faint);
+	}
+	.ca-year-t { margin: 0.15rem 0 0.25rem; font-size: clamp(1.1rem, 2vw, 1.4rem); font-weight: 800; }
+	.ca-year-d { margin: 0; max-width: 46rem; font-size: 0.94rem; line-height: 1.6; color: var(--cp-muted); }
+
+	/* ── E · the faculty ── */
+	.ca-staff {
+		display: grid;
+		gap: 1.1rem;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
+	@media (max-width: 980px) {
+		.ca-staff { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	}
+	.ca-card {
+		position: relative;
+		display: grid;
+		gap: 0;
+		padding: 0;
+		border: 1px solid var(--cp-line);
+		border-radius: 0.9rem;
+		background: var(--cp-card);
+		color: inherit;
+		text-align: left;
+		cursor: pointer;
+		overflow: visible;
+		transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+	}
+	.ca-card:hover {
+		border-color: color-mix(in srgb, var(--cp-acc) 55%, transparent);
+		transform: translateY(-4px);
+		box-shadow: 0 24px 50px -24px color-mix(in srgb, var(--cp-acc) 45%, transparent);
+	}
+	.ca-card-clip {
+		position: absolute;
+		top: -9px;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 34px;
+		height: 12px;
+		border-radius: 6px 6px 0 0;
+		border: 2.5px solid #9ca3af;
+		border-bottom: 0;
+		background: transparent;
+		z-index: 2;
+	}
+	.ca-card-photo {
+		display: block;
+		aspect-ratio: 1 / 1;
+		overflow: hidden;
+		border-radius: 0.85rem 0.85rem 0 0;
+	}
+	.ca-card-photo img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.ca-card:hover .ca-card-photo img { transform: scale(1.05); }
+	.ca-card-body { display: grid; gap: 0.15rem; padding: 0.8rem 0.95rem 1rem; }
+	.ca-card-body strong { font-size: 1rem; font-weight: 800; }
+	.ca-card-body em {
+		font-style: normal;
+		font-size: 0.78rem;
+		color: var(--cp-muted);
+	}
+	.ca-card-open {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3rem;
+		margin-top: 0.45rem;
+		font-size: 0.74rem;
+		font-weight: 800;
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+		color: var(--cp-acc);
+		opacity: 0.85;
+		transition: gap 0.25s ease, opacity 0.25s ease;
+	}
+	.ca-card:hover .ca-card-open { gap: 0.55rem; opacity: 1; }
+
+	/* ── F · class photos ── */
+	.ca-media {
+		display: grid;
+		gap: 1rem;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
+	.ca-frame {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.45rem;
+		aspect-ratio: 4 / 3;
+		border-radius: 0.7rem;
+		border: 1.5px dashed color-mix(in srgb, var(--cp-ink) 22%, transparent);
+		background: var(--cp-card);
+		color: var(--cp-muted);
+		padding: 0.8rem;
+	}
+	.ca-frame--wide { grid-column: span 2; grid-row: span 2; aspect-ratio: auto; }
+	.ca-frame-name {
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.07em;
+		text-transform: uppercase;
+		text-align: center;
+	}
+	.ca-frame-sub { font-family: var(--cp-marker); font-size: 0.85rem; color: var(--cp-faint); text-align: center; }
+	@media (max-width: 760px) {
+		.ca-media { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+		.ca-frame--wide { grid-column: span 2; grid-row: auto; aspect-ratio: 16 / 9; }
+	}
+
+	/* ── G · the textbook ── */
+	.ca-book {
+		display: grid;
+		gap: clamp(1.5rem, 4vw, 3rem);
+		align-items: center;
+	}
+	@media (min-width: 880px) {
+		.ca-book { grid-template-columns: 0.85fr 1.15fr; }
+	}
+	.ca-book-cover {
+		position: relative;
+		display: block;
+		border-radius: 0.7rem;
+		max-width: 24rem;
+	}
+	.ca-book-cover img {
+		width: 100%;
+		border-radius: 0.7rem;
+		border: 1px solid var(--cp-line);
+		box-shadow: 0 34px 80px -32px rgba(0, 0, 0, 0.6);
+	}
+	.ca-book-eds {
+		display: grid;
+		gap: 0.6rem;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		max-width: 26rem;
+	}
+	.ca-book-eds a {
+		display: flex;
+		align-items: center;
+		gap: 0.7rem;
+		padding: 0.75rem 1rem;
+		border: 1px solid var(--cp-line);
+		border-radius: 0.7rem;
+		background: var(--cp-card);
+		color: var(--cp-ink);
+		transition: border-color 0.25s ease, transform 0.25s ease;
+	}
+	.ca-book-eds a:hover { border-color: color-mix(in srgb, var(--cp-acc) 55%, transparent); transform: translateX(4px); }
+	.ca-book-eds a :global(svg:first-child) { color: var(--cp-acc); flex-shrink: 0; }
+	.ca-book-eds strong { font-size: 0.92rem; font-weight: 800; }
+	.ca-book-eds span { flex: 1; font-size: 0.8rem; color: var(--cp-faint); text-align: right; }
+	.ca-book-eds a :global(svg:last-child) { color: var(--cp-faint); flex-shrink: 0; }
+
+	/* ── H · report card ── */
+	.ca-grades {
+		display: grid;
+		gap: 1.1rem;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+	@media (max-width: 920px) {
+		.ca-grades { grid-template-columns: 1fr; }
+	}
+	.ca-grade {
+		position: relative;
+		margin: 0;
+		padding: 1.4rem 1.3rem 1.2rem;
+		border-radius: 0.9rem;
+		border: 1px solid var(--cp-line);
+		background: var(--cp-card);
+		transition: border-color 0.25s ease;
+	}
+	.ca-grade:hover { border-color: color-mix(in srgb, var(--cp-acc) 50%, transparent); }
+	.ca-grade-mark {
+		position: absolute;
+		top: 0.85rem;
+		right: 1rem;
+		font-family: var(--cp-marker);
+		font-size: 1.6rem;
+		font-weight: 700;
+		color: #dc2626;
+		transform: rotate(6deg);
+	}
+	.ca-grade blockquote {
+		margin: 0 0 0.9rem;
+		font-size: 0.95rem;
+		line-height: 1.65;
+		color: var(--cp-muted);
+		padding-right: 2.2rem;
+	}
+	.ca-grade figcaption {
+		display: flex;
+		align-items: center;
+		gap: 0.55rem;
+		font-size: 0.84rem;
+		font-weight: 800;
+		color: var(--cp-ink);
+	}
+	.ca-grade figcaption img {
+		width: 36px;
+		height: 36px;
+		border-radius: 50%;
+		object-fit: cover;
+		border: 2px solid color-mix(in srgb, var(--cp-acc) 50%, transparent);
+	}
+
+	/* ── I · final bell ── */
+	.ca-cta-box { text-align: center; }
+	.ca-cta-row {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 1.4rem;
+		flex-wrap: wrap;
+	}
+
+	/* ── staff modal ── */
+	.ca-modal { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; padding: 1rem; }
+	.ca-modal[hidden] { display: none; }
+	.ca-modal-overlay {
+		position: absolute;
+		inset: 0;
+		background: rgba(10, 6, 2, 0.72);
+		-webkit-backdrop-filter: blur(8px);
+		backdrop-filter: blur(8px);
+		opacity: 0;
+		transition: opacity 0.25s ease;
+	}
+	.ca-modal.is-open .ca-modal-overlay { opacity: 1; }
+	.ca-modal-card {
+		position: relative;
+		width: min(46rem, 100%);
+		max-height: min(84vh, 44rem);
+		overflow-y: auto;
+		border-radius: 1rem;
+		border: 1px solid rgba(253, 246, 234, 0.14);
+		background:
+			radial-gradient(500px 260px at 85% -8%, rgba(245, 158, 11, 0.15), transparent 60%),
+			linear-gradient(180deg, #1c130a 0%, #120c05 100%);
+		box-shadow: 0 60px 120px -40px rgba(0, 0, 0, 0.85);
+		color: #fdf6ea;
+		padding: clamp(1.4rem, 3vw, 2.2rem);
+		transform: translateY(18px) scale(0.985);
+		opacity: 0;
+		transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
+	}
+	.ca-modal.is-open .ca-modal-card { transform: translateY(0) scale(1); opacity: 1; }
+	.ca-modal-x {
+		position: sticky;
+		top: 0;
+		margin-left: auto;
+		display: grid;
+		place-items: center;
+		width: 38px;
+		height: 38px;
+		border-radius: 50%;
+		border: 1px solid rgba(253, 246, 234, 0.2);
+		background: rgba(18, 12, 5, 0.85);
+		color: #fdf6ea;
+		cursor: pointer;
+		z-index: 2;
+		transition: border-color 0.2s ease, color 0.2s ease;
+	}
+	.ca-modal-x:hover { border-color: var(--cp-acc); color: var(--cp-acc); }
+	.ca-modal-body {
+		display: grid;
+		gap: clamp(1.2rem, 3vw, 2rem);
+		margin-top: -0.6rem;
+	}
+	@media (min-width: 700px) {
+		.ca-modal-body { grid-template-columns: 0.75fr 1.25fr; align-items: start; }
+	}
+	.ca-modal-photo {
+		aspect-ratio: 4 / 5;
+		overflow: hidden;
+		border-radius: 0.8rem;
+		border: 1px solid rgba(253, 246, 234, 0.14);
+		margin-bottom: 0.9rem;
+	}
+	.ca-modal-photo img { width: 100%; height: 100%; object-fit: cover; }
+	.ca-modal-name { margin: 0 0 0.15rem; font-size: 1.4rem; font-weight: 850; }
+	.ca-modal-role {
+		margin: 0 0 0.8rem;
+		font-family: var(--cp-marker);
+		font-size: 0.98rem;
+		color: var(--cp-acc);
+	}
+	.ca-modal-linkedin {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		font-size: 0.85rem;
+		font-weight: 800;
+		color: #fdf6ea;
+		border-bottom: 2px solid color-mix(in srgb, var(--cp-acc) 45%, transparent);
+		padding-bottom: 0.15rem;
+		transition: color 0.2s ease, border-color 0.2s ease;
+	}
+	.ca-modal-linkedin:hover { color: var(--cp-acc); border-color: var(--cp-acc); }
+	.ca-modal-k {
+		display: block;
+		font-family: ui-monospace, monospace;
+		font-size: 0.68rem;
+		font-weight: 800;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--cp-acc);
+		margin-bottom: 0.5rem;
+	}
+	.ca-modal-bio { margin: 0 0 1.2rem; font-size: 0.96rem; line-height: 1.7; color: rgba(253, 246, 234, 0.75); }
+	.ca-modal-exp { display: grid; gap: 0.55rem; list-style: none; margin: 0; padding: 0; }
+	.ca-modal-exp :global(li) {
+		display: grid;
+		gap: 0.1rem;
+		padding: 0.6rem 0.85rem;
+		border: 1px solid rgba(253, 246, 234, 0.12);
+		border-left: 3px solid var(--cp-acc);
+		border-radius: 0 0.6rem 0.6rem 0;
+		background: rgba(255, 255, 255, 0.03);
+	}
+	.ca-modal-exp :global(strong) { font-size: 0.88rem; font-weight: 800; }
+	.ca-modal-exp :global(em) { font-style: normal; font-size: 0.82rem; color: rgba(253, 246, 234, 0.6); }
+
+	/* ── reveals (campus engine adds .is-on) ── */
+	.cp-rev {
+		opacity: 0;
+		transform: translateY(22px);
+		transition: opacity 0.65s ease, transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+		transition-delay: calc(var(--i, 0) * 0.08s);
+	}
+	.cp-rev.is-on { opacity: 1; transform: translateY(0); }
+
+	@media (prefers-reduced-motion: reduce) {
+		.cp-rev { opacity: 1; transform: none; transition: none; }
+		.ca-spine { transform: none; transition: none; }
+	}
+</style>
