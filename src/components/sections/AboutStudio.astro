@@ -83,36 +83,49 @@ const studioFrames = [
 
 <div class="sabout sbody view-body view-body-studio">
 	<!-- ── A · the retrospective atrium ────────────────────── -->
-	<section class="sa-sec">
+	<section class="sa-sec sa-atrium">
 		<div class="sa-wrap">
 			<div class="sa-folio sd-rev">
 				<span>The Swizel Gallery — Retrospective Wing</span>
 				<span>The people behind the collection</span>
 				<span>Est. 2019 · One house · Every craft</span>
 			</div>
-			<h1 class="sa-display sd-rev">
-				Portrait of<br />
-				<em>the studio.</em>
-			</h1>
-			<p class="sa-lead sd-rev">
-				Every piece on our walls was made by hands you can meet. Swizel is
-				one house of designers, engineers and growth marketers, shipping
-				since 2019 — we design the idea, build it, take it to market, and
-				stay to grow it. This wing is about the makers.
-			</p>
 
-			<figure class="sa-centerpiece sd-rev" data-cursor="play" data-fa-tilt="3">
-				<span class="sa-glare" aria-hidden="true"></span>
-				<span class="sa-centerpiece-media">
-					<Icon width={40} name="mdi:play-circle-outline" />
-					<span class="sa-cp-name">the-makers.mp4 — video placeholder</span>
-					<span class="sa-cp-sub">Two minutes inside the residence</span>
-				</span>
-				<figcaption class="sa-plaque sa-plaque--lg">
-					<strong>Portrait of a Studio</strong>
-					<span>Mixed media · 2019—'26 · The retrospective</span>
-				</figcaption>
-			</figure>
+			<div class="sa-open">
+				<div class="sa-open-copy">
+					<h1 class="sa-display sd-rev">
+						Portrait of<br />
+						<em>the studio.</em>
+					</h1>
+					<p class="sa-lead sa-lead--open sd-rev">
+						Every piece on our walls was made by hands you can meet.
+						Swizel is one house of designers, engineers and growth
+						marketers, shipping since 2019 — we design the idea, build
+						it, take it to market, and stay to grow it. This wing is
+						about the makers.
+					</p>
+					<div class="sa-open-cues sd-rev">
+						<a href="/portfolio" class="sa-link">
+							See the collection first
+							<Icon width={15} name="mdi:arrow-right" />
+						</a>
+					</div>
+				</div>
+
+				<figure class="sa-centerpiece sd-rev" data-cursor="play" data-fa-tilt="4">
+					<span class="sa-wire" aria-hidden="true"></span>
+					<span class="sa-glare" aria-hidden="true"></span>
+					<span class="sa-centerpiece-media">
+						<Icon width={40} name="mdi:play-circle-outline" />
+						<span class="sa-cp-name">the-makers.mp4 — video placeholder</span>
+						<span class="sa-cp-sub">Two minutes inside the residence</span>
+					</span>
+					<figcaption class="sa-plaque sa-plaque--lg">
+						<strong>Portrait of a Studio</strong>
+						<span>Mixed media · 2019—'26 · The retrospective</span>
+					</figcaption>
+				</figure>
+			</div>
 
 			<ul class="sa-wings sd-rev">
 				{stats.map((s) => (
@@ -332,7 +345,7 @@ const studioFrames = [
 					data-fa-tilt="6"
 				>
 					<span class="sa-glare" aria-hidden="true"></span>
-					<img src="/bevarium.jpg" alt="The Brevarium by Swizel" loading="lazy" />
+					<img src="/images/brevarium-cover.jpg" alt="The Brevarium by Swizel — latest edition" loading="lazy" />
 					<span class="sa-plaque">
 						<strong>The Brevarium</strong>
 						<span>Print & PDF · Published yearly since 2024</span>
@@ -585,17 +598,61 @@ const studioFrames = [
 	}
 	[data-fa-tilt]:hover .sa-glare { opacity: 1; }
 
-	/* ── A · atrium ── */
-	.sa-centerpiece { position: relative; margin: 0 0 clamp(1.5rem, 3vw, 2.25rem); border-radius: 0.4rem; }
+	/* ── A · atrium — copy left, a hung portrait right ── */
+	.sa-atrium { padding-top: clamp(0.75rem, 2vw, 1.75rem); }
+	.sa-open {
+		display: grid;
+		gap: clamp(1.75rem, 4vw, 3.5rem);
+		align-items: center;
+		margin-bottom: clamp(2rem, 4vw, 3rem);
+	}
+	@media (min-width: 960px) {
+		.sa-open { grid-template-columns: 1.05fr 0.95fr; }
+	}
+	.sa-lead--open { margin-bottom: 1.6rem; max-width: 34rem; }
+	.sa-open-cues { display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap; }
+	.sa-centerpiece {
+		position: relative;
+		margin: 0;
+		border-radius: 0.4rem;
+		justify-self: stretch;
+		transform: rotate(1.2deg);
+	}
+	@media (min-width: 960px) {
+		.sa-centerpiece { margin-top: 1.4rem; }
+	}
+	/* the hanging wire: a nail above the frame, two strands to the corners */
+	.sa-wire {
+		position: absolute;
+		left: 50%;
+		top: -2.1rem;
+		width: 9px;
+		height: 9px;
+		transform: translateX(-50%);
+		border-radius: 50%;
+		background: var(--sa-acc);
+		box-shadow: 0 0 0 3px color-mix(in srgb, var(--sa-acc) 25%, transparent);
+		pointer-events: none;
+	}
+	.sa-wire::before,
+	.sa-wire::after {
+		content: '';
+		position: absolute;
+		top: 4px;
+		width: 1.5px;
+		height: 2.4rem;
+		background: linear-gradient(180deg, color-mix(in srgb, var(--sa-ink) 45%, transparent), color-mix(in srgb, var(--sa-ink) 18%, transparent));
+	}
+	.sa-wire::before { left: 3px; transform-origin: top center; transform: rotate(58deg); }
+	.sa-wire::after { right: 3px; transform-origin: top center; transform: rotate(-58deg); }
 	.sa-centerpiece-media {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
 		gap: 0.5rem;
-		aspect-ratio: 21 / 9;
-		max-height: 520px;
-		min-height: 200px;
+		aspect-ratio: 4 / 3;
+		min-height: 220px;
 		border-radius: 0.4rem;
 		border: 1px solid var(--sa-line);
 		box-shadow:
@@ -606,8 +663,8 @@ const studioFrames = [
 			var(--sa-card);
 		color: var(--sa-muted);
 	}
-	@media (max-width: 720px) {
-		.sa-centerpiece-media { aspect-ratio: 16 / 11; }
+	@media (max-width: 959px) {
+		.sa-centerpiece { transform: none; margin-top: 2.2rem; }
 	}
 	.sa-cp-name {
 		font-size: 0.74rem;
