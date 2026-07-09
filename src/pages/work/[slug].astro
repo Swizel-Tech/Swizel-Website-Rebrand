@@ -2,6 +2,7 @@
 import MainLayout from '../../layouts/MainLayout.astro';
 import CaseStudy from '../../components/sections/CaseStudy.astro';
 import CaseStudyFounder from '../../components/sections/CaseStudyFounder.astro';
+import CaseStudyBuilder from '../../components/sections/CaseStudyBuilder.astro';
 import { featuredProjects, projects } from '../../data/projects';
 
 export async function getStaticPaths() {
@@ -24,6 +25,9 @@ const seoDesc = project.tagline || project.caseStudy?.intro || '';
 	<!-- Founder world: the whole launch story, founder momentum. -->
 	<CaseStudyFounder project={project} others={others} />
 
+	<!-- Builder world: the launch as a deploy report. -->
+	<CaseStudyBuilder project={project} others={others} />
+
 	<!-- Fallback for the remaining worlds: a simple summary + link out. -->
 	<div class="alt-view-only case-fallback" style="max-width:48rem;margin:0 auto;padding:5rem 1.5rem;">
 		<a href="/portfolio" style="font-size:.9rem;font-weight:600;">← All work</a>
@@ -37,7 +41,8 @@ const seoDesc = project.tagline || project.caseStudy?.intro || '';
 
 <style is:global>
 	/* Founder view has its own case study now — hide the generic fallback. */
-	html[data-view='founder'] .case-fallback {
+	html[data-view='founder'] .case-fallback,
+	html[data-view='builder'] .case-fallback {
 		display: none !important;
 	}
 </style>
