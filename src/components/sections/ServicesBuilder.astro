@@ -1,0 +1,666 @@
+---
+// Services hub · Builder world — the same foundations as the Boardroom and
+// Founder hubs (six disciplines, process, showreel, numbers, full stack,
+// sectors, CTA) told as a repository: a file tree, module cards, a CI
+// pipeline and a stack.config. Root carries `bbody` so the builder engine
+// (.bb-rev, [data-count], #bb-git draw) and the motion engine both bind.
+import { Icon } from 'astro-icon/components';
+import { disciplines } from '../../data/disciplines';
+
+const stats = [
+	{ to: 65, suffix: '+', label: 'products shipped' },
+	{ to: 98, suffix: '%', label: 'on-time delivery' },
+	{ to: 7, suffix: '+', label: 'years building' },
+	{ to: 10, suffix: '+', label: 'countries' },
+];
+
+const process = [
+	{ n: '01', title: 'Discover', desc: 'We research, define and lock the goal together, so we build the right thing.' },
+	{ n: '02', title: 'Design & build', desc: 'Design, engineer and test in tight, visible loops you can follow every week.' },
+	{ n: '03', title: 'Launch & scale', desc: 'Ship it, market it, then maintain and grow what we shipped.' },
+];
+
+const stack = [
+	{ group: 'design', icon: 'mdi:palette-outline', tools: ['Figma', 'Illustrator', 'Photoshop', 'After Effects', 'Framer', 'Sketch'] },
+	{ group: 'web', icon: 'mdi:language-html5', tools: ['React', 'Next.js', 'Vue', 'Nuxt', 'Astro', 'Svelte', 'Tailwind', 'TypeScript'] },
+	{ group: 'mobile', icon: 'mdi:cellphone', tools: ['Flutter', 'React Native', 'Swift', 'Kotlin', 'Expo'] },
+	{ group: 'backend', icon: 'mdi:server-network', tools: ['Node', 'Python', 'PHP', 'Laravel', 'Django', 'Go', 'Express'] },
+	{ group: 'cloud', icon: 'mdi:cloud-outline', tools: ['AWS', 'Vercel', 'Docker', 'Kubernetes', 'Cloudflare', 'GitHub Actions'] },
+	{ group: 'data_ai', icon: 'mdi:database-outline', tools: ['PostgreSQL', 'MongoDB', 'Redis', 'Supabase', 'OpenAI', 'Prisma'] },
+	{ group: 'commerce', icon: 'mdi:cart-outline', tools: ['Stripe', 'Shopify', 'WooCommerce', 'Paystack', 'PayPal'] },
+	{ group: 'cms', icon: 'mdi:file-document-edit-outline', tools: ['WordPress', 'Sanity', 'Contentful', 'Strapi', 'Webflow'] },
+	{ group: 'quality', icon: 'mdi:check-decagram-outline', tools: ['Git', 'Jest', 'Playwright', 'Storybook', 'Sentry'] },
+];
+
+const sectors = [
+	'fintech', 'real-estate', 'sports', 'e-commerce', 'education', 'logistics',
+	'healthcare', 'beauty', 'energy', 'agritech', 'hospitality', 'media',
+	'retail', 'travel', 'gaming', 'legal',
+];
+---
+
+<div class="bsvc bbody view-body view-body-builder">
+	<div class="bs-bg" aria-hidden="true">
+		<span class="bs-orb bs-orb--a"></span>
+		<span class="bs-orb bs-orb--b"></span>
+		{Array.from({ length: 7 }).map((_, i) => (
+			<i class="bs-spark" style={`--s:${i}`}></i>
+		))}
+	</div>
+
+	<!-- ── 01 · hero: copy + the repo tree ─────────────────── -->
+	<section class="bs-sec" data-cursor="term">
+		<div class="bs-wrap bs-hero">
+			<div class="bb-rev">
+				<span class="bs-kick">$ ls swizel/services</span>
+			<h1 class="bs-h bs-h--xl">Every discipline, <span class="bs-acc">one repo.</span></h1>
+				<p class="bs-p">
+					Design, build, market and maintain. Everything your product
+					needs to launch and grow, importable from a single team.
+				</p>
+				<ul class="bs-stats">
+					{
+						stats.map((s) => (
+							<li>
+								<strong data-count={s.to} data-suffix={s.suffix}>0{s.suffix}</strong>
+								<span>{s.label}</span>
+							</li>
+						))
+					}
+				</ul>
+				<div class="bs-row">
+					<a href="/contact" class="bs-merge fs-cta">
+						<Icon width={17} name="mdi:source-branch" />
+						Start your build
+					</a>
+					<a href="#bs-modules" class="bs-link">
+						Browse the modules
+						<Icon width={15} name="mdi:chevron-down" />
+					</a>
+				</div>
+			</div>
+
+			<!-- the repo tree — every service is a directory -->
+			<div class="bs-tree bb-rev" data-fa-tilt="4">
+				<span class="bb-glare" aria-hidden="true"></span>
+				<div class="bs-winbar">
+					<span class="bs-dot bs-dot--r"></span>
+					<span class="bs-dot bs-dot--y"></span>
+					<span class="bs-dot bs-dot--g"></span>
+					<span class="bs-wintitle">swizel/ — tree</span>
+				</div>
+				<div class="bs-tree-body">
+					<p class="bs-tree-root">swizel/</p>
+					{
+						disciplines.map((d, i) => (
+							<a
+								href={`/services/${d.slug}`}
+								class="bs-tree-row"
+								style={`--c:${d.color}; --i:${i}`}
+								data-cursor={d.cursor}
+							>
+								<span class="bs-tree-branch">{i === disciplines.length - 1 ? '└──' : '├──'}</span>
+								<span class="bs-tree-ic"><Icon width={15} name={d.icon} /></span>
+								<span class="bs-tree-name">{d.slug}/</span>
+								<span class="bs-tree-desc">{d.tagline}</span>
+								<Icon class="bs-tree-go" width={14} name="mdi:arrow-right" />
+							</a>
+						))
+					}
+				</div>
+				<div class="bs-winfoot">
+					<span class="bs-live" aria-hidden="true"></span>
+					6 directories · 0 vendors needed · all maintained
+				</div>
+			</div>
+		</div>
+
+		<!-- capability marquee -->
+		<div class="bs-marquee bb-rev" aria-hidden="true">
+			<div class="bs-marquee-track">
+				{
+					Array.from({ length: 2 }).map(() => (
+						<span class="bs-marquee-seq">
+							{disciplines.map((d) => (
+								<><i>{d.slug}</i><b>·</b></>
+							))}
+							<i>one-roof</i><b>·</b>
+							<i>one-contract</i><b>·</b>
+						</span>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── 02 · the modules ────────────────────────────────── -->
+	<section class="bs-sec" id="bs-modules" data-cursor="pkg">
+		<div class="bs-wrap">
+			<div class="bs-head bb-rev">
+				<span class="bs-kick">// modules</span>
+				<h2 class="bs-h">Six modules. <span class="bs-acc">Zero hand-offs.</span></h2>
+				<p class="bs-p bs-p--center">
+					No hiring, no vendors, no finger-pointing. Every capability
+					your product needs lives in the same room.
+				</p>
+			</div>
+			<div class="bs-grid">
+				{
+					disciplines.map((d, i) => (
+						<a
+							href={`/services/${d.slug}`}
+							class="bs-card bb-rev"
+							data-cursor={d.cursor}
+							data-fa-tilt="8"
+							style={`--c:${d.color}; --i:${i % 3}`}
+						>
+							<span class="bb-glare" aria-hidden="true" />
+							<span class="bs-card-n">{d.n}</span>
+							<span class="bs-card-ic"><Icon width={26} name={d.icon} /></span>
+							<h3>{d.title}</h3>
+							<p class="bs-card-tag">{d.tagline}</p>
+							<p class="bs-card-desc">{d.desc}</p>
+							<span class="bs-card-items">
+								{d.items.slice(0, 4).map((it) => <i>{it}</i>)}
+							</span>
+							<span class="bs-card-go">
+								cd {d.slug}/
+								<Icon width={14} name="mdi:arrow-right" />
+							</span>
+						</a>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── 03 · pipeline — how we work ─────────────────────── -->
+	<section class="bs-sec" data-cursor="branch">
+		<div class="bs-wrap">
+			<div class="bs-head bb-rev">
+				<span class="bs-kick">// pipeline</span>
+				<h2 class="bs-h">The same three stages, <span class="bs-acc">every run.</span></h2>
+			</div>
+			<ol class="bb-git bs-pipe" id="bb-git">
+				<span class="bb-git-line" aria-hidden="true"></span>
+				{
+					process.map((p) => (
+						<li class="bs-stage bb-rev">
+							<span class="bs-node" aria-hidden="true" />
+							<div>
+								<span class="bs-stage-n">stage {p.n}</span>
+								<h3>{p.title}</h3>
+								<p>{p.desc}</p>
+							</div>
+						</li>
+					))
+				}
+			</ol>
+		</div>
+	</section>
+
+	<!-- ── 04 · numbers + showreel ─────────────────────────── -->
+	<section class="bs-sec" data-cursor="repo">
+		<div class="bs-wrap bs-proofrow">
+			<div class="bs-reel bb-rev" data-fa-tilt="5">
+				<span class="bb-glare" aria-hidden="true"></span>
+				<span class="bs-sheen" aria-hidden="true"></span>
+				<Icon width={32} name="mdi:play-circle-outline" />
+				<span class="bs-reel-name">assets/how-we-build.webm</span>
+				<span class="bs-reel-sub">2:00 showreel — first sketch to launch day, the honest middle included</span>
+			</div>
+			<div class="bs-nums bb-rev" style="--i:1" data-fa-tilt="5">
+				<span class="bb-glare" aria-hidden="true"></span>
+				<span class="bs-kick">// measured the only way that matters</span>
+				<ul>
+					<li><i>uptime:</i> <b>99.9%</b></li>
+					<li><i>delivery:</i> <b>on-time, 98%</b></li>
+					<li><i>rating:</i> <b>5.0 ★ average</b></li>
+					<li><i>support:</i> <b>same-day, humans</b></li>
+				</ul>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── 05 · stack.config ───────────────────────────────── -->
+	<section class="bs-sec" data-cursor="pkg">
+		<div class="bs-wrap">
+			<div class="bs-head bb-rev">
+				<span class="bs-kick">// stack.config — full toolkit</span>
+				<h2 class="bs-h">Tools picked for the job, <span class="bs-acc">not the hype.</span></h2>
+			</div>
+			<div class="bs-stack bb-rev" data-fa-tilt="3">
+				<span class="bb-glare" aria-hidden="true"></span>
+				<div class="bs-winbar">
+					<span class="bs-dot bs-dot--r"></span>
+					<span class="bs-dot bs-dot--y"></span>
+					<span class="bs-dot bs-dot--g"></span>
+					<span class="bs-wintitle">stack.config</span>
+				</div>
+				<div class="bs-stack-body">
+					{
+						stack.map((cat) => (
+							<div class="bs-stack-row">
+								<span class="bs-stack-key">
+									<Icon width={15} name={cat.icon} />
+									{cat.group}:
+								</span>
+								<span class="bs-stack-chips">
+									{cat.tools.map((t) => <i>{t}</i>)}
+								</span>
+							</div>
+						))
+					}
+					<div class="bs-stack-row bs-stack-row--joke">
+						<span class="bs-stack-key"><Icon width={15} name="mdi:coffee-outline" /> fuel:</span>
+						<span class="bs-stack-chips"><i>coffee — non-negotiable ☕</i></span>
+					</div>
+				</div>
+			</div>
+			<p class="bs-note bb-rev">…and whatever else the job calls for. We pick tools to fit your product, not our comfort zone.</p>
+		</div>
+	</section>
+
+	<!-- ── 06 · sectors ────────────────────────────────────── -->
+	<section class="bs-sec" data-cursor="repo">
+		<div class="bs-head bb-rev">
+			<span class="bs-kick">// at home in your industry</span>
+		</div>
+		<div class="bs-marquee bs-marquee--sectors bb-rev" aria-hidden="true">
+			<div class="bs-marquee-track bs-marquee-track--slow">
+				{
+					[0, 1].map(() => (
+						<span class="bs-marquee-seq">
+							{sectors.map((s) => (
+								<><i class="bs-str">'{s}'</i><b>,</b></>
+							))}
+						</span>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── 07 · CTA ────────────────────────────────────────── -->
+	<section class="bs-sec bs-sec--last" data-cursor="phone">
+		<div class="bs-cta bb-rev">
+			<span class="bs-orbit" aria-hidden="true"><i></i><i></i><i></i></span>
+			<p class="bs-cta-cmd">$ git checkout -b <span class="bs-acc">your-product</span></p>
+			<h2 class="bs-h bs-h--xl">Ready to build?</h2>
+			<p class="bs-p bs-p--center">
+				Tell us what you have in mind. A senior engineer reads every
+				message, reply within one business day.
+			</p>
+			<div class="bs-row bs-row--center">
+				<a href="/contact" class="bs-merge fs-cta">
+					<Icon width={18} name="mdi:source-merge" />
+					Start your project
+				</a>
+				<a href="/portfolio" class="bs-link">
+					See the deployments
+					<Icon width={15} name="mdi:arrow-right" />
+				</a>
+			</div>
+			<a href="tel:+2348100204570" class="bs-call">
+				<span>or call us now</span>
+				<strong><Icon width={20} name="mdi:phone" /> +234 810 020 4570</strong>
+			</a>
+		</div>
+	</section>
+</div>
+
+<style>
+	.bsvc {
+		--bu-ink: #e8f0f4;
+		--bu-muted: rgba(232, 240, 244, 0.62);
+		--bu-faint: rgba(232, 240, 244, 0.4);
+		--bu-acc: var(--view-accent, #18debe);
+		--bu-line: rgba(255, 255, 255, 0.08);
+		--bu-card: rgba(255, 255, 255, 0.03);
+		--bu-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+		font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+			Roboto, sans-serif;
+		position: relative;
+		isolation: isolate;
+		background:
+			radial-gradient(1000px 520px at 85% -4%, rgba(24, 222, 190, 0.1), transparent 60%),
+			radial-gradient(800px 480px at 4% 42%, rgba(40, 166, 236, 0.07), transparent 60%),
+			linear-gradient(180deg, #05080c 0%, #070d12 50%, #04070a 100%);
+		color: var(--bu-ink);
+		padding: clamp(3rem, 7vw, 5rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 4rem);
+	}
+	:global(html:not(.dark)) .bsvc {
+		--bu-ink: #102420;
+		--bu-muted: rgba(16, 36, 32, 0.66);
+		--bu-faint: rgba(16, 36, 32, 0.45);
+		--bu-line: rgba(16, 36, 32, 0.1);
+		--bu-card: rgba(16, 36, 32, 0.04);
+		background:
+			radial-gradient(1000px 520px at 85% -4%, rgba(24, 222, 190, 0.1), transparent 60%),
+			linear-gradient(180deg, #f0faf7 0%, #e6f4ef 55%, #f0faf7 100%);
+	}
+	.bs-sec { position: relative; z-index: 1; padding-block: clamp(1.8rem, 4.5vw, 3.2rem); }
+	.bs-sec--last { padding-bottom: clamp(3rem, 6vw, 4.5rem); }
+	.bs-wrap { max-width: 74rem; margin: 0 auto; }
+
+	.bs-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+	.bs-orb { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.4; animation: bs-orb-drift 17s ease-in-out infinite alternate; }
+	.bs-orb--a { width: 440px; height: 440px; left: -150px; top: 5%; background: radial-gradient(circle, rgba(24, 222, 190, 0.28), transparent 70%); }
+	.bs-orb--b { width: 500px; height: 500px; right: -170px; top: 44%; background: radial-gradient(circle, rgba(40, 166, 236, 0.18), transparent 70%); animation-delay: -7s; }
+	@keyframes bs-orb-drift { to { transform: translate3d(52px, -38px, 0) scale(1.1); } }
+	.bs-spark {
+		position: absolute; bottom: -12px; left: calc(10% + var(--s) * 12%);
+		width: 3.5px; height: 3.5px; border-radius: 50%;
+		background: color-mix(in srgb, var(--bu-acc) 85%, #fff);
+		box-shadow: 0 0 10px 2px color-mix(in srgb, var(--bu-acc) 55%, transparent);
+		opacity: 0;
+		animation: bs-rise calc(9s + var(--s) * 1.4s) linear infinite;
+		animation-delay: calc(var(--s) * -1.9s);
+	}
+	@keyframes bs-rise {
+		0% { transform: translateY(0); opacity: 0; }
+		8% { opacity: 0.75; }
+		92% { opacity: 0.2; }
+		100% { transform: translateY(-105vh) translateX(24px); opacity: 0; }
+	}
+	@media (prefers-reduced-motion: reduce) { .bs-orb { animation: none; } .bs-spark { display: none; } }
+
+	.bs-kick { display: block; font-family: var(--bu-mono); font-size: 0.8rem; color: var(--bu-acc); margin-bottom: 0.8rem; }
+	:global(html:not(.dark)) .bsvc .bs-kick { color: #0b8a76; }
+	.bs-h { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 850; letter-spacing: -0.025em; line-height: 1.08; margin: 0 0 1rem; }
+	.bs-h--xl { font-size: clamp(2.1rem, 4.4vw, 3.2rem); }
+	.bs-acc {
+		background: linear-gradient(95deg, #8dfeea, var(--bu-acc) 60%, #28a6ec);
+		-webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+	}
+	:global(html:not(.dark)) .bsvc .bs-acc { background: linear-gradient(95deg, #0b8a76, #0d7fb8); -webkit-background-clip: text; background-clip: text; }
+	.bs-p { font-size: 1rem; line-height: 1.65; color: var(--bu-muted); max-width: 34rem; margin: 0 0 1.3rem; }
+	.bs-p--center { margin-inline: auto; text-align: center; }
+	.bs-head { text-align: center; max-width: 46rem; margin: 0 auto clamp(1.4rem, 3vw, 2rem); }
+	.bs-head .bs-kick { text-align: center; }
+	.bs-link { display: inline-flex; align-items: center; gap: 0.45rem; font-weight: 700; color: var(--bu-acc); transition: gap 0.25s ease; }
+	.bs-link:hover { gap: 0.75rem; }
+	:global(html:not(.dark)) .bsvc .bs-link { color: #0b8a76; }
+	.bs-row { display: flex; align-items: center; gap: 1.3rem; flex-wrap: wrap; }
+	.bs-row--center { justify-content: center; }
+
+	.bb-rev {
+		opacity: 0; transform: translateY(20px);
+		transition: opacity 0.6s ease calc(var(--i, 0) * 90ms),
+			transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i, 0) * 90ms);
+	}
+	.bb-rev.is-on { opacity: 1; transform: none; }
+	@media (prefers-reduced-motion: reduce) { .bb-rev { opacity: 1; transform: none; transition: none; } }
+	.bb-glare {
+		position: absolute; inset: 0; border-radius: inherit; z-index: 3;
+		background: radial-gradient(360px 230px at var(--gx, 50%) var(--gy, 0%), rgba(255, 255, 255, 0.08), transparent 60%);
+		opacity: 0; transition: opacity 0.3s ease; pointer-events: none;
+	}
+	:is(.bs-tree, .bs-card, .bs-reel, .bs-nums, .bs-stack):hover .bb-glare { opacity: 1; }
+
+	/* hero */
+	.bs-hero { display: grid; grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr); gap: clamp(2rem, 4vw, 3.2rem); align-items: center; }
+	.bs-stats { display: flex; align-items: stretch; margin: 1.5rem 0 1.4rem; padding: 0; list-style: none; }
+	.bs-stats li { flex: 1; min-width: 0; padding: 0.2rem 0.9rem; border-left: 1px solid color-mix(in srgb, var(--bu-acc) 25%, transparent); transition: transform 0.25s ease; }
+	.bs-stats li:first-child { padding-left: 0; border-left: 0; }
+	.bs-stats li:hover { transform: translateY(-3px); }
+	.bs-stats strong {
+		display: block; font-family: var(--bu-mono); font-weight: 700; white-space: nowrap;
+		font-size: clamp(1.25rem, 2.2vw, 1.7rem);
+		background: linear-gradient(135deg, #8dfeea, var(--bu-acc));
+		-webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+	}
+	:global(html:not(.dark)) .bsvc .bs-stats strong { background: linear-gradient(135deg, #0b8a76, #0d7fb8); -webkit-background-clip: text; background-clip: text; }
+	.bs-stats span { display: block; font-size: 0.72rem; line-height: 1.3; color: var(--bu-muted); margin-top: 0.2rem; }
+
+	/* windows */
+	.bs-winbar { display: flex; align-items: center; gap: 6px; padding: 10px 12px; background: rgba(255, 255, 255, 0.05); }
+	.bs-dot { width: 10px; height: 10px; border-radius: 50%; }
+	.bs-dot--r { background: #ff5f57; } .bs-dot--y { background: #febc2e; } .bs-dot--g { background: #28c840; }
+	.bs-wintitle { margin-left: 0.5rem; font-family: var(--bu-mono); font-size: 0.74rem; color: rgba(232, 240, 244, 0.5); }
+	.bs-winfoot {
+		display: flex; align-items: center; gap: 0.5rem;
+		padding: 0.6rem 1.2rem; border-top: 1px solid rgba(255, 255, 255, 0.06);
+		font-family: var(--bu-mono); font-size: 0.72rem; color: rgba(232, 240, 244, 0.5);
+	}
+	.bs-live { width: 8px; height: 8px; border-radius: 50%; background: #28c840; animation: bs-live 2s ease-in-out infinite; }
+	@keyframes bs-live { 0%, 100% { box-shadow: 0 0 0 0 rgba(40, 200, 64, 0.5); } 50% { box-shadow: 0 0 0 5px rgba(40, 200, 64, 0); } }
+
+	/* the tree */
+	.bs-tree {
+		position: relative; overflow: hidden;
+		border-radius: 1rem; border: 1px solid color-mix(in srgb, var(--bu-acc) 22%, var(--bu-line));
+		background: #0a0e15;
+		box-shadow: 0 30px 70px -30px rgba(0, 0, 0, 0.75);
+		transform-style: preserve-3d; will-change: transform;
+	}
+	.bs-tree-body { padding: 0.9rem 1.1rem 1rem; font-family: var(--bu-mono); }
+	.bs-tree-root { margin: 0 0 0.35rem; font-size: 0.85rem; color: #8dfeea; }
+	.bs-tree-row {
+		display: flex; align-items: center; gap: 0.55rem;
+		padding: 0.42rem 0.5rem; border-radius: 0.5rem;
+		font-size: 0.82rem; color: rgba(232, 240, 244, 0.85);
+		transition: background 0.2s ease, transform 0.2s ease;
+		animation: bs-tree-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i, 0) * 100ms) both;
+	}
+	@keyframes bs-tree-in { from { opacity: 0; transform: translateX(-8px); } }
+	.bs-tree-row:hover { background: color-mix(in srgb, var(--c, #18debe) 12%, transparent); transform: translateX(4px); }
+	.bs-tree-branch { color: rgba(232, 240, 244, 0.3); }
+	.bs-tree-ic { color: var(--c, #18debe); display: grid; place-items: center; }
+	.bs-tree-name { font-weight: 700; color: var(--c, #18debe); }
+	.bs-tree-desc { flex: 1; min-width: 0; font-size: 0.7rem; color: rgba(232, 240, 244, 0.45); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+	.bs-tree-go { color: var(--c, #18debe); opacity: 0; transition: opacity 0.2s ease; flex-shrink: 0; }
+	.bs-tree-row:hover .bs-tree-go { opacity: 1; }
+
+	/* marquee */
+	.bs-marquee {
+		margin-top: clamp(1.6rem, 4vw, 2.6rem); overflow: hidden;
+		border-block: 1px solid color-mix(in srgb, var(--bu-acc) 22%, transparent);
+		padding-block: 0.75rem;
+		-webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+		mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+	}
+	.bs-marquee--sectors { margin-top: 0.2rem; }
+	.bs-marquee-track { display: flex; width: max-content; animation: bs-scroll 26s linear infinite; }
+	.bs-marquee-track--slow { animation-duration: 40s; }
+	.bs-marquee:hover .bs-marquee-track { animation-play-state: paused; }
+	@keyframes bs-scroll { to { transform: translateX(-50%); } }
+	.bs-marquee-seq { display: flex; align-items: center; }
+	.bs-marquee-seq i {
+		font-style: normal; font-family: var(--bu-mono); font-size: 0.88rem; font-weight: 600;
+		color: var(--bu-muted); white-space: nowrap; padding: 0 1.1rem;
+	}
+	.bs-marquee-seq b { color: var(--bu-acc); font-weight: 400; }
+	.bs-str { color: var(--bu-acc) !important; }
+	:global(html:not(.dark)) .bsvc .bs-str { color: #0b8a76 !important; }
+	@media (prefers-reduced-motion: reduce) { .bs-marquee-track { animation: none; } }
+
+	/* module cards */
+	.bs-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+	.bs-card {
+		position: relative; overflow: hidden; display: flex; flex-direction: column;
+		border: 1px solid color-mix(in srgb, var(--c, #18debe) 26%, var(--bu-line));
+		border-radius: 1rem;
+		background:
+			linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 55%),
+			radial-gradient(120% 90% at 85% -20%, color-mix(in srgb, var(--c, #18debe) 10%, transparent), transparent 60%),
+			var(--bu-card);
+		padding: 1.25rem; color: var(--bu-ink);
+		transform-style: preserve-3d; will-change: transform;
+		transition: border-color 0.3s ease, box-shadow 0.3s ease;
+	}
+	.bs-card:hover { border-color: color-mix(in srgb, var(--c) 60%, transparent); box-shadow: 0 24px 50px -24px color-mix(in srgb, var(--c) 60%, transparent); }
+	.bs-card-n { position: absolute; top: 0.85rem; right: 1rem; font-family: var(--bu-mono); font-size: 0.72rem; color: color-mix(in srgb, var(--c) 70%, transparent); }
+	.bs-card-ic {
+		display: grid; place-items: center; width: 46px; height: 46px; border-radius: 0.8rem;
+		color: var(--c);
+		background: linear-gradient(135deg, color-mix(in srgb, var(--c) 28%, transparent), color-mix(in srgb, var(--c) 9%, transparent));
+		margin-bottom: 0.8rem;
+		animation: bs-bob 5s ease-in-out calc(var(--i, 0) * -1.4s) infinite;
+	}
+	@keyframes bs-bob { 0%, 100% { margin-top: 0; } 50% { margin-top: -5px; } }
+	@media (prefers-reduced-motion: reduce) { .bs-card-ic { animation: none; } }
+	.bs-card h3 { font-size: 1.15rem; font-weight: 850; margin: 0 0 0.1rem; }
+	.bs-card-tag { font-size: 0.82rem; font-weight: 700; color: var(--c); margin: 0 0 0.5rem; }
+	.bs-card-desc { font-size: 0.89rem; line-height: 1.6; color: var(--bu-muted); margin: 0 0 0.85rem; flex: 1; }
+	.bs-card-items { display: flex; flex-wrap: wrap; gap: 0.32rem; margin-bottom: 0.9rem; }
+	.bs-card-items i {
+		font-style: normal; font-family: var(--bu-mono); font-size: 0.66rem;
+		padding: 0.2rem 0.5rem; border-radius: 999px;
+		border: 1px solid color-mix(in srgb, var(--c) 38%, transparent);
+		color: var(--bu-ink);
+	}
+	.bs-card-go { display: inline-flex; align-items: center; gap: 0.4rem; font-family: var(--bu-mono); font-size: 0.8rem; font-weight: 700; color: var(--c); transition: gap 0.25s ease; }
+	.bs-card:hover .bs-card-go { gap: 0.7rem; }
+
+	/* pipeline (reuses the builder draw engine) */
+	.bb-git { position: relative; }
+	.bs-pipe { list-style: none; margin: 0 auto; padding: 0 0 0 2.2rem; max-width: 44rem; }
+	.bb-git-line {
+		position: absolute; left: 7px; top: 0.6rem; bottom: 0.6rem; width: 2.5px; border-radius: 2px;
+		background: linear-gradient(180deg, #8dfeea, var(--bu-acc), #28a6ec);
+		box-shadow: 0 0 12px color-mix(in srgb, var(--bu-acc) 55%, transparent);
+		transform: scaleY(0); transform-origin: top;
+		transition: transform 2s cubic-bezier(0.22, 1, 0.36, 1) 0.2s;
+	}
+	.bb-git.is-drawn .bb-git-line { transform: scaleY(1); }
+	.bs-stage { position: relative; padding-bottom: 1.6rem; }
+	.bs-stage:last-child { padding-bottom: 0; }
+	.bs-node {
+		position: absolute; left: -2.2rem; top: 0.4rem;
+		width: 0.95rem; height: 0.95rem; border-radius: 50%;
+		background: linear-gradient(135deg, #8dfeea, var(--bu-acc));
+		box-shadow: 0 0 0 4px color-mix(in srgb, var(--bu-acc) 20%, transparent);
+	}
+	.bs-node::after {
+		content: '';
+		position: absolute; inset: -5px; border-radius: 9999px;
+		border: 2px solid color-mix(in srgb, var(--bu-acc) 45%, transparent);
+		animation: bs-node-pulse 2.6s ease-out infinite;
+	}
+	@keyframes bs-node-pulse { 0% { transform: scale(0.6); opacity: 1; } 70%, 100% { transform: scale(1.5); opacity: 0; } }
+	@media (prefers-reduced-motion: reduce) { .bs-node::after { animation: none; opacity: 0; } }
+	.bs-stage-n { display: block; font-family: var(--bu-mono); font-size: 0.72rem; color: var(--bu-acc); }
+	:global(html:not(.dark)) .bsvc .bs-stage-n { color: #0b8a76; }
+	.bs-stage h3 { font-size: 1.08rem; font-weight: 800; margin: 0.15rem 0 0.3rem; }
+	.bs-stage p { font-size: 0.92rem; line-height: 1.6; color: var(--bu-muted); margin: 0; max-width: 36rem; }
+
+	/* proof row: showreel + numbers */
+	.bs-proofrow { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: 1rem; align-items: stretch; }
+	.bs-reel {
+		position: relative; overflow: hidden;
+		display: grid; place-content: center; justify-items: center; gap: 0.35rem;
+		min-height: 230px; text-align: center; padding: 1.4rem;
+		border: 1.5px dashed color-mix(in srgb, var(--bu-acc) 40%, transparent);
+		border-radius: 1rem; background: color-mix(in srgb, var(--bu-acc) 6%, transparent);
+		color: var(--bu-acc);
+		transform-style: preserve-3d; will-change: transform;
+	}
+	.bs-reel-name { font-family: var(--bu-mono); font-size: 0.84rem; font-weight: 700; }
+	.bs-reel-sub { font-size: 0.8rem; color: var(--bu-muted); max-width: 26rem; }
+	.bs-sheen {
+		position: absolute; inset: 0;
+		background: linear-gradient(115deg, transparent 42%, rgba(255, 255, 255, 0.07) 50%, transparent 60%);
+		background-size: 250% 100%;
+		animation: bs-sheen-kf 4.5s ease-in-out infinite;
+	}
+	@keyframes bs-sheen-kf { 0% { background-position: 120% 0; } 60%, 100% { background-position: -130% 0; } }
+	@media (prefers-reduced-motion: reduce) { .bs-sheen { animation: none; } }
+	.bs-nums {
+		position: relative; overflow: hidden;
+		border: 1px solid var(--bu-line); border-radius: 1rem;
+		background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 55%), var(--bu-card);
+		padding: 1.3rem 1.4rem;
+		transform-style: preserve-3d; will-change: transform;
+	}
+	.bs-nums ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; }
+	.bs-nums li { font-family: var(--bu-mono); font-size: 0.9rem; }
+	.bs-nums i { font-style: normal; color: var(--bu-faint); margin-right: 0.4rem; }
+	.bs-nums b { color: var(--bu-acc); font-weight: 700; }
+	:global(html:not(.dark)) .bsvc .bs-nums b { color: #0b8a76; }
+
+	/* stack window */
+	.bs-stack {
+		position: relative; overflow: hidden;
+		border-radius: 1rem; border: 1px solid color-mix(in srgb, var(--bu-acc) 20%, var(--bu-line));
+		background: #0a0e15;
+		box-shadow: 0 26px 60px -28px rgba(0, 0, 0, 0.7);
+		transform-style: preserve-3d; will-change: transform;
+	}
+	.bs-stack-body { padding: 0.9rem 1.2rem 1rem; display: grid; gap: 0.55rem; }
+	.bs-stack-row { display: grid; grid-template-columns: 9rem minmax(0, 1fr); align-items: start; gap: 0.7rem; }
+	.bs-stack-key {
+		display: inline-flex; align-items: center; gap: 0.45rem;
+		font-family: var(--bu-mono); font-size: 0.8rem; color: #8dfeea; padding-top: 0.18rem;
+	}
+	.bs-stack-chips { display: flex; flex-wrap: wrap; gap: 0.32rem; }
+	.bs-stack-chips i {
+		font-style: normal; font-family: var(--bu-mono); font-size: 0.72rem;
+		padding: 0.2rem 0.55rem; border-radius: 999px;
+		border: 1px solid rgba(255, 255, 255, 0.12); color: rgba(232, 240, 244, 0.75);
+		transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+	}
+	.bs-stack-chips i:hover { border-color: var(--bu-acc); color: #fff; transform: translateY(-2px); }
+	.bs-stack-row--joke .bs-stack-chips i { color: var(--bu-acc); border-color: color-mix(in srgb, var(--bu-acc) 40%, transparent); }
+	.bs-note { text-align: center; font-size: 0.88rem; color: var(--bu-muted); margin: 1.2rem 0 0; }
+
+	/* CTA */
+	.bs-cta { position: relative; text-align: center; max-width: 46rem; margin: 0 auto; }
+	.bs-cta-cmd { font-family: var(--bu-mono); font-size: 0.9rem; color: var(--bu-muted); margin: 0 0 0.8rem; }
+	.bs-merge {
+		position: relative; overflow: hidden;
+		display: inline-flex; align-items: center; gap: 0.55rem;
+		font-weight: 800; font-size: 0.96rem; color: #04211a;
+		background: linear-gradient(95deg, #8dfeea, var(--bu-acc) 60%, #28a6ec);
+		padding: 0.9rem 1.7rem; border-radius: 9999px;
+		box-shadow: 0 18px 42px -16px color-mix(in srgb, var(--bu-acc) 80%, transparent);
+		transition: transform 0.22s ease;
+	}
+	.bs-merge:hover { transform: translateY(-2px); }
+	.bs-merge::after {
+		content: '';
+		position: absolute; inset: 0;
+		background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, 0.3) 50%, transparent 65%);
+		background-size: 250% 100%; background-position: 120% 0;
+		animation: bs-merge-sheen 3.8s ease-in-out infinite;
+	}
+	@keyframes bs-merge-sheen { 0%, 55% { background-position: 120% 0; } 100% { background-position: -130% 0; } }
+	@media (prefers-reduced-motion: reduce) { .bs-merge::after { animation: none; } }
+	.bs-orbit { position: absolute; inset: 0; pointer-events: none; }
+	.bs-orbit i {
+		position: absolute; left: 50%; top: 50%; width: 7px; height: 7px; margin: -3.5px;
+		border-radius: 50%;
+		background: linear-gradient(95deg, #8dfeea, var(--bu-acc));
+		box-shadow: 0 0 12px color-mix(in srgb, var(--bu-acc) 70%, transparent);
+		animation: bs-orbit-kf 11s linear infinite;
+	}
+	.bs-orbit i:nth-child(2) { animation-delay: -3.66s; width: 5px; height: 5px; }
+	.bs-orbit i:nth-child(3) { animation-delay: -7.33s; width: 6px; height: 6px; }
+	@keyframes bs-orbit-kf {
+		from { transform: rotate(0deg) translateX(min(21rem, 44vw)) rotate(0deg); }
+		to { transform: rotate(360deg) translateX(min(21rem, 44vw)) rotate(-360deg); }
+	}
+	@media (prefers-reduced-motion: reduce) { .bs-orbit { display: none; } }
+	.bs-call { display: grid; gap: 0.15rem; justify-items: center; margin-top: 1.5rem; }
+	.bs-call span { font-family: var(--bu-mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--bu-muted); }
+	.bs-call strong { display: inline-flex; align-items: center; gap: 0.5rem; font-size: clamp(1.1rem, 3vw, 1.5rem); font-weight: 850; color: var(--bu-acc); }
+	:global(html:not(.dark)) .bsvc .bs-call strong { color: #0b8a76; }
+
+	/* responsive — mobile-checked, per the law */
+	@media (max-width: 980px) {
+		.bs-hero { grid-template-columns: minmax(0, 1fr); }
+		.bs-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+		.bs-proofrow { grid-template-columns: minmax(0, 1fr); }
+		.bs-tree-desc { display: none; }
+	}
+	@media (max-width: 640px) {
+		.bs-grid { grid-template-columns: minmax(0, 1fr); }
+		.bs-stats li { padding: 0.1rem 0.5rem; }
+		.bs-stats strong { font-size: 1.05rem; }
+		.bs-stats span { font-size: 0.58rem; }
+		.bs-stack-row { grid-template-columns: minmax(0, 1fr); gap: 0.3rem; }
+		.bs-pipe { padding-left: 1.8rem; }
+		.bs-node { left: -1.8rem; }
+		.bb-git-line { left: 5px; }
+	}
+</style>

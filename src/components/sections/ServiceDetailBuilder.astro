@@ -1,0 +1,524 @@
+---
+// Service detail · Builder world — same discipline data as the Boardroom and
+// Founder detail pages, told as a module inside the swizel repo. Tinted by
+// the discipline's own colour; the animated ServiceVisual carries the hero.
+import { Icon } from 'astro-icon/components';
+import ServiceVisual from './ServiceVisual.astro';
+import type { Discipline } from '../../data/disciplines';
+
+interface Props {
+	discipline: Discipline;
+	others: Discipline[];
+}
+const { discipline: d, others } = Astro.props;
+
+const clarifierChips = d.clarifier
+	.replace(/\.$/, '')
+	.split(/,\s*|\s+and\s+/)
+	.map((c) => c.trim())
+	.filter(Boolean);
+
+const incCols = d.included.length % 4 === 0 ? 4 : 3;
+---
+
+<div class="bsd bbody view-body view-body-builder" style={`--c:${d.color}`}>
+	<div class="bd-bg" aria-hidden="true">
+		<span class="bd-orb bd-orb--a"></span>
+		<span class="bd-orb bd-orb--b"></span>
+	</div>
+
+	<!-- ── hero ── -->
+	<section class="bd-sec" data-cursor={d.cursor}>
+		<div class="bd-wrap bd-hero">
+			<div class="bb-rev">
+				<nav class="bd-crumb" aria-label="Breadcrumb">
+					<a href="/services">swizel/services</a>
+					<span>/</span>
+					<span class="bd-crumb-here">{d.slug}</span>
+				</nav>
+				<span class="bd-kick">// module {d.n} · builder mode</span>
+				<h1 class="bd-h bd-h--xl">{d.tagline.replace(/\.$/, '')}<span class="bd-accent">.</span></h1>
+				<p class="bd-p">{d.heroDesc}</p>
+				<span class="bd-chips">
+					{clarifierChips.map((c) => <i>{c}</i>)}
+				</span>
+				<div class="bd-row">
+					<a href="/contact" class="bd-merge fs-cta">
+						<Icon width={17} name="mdi:source-branch" />
+						Start your build
+					</a>
+					<a href="#bd-included" class="bd-link">
+						What's included
+						<Icon width={15} name="mdi:chevron-down" />
+					</a>
+				</div>
+			</div>
+
+			<!-- the discipline's living, animated signature visual -->
+			<div class="bd-viz bb-rev" data-fa-tilt="6">
+				<ServiceVisual d={d} />
+				<span class="bd-viz-tag">
+					<Icon width={14} name="mdi:flash" />
+					{d.outcome}
+				</span>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── what's included ── -->
+	<section class="bd-sec" id="bd-included" data-cursor="repo">
+		<div class="bd-wrap">
+			<div class="bd-head bb-rev">
+				<span class="bd-kick">// exports</span>
+				<h2 class="bd-h">Everything the module <span class="bd-accent">ships with.</span></h2>
+			</div>
+			<div class="bd-inc" style={`--inc-cols:${incCols}`}>
+				{
+					d.included.map((s, i) => (
+						<article class="bd-inc-card bb-rev" style={`--i:${i % incCols}`} data-fa-tilt="8">
+							<span class="bb-glare" aria-hidden="true" />
+							<h3>{s.title}</h3>
+							<p>{s.desc}</p>
+							<span class="bd-inc-items">
+								{s.items.map((it) => (
+									<i>
+										<Icon width={12} name="mdi:check" />
+										{it}
+									</i>
+								))}
+							</span>
+						</article>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── the approach — a pipeline that draws itself ── -->
+	<section class="bd-sec" data-cursor="branch">
+		<div class="bd-wrap">
+			<div class="bd-head bb-rev">
+				<span class="bd-kick">// pipeline</span>
+				<h2 class="bd-h">How we <span class="bd-accent">run it.</span></h2>
+			</div>
+			<ol class="bb-git bd-pipe" id="bb-git">
+				<span class="bb-git-line" aria-hidden="true"></span>
+				{
+					d.approach.map((p) => (
+						<li class="bd-stage bb-rev">
+							<span class="bd-node" aria-hidden="true" />
+							<div>
+								<span class="bd-stage-n">stage {p.n}</span>
+								<h3>{p.title}</h3>
+								<p>{p.desc}</p>
+							</div>
+						</li>
+					))
+				}
+			</ol>
+		</div>
+	</section>
+
+	<!-- ── ways to work together ── -->
+	<section class="bd-sec" data-cursor="pkg">
+		<div class="bd-wrap">
+			<div class="bd-head bb-rev">
+				<span class="bd-kick">// install options</span>
+				<h2 class="bd-h">Pick your <span class="bd-accent">flag.</span></h2>
+			</div>
+			<div class="bd-ways">
+				{
+					d.ways.map((w, i) => (
+						<article class="bd-way bb-rev" style={`--i:${i}`} data-fa-tilt="9">
+							<span class="bb-glare" aria-hidden="true" />
+							<span class="bd-way-ic"><Icon width={20} name={w.icon} /></span>
+							<h3>{w.title}</h3>
+							<p>{w.desc}</p>
+						</article>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── proof: deployments + review ── -->
+	<section class="bd-sec" data-cursor="repo">
+		<div class="bd-wrap">
+			<div class="bd-head bb-rev">
+				<span class="bd-kick">// deployments</span>
+				<h2 class="bd-h">Shipped with this <span class="bd-accent">module.</span></h2>
+			</div>
+			<div class="bd-proof">
+				{
+					d.projects.map((p, i) => (
+						<figure class="bd-proj bb-rev" style={`--i:${i}`} data-fa-tilt="7">
+							{p.img ? (
+								<img src={p.img} alt={p.name} loading="lazy" />
+							) : (
+								<span class="bd-proj-ph"><Icon width={20} name="mdi:image-outline" /></span>
+							)}
+							<figcaption>
+								<strong>{p.name}</strong>
+								<em>{p.sector}</em>
+								<span class="bd-proj-live"><i></i>live</span>
+							</figcaption>
+						</figure>
+					))
+				}
+			</div>
+			<figure class="bd-review bb-rev" data-cursor="quote">
+				<div class="bd-review-top">
+					<img src={d.review.img} alt={d.review.name} loading="lazy" width="40" height="40" />
+					<span>
+						<strong>{d.review.name}</strong>
+						<em>{d.review.role} · approved these changes</em>
+					</span>
+					<span class="bd-review-badge">
+						<Icon width={13} name="mdi:check-bold" />
+						Approved
+					</span>
+				</div>
+				<blockquote>“{d.review.quote}”</blockquote>
+			</figure>
+		</div>
+	</section>
+
+	<!-- ── FAQs ── -->
+	{
+		d.faqs && d.faqs.length > 0 && (
+			<section class="bd-sec" data-cursor="quote">
+				<div class="bd-wrap bd-wrap--narrow">
+					<div class="bd-head bb-rev">
+						<span class="bd-kick">// FAQ.md</span>
+						<h2 class="bd-h">Questions, <span class="bd-accent">answered.</span></h2>
+					</div>
+					<div class="bd-faq bb-rev">
+						{d.faqs.map((f, i) => (
+							<details class="bd-faq-item" open={i === 0}>
+								<summary>
+									<span>{f.q}</span>
+									<Icon class="bd-faq-caret" width={20} name="mdi:chevron-down" />
+								</summary>
+								<p>{f.a}</p>
+							</details>
+						))}
+					</div>
+				</div>
+			</section>
+		)
+	}
+
+	<!-- ── other modules + CTA ── -->
+	<section class="bd-sec bd-sec--last" data-cursor="phone">
+		<div class="bd-wrap">
+			<div class="bd-others bb-rev">
+				<span class="bd-others-h">// other modules in the repo</span>
+				<div class="bd-others-row">
+					{
+						others.map((o) => (
+							<a href={`/services/${o.slug}`} class="bd-other" style={`--oc:${o.color}`} data-cursor={o.cursor}>
+								<Icon width={15} name={o.icon} />
+								{o.slug}/
+							</a>
+						))
+					}
+				</div>
+			</div>
+			<div class="bd-ctabox bb-rev">
+				<p class="bd-cta-cmd">$ npm i @swizel/{d.slug}</p>
+				<h2 class="bd-h">Add it to <span class="bd-accent">your build.</span></h2>
+				<p class="bd-p bd-p--center">
+					Tell us what you're building. A senior engineer reads every
+					message, reply within one business day.
+				</p>
+				<div class="bd-row bd-row--center">
+					<a href="/contact" class="bd-merge fs-cta">
+						<Icon width={18} name="mdi:source-merge" />
+						Talk to a project manager
+					</a>
+					<a href="/portfolio" class="bd-link">
+						See the deployments
+						<Icon width={15} name="mdi:arrow-right" />
+					</a>
+				</div>
+			</div>
+		</div>
+	</section>
+</div>
+
+<style>
+	.bsd {
+		--bu-ink: #e8f0f4;
+		--bu-muted: rgba(232, 240, 244, 0.62);
+		--bu-faint: rgba(232, 240, 244, 0.4);
+		--bu-acc: var(--c, #18debe);
+		--bu-line: rgba(255, 255, 255, 0.08);
+		--bu-card: rgba(255, 255, 255, 0.03);
+		--bu-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+		font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+			Roboto, sans-serif;
+		position: relative;
+		isolation: isolate;
+		background:
+			radial-gradient(900px 500px at 85% -6%, color-mix(in srgb, var(--c, #18debe) 13%, transparent), transparent 62%),
+			radial-gradient(760px 440px at 4% 44%, rgba(40, 166, 236, 0.06), transparent 60%),
+			linear-gradient(180deg, #05080c 0%, #070d12 50%, #04070a 100%);
+		color: var(--bu-ink);
+		padding: clamp(3rem, 7vw, 5rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 4rem);
+	}
+	:global(html:not(.dark)) .bsd {
+		--bu-ink: #102420;
+		--bu-muted: rgba(16, 36, 32, 0.66);
+		--bu-faint: rgba(16, 36, 32, 0.45);
+		--bu-line: rgba(16, 36, 32, 0.1);
+		--bu-card: rgba(16, 36, 32, 0.04);
+		background:
+			radial-gradient(900px 500px at 85% -6%, color-mix(in srgb, var(--c, #18debe) 9%, transparent), transparent 62%),
+			linear-gradient(180deg, #f0faf7 0%, #e6f4ef 55%, #f0faf7 100%);
+	}
+	.bd-sec { position: relative; z-index: 1; padding-block: clamp(1.8rem, 4.5vw, 3rem); }
+	.bd-sec--last { padding-bottom: clamp(3rem, 6vw, 4.5rem); }
+	.bd-wrap { max-width: 74rem; margin: 0 auto; }
+	.bd-wrap--narrow { max-width: 52rem; }
+
+	.bd-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+	.bd-orb { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.42; animation: bd-orb-drift 16s ease-in-out infinite alternate; }
+	.bd-orb--a { width: 420px; height: 420px; left: -140px; top: 5%; background: radial-gradient(circle, color-mix(in srgb, var(--c, #18debe) 35%, transparent), transparent 70%); }
+	.bd-orb--b { width: 480px; height: 480px; right: -160px; top: 44%; background: radial-gradient(circle, rgba(40, 166, 236, 0.16), transparent 70%); animation-delay: -7s; }
+	@keyframes bd-orb-drift { to { transform: translate3d(48px, -36px, 0) scale(1.08); } }
+	@media (prefers-reduced-motion: reduce) { .bd-orb { animation: none; } }
+
+	.bd-kick { display: block; font-family: var(--bu-mono); font-size: 0.8rem; color: var(--c); margin-bottom: 0.8rem; }
+	.bd-h { font-size: clamp(1.7rem, 3.8vw, 2.7rem); font-weight: 850; letter-spacing: -0.025em; line-height: 1.08; margin: 0 0 1rem; }
+	.bd-h--xl { font-size: clamp(2rem, 4.4vw, 3.2rem); }
+	.bd-accent {
+		background: linear-gradient(95deg, color-mix(in srgb, var(--c) 60%, #fff), var(--c));
+		-webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+	}
+	.bd-p { font-size: 1rem; line-height: 1.65; color: var(--bu-muted); max-width: 34rem; margin: 0 0 1.2rem; }
+	.bd-p--center { margin-inline: auto; text-align: center; }
+	.bd-head { text-align: center; max-width: 46rem; margin: 0 auto clamp(1.4rem, 3vw, 2rem); }
+	.bd-head .bd-kick { text-align: center; }
+	.bd-link { display: inline-flex; align-items: center; gap: 0.45rem; font-weight: 700; color: var(--c); transition: gap 0.25s ease; }
+	.bd-link:hover { gap: 0.75rem; }
+	.bd-row { display: flex; align-items: center; gap: 1.3rem; flex-wrap: wrap; }
+	.bd-row--center { justify-content: center; }
+
+	.bb-rev {
+		opacity: 0; transform: translateY(20px);
+		transition: opacity 0.6s ease calc(var(--i, 0) * 90ms),
+			transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i, 0) * 90ms);
+	}
+	.bb-rev.is-on { opacity: 1; transform: none; }
+	@media (prefers-reduced-motion: reduce) { .bb-rev { opacity: 1; transform: none; transition: none; } }
+	.bb-glare {
+		position: absolute; inset: 0; border-radius: inherit; z-index: 3;
+		background: radial-gradient(340px 220px at var(--gx, 50%) var(--gy, 0%), rgba(255, 255, 255, 0.08), transparent 60%);
+		opacity: 0; transition: opacity 0.3s ease; pointer-events: none;
+	}
+	:is(.bd-inc-card, .bd-way):hover .bb-glare { opacity: 1; }
+
+	/* hero */
+	.bd-hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 4vw, 3.2rem); align-items: center; }
+	.bd-crumb { display: flex; align-items: center; gap: 0.4rem; font-family: var(--bu-mono); font-size: 0.8rem; color: var(--bu-faint); margin-bottom: 1rem; }
+	.bd-crumb a { color: var(--c); }
+	.bd-crumb-here { color: var(--bu-ink); }
+	.bd-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: -0.2rem 0 1.4rem; }
+	.bd-chips i {
+		font-style: normal; font-family: var(--bu-mono); font-size: 0.72rem; font-weight: 600;
+		padding: 0.3rem 0.65rem; border-radius: 999px;
+		border: 1px solid color-mix(in srgb, var(--c) 42%, transparent);
+		background: color-mix(in srgb, var(--c) 9%, transparent);
+		color: var(--bu-ink);
+	}
+	.bd-viz {
+		position: relative; display: grid; gap: 0.9rem; justify-items: center;
+		transform-style: preserve-3d; will-change: transform;
+		--bd-ink: var(--bu-ink);
+		--bd-muted: var(--bu-muted);
+		--bd-glass: var(--bu-card);
+		--bd-glass-border: color-mix(in srgb, var(--c) 30%, rgba(255, 255, 255, 0.12));
+		--bd-shadow: 0 34px 70px -28px rgba(0, 0, 0, 0.65);
+	}
+	.bd-viz :global(.det-viz-wrap) { width: 100%; }
+	.bd-viz-tag {
+		display: inline-flex; align-items: center; gap: 0.4rem;
+		font-family: var(--bu-mono); font-size: 0.72rem; font-weight: 700;
+		text-transform: lowercase; color: #04211a;
+		background: linear-gradient(95deg, color-mix(in srgb, var(--c) 55%, #fff), var(--c));
+		padding: 0.5rem 1rem; border-radius: 9999px;
+		box-shadow: 0 14px 30px -12px color-mix(in srgb, var(--c) 75%, transparent);
+		transform: rotate(-1.2deg);
+		animation: bd-bob 5s ease-in-out infinite;
+		text-align: center;
+	}
+	@keyframes bd-bob { 0%, 100% { margin-top: 0; } 50% { margin-top: -7px; } }
+	@media (prefers-reduced-motion: reduce) { .bd-viz-tag { animation: none; } }
+	.bd-merge {
+		position: relative; overflow: hidden;
+		display: inline-flex; align-items: center; gap: 0.55rem;
+		font-weight: 800; font-size: 0.95rem; color: #04211a;
+		background: linear-gradient(95deg, color-mix(in srgb, var(--c) 55%, #fff), var(--c));
+		padding: 0.85rem 1.6rem; border-radius: 9999px;
+		box-shadow: 0 16px 38px -14px color-mix(in srgb, var(--c) 80%, transparent);
+		transition: transform 0.22s ease;
+	}
+	.bd-merge:hover { transform: translateY(-2px); }
+
+	/* included */
+	.bd-inc { display: grid; grid-template-columns: repeat(var(--inc-cols, 3), minmax(0, 1fr)); gap: 1rem; }
+	.bd-inc-card {
+		position: relative; overflow: hidden;
+		border: 1px solid var(--bu-line); border-radius: 1rem;
+		background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 55%), var(--bu-card);
+		padding: 1.2rem 1.1rem;
+		transform-style: preserve-3d; will-change: transform;
+		transition: border-color 0.3s ease;
+	}
+	.bd-inc-card:hover { border-color: color-mix(in srgb, var(--c) 50%, transparent); }
+	.bd-inc-card h3 { font-size: 1.02rem; font-weight: 800; margin: 0 0 0.35rem; }
+	.bd-inc-card p { font-size: 0.88rem; line-height: 1.6; color: var(--bu-muted); margin: 0 0 0.75rem; }
+	.bd-inc-items { display: grid; gap: 0.32rem; }
+	.bd-inc-items i { display: flex; align-items: center; gap: 0.45rem; font-style: normal; font-size: 0.8rem; color: var(--bu-muted); }
+	.bd-inc-items :global(svg) { color: var(--c); flex-shrink: 0; }
+
+	/* pipeline */
+	.bb-git { position: relative; }
+	.bd-pipe { list-style: none; margin: 0 auto; padding: 0 0 0 2.2rem; max-width: 44rem; }
+	.bb-git-line {
+		position: absolute; left: 7px; top: 0.6rem; bottom: 0.6rem; width: 2.5px; border-radius: 2px;
+		background: linear-gradient(180deg, color-mix(in srgb, var(--c) 55%, #fff), var(--c));
+		box-shadow: 0 0 12px color-mix(in srgb, var(--c) 55%, transparent);
+		transform: scaleY(0); transform-origin: top;
+		transition: transform 2s cubic-bezier(0.22, 1, 0.36, 1) 0.2s;
+	}
+	.bb-git.is-drawn .bb-git-line { transform: scaleY(1); }
+	.bd-stage { position: relative; padding-bottom: 1.5rem; }
+	.bd-stage:last-child { padding-bottom: 0; }
+	.bd-node {
+		position: absolute; left: -2.2rem; top: 0.4rem;
+		width: 0.95rem; height: 0.95rem; border-radius: 50%;
+		background: linear-gradient(135deg, color-mix(in srgb, var(--c) 55%, #fff), var(--c));
+		box-shadow: 0 0 0 4px color-mix(in srgb, var(--c) 20%, transparent);
+	}
+	.bd-node::after {
+		content: '';
+		position: absolute; inset: -5px; border-radius: 9999px;
+		border: 2px solid color-mix(in srgb, var(--c) 45%, transparent);
+		animation: bd-node-pulse 2.6s ease-out infinite;
+	}
+	@keyframes bd-node-pulse { 0% { transform: scale(0.6); opacity: 1; } 70%, 100% { transform: scale(1.5); opacity: 0; } }
+	@media (prefers-reduced-motion: reduce) { .bd-node::after { animation: none; opacity: 0; } }
+	.bd-stage-n { display: block; font-family: var(--bu-mono); font-size: 0.72rem; color: var(--c); }
+	.bd-stage h3 { font-size: 1.06rem; font-weight: 800; margin: 0.15rem 0 0.3rem; }
+	.bd-stage p { font-size: 0.9rem; line-height: 1.6; color: var(--bu-muted); margin: 0; max-width: 36rem; }
+
+	/* ways */
+	.bd-ways { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1rem; }
+	.bd-way {
+		position: relative; overflow: hidden;
+		border: 1px solid var(--bu-line); border-radius: 1rem;
+		background: var(--bu-card); padding: 1.2rem 1.1rem;
+		transform-style: preserve-3d; will-change: transform;
+		transition: border-color 0.3s ease;
+	}
+	.bd-way:hover { border-color: color-mix(in srgb, var(--c) 50%, transparent); }
+	.bd-way-ic {
+		display: grid; place-items: center; width: 42px; height: 42px; border-radius: 0.7rem;
+		color: var(--c); background: color-mix(in srgb, var(--c) 13%, transparent);
+		margin-bottom: 0.7rem;
+	}
+	.bd-way h3 { font-size: 0.98rem; font-weight: 800; margin: 0 0 0.3rem; }
+	.bd-way p { font-size: 0.86rem; line-height: 1.55; color: var(--bu-muted); margin: 0; }
+
+	/* proof */
+	.bd-proof { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin-bottom: 1.2rem; }
+	.bd-proj {
+		margin: 0; border: 1px solid var(--bu-line); border-radius: 0.95rem; overflow: hidden;
+		background: var(--bu-card);
+		transform-style: preserve-3d; will-change: transform;
+		transition: border-color 0.3s ease;
+	}
+	.bd-proj:hover { border-color: color-mix(in srgb, var(--c) 50%, transparent); }
+	.bd-proj img { display: block; width: 100%; height: 145px; object-fit: cover; object-position: top; }
+	.bd-proj-ph { display: grid; place-items: center; height: 145px; color: var(--c); background: color-mix(in srgb, var(--c) 7%, transparent); }
+	.bd-proj figcaption { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; padding: 0.65rem 0.85rem; }
+	.bd-proj strong { font-size: 0.9rem; font-weight: 800; }
+	.bd-proj em { flex: 1; min-width: 0; font-style: normal; font-size: 0.74rem; color: var(--bu-muted); }
+	.bd-proj-live {
+		display: inline-flex; align-items: center; gap: 0.3rem;
+		font-family: var(--bu-mono); font-size: 0.66rem; color: #2ee889;
+	}
+	.bd-proj-live i { width: 7px; height: 7px; border-radius: 50%; background: #2ee889; animation: bd-live 2s ease-in-out infinite; }
+	@keyframes bd-live { 0%, 100% { box-shadow: 0 0 0 0 rgba(46, 232, 137, 0.5); } 50% { box-shadow: 0 0 0 4px rgba(46, 232, 137, 0); } }
+	.bd-review {
+		margin: 0 auto; max-width: 44rem;
+		border: 1px solid var(--bu-line); border-radius: 1rem;
+		background: var(--bu-card); padding: 1.2rem 1.3rem;
+	}
+	.bd-review-top { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.6rem; }
+	.bd-review-top img { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; }
+	.bd-review-top span { flex: 1; min-width: 0; }
+	.bd-review-top strong { display: block; font-size: 0.92rem; font-weight: 800; }
+	.bd-review-top em { display: block; font-style: normal; font-size: 0.74rem; color: var(--bu-muted); }
+	.bd-review-badge {
+		display: inline-flex; align-items: center; gap: 0.3rem;
+		font-size: 0.68rem; font-weight: 800; color: #2ee889;
+		border: 1px solid rgba(46, 232, 137, 0.4); background: rgba(46, 232, 137, 0.1);
+		border-radius: 999px; padding: 0.22rem 0.6rem; flex: none !important;
+	}
+	.bd-review blockquote { margin: 0; font-size: 0.96rem; line-height: 1.65; color: var(--bu-muted); }
+
+	/* faq */
+	.bd-faq { display: grid; gap: 0.6rem; }
+	.bd-faq-item {
+		border: 1px solid var(--bu-line); border-radius: 0.85rem;
+		background: var(--bu-card); padding: 0 1.05rem;
+		transition: border-color 0.25s ease;
+	}
+	.bd-faq-item[open] { border-color: color-mix(in srgb, var(--c) 45%, transparent); }
+	.bd-faq-item summary {
+		display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+		padding: 0.9rem 0; cursor: pointer; list-style: none;
+		font-size: 0.94rem; font-weight: 700;
+	}
+	.bd-faq-item summary::-webkit-details-marker { display: none; }
+	.bd-faq-caret { color: var(--c); transition: transform 0.25s ease; flex-shrink: 0; }
+	.bd-faq-item[open] .bd-faq-caret { transform: rotate(180deg); }
+	.bd-faq-item p { font-size: 0.88rem; line-height: 1.65; color: var(--bu-muted); margin: 0; padding: 0 0 0.95rem; }
+
+	/* others + cta */
+	.bd-others { text-align: center; margin-bottom: clamp(1.8rem, 4vw, 2.4rem); }
+	.bd-others-h { display: block; font-family: var(--bu-mono); font-size: 0.76rem; color: var(--bu-faint); margin-bottom: 0.8rem; }
+	.bd-others-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
+	.bd-other {
+		display: inline-flex; align-items: center; gap: 0.4rem;
+		font-family: var(--bu-mono); font-size: 0.8rem; font-weight: 700;
+		padding: 0.45rem 0.9rem; border-radius: 999px;
+		border: 1px solid color-mix(in srgb, var(--oc, #18debe) 40%, transparent);
+		background: color-mix(in srgb, var(--oc, #18debe) 8%, transparent);
+		color: var(--bu-ink);
+		transition: transform 0.22s ease, background 0.22s ease;
+	}
+	.bd-other:hover { transform: translateY(-2px); background: color-mix(in srgb, var(--oc) 16%, transparent); }
+	.bd-other :global(svg) { color: var(--oc); }
+	.bd-ctabox { text-align: center; max-width: 46rem; margin: 0 auto; }
+	.bd-cta-cmd { font-family: var(--bu-mono); font-size: 0.9rem; color: var(--bu-muted); margin: 0 0 0.8rem; }
+
+	@media (max-width: 1180px) {
+		.bd-inc { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	}
+	@media (max-width: 980px) {
+		.bd-hero { grid-template-columns: minmax(0, 1fr); }
+		.bd-proof { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+		/* the visual's blurred glow must not poke past the viewport */
+		.bd-viz :global(.det-viz-glow) { left: 0; right: 0; }
+	}
+	@media (max-width: 640px) {
+		.bd-inc { grid-template-columns: minmax(0, 1fr); }
+		.bd-proof { grid-template-columns: minmax(0, 1fr); }
+		.bd-pipe { padding-left: 1.8rem; }
+		.bd-node { left: -1.8rem; }
+		.bb-git-line { left: 5px; }
+	}
+</style>

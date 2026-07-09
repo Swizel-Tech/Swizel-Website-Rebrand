@@ -517,6 +517,8 @@ const incCols = d.included.length % 4 === 0 ? 4 : 3;
 	@media (max-width: 980px) {
 		.fsd-hero { grid-template-columns: minmax(0, 1fr); }
 		.fsd-proof { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+		/* the visual's blurred glow must not poke past the viewport */
+		.fsd-viz :global(.det-viz-glow) { left: 0; right: 0; }
 	}
 	@media (max-width: 640px) {
 		.fsd-inc { grid-template-columns: minmax(0, 1fr); }

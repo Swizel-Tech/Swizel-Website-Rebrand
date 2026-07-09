@@ -2,6 +2,7 @@
 import MainLayout from '../../layouts/MainLayout.astro';
 import ServiceDetail from '../../components/sections/ServiceDetail.astro';
 import ServiceDetailFounder from '../../components/sections/ServiceDetailFounder.astro';
+import ServiceDetailBuilder from '../../components/sections/ServiceDetailBuilder.astro';
 import CustomButton from '../../components/CustomButton.astro';
 import { Icon } from 'astro-icon/components';
 import { disciplines } from '../../data/disciplines';
@@ -29,6 +30,9 @@ const pageDescription = discipline.heroDesc;
 
 	<!-- Founder world: same discipline, founder telling. -->
 	<ServiceDetailFounder discipline={discipline} others={others} />
+
+	<!-- Builder world: the discipline as a module in the repo. -->
+	<ServiceDetailBuilder discipline={discipline} others={others} />
 
 	<!-- Minimal fallback for the remaining worlds. -->
 	<div class="alt-view-only svc-detail-fallback">
@@ -59,7 +63,8 @@ const pageDescription = discipline.heroDesc;
 
 <style is:global>
 	/* Founder view has its own service detail now — hide the generic fallback. */
-	html[data-view='founder'] .svc-detail-fallback {
+	html[data-view='founder'] .svc-detail-fallback,
+	html[data-view='builder'] .svc-detail-fallback {
 		display: none !important;
 	}
 </style>

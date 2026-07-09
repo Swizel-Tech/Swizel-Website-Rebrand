@@ -11,6 +11,7 @@ import ServicesDropDown from '../components/sections/ServicesDropDown.astro';
 import FooterCTA from '../components/blocks/FooterCTA.astro';
 import ServicesBoardroom from '../components/sections/ServicesBoardroom.astro';
 import ServicesFounder from '../components/sections/ServicesFounder.astro';
+import ServicesBuilder from '../components/sections/ServicesBuilder.astro';
 ---
 
 <MainLayout
@@ -24,6 +25,9 @@ import ServicesFounder from '../components/sections/ServicesFounder.astro';
 
 	<!-- Founder world: the launch-crew telling of the same services. -->
 	<ServicesFounder />
+
+	<!-- Builder world: the services as a repository. -->
+	<ServicesBuilder />
 
 	<!-- Fallback Services for the remaining worlds until each gets its own. -->
 	<div class="alt-view-only services-fallback">
@@ -95,7 +99,8 @@ import ServicesFounder from '../components/sections/ServicesFounder.astro';
 
 <style is:global>
 	/* Founder view has its own Services hub now — hide the generic fallback. */
-	html[data-view='founder'] .services-fallback {
+	html[data-view='founder'] .services-fallback,
+	html[data-view='builder'] .services-fallback {
 		display: none !important;
 	}
 </style>
