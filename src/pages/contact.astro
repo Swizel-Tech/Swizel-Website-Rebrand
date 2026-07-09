@@ -36,6 +36,7 @@ const channels = [
 				<span class="ct-t ct-t--default">Tell us about your <span class="ct-grad">project.</span></span>
 				<span class="ct-t ct-t--founder">Tell us what you <span class="ct-grad">imagine.</span></span>
 				<span class="ct-t ct-t--builder">Tell us what to <span class="ct-grad">build.</span></span>
+				<span class="ct-t ct-t--studio">Tell us what to <span class="ct-grad">craft.</span></span>
 			</h1>
 			<p class="ct-lead">
 				Whether it is a fully formed brief or a rough idea, tell us where you want to go.
@@ -162,12 +163,14 @@ const channels = [
 	.ct-title { font-family: 'Bebas Neue', sans-serif; font-weight: 400; line-height: 0.95; letter-spacing: 0.5px; font-size: clamp(2.6rem, 7vw, 4.6rem); margin-bottom: 1rem; }
 	.ct-grad { background: linear-gradient(120deg, var(--bd-accent), #8dfeea); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 	/* per-view headline: founder reads "Tell us what you imagine.",
-	   builder reads "Tell us what to build." */
-	.ct-t--founder, .ct-t--builder { display: none; }
+	   builder "Tell us what to build.", studio "Tell us what to craft." */
+	.ct-t--founder, .ct-t--builder, .ct-t--studio { display: none; }
 	:global(html[data-view='founder']) .ct-t--default { display: none; }
 	:global(html[data-view='founder']) .ct-t--founder { display: inline; }
 	:global(html[data-view='builder']) .ct-t--default { display: none; }
 	:global(html[data-view='builder']) .ct-t--builder { display: inline; }
+	:global(html[data-view='studio']) .ct-t--default { display: none; }
+	:global(html[data-view='studio']) .ct-t--studio { display: inline; }
 	.ct-lead { max-width: 36rem; margin: 0 auto; color: var(--bd-muted); font-size: 1.02rem; line-height: 1.65; }
 
 	.ct-grid { max-width: 64rem; margin: clamp(2rem, 4vw, 3rem) auto 0; display: grid; gap: clamp(1.2rem, 2.5vw, 1.8rem); align-items: start; perspective: 1500px; }
@@ -387,4 +390,49 @@ const channels = [
 	html[data-view='builder'] .ct .ct-formcard #contact-form button {
 		color: #04241e !important;
 	}
+
+	/* ── Studio world skin for the contact page ──────────────────
+	   Same page, gallery dress: pink accent leads, purple secondary,
+	   Playfair serif italics, the eyebrow becomes a museum plaque. */
+	html[data-view='studio'] .ct {
+		--bd-accent: #ec4899;
+		--ct-cta2: #a855f7;
+	}
+	html[data-view='studio']:not(.dark) .ct {
+		--bd-accent: #cf2570;
+	}
+	html[data-view='studio'] .ct .ct-grad {
+		background: linear-gradient(120deg, var(--bd-accent), #a855f7);
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	html[data-view='studio'] .ct .ct-orb--2 {
+		background: radial-gradient(circle, rgba(168, 85, 247, 0.4), transparent 70%);
+	}
+	/* eyebrow = a little gallery plaque: serif italic, accent keyline */
+	html[data-view='studio'] .ct .ct-eyebrow {
+		font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+		font-style: italic;
+		font-weight: 500;
+		font-size: 0.95rem;
+		letter-spacing: 0.02em;
+		text-transform: none;
+		border-radius: 0 0.6rem 0.6rem 0;
+		border-left: 3px solid var(--bd-accent);
+	}
+	/* kickers speak serif italic, gallery-label style */
+	html[data-view='studio'] .ct .ct-form-k,
+	html[data-view='studio'] .ct .ct-aside-k,
+	html[data-view='studio'] .ct .ct-kicker {
+		font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+		font-style: italic;
+		font-weight: 500;
+		font-size: 0.95rem;
+		letter-spacing: 0.03em;
+		text-transform: none;
+	}
+	html[data-view='studio'] .ct .ct-form-k::before,
+	html[data-view='studio'] .ct .ct-aside-k::before,
+	html[data-view='studio'] .ct .ct-kicker::before { content: '— '; opacity: 0.7; }
 </style>

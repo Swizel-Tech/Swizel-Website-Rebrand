@@ -110,7 +110,10 @@ const isActive = (href: string) => {
 								</div>
 							</div>
 						) : (
-							<Link class="capitalize" href={`/${link}`}>
+							<Link
+								class:list={['capitalize', { 'nav-bootcamp': link === 'bootcamp' }]}
+								href={`/${link}`}
+							>
 								{formatLink(link)}
 							</Link>
 						)
@@ -220,7 +223,10 @@ const isActive = (href: string) => {
 							</div>
 						</details>
 					) : (
-						<a href={`/${link}`} class:list={['m-nav-link', { active: isActive('/' + link) }]}>
+						<a
+							href={`/${link}`}
+							class:list={['m-nav-link', { active: isActive('/' + link), 'nav-bootcamp': link === 'bootcamp' }]}
+						>
 							<span>{formatLink(link)}</span>
 							<svg class="m-nav-go" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6" /></svg>
 						</a>
@@ -536,4 +542,12 @@ const isActive = (href: string) => {
 	.nav-m-sub { list-style: none; padding: 0.6rem 0 0.2rem 0.9rem; margin: 0.4rem 0 0; display: grid; gap: 0.7rem; border-left: 1px solid rgba(255, 255, 255, 0.16); }
 	.nav-m-sub a { font-size: 0.95rem; color: rgba(255, 255, 255, 0.7); transition: color 0.2s ease; }
 	.nav-m-sub a:hover { color: #fff; }
+</style>
+
+<style is:global>
+	/* Bootcamp lives in the Campus world (for now) — hide its nav entry
+	   everywhere else, desktop nav AND the mobile drawer. */
+	html:not([data-view='campus']) .nav-bootcamp {
+		display: none !important;
+	}
 </style>
