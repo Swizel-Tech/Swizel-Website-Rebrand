@@ -50,7 +50,7 @@ const wa = `https://wa.me/?text=${encodeURIComponent(title + ' ' + shareUrl)}`;
 	     (dual view-body classes); founder skin via the html[data-view]
 	     overrides at the bottom of this file. ══ -->
 	<article
-		class="bdbody bd-services bd-reader view-body view-body-boardroom view-body-founder"
+		class="bdbody bd-services bd-reader view-body view-body-boardroom view-body-founder view-body-builder"
 		style={`--c:${c}`}
 		data-cursor="book"
 	>
@@ -373,8 +373,35 @@ const wa = `https://wa.me/?text=${encodeURIComponent(title + ' ' + shareUrl)}`;
 		border-radius: 0.5rem;
 		transform: rotate(-2deg);
 	}
-	/* Founder view has the rich reader — hide the legacy fallback there. */
-	html[data-view='founder'] .post-fallback {
+	/* ── Builder world skin for the reader ──────────────────────
+	   Same article, builder dress: the IDE-dark teal stage, Inter
+	   type and mono category stamp. The category colour still leads. */
+	html[data-view='builder'] .bd-reader {
+		font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+			Roboto, sans-serif;
+		background:
+			radial-gradient(1000px 540px at 82% -6%, color-mix(in srgb, var(--c) 14%, transparent), transparent 62%),
+			radial-gradient(820px 480px at 6% 34%, rgba(24, 222, 190, 0.08), transparent 60%),
+			linear-gradient(180deg, #05080c 0%, #070d12 50%, #04070a 100%);
+	}
+	html[data-view='builder']:not(.dark) .bd-reader {
+		background:
+			radial-gradient(1000px 540px at 82% -6%, color-mix(in srgb, var(--c) 10%, transparent), transparent 62%),
+			linear-gradient(180deg, #f0faf7 0%, #e6f4ef 55%, #f0faf7 100%);
+	}
+	html[data-view='builder'] .bd-reader .br-cat {
+		font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+		text-transform: lowercase;
+		border-radius: 0.45rem;
+	}
+	html[data-view='builder'] .bd-reader .br-cat::before {
+		content: '// ';
+	}
+
+	/* Founder and Builder views have the rich reader — hide the legacy
+	   fallback there. */
+	html[data-view='founder'] .post-fallback,
+	html[data-view='builder'] .post-fallback {
 		display: none !important;
 	}
 </style>

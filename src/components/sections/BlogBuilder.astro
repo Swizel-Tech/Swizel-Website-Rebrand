@@ -1,0 +1,447 @@
+---
+// Blog index · Builder world — the same journal (featured lead, category
+// filter, all posts, newsletter, Brevarium promo) told as the repo's
+// journal/ directory: posts are markdown files, categories are --flags.
+import { Icon } from 'astro-icon/components';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props { posts: CollectionEntry<'blog'>[]; }
+const { posts } = Astro.props;
+
+const featured = posts.find((p) => p.data.featured) ?? posts[0];
+const cats = [...new Set(posts.map((p) => p.data.category))];
+const catSlug = (c: string) => c.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+const catCount = (c: string) => posts.filter((p) => p.data.category === c).length;
+const readTime = (body: string) => Math.max(1, Math.round((body?.trim().split(/\s+/).length || 0) / 200));
+const fmtDate = (d: Date) => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+const catColor: Record<string, string> = { EdTech: '#2bb3c0', Fintech: '#6366f1', Marketing: '#ec4899', Technology: '#18debe', Insights: '#8dfeea' };
+const col = (c: string) => catColor[c] ?? '#18debe';
+const mdName = (slug: string) => `${slug.replace(/[^a-z0-9-]/g, '')}.md`;
+
+const filterCss = cats
+	.map((c) => {
+		const s = catSlug(c);
+		const cc = col(c);
+		return [
+			`#bbl-${s}:checked ~ .bj-grid .bj-card:not(.c-${s}){display:none}`,
+			`#bbl-${s}:checked ~ .bj-chips label[for="bbl-${s}"]{color:#04211a;background:${cc};border-color:transparent}`,
+			`#bbl-${s}:checked ~ .bj-chips label[for="bbl-${s}"] span{color:#04211a}`,
+		].join('');
+	})
+	.join('');
+---
+
+<div class="bbl bbody view-body view-body-builder">
+	<div class="bj-bg" aria-hidden="true">
+		<span class="bj-orb bj-orb--a"></span>
+		<span class="bj-orb bj-orb--b"></span>
+		{Array.from({ length: 6 }).map((_, i) => (
+			<i class="bj-spark" style={`--s:${i}`}></i>
+		))}
+	</div>
+
+	<!-- ── hero ── -->
+	<section class="bj-sec" data-cursor="term">
+		<div class="bj-wrap bj-hero bb-rev">
+			<span class="bj-kick">$ ls swizel/journal</span>
+			<h1 class="bj-h bj-h--xl">Notes from <span class="bj-acc">the build.</span></h1>
+			<p class="bj-p bj-p--center">
+				Field notes on technology, design, fintech, edtech and growth.
+				What we're building, learning and seeing across the African
+				digital landscape.
+			</p>
+		</div>
+	</section>
+
+	<!-- ── featured ── -->
+	{
+		featured && (
+			<section class="bj-sec">
+				<div class="bj-wrap">
+					<a
+						href={`/blog/${featured.slug}`}
+						class="bj-feature bb-rev"
+						style={`--c:${col(featured.data.category)}`}
+						data-cursor="book"
+						data-fa-tilt="4"
+					>
+						<span class="bb-glare" aria-hidden="true" />
+						<span class="bj-feature-media">
+							<img src={featured.data.heroImage} alt={featured.data.title} loading="eager" />
+							<span class="bj-feature-pin">
+								<Icon width={12} name="mdi:pin" />
+								pinned
+							</span>
+						</span>
+						<span class="bj-feature-body">
+							<span class="bj-file">
+								<Icon width={14} name="mdi:language-markdown" />
+								journal/{mdName(featured.slug)} · {featured.data.category.toLowerCase()}
+							</span>
+							<strong class="bj-feature-title">{featured.data.title}</strong>
+							<span class="bj-feature-desc">{featured.data.description}</span>
+							<span class="bj-meta">{featured.data.author} · {fmtDate(featured.data.pubDate)} · {readTime(featured.body)} min read</span>
+							<span class="bj-link">
+								cat {mdName(featured.slug)}
+								<Icon width={15} name="mdi:arrow-right" />
+							</span>
+						</span>
+					</a>
+				</div>
+			</section>
+		)
+	}
+
+	<!-- ── all posts, --flag filter ── -->
+	<section class="bj-sec" data-cursor="repo">
+		<div class="bj-wrap">
+			<div class="bj-head bb-rev">
+				<span class="bj-kick">$ swizel journal --filter=topic</span>
+				<h2 class="bj-h">From the <span class="bj-acc">journal.</span></h2>
+				<p class="bj-p bj-p--center">
+					{posts.length} {posts.length === 1 ? 'entry' : 'entries'},
+					more on the way.
+				</p>
+			</div>
+
+			<form class="bj-filter" autocomplete="off">
+				<input class="bj-radio" type="radio" name="bbl" id="bbl-all" checked />
+				{cats.map((c) => <input class="bj-radio" type="radio" name="bbl" id={`bbl-${catSlug(c)}`} />)}
+				<div class="bj-chips bb-rev">
+					<label class="bj-chip" for="bbl-all">--all <span>{posts.length}</span></label>
+					{
+						cats.map((c) => (
+							<label class="bj-chip" for={`bbl-${catSlug(c)}`}>
+								--{catSlug(c)} <span>{catCount(c)}</span>
+							</label>
+						))
+					}
+				</div>
+				<div class="bj-grid">
+					{
+						posts.map((p, i) => (
+							<article
+								class:list={['bj-card', 'bb-rev', `c-${catSlug(p.data.category)}`]}
+								style={`--c:${col(p.data.category)}; --i:${i % 3}`}
+								data-cursor="book"
+								data-fa-tilt="7"
+							>
+								<a href={`/blog/${p.slug}`} class="bj-card-link">
+									<span class="bb-glare" aria-hidden="true" />
+									<span class="bj-card-bar">
+										<i></i><i></i><i></i>
+										<span class="bj-card-file">{mdName(p.slug)}</span>
+										<span class="bj-card-cat">{p.data.category.toLowerCase()}</span>
+									</span>
+									<span class="bj-card-media">
+										<img src={p.data.heroImage} alt={p.data.title} loading="lazy" />
+									</span>
+									<span class="bj-card-body">
+										<strong>{p.data.title}</strong>
+										<span class="bj-card-desc">{p.data.description}</span>
+										<span class="bj-meta">{fmtDate(p.data.pubDate)} · {readTime(p.body)} min read</span>
+									</span>
+								</a>
+							</article>
+						))
+					}
+				</div>
+			</form>
+		</div>
+	</section>
+
+	<!-- ── newsletter ── -->
+	<section class="bj-sec" data-cursor="phone">
+		<div class="bj-wrap">
+			<div class="bj-news bb-rev">
+				<span class="bj-orbit" aria-hidden="true"><i></i><i></i><i></i></span>
+				<span class="bj-kick">$ swizel subscribe --channel=email</span>
+				<h2 class="bj-h">Get the next one <span class="bj-acc">in your inbox.</span></h2>
+				<p class="bj-p bj-p--center">
+					No spam, no fluff. Just our sharpest thinking on building for
+					the African market, when it's worth your time.
+				</p>
+				<form class="bj-news-form" name="newsletter" method="post" data-netlify="true" netlify-honeypot="bot-field">
+					<input type="hidden" name="form-name" value="newsletter" />
+					<p class="bj-hp"><label>Don't fill this out: <input name="bot-field" /></label></p>
+					<input class="bj-news-input" type="email" name="email" placeholder="you@company.com" required aria-label="Email address" />
+					<button class="bj-news-btn fs-cta" type="submit">
+						Subscribe
+						<Icon width={16} name="mdi:arrow-right" />
+					</button>
+				</form>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── Brevarium promo ── -->
+	<section class="bj-sec bj-sec--last" data-cursor="repo">
+		<div class="bj-wrap">
+			<a class="bj-mag bb-rev" href="/brevarium/the-brevarium-latest.pdf" download data-fa-tilt="6">
+				<span class="bj-mag-cover">
+					<img src="/images/portfolio/mag-latest-cover.jpg" alt="The Brevarium magazine" loading="lazy" />
+				</span>
+				<span class="bj-mag-meta">
+					<span class="bj-kick">// docs/the-brevarium — long-form, in print</span>
+					<strong>Prefer the magazine? Read The Brevarium.</strong>
+					<em>Our featured projects, the team and the thinking behind the work, cover to cover.</em>
+					<span class="bj-link"><Icon width={15} name="mdi:download" /> download latest.pdf</span>
+				</span>
+			</a>
+		</div>
+	</section>
+</div>
+
+<style is:global set:html={filterCss}></style>
+
+<style>
+	.bbl {
+		--bu-ink: #e8f0f4;
+		--bu-muted: rgba(232, 240, 244, 0.62);
+		--bu-faint: rgba(232, 240, 244, 0.4);
+		--bu-acc: var(--view-accent, #18debe);
+		--bu-line: rgba(255, 255, 255, 0.08);
+		--bu-card: rgba(255, 255, 255, 0.03);
+		--bu-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+		font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+			Roboto, sans-serif;
+		position: relative;
+		isolation: isolate;
+		background:
+			radial-gradient(1000px 520px at 85% -4%, rgba(24, 222, 190, 0.1), transparent 60%),
+			radial-gradient(800px 480px at 4% 42%, rgba(40, 166, 236, 0.07), transparent 60%),
+			linear-gradient(180deg, #05080c 0%, #070d12 50%, #04070a 100%);
+		color: var(--bu-ink);
+		padding: clamp(3rem, 7vw, 5rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 4rem);
+	}
+	:global(html:not(.dark)) .bbl {
+		--bu-ink: #102420;
+		--bu-muted: rgba(16, 36, 32, 0.66);
+		--bu-faint: rgba(16, 36, 32, 0.45);
+		--bu-line: rgba(16, 36, 32, 0.1);
+		--bu-card: rgba(16, 36, 32, 0.04);
+		background:
+			radial-gradient(1000px 520px at 85% -4%, rgba(24, 222, 190, 0.1), transparent 60%),
+			linear-gradient(180deg, #f0faf7 0%, #e6f4ef 55%, #f0faf7 100%);
+	}
+	.bj-sec { position: relative; z-index: 1; padding-block: clamp(1.6rem, 4vw, 2.8rem); }
+	.bj-sec--last { padding-bottom: clamp(3rem, 6vw, 4.5rem); }
+	.bj-wrap { max-width: 74rem; margin: 0 auto; }
+
+	.bj-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+	.bj-orb { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.4; animation: bj-orb-drift 17s ease-in-out infinite alternate; }
+	.bj-orb--a { width: 440px; height: 440px; left: -150px; top: 5%; background: radial-gradient(circle, rgba(24, 222, 190, 0.26), transparent 70%); }
+	.bj-orb--b { width: 500px; height: 500px; right: -170px; top: 42%; background: radial-gradient(circle, rgba(40, 166, 236, 0.16), transparent 70%); animation-delay: -7s; }
+	@keyframes bj-orb-drift { to { transform: translate3d(50px, -36px, 0) scale(1.1); } }
+	.bj-spark {
+		position: absolute; bottom: -12px; left: calc(12% + var(--s) * 14%);
+		width: 3.5px; height: 3.5px; border-radius: 50%;
+		background: color-mix(in srgb, var(--bu-acc) 85%, #fff);
+		box-shadow: 0 0 10px 2px color-mix(in srgb, var(--bu-acc) 55%, transparent);
+		opacity: 0;
+		animation: bj-rise calc(9s + var(--s) * 1.5s) linear infinite;
+		animation-delay: calc(var(--s) * -2.1s);
+	}
+	@keyframes bj-rise {
+		0% { transform: translateY(0); opacity: 0; }
+		8% { opacity: 0.75; }
+		92% { opacity: 0.2; }
+		100% { transform: translateY(-105vh) translateX(24px); opacity: 0; }
+	}
+	@media (prefers-reduced-motion: reduce) { .bj-orb { animation: none; } .bj-spark { display: none; } }
+
+	.bj-kick { display: block; font-family: var(--bu-mono); font-size: 0.8rem; color: var(--bu-acc); margin-bottom: 0.8rem; }
+	:global(html:not(.dark)) .bbl .bj-kick { color: #0b8a76; }
+	.bj-h { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 850; letter-spacing: -0.025em; line-height: 1.08; margin: 0 0 1rem; }
+	.bj-h--xl { font-size: clamp(2.1rem, 4.4vw, 3.2rem); }
+	.bj-acc {
+		background: linear-gradient(95deg, #8dfeea, var(--bu-acc) 60%, #28a6ec);
+		-webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+	}
+	:global(html:not(.dark)) .bbl .bj-acc { background: linear-gradient(95deg, #0b8a76, #0d7fb8); -webkit-background-clip: text; background-clip: text; }
+	.bj-p { font-size: 1rem; line-height: 1.65; color: var(--bu-muted); max-width: 36rem; margin: 0 0 1.2rem; }
+	.bj-p--center { margin-inline: auto; text-align: center; }
+	.bj-head { text-align: center; max-width: 46rem; margin: 0 auto clamp(1.4rem, 3vw, 2rem); }
+	.bj-head .bj-kick { text-align: center; }
+	.bj-hero { text-align: center; max-width: 50rem; }
+	.bj-hero .bj-kick { text-align: center; }
+	.bj-link { display: inline-flex; align-items: center; gap: 0.45rem; font-family: var(--bu-mono); font-size: 0.86rem; font-weight: 700; color: var(--bu-acc); transition: gap 0.25s ease; }
+	.bj-link:hover { gap: 0.75rem; }
+	:global(html:not(.dark)) .bbl .bj-link { color: #0b8a76; }
+	.bj-meta { display: block; font-family: var(--bu-mono); font-size: 0.7rem; color: var(--bu-faint); }
+	.bj-file { display: inline-flex; align-items: center; gap: 0.4rem; font-family: var(--bu-mono); font-size: 0.72rem; color: var(--c, var(--bu-acc)); margin-bottom: 0.65rem; }
+
+	.bb-rev {
+		opacity: 0; transform: translateY(20px);
+		transition: opacity 0.6s ease calc(var(--i, 0) * 90ms),
+			transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i, 0) * 90ms);
+	}
+	.bb-rev.is-on { opacity: 1; transform: none; }
+	@media (prefers-reduced-motion: reduce) { .bb-rev { opacity: 1; transform: none; transition: none; } }
+	.bb-glare {
+		position: absolute; inset: 0; border-radius: inherit; z-index: 3;
+		background: radial-gradient(340px 220px at var(--gx, 50%) var(--gy, 0%), rgba(255, 255, 255, 0.07), transparent 60%);
+		opacity: 0; transition: opacity 0.3s ease; pointer-events: none;
+	}
+	:is(.bj-feature, .bj-card-link):hover .bb-glare { opacity: 1; }
+
+	/* featured */
+	.bj-feature {
+		position: relative; overflow: hidden;
+		display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+		gap: clamp(1.2rem, 2.6vw, 2rem); align-items: center;
+		border: 1px solid color-mix(in srgb, var(--c, #18debe) 32%, rgba(255, 255, 255, 0.1));
+		border-radius: 1.2rem;
+		background:
+			linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 55%),
+			radial-gradient(120% 90% at 85% -20%, color-mix(in srgb, var(--c, #18debe) 10%, transparent), transparent 60%),
+			var(--bu-card);
+		padding: clamp(1rem, 2.2vw, 1.6rem);
+		color: var(--bu-ink);
+		transform-style: preserve-3d; will-change: transform;
+		transition: border-color 0.3s ease;
+	}
+	.bj-feature:hover { border-color: color-mix(in srgb, var(--c) 60%, transparent); }
+	.bj-feature-media { position: relative; display: block; border-radius: 0.9rem; overflow: hidden; }
+	.bj-feature-media img { display: block; width: 100%; height: 265px; object-fit: cover; transition: transform 0.5s ease; }
+	.bj-feature:hover .bj-feature-media img { transform: scale(1.05); }
+	.bj-feature-pin {
+		position: absolute; top: 0.7rem; left: 0.7rem;
+		display: inline-flex; align-items: center; gap: 0.3rem;
+		font-family: var(--bu-mono); font-size: 0.64rem; font-weight: 700;
+		color: #04211a; background: linear-gradient(95deg, #8dfeea, var(--c, #18debe));
+		padding: 0.26rem 0.65rem; border-radius: 999px;
+	}
+	.bj-feature-title { display: block; font-size: clamp(1.25rem, 2.6vw, 1.7rem); font-weight: 850; line-height: 1.22; margin-bottom: 0.5rem; }
+	.bj-feature-desc {
+		display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+		font-size: 0.92rem; line-height: 1.6; color: var(--bu-muted); margin-bottom: 0.6rem;
+	}
+	.bj-feature .bj-meta { margin-bottom: 0.85rem; }
+
+	/* filter + grid */
+	.bj-filter { position: relative; }
+	.bj-radio { position: absolute; opacity: 0; pointer-events: none; }
+	.bj-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.45rem; margin-bottom: 1.5rem; }
+	.bj-chip {
+		display: inline-flex; align-items: center; gap: 0.4rem;
+		font-family: var(--bu-mono); font-size: 0.8rem; font-weight: 700; cursor: pointer;
+		padding: 0.45rem 0.85rem; border-radius: 999px;
+		border: 1px solid var(--bu-line); background: var(--bu-card);
+		color: var(--bu-muted);
+		transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+	}
+	.bj-chip:hover { transform: translateY(-2px); color: var(--bu-ink); }
+	.bj-chip span { font-size: 0.66rem; color: var(--bu-acc); }
+	#bbl-all:checked ~ .bj-chips [for='bbl-all'] {
+		color: #04211a;
+		background: linear-gradient(95deg, #8dfeea, var(--bu-acc));
+		border-color: transparent;
+	}
+	#bbl-all:checked ~ .bj-chips [for='bbl-all'] span { color: #04211a; }
+	#bbl-all:checked ~ .bj-grid .bj-card { display: block; }
+
+	.bj-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+	.bj-card { display: block; }
+	.bj-card-link {
+		position: relative; overflow: hidden; display: block; height: 100%;
+		border: 1px solid color-mix(in srgb, var(--c, #18debe) 26%, var(--bu-line));
+		border-radius: 0.95rem;
+		background: #0a0e15;
+		color: var(--bu-ink);
+		transform-style: preserve-3d; will-change: transform;
+		transition: border-color 0.3s ease, box-shadow 0.3s ease;
+	}
+	:global(html:not(.dark)) .bbl .bj-card-link { background: rgba(255, 255, 255, 0.65); }
+	.bj-card:hover .bj-card-link {
+		border-color: color-mix(in srgb, var(--c, #18debe) 55%, transparent);
+		box-shadow: 0 22px 46px -22px color-mix(in srgb, var(--c, #18debe) 55%, transparent);
+	}
+	.bj-card-bar { display: flex; align-items: center; gap: 4px; padding: 8px 10px; background: rgba(255, 255, 255, 0.05); }
+	.bj-card-bar i { width: 7px; height: 7px; border-radius: 50%; background: color-mix(in srgb, var(--c, #18debe) 70%, #fff); opacity: 0.55; }
+	.bj-card-file { margin-left: 0.4rem; font-family: var(--bu-mono); font-size: 0.64rem; color: var(--bu-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+	.bj-card-cat { margin-left: auto; font-family: var(--bu-mono); font-size: 0.62rem; font-weight: 700; color: var(--c, var(--bu-acc)); flex-shrink: 0; }
+	.bj-card-media { display: block; overflow: hidden; }
+	.bj-card-media img { display: block; width: 100%; height: 160px; object-fit: cover; transition: transform 0.5s ease; }
+	.bj-card:hover .bj-card-media img { transform: scale(1.06); }
+	.bj-card-body { display: block; padding: 0.9rem 1rem 1rem; }
+	.bj-card-body strong { display: block; font-size: 1rem; font-weight: 800; line-height: 1.3; margin-bottom: 0.4rem; }
+	.bj-card-desc {
+		display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+		font-size: 0.85rem; line-height: 1.55; color: var(--bu-muted); margin-bottom: 0.5rem;
+	}
+
+	/* newsletter */
+	.bj-news {
+		position: relative; text-align: center;
+		border: 1px solid color-mix(in srgb, var(--bu-acc) 28%, transparent);
+		border-radius: 1.2rem;
+		background:
+			radial-gradient(120% 130% at 50% -30%, color-mix(in srgb, var(--bu-acc) 13%, transparent), transparent 60%),
+			var(--bu-card);
+		padding: clamp(1.8rem, 4.5vw, 3rem);
+	}
+	.bj-news .bj-kick { text-align: center; }
+	.bj-news-form { display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; margin-top: 0.4rem; }
+	.bj-hp { position: absolute; left: -9999px; }
+	.bj-news-input {
+		width: min(24rem, 100%);
+		padding: 0.85rem 1.2rem; border-radius: 999px;
+		border: 1px solid color-mix(in srgb, var(--bu-acc) 40%, transparent);
+		background: rgba(255, 255, 255, 0.05); color: var(--bu-ink);
+		font-family: var(--bu-mono); font-size: 0.9rem; outline: none;
+		transition: border-color 0.25s ease, box-shadow 0.25s ease;
+	}
+	:global(html:not(.dark)) .bbl .bj-news-input { background: rgba(255, 255, 255, 0.75); }
+	.bj-news-input:focus { border-color: var(--bu-acc); box-shadow: 0 0 0 4px color-mix(in srgb, var(--bu-acc) 20%, transparent); }
+	.bj-news-btn {
+		display: inline-flex; align-items: center; gap: 0.5rem;
+		font-weight: 800; font-size: 0.95rem; color: #04211a; cursor: pointer; border: 0;
+		background: linear-gradient(95deg, #8dfeea, var(--bu-acc));
+		padding: 0.85rem 1.6rem; border-radius: 9999px;
+		box-shadow: 0 16px 38px -14px color-mix(in srgb, var(--bu-acc) 80%, transparent);
+		transition: transform 0.22s ease;
+	}
+	.bj-news-btn:hover { transform: translateY(-2px); }
+	.bj-orbit { position: absolute; inset: 0; pointer-events: none; }
+	.bj-orbit i {
+		position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; margin: -3px;
+		border-radius: 50%;
+		background: linear-gradient(95deg, #8dfeea, var(--bu-acc));
+		box-shadow: 0 0 12px color-mix(in srgb, var(--bu-acc) 70%, transparent);
+		animation: bj-orbit-kf 12s linear infinite;
+	}
+	.bj-orbit i:nth-child(2) { animation-delay: -4s; width: 5px; height: 5px; }
+	.bj-orbit i:nth-child(3) { animation-delay: -8s; }
+	@keyframes bj-orbit-kf {
+		from { transform: rotate(0deg) translateX(min(24rem, 46vw)) rotate(0deg); }
+		to { transform: rotate(360deg) translateX(min(24rem, 46vw)) rotate(-360deg); }
+	}
+	@media (prefers-reduced-motion: reduce) { .bj-orbit { display: none; } }
+
+	/* Brevarium promo */
+	.bj-mag {
+		display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 1.2rem; align-items: center;
+		max-width: 52rem; margin: 0 auto;
+		border: 1px solid var(--bu-line); border-radius: 1.1rem;
+		background: var(--bu-card); padding: 1.1rem;
+		color: var(--bu-ink);
+		transform-style: preserve-3d; will-change: transform;
+		transition: border-color 0.3s ease;
+	}
+	.bj-mag:hover { border-color: color-mix(in srgb, var(--bu-acc) 50%, transparent); }
+	.bj-mag-cover { border-radius: 0.6rem; overflow: hidden; transform: rotate(-2deg); box-shadow: 0 16px 32px -14px rgba(0, 0, 0, 0.6); }
+	.bj-mag-cover img { display: block; width: 100%; height: auto; }
+	.bj-mag-meta .bj-kick { margin-bottom: 0.35rem; }
+	.bj-mag-meta strong { display: block; font-size: 1.05rem; font-weight: 850; }
+	.bj-mag-meta em { display: block; font-style: normal; font-size: 0.84rem; line-height: 1.5; color: var(--bu-muted); margin: 0.25rem 0 0.55rem; }
+
+	@media (max-width: 980px) {
+		.bj-feature { grid-template-columns: minmax(0, 1fr); }
+		.bj-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	}
+	@media (max-width: 640px) {
+		.bj-grid { grid-template-columns: minmax(0, 1fr); }
+		.bj-mag { grid-template-columns: 100px minmax(0, 1fr); }
+	}
+</style>
