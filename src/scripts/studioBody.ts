@@ -1,9 +1,85 @@
-// Studio world (The Gallery): scroll reveals and the rotating guestbook
-// quote. The work is shown directly on the wall — no reveal tricks.
+// Studio world (The Gallery): scroll reveals, the rotating guestbook quote
+// and the portfolio Spotlight Room. The work is shown directly on the wall.
 export function initStudioBody() {
 	const body = document.querySelector('.sbody');
 	if (!body) return;
 	const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	// ── the Spotlight Room: one work under the light at a time ──
+	const spot = body.querySelector<HTMLElement>('#sp-spot');
+	if (spot && !spot.dataset.spBound) {
+		spot.dataset.spBound = '1';
+		const items = Array.from(
+			spot.querySelectorAll<HTMLElement>('[data-sp-item]')
+		).map((el) => ({
+			img: el.dataset.img || '',
+			name: el.dataset.name || '',
+			meta: el.dataset.meta || '',
+			room: el.dataset.room || '',
+			color: el.dataset.color || '',
+		}));
+		const imgs = [
+			spot.querySelector<HTMLImageElement>('#sp-spot-a')!,
+			spot.querySelector<HTMLImageElement>('#sp-spot-b')!,
+		];
+		const name = spot.querySelector<HTMLElement>('#sp-spot-name')!;
+		const meta = spot.querySelector<HTMLElement>('#sp-spot-meta')!;
+		const room = spot.querySelector<HTMLElement>('#sp-spot-room')!;
+		const plaque = spot.querySelector<HTMLElement>('#sp-spot-plaque')!;
+		const thumbs = Array.from(
+			spot.querySelectorAll<HTMLElement>('[data-sp-go]')
+		);
+		let cur = 0;
+		let front = 0;
+		let timer = 0;
+
+		const show = (n: number) => {
+			cur = (n + items.length) % items.length;
+			const it = items[cur];
+			// the light dips while the piece is swapped
+			spot.classList.add('sp-dim');
+			const back = imgs[1 - front];
+			back.src = it.img;
+			back.alt = it.name;
+			requestAnimationFrame(() => {
+				back.classList.add('is-on');
+				imgs[front].classList.remove('is-on');
+				front = 1 - front;
+				spot.style.setProperty('--c', it.color);
+				name.textContent = it.name;
+				meta.textContent = it.meta;
+				room.textContent = it.room;
+				plaque.classList.remove('sp-pop');
+				void plaque.offsetWidth;
+				plaque.classList.add('sp-pop');
+				thumbs.forEach((t, ti) => t.classList.toggle('is-on', ti === cur));
+				window.setTimeout(() => spot.classList.remove('sp-dim'), 300);
+			});
+		};
+		const start = () => {
+			if (timer || reduce || items.length < 2) return;
+			timer = window.setInterval(() => show(cur + 1), 3400);
+		};
+		const stop = () => {
+			window.clearInterval(timer);
+			timer = 0;
+		};
+		thumbs.forEach((t) =>
+			t.addEventListener('click', () => {
+				stop();
+				show(Number(t.dataset.spGo || '0'));
+				start();
+			})
+		);
+		spot.addEventListener('pointerenter', stop);
+		spot.addEventListener('pointerleave', start);
+		const io = new IntersectionObserver(
+			(entries) =>
+				entries.forEach((e) => (e.isIntersecting ? start() : stop())),
+			{ threshold: 0.25 }
+		);
+		io.observe(spot);
+	}
 
 	// ── scroll reveals ──
 	const reveals = Array.from(body.querySelectorAll<HTMLElement>('.sd-rev'));

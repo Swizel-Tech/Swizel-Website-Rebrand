@@ -21,6 +21,12 @@ const stats = [
 
 const dest = (p: (typeof projects)[number]) => (p.caseStudy ? `/work/${p.slug}` : p.url);
 const roman = ['01', '02', '03', '04', '05', '06'];
+
+// the spotlight cycles these real works (featured first, then more with shots)
+const spotWorks = [
+	...featuredProjects,
+	...projects.filter((p) => p.img && !p.caseStudy),
+].filter((p) => p.img).slice(0, 8);
 ---
 
 <div class="spf sbody view-body view-body-studio">
@@ -33,20 +39,70 @@ const roman = ['01', '02', '03', '04', '05', '06'];
 				<span>Permanent exhibition · Free entry</span>
 			</div>
 			<div class="sp-open">
-				<h1 class="sp-display sd-rev">
-					The complete<br />
-					<em>collection.</em>
-				</h1>
-				<div class="sp-open-side sd-rev">
-					<p class="sp-lead">
+				<div class="sp-open-copy">
+					<span class="sp-ghost" aria-hidden="true">the collection</span>
+					<h1 class="sp-display sd-rev">
+						The complete<br />
+						<em>collection.</em>
+					</h1>
+					<p class="sp-lead sd-rev">
 						Not a moodboard — receipts. Brands you can buy from, apps
-						you can download, platforms real businesses run on. Start
-						in the big rooms, then walk the full wall.
+						you can download, platforms real businesses run on. The
+						spotlight is walking the wall; follow it, or go straight in.
 					</p>
-					<a href="#sp-wall" class="sp-link">
-						Straight to the wall
-						<Icon width={15} name="mdi:arrow-down" />
-					</a>
+					<div class="sp-open-cues sd-rev">
+						<a href="#sp-wall" class="sp-link">
+							Straight to the wall
+							<Icon width={15} name="mdi:arrow-down" />
+						</a>
+					</div>
+				</div>
+
+				<!-- ── the Spotlight Room: one work under the light at a time ── -->
+				<div class="sp-spot sd-rev" id="sp-spot" data-cursor="play">
+					{
+						spotWorks.map((p, i) => (
+							<span
+								data-sp-item
+								data-img={p.img}
+								data-name={p.name}
+								data-meta={`${sectorLabels[p.sector]} · ${p.year}`}
+								data-room={`Room ${String(i + 1).padStart(2, '0')}`}
+								data-color={p.color}
+								hidden
+							/>
+						))
+					}
+					<span class="sp-lamp" aria-hidden="true"></span>
+					<span class="sp-beam" aria-hidden="true"></span>
+					{Array.from({ length: 7 }).map((_, i) => (
+						<i class="sp-dust" style={`--d:${i}`} aria-hidden="true"></i>
+					))}
+					<figure class="sp-spot-stage" data-fa-tilt="3">
+						<span class="sa-glare" aria-hidden="true"></span>
+						<img class="sp-spot-img is-on" id="sp-spot-a" src={spotWorks[0].img} alt={spotWorks[0].name} />
+						<img class="sp-spot-img" id="sp-spot-b" src={spotWorks[1]?.img} alt="" aria-hidden="true" />
+						<span class="sp-spot-room" id="sp-spot-room">Room 01</span>
+					</figure>
+					<figcaption class="sp-plaque sp-spot-plaque" id="sp-spot-plaque">
+						<strong id="sp-spot-name">{spotWorks[0].name}</strong>
+						<span id="sp-spot-meta">{sectorLabels[spotWorks[0].sector]} · {spotWorks[0].year}</span>
+					</figcaption>
+					<div class="sp-spot-queue" role="tablist" aria-label="Works under the spotlight">
+						{
+							spotWorks.map((p, i) => (
+								<button
+									type="button"
+									class:list={['sp-spot-thumb', { 'is-on': i === 0 }]}
+									data-sp-go={i}
+									style={`--c:${p.color}`}
+									aria-label={p.name}
+								>
+									<img src={p.img} alt="" loading="lazy" />
+								</button>
+							))
+						}
+					</div>
 				</div>
 			</div>
 			<ul class="sp-wings sd-rev">
@@ -321,17 +377,193 @@ const roman = ['01', '02', '03', '04', '05', '06'];
 	}
 	[data-fa-tilt]:hover .sa-glare { opacity: 1; }
 
-	/* ── A · entrance ── */
+	/* ── A · entrance — copy left, the Spotlight Room right ── */
 	.sp-open {
 		display: grid;
-		gap: clamp(1.5rem, 4vw, 3.5rem);
-		align-items: end;
+		gap: clamp(2rem, 4.5vw, 4rem);
+		align-items: center;
 		margin-bottom: clamp(2rem, 4vw, 3rem);
 	}
-	@media (min-width: 920px) {
-		.sp-open { grid-template-columns: 1.15fr 0.85fr; }
+	@media (min-width: 960px) {
+		.sp-open { grid-template-columns: 1fr 1.05fr; }
 	}
-	.sp-open-side { max-width: 34rem; }
+	.sp-open-copy { position: relative; }
+	.sp-ghost {
+		position: absolute;
+		top: -1.2em;
+		left: -0.06em;
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-weight: 500;
+		font-size: clamp(4rem, 9vw, 7.5rem);
+		line-height: 1;
+		white-space: nowrap;
+		color: transparent;
+		-webkit-text-stroke: 1px color-mix(in srgb, var(--sa-ink) 14%, transparent);
+		pointer-events: none;
+		user-select: none;
+	}
+	/* on phones the ghost collides with the folio — desktop-only drama */
+	@media (max-width: 959px) {
+		.sp-ghost { display: none; }
+	}
+	.sp-open-cues { display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap; }
+
+	/* the room: lamp, beam, dust, the lit frame, plaque, queue */
+	.sp-spot {
+		position: relative;
+		padding-top: 3.2rem;
+	}
+	.sp-lamp {
+		position: absolute;
+		top: 0;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 46px;
+		height: 12px;
+		border-radius: 0 0 10px 10px;
+		background: linear-gradient(180deg, color-mix(in srgb, var(--sa-ink) 40%, transparent), color-mix(in srgb, var(--sa-ink) 18%, transparent));
+		z-index: 3;
+	}
+	.sp-lamp::after {
+		content: '';
+		position: absolute;
+		left: 50%;
+		bottom: -4px;
+		transform: translateX(-50%);
+		width: 10px;
+		height: 10px;
+		border-radius: 50%;
+		background: #fff7e8;
+		box-shadow:
+			0 0 10px 3px rgba(255, 247, 232, 0.8),
+			0 0 26px 10px color-mix(in srgb, var(--c, var(--sa-acc)) 40%, transparent);
+	}
+	.sp-beam {
+		position: absolute;
+		top: 0.4rem;
+		left: 50%;
+		transform: translateX(-50%);
+		width: min(120%, 40rem);
+		aspect-ratio: 1 / 0.8;
+		background: conic-gradient(
+			from 180deg at 50% 0%,
+			transparent 41%,
+			color-mix(in srgb, var(--c, var(--sa-acc)) 16%, rgba(255, 246, 226, 0.12)) 50%,
+			transparent 59%
+		);
+		filter: blur(2px);
+		mix-blend-mode: screen;
+		pointer-events: none;
+		z-index: 2;
+		transform-origin: top center;
+		animation: sp-beam-sway 7s ease-in-out infinite alternate;
+		transition: opacity 0.4s ease;
+	}
+	:global(html:not(.dark)) .sp-beam { mix-blend-mode: multiply; opacity: 0.35; }
+	@keyframes sp-beam-sway {
+		from { transform: translateX(-50%) rotate(-2.2deg); }
+		to { transform: translateX(-50%) rotate(2.2deg); }
+	}
+	.sp-spot.sp-dim .sp-beam { opacity: 0.25; }
+	.sp-dust {
+		position: absolute;
+		top: 20%;
+		left: calc(32% + var(--d) * 6%);
+		width: 3px;
+		height: 3px;
+		border-radius: 50%;
+		background: rgba(255, 246, 226, 0.65);
+		opacity: 0;
+		pointer-events: none;
+		z-index: 2;
+		animation: sp-dust-drift 7s linear infinite;
+		animation-delay: calc(var(--d) * -1.1s);
+	}
+	@keyframes sp-dust-drift {
+		0% { transform: translateY(28px) translateX(0); opacity: 0; }
+		18% { opacity: 0.8; }
+		82% { opacity: 0.5; }
+		100% { transform: translateY(-110px) translateX(14px); opacity: 0; }
+	}
+	.sp-spot-stage {
+		position: relative;
+		margin: 0;
+		aspect-ratio: 16 / 10;
+		overflow: hidden;
+		border-radius: 0.4rem;
+		border: 1px solid color-mix(in srgb, var(--c, var(--sa-acc)) 38%, var(--sa-line));
+		box-shadow:
+			inset 0 0 0 10px color-mix(in srgb, var(--sa-ink) 5%, transparent),
+			0 0 60px -12px color-mix(in srgb, var(--c, var(--sa-acc)) 45%, transparent),
+			0 40px 90px -36px rgba(0, 0, 0, 0.8);
+		background: var(--sa-card);
+		z-index: 1;
+		transition: border-color 0.5s ease, box-shadow 0.5s ease;
+	}
+	.sp-spot-img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: top;
+		opacity: 0;
+		transform: scale(1.03);
+		transition: opacity 0.7s ease, transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.sp-spot-img.is-on { opacity: 1; transform: scale(1); }
+	.sp-spot-room {
+		position: absolute;
+		left: 0.9rem;
+		bottom: 0.8rem;
+		font-size: 0.66rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: #fff;
+		padding: 0.3rem 0.75rem;
+		border-radius: 9999px;
+		background: color-mix(in srgb, var(--c, var(--sa-acc)) 78%, #000);
+		transition: background 0.5s ease;
+	}
+	.sp-spot-plaque { position: relative; z-index: 1; }
+	.sp-spot-plaque strong { transition: color 0.3s ease; }
+	.sp-spot-plaque.sp-pop { animation: sp-plaque-pop 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
+	@keyframes sp-plaque-pop {
+		0% { transform: translateY(7px); opacity: 0.4; }
+		100% { transform: translateY(0); opacity: 1; }
+	}
+	.sp-spot-queue {
+		display: flex;
+		gap: 0.5rem;
+		margin-top: 0.9rem;
+		flex-wrap: wrap;
+		position: relative;
+		z-index: 1;
+	}
+	.sp-spot-thumb {
+		position: relative;
+		width: 52px;
+		height: 36px;
+		padding: 0;
+		overflow: hidden;
+		border-radius: 0.3rem;
+		border: 1.5px solid var(--sa-line);
+		background: var(--sa-card);
+		cursor: pointer;
+		opacity: 0.45;
+		filter: saturate(0.4);
+		transition: opacity 0.3s ease, filter 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+	}
+	.sp-spot-thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+	.sp-spot-thumb:hover { opacity: 0.85; transform: translateY(-2px); }
+	.sp-spot-thumb.is-on {
+		opacity: 1;
+		filter: saturate(1);
+		border-color: var(--c);
+		box-shadow: 0 0 14px -3px color-mix(in srgb, var(--c) 65%, transparent);
+	}
 	.sp-wings {
 		display: grid;
 		grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -694,5 +926,6 @@ const roman = ['01', '02', '03', '04', '05', '06'];
 
 	@media (prefers-reduced-motion: reduce) {
 		.sd-rev { opacity: 1; transform: none; transition: none; }
+		.sp-beam, .sp-dust { animation: none; }
 	}
 </style>
