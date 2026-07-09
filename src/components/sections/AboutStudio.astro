@@ -85,6 +85,10 @@ const studioFrames = [
 	<!-- ── A · the retrospective atrium ────────────────────── -->
 	<section class="sa-sec sa-atrium">
 		<div class="sa-wrap">
+			<div class="sa-ticket sd-rev">
+				<span class="sa-ticket-live"><i aria-hidden="true"></i> The gallery is open — free admission</span>
+				<span class="sa-ticket-wing">Wing 02 · <em>The Retrospective</em></span>
+			</div>
 			<div class="sa-folio sd-rev">
 				<span>The Swizel Gallery — Retrospective Wing</span>
 				<span>The people behind the collection</span>
@@ -489,7 +493,7 @@ const studioFrames = [
 			radial-gradient(820px 480px at 8% 50%, rgba(168, 85, 247, 0.07), transparent 60%),
 			linear-gradient(180deg, #0f0a0d 0%, #130c11 50%, #0b0709 100%);
 		color: var(--sa-ink);
-		padding: clamp(3rem, 7vw, 5.5rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 4rem);
+		padding: clamp(1.25rem, 2.5vw, 2rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 4rem);
 		transition: background 0.4s ease, color 0.4s ease;
 	}
 	:global(html:not(.dark)) .sabout {
@@ -599,7 +603,52 @@ const studioFrames = [
 	[data-fa-tilt]:hover .sa-glare { opacity: 1; }
 
 	/* ── A · atrium — copy left, a hung portrait right ── */
-	.sa-atrium { padding-top: clamp(0.75rem, 2vw, 1.75rem); }
+	.sa-atrium { padding-top: clamp(0.5rem, 1.5vw, 1rem); }
+
+	/* the admission ticket — fills the strip above the folio */
+	.sa-ticket {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 1rem;
+		flex-wrap: wrap;
+		margin-bottom: clamp(0.9rem, 2vw, 1.4rem);
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--sa-faint);
+	}
+	.sa-ticket-live {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.42rem 0.9rem;
+		border: 1px dashed color-mix(in srgb, var(--sa-acc) 45%, transparent);
+		border-radius: 9999px;
+		color: var(--sa-ink);
+		background: color-mix(in srgb, var(--sa-acc) 7%, transparent);
+	}
+	.sa-ticket-live i {
+		width: 7px;
+		height: 7px;
+		border-radius: 50%;
+		background: var(--sa-acc);
+		box-shadow: 0 0 0 0 color-mix(in srgb, var(--sa-acc) 55%, transparent);
+		animation: sa-adm-pulse 1.9s ease-out infinite;
+	}
+	@keyframes sa-adm-pulse {
+		0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--sa-acc) 55%, transparent); }
+		100% { box-shadow: 0 0 0 7px transparent; }
+	}
+	.sa-ticket-wing em {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		text-transform: none;
+		letter-spacing: 0.02em;
+		font-size: 0.92rem;
+		color: var(--sa-acc);
+	}
 	.sa-open {
 		display: grid;
 		gap: clamp(1.75rem, 4vw, 3.5rem);
@@ -1426,7 +1475,7 @@ const studioFrames = [
 
 	@media (prefers-reduced-motion: reduce) {
 		.sd-rev { opacity: 1; transform: none; transition: none; }
-		.sa-marquee-track, .sa-pull-mark { animation: none; }
+		.sa-marquee-track, .sa-pull-mark, .sa-ticket-live i { animation: none; }
 		.sa-spine { transform: none; transition: none; }
 		.sd-quote { transition: none; }
 	}
