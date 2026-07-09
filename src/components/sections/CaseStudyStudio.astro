@@ -1,0 +1,988 @@
+---
+// Case study · Studio world — the launch as a single-work exhibition in the
+// Collection Wing. Same data as every other case study telling (story,
+// challenge, approach, highlights, results, gallery, quote, press, next),
+// tinted by the project's colour. Root carries `sbody` (studio engine:
+// .sd-rev reveals) and `scs` (motion engine: tilt / glare / magnetic /
+// .fa-journey draw).
+import { Icon } from 'astro-icon/components';
+import type { Project } from '../../data/projects';
+
+interface Props {
+	project: Project;
+	others: Project[];
+}
+const { project: p, others } = Astro.props;
+const cs = p.caseStudy!;
+
+const galVideo = cs.gallery.find((g) => g.kind === 'video');
+const galImages = cs.gallery.filter((g) => g.kind !== 'video');
+const heroBadges = cs.results.slice(0, 2);
+const roman = ['I', 'II', 'III', 'IV', 'V', 'VI'];
+---
+
+<div class="scs sbody view-body view-body-studio" style={`--c:${p.color}`}>
+	<!-- ── A · the exhibition entrance ─────────────────────── -->
+	<section class="sc-sec sc-entry" data-cursor="play">
+		<div class="sc-wrap">
+			<div class="sc-folio sd-rev">
+				<span>Collection Wing — Exhibition</span>
+				<span>{cs.meta.sector}</span>
+				<span><a href="/portfolio" class="sc-folio-back">← The collection</a></span>
+			</div>
+			<div class="sc-open">
+				<div class="sc-open-copy">
+					<span class="sc-kick sd-rev">Now showing · {cs.meta.year}</span>
+					<h1 class="sc-display sd-rev">{p.name}<em>.</em></h1>
+					<p class="sc-tagline sd-rev">{p.tagline}</p>
+					<p class="sc-lead sd-rev">{cs.intro}</p>
+					<div class="sc-label sd-rev">
+						<i><b>Client</b>{cs.meta.client}</i>
+						<i><b>Year</b>{cs.meta.year}</i>
+						<i><b>Scope</b>{cs.meta.scope}</i>
+					</div>
+					<div class="sc-open-cues sd-rev">
+						{
+							cs.liveUrl && (
+								<a
+									href={cs.liveUrl}
+									target="_blank"
+									rel="noopener noreferrer"
+									data-leaving=""
+									data-leaving-name={p.name}
+									class="sc-btn fa-cta"
+								>
+									<Icon width={16} name="mdi:open-in-new" />
+									Visit the live piece
+								</a>
+							)
+						}
+						<a href="/contact" class="sc-link">
+							Commission yours
+							<Icon width={15} name="mdi:arrow-right" />
+						</a>
+					</div>
+				</div>
+
+				<!-- the work, hung under its own light -->
+				<figure class="sc-piece sd-rev" data-fa-tilt="4">
+					<span class="sc-wire" aria-hidden="true"></span>
+					<span class="sa-glare" aria-hidden="true"></span>
+					<a
+						class="sc-frame"
+						href={cs.liveUrl ?? undefined}
+						target={cs.liveUrl ? '_blank' : undefined}
+						rel={cs.liveUrl ? 'noopener noreferrer' : undefined}
+						data-leaving={cs.liveUrl ? '' : undefined}
+						data-leaving-name={cs.liveUrl ? p.name : undefined}
+						aria-label={p.name}
+					>
+						<img src={p.img} alt={p.name} loading="eager" />
+					</a>
+					{
+						heroBadges.map((r, i) => (
+							<span class:list={['sc-float', `sc-float--${i}`]}>
+								<strong>{r.stat}</strong>
+								<em>{r.label}</em>
+							</span>
+						))
+					}
+					<figcaption class="sc-plaque">
+						<strong>{p.name}, {cs.meta.year}</strong>
+						<span>{cs.meta.sector} · On permanent display</span>
+					</figcaption>
+				</figure>
+			</div>
+		</div>
+
+		<!-- the services belt -->
+		<div class="sc-belt sd-rev" aria-hidden="true">
+			<div class="sc-belt-track">
+				{
+					Array.from({ length: 2 }).map(() => (
+						<span class="sc-belt-seq">
+							{cs.services.map((s) => (
+								<><em>{s.toLowerCase()}</em><b>✦</b></>
+							))}
+						</span>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── B · the brief (wall text) ───────────────────────── -->
+	<section class="sc-sec" data-cursor="pen">
+		<div class="sc-wrap">
+			<div class="sc-rule sd-rev">
+				<span>The brief</span>
+				<span>Read before viewing</span>
+			</div>
+			<div class="sc-walltext">
+				<p class="sc-wt-big sd-rev">{cs.challenge}</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── C · how it was made ─────────────────────────────── -->
+	<section class="sc-sec" data-cursor="vector">
+		<div class="sc-wrap">
+			<div class="sc-rule sd-rev">
+				<span>How it was made</span>
+				<span>The studio's hand, step by step</span>
+			</div>
+			<div class="sc-steps fa-journey">
+				<span class="sc-spine" aria-hidden="true"></span>
+				{
+					cs.approach.map((a, i) => (
+						<article class="sc-step sd-rev" style={`--i:${i}`}>
+							<span class="sc-step-node" aria-hidden="true" />
+							<span class="sc-step-n">{roman[i] || i + 1}</span>
+							<div>
+								<h3 class="sc-step-t">{a.title}</h3>
+								<p class="sc-step-d">{a.desc}</p>
+							</div>
+						</article>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── D · details of the piece ────────────────────────── -->
+	<section class="sc-sec" data-cursor="palette">
+		<div class="sc-wrap">
+			<div class="sc-rule sd-rev">
+				<span>Details of the piece</span>
+				<span>Look closer</span>
+			</div>
+			<div class="sc-hl">
+				{
+					cs.highlights.map((h, i) => (
+						<article class="sc-hl-card sd-rev" style={`--i:${i % 2}`} data-fa-tilt="7">
+							<span class="sa-glare" aria-hidden="true" />
+							<span class="sc-hl-n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+							<h3>{h.title}</h3>
+							<p>{h.desc}</p>
+						</article>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── E · the numbers ─────────────────────────────────── -->
+	<section class="sc-sec" data-cursor="repo">
+		<div class="sc-wrap">
+			<div class="sc-rule sd-rev">
+				<span>The numbers</span>
+				<span>What the piece did in the world</span>
+			</div>
+			<ul class="sc-results sd-rev">
+				{
+					cs.results.map((r) => (
+						<li>
+							<strong>{r.stat}</strong>
+							<span>{r.label}</span>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+	</section>
+
+	<!-- ── F · the gallery ─────────────────────────────────── -->
+	<section class="sc-sec" data-cursor="play">
+		<div class="sc-wrap">
+			<div class="sc-rule sd-rev">
+				<span>The gallery</span>
+				<span>Frames & footage from the build</span>
+			</div>
+			<div class="sc-media sd-rev">
+				{
+					galVideo && (
+						<div class="sc-mframe sc-mframe--wide">
+							<Icon width={34} name="mdi:play-circle-outline" />
+							<span class="sc-mname">{galVideo.label}</span>
+							{galVideo.caption && <span class="sc-msub">{galVideo.caption}</span>}
+						</div>
+					)
+				}
+				{
+					galImages.map((g) => (
+						<div class="sc-mframe">
+							{g.src ? (
+								<img src={g.src} alt={g.caption || g.label} loading="lazy" />
+							) : (
+								<>
+									<Icon width={24} name="mdi:image-outline" />
+									<span class="sc-mname">{g.label}</span>
+								</>
+							)}
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── G · the guest note ──────────────────────────────── -->
+	{
+		cs.quote && (
+			<section class="sc-sec" data-cursor="quote">
+				<div class="sc-wrap">
+					<figure class="sc-note sd-rev">
+						<span class="sc-note-mark" aria-hidden="true">“</span>
+						<blockquote>
+							<p>{cs.quote.text}</p>
+							<footer>— {cs.quote.who}</footer>
+						</blockquote>
+					</figure>
+				</div>
+			</section>
+		)
+	}
+
+	<!-- ── H · in the press ────────────────────────────────── -->
+	{
+		cs.press && cs.press.items.length > 0 && (
+			<section class="sc-sec" data-cursor="repo">
+				<div class="sc-wrap">
+					<div class="sc-rule sd-rev">
+						<span>In the press</span>
+						<span>{cs.press.intro || 'Catalogued & covered'}</span>
+					</div>
+					<ul class="sc-press">
+						{cs.press.items.map((it, i) => {
+							const Tag = it.url ? 'a' : 'div';
+							return (
+								<li class="sd-rev" style={`--i:${i}`}>
+									<Tag
+										class="sc-press-row"
+										href={it.url || undefined}
+										target={it.url ? '_blank' : undefined}
+										rel={it.url ? 'noopener noreferrer' : undefined}
+									>
+										<span class="sc-press-outlet">{it.outlet}</span>
+										<span class="sc-press-title">{it.title}</span>
+										<span class="sc-press-date">{it.date || 'coming'}</span>
+										{it.url && <Icon width={15} name="mdi:arrow-top-right" />}
+									</Tag>
+								</li>
+							);
+						})}
+					</ul>
+				</div>
+			</section>
+		)
+	}
+
+	<!-- ── I · next rooms + the desk ───────────────────────── -->
+	<section class="sc-sec sc-sec--last" data-cursor="phone">
+		<div class="sc-wrap">
+			<div class="sc-others sd-rev">
+				<span class="sc-others-h">Continue through the wing</span>
+				<div class="sc-others-grid">
+					{
+						others.slice(0, 3).map((o) => (
+							<a href={`/work/${o.slug}`} class="sc-other" style={`--oc:${o.color}`}>
+								<span class="sc-other-frame">
+									<img src={o.img} alt={o.name} loading="lazy" />
+								</span>
+								<span class="sc-other-plaque">
+									<strong>{o.name}</strong>
+									<span>{o.caseStudy?.meta.sector} · {o.year}</span>
+								</span>
+							</a>
+						))
+					}
+				</div>
+			</div>
+			<div class="sc-ctabox sd-rev">
+				<span class="sc-cta-k">Commissions open</span>
+				<h2 class="sc-h2">Your story could <em>hang here.</em></h2>
+				<p class="sc-lead sc-lead--center">
+					Every exhibition in this wing started as a rough idea. Bring
+					yours — we design it, build it, launch it, and grow it.
+				</p>
+				<div class="sc-open-cues sc-open-cues--center">
+					<a href="/contact" class="sc-btn fa-cta">
+						Start your exhibition
+						<Icon width={17} name="mdi:arrow-right" />
+					</a>
+					<a href="tel:+2348100204570" class="sc-call">
+						or call <strong>+234 810 020 4570</strong>
+					</a>
+				</div>
+			</div>
+		</div>
+	</section>
+</div>
+
+<style>
+	/* ── Studio case study — gallery dress, tinted by the project. ── */
+	.scs {
+		--sa-ink: #f3edf0;
+		--sa-muted: rgba(243, 237, 240, 0.64);
+		--sa-faint: rgba(243, 237, 240, 0.42);
+		--sa-line: rgba(243, 237, 240, 0.14);
+		--sa-card: rgba(255, 255, 255, 0.04);
+		--sa-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+		font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+		position: relative;
+		isolation: isolate;
+		overflow: hidden;
+		background:
+			radial-gradient(1100px 560px at 84% -6%, color-mix(in srgb, var(--c) 12%, transparent), transparent 60%),
+			radial-gradient(820px 480px at 8% 55%, rgba(168, 85, 247, 0.06), transparent 60%),
+			linear-gradient(180deg, #0f0a0d 0%, #130c11 50%, #0b0709 100%);
+		color: var(--sa-ink);
+		padding: clamp(1.25rem, 2.5vw, 2rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 4rem);
+		transition: background 0.4s ease, color 0.4s ease;
+	}
+	:global(html:not(.dark)) .scs {
+		--sa-ink: #1c151a;
+		--sa-muted: rgba(28, 21, 26, 0.7);
+		--sa-faint: rgba(28, 21, 26, 0.48);
+		--sa-line: rgba(28, 21, 26, 0.14);
+		--sa-card: rgba(28, 21, 26, 0.035);
+		background:
+			radial-gradient(1100px 560px at 84% -6%, color-mix(in srgb, var(--c) 8%, transparent), transparent 60%),
+			linear-gradient(180deg, #f3ece6 0%, #ece2da 55%, #f3ece6 100%);
+	}
+
+	.sc-sec { padding-block: clamp(2.25rem, 5vw, 3.75rem); }
+	.sc-entry { padding-top: clamp(0.5rem, 1.5vw, 1rem); padding-bottom: 0; }
+	.sc-wrap { max-width: 80rem; margin: 0 auto; }
+
+	.sc-folio {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+		flex-wrap: wrap;
+		padding: 0.6rem 0;
+		border-top: 2px solid var(--sa-ink);
+		border-bottom: 1px solid var(--sa-line);
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--sa-faint);
+		margin-bottom: clamp(1.75rem, 4vw, 2.75rem);
+	}
+	.sc-folio span:first-child { color: var(--sa-ink); }
+	.sc-folio-back { color: var(--sa-faint); transition: color 0.2s ease; }
+	.sc-folio-back:hover { color: var(--c); }
+	.sc-rule {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 1rem;
+		padding-bottom: 0.5rem;
+		border-bottom: 1px solid var(--sa-line);
+		margin-bottom: clamp(1.5rem, 3.5vw, 2.5rem);
+		font-size: 0.74rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+	}
+	.sc-rule span:first-child { color: var(--c); }
+	.sc-rule span:last-child {
+		color: var(--sa-faint);
+		font-style: italic;
+		font-family: var(--sa-serif);
+		letter-spacing: 0.02em;
+		text-transform: none;
+		font-size: 0.98rem;
+		font-weight: 400;
+	}
+
+	.sc-kick {
+		display: inline-block;
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--c);
+		margin-bottom: 0.7rem;
+	}
+	.sc-display {
+		font-size: clamp(2.6rem, 6vw, 5rem);
+		font-weight: 850;
+		letter-spacing: -0.03em;
+		line-height: 0.98;
+		margin: 0 0 0.5rem;
+	}
+	.sc-display em {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-weight: 500;
+		color: var(--c);
+	}
+	.sc-h2 {
+		font-size: clamp(2rem, 4.5vw, 3.4rem);
+		font-weight: 850;
+		letter-spacing: -0.02em;
+		line-height: 1;
+		margin: 0.3rem 0 1rem;
+	}
+	.sc-h2 em {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-weight: 500;
+		color: var(--c);
+	}
+	.sc-tagline {
+		margin: 0 0 0.9rem;
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: clamp(1.1rem, 2vw, 1.4rem);
+		color: var(--c);
+	}
+	.sc-lead {
+		font-size: clamp(0.98rem, 1.5vw, 1.12rem);
+		line-height: 1.7;
+		color: var(--sa-muted);
+		max-width: 34rem;
+		margin: 0 0 1.2rem;
+	}
+	.sc-lead--center { text-align: center; margin-inline: auto; max-width: 36rem; }
+	.sc-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		font-weight: 800;
+		font-size: 0.92rem;
+		color: var(--c);
+		border-bottom: 2px solid color-mix(in srgb, var(--c) 45%, transparent);
+		padding-bottom: 0.15rem;
+		transition: border-color 0.25s ease, gap 0.25s ease;
+	}
+	.sc-link:hover { gap: 0.7rem; border-color: var(--c); }
+	.sc-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+		padding: 0.9rem 1.7rem;
+		border-radius: 9999px;
+		font-weight: 800;
+		font-size: 0.92rem;
+		color: #fff;
+		background: linear-gradient(95deg, var(--c), color-mix(in srgb, var(--c) 55%, #a855f7));
+		box-shadow: 0 18px 44px -16px color-mix(in srgb, var(--c) 75%, transparent);
+		transition: box-shadow 0.25s ease, filter 0.25s ease;
+		will-change: transform;
+	}
+	.sc-btn:hover { filter: brightness(1.07); }
+	.sc-call { font-size: 0.95rem; color: var(--sa-muted); }
+	.sc-call strong {
+		font-weight: 850;
+		color: var(--sa-ink);
+		transition: color 0.25s ease;
+	}
+	.sc-call:hover strong { color: var(--c); }
+
+	.sa-glare {
+		position: absolute;
+		inset: 0;
+		border-radius: inherit;
+		background: radial-gradient(340px 220px at var(--gx, 50%) var(--gy, 20%), color-mix(in srgb, var(--c) 12%, transparent), transparent 70%);
+		opacity: 0;
+		transition: opacity 0.3s ease;
+		pointer-events: none;
+		z-index: 2;
+	}
+	[data-fa-tilt]:hover .sa-glare { opacity: 1; }
+
+	/* ── A · entrance ── */
+	.sc-open {
+		display: grid;
+		gap: clamp(1.75rem, 4vw, 3.5rem);
+		align-items: center;
+	}
+	@media (min-width: 960px) {
+		.sc-open { grid-template-columns: 1.02fr 0.98fr; }
+	}
+	.sc-label {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin-bottom: 1.4rem;
+	}
+	.sc-label i {
+		display: grid;
+		gap: 0.1rem;
+		font-style: normal;
+		font-size: 0.85rem;
+		font-weight: 700;
+		padding: 0.5rem 0.9rem;
+		border-radius: 0.4rem;
+		border: 1px solid var(--sa-line);
+		background: var(--sa-card);
+		color: var(--sa-ink);
+	}
+	.sc-label i b {
+		font-size: 0.62rem;
+		font-weight: 800;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--sa-faint);
+	}
+	.sc-open-cues { display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap; }
+	.sc-open-cues--center { justify-content: center; }
+
+	.sc-piece {
+		position: relative;
+		margin: 0;
+		border-radius: 0.4rem;
+		transform: rotate(1.2deg);
+	}
+	@media (max-width: 959px) {
+		.sc-piece { transform: none; margin-top: 1.6rem; }
+	}
+	.sc-wire {
+		position: absolute;
+		left: 50%;
+		top: -2.1rem;
+		width: 9px;
+		height: 9px;
+		transform: translateX(-50%);
+		border-radius: 50%;
+		background: var(--c);
+		box-shadow: 0 0 0 3px color-mix(in srgb, var(--c) 25%, transparent);
+		pointer-events: none;
+		z-index: 2;
+	}
+	.sc-wire::before,
+	.sc-wire::after {
+		content: '';
+		position: absolute;
+		top: 4px;
+		width: 1.5px;
+		height: 2.4rem;
+		background: linear-gradient(180deg, color-mix(in srgb, var(--sa-ink) 45%, transparent), color-mix(in srgb, var(--sa-ink) 18%, transparent));
+	}
+	.sc-wire::before { left: 3px; transform-origin: top center; transform: rotate(58deg); }
+	.sc-wire::after { right: 3px; transform-origin: top center; transform: rotate(-58deg); }
+	.sc-frame {
+		position: relative;
+		display: block;
+		aspect-ratio: 16 / 10;
+		overflow: hidden;
+		border-radius: 0.4rem;
+		border: 1px solid color-mix(in srgb, var(--c) 35%, var(--sa-line));
+		box-shadow:
+			inset 0 0 0 10px color-mix(in srgb, var(--sa-ink) 5%, transparent),
+			0 0 55px -14px color-mix(in srgb, var(--c) 45%, transparent),
+			0 40px 90px -36px rgba(0, 0, 0, 0.8);
+		background: var(--sa-card);
+	}
+	.sc-frame img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: top;
+		transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.sc-piece:hover .sc-frame img { transform: scale(1.04); }
+	.sc-float {
+		position: absolute;
+		display: grid;
+		gap: 0.05rem;
+		padding: 0.55rem 0.9rem;
+		border-radius: 0.5rem;
+		background: rgba(12, 8, 11, 0.78);
+		-webkit-backdrop-filter: blur(10px);
+		backdrop-filter: blur(10px);
+		border: 1px solid color-mix(in srgb, var(--c) 40%, rgba(255, 255, 255, 0.14));
+		box-shadow: 0 16px 34px -16px rgba(0, 0, 0, 0.7);
+		z-index: 2;
+	}
+	.sc-float strong {
+		font-size: 1.05rem;
+		font-weight: 850;
+		color: var(--c);
+		letter-spacing: -0.01em;
+	}
+	.sc-float em {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 0.72rem;
+		color: rgba(255, 255, 255, 0.72);
+	}
+	.sc-float--0 { top: 0.9rem; right: 0.9rem; }
+	.sc-float--1 { bottom: 3.9rem; left: 0.9rem; }
+
+	.sc-plaque {
+		display: inline-flex;
+		flex-direction: column;
+		gap: 0.12rem;
+		margin-top: 0.85rem;
+		padding: 0.6rem 0.95rem;
+		background: rgba(12, 8, 11, 0.66);
+		-webkit-backdrop-filter: blur(12px) saturate(130%);
+		backdrop-filter: blur(12px) saturate(130%);
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		border-left: 3px solid var(--c);
+		border-radius: 0 0.5rem 0.5rem 0;
+		box-shadow: 0 14px 30px -14px rgba(0, 0, 0, 0.6);
+		max-width: fit-content;
+	}
+	.sc-plaque strong { font-size: 0.82rem; font-weight: 850; color: #fff; }
+	.sc-plaque span {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 0.74rem;
+		color: rgba(255, 255, 255, 0.62);
+	}
+
+	/* the services belt */
+	.sc-belt {
+		overflow: hidden;
+		border-block: 1px solid var(--sa-line);
+		padding-block: 0.45rem;
+		margin-top: clamp(2rem, 4vw, 3rem);
+	}
+	.sc-belt-track {
+		display: flex;
+		width: max-content;
+		animation: sc-belt 24s linear infinite;
+	}
+	.sc-belt-seq { display: inline-flex; align-items: center; white-space: nowrap; }
+	.sc-belt-seq em {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: clamp(1.2rem, 2.6vw, 1.9rem);
+		color: color-mix(in srgb, var(--sa-ink) 34%, transparent);
+	}
+	.sc-belt-seq b {
+		margin: 0 0.9rem;
+		color: color-mix(in srgb, var(--c) 60%, transparent);
+		font-size: 0.9rem;
+	}
+	@keyframes sc-belt {
+		from { transform: translateX(0); }
+		to { transform: translateX(-50%); }
+	}
+
+	/* ── B · the brief ── */
+	.sc-walltext { max-width: 56rem; }
+	.sc-wt-big {
+		margin: 0;
+		font-size: clamp(1.3rem, 2.8vw, 2.1rem);
+		line-height: 1.45;
+		font-weight: 600;
+		letter-spacing: -0.01em;
+		padding-left: 1.2rem;
+		border-left: 3px solid var(--c);
+	}
+
+	/* ── C · steps ── */
+	.sc-steps {
+		position: relative;
+		display: grid;
+		gap: clamp(1.4rem, 3vw, 2rem);
+		padding-left: clamp(1.6rem, 4vw, 2.6rem);
+	}
+	.sc-spine {
+		position: absolute;
+		top: 0.4rem;
+		bottom: 0.4rem;
+		left: 8px;
+		width: 2px;
+		background: linear-gradient(180deg, var(--c), color-mix(in srgb, var(--c) 25%, transparent));
+		transform: scaleY(0);
+		transform-origin: top;
+		transition: transform 1.6s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.sc-steps.is-drawing .sc-spine { transform: scaleY(1); }
+	.sc-step { position: relative; display: grid; grid-template-columns: auto 1fr; gap: 1rem; align-items: start; }
+	.sc-step-node {
+		position: absolute;
+		left: calc(-1 * clamp(1.6rem, 4vw, 2.6rem) + 3px);
+		top: 0.45rem;
+		width: 12px;
+		height: 12px;
+		border-radius: 50%;
+		background: var(--c);
+		box-shadow: 0 0 0 4px color-mix(in srgb, var(--c) 22%, transparent);
+	}
+	.sc-step-n {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: clamp(1.4rem, 2.8vw, 2rem);
+		line-height: 1;
+		color: var(--c);
+		min-width: 2.4rem;
+	}
+	.sc-step-t { margin: 0.1rem 0 0.25rem; font-size: clamp(1.1rem, 2vw, 1.35rem); font-weight: 800; }
+	.sc-step-d { margin: 0; max-width: 44rem; font-size: 0.94rem; line-height: 1.6; color: var(--sa-muted); }
+
+	/* ── D · highlights ── */
+	.sc-hl {
+		display: grid;
+		gap: 1.1rem;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+	@media (max-width: 760px) {
+		.sc-hl { grid-template-columns: 1fr; }
+	}
+	.sc-hl-card {
+		position: relative;
+		padding: 1.35rem 1.35rem 1.45rem;
+		border-radius: 0.4rem;
+		border: 1px solid var(--sa-line);
+		background: var(--sa-card);
+		box-shadow: inset 0 0 0 8px color-mix(in srgb, var(--sa-ink) 4%, transparent);
+		transition: border-color 0.25s ease;
+	}
+	.sc-hl-card:hover { border-color: color-mix(in srgb, var(--c) 50%, transparent); }
+	.sc-hl-n {
+		position: absolute;
+		top: 0.9rem;
+		right: 1.1rem;
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 1rem;
+		color: var(--sa-faint);
+	}
+	.sc-hl-card h3 { margin: 0 0 0.4rem; font-size: 1.05rem; font-weight: 800; letter-spacing: -0.01em; }
+	.sc-hl-card p { margin: 0; font-size: 0.92rem; line-height: 1.62; color: var(--sa-muted); }
+
+	/* ── E · results ── */
+	.sc-results {
+		display: grid;
+		/* one line, however many numbers the piece earned — no dead columns */
+		grid-auto-flow: column;
+		grid-auto-columns: minmax(0, 1fr);
+		gap: 1rem;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	@media (max-width: 860px) {
+		.sc-results { grid-auto-flow: row; grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 1.4rem; }
+		/* an odd count never leaves an orphan cell */
+		.sc-results li:last-child:nth-child(odd) { grid-column: span 2; }
+	}
+	.sc-results li {
+		display: grid;
+		gap: 0.15rem;
+		padding-left: 1rem;
+		border-left: 1px solid var(--sa-line);
+	}
+	.sc-results li strong {
+		font-size: clamp(1.5rem, 2.8vw, 2.2rem);
+		font-weight: 850;
+		letter-spacing: -0.02em;
+		color: var(--c);
+	}
+	.sc-results li span {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 0.86rem;
+		color: var(--sa-faint);
+	}
+
+	/* ── F · gallery ── */
+	.sc-media {
+		display: grid;
+		gap: 1rem;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
+	.sc-mframe {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.45rem;
+		aspect-ratio: 4 / 3;
+		overflow: hidden;
+		border-radius: 0.4rem;
+		border: 1px solid var(--sa-line);
+		box-shadow: inset 0 0 0 8px color-mix(in srgb, var(--sa-ink) 4%, transparent);
+		background: var(--sa-card);
+		color: var(--sa-muted);
+		padding: 0.8rem;
+	}
+	.sc-mframe img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: top;
+	}
+	.sc-mframe:has(img) { position: relative; padding: 0; }
+	.sc-mframe--wide { grid-column: span 2; grid-row: span 2; aspect-ratio: auto; }
+	.sc-mname {
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.07em;
+		text-transform: uppercase;
+		text-align: center;
+	}
+	.sc-msub {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 0.8rem;
+		color: var(--sa-faint);
+		text-align: center;
+	}
+	@media (max-width: 760px) {
+		.sc-media { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+		.sc-mframe--wide { grid-column: span 2; grid-row: auto; aspect-ratio: 16 / 9; }
+	}
+
+	/* ── G · guest note ── */
+	.sc-note {
+		position: relative;
+		margin: 0 auto;
+		max-width: 56rem;
+		padding: clamp(1rem, 2vw, 1.5rem) clamp(1.5rem, 5vw, 4rem) 0;
+	}
+	.sc-note-mark {
+		position: absolute;
+		top: -1.6rem;
+		left: 0;
+		font-family: var(--sa-serif);
+		font-size: clamp(4.5rem, 9vw, 7rem);
+		line-height: 1;
+		color: var(--c);
+		opacity: 0.85;
+		pointer-events: none;
+	}
+	.sc-note blockquote { margin: 0; }
+	.sc-note p {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: clamp(1.3rem, 2.8vw, 2rem);
+		line-height: 1.4;
+		margin: 0 0 1rem;
+	}
+	.sc-note footer {
+		font-size: 0.85rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--sa-faint);
+	}
+
+	/* ── H · press ── */
+	.sc-press {
+		display: grid;
+		gap: 0.6rem;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	.sc-press-row {
+		display: flex;
+		align-items: baseline;
+		gap: 1rem;
+		padding: 0.85rem 1.1rem;
+		border: 1px solid var(--sa-line);
+		border-radius: 0.4rem;
+		background: var(--sa-card);
+		color: var(--sa-ink);
+		transition: border-color 0.25s ease, transform 0.25s ease;
+	}
+	a.sc-press-row:hover { border-color: color-mix(in srgb, var(--c) 55%, transparent); transform: translateX(4px); }
+	.sc-press-outlet {
+		flex-shrink: 0;
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--c);
+		min-width: 9rem;
+	}
+	.sc-press-title { flex: 1; font-size: 0.92rem; font-weight: 600; min-width: 0; }
+	.sc-press-date {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 0.82rem;
+		color: var(--sa-faint);
+		flex-shrink: 0;
+	}
+	.sc-press-row :global(svg) { color: var(--sa-faint); flex-shrink: 0; align-self: center; }
+	@media (max-width: 640px) {
+		.sc-press-row { flex-wrap: wrap; gap: 0.3rem 1rem; }
+		.sc-press-outlet { min-width: 0; }
+		.sc-press-title { flex-basis: 100%; }
+	}
+
+	/* ── I · next + desk ── */
+	.sc-sec--last { padding-bottom: clamp(1.5rem, 3vw, 2.5rem); }
+	.sc-others { margin-bottom: clamp(2.5rem, 5vw, 3.5rem); }
+	.sc-others-h {
+		display: block;
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--sa-faint);
+		margin-bottom: 1rem;
+	}
+	.sc-others-grid {
+		display: grid;
+		gap: 1.1rem;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+	@media (max-width: 860px) {
+		.sc-others-grid { grid-template-columns: 1fr; }
+	}
+	.sc-other { display: grid; justify-items: start; color: inherit; }
+	.sc-other-frame {
+		display: block;
+		width: 100%;
+		aspect-ratio: 16 / 9;
+		overflow: hidden;
+		border-radius: 0.4rem;
+		border: 1px solid var(--sa-line);
+		box-shadow: inset 0 0 0 6px color-mix(in srgb, var(--sa-ink) 4%, transparent);
+		background: var(--sa-card);
+		transition: border-color 0.3s ease;
+	}
+	.sc-other:hover .sc-other-frame { border-color: color-mix(in srgb, var(--oc) 55%, transparent); }
+	.sc-other-frame img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: top;
+		transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.sc-other:hover .sc-other-frame img { transform: scale(1.05); }
+	.sc-other-plaque { display: grid; gap: 0.05rem; margin-top: 0.55rem; }
+	.sc-other-plaque strong { font-size: 0.92rem; font-weight: 800; }
+	.sc-other-plaque span {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 0.78rem;
+		color: var(--sa-faint);
+	}
+	.sc-ctabox { text-align: center; }
+	.sc-cta-k {
+		display: inline-block;
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--c);
+	}
+
+	/* ── reveals ── */
+	.sd-rev {
+		opacity: 0;
+		transform: translateY(22px);
+		transition: opacity 0.65s ease, transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+		transition-delay: calc(var(--i, 0) * 0.06s);
+	}
+	.sd-rev.is-on { opacity: 1; transform: translateY(0); }
+
+	@media (prefers-reduced-motion: reduce) {
+		.sd-rev { opacity: 1; transform: none; transition: none; }
+		.sc-belt-track { animation: none; }
+		.sc-spine { transform: none; transition: none; }
+	}
+</style>
