@@ -444,18 +444,18 @@ export const faq = [
   {
     question: "Do I get an incentive for referring jobs to Swizel?",
     answer:
-      "Yes. we have a referral program that guarantees bonuses for bringing in paying clients, you can contact us via contact@swizel.co or WhatsApp us at +234 8140 833 014",
+      "Yes. we have a referral program that guarantees bonuses for bringing in paying clients, you can contact us via contact@swizel.co or WhatsApp us at +234 810 020 4570",
   },
   {
     question:
       "I want to move my business or tech support to Nigeria, do you offer such a service?",
     answer:
-      "Yes. We are certain our well-rounded team will fulfill all your support and transition needs. We will also help with compliance and great insight into the Nigerian business space. Please  contact us via contact@swizel.co or WhatsApp us at +234 8140 833 014",
+      "Yes. We are certain our well-rounded team will fulfill all your support and transition needs. We will also help with compliance and great insight into the Nigerian business space. Please  contact us via contact@swizel.co or WhatsApp us at +234 810 020 4570",
   },
   {
     question: "I have an idea I want to turn into a startup, can you help?",
     answer:
-      "Yes. We will be your team and work with you to turn your ideas into real products and services. Contact us via contact@swizel.co or WhatsApp us at +234 8140 833 014 ",
+      "Yes. We will be your team and work with you to turn your ideas into real products and services. Contact us via contact@swizel.co or WhatsApp us at +234 810 020 4570 ",
   },
 ];
 

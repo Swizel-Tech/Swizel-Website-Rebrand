@@ -9,7 +9,7 @@ type Props = {
 
 const {
 	textColor = 'text-darker',
-	phone = '+234 814 083 3014',
+	phone = '+234 810 020 4570',
 	email = 'info@swizel.co',
 } = Astro.props;
 ---
@@ -22,7 +22,7 @@ const {
 				'md:text-6xl text-4xl font-extrabold text-darker sm:leading-[1.25]',
 				`!${textColor}`,
 			]}
-			href={`tel:${phone}`}
+			href={`tel:${phone.replace(/\s/g, '')}`}
 		>
 			{phone}
 		</a>
