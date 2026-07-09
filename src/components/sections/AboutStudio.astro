@@ -1,0 +1,1376 @@
+---
+// About page · Studio world — the Retrospective Wing of The Swizel Gallery.
+// The About page as a museum retrospective about the makers themselves. Same
+// foundational content as Boardroom/Founder/Builder About (story, mission /
+// vision / core values, what we do, real timeline incl 2024, clickable team,
+// media, Brevarium, client words) told as wall text, a charter, ateliers,
+// exhibition history, a portrait wall, the catalogue and a guestbook.
+// Root carries `sbody` so the studio engine (.sd-rev reveals + #sd-pull
+// guestbook rotation) binds, and `sabout` so the shared motion engine
+// (tilt / glare / team modal / magnetic CTAs) binds too.
+import { Icon } from 'astro-icon/components';
+import { teamDetails } from '../../consts';
+
+const stats = [
+	{ n: '65+', label: 'works shipped' },
+	{ n: '25+', label: 'makers in residence' },
+	{ n: '7+', label: 'years exhibiting' },
+	{ n: '10+', label: 'countries on loan to' },
+];
+
+// the six disciplines as ateliers — same content as every other view
+const ateliers = [
+	{ n: '01', icon: 'mdi:palette-outline', title: 'Design', desc: 'Brand identity, graphics and product design — interfaces your customers find effortless.' },
+	{ n: '02', icon: 'mdi:code-tags', title: 'Development', desc: 'Web and mobile engineering built to scale. We build, test and ship fast, without breaking things.' },
+	{ n: '03', icon: 'mdi:bullhorn-outline', title: 'Marketing', desc: 'We grow your audience across every platform that matters, and co-market the products we ship.' },
+	{ n: '04', icon: 'mdi:compass-outline', title: 'Strategy', desc: 'Research, define, lock the goal — a tailored product roadmap before a line of code is written.' },
+	{ n: '05', icon: 'mdi:wrench-outline', title: 'Maintenance', desc: 'Improving existing products and keeping complex systems healthy, secure and online, year after year.' },
+	{ n: '06', icon: 'mdi:school-outline', title: 'Education', desc: 'A free bootcamp and The Brevarium, putting real, job-ready skills in the hands of the next makers.' },
+];
+
+// the real road — same milestones as every About world, as exhibition volumes
+const history = [
+	{ year: '2019', vol: 'Vol. I', title: 'The first room opens.', desc: 'Swizel starts in Nigeria — a small, stubborn team taking on its first builds for local businesses.' },
+	{ year: '2020', vol: 'Vol. II', title: 'Products, not projects.', desc: 'We stop thinking in deliverables and start thinking in products — work meant to live and grow.' },
+	{ year: '2022', vol: 'Vol. III', title: 'Mobile joins the collection.', desc: 'Native iOS and Android join the practice. The same house now ships across web and phone.' },
+	{ year: '2023', vol: 'Vol. IV', title: 'At home in every sector.', desc: 'Fintech, real estate, sports, education, logistics — the work spreads across the industries that move Africa.' },
+	{ year: '2024', vol: 'Vol. V', title: 'Crossing borders.', desc: 'The work goes global. ConvertMyBetCode serves users in 10+ countries, and the first Brevarium is published.' },
+	{ year: '2025', vol: 'Vol. VI', title: 'Teaching the next ones.', desc: 'We open a free tech bootcamp — training new engineers, designers and marketers on real products.' },
+	{ year: '2026', vol: 'Vol. VII', title: '65+ and counting.', desc: 'Seven years in, more than sixty-five products live in the market, and we are only warming up.' },
+];
+
+// same crew, same order, same modal data as the other About worlds
+const teamOrder = [
+	{ name: 'Azoro', role: 'Business Development Lead' },
+	{ name: 'Ruke', role: 'Product Manager' },
+	{ name: 'Dennis', role: 'UI/UX Designer' },
+	{ name: 'Mary', role: 'Software Engineer' },
+	{ name: 'Stephen', role: 'Fullstack Developer' },
+	{ name: 'Nathaniel', role: 'Frontend Developer' },
+	{ name: 'Precious', role: 'Mobile Developer' },
+	{ name: 'Linda', role: 'Marketing Lead' },
+];
+const team = teamOrder.map((m) => {
+	const d = (teamDetails as any[]).find((t) => t.name === m.name) || {};
+	return {
+		...m,
+		bio: d.bio || '',
+		experience: (d.experience || []) as { company: string; jobDesc: string }[],
+		linkedin: d.linkedinURL && d.linkedinURL !== '#' ? d.linkedinURL : '',
+	};
+});
+
+const brevariumEditions = [
+	{ vol: 'Third edition', date: 'Latest · 2026', href: '/brevarium/the-brevarium-latest.pdf' },
+	{ vol: 'Second edition', date: '2025', href: '/The Brevarium by Swizel.pdf' },
+	{ vol: 'First edition', date: '2024', href: '/The Brevarium by Swizel.pdf' },
+];
+
+const quotes = [
+	{ text: 'Warm, responsive and a true extension of our team. They took the worry out of shipping software.', name: 'Chidimma', role: 'Education' },
+	{ text: 'Geniuses, honestly. Working with them was effortless from the first call to launch day.', name: 'Favour', role: 'Marketing' },
+	{ text: 'Thorough, polite and always on time. They make hard things feel easy.', name: 'Cheta', role: 'E-commerce' },
+];
+
+const studioFrames = [
+	{ wide: true, video: true, name: 'studio-life.mp4 — video placeholder', sub: 'A day in the residence' },
+	{ video: false, name: 'critique-friday.jpg' },
+	{ video: false, name: 'sketch-wall.jpg' },
+	{ video: true, name: 'launch-night.mp4 — video' },
+	{ video: false, name: 'the-desk-after-hours.jpg' },
+];
+---
+
+<div class="sabout sbody view-body view-body-studio">
+	<!-- ── A · the retrospective atrium ────────────────────── -->
+	<section class="sa-sec">
+		<div class="sa-wrap">
+			<div class="sa-folio sd-rev">
+				<span>The Swizel Gallery — Retrospective Wing</span>
+				<span>The people behind the collection</span>
+				<span>Est. 2019 · One house · Every craft</span>
+			</div>
+			<h1 class="sa-display sd-rev">
+				Portrait of<br />
+				<em>the studio.</em>
+			</h1>
+			<p class="sa-lead sd-rev">
+				Every piece on our walls was made by hands you can meet. Swizel is
+				one house of designers, engineers and growth marketers, shipping
+				since 2019 — we design the idea, build it, take it to market, and
+				stay to grow it. This wing is about the makers.
+			</p>
+
+			<figure class="sa-centerpiece sd-rev" data-cursor="play" data-fa-tilt="3">
+				<span class="sa-glare" aria-hidden="true"></span>
+				<span class="sa-centerpiece-media">
+					<Icon width={40} name="mdi:play-circle-outline" />
+					<span class="sa-cp-name">the-makers.mp4 — video placeholder</span>
+					<span class="sa-cp-sub">Two minutes inside the residence</span>
+				</span>
+				<figcaption class="sa-plaque sa-plaque--lg">
+					<strong>Portrait of a Studio</strong>
+					<span>Mixed media · 2019—'26 · The retrospective</span>
+				</figcaption>
+			</figure>
+
+			<ul class="sa-wings sd-rev">
+				{stats.map((s) => (
+					<li>
+						<strong>{s.n}</strong>
+						<span>{s.label}</span>
+					</li>
+				))}
+			</ul>
+		</div>
+	</section>
+
+	<!-- ── B · giant type, drifting ────────────────────────── -->
+	<div class="sa-marquee" aria-hidden="true">
+		<div class="sa-marquee-track">
+			{
+				[0, 1].map(() => (
+					<span class="sa-marquee-text">
+						the&nbsp;makers&nbsp;✦&nbsp;in&nbsp;residence&nbsp;✦&nbsp;
+					</span>
+				))
+			}
+		</div>
+	</div>
+
+	<!-- ── C · wall text (the story) ───────────────────────── -->
+	<section class="sa-sec" data-cursor="pen">
+		<div class="sa-wrap">
+			<div class="sa-rule sd-rev">
+				<span>Wall text</span>
+				<span>Read before entering</span>
+			</div>
+			<div class="sa-walltext">
+				<p class="sa-wt-big sd-rev">
+					Founded in <b>2019</b> on a stubborn belief: African businesses
+					deserve software as good as anything built anywhere. <em>Not
+					a vendor. A studio in residence.</em>
+				</p>
+				<div class="sa-wt-side sd-rev">
+					<p>
+						Sixty-five works later, the practice holds one rule — the
+						same hands that imagine a piece stay to build it, hang it,
+						and keep it alive in the market.
+					</p>
+					<p>
+						One team, every discipline. Weeks, not quarters. And we
+						stay long after the opening night.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── D · the charter (mission / vision / values) ─────── -->
+	<section class="sa-sec" data-cursor="palette">
+		<div class="sa-wrap">
+			<div class="sa-rule sd-rev">
+				<span>The charter</span>
+				<span>Engraved at the entrance</span>
+			</div>
+			<div class="sa-charter">
+				<article class="sa-placard sd-rev" data-fa-tilt="7">
+					<span class="sa-glare" aria-hidden="true"></span>
+					<span class="sa-placard-k">Mission</span>
+					<p class="sa-placard-t">
+						To drive the digitalisation of African business — turning
+						bold ideas into software people love.
+					</p>
+				</article>
+				<article class="sa-placard sd-rev" style="--i:1" data-fa-tilt="7">
+					<span class="sa-glare" aria-hidden="true"></span>
+					<span class="sa-placard-k">Vision</span>
+					<p class="sa-placard-t">
+						A world where every ambitious African business runs on
+						world-class software, built at home.
+					</p>
+				</article>
+			</div>
+			<div class="sa-values sd-rev">
+				<span class="sa-values-label">Core values</span>
+				<ul class="sa-values-row">
+					<li><Icon width={16} name="mdi:lightbulb-on-outline" /> Innovative products</li>
+					<li><Icon width={16} name="mdi:handshake-outline" /> Client-centric culture</li>
+					<li><Icon width={16} name="mdi:clock-check-outline" /> Timely delivery</li>
+				</ul>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── E · the ateliers (what we do, one roof) ─────────── -->
+	<section class="sa-sec" data-cursor="vector">
+		<div class="sa-wrap">
+			<div class="sa-rule sd-rev">
+				<span>The ateliers</span>
+				<span>Every craft under one roof</span>
+			</div>
+			<div class="sa-ateliers">
+				{
+					ateliers.map((a, i) => (
+						<article class="sa-atelier sd-rev" style={`--i:${i}`} data-fa-tilt="6">
+							<span class="sa-glare" aria-hidden="true"></span>
+							<span class="sa-atelier-n">{a.n}</span>
+							<span class="sa-atelier-ic"><Icon width={24} name={a.icon} /></span>
+							<h3 class="sa-atelier-t">{a.title}</h3>
+							<p class="sa-atelier-d">{a.desc}</p>
+						</article>
+					))
+				}
+			</div>
+			<p class="sa-atelier-all sd-rev">
+				<a href="/services" class="sa-link">
+					Tour every atelier
+					<Icon width={15} name="mdi:arrow-right" />
+				</a>
+			</p>
+		</div>
+	</section>
+
+	<!-- ── F · exhibition history (the journey, incl 2024) ─── -->
+	<section class="sa-sec" data-cursor="repo">
+		<div class="sa-wrap">
+			<div class="sa-rule sd-rev">
+				<span>Exhibition history</span>
+				<span>2019 — 2026 · the volumes so far</span>
+			</div>
+			<div class="sa-history fa-journey">
+				<span class="sa-spine" aria-hidden="true"></span>
+				{
+					history.map((h, i) => (
+						<article class="sa-vol sd-rev" style={`--i:${i}`}>
+							<span class="sa-vol-node" aria-hidden="true"></span>
+							<span class="sa-vol-year">{h.year}</span>
+							<div class="sa-vol-body">
+								<span class="sa-vol-k">{h.vol}</span>
+								<h3 class="sa-vol-t">{h.title}</h3>
+								<p class="sa-vol-d">{h.desc}</p>
+							</div>
+						</article>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── G · the makers (clickable team) ─────────────────── -->
+	<section class="sa-sec" data-cursor="palette">
+		<div class="sa-wrap">
+			<div class="sa-rule sd-rev">
+				<span>The makers</span>
+				<span>In residence · tap a portrait for the dossier</span>
+			</div>
+			<div class="sa-portraits">
+				{
+					team.map((m, i) => (
+						<button
+							type="button"
+							class="sa-portrait sd-rev"
+							style={`--i:${i}`}
+							data-fa-member
+							data-name={m.name}
+							data-role={m.role}
+							data-bio={m.bio}
+							data-linkedin={m.linkedin}
+							data-exp={JSON.stringify(m.experience)}
+						>
+							<span class="sa-portrait-frame">
+								<img src={`/teammates/${m.name}.jpg`} alt={m.name} loading="lazy" />
+								<span class="sa-portrait-view" aria-hidden="true">
+									View dossier <Icon width={13} name="mdi:arrow-top-right" />
+								</span>
+							</span>
+							<span class="sa-plaque">
+								<strong>{m.name}</strong>
+								<span>{m.role}</span>
+							</span>
+						</button>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── H · in the studio (media) ───────────────────────── -->
+	<section class="sa-sec" data-cursor="play">
+		<div class="sa-wrap">
+			<div class="sa-rule sd-rev">
+				<span>In the studio</span>
+				<span>Footage & frames — your media goes here</span>
+			</div>
+			<div class="sa-media sd-rev">
+				{
+					studioFrames.map((f) => (
+						<div class:list={['sa-frame', { 'sa-frame--wide': f.wide }]}>
+							<Icon width={f.wide ? 34 : 24} name={f.video ? 'mdi:play-circle-outline' : 'mdi:image-outline'} />
+							<span class="sa-frame-name">{f.name}</span>
+							{f.sub && <span class="sa-frame-sub">{f.sub}</span>}
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── I · the catalogue (Brevarium) ───────────────────── -->
+	<section class="sa-sec" data-cursor="pen">
+		<div class="sa-wrap">
+			<div class="sa-rule sd-rev">
+				<span>The catalogue</span>
+				<span>Published by the house</span>
+			</div>
+			<div class="sa-cat">
+				<a
+					class="sa-cat-cover sd-rev"
+					href="/brevarium/the-brevarium-latest.pdf"
+					download="The Brevarium by Swizel"
+					aria-label="Download The Brevarium"
+					data-fa-tilt="6"
+				>
+					<span class="sa-glare" aria-hidden="true"></span>
+					<img src="/bevarium.jpg" alt="The Brevarium by Swizel" loading="lazy" />
+					<span class="sa-plaque">
+						<strong>The Brevarium</strong>
+						<span>Print & PDF · Published yearly since 2024</span>
+					</span>
+				</a>
+				<div class="sa-cat-copy sd-rev">
+					<h3 class="sa-cat-t">The Brevarium — <em>the house journal.</em></h3>
+					<p class="sa-cat-d">
+						Everything the studio learns on the floor — design, code,
+						growth, the business of shipping — written down and given
+						away. Education has never been easier, or smarter.
+					</p>
+					<ul class="sa-cat-eds">
+						{
+							brevariumEditions.map((e) => (
+								<li>
+									<a href={e.href} download="The Brevarium by Swizel">
+										<Icon width={16} name="mdi:book-open-page-variant-outline" />
+										<strong>{e.vol}</strong>
+										<span>{e.date}</span>
+										<Icon width={15} name="mdi:download-outline" />
+									</a>
+								</li>
+							))
+						}
+					</ul>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── J · the guestbook ───────────────────────────────── -->
+	<section class="sa-sec" data-cursor="quote">
+		<div class="sa-wrap">
+			<div class="sa-rule sd-rev">
+				<span>The guestbook</span>
+				<span>Signed by the collectors</span>
+			</div>
+			<div class="sd-pull" id="sd-pull" tabindex="0">
+				<span class="sa-pull-mark" aria-hidden="true">“</span>
+				<div class="sa-pull-stage">
+					{
+						quotes.map((q, i) => (
+							<blockquote class:list={['sd-quote', { 'is-live': i === 0 }]}>
+								<p>{q.text}</p>
+								<footer>— {q.name}, <em>{q.role}</em></footer>
+							</blockquote>
+						))
+					}
+				</div>
+				<div class="sa-pull-controls">
+					<div class="sa-pull-nav">
+						{quotes.map((_, i) => <button class:list={['sa-pull-tick', { 'is-on': i === 0 }]} type="button" data-tick={i} aria-label={`Quote ${i + 1}`} />)}
+					</div>
+					<div class="sa-pull-arrows">
+						<button class="sa-pull-arrow" type="button" id="sd-pull-prev" aria-label="Previous quote">
+							<Icon width={18} name="mdi:arrow-left" />
+						</button>
+						<button class="sa-pull-arrow" type="button" id="sd-pull-next" aria-label="Next quote">
+							<Icon width={18} name="mdi:arrow-right" />
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── K · the commission desk ─────────────────────────── -->
+	<section class="sa-sec sa-sec--cta" data-cursor="phone">
+		<div class="sa-wrap sa-cta sd-rev">
+			<div class="sa-folio">
+				<span>Commissions open</span>
+				<span>The residence receives</span>
+			</div>
+			<h2 class="sa-display sa-display--cta">
+				Come meet<br />
+				<em>the makers.</em>
+			</h2>
+			<p class="sa-lead sa-lead--center">
+				Bring the brief, the sketch, or just the itch. The same hands you
+				met on this wall will design it, build it and grow it.
+			</p>
+			<div class="sa-cta-row">
+				<a href="/contact" class="sa-btn fa-cta">
+					Commission the studio
+					<Icon width={17} name="mdi:arrow-right" />
+				</a>
+				<a href="tel:+2348100204570" class="sa-call">
+					or call <strong>+234 810 020 4570</strong>
+				</a>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── the dossier (team modal, shared engine contract) ── -->
+	<div class="fa-member-modal sa-modal" hidden>
+		<div class="sa-modal-overlay" data-fa-modal-close></div>
+		<div class="sa-modal-card" role="dialog" aria-modal="true">
+			<button type="button" class="sa-modal-x" data-fa-modal-close aria-label="Close">
+				<Icon width={20} name="mdi:close" />
+			</button>
+			<div class="sa-modal-body">
+				<div class="sa-modal-side">
+					<div class="sa-modal-photo"><img id="fa-modal-photo" src="" alt="" /></div>
+					<h3 class="sa-modal-name" id="fa-modal-name"></h3>
+					<p class="sa-modal-role" id="fa-modal-role"></p>
+					<a class="sa-modal-linkedin" id="fa-modal-linkedin" href="#" target="_blank" rel="noopener noreferrer" hidden>
+						<Icon width={18} name="linkedin" />
+						Connect on LinkedIn
+					</a>
+				</div>
+				<div class="sa-modal-main">
+					<span class="sa-modal-k">The dossier</span>
+					<p class="sa-modal-bio" id="fa-modal-bio"></p>
+					<div id="fa-modal-exp-wrap" hidden>
+						<span class="sa-modal-k">Previously hung in</span>
+						<ul class="sa-modal-exp" id="fa-modal-exp"></ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+	/* ── Studio About — same gallery dress as the studio landing. ── */
+	.sabout {
+		--sa-ink: #f3edf0;
+		--sa-muted: rgba(243, 237, 240, 0.64);
+		--sa-faint: rgba(243, 237, 240, 0.42);
+		--sa-acc: var(--view-accent, #ec4899);
+		--sa-line: rgba(243, 237, 240, 0.14);
+		--sa-card: rgba(255, 255, 255, 0.04);
+		--sa-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+		font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+		position: relative;
+		isolation: isolate;
+		overflow: hidden;
+		background:
+			radial-gradient(1100px 560px at 84% -6%, rgba(236, 72, 153, 0.13), transparent 60%),
+			radial-gradient(820px 480px at 8% 50%, rgba(168, 85, 247, 0.07), transparent 60%),
+			linear-gradient(180deg, #0f0a0d 0%, #130c11 50%, #0b0709 100%);
+		color: var(--sa-ink);
+		padding: clamp(3rem, 7vw, 5.5rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 4rem);
+		transition: background 0.4s ease, color 0.4s ease;
+	}
+	:global(html:not(.dark)) .sabout {
+		--sa-ink: #1c151a;
+		--sa-muted: rgba(28, 21, 26, 0.7);
+		--sa-faint: rgba(28, 21, 26, 0.48);
+		--sa-acc: #cf2570;
+		--sa-line: rgba(28, 21, 26, 0.14);
+		--sa-card: rgba(28, 21, 26, 0.035);
+		background:
+			radial-gradient(1100px 560px at 84% -6%, rgba(236, 72, 153, 0.07), transparent 60%),
+			linear-gradient(180deg, #f3ece6 0%, #ece2da 55%, #f3ece6 100%);
+	}
+
+	.sa-sec { padding-block: clamp(2.25rem, 5vw, 3.75rem); }
+	.sa-wrap { max-width: 80rem; margin: 0 auto; }
+
+	/* ── editorial furniture ── */
+	.sa-folio {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+		flex-wrap: wrap;
+		padding: 0.6rem 0;
+		border-top: 2px solid var(--sa-ink);
+		border-bottom: 1px solid var(--sa-line);
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--sa-faint);
+		margin-bottom: clamp(1.75rem, 4vw, 3rem);
+	}
+	.sa-folio span:first-child { color: var(--sa-ink); }
+	.sa-rule {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 1rem;
+		padding-bottom: 0.5rem;
+		border-bottom: 1px solid var(--sa-line);
+		margin-bottom: clamp(1.5rem, 3.5vw, 2.5rem);
+		font-size: 0.74rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+	}
+	.sa-rule span:first-child { color: var(--sa-acc); }
+	.sa-rule span:last-child {
+		color: var(--sa-faint);
+		font-style: italic;
+		font-family: var(--sa-serif);
+		letter-spacing: 0.02em;
+		text-transform: none;
+		font-size: 0.98rem;
+		font-weight: 400;
+	}
+
+	/* ── type ── */
+	.sa-display {
+		font-size: clamp(2.8rem, 7vw, 5.6rem);
+		font-weight: 850;
+		letter-spacing: -0.03em;
+		line-height: 0.98;
+		margin: 0 0 1.25rem;
+	}
+	.sa-display em {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-weight: 500;
+		letter-spacing: -0.01em;
+		color: var(--sa-acc);
+	}
+	.sa-lead {
+		font-size: clamp(1.05rem, 1.7vw, 1.3rem);
+		line-height: 1.6;
+		color: var(--sa-muted);
+		max-width: 44rem;
+		margin: 0 0 clamp(2rem, 4vw, 3rem);
+	}
+	.sa-lead--center { text-align: center; margin-inline: auto; max-width: 38rem; margin-bottom: 1.6rem; }
+	.sa-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		font-weight: 800;
+		font-size: 0.95rem;
+		letter-spacing: 0.01em;
+		color: var(--sa-acc);
+		border-bottom: 2px solid color-mix(in srgb, var(--sa-acc) 45%, transparent);
+		padding-bottom: 0.15rem;
+		transition: border-color 0.25s ease, gap 0.25s ease;
+	}
+	.sa-link:hover { gap: 0.7rem; border-color: var(--sa-acc); }
+
+	/* the pointer glare the motion engine feeds via --gx/--gy */
+	.sa-glare {
+		content: '';
+		position: absolute;
+		inset: 0;
+		border-radius: inherit;
+		background: radial-gradient(340px 220px at var(--gx, 50%) var(--gy, 20%), color-mix(in srgb, var(--sa-acc) 12%, transparent), transparent 70%);
+		opacity: 0;
+		transition: opacity 0.3s ease;
+		pointer-events: none;
+	}
+	[data-fa-tilt]:hover .sa-glare { opacity: 1; }
+
+	/* ── A · atrium ── */
+	.sa-centerpiece { position: relative; margin: 0 0 clamp(1.5rem, 3vw, 2.25rem); border-radius: 0.4rem; }
+	.sa-centerpiece-media {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+		aspect-ratio: 21 / 9;
+		max-height: 520px;
+		min-height: 200px;
+		border-radius: 0.4rem;
+		border: 1px solid var(--sa-line);
+		box-shadow:
+			inset 0 0 0 12px color-mix(in srgb, var(--sa-ink) 5%, transparent),
+			0 40px 90px -36px rgba(0, 0, 0, 0.7);
+		background:
+			radial-gradient(600px 300px at 70% 8%, color-mix(in srgb, var(--sa-acc) 12%, transparent), transparent),
+			var(--sa-card);
+		color: var(--sa-muted);
+	}
+	@media (max-width: 720px) {
+		.sa-centerpiece-media { aspect-ratio: 16 / 11; }
+	}
+	.sa-cp-name {
+		font-size: 0.74rem;
+		font-weight: 800;
+		letter-spacing: 0.07em;
+		text-transform: uppercase;
+		text-align: center;
+		padding-inline: 0.5rem;
+	}
+	.sa-cp-sub {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 0.85rem;
+		text-align: center;
+		color: var(--sa-faint);
+	}
+
+	/* the gallery label — sleek dark glass */
+	.sa-plaque {
+		display: inline-flex;
+		flex-direction: column;
+		gap: 0.12rem;
+		margin-top: 0.85rem;
+		padding: 0.6rem 0.95rem;
+		background: rgba(12, 8, 11, 0.66);
+		-webkit-backdrop-filter: blur(12px) saturate(130%);
+		backdrop-filter: blur(12px) saturate(130%);
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		border-left: 3px solid var(--sa-acc);
+		border-radius: 0 0.5rem 0.5rem 0;
+		box-shadow: 0 14px 30px -14px rgba(0, 0, 0, 0.6);
+		max-width: fit-content;
+	}
+	.sa-plaque strong {
+		font-size: 0.82rem;
+		font-weight: 850;
+		letter-spacing: 0.02em;
+		color: #ffffff;
+	}
+	.sa-plaque span {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 0.74rem;
+		color: rgba(255, 255, 255, 0.62);
+	}
+	.sa-plaque--lg strong { font-size: 0.92rem; }
+
+	/* the stats — one strip, museum dividers */
+	.sa-wings {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 1rem;
+		list-style: none;
+		margin: 0;
+		padding: 1.4rem 0 0;
+		border-top: 1px solid var(--sa-line);
+	}
+	.sa-wings li {
+		display: grid;
+		gap: 0.15rem;
+		padding-left: 1rem;
+		border-left: 1px solid var(--sa-line);
+	}
+	.sa-wings li strong {
+		font-size: clamp(1.6rem, 3vw, 2.3rem);
+		font-weight: 850;
+		letter-spacing: -0.02em;
+		color: var(--sa-acc);
+	}
+	.sa-wings li span {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 0.86rem;
+		color: var(--sa-faint);
+	}
+	@media (max-width: 620px) {
+		.sa-wings { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 1.4rem; }
+	}
+
+	/* ── B · marquee ── */
+	.sa-marquee {
+		overflow: hidden;
+		border-block: 1px solid var(--sa-line);
+		padding-block: 0.4rem;
+		margin-block: clamp(0.5rem, 2vw, 1.5rem);
+	}
+	.sa-marquee-track {
+		display: flex;
+		width: max-content;
+		animation: sa-marq 26s linear infinite;
+	}
+	.sa-marquee-text {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: clamp(2rem, 5vw, 3.6rem);
+		white-space: nowrap;
+		color: color-mix(in srgb, var(--sa-ink) 22%, transparent);
+	}
+	@keyframes sa-marq {
+		from { transform: translateX(0); }
+		to { transform: translateX(-50%); }
+	}
+
+	/* ── C · wall text ── */
+	.sa-walltext {
+		display: grid;
+		gap: clamp(1.5rem, 4vw, 3.5rem);
+		align-items: start;
+	}
+	@media (min-width: 880px) {
+		.sa-walltext { grid-template-columns: 1.4fr 0.8fr; }
+	}
+	.sa-wt-big {
+		margin: 0;
+		font-size: clamp(1.5rem, 3.2vw, 2.5rem);
+		line-height: 1.35;
+		font-weight: 650;
+		letter-spacing: -0.015em;
+	}
+	.sa-wt-big b { color: var(--sa-acc); font-weight: 850; }
+	.sa-wt-big em {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-weight: 500;
+		color: var(--sa-acc);
+	}
+	.sa-wt-side {
+		display: grid;
+		gap: 1rem;
+		padding-left: 1.2rem;
+		border-left: 2px solid var(--sa-acc);
+	}
+	.sa-wt-side p {
+		margin: 0;
+		font-size: 1rem;
+		line-height: 1.65;
+		color: var(--sa-muted);
+	}
+
+	/* ── D · the charter ── */
+	.sa-charter {
+		display: grid;
+		gap: 1.2rem;
+		margin-bottom: 1.4rem;
+	}
+	@media (min-width: 760px) {
+		.sa-charter { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	}
+	.sa-placard {
+		position: relative;
+		padding: clamp(1.4rem, 3vw, 2rem);
+		border-radius: 0.4rem;
+		border: 1px solid var(--sa-line);
+		box-shadow: inset 0 0 0 10px color-mix(in srgb, var(--sa-ink) 5%, transparent), 0 30px 70px -34px rgba(0, 0, 0, 0.65);
+		background: var(--sa-card);
+	}
+	.sa-placard-k {
+		display: inline-block;
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--sa-acc);
+		margin-bottom: 0.7rem;
+	}
+	.sa-placard-t {
+		margin: 0;
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: clamp(1.15rem, 2vw, 1.5rem);
+		line-height: 1.45;
+		color: var(--sa-ink);
+	}
+	.sa-values { display: grid; gap: 0.7rem; }
+	.sa-values-label {
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--sa-faint);
+	}
+	.sa-values-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.7rem;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	.sa-values-row li {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.55rem 1rem;
+		border: 1px solid color-mix(in srgb, var(--sa-acc) 40%, transparent);
+		border-radius: 9999px;
+		font-size: 0.88rem;
+		font-weight: 700;
+		color: var(--sa-ink);
+		background: color-mix(in srgb, var(--sa-acc) 8%, transparent);
+	}
+	.sa-values-row li :global(svg) { color: var(--sa-acc); }
+
+	/* ── E · the ateliers ── */
+	.sa-ateliers {
+		display: grid;
+		gap: 1.1rem;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+	@media (max-width: 980px) {
+		.sa-ateliers { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	}
+	@media (max-width: 560px) {
+		.sa-ateliers { grid-template-columns: 1fr; }
+	}
+	.sa-atelier {
+		position: relative;
+		padding: 1.3rem 1.3rem 1.4rem;
+		border-radius: 0.4rem;
+		border: 1px solid var(--sa-line);
+		background: var(--sa-card);
+		box-shadow: inset 0 0 0 8px color-mix(in srgb, var(--sa-ink) 4%, transparent);
+		transition: border-color 0.25s ease;
+	}
+	.sa-atelier:hover { border-color: color-mix(in srgb, var(--sa-acc) 50%, transparent); }
+	.sa-atelier-n {
+		position: absolute;
+		top: 0.9rem;
+		right: 1.1rem;
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 1rem;
+		color: var(--sa-faint);
+	}
+	.sa-atelier-ic {
+		display: grid;
+		place-items: center;
+		width: 44px;
+		height: 44px;
+		border-radius: 0.6rem;
+		color: var(--sa-acc);
+		background: color-mix(in srgb, var(--sa-acc) 12%, transparent);
+		border: 1px solid color-mix(in srgb, var(--sa-acc) 28%, transparent);
+		margin-bottom: 0.9rem;
+	}
+	.sa-atelier-t {
+		margin: 0 0 0.4rem;
+		font-size: 1.08rem;
+		font-weight: 800;
+		letter-spacing: -0.01em;
+	}
+	.sa-atelier-d {
+		margin: 0;
+		font-size: 0.92rem;
+		line-height: 1.6;
+		color: var(--sa-muted);
+	}
+	.sa-atelier-all { margin: 1.6rem 0 0; text-align: center; }
+
+	/* ── F · exhibition history ── */
+	.sa-history {
+		position: relative;
+		display: grid;
+		gap: clamp(1.4rem, 3vw, 2rem);
+		padding-left: clamp(1.6rem, 4vw, 2.6rem);
+	}
+	.sa-spine {
+		position: absolute;
+		top: 0.4rem;
+		bottom: 0.4rem;
+		left: 8px;
+		width: 2px;
+		background: linear-gradient(180deg, var(--sa-acc), color-mix(in srgb, var(--sa-acc) 25%, transparent));
+		transform: scaleY(0);
+		transform-origin: top;
+		transition: transform 1.6s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.sa-history.is-drawing .sa-spine { transform: scaleY(1); }
+	.sa-vol { position: relative; display: grid; gap: 0.3rem; }
+	.sa-vol-node {
+		position: absolute;
+		left: calc(-1 * clamp(1.6rem, 4vw, 2.6rem) + 3px);
+		top: 0.5rem;
+		width: 12px;
+		height: 12px;
+		border-radius: 50%;
+		background: var(--sa-acc);
+		box-shadow: 0 0 0 4px color-mix(in srgb, var(--sa-acc) 22%, transparent);
+	}
+	.sa-vol-year {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: clamp(1.5rem, 3vw, 2.1rem);
+		line-height: 1;
+		color: var(--sa-acc);
+	}
+	.sa-vol-k {
+		font-size: 0.68rem;
+		font-weight: 800;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--sa-faint);
+	}
+	.sa-vol-t {
+		margin: 0.15rem 0 0.25rem;
+		font-size: clamp(1.15rem, 2vw, 1.45rem);
+		font-weight: 800;
+		letter-spacing: -0.01em;
+	}
+	.sa-vol-d {
+		margin: 0;
+		max-width: 46rem;
+		font-size: 0.95rem;
+		line-height: 1.6;
+		color: var(--sa-muted);
+	}
+
+	/* ── G · the portrait wall ── */
+	.sa-portraits {
+		display: grid;
+		gap: 1.2rem;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
+	@media (max-width: 980px) {
+		.sa-portraits { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	}
+	.sa-portrait {
+		display: grid;
+		justify-items: start;
+		padding: 0;
+		border: 0;
+		background: none;
+		color: inherit;
+		text-align: left;
+		cursor: pointer;
+	}
+	.sa-portrait-frame {
+		position: relative;
+		display: block;
+		width: 100%;
+		aspect-ratio: 4 / 5;
+		overflow: hidden;
+		border-radius: 0.4rem;
+		border: 1px solid var(--sa-line);
+		box-shadow: inset 0 0 0 8px color-mix(in srgb, var(--sa-ink) 5%, transparent), 0 26px 60px -30px rgba(0, 0, 0, 0.7);
+		background: var(--sa-card);
+	}
+	.sa-portrait-frame img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		filter: saturate(0.92);
+		transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), filter 0.4s ease;
+	}
+	.sa-portrait:hover .sa-portrait-frame img { transform: scale(1.05); filter: saturate(1.05); }
+	.sa-portrait-view {
+		position: absolute;
+		left: 0.7rem;
+		bottom: 0.7rem;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3rem;
+		padding: 0.3rem 0.7rem;
+		border-radius: 9999px;
+		font-size: 0.68rem;
+		font-weight: 800;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: #fff;
+		background: color-mix(in srgb, var(--sa-acc) 82%, #000);
+		opacity: 0;
+		transform: translateY(6px);
+		transition: opacity 0.3s ease, transform 0.3s ease;
+	}
+	.sa-portrait:hover .sa-portrait-view,
+	.sa-portrait:focus-visible .sa-portrait-view { opacity: 1; transform: translateY(0); }
+
+	/* ── H · in the studio ── */
+	.sa-media {
+		display: grid;
+		gap: 1rem;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
+	.sa-frame {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.45rem;
+		aspect-ratio: 4 / 3;
+		border-radius: 0.4rem;
+		border: 1px solid var(--sa-line);
+		box-shadow: inset 0 0 0 8px color-mix(in srgb, var(--sa-ink) 4%, transparent);
+		background: var(--sa-card);
+		color: var(--sa-muted);
+		padding: 0.8rem;
+	}
+	.sa-frame--wide { grid-column: span 2; grid-row: span 2; aspect-ratio: auto; }
+	.sa-frame-name {
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.07em;
+		text-transform: uppercase;
+		text-align: center;
+	}
+	.sa-frame-sub {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 0.8rem;
+		color: var(--sa-faint);
+		text-align: center;
+	}
+	@media (max-width: 760px) {
+		.sa-media { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+		.sa-frame--wide { grid-column: span 2; grid-row: auto; aspect-ratio: 16 / 9; }
+	}
+
+	/* ── I · the catalogue ── */
+	.sa-cat {
+		display: grid;
+		gap: clamp(1.5rem, 4vw, 3rem);
+		align-items: center;
+	}
+	@media (min-width: 880px) {
+		.sa-cat { grid-template-columns: 0.9fr 1.1fr; }
+	}
+	.sa-cat-cover {
+		position: relative;
+		display: grid;
+		justify-items: start;
+		border-radius: 0.4rem;
+	}
+	.sa-cat-cover img {
+		width: 100%;
+		border-radius: 0.4rem;
+		border: 1px solid var(--sa-line);
+		box-shadow: inset 0 0 0 10px color-mix(in srgb, var(--sa-ink) 5%, transparent), 0 40px 90px -36px rgba(0, 0, 0, 0.7);
+	}
+	.sa-cat-t {
+		margin: 0 0 0.8rem;
+		font-size: clamp(1.5rem, 3vw, 2.2rem);
+		font-weight: 850;
+		letter-spacing: -0.02em;
+	}
+	.sa-cat-t em {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-weight: 500;
+		color: var(--sa-acc);
+	}
+	.sa-cat-d {
+		margin: 0 0 1.4rem;
+		font-size: 1rem;
+		line-height: 1.65;
+		color: var(--sa-muted);
+		max-width: 34rem;
+	}
+	.sa-cat-eds {
+		display: grid;
+		gap: 0.6rem;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		max-width: 26rem;
+	}
+	.sa-cat-eds a {
+		display: flex;
+		align-items: center;
+		gap: 0.7rem;
+		padding: 0.75rem 1rem;
+		border: 1px solid var(--sa-line);
+		border-radius: 0.5rem;
+		background: var(--sa-card);
+		color: var(--sa-ink);
+		transition: border-color 0.25s ease, transform 0.25s ease;
+	}
+	.sa-cat-eds a:hover { border-color: color-mix(in srgb, var(--sa-acc) 55%, transparent); transform: translateX(4px); }
+	.sa-cat-eds a :global(svg:first-child) { color: var(--sa-acc); flex-shrink: 0; }
+	.sa-cat-eds strong { font-size: 0.92rem; font-weight: 800; }
+	.sa-cat-eds span {
+		flex: 1;
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 0.84rem;
+		color: var(--sa-faint);
+		text-align: right;
+	}
+	.sa-cat-eds a :global(svg:last-child) { color: var(--sa-faint); flex-shrink: 0; }
+
+	/* ── J · guestbook ── */
+	.sd-pull {
+		position: relative;
+		max-width: 60rem;
+		margin: 0 auto;
+		padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1.5rem, 6vw, 5rem) 0;
+		touch-action: pan-y;
+		outline: none;
+	}
+	.sa-pull-mark {
+		position: absolute;
+		top: -1.5rem;
+		left: clamp(0.25rem, 3vw, 2rem);
+		font-family: var(--sa-serif);
+		font-size: clamp(6rem, 12vw, 10rem);
+		line-height: 1;
+		color: var(--sa-acc);
+		opacity: 0.85;
+		animation: sa-markfloat 6s ease-in-out infinite alternate;
+		pointer-events: none;
+	}
+	@keyframes sa-markfloat {
+		from { transform: translateY(0) rotate(-2deg); }
+		to { transform: translateY(-8px) rotate(1.5deg); }
+	}
+	.sa-pull-stage { position: relative; min-height: 11rem; }
+	.sd-quote {
+		position: absolute;
+		inset: 0;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		margin: 0;
+		opacity: 0;
+		transform: translateY(12px);
+		transition: opacity 0.5s ease, transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+		pointer-events: none;
+	}
+	.sd-quote.is-live { opacity: 1; transform: translateY(0); pointer-events: auto; }
+	.sd-quote p {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: clamp(1.5rem, 3.4vw, 2.5rem);
+		line-height: 1.35;
+		margin: 0 0 1rem;
+	}
+	.sd-quote footer {
+		font-size: 0.85rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--sa-faint);
+	}
+	.sd-quote footer em {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		text-transform: none;
+		letter-spacing: 0;
+		font-weight: 400;
+	}
+	.sa-pull-controls {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		margin-top: 1rem;
+		flex-wrap: wrap;
+	}
+	.sa-pull-nav { display: flex; gap: 0.5rem; }
+	.sa-pull-tick {
+		width: 26px;
+		height: 4px;
+		padding: 0;
+		border: 0;
+		cursor: pointer;
+		background: color-mix(in srgb, var(--sa-ink) 18%, transparent);
+		transition: background 0.3s ease, transform 0.2s ease;
+	}
+	.sa-pull-tick:hover { transform: scaleY(1.6); }
+	.sa-pull-tick.is-on { background: var(--sa-acc); }
+	.sa-pull-arrows { display: flex; gap: 0.5rem; }
+	.sa-pull-arrow {
+		display: grid;
+		place-items: center;
+		width: 40px;
+		height: 40px;
+		border-radius: 50%;
+		border: 1px solid var(--sa-line);
+		background: var(--sa-card);
+		color: var(--sa-ink);
+		cursor: pointer;
+		transition: border-color 0.25s ease, color 0.25s ease;
+	}
+	.sa-pull-arrow:hover { border-color: var(--sa-acc); color: var(--sa-acc); }
+
+	/* ── K · commission desk ── */
+	.sa-sec--cta { padding-bottom: clamp(1.5rem, 3vw, 2.5rem); }
+	.sa-cta { text-align: center; }
+	.sa-cta .sa-folio { text-align: left; }
+	.sa-display--cta { font-size: clamp(2.4rem, 6vw, 4.6rem); }
+	.sa-cta-row {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 1.4rem;
+		flex-wrap: wrap;
+	}
+	.sa-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.6rem;
+		padding: 1rem 1.9rem;
+		border-radius: 9999px;
+		font-weight: 800;
+		font-size: 0.95rem;
+		letter-spacing: 0.02em;
+		color: #fff;
+		background: linear-gradient(95deg, var(--sa-acc), #a855f7);
+		box-shadow: 0 18px 44px -16px color-mix(in srgb, var(--sa-acc) 80%, transparent);
+		transition: box-shadow 0.25s ease, filter 0.25s ease;
+		will-change: transform;
+	}
+	.sa-btn:hover { filter: brightness(1.07); box-shadow: 0 24px 54px -16px color-mix(in srgb, var(--sa-acc) 90%, transparent); }
+	.sa-call { font-size: 0.95rem; color: var(--sa-muted); }
+	.sa-call strong {
+		font-weight: 850;
+		letter-spacing: -0.01em;
+		color: var(--sa-ink);
+		transition: color 0.25s ease;
+	}
+	.sa-call:hover strong { color: var(--sa-acc); }
+
+	/* ── the dossier (team modal) ── */
+	.sa-modal { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; padding: 1rem; }
+	.sa-modal[hidden] { display: none; }
+	.sa-modal-overlay {
+		position: absolute;
+		inset: 0;
+		background: rgba(8, 5, 7, 0.7);
+		-webkit-backdrop-filter: blur(8px);
+		backdrop-filter: blur(8px);
+		opacity: 0;
+		transition: opacity 0.25s ease;
+	}
+	.sa-modal.is-open .sa-modal-overlay { opacity: 1; }
+	.sa-modal-card {
+		position: relative;
+		width: min(46rem, 100%);
+		max-height: min(84vh, 44rem);
+		overflow-y: auto;
+		border-radius: 0.5rem;
+		border: 1px solid var(--sa-line);
+		background:
+			radial-gradient(500px 260px at 85% -8%, rgba(236, 72, 153, 0.14), transparent 60%),
+			linear-gradient(180deg, #171017 0%, #100a0e 100%);
+		box-shadow: inset 0 0 0 10px rgba(243, 237, 240, 0.04), 0 60px 120px -40px rgba(0, 0, 0, 0.85);
+		color: #f3edf0;
+		padding: clamp(1.4rem, 3vw, 2.2rem);
+		transform: translateY(18px) scale(0.985);
+		opacity: 0;
+		transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
+	}
+	.sa-modal.is-open .sa-modal-card { transform: translateY(0) scale(1); opacity: 1; }
+	.sa-modal-x {
+		position: sticky;
+		top: 0;
+		margin-left: auto;
+		display: grid;
+		place-items: center;
+		width: 38px;
+		height: 38px;
+		border-radius: 50%;
+		border: 1px solid rgba(243, 237, 240, 0.18);
+		background: rgba(12, 8, 11, 0.8);
+		color: #f3edf0;
+		cursor: pointer;
+		z-index: 2;
+		transition: border-color 0.2s ease, color 0.2s ease;
+	}
+	.sa-modal-x:hover { border-color: var(--sa-acc); color: var(--sa-acc); }
+	.sa-modal-body {
+		display: grid;
+		gap: clamp(1.2rem, 3vw, 2rem);
+		margin-top: -0.6rem;
+	}
+	@media (min-width: 700px) {
+		.sa-modal-body { grid-template-columns: 0.75fr 1.25fr; align-items: start; }
+	}
+	.sa-modal-photo {
+		aspect-ratio: 4 / 5;
+		overflow: hidden;
+		border-radius: 0.4rem;
+		border: 1px solid rgba(243, 237, 240, 0.14);
+		box-shadow: inset 0 0 0 8px rgba(243, 237, 240, 0.05);
+		margin-bottom: 0.9rem;
+	}
+	.sa-modal-photo img { width: 100%; height: 100%; object-fit: cover; }
+	.sa-modal-name {
+		margin: 0 0 0.15rem;
+		font-size: 1.4rem;
+		font-weight: 850;
+		letter-spacing: -0.01em;
+	}
+	.sa-modal-role {
+		margin: 0 0 0.8rem;
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 0.95rem;
+		color: var(--sa-acc);
+	}
+	.sa-modal-linkedin {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		font-size: 0.85rem;
+		font-weight: 800;
+		color: #f3edf0;
+		border-bottom: 2px solid color-mix(in srgb, var(--sa-acc) 45%, transparent);
+		padding-bottom: 0.15rem;
+		transition: color 0.2s ease, border-color 0.2s ease;
+	}
+	.sa-modal-linkedin:hover { color: var(--sa-acc); border-color: var(--sa-acc); }
+	.sa-modal-k {
+		display: block;
+		font-size: 0.68rem;
+		font-weight: 800;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--sa-acc);
+		margin-bottom: 0.5rem;
+	}
+	.sa-modal-bio {
+		margin: 0 0 1.2rem;
+		font-size: 0.96rem;
+		line-height: 1.7;
+		color: rgba(243, 237, 240, 0.75);
+	}
+	.sa-modal-exp {
+		display: grid;
+		gap: 0.55rem;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	.sa-modal-exp :global(li) {
+		display: grid;
+		gap: 0.1rem;
+		padding: 0.6rem 0.85rem;
+		border: 1px solid rgba(243, 237, 240, 0.12);
+		border-left: 3px solid var(--sa-acc);
+		border-radius: 0 0.4rem 0.4rem 0;
+		background: rgba(255, 255, 255, 0.03);
+	}
+	.sa-modal-exp :global(strong) { font-size: 0.88rem; font-weight: 800; }
+	.sa-modal-exp :global(em) {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 0.82rem;
+		color: rgba(243, 237, 240, 0.6);
+	}
+
+	/* ── reveals (engine adds .is-on) ── */
+	.sd-rev {
+		opacity: 0;
+		transform: translateY(22px);
+		transition: opacity 0.65s ease, transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+		transition-delay: calc(var(--i, 0) * 0.06s);
+	}
+	.sd-rev.is-on { opacity: 1; transform: translateY(0); }
+
+	@media (prefers-reduced-motion: reduce) {
+		.sd-rev { opacity: 1; transform: none; transition: none; }
+		.sa-marquee-track, .sa-pull-mark { animation: none; }
+		.sa-spine { transform: none; transition: none; }
+		.sd-quote { transition: none; }
+	}
+</style>

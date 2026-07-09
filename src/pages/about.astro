@@ -10,6 +10,7 @@ import NewsLetterAndContact from '../components/sections/NewsLetterAndContact.as
 import AboutBoardroom from '../components/sections/AboutBoardroom.astro';
 import AboutFounder from '../components/sections/AboutFounder.astro';
 import AboutBuilder from '../components/sections/AboutBuilder.astro';
+import AboutStudio from '../components/sections/AboutStudio.astro';
 import MainLayout from '../layouts/MainLayout.astro';
 
 const pageTitle = 'About Swizel | The team behind the software';
@@ -31,6 +32,9 @@ const pageDescription =
 
 	<!-- Builder world: the company as a repository. -->
 	<AboutBuilder />
+
+	<!-- Studio world: the retrospective wing of the gallery. -->
+	<AboutStudio />
 
 	<!-- Fallback About for the remaining worlds until each gets its own. -->
 	<div class="alt-view-only about-fallback">
@@ -159,10 +163,11 @@ const pageDescription =
 </MainLayout>
 
 <style is:global>
-	/* Founder and Builder views have their own About now — suppress the
-	   generic fallback there. */
+	/* Founder, Builder and Studio views have their own About now — suppress
+	   the generic fallback there. */
 	html[data-view='founder'] .about-fallback,
-	html[data-view='builder'] .about-fallback {
+	html[data-view='builder'] .about-fallback,
+	html[data-view='studio'] .about-fallback {
 		display: none !important;
 	}
 </style>
