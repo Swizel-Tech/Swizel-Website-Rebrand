@@ -4,6 +4,7 @@ import ServiceDetail from '../../components/sections/ServiceDetail.astro';
 import ServiceDetailFounder from '../../components/sections/ServiceDetailFounder.astro';
 import ServiceDetailBuilder from '../../components/sections/ServiceDetailBuilder.astro';
 import ServiceDetailStudio from '../../components/sections/ServiceDetailStudio.astro';
+import ServiceDetailCampus from '../../components/sections/ServiceDetailCampus.astro';
 import CustomButton from '../../components/CustomButton.astro';
 import { Icon } from 'astro-icon/components';
 import { disciplines } from '../../data/disciplines';
@@ -38,6 +39,9 @@ const pageDescription = discipline.heroDesc;
 	<!-- Studio world: the discipline as a room in the Ateliers Wing. -->
 	<ServiceDetailStudio discipline={discipline} others={others} />
 
+	<!-- Campus world: the discipline as a department in the school. -->
+	<ServiceDetailCampus discipline={discipline} others={others} />
+
 	<!-- Minimal fallback for the remaining worlds. -->
 	<div class="alt-view-only svc-detail-fallback">
 		<section class="px-[5%] py-24 max-w-3xl mx-auto text-center space-y-6">
@@ -70,7 +74,8 @@ const pageDescription = discipline.heroDesc;
 	   hide the generic fallback there. */
 	html[data-view='founder'] .svc-detail-fallback,
 	html[data-view='builder'] .svc-detail-fallback,
-	html[data-view='studio'] .svc-detail-fallback {
+	html[data-view='studio'] .svc-detail-fallback,
+	html[data-view='campus'] .svc-detail-fallback {
 		display: none !important;
 	}
 </style>

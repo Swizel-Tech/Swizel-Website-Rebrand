@@ -13,6 +13,7 @@ import ServicesBoardroom from '../components/sections/ServicesBoardroom.astro';
 import ServicesFounder from '../components/sections/ServicesFounder.astro';
 import ServicesBuilder from '../components/sections/ServicesBuilder.astro';
 import ServicesStudio from '../components/sections/ServicesStudio.astro';
+import ServicesCampus from '../components/sections/ServicesCampus.astro';
 ---
 
 <MainLayout
@@ -32,6 +33,9 @@ import ServicesStudio from '../components/sections/ServicesStudio.astro';
 
 	<!-- Studio world: the Ateliers Wing of the gallery. -->
 	<ServicesStudio />
+
+	<!-- Campus world: the course catalogue. -->
+	<ServicesCampus />
 
 	<!-- Fallback Services for the remaining worlds until each gets its own. -->
 	<div class="alt-view-only services-fallback">
@@ -106,7 +110,8 @@ import ServicesStudio from '../components/sections/ServicesStudio.astro';
 	   hide the generic fallback there. */
 	html[data-view='founder'] .services-fallback,
 	html[data-view='builder'] .services-fallback,
-	html[data-view='studio'] .services-fallback {
+	html[data-view='studio'] .services-fallback,
+	html[data-view='campus'] .services-fallback {
 		display: none !important;
 	}
 </style>
