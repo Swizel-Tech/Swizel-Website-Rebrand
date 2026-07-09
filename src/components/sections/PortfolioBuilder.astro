@@ -1,0 +1,720 @@
+---
+// Portfolio · Builder world — the same receipts as every other portfolio
+// (marquee wall, numbers, featured case studies, Brevarium, the full
+// sector-filtered grid, CTA) told as a deployments dashboard. Signature
+// widget: a LIVE DEPLOY CONSOLE that ships real projects on a loop —
+// terminal types the deploy, the preview pane swaps to the real product.
+import { Icon } from 'astro-icon/components';
+import { projects, featuredProjects, sectorLabels, sectorOrder, type ProjectSector } from '../../data/projects';
+
+const sectors = sectorOrder;
+const sectorShown: Record<ProjectSector, string> = {
+	agri: '12+', health: '6+', property: '14+', media: '9+', commerce: '8+', product: '18+',
+};
+const totalShown = '65+';
+
+const stats = [
+	{ to: 65, suffix: '+', label: 'deployments' },
+	{ to: 15, suffix: '+', label: 'sectors' },
+	{ to: 7, suffix: '+', label: 'years shipping' },
+	{ to: 99.9, decimals: 1, suffix: '%', label: 'uptime' },
+];
+
+// the console ships these on a loop (real projects with real screenshots)
+const consoleProjects = ['hemam-synergy', 'betslipswitch', 'binas-residence', 'jobblander', 'anchorstep', 'trueverdict']
+	.map((s) => projects.find((p) => p.slug === s))
+	.filter(Boolean) as typeof projects;
+
+const marquee = [...projects, ...projects];
+const rot = [...projects.slice(6), ...projects.slice(0, 6)];
+const marquee2 = [...rot, ...rot];
+
+const dest = (p: (typeof projects)[number]) => (p.caseStudy ? `/work/${p.slug}` : p.url);
+const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'pulse', property: 'layers', media: 'book', commerce: 'pkg', product: 'repo' };
+---
+
+<div class="bpf bbody view-body view-body-builder">
+	<div class="pb-bg" aria-hidden="true">
+		<span class="pb-orb pb-orb--a"></span>
+		<span class="pb-orb pb-orb--b"></span>
+		{Array.from({ length: 7 }).map((_, i) => (
+			<i class="pb-spark" style={`--s:${i}`}></i>
+		))}
+	</div>
+
+	<!-- ── 01 · hero: copy + THE DEPLOY CONSOLE ────────────── -->
+	<section class="pb-sec" data-cursor="term">
+		<div class="pb-wrap pb-hero">
+			<div class="bb-rev">
+				<span class="pb-kick">$ swizel deployments --list</span>
+				<h1 class="pb-h pb-h--xl">Proof, in <span class="pb-acc">production.</span></h1>
+				<p class="pb-p">
+					Real products, live on the internet. Watch the console ship
+					them, then browse every deployment below.
+				</p>
+				<ul class="pb-stats">
+					{
+						stats.map((s) => (
+							<li>
+								<strong data-count={s.to} data-suffix={s.suffix} data-decimals={s.decimals || 0}>0{s.suffix}</strong>
+								<span>{s.label}</span>
+							</li>
+						))
+					}
+				</ul>
+				<div class="pb-row">
+					<a href="#pb-featured" class="pb-merge fs-cta">
+						<Icon width={17} name="mdi:rocket-launch-outline" />
+						See the headliners
+					</a>
+					<a href="#pb-work" class="pb-link">
+						Browse everything
+						<Icon width={15} name="mdi:arrow-down" />
+					</a>
+				</div>
+			</div>
+
+			<!-- the live deploy console -->
+			<div class="pb-console bb-rev" id="pb-console" data-fa-tilt="3">
+				<span class="bb-glare" aria-hidden="true"></span>
+				<div class="pb-winbar">
+					<span class="pb-dot pb-dot--r"></span>
+					<span class="pb-dot pb-dot--y"></span>
+					<span class="pb-dot pb-dot--g"></span>
+					<span class="pb-wintitle">swizel — deploy console</span>
+					<span class="pb-win-live"><i></i>shipping on loop</span>
+				</div>
+				<div class="pb-console-grid">
+					<div class="pb-term">
+						<p class="pb-tline"><span class="pb-prompt">$</span> <span id="pb-cmd"></span><span class="pb-caret" aria-hidden="true"></span></p>
+						<div class="pb-bar"><span class="pb-fill" id="pb-fill"></span></div>
+						<div class="pb-log" id="pb-log"></div>
+					</div>
+					<div class="pb-preview">
+						<span class="pb-preview-bar">
+							<i></i><i></i><i></i>
+							<span class="pb-preview-url" id="pb-url">…</span>
+						</span>
+						<span class="pb-preview-img">
+							{
+								consoleProjects.map((p, i) => (
+									<img
+										src={p.img}
+										alt={p.name}
+										loading={i === 0 ? 'eager' : 'lazy'}
+										data-pb-shot={p.slug}
+										class:list={[{ 'is-on': i === 0 }]}
+									/>
+								))
+							}
+						</span>
+						<span class="pb-preview-meta">
+							<b id="pb-name">{consoleProjects[0]?.name}</b>
+							<em id="pb-sector">{sectorLabels[consoleProjects[0]?.sector]}</em>
+							<span class="pb-status" id="pb-status"><i></i>Ready · Production</span>
+						</span>
+					</div>
+				</div>
+				{
+					consoleProjects.map((p) => (
+						<span
+							class="pb-data"
+							hidden
+							data-pb-project
+							data-slug={p.slug}
+							data-name={p.name}
+							data-host={p.host}
+							data-sector={sectorLabels[p.sector]}
+						/>
+					))
+				}
+			</div>
+		</div>
+
+		<!-- full-bleed wall of work -->
+		<div class="pb-wallhead bb-rev">// a wall of deployments, on loop</div>
+		<div class="pb-marquee bb-rev" aria-hidden="true">
+			<div class="pb-marquee-track">
+				{
+					marquee.map((p) => (
+						<a href={dest(p) ?? undefined} data-leaving={p.caseStudy ? undefined : p.host} data-leaving-name={p.caseStudy ? undefined : p.name} class="pb-thumb" style={`--c:${p.color}`} tabindex="-1">
+							<span class="pb-thumb-bar"><i></i><i></i><i></i></span>
+							<img src={p.img} alt="" loading="eager" decoding="async" />
+						</a>
+					))
+				}
+			</div>
+			<div class="pb-marquee-track pb-marquee-track--rev">
+				{
+					marquee2.map((p) => (
+						<a href={dest(p) ?? undefined} data-leaving={p.caseStudy ? undefined : p.host} data-leaving-name={p.caseStudy ? undefined : p.name} class="pb-thumb" style={`--c:${p.color}`} tabindex="-1">
+							<span class="pb-thumb-bar"><i></i><i></i><i></i></span>
+							<img src={p.img} alt="" loading="eager" decoding="async" />
+						</a>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── 02 · featured case studies ──────────────────────── -->
+	<section class="pb-sec" id="pb-featured" data-cursor="repo">
+		<div class="pb-wrap">
+			<div class="pb-head bb-rev">
+				<span class="pb-kick">// featured — the long reads</span>
+				<h2 class="pb-h">Post-mortems worth <span class="pb-acc">reading.</span></h2>
+			</div>
+			<div class="pb-feats">
+				{
+					featuredProjects.map((p, i) => (
+						<article
+							class:list={['pb-feat', 'bb-rev', { 'pb-feat--rev': i % 2 === 1 }]}
+							style={`--c:${p.color}`}
+							data-cursor={sectorCursor[p.sector]}
+						>
+							<a
+								class:list={['pb-shot', { 'pb-shot--app': p.kind === 'app' }]}
+								href={`/work/${p.slug}`}
+								aria-label={`${p.name} case study`}
+								data-fa-tilt="6"
+							>
+								{p.kind !== 'app' && (
+									<span class="pb-bar2" aria-hidden="true">
+										<i></i><i></i><i></i>
+										<span class="pb-url2">{p.host}</span>
+									</span>
+								)}
+								<span class="pb-img"><img src={p.img} alt={p.name} loading={i === 0 ? 'eager' : 'lazy'} /></span>
+							</a>
+							<div class="pb-feat-body">
+								<span class="pb-feat-eyebrow">
+									<span class="pb-live-dot" aria-hidden="true"></span>
+									deploy #{String(i + 1).padStart(2, '0')} · {sectorLabels[p.sector]}
+								</span>
+								<h3>{p.name}</h3>
+								<p class="pb-feat-tagline">{p.tagline}</p>
+								<p class="pb-feat-blurb">{p.blurb}</p>
+								<span class="pb-tags">
+									{p.tags.map((t) => <i>{t}</i>)}
+								</span>
+								<a class="pb-link" href={`/work/${p.slug}`}>
+									cat case-study.md
+									<Icon width={15} name="mdi:arrow-right" />
+								</a>
+							</div>
+						</article>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── 03 · docs/ — the Brevarium ──────────────────────── -->
+	<section class="pb-sec" data-cursor="repo">
+		<div class="pb-wrap">
+			<div class="pb-mags bb-rev">
+				<a class="pb-mag" href="/brevarium/the-brevarium-latest.pdf" download data-fa-tilt="7">
+					<span class="pb-mag-cover"><img src="/images/portfolio/mag-latest-cover.jpg" alt="The Brevarium — latest edition" loading="lazy" /></span>
+					<span class="pb-mag-meta">
+						<span class="pb-kick">// docs/the-brevarium — latest</span>
+						<strong>The Brevarium</strong>
+						<em>Featured projects, the team & how we ship. Free, cover to cover.</em>
+						<span class="pb-link"><Icon width={15} name="mdi:download" /> download.pdf</span>
+					</span>
+				</a>
+				<a class="pb-mag" href="/The Brevarium by Swizel.pdf" download data-fa-tilt="7">
+					<span class="pb-mag-cover"><img src="/images/portfolio/mag-v1-cover.jpg" alt="The Brevarium — Vol. 1" loading="lazy" /></span>
+					<span class="pb-mag-meta">
+						<span class="pb-kick">// docs/the-brevarium — v1.0.0</span>
+						<strong>The Brevarium · Vol. 1</strong>
+						<em>The AppMan story, a full product, start to finish.</em>
+						<span class="pb-link"><Icon width={15} name="mdi:download" /> download.pdf</span>
+					</span>
+				</a>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── 04 · every deployment — sector filter ───────────── -->
+	<section class="pb-sec" id="pb-work" data-cursor="repo">
+		<div class="pb-wrap">
+			<div class="pb-head bb-rev">
+				<span class="pb-kick">$ swizel ls --filter=sector</span>
+				<h2 class="pb-h">Every <span class="pb-acc">deployment.</span></h2>
+				<p class="pb-p pb-p--center">
+					We've shipped <strong>{totalShown}</strong> products across
+					<strong>15+</strong> sectors. ~{projects.length} favourites
+					below, filter away.
+				</p>
+			</div>
+
+			<form class="pb-filter" autocomplete="off">
+				<input class="pb-radio" type="radio" name="pbf" id="pbf-all" checked />
+				{sectors.map((s) => <input class="pb-radio" type="radio" name="pbf" id={`pbf-${s}`} />)}
+				<div class="pb-chips bb-rev">
+					<label class="pb-chip" for="pbf-all">--all <span>{totalShown}</span></label>
+					{
+						sectors.map((s) => (
+							<label class="pb-chip" for={`pbf-${s}`}>
+								--{s} <span>{sectorShown[s]}</span>
+							</label>
+						))
+					}
+				</div>
+				<div class="pb-grid">
+					{
+						projects.map((p) => {
+							const href = dest(p);
+							const hasCase = !!p.caseStudy;
+							const Tag = href ? 'a' : 'div';
+							return (
+								<article class:list={['pb-card', 'bb-rev', `s-${p.sector}`]} style={`--c:${p.color}`} data-cursor={sectorCursor[p.sector]}>
+									<Tag
+										class="pb-card-link"
+										href={href ?? undefined}
+										data-leaving={href && !hasCase ? p.host : undefined}
+										data-leaving-name={href && !hasCase ? p.name : undefined}
+										rel={href && !hasCase ? 'noopener noreferrer' : undefined}
+										aria-label={p.name}
+									>
+										<span class:list={['pb-cshot', { 'pb-cshot--app': p.kind === 'app' }]}>
+											<span class="pb-cimg"><img src={p.img} alt={p.name} loading="lazy" /></span>
+											{hasCase && <span class="pb-badge">case study</span>}
+										</span>
+										<span class="pb-card-body">
+											<span class="pb-card-head">
+												<strong>{p.name}</strong>
+												<em>{p.year}</em>
+											</span>
+											<span class="pb-card-status"><i></i>Ready · Production · {sectorLabels[p.sector]}</span>
+											<span class="pb-tags">
+												{p.tags.map((t) => <i>{t}</i>)}
+											</span>
+										</span>
+									</Tag>
+								</article>
+							);
+						})
+					}
+					<a class="pb-card pb-next s-agri s-health s-property s-media s-commerce s-product" href="/contact" data-cursor="phone">
+						<span class="pb-next-ic"><Icon width={24} name="mdi:rocket-launch-outline" /></span>
+						<span class="pb-kick">// slot reserved</span>
+						<strong>your-product.com</strong>
+						<span class="pb-next-p">We've shipped <b>65+</b> across <b>15+</b> sectors. This deploy slot has your name on it.</span>
+						<span class="pb-link">swizel deploy your-idea <Icon width={15} name="mdi:arrow-right" /></span>
+					</a>
+				</div>
+			</form>
+		</div>
+	</section>
+
+	<!-- ── 05 · CTA ────────────────────────────────────────── -->
+	<section class="pb-sec pb-sec--last" data-cursor="phone">
+		<div class="pb-cta bb-rev">
+			<span class="pb-orbit" aria-hidden="true"><i></i><i></i><i></i></span>
+			<p class="pb-cta-cmd">$ swizel deploy <span class="pb-acc">your-product</span> --prod</p>
+			<h2 class="pb-h pb-h--xl">Next on this dashboard: yours.</h2>
+			<p class="pb-p pb-p--center">
+				Tell us what you have in mind. You'll have a reply within one
+				business day.
+			</p>
+			<div class="pb-row pb-row--center">
+				<a href="/contact" class="pb-merge fs-cta">
+					<Icon width={18} name="mdi:source-merge" />
+					Start your project
+				</a>
+				<a href="/services" class="pb-link">
+					See what we do
+					<Icon width={15} name="mdi:chevron-right" />
+				</a>
+			</div>
+		</div>
+	</section>
+</div>
+
+<style>
+	.bpf {
+		--bu-ink: #e8f0f4;
+		--bu-muted: rgba(232, 240, 244, 0.62);
+		--bu-faint: rgba(232, 240, 244, 0.4);
+		--bu-acc: var(--view-accent, #18debe);
+		--bu-line: rgba(255, 255, 255, 0.08);
+		--bu-card: rgba(255, 255, 255, 0.03);
+		--bu-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+		font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+			Roboto, sans-serif;
+		position: relative;
+		isolation: isolate;
+		background:
+			radial-gradient(1000px 520px at 85% -4%, rgba(24, 222, 190, 0.1), transparent 60%),
+			radial-gradient(800px 480px at 4% 42%, rgba(40, 166, 236, 0.07), transparent 60%),
+			linear-gradient(180deg, #05080c 0%, #070d12 50%, #04070a 100%);
+		color: var(--bu-ink);
+		padding: clamp(3rem, 7vw, 5rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 4rem);
+	}
+	:global(html:not(.dark)) .bpf {
+		--bu-ink: #102420;
+		--bu-muted: rgba(16, 36, 32, 0.66);
+		--bu-faint: rgba(16, 36, 32, 0.45);
+		--bu-line: rgba(16, 36, 32, 0.1);
+		--bu-card: rgba(16, 36, 32, 0.04);
+		background:
+			radial-gradient(1000px 520px at 85% -4%, rgba(24, 222, 190, 0.1), transparent 60%),
+			linear-gradient(180deg, #f0faf7 0%, #e6f4ef 55%, #f0faf7 100%);
+	}
+	.pb-sec { position: relative; z-index: 1; padding-block: clamp(1.8rem, 4.5vw, 3.2rem); }
+	.pb-sec--last { padding-bottom: clamp(3rem, 6vw, 4.5rem); }
+	.pb-wrap { max-width: 74rem; margin: 0 auto; }
+
+	.pb-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+	.pb-orb { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.4; animation: pb-orb-drift 17s ease-in-out infinite alternate; }
+	.pb-orb--a { width: 440px; height: 440px; left: -150px; top: 5%; background: radial-gradient(circle, rgba(24, 222, 190, 0.28), transparent 70%); }
+	.pb-orb--b { width: 500px; height: 500px; right: -170px; top: 44%; background: radial-gradient(circle, rgba(40, 166, 236, 0.18), transparent 70%); animation-delay: -7s; }
+	@keyframes pb-orb-drift { to { transform: translate3d(52px, -38px, 0) scale(1.1); } }
+	.pb-spark {
+		position: absolute; bottom: -12px; left: calc(10% + var(--s) * 12%);
+		width: 3.5px; height: 3.5px; border-radius: 50%;
+		background: color-mix(in srgb, var(--bu-acc) 85%, #fff);
+		box-shadow: 0 0 10px 2px color-mix(in srgb, var(--bu-acc) 55%, transparent);
+		opacity: 0;
+		animation: pb-rise calc(9s + var(--s) * 1.4s) linear infinite;
+		animation-delay: calc(var(--s) * -1.9s);
+	}
+	@keyframes pb-rise {
+		0% { transform: translateY(0); opacity: 0; }
+		8% { opacity: 0.75; }
+		92% { opacity: 0.2; }
+		100% { transform: translateY(-105vh) translateX(24px); opacity: 0; }
+	}
+	@media (prefers-reduced-motion: reduce) { .pb-orb { animation: none; } .pb-spark { display: none; } }
+
+	.pb-kick { display: block; font-family: var(--bu-mono); font-size: 0.8rem; color: var(--bu-acc); margin-bottom: 0.8rem; }
+	:global(html:not(.dark)) .bpf .pb-kick { color: #0b8a76; }
+	.pb-h { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 850; letter-spacing: -0.025em; line-height: 1.08; margin: 0 0 1rem; }
+	.pb-h--xl { font-size: clamp(2rem, 4.4vw, 3.2rem); }
+	.pb-acc {
+		background: linear-gradient(95deg, #8dfeea, var(--bu-acc) 60%, #28a6ec);
+		-webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+	}
+	:global(html:not(.dark)) .bpf .pb-acc { background: linear-gradient(95deg, #0b8a76, #0d7fb8); -webkit-background-clip: text; background-clip: text; }
+	.pb-p { font-size: 1rem; line-height: 1.65; color: var(--bu-muted); max-width: 34rem; margin: 0 0 1.3rem; }
+	.pb-p--center { margin-inline: auto; text-align: center; }
+	.pb-head { text-align: center; max-width: 46rem; margin: 0 auto clamp(1.4rem, 3vw, 2rem); }
+	.pb-head .pb-kick { text-align: center; }
+	.pb-link { display: inline-flex; align-items: center; gap: 0.45rem; font-weight: 700; color: var(--bu-acc); transition: gap 0.25s ease; }
+	.pb-link:hover { gap: 0.75rem; }
+	:global(html:not(.dark)) .bpf .pb-link { color: #0b8a76; }
+	.pb-row { display: flex; align-items: center; gap: 1.3rem; flex-wrap: wrap; }
+	.pb-row--center { justify-content: center; }
+	.pb-merge {
+		position: relative; overflow: hidden;
+		display: inline-flex; align-items: center; gap: 0.55rem;
+		font-weight: 800; font-size: 0.95rem; color: #04211a;
+		background: linear-gradient(95deg, #8dfeea, var(--bu-acc) 60%, #28a6ec);
+		padding: 0.85rem 1.6rem; border-radius: 9999px;
+		box-shadow: 0 16px 38px -14px color-mix(in srgb, var(--bu-acc) 80%, transparent);
+		transition: transform 0.22s ease;
+	}
+	.pb-merge:hover { transform: translateY(-2px); }
+
+	.bb-rev {
+		opacity: 0; transform: translateY(20px);
+		transition: opacity 0.6s ease calc(var(--i, 0) * 90ms),
+			transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i, 0) * 90ms);
+	}
+	.bb-rev.is-on { opacity: 1; transform: none; }
+	@media (prefers-reduced-motion: reduce) { .bb-rev { opacity: 1; transform: none; transition: none; } }
+	.bb-glare {
+		position: absolute; inset: 0; border-radius: inherit; z-index: 3;
+		background: radial-gradient(360px 230px at var(--gx, 50%) var(--gy, 0%), rgba(255, 255, 255, 0.07), transparent 60%);
+		opacity: 0; transition: opacity 0.3s ease; pointer-events: none;
+	}
+	.pb-console:hover .bb-glare { opacity: 1; }
+
+	/* hero */
+	.pb-hero { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: clamp(2rem, 4vw, 3rem); align-items: center; }
+	.pb-stats { display: flex; align-items: stretch; margin: 1.5rem 0 1.4rem; padding: 0; list-style: none; }
+	.pb-stats li { flex: 1; min-width: 0; padding: 0.2rem 0.85rem; border-left: 1px solid color-mix(in srgb, var(--bu-acc) 25%, transparent); transition: transform 0.25s ease; }
+	.pb-stats li:first-child { padding-left: 0; border-left: 0; }
+	.pb-stats li:hover { transform: translateY(-3px); }
+	.pb-stats strong {
+		display: block; font-family: var(--bu-mono); font-weight: 700; white-space: nowrap;
+		font-size: clamp(1.2rem, 2.1vw, 1.6rem);
+		background: linear-gradient(135deg, #8dfeea, var(--bu-acc));
+		-webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+	}
+	:global(html:not(.dark)) .bpf .pb-stats strong { background: linear-gradient(135deg, #0b8a76, #0d7fb8); -webkit-background-clip: text; background-clip: text; }
+	.pb-stats span { display: block; font-size: 0.7rem; line-height: 1.3; color: var(--bu-muted); margin-top: 0.2rem; }
+
+	/* ── THE DEPLOY CONSOLE ── */
+	.pb-console {
+		position: relative; overflow: hidden;
+		border-radius: 1rem; border: 1px solid color-mix(in srgb, var(--bu-acc) 24%, var(--bu-line));
+		background: #0a0e15;
+		box-shadow: 0 34px 80px -32px rgba(0, 0, 0, 0.8);
+		transform-style: preserve-3d; will-change: transform;
+	}
+	.pb-winbar { display: flex; align-items: center; gap: 6px; padding: 10px 12px; background: rgba(255, 255, 255, 0.05); }
+	.pb-dot { width: 10px; height: 10px; border-radius: 50%; }
+	.pb-dot--r { background: #ff5f57; } .pb-dot--y { background: #febc2e; } .pb-dot--g { background: #28c840; }
+	.pb-wintitle { margin-left: 0.5rem; font-family: var(--bu-mono); font-size: 0.74rem; color: rgba(232, 240, 244, 0.5); }
+	.pb-win-live { margin-left: auto; display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--bu-mono); font-size: 0.66rem; color: #2ee889; }
+	.pb-win-live i { width: 7px; height: 7px; border-radius: 50%; background: #2ee889; animation: pb-live 2s ease-in-out infinite; }
+	@keyframes pb-live { 0%, 100% { box-shadow: 0 0 0 0 rgba(46, 232, 137, 0.5); } 50% { box-shadow: 0 0 0 4px rgba(46, 232, 137, 0); } }
+	.pb-console-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+	.pb-term { padding: 1rem 1.1rem 1.1rem; border-right: 1px solid rgba(255, 255, 255, 0.06); min-height: 250px; }
+	.pb-tline { margin: 0 0 0.65rem; font-family: var(--bu-mono); font-size: 0.82rem; color: #e8f0f4; min-height: 1.3em; }
+	.pb-prompt { color: var(--bu-acc); margin-right: 0.35rem; }
+	.pb-caret { display: inline-block; width: 7px; height: 0.95em; margin-left: 2px; vertical-align: text-bottom; background: var(--bu-acc); animation: pb-caret 0.9s steps(1) infinite; }
+	@keyframes pb-caret { 50% { opacity: 0; } }
+	.pb-bar { height: 5px; border-radius: 999px; background: rgba(255, 255, 255, 0.08); overflow: hidden; margin-bottom: 0.7rem; }
+	.pb-fill { display: block; height: 100%; width: 0%; border-radius: 999px; background: linear-gradient(90deg, #8dfeea, var(--bu-acc), #28a6ec); transition: width 0.35s ease; }
+	.pb-log { display: grid; gap: 0.28rem; font-family: var(--bu-mono); font-size: 0.74rem; color: rgba(232, 240, 244, 0.6); }
+	.pb-log :global(p) { margin: 0; animation: pb-login 0.3s ease both; }
+	.pb-log :global(.ok) { color: #2ee889; }
+	.pb-log :global(.info) { color: rgba(232, 240, 244, 0.6); }
+	.pb-log :global(.accent) { color: var(--bu-acc); font-weight: 700; }
+	@keyframes pb-login { from { opacity: 0; transform: translateY(4px); } }
+	.pb-preview { display: grid; grid-template-rows: auto 1fr auto; min-height: 250px; }
+	.pb-preview-bar { display: flex; align-items: center; gap: 4px; padding: 8px 10px; background: rgba(255, 255, 255, 0.04); }
+	.pb-preview-bar i { width: 7px; height: 7px; border-radius: 50%; background: rgba(255, 255, 255, 0.25); }
+	.pb-preview-url { margin-left: 0.4rem; font-family: var(--bu-mono); font-size: 0.68rem; color: var(--bu-acc); transition: opacity 0.3s ease; }
+	.pb-preview-img { position: relative; display: block; overflow: hidden; min-height: 130px; }
+	.pb-preview-img img {
+		position: absolute; inset: 0; width: 100%; height: 100%;
+		object-fit: cover; object-position: top;
+		opacity: 0; transform: scale(1.04);
+		transition: opacity 0.5s ease, transform 0.6s ease;
+	}
+	.pb-preview-img img.is-on { opacity: 1; transform: none; }
+	.pb-preview-meta { display: flex; align-items: center; gap: 0.55rem; padding: 0.6rem 0.9rem; border-top: 1px solid rgba(255, 255, 255, 0.06); }
+	.pb-preview-meta b { font-size: 0.82rem; font-weight: 800; color: #e8f0f4; }
+	.pb-preview-meta em { flex: 1; min-width: 0; font-style: normal; font-family: var(--bu-mono); font-size: 0.66rem; color: rgba(232, 240, 244, 0.5); }
+	.pb-status { display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--bu-mono); font-size: 0.64rem; color: #2ee889; white-space: nowrap; }
+	.pb-status i { width: 7px; height: 7px; border-radius: 50%; background: #2ee889; animation: pb-live 2s ease-in-out infinite; }
+
+	/* wall */
+	.pb-wallhead { text-align: center; font-family: var(--bu-mono); font-size: 0.76rem; color: var(--bu-faint); margin: clamp(1.8rem, 4vw, 2.6rem) 0 0.9rem; }
+	.pb-marquee {
+		display: grid; gap: 0.8rem;
+		margin-inline: calc(50% - 50vw);
+		overflow: hidden;
+		-webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+		mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+	}
+	.pb-marquee-track { display: flex; gap: 0.8rem; width: max-content; animation: pb-scroll 60s linear infinite; }
+	.pb-marquee-track--rev { animation-direction: reverse; }
+	.pb-marquee:hover .pb-marquee-track { animation-play-state: paused; }
+	@keyframes pb-scroll { to { transform: translateX(-50%); } }
+	.pb-thumb {
+		flex-shrink: 0; width: 210px; border-radius: 0.7rem; overflow: hidden;
+		border: 1px solid color-mix(in srgb, var(--c, #18debe) 40%, rgba(255, 255, 255, 0.12));
+		background: #0a0e15;
+		transition: transform 0.25s ease, box-shadow 0.25s ease;
+	}
+	.pb-thumb:hover { transform: translateY(-4px) scale(1.03); box-shadow: 0 18px 36px -16px color-mix(in srgb, var(--c) 70%, transparent); }
+	.pb-thumb-bar { display: flex; gap: 3px; padding: 5px 7px; background: rgba(255, 255, 255, 0.05); }
+	.pb-thumb-bar i { width: 6px; height: 6px; border-radius: 50%; background: color-mix(in srgb, var(--c) 70%, #fff); opacity: 0.6; }
+	.pb-thumb img { width: 100%; height: 108px; object-fit: cover; object-position: top; display: block; }
+	@media (prefers-reduced-motion: reduce) { .pb-marquee-track { animation: none; } }
+
+	/* featured */
+	.pb-feats { display: grid; gap: clamp(1.5rem, 3.5vw, 2.4rem); }
+	.pb-feat {
+		display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+		gap: clamp(1.3rem, 3vw, 2.2rem); align-items: center;
+		border: 1px solid var(--bu-line); border-radius: 1.2rem;
+		background:
+			linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 55%),
+			radial-gradient(120% 90% at 85% -20%, color-mix(in srgb, var(--c, #18debe) 9%, transparent), transparent 60%),
+			var(--bu-card);
+		padding: clamp(1.1rem, 2.4vw, 1.8rem);
+		transition: border-color 0.3s ease;
+	}
+	.pb-feat:hover { border-color: color-mix(in srgb, var(--c) 50%, transparent); }
+	.pb-feat--rev { direction: rtl; }
+	.pb-feat--rev > * { direction: ltr; }
+	.pb-feat-eyebrow { display: inline-flex; align-items: center; gap: 0.45rem; font-family: var(--bu-mono); font-size: 0.72rem; color: var(--c); }
+	.pb-live-dot { width: 8px; height: 8px; border-radius: 50%; background: #2ee889; animation: pb-live 2s ease-in-out infinite; }
+	.pb-feat h3 { font-size: clamp(1.3rem, 2.8vw, 1.8rem); font-weight: 850; margin: 0.35rem 0 0.15rem; }
+	.pb-feat-tagline { font-size: 0.92rem; font-weight: 700; color: var(--c); margin: 0 0 0.55rem; }
+	.pb-feat-blurb { font-size: 0.92rem; line-height: 1.65; color: var(--bu-muted); margin: 0 0 0.85rem; }
+	.pb-tags { display: flex; flex-wrap: wrap; gap: 0.32rem; margin-bottom: 0.9rem; }
+	.pb-tags i {
+		font-style: normal; font-family: var(--bu-mono); font-size: 0.66rem;
+		padding: 0.2rem 0.5rem; border-radius: 999px;
+		border: 1px solid color-mix(in srgb, var(--c, #18debe) 38%, transparent);
+		color: var(--bu-ink);
+	}
+	.pb-shot {
+		position: relative; display: block; border-radius: 0.9rem; overflow: hidden;
+		border: 1px solid color-mix(in srgb, var(--c, #18debe) 40%, rgba(255, 255, 255, 0.12));
+		background: #0a0e15;
+		box-shadow: 0 28px 60px -26px rgba(0, 0, 0, 0.65);
+		transform-style: preserve-3d; will-change: transform;
+		transition: border-color 0.3s ease;
+	}
+	.pb-shot:hover { border-color: color-mix(in srgb, var(--c) 65%, transparent); }
+	.pb-bar2 { display: flex; align-items: center; gap: 4px; padding: 8px 10px; background: rgba(255, 255, 255, 0.05); }
+	.pb-bar2 i { width: 8px; height: 8px; border-radius: 50%; background: color-mix(in srgb, var(--c) 70%, #fff); opacity: 0.6; }
+	.pb-url2 { margin-left: 0.5rem; font-family: var(--bu-mono); font-size: 0.66rem; color: rgba(232, 240, 244, 0.5); }
+	.pb-img { display: block; height: 280px; overflow: hidden; }
+	.pb-img img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; transition: transform 0.5s ease; }
+	.pb-shot:hover .pb-img img { transform: scale(1.05); }
+	.pb-shot--app .pb-img { height: 300px; }
+	.pb-shot--app .pb-img img { object-fit: contain; background: color-mix(in srgb, var(--c) 8%, transparent); }
+
+	/* mags */
+	.pb-mags { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.1rem; max-width: 60rem; margin-inline: auto; }
+	.pb-mag {
+		display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 1rem; align-items: center;
+		border: 1px solid var(--bu-line); border-radius: 1rem;
+		background: var(--bu-card); padding: 1rem;
+		color: var(--bu-ink);
+		transform-style: preserve-3d; will-change: transform;
+		transition: border-color 0.3s ease;
+	}
+	.pb-mag:hover { border-color: color-mix(in srgb, var(--bu-acc) 50%, transparent); }
+	.pb-mag-cover { border-radius: 0.6rem; overflow: hidden; transform: rotate(-2deg); box-shadow: 0 16px 32px -14px rgba(0, 0, 0, 0.6); }
+	.pb-mag-cover img { display: block; width: 100%; height: auto; }
+	.pb-mag-meta .pb-kick { margin-bottom: 0.3rem; }
+	.pb-mag-meta strong { display: block; font-size: 1rem; font-weight: 850; }
+	.pb-mag-meta em { display: block; font-style: normal; font-size: 0.8rem; line-height: 1.5; color: var(--bu-muted); margin: 0.2rem 0 0.5rem; }
+
+	/* filter grid */
+	.pb-filter { position: relative; }
+	.pb-radio { position: absolute; opacity: 0; pointer-events: none; }
+	.pb-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.45rem; margin-bottom: 1.5rem; }
+	.pb-chip {
+		display: inline-flex; align-items: center; gap: 0.4rem;
+		font-family: var(--bu-mono); font-size: 0.8rem; font-weight: 700; cursor: pointer;
+		padding: 0.45rem 0.85rem; border-radius: 999px;
+		border: 1px solid var(--bu-line); background: var(--bu-card);
+		color: var(--bu-muted);
+		transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+	}
+	.pb-chip:hover { transform: translateY(-2px); color: var(--bu-ink); }
+	.pb-chip span { font-size: 0.66rem; color: var(--bu-acc); }
+	#pbf-all:checked ~ .pb-chips [for='pbf-all'],
+	#pbf-agri:checked ~ .pb-chips [for='pbf-agri'],
+	#pbf-health:checked ~ .pb-chips [for='pbf-health'],
+	#pbf-property:checked ~ .pb-chips [for='pbf-property'],
+	#pbf-media:checked ~ .pb-chips [for='pbf-media'],
+	#pbf-commerce:checked ~ .pb-chips [for='pbf-commerce'],
+	#pbf-product:checked ~ .pb-chips [for='pbf-product'] {
+		color: #04211a;
+		background: linear-gradient(95deg, #8dfeea, var(--bu-acc));
+		border-color: transparent;
+	}
+	#pbf-all:checked ~ .pb-chips [for='pbf-all'] span,
+	#pbf-agri:checked ~ .pb-chips [for='pbf-agri'] span,
+	#pbf-health:checked ~ .pb-chips [for='pbf-health'] span,
+	#pbf-property:checked ~ .pb-chips [for='pbf-property'] span,
+	#pbf-media:checked ~ .pb-chips [for='pbf-media'] span,
+	#pbf-commerce:checked ~ .pb-chips [for='pbf-commerce'] span,
+	#pbf-product:checked ~ .pb-chips [for='pbf-product'] span { color: #04211a; }
+
+	.pb-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+	.pb-card { display: none; }
+	#pbf-all:checked ~ .pb-grid .pb-card { display: block; }
+	#pbf-agri:checked ~ .pb-grid .s-agri,
+	#pbf-health:checked ~ .pb-grid .s-health,
+	#pbf-property:checked ~ .pb-grid .s-property,
+	#pbf-media:checked ~ .pb-grid .s-media,
+	#pbf-commerce:checked ~ .pb-grid .s-commerce,
+	#pbf-product:checked ~ .pb-grid .s-product { display: block; }
+	.pb-card-link { display: block; color: inherit; }
+	.pb-cshot {
+		position: relative; display: block; border-radius: 0.8rem; overflow: hidden;
+		border: 1px solid color-mix(in srgb, var(--c, #18debe) 35%, rgba(255, 255, 255, 0.1));
+		transition: border-color 0.3s ease, box-shadow 0.3s ease;
+	}
+	.pb-card:hover .pb-cshot { border-color: color-mix(in srgb, var(--c) 60%, transparent); box-shadow: 0 20px 42px -20px color-mix(in srgb, var(--c) 60%, transparent); }
+	.pb-cimg { display: block; height: 160px; overflow: hidden; }
+	.pb-cimg img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; transition: transform 0.5s ease; }
+	.pb-card:hover .pb-cimg img { transform: scale(1.06); }
+	.pb-badge {
+		position: absolute; left: 0.6rem; bottom: 0.6rem;
+		font-family: var(--bu-mono); font-size: 0.62rem; font-weight: 700;
+		color: #04211a; background: linear-gradient(95deg, #8dfeea, var(--c, #18debe));
+		padding: 0.24rem 0.6rem; border-radius: 999px;
+	}
+	.pb-card-body { display: block; padding: 0.8rem 0.25rem 0.3rem; }
+	.pb-card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.6rem; }
+	.pb-card-head strong { font-size: 0.98rem; font-weight: 800; }
+	.pb-card-head em { font-style: normal; font-family: var(--bu-mono); font-size: 0.68rem; color: var(--bu-muted); }
+	.pb-card-status {
+		display: inline-flex; align-items: center; gap: 0.35rem;
+		font-family: var(--bu-mono); font-size: 0.64rem; color: #2ee889;
+		margin: 0.25rem 0 0.5rem;
+	}
+	.pb-card-status i { width: 6px; height: 6px; border-radius: 50%; background: #2ee889; animation: pb-live 2s ease-in-out infinite; }
+	.pb-next {
+		display: grid !important; align-content: center; justify-items: center; text-align: center; gap: 0.35rem;
+		border: 1.5px dashed color-mix(in srgb, var(--bu-acc) 50%, transparent);
+		border-radius: 0.9rem; padding: 1.5rem 1.1rem;
+		background: color-mix(in srgb, var(--bu-acc) 5%, transparent);
+		color: var(--bu-ink);
+		transition: transform 0.25s ease, background 0.25s ease;
+	}
+	.pb-next:hover { transform: translateY(-4px); background: color-mix(in srgb, var(--bu-acc) 11%, transparent); }
+	.pb-next .pb-kick { margin-bottom: 0; }
+	.pb-next-ic {
+		display: grid; place-items: center; width: 46px; height: 46px; border-radius: 50%;
+		color: #04211a; background: linear-gradient(135deg, #8dfeea, var(--bu-acc));
+		animation: pb-bob 4.5s ease-in-out infinite;
+	}
+	@keyframes pb-bob { 0%, 100% { margin-top: 0; } 50% { margin-top: -5px; } }
+	.pb-next strong { font-family: var(--bu-mono); font-size: 1.02rem; font-weight: 700; }
+	.pb-next-p { font-size: 0.84rem; line-height: 1.55; color: var(--bu-muted); max-width: 16rem; }
+
+	/* CTA */
+	.pb-cta { position: relative; text-align: center; max-width: 46rem; margin: 0 auto; }
+	.pb-cta-cmd { font-family: var(--bu-mono); font-size: 0.9rem; color: var(--bu-muted); margin: 0 0 0.8rem; }
+	.pb-orbit { position: absolute; inset: 0; pointer-events: none; }
+	.pb-orbit i {
+		position: absolute; left: 50%; top: 50%; width: 7px; height: 7px; margin: -3.5px;
+		border-radius: 50%;
+		background: linear-gradient(95deg, #8dfeea, var(--bu-acc));
+		box-shadow: 0 0 12px color-mix(in srgb, var(--bu-acc) 70%, transparent);
+		animation: pb-orbit-kf 11s linear infinite;
+	}
+	.pb-orbit i:nth-child(2) { animation-delay: -3.66s; width: 5px; height: 5px; }
+	.pb-orbit i:nth-child(3) { animation-delay: -7.33s; width: 6px; height: 6px; }
+	@keyframes pb-orbit-kf {
+		from { transform: rotate(0deg) translateX(min(21rem, 44vw)) rotate(0deg); }
+		to { transform: rotate(360deg) translateX(min(21rem, 44vw)) rotate(-360deg); }
+	}
+	@media (prefers-reduced-motion: reduce) { .pb-orbit { display: none; } }
+	.pb-merge::after {
+		content: '';
+		position: absolute; inset: 0;
+		background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, 0.3) 50%, transparent 65%);
+		background-size: 250% 100%; background-position: 120% 0;
+		animation: pb-merge-sheen 3.8s ease-in-out infinite;
+	}
+	@keyframes pb-merge-sheen { 0%, 55% { background-position: 120% 0; } 100% { background-position: -130% 0; } }
+	@media (prefers-reduced-motion: reduce) { .pb-merge::after { animation: none; } }
+
+	/* responsive — mobile-checked per the law */
+	@media (max-width: 980px) {
+		.pb-hero { grid-template-columns: minmax(0, 1fr); }
+		.pb-console-grid { grid-template-columns: minmax(0, 1fr); }
+		.pb-term { border-right: 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06); min-height: 0; }
+		.pb-preview { min-height: 230px; }
+		.pb-feat { grid-template-columns: minmax(0, 1fr); }
+		.pb-feat--rev { direction: ltr; }
+		.pb-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+		.pb-mags { grid-template-columns: minmax(0, 1fr); }
+	}
+	@media (max-width: 640px) {
+		.pb-grid { grid-template-columns: minmax(0, 1fr); }
+		.pb-stats li { padding: 0.1rem 0.45rem; }
+		.pb-stats strong { font-size: 1rem; }
+		.pb-stats span { font-size: 0.56rem; }
+		.pb-thumb { width: 160px; }
+		.pb-thumb img { height: 84px; }
+		.pb-mag { grid-template-columns: 96px minmax(0, 1fr); }
+		.pb-img { height: 220px; }
+	}
+</style>

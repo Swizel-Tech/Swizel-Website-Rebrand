@@ -28,14 +28,17 @@ export function initBuilderBody() {
 		const run = (el: HTMLElement) => {
 			const t = Number(el.dataset.count || '0');
 			const sfx = el.dataset.suffix || '';
+			// respect data-decimals so 99.9% doesn't round up to 100%
+			const dec = Number(el.dataset.decimals || '0');
 			if (reduce) {
-				el.textContent = t + sfx;
+				el.textContent = t.toFixed(dec) + sfx;
 				return;
 			}
 			const start = performance.now();
 			const tick = (now: number) => {
 				const p = Math.min((now - start) / 1200, 1);
-				el.textContent = Math.round((1 - Math.pow(1 - p, 3)) * t) + sfx;
+				el.textContent =
+					((1 - Math.pow(1 - p, 3)) * t).toFixed(dec) + sfx;
 				if (p < 1) requestAnimationFrame(tick);
 			};
 			requestAnimationFrame(tick);
@@ -254,6 +257,89 @@ export function initBuilderBody() {
 				{ threshold: 0.35 }
 			);
 			io.observe(editor);
+		}
+	}
+
+	// ── the deploy console: ships real projects on a loop ──
+	const con = body.querySelector<HTMLElement>('#pb-console');
+	if (con) {
+		const data = Array.from(
+			con.querySelectorAll<HTMLElement>('[data-pb-project]')
+		).map((el) => ({
+			slug: el.dataset.slug || '',
+			name: el.dataset.name || '',
+			host: el.dataset.host || '',
+			sector: el.dataset.sector || '',
+		}));
+		const cmd = con.querySelector<HTMLElement>('#pb-cmd');
+		const fill = con.querySelector<HTMLElement>('#pb-fill');
+		const log = con.querySelector<HTMLElement>('#pb-log');
+		const url = con.querySelector<HTMLElement>('#pb-url');
+		const name = con.querySelector<HTMLElement>('#pb-name');
+		const sector = con.querySelector<HTMLElement>('#pb-sector');
+		const shots = Array.from(
+			con.querySelectorAll<HTMLElement>('[data-pb-shot]')
+		);
+		if (data.length && cmd && fill && log && url && name && sector) {
+			const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+			let i = 0;
+			let running = false;
+			let visible = false;
+
+			const addLog = (text: string, cls = 'info') => {
+				const p = document.createElement('p');
+				p.className = cls;
+				p.textContent = text;
+				log.appendChild(p);
+				while (log.children.length > 4) log.removeChild(log.firstChild!);
+			};
+
+			const deploy = async () => {
+				if (running) return;
+				running = true;
+				while (visible) {
+					const d = data[i % data.length];
+					i++;
+					const command = `swizel deploy ${d.slug} --prod`;
+					cmd.textContent = '';
+					fill.style.width = '0%';
+					if (reduce) {
+						cmd.textContent = command;
+					} else {
+						for (let c = 0; c <= command.length; c++) {
+							cmd.textContent = command.slice(0, c);
+							await sleep(26);
+						}
+					}
+					addLog('› building…');
+					fill.style.width = '38%';
+					await sleep(reduce ? 120 : 620);
+					addLog('› running 214 tests… all passed', 'ok');
+					fill.style.width = '72%';
+					await sleep(reduce ? 120 : 620);
+					fill.style.width = '100%';
+					addLog(`✓ live at ${d.host}`, 'accent');
+					// swap the preview to the freshly "deployed" product
+					shots.forEach((s) =>
+						s.classList.toggle('is-on', s.dataset.pbShot === d.slug)
+					);
+					url.textContent = `https://${d.host}`;
+					name.textContent = d.name;
+					sector.textContent = d.sector;
+					await sleep(reduce ? 800 : 2600);
+				}
+				running = false;
+			};
+
+			const io = new IntersectionObserver(
+				(entries) =>
+					entries.forEach((e) => {
+						visible = e.isIntersecting;
+						if (visible) deploy();
+					}),
+				{ threshold: 0.3 }
+			);
+			io.observe(con);
 		}
 	}
 
