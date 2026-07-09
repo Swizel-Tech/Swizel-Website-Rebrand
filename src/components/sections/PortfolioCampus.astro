@@ -1,0 +1,789 @@
+---
+// Portfolio · Campus world — Show & Tell day. The same receipts as every
+// other portfolio (stats, featured case studies, the full sector-filtered
+// grid, CTA) told as school: the SIGNATURE widget is a CLASS PROJECTOR that
+// clicks through real projects on a pull-down screen; featured work sits on
+// science-fair poster boards; the full wall is the trophy cabinet. Root
+// carries `cbody` (campus engine: .cp-rev + [data-count] + #cp-show
+// projector) and `cpf` (motion engine: tilt / glare / magnetic).
+import { Icon } from 'astro-icon/components';
+import { projects, featuredProjects, sectorLabels, sectorOrder, type ProjectSector } from '../../data/projects';
+
+const sectors = sectorOrder;
+const sectorShown: Record<ProjectSector, string> = {
+	agri: '12+', health: '6+', property: '14+', media: '9+', commerce: '8+', product: '18+',
+};
+
+const stats = [
+	{ to: 65, suffix: '+', label: 'projects shipped' },
+	{ to: 15, suffix: '+', label: 'sectors visited' },
+	{ to: 7, suffix: '+', label: 'years of homework' },
+	{ to: 10, suffix: '+', label: 'countries reached' },
+];
+
+// the projector clicks through these real works (featured first)
+const slides = [
+	...featuredProjects,
+	...projects.filter((p) => p.img && !p.caseStudy),
+].filter((p) => p.img).slice(0, 8);
+
+const dest = (p: (typeof projects)[number]) => (p.caseStudy ? `/work/${p.slug}` : p.url);
+---
+
+<div class="cpf cbody view-body view-body-campus">
+	<!-- ── A · show & tell ─────────────────────────────────── -->
+	<section class="cf-sec">
+		<div class="cf-wrap cf-open">
+			<div class="cf-copy cp-rev">
+				<span class="cf-badge">🎬 Show & tell day</span>
+				<h1 class="cf-h cf-h--xl">What the school <em>has shipped.</em></h1>
+				<p class="cf-p">
+					Not classroom exercises — real products, live on the internet.
+					The projector is running; click through the slides, then browse
+					the whole trophy cabinet below.
+				</p>
+				<ul class="cf-stats">
+					{
+						stats.map((s) => (
+							<li>
+								<strong data-count={s.to} data-suffix={s.suffix}>0{s.suffix}</strong>
+								<span>{s.label}</span>
+							</li>
+						))
+					}
+				</ul>
+				<a href="#cf-cabinet" class="cf-link">
+					Straight to the cabinet
+					<Icon width={15} name="mdi:arrow-down" />
+				</a>
+			</div>
+
+			<!-- the class projector: a pull-down screen + clicker -->
+			<div class="cf-show cp-rev" id="cp-show" data-cursor="play">
+				{
+					slides.map((p, i) => (
+						<span
+							data-cs-item
+							data-img={p.img}
+							data-name={p.name}
+							data-meta={`${sectorLabels[p.sector]} · ${p.year}`}
+							data-color={p.color}
+							hidden
+						/>
+					))
+				}
+				<span class="cf-roller" aria-hidden="true"><i></i></span>
+				<figure class="cf-screen" data-fa-tilt="3">
+					<img class="cf-slide is-on" id="cp-show-a" src={slides[0].img} alt={slides[0].name} />
+					<img class="cf-slide" id="cp-show-b" src={slides[1]?.img} alt="" aria-hidden="true" />
+					<span class="cf-flash" aria-hidden="true"></span>
+					<span class="cf-count" id="cp-show-count">Slide 1 / {slides.length}</span>
+				</figure>
+				<span class="cf-pull" aria-hidden="true"></span>
+				<figcaption class="cf-tape" id="cp-show-tape">
+					<strong id="cp-show-name">{slides[0].name}</strong>
+					<em id="cp-show-meta">{sectorLabels[slides[0].sector]} · {slides[0].year}</em>
+				</figcaption>
+				<div class="cf-clicker" role="tablist" aria-label="Slides">
+					{
+						slides.map((p, i) => (
+							<button
+								type="button"
+								class:list={['cf-click', { 'is-on': i === 0 }]}
+								data-cs-go={i}
+								style={`--c:${p.color}`}
+								aria-label={p.name}
+							>
+								{i + 1}
+							</button>
+						))
+					}
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── B · gold-star projects (featured case studies) ──── -->
+	<section class="cf-sec" data-cursor="book">
+		<div class="cf-wrap">
+			<div class="cf-head cp-rev">
+				<span class="cf-kick">⭐ Gold-star projects</span>
+				<h2 class="cf-h">The full <em>write-ups.</em></h2>
+			</div>
+			{
+				featuredProjects.map((p, i) => (
+					<div class:list={['cf-fair', 'cp-rev', { 'cf-fair--rev': i % 2 === 1 }]} style={`--c:${p.color}`}>
+						<a class="cf-fair-media" href={`/work/${p.slug}`} data-fa-tilt="4" aria-label={`${p.name} case study`}>
+							<span class="cf-glare" aria-hidden="true" />
+							<img src={p.img} alt={p.name} loading="lazy" />
+							<span class="cf-star" aria-hidden="true">⭐</span>
+						</a>
+						<div class="cf-fair-copy">
+							<span class="cf-fair-kick">{sectorLabels[p.sector]} · {p.year}</span>
+							<h3 class="cf-fair-name">{p.name}</h3>
+							<p class="cf-fair-tag">{p.tagline}</p>
+							<p class="cf-fair-blurb">{p.blurb}</p>
+							<span class="cf-fair-tags">
+								{p.tags.map((t) => <i>{t}</i>)}
+							</span>
+							<a href={`/work/${p.slug}`} class="cf-link">
+								Read the write-up
+								<Icon width={15} name="mdi:arrow-right" />
+							</a>
+						</div>
+					</div>
+				))
+			}
+		</div>
+	</section>
+
+	<!-- ── C · the trophy cabinet (filterable wall) ────────── -->
+	<section class="cf-sec" id="cf-cabinet" data-cursor="repo">
+		<div class="cf-wrap">
+			<div class="cf-head cp-rev">
+				<span class="cf-kick">🏆 The trophy cabinet</span>
+				<h2 class="cf-h">Every project, <em>on the shelf.</em></h2>
+			</div>
+			<form class="cf-filter" autocomplete="off">
+				<input class="cf-radio" type="radio" name="cpf" id="cpf-all" checked />
+				{sectors.map((s) => <input class="cf-radio" type="radio" name="cpf" id={`cpf-${s}`} />)}
+				<div class="cf-tabs cp-rev">
+					<label class="cf-tab" for="cpf-all">All <span>65+</span></label>
+					{
+						sectors.map((s) => (
+							<label class="cf-tab" for={`cpf-${s}`}>
+								{sectorLabels[s]} <span>{sectorShown[s]}</span>
+							</label>
+						))
+					}
+				</div>
+				<div class="cf-shelf">
+					{
+						projects.map((p, i) => {
+							const href = dest(p);
+							const hasCase = !!p.caseStudy;
+							const Tag = href ? 'a' : 'div';
+							return (
+								<figure class:list={['cf-trophy', 'cp-rev', `s-${p.sector}`]} style={`--c:${p.color}; --i:${i % 3}`}>
+									<Tag
+										class="cf-trophy-link"
+										href={href ?? undefined}
+										data-leaving={href && !hasCase ? p.host : undefined}
+										data-leaving-name={href && !hasCase ? p.name : undefined}
+										rel={href && !hasCase ? 'noopener noreferrer' : undefined}
+										aria-label={p.name}
+									>
+										<span class="cf-trophy-frame" data-fa-tilt="5">
+											<span class="cf-glare" aria-hidden="true" />
+											<img src={p.img} alt={p.name} loading="lazy" />
+											{hasCase && <span class="cf-trophy-star">⭐ gold star</span>}
+											{href && !hasCase && (
+												<span class="cf-trophy-view" aria-hidden="true">
+													Visit live <Icon width={13} name="mdi:arrow-top-right" />
+												</span>
+											)}
+										</span>
+										<figcaption class="cf-trophy-tape">
+											<strong>{p.name}</strong>
+											<em>{sectorLabels[p.sector]} · {p.year}</em>
+										</figcaption>
+									</Tag>
+								</figure>
+							);
+						})
+					}
+					<!-- the empty shelf spot: visible under every tab -->
+					<a
+						class="cf-trophy cf-next s-agri s-health s-property s-media s-commerce s-product"
+						href="/contact"
+						data-cursor="phone"
+					>
+						<span class="cf-next-frame">
+							<Icon width={26} name="mdi:plus" />
+							<strong>This shelf is saved for you.</strong>
+							<em>Bring the idea — we'll build the trophy.</em>
+						</span>
+					</a>
+				</div>
+			</form>
+		</div>
+	</section>
+
+	<!-- ── D · the final bell ──────────────────────────────── -->
+	<section class="cf-sec cf-sec--cta" data-cursor="phone">
+		<div class="cf-wrap cf-cta-box cp-rev">
+			<span class="cf-badge">🔔 The bell rang</span>
+			<h2 class="cf-h cf-h--cta">Your project could be <em>next slide.</em></h2>
+			<p class="cf-p cf-p--center">
+				Every trophy up there started as somebody's rough idea. Bring
+				yours — we design it, build it, ship it, and keep it growing.
+			</p>
+			<div class="cf-cta-row">
+				<a href="/contact" class="cf-cta fa-cta">
+					Start a project
+					<Icon width={17} name="mdi:arrow-right" />
+				</a>
+				<a href="tel:+2348100204570" class="cf-call">
+					or call <strong>+234 810 020 4570</strong>
+				</a>
+			</div>
+		</div>
+	</section>
+</div>
+
+<style>
+	/* ── Campus Portfolio — the school dress. ── */
+	.cpf {
+		--cp-ink: #fdf6ea;
+		--cp-muted: rgba(253, 246, 234, 0.62);
+		--cp-faint: rgba(253, 246, 234, 0.4);
+		--cp-acc: var(--view-accent, #f59e0b);
+		--cp-acc2: #fb7185;
+		--cp-line: rgba(255, 255, 255, 0.09);
+		--cp-card: rgba(255, 255, 255, 0.035);
+		--cp-marker: 'Bradley Hand', 'Segoe Print', 'Comic Sans MS', cursive;
+		font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+		position: relative;
+		isolation: isolate;
+		overflow: hidden;
+		background:
+			radial-gradient(1000px 540px at 82% -6%, rgba(245, 158, 11, 0.13), transparent 62%),
+			radial-gradient(820px 480px at 6% 44%, rgba(251, 113, 133, 0.07), transparent 60%),
+			linear-gradient(180deg, #120c04 0%, #160f08 50%, #0e0903 100%);
+		color: var(--cp-ink);
+		padding: clamp(2rem, 4vw, 3rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 4rem);
+		transition: background 0.4s ease, color 0.4s ease;
+	}
+	:global(html:not(.dark)) .cpf {
+		--cp-ink: #2b1c08;
+		--cp-muted: rgba(43, 28, 8, 0.68);
+		--cp-faint: rgba(43, 28, 8, 0.46);
+		--cp-acc: #b45309;
+		--cp-line: rgba(43, 28, 8, 0.1);
+		--cp-card: rgba(43, 28, 8, 0.045);
+		background:
+			radial-gradient(1000px 540px at 82% -6%, rgba(245, 158, 11, 0.14), transparent 62%),
+			linear-gradient(180deg, #fdf4e3 0%, #faecd4 55%, #fdf4e3 100%);
+	}
+
+	.cf-sec { padding-block: clamp(2rem, 4.5vw, 3.5rem); }
+	.cf-sec--cta { padding-bottom: clamp(1.5rem, 3vw, 2.5rem); }
+	.cf-wrap { max-width: 76rem; margin: 0 auto; }
+
+	.cf-badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		font-family: ui-monospace, monospace;
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--cp-acc);
+		border: 1px solid color-mix(in srgb, var(--cp-acc) 40%, transparent);
+		background: color-mix(in srgb, var(--cp-acc) 9%, transparent);
+		padding: 0.4rem 0.9rem;
+		border-radius: 9999px;
+		margin-bottom: 1.1rem;
+	}
+	.cf-kick {
+		display: block;
+		font-family: ui-monospace, monospace;
+		font-size: 0.74rem;
+		font-weight: 800;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--cp-acc);
+		margin-bottom: 0.6rem;
+	}
+	.cf-h {
+		font-size: clamp(1.9rem, 4vw, 3rem);
+		font-weight: 850;
+		letter-spacing: -0.02em;
+		line-height: 1.05;
+		margin: 0 0 0.9rem;
+	}
+	.cf-h--xl { font-size: clamp(2.3rem, 5.2vw, 4rem); line-height: 1; }
+	.cf-h--cta { font-size: clamp(2rem, 4.6vw, 3.4rem); }
+	.cf-h em {
+		font-style: normal;
+		background: linear-gradient(95deg, var(--cp-acc), var(--cp-acc2));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	.cf-p {
+		font-size: clamp(0.98rem, 1.5vw, 1.1rem);
+		line-height: 1.7;
+		color: var(--cp-muted);
+		max-width: 32rem;
+		margin: 0 0 1.4rem;
+	}
+	.cf-p--center { text-align: center; margin-inline: auto; max-width: 36rem; }
+	.cf-head { text-align: center; margin-bottom: clamp(1.5rem, 3vw, 2.25rem); }
+	.cf-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		font-weight: 800;
+		font-size: 0.92rem;
+		color: var(--cp-acc);
+		border-bottom: 2px solid color-mix(in srgb, var(--cp-acc) 45%, transparent);
+		padding-bottom: 0.15rem;
+		transition: border-color 0.25s ease, gap 0.25s ease;
+	}
+	.cf-link:hover { gap: 0.7rem; border-color: var(--cp-acc); }
+	.cf-cta {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+		padding: 0.95rem 1.8rem;
+		border-radius: 9999px;
+		font-weight: 800;
+		font-size: 0.95rem;
+		color: #2b1500;
+		background: linear-gradient(95deg, #fbbf24, var(--cp-acc));
+		box-shadow: 0 18px 44px -16px color-mix(in srgb, var(--cp-acc) 80%, transparent);
+		transition: box-shadow 0.25s ease, filter 0.25s ease;
+		will-change: transform;
+	}
+	.cf-cta:hover { filter: brightness(1.06); }
+	.cf-call { font-size: 0.95rem; color: var(--cp-muted); }
+	.cf-call strong { font-weight: 850; color: var(--cp-ink); transition: color 0.25s ease; }
+	.cf-call:hover strong { color: var(--cp-acc); }
+
+	.cf-glare {
+		position: absolute;
+		inset: 0;
+		border-radius: inherit;
+		background: radial-gradient(320px 200px at var(--gx, 50%) var(--gy, 20%), color-mix(in srgb, var(--c, var(--cp-acc)) 12%, transparent), transparent 70%);
+		opacity: 0;
+		transition: opacity 0.3s ease;
+		pointer-events: none;
+		z-index: 2;
+	}
+	[data-fa-tilt]:hover .cf-glare { opacity: 1; }
+
+	/* ── A · show & tell ── */
+	.cf-open {
+		display: grid;
+		gap: clamp(1.75rem, 4vw, 3.5rem);
+		align-items: center;
+	}
+	@media (min-width: 960px) {
+		.cf-open { grid-template-columns: 1fr 1.05fr; }
+	}
+	.cf-stats {
+		display: flex;
+		list-style: none;
+		margin: 0 0 1.5rem;
+		padding: 0;
+	}
+	.cf-stats li {
+		display: grid;
+		gap: 0.1rem;
+		flex: 1;
+		padding-inline: 0.9rem;
+		border-left: 1px solid var(--cp-line);
+	}
+	.cf-stats li:first-child { padding-left: 0; border-left: 0; }
+	.cf-stats strong {
+		font-size: clamp(1.4rem, 2.6vw, 2rem);
+		font-weight: 850;
+		background: linear-gradient(135deg, #fbbf24, var(--cp-acc));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	.cf-stats span { font-size: 0.76rem; color: var(--cp-faint); line-height: 1.35; }
+	@media (max-width: 560px) {
+		.cf-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 1rem; }
+		.cf-stats li { padding-inline: 0; border-left: 0; }
+	}
+
+	/* the pull-down screen */
+	.cf-show { position: relative; padding-top: 1.1rem; }
+	.cf-roller {
+		position: relative;
+		display: block;
+		height: 16px;
+		border-radius: 8px;
+		background: linear-gradient(180deg, #57534e, #292524);
+		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+		margin-inline: -0.4rem;
+		z-index: 3;
+	}
+	.cf-roller i {
+		position: absolute;
+		left: 50%;
+		top: 3px;
+		transform: translateX(-50%);
+		width: 46px;
+		height: 8px;
+		border-radius: 999px;
+		background: rgba(255, 255, 255, 0.12);
+	}
+	.cf-screen {
+		position: relative;
+		margin: 0;
+		aspect-ratio: 16 / 10;
+		overflow: hidden;
+		border: 8px solid #fbfaf7;
+		border-top-width: 4px;
+		border-radius: 0 0 0.5rem 0.5rem;
+		background: #fbfaf7;
+		box-shadow:
+			0 0 55px -12px color-mix(in srgb, var(--c, var(--cp-acc)) 40%, transparent),
+			0 40px 90px -36px rgba(0, 0, 0, 0.8);
+		transition: box-shadow 0.5s ease;
+		z-index: 1;
+	}
+	.cf-slide {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: top;
+		opacity: 0;
+		transform: scale(1.02);
+		transition: opacity 0.55s ease, transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.cf-slide.is-on { opacity: 1; transform: scale(1); }
+	/* the projector flash when a slide clicks over */
+	.cf-flash {
+		position: absolute;
+		inset: 0;
+		background: #fff;
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 0.16s ease;
+		z-index: 2;
+	}
+	.cf-show.cf-click-over .cf-flash { opacity: 0.55; }
+	.cf-count {
+		position: absolute;
+		right: 0.7rem;
+		bottom: 0.6rem;
+		font-family: var(--cp-marker);
+		font-size: 0.85rem;
+		font-weight: 700;
+		color: #fff;
+		padding: 0.2rem 0.65rem;
+		border-radius: 9999px;
+		background: rgba(20, 13, 4, 0.72);
+		z-index: 2;
+	}
+	.cf-pull {
+		position: absolute;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 16px;
+		height: 16px;
+		margin-top: -4px;
+		border-radius: 50%;
+		border: 3px solid #57534e;
+		background: transparent;
+		z-index: 3;
+	}
+	/* the masking-tape label */
+	.cf-tape {
+		position: relative;
+		display: inline-grid;
+		gap: 0.05rem;
+		margin: 1.3rem 0 0 0.4rem;
+		padding: 0.55rem 1rem 0.65rem;
+		background: #fef08a;
+		color: #44403c;
+		box-shadow: 0 10px 22px -8px rgba(0, 0, 0, 0.4);
+		transform: rotate(-1.6deg);
+	}
+	.cf-tape.cf-pop { animation: cf-tape-pop 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
+	@keyframes cf-tape-pop {
+		0% { transform: rotate(-1.6deg) translateY(6px); opacity: 0.4; }
+		100% { transform: rotate(-1.6deg) translateY(0); opacity: 1; }
+	}
+	.cf-tape strong { font-family: var(--cp-marker); font-size: 1rem; font-weight: 700; }
+	.cf-tape em { font-family: var(--cp-marker); font-size: 0.82rem; color: #78716c; }
+	.cf-clicker { display: flex; gap: 0.45rem; margin-top: 0.9rem; flex-wrap: wrap; }
+	.cf-click {
+		width: 34px;
+		height: 34px;
+		border-radius: 0.55rem;
+		border: 1.5px solid var(--cp-line);
+		background: var(--cp-card);
+		color: var(--cp-muted);
+		font-family: var(--cp-marker);
+		font-size: 0.95rem;
+		font-weight: 700;
+		cursor: pointer;
+		transition: border-color 0.25s ease, color 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
+	}
+	.cf-click:hover { transform: translateY(-2px); color: var(--cp-ink); }
+	.cf-click.is-on {
+		border-color: var(--c);
+		color: var(--cp-ink);
+		box-shadow: 0 0 14px -3px color-mix(in srgb, var(--c) 65%, transparent);
+	}
+
+	/* ── B · gold-star projects ── */
+	.cf-fair {
+		display: grid;
+		gap: clamp(1.5rem, 3.5vw, 3rem);
+		align-items: center;
+		padding-block: clamp(1.25rem, 3vw, 2.25rem);
+	}
+	@media (min-width: 920px) {
+		.cf-fair { grid-template-columns: 1.05fr 0.95fr; }
+		.cf-fair--rev .cf-fair-media { order: 2; }
+		.cf-fair--rev .cf-fair-copy { order: 1; }
+	}
+	.cf-fair-media {
+		position: relative;
+		display: block;
+		overflow: hidden;
+		aspect-ratio: 16 / 10;
+		border-radius: 0.9rem;
+		border: 1px solid var(--cp-line);
+		background: var(--cp-card);
+		box-shadow: 0 36px 80px -34px rgba(0, 0, 0, 0.65);
+	}
+	.cf-fair-media img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: top;
+		transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.cf-fair:hover .cf-fair-media img { transform: scale(1.04); }
+	.cf-star {
+		position: absolute;
+		top: 0.7rem;
+		right: 0.8rem;
+		font-size: 1.5rem;
+		filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.45));
+		transform: rotate(8deg);
+	}
+	.cf-fair-kick {
+		display: block;
+		font-family: ui-monospace, monospace;
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--c, var(--cp-acc));
+		margin-bottom: 0.6rem;
+	}
+	.cf-fair-name {
+		margin: 0 0 0.3rem;
+		font-size: clamp(1.6rem, 3.2vw, 2.4rem);
+		font-weight: 850;
+		letter-spacing: -0.02em;
+		line-height: 1;
+	}
+	.cf-fair-tag {
+		margin: 0 0 0.7rem;
+		font-family: var(--cp-marker);
+		font-size: clamp(1rem, 1.8vw, 1.2rem);
+		color: var(--c, var(--cp-acc));
+	}
+	.cf-fair-blurb {
+		margin: 0 0 1rem;
+		max-width: 34rem;
+		font-size: 0.95rem;
+		line-height: 1.65;
+		color: var(--cp-muted);
+	}
+	.cf-fair-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.1rem; }
+	.cf-fair-tags i {
+		font-style: normal;
+		font-size: 0.72rem;
+		font-weight: 700;
+		padding: 0.25rem 0.6rem;
+		border-radius: 9999px;
+		border: 1px solid var(--cp-line);
+		color: var(--cp-muted);
+	}
+
+	/* ── C · the trophy cabinet ── */
+	.cf-filter { display: block; }
+	.cf-radio { position: absolute; opacity: 0; pointer-events: none; }
+	.cf-tabs {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0.55rem;
+		margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
+	}
+	.cf-tab {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 0.45rem;
+		padding: 0.5rem 1rem;
+		border-radius: 9999px;
+		border: 1px solid var(--cp-line);
+		font-size: 0.78rem;
+		font-weight: 800;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: var(--cp-muted);
+		cursor: pointer;
+		transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+	}
+	.cf-tab:hover { transform: translateY(-2px); color: var(--cp-ink); }
+	.cf-tab span { font-family: var(--cp-marker); font-size: 0.85rem; color: var(--cp-acc); }
+	#cpf-all:checked ~ .cf-tabs [for='cpf-all'],
+	#cpf-agri:checked ~ .cf-tabs [for='cpf-agri'],
+	#cpf-health:checked ~ .cf-tabs [for='cpf-health'],
+	#cpf-property:checked ~ .cf-tabs [for='cpf-property'],
+	#cpf-media:checked ~ .cf-tabs [for='cpf-media'],
+	#cpf-commerce:checked ~ .cf-tabs [for='cpf-commerce'],
+	#cpf-product:checked ~ .cf-tabs [for='cpf-product'] {
+		color: #2b1500;
+		background: linear-gradient(95deg, #fbbf24, var(--cp-acc));
+		border-color: transparent;
+	}
+	#cpf-all:checked ~ .cf-tabs [for='cpf-all'] span,
+	#cpf-agri:checked ~ .cf-tabs [for='cpf-agri'] span,
+	#cpf-health:checked ~ .cf-tabs [for='cpf-health'] span,
+	#cpf-property:checked ~ .cf-tabs [for='cpf-property'] span,
+	#cpf-media:checked ~ .cf-tabs [for='cpf-media'] span,
+	#cpf-commerce:checked ~ .cf-tabs [for='cpf-commerce'] span,
+	#cpf-product:checked ~ .cf-tabs [for='cpf-product'] span { color: #2b1500; }
+
+	.cf-shelf {
+		display: grid;
+		gap: 1.3rem;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+	@media (max-width: 980px) {
+		.cf-shelf { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	}
+	@media (max-width: 560px) {
+		.cf-shelf { grid-template-columns: 1fr; }
+	}
+	.cf-trophy { display: none; margin: 0; }
+	#cpf-all:checked ~ .cf-shelf .cf-trophy { display: block; }
+	#cpf-agri:checked ~ .cf-shelf .s-agri,
+	#cpf-health:checked ~ .cf-shelf .s-health,
+	#cpf-property:checked ~ .cf-shelf .s-property,
+	#cpf-media:checked ~ .cf-shelf .s-media,
+	#cpf-commerce:checked ~ .cf-shelf .s-commerce,
+	#cpf-product:checked ~ .cf-shelf .s-product { display: block; }
+	.cf-trophy-link { display: block; color: inherit; }
+	.cf-trophy-frame {
+		position: relative;
+		display: block;
+		aspect-ratio: 16 / 10;
+		overflow: hidden;
+		border-radius: 0.8rem;
+		border: 1px solid var(--cp-line);
+		background: var(--cp-card);
+		transition: border-color 0.3s ease, box-shadow 0.3s ease;
+	}
+	.cf-trophy:hover .cf-trophy-frame {
+		border-color: color-mix(in srgb, var(--c, var(--cp-acc)) 55%, transparent);
+		box-shadow: 0 30px 70px -28px color-mix(in srgb, var(--c, var(--cp-acc)) 45%, transparent);
+	}
+	.cf-trophy-frame img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: top;
+		transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.cf-trophy:hover .cf-trophy-frame img { transform: scale(1.05); }
+	.cf-trophy-star {
+		position: absolute;
+		left: 0.7rem;
+		bottom: 0.7rem;
+		font-family: var(--cp-marker);
+		font-size: 0.8rem;
+		font-weight: 700;
+		color: #2b1500;
+		padding: 0.24rem 0.65rem;
+		border-radius: 9999px;
+		background: linear-gradient(95deg, #fde68a, #fbbf24);
+	}
+	.cf-trophy-view {
+		position: absolute;
+		right: 0.7rem;
+		bottom: 0.7rem;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3rem;
+		font-size: 0.66rem;
+		font-weight: 800;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: #fff;
+		padding: 0.28rem 0.7rem;
+		border-radius: 9999px;
+		background: rgba(20, 13, 4, 0.75);
+		border: 1px solid rgba(255, 255, 255, 0.25);
+		opacity: 0;
+		transform: translateY(6px);
+		transition: opacity 0.3s ease, transform 0.3s ease;
+	}
+	.cf-trophy:hover .cf-trophy-view { opacity: 1; transform: translateY(0); }
+	.cf-trophy-tape {
+		display: inline-grid;
+		gap: 0.02rem;
+		margin: 0.6rem 0 0 0.3rem;
+		padding: 0.45rem 0.85rem 0.55rem;
+		background: #fef08a;
+		color: #44403c;
+		box-shadow: 0 8px 18px -8px rgba(0, 0, 0, 0.4);
+		transform: rotate(-1.4deg);
+	}
+	.cf-trophy-tape strong { font-family: var(--cp-marker); font-size: 0.92rem; font-weight: 700; }
+	.cf-trophy-tape em { font-family: var(--cp-marker); font-size: 0.76rem; color: #78716c; }
+
+	.cf-next { display: none; }
+	.cf-next-frame {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.4rem;
+		aspect-ratio: 16 / 10;
+		border-radius: 0.8rem;
+		border: 1.5px dashed color-mix(in srgb, var(--cp-acc) 50%, transparent);
+		background: color-mix(in srgb, var(--cp-acc) 5%, transparent);
+		color: var(--cp-muted);
+		text-align: center;
+		padding: 1rem;
+		transition: background 0.25s ease, border-color 0.25s ease;
+	}
+	.cf-next:hover .cf-next-frame {
+		background: color-mix(in srgb, var(--cp-acc) 10%, transparent);
+		border-color: var(--cp-acc);
+	}
+	.cf-next-frame :global(svg) { color: var(--cp-acc); }
+	.cf-next-frame strong { font-size: 0.95rem; font-weight: 800; color: var(--cp-ink); }
+	.cf-next-frame em { font-family: var(--cp-marker); font-size: 0.9rem; color: var(--cp-faint); }
+
+	/* ── D · final bell ── */
+	.cf-cta-box { text-align: center; }
+	.cf-cta-row {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 1.4rem;
+		flex-wrap: wrap;
+	}
+
+	/* ── reveals ── */
+	.cp-rev {
+		opacity: 0;
+		transform: translateY(22px);
+		transition: opacity 0.65s ease, transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+		transition-delay: calc(var(--i, 0) * 0.08s);
+	}
+	.cp-rev.is-on { opacity: 1; transform: translateY(0); }
+
+	@media (prefers-reduced-motion: reduce) {
+		.cp-rev { opacity: 1; transform: none; transition: none; }
+		.cf-flash { transition: none; }
+	}
+</style>

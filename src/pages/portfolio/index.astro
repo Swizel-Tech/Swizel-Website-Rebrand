@@ -9,6 +9,7 @@ import PortfolioBoardroom from '../../components/sections/PortfolioBoardroom.ast
 import PortfolioFounder from '../../components/sections/PortfolioFounder.astro';
 import PortfolioBuilder from '../../components/sections/PortfolioBuilder.astro';
 import PortfolioStudio from '../../components/sections/PortfolioStudio.astro';
+import PortfolioCampus from '../../components/sections/PortfolioCampus.astro';
 
 const getImageClass = (idx: number) =>
 	idx === 0 ? 'md:h-[600px] h-[250px]' : 'md:h-[420px] h-[280px]';
@@ -31,6 +32,9 @@ const getImageClass = (idx: number) =>
 
 	<!-- Studio world: the Collection Wing of the gallery. -->
 	<PortfolioStudio />
+
+	<!-- Campus world: Show & Tell day. -->
+	<PortfolioCampus />
 
 	<!-- Fallback portfolio for the remaining worlds. -->
 	<div class="alt-view-only portfolio-fallback">
@@ -89,7 +93,8 @@ const getImageClass = (idx: number) =>
 	   the generic fallback there. */
 	html[data-view='founder'] .portfolio-fallback,
 	html[data-view='builder'] .portfolio-fallback,
-	html[data-view='studio'] .portfolio-fallback {
+	html[data-view='studio'] .portfolio-fallback,
+	html[data-view='campus'] .portfolio-fallback {
 		display: none !important;
 	}
 </style>
