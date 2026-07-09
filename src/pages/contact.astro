@@ -35,6 +35,7 @@ const channels = [
 			<h1 class="ct-title">
 				<span class="ct-t ct-t--default">Tell us about your <span class="ct-grad">project.</span></span>
 				<span class="ct-t ct-t--founder">Tell us what you <span class="ct-grad">imagine.</span></span>
+				<span class="ct-t ct-t--builder">Tell us what to <span class="ct-grad">build.</span></span>
 			</h1>
 			<p class="ct-lead">
 				Whether it is a fully formed brief or a rough idea, tell us where you want to go.
@@ -160,10 +161,13 @@ const channels = [
 	.ct-wave { font-size: 1.05em; line-height: 1; }
 	.ct-title { font-family: 'Bebas Neue', sans-serif; font-weight: 400; line-height: 0.95; letter-spacing: 0.5px; font-size: clamp(2.6rem, 7vw, 4.6rem); margin-bottom: 1rem; }
 	.ct-grad { background: linear-gradient(120deg, var(--bd-accent), #8dfeea); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-	/* per-view headline: founder reads "Tell us what you imagine." */
-	.ct-t--founder { display: none; }
+	/* per-view headline: founder reads "Tell us what you imagine.",
+	   builder reads "Tell us what to build." */
+	.ct-t--founder, .ct-t--builder { display: none; }
 	:global(html[data-view='founder']) .ct-t--default { display: none; }
 	:global(html[data-view='founder']) .ct-t--founder { display: inline; }
+	:global(html[data-view='builder']) .ct-t--default { display: none; }
+	:global(html[data-view='builder']) .ct-t--builder { display: inline; }
 	.ct-lead { max-width: 36rem; margin: 0 auto; color: var(--bd-muted); font-size: 1.02rem; line-height: 1.65; }
 
 	.ct-grid { max-width: 64rem; margin: clamp(2rem, 4vw, 3rem) auto 0; display: grid; gap: clamp(1.2rem, 2.5vw, 1.8rem); align-items: start; perspective: 1500px; }
@@ -337,5 +341,50 @@ const channels = [
 	html:not(.dark) .ct .ct-formcard #contact-form input,
 	html:not(.dark) .ct .ct-formcard #contact-form textarea {
 		background: rgba(255, 255, 255, 0.75) !important;
+	}
+
+	/* ── Builder world skin for the contact page ─────────────────
+	   Same page, builder dress: teal accent leads, blue secondary,
+	   mono terminal kickers, the eyebrow becomes a `$ say hello` prompt. */
+	html[data-view='builder'] .ct {
+		--bd-accent: #18debe;
+		--ct-cta2: #28a6ec;
+	}
+	html[data-view='builder']:not(.dark) .ct {
+		--bd-accent: #0b9e88;
+	}
+	html[data-view='builder'] .ct .ct-grad {
+		background: linear-gradient(120deg, var(--bd-accent), #28a6ec);
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	html[data-view='builder'] .ct .ct-orb--3 {
+		background: radial-gradient(circle, rgba(40, 166, 236, 0.4), transparent 70%);
+	}
+	/* eyebrow = terminal prompt: mono, lowercase, $ prefix, no wave emoji */
+	html[data-view='builder'] .ct .ct-eyebrow {
+		font-family: 'JetBrains Mono', ui-monospace, monospace;
+		font-weight: 600;
+		letter-spacing: 0.02em;
+		text-transform: lowercase;
+		border-radius: 0.55rem;
+	}
+	html[data-view='builder'] .ct .ct-eyebrow::before { content: '$'; opacity: 0.75; }
+	html[data-view='builder'] .ct .ct-wave { display: none; }
+	/* kickers speak mono with a comment prefix */
+	html[data-view='builder'] .ct .ct-form-k,
+	html[data-view='builder'] .ct .ct-aside-k,
+	html[data-view='builder'] .ct .ct-kicker {
+		font-family: 'JetBrains Mono', ui-monospace, monospace;
+		text-transform: lowercase;
+		letter-spacing: 0.04em;
+	}
+	html[data-view='builder'] .ct .ct-form-k::before,
+	html[data-view='builder'] .ct .ct-aside-k::before,
+	html[data-view='builder'] .ct .ct-kicker::before { content: '// '; opacity: 0.7; }
+	/* submit reads like a command */
+	html[data-view='builder'] .ct .ct-formcard #contact-form button {
+		color: #04241e !important;
 	}
 </style>
