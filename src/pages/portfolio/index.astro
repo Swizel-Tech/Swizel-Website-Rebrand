@@ -8,6 +8,7 @@ import MainLayout from '../../layouts/MainLayout.astro';
 import PortfolioBoardroom from '../../components/sections/PortfolioBoardroom.astro';
 import PortfolioFounder from '../../components/sections/PortfolioFounder.astro';
 import PortfolioBuilder from '../../components/sections/PortfolioBuilder.astro';
+import PortfolioStudio from '../../components/sections/PortfolioStudio.astro';
 
 const getImageClass = (idx: number) =>
 	idx === 0 ? 'md:h-[600px] h-[250px]' : 'md:h-[420px] h-[280px]';
@@ -27,6 +28,9 @@ const getImageClass = (idx: number) =>
 
 	<!-- Builder world: the deployments dashboard. -->
 	<PortfolioBuilder />
+
+	<!-- Studio world: the Collection Wing of the gallery. -->
+	<PortfolioStudio />
 
 	<!-- Fallback portfolio for the remaining worlds. -->
 	<div class="alt-view-only portfolio-fallback">
@@ -81,9 +85,11 @@ const getImageClass = (idx: number) =>
 </MainLayout>
 
 <style is:global>
-	/* Founder view has its own Portfolio now — hide the generic fallback. */
+	/* Founder, Builder and Studio views have their own Portfolio now — hide
+	   the generic fallback there. */
 	html[data-view='founder'] .portfolio-fallback,
-	html[data-view='builder'] .portfolio-fallback {
+	html[data-view='builder'] .portfolio-fallback,
+	html[data-view='studio'] .portfolio-fallback {
 		display: none !important;
 	}
 </style>

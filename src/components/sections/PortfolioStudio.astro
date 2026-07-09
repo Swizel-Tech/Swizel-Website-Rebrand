@@ -1,0 +1,698 @@
+---
+// Portfolio · Studio world — the Collection Wing of The Swizel Gallery.
+// The complete catalogue: featured exhibitions (case studies) as big rooms,
+// then every work on the wall behind a CSS-only sector filter styled as
+// museum index tabs. Root carries `sbody` (studio engine: .sd-rev reveals)
+// and `spf` (motion engine: tilt / glare / magnetic).
+import { Icon } from 'astro-icon/components';
+import { projects, featuredProjects, sectorLabels, sectorOrder, type ProjectSector } from '../../data/projects';
+
+const sectors = sectorOrder;
+const sectorShown: Record<ProjectSector, string> = {
+	agri: '12+', health: '6+', property: '14+', media: '9+', commerce: '8+', product: '18+',
+};
+
+const stats = [
+	{ n: '65+', label: 'works in the collection' },
+	{ n: '15+', label: 'sectors curated' },
+	{ n: '7+', label: 'years exhibiting' },
+	{ n: '10+', label: 'countries on loan to' },
+];
+
+const dest = (p: (typeof projects)[number]) => (p.caseStudy ? `/work/${p.slug}` : p.url);
+const roman = ['01', '02', '03', '04', '05', '06'];
+---
+
+<div class="spf sbody view-body view-body-studio">
+	<!-- ── A · the wing entrance ───────────────────────────── -->
+	<section class="sp-sec sp-entry">
+		<div class="sp-wrap">
+			<div class="sp-folio sd-rev">
+				<span>The Swizel Gallery — Collection Wing</span>
+				<span>Every work, on the wall</span>
+				<span>Permanent exhibition · Free entry</span>
+			</div>
+			<div class="sp-open">
+				<h1 class="sp-display sd-rev">
+					The complete<br />
+					<em>collection.</em>
+				</h1>
+				<div class="sp-open-side sd-rev">
+					<p class="sp-lead">
+						Not a moodboard — receipts. Brands you can buy from, apps
+						you can download, platforms real businesses run on. Start
+						in the big rooms, then walk the full wall.
+					</p>
+					<a href="#sp-wall" class="sp-link">
+						Straight to the wall
+						<Icon width={15} name="mdi:arrow-down" />
+					</a>
+				</div>
+			</div>
+			<ul class="sp-wings sd-rev">
+				{stats.map((s) => (
+					<li>
+						<strong>{s.n}</strong>
+						<span>{s.label}</span>
+					</li>
+				))}
+			</ul>
+		</div>
+	</section>
+
+	<!-- ── B · featured exhibitions (the big rooms) ────────── -->
+	<section class="sp-sec" data-cursor="play">
+		<div class="sp-wrap">
+			<div class="sp-rule sd-rev">
+				<span>Featured exhibitions</span>
+				<span>The big rooms · full case studies</span>
+			</div>
+			{
+				featuredProjects.map((p, i) => (
+					<div class:list={['sp-ex', 'sd-rev', { 'sp-ex--rev': i % 2 === 1 }]} style={`--c:${p.color}`}>
+						<a class="sp-exmedia" href={`/work/${p.slug}`} data-fa-tilt="4" aria-label={`${p.name} case study`}>
+							<span class="sa-glare" aria-hidden="true" />
+							<img src={p.img} alt={p.name} loading="lazy" />
+							<span class="sp-exveil" aria-hidden="true" />
+							<span class="sp-exroom">Room {roman[i] || p.year}</span>
+						</a>
+						<div class="sp-excopy">
+							<span class="sp-exkick">Room {roman[i]} · {sectorLabels[p.sector]} · {p.year}</span>
+							<h2 class="sp-exname">{p.name}</h2>
+							<p class="sp-extag">{p.tagline}</p>
+							<p class="sp-exblurb">{p.blurb}</p>
+							<span class="sp-extags">
+								{p.tags.map((t) => <i>{t}</i>)}
+							</span>
+							<a href={`/work/${p.slug}`} class="sp-link">
+								Walk the exhibition
+								<Icon width={15} name="mdi:arrow-right" />
+							</a>
+						</div>
+					</div>
+				))
+			}
+		</div>
+	</section>
+
+	<!-- ── C · the full wall (filterable catalogue) ────────── -->
+	<section class="sp-sec" id="sp-wall" data-cursor="repo">
+		<div class="sp-wrap">
+			<div class="sp-rule sd-rev">
+				<span>The full wall</span>
+				<span>Choose an index tab · hanging now</span>
+			</div>
+			<form class="sp-filter" autocomplete="off">
+				<input class="sp-radio" type="radio" name="spf" id="spf-all" checked />
+				{sectors.map((s) => <input class="sp-radio" type="radio" name="spf" id={`spf-${s}`} />)}
+				<div class="sp-tabs sd-rev">
+					<label class="sp-tab" for="spf-all">All works <em>65+</em></label>
+					{
+						sectors.map((s) => (
+							<label class="sp-tab" for={`spf-${s}`}>
+								{sectorLabels[s]} <em>{sectorShown[s]}</em>
+							</label>
+						))
+					}
+				</div>
+				<div class="sp-wall">
+					{
+						projects.map((p, i) => {
+							const href = dest(p);
+							const hasCase = !!p.caseStudy;
+							const Tag = href ? 'a' : 'div';
+							return (
+								<figure class:list={['sp-art', 'sd-rev', `s-${p.sector}`]} style={`--c:${p.color}; --i:${i % 3}`}>
+									<Tag
+										class="sp-art-link"
+										href={href ?? undefined}
+										data-leaving={href && !hasCase ? p.host : undefined}
+										data-leaving-name={href && !hasCase ? p.name : undefined}
+										rel={href && !hasCase ? 'noopener noreferrer' : undefined}
+										aria-label={p.name}
+									>
+										<span class="sp-art-frame" data-fa-tilt="5">
+											<span class="sa-glare" aria-hidden="true" />
+											<img src={p.img} alt={p.name} loading="lazy" />
+											{hasCase && (
+												<span class="sp-art-ribbon">Featured exhibition</span>
+											)}
+											{href && !hasCase && (
+												<span class="sp-art-view" aria-hidden="true">
+													View live <Icon width={13} name="mdi:arrow-top-right" />
+												</span>
+											)}
+										</span>
+										<figcaption class="sp-plaque">
+											<strong>{p.name}</strong>
+											<span>{sectorLabels[p.sector]} · {p.year}</span>
+										</figcaption>
+									</Tag>
+								</figure>
+							);
+						})
+					}
+					<!-- the reserved slot: visible under every tab -->
+					<a
+						class="sp-art sp-next s-agri s-health s-property s-media s-commerce s-product"
+						href="/contact"
+						data-cursor="phone"
+					>
+						<span class="sp-next-frame">
+							<Icon width={26} name="mdi:plus" />
+							<strong>This spot is reserved.</strong>
+							<em>For your brand — bring the brief, we'll frame the result.</em>
+						</span>
+						<span class="sp-plaque">
+							<strong>Untitled, {new Date().getFullYear()}</strong>
+							<span>Your sector · Commission open</span>
+						</span>
+					</a>
+				</div>
+			</form>
+		</div>
+	</section>
+
+	<!-- ── D · the commission desk ─────────────────────────── -->
+	<section class="sp-sec sp-sec--cta" data-cursor="phone">
+		<div class="sp-wrap sp-cta sd-rev">
+			<h2 class="sp-display sp-display--cta">
+				The wall has<br />
+				<em>one space left.</em>
+			</h2>
+			<p class="sp-lead sp-lead--center">
+				Every piece up there started as somebody's rough idea. Bring
+				yours — we design it, build it, hang it, and keep it alive.
+			</p>
+			<div class="sp-cta-row">
+				<a href="/contact" class="sp-btn fa-cta">
+					Reserve the spot
+					<Icon width={17} name="mdi:arrow-right" />
+				</a>
+				<a href="tel:+2348100204570" class="sp-call">
+					or call <strong>+234 810 020 4570</strong>
+				</a>
+			</div>
+		</div>
+	</section>
+</div>
+
+<style>
+	/* ── Studio Portfolio — the gallery dress. ── */
+	.spf {
+		--sa-ink: #f3edf0;
+		--sa-muted: rgba(243, 237, 240, 0.64);
+		--sa-faint: rgba(243, 237, 240, 0.42);
+		--sa-acc: var(--view-accent, #ec4899);
+		--sa-line: rgba(243, 237, 240, 0.14);
+		--sa-card: rgba(255, 255, 255, 0.04);
+		--sa-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+		font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+		position: relative;
+		isolation: isolate;
+		overflow: hidden;
+		background:
+			radial-gradient(1100px 560px at 84% -6%, rgba(236, 72, 153, 0.13), transparent 60%),
+			radial-gradient(820px 480px at 8% 50%, rgba(168, 85, 247, 0.07), transparent 60%),
+			linear-gradient(180deg, #0f0a0d 0%, #130c11 50%, #0b0709 100%);
+		color: var(--sa-ink);
+		padding: clamp(1.25rem, 2.5vw, 2rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 4rem);
+		transition: background 0.4s ease, color 0.4s ease;
+	}
+	:global(html:not(.dark)) .spf {
+		--sa-ink: #1c151a;
+		--sa-muted: rgba(28, 21, 26, 0.7);
+		--sa-faint: rgba(28, 21, 26, 0.48);
+		--sa-acc: #cf2570;
+		--sa-line: rgba(28, 21, 26, 0.14);
+		--sa-card: rgba(28, 21, 26, 0.035);
+		background:
+			radial-gradient(1100px 560px at 84% -6%, rgba(236, 72, 153, 0.07), transparent 60%),
+			linear-gradient(180deg, #f3ece6 0%, #ece2da 55%, #f3ece6 100%);
+	}
+
+	.sp-sec { padding-block: clamp(2.25rem, 5vw, 3.75rem); }
+	.sp-entry { padding-top: clamp(0.5rem, 1.5vw, 1rem); }
+	.sp-wrap { max-width: 80rem; margin: 0 auto; }
+
+	.sp-folio {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+		flex-wrap: wrap;
+		padding: 0.6rem 0;
+		border-top: 2px solid var(--sa-ink);
+		border-bottom: 1px solid var(--sa-line);
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--sa-faint);
+		margin-bottom: clamp(1.75rem, 4vw, 3rem);
+	}
+	.sp-folio span:first-child { color: var(--sa-ink); }
+	.sp-rule {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 1rem;
+		padding-bottom: 0.5rem;
+		border-bottom: 1px solid var(--sa-line);
+		margin-bottom: clamp(1.5rem, 3.5vw, 2.5rem);
+		font-size: 0.74rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+	}
+	.sp-rule span:first-child { color: var(--sa-acc); }
+	.sp-rule span:last-child {
+		color: var(--sa-faint);
+		font-style: italic;
+		font-family: var(--sa-serif);
+		letter-spacing: 0.02em;
+		text-transform: none;
+		font-size: 0.98rem;
+		font-weight: 400;
+	}
+
+	.sp-display {
+		font-size: clamp(2.8rem, 7vw, 5.6rem);
+		font-weight: 850;
+		letter-spacing: -0.03em;
+		line-height: 0.98;
+		margin: 0;
+	}
+	.sp-display em {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-weight: 500;
+		letter-spacing: -0.01em;
+		color: var(--sa-acc);
+	}
+	.sp-lead {
+		font-size: clamp(1.05rem, 1.7vw, 1.25rem);
+		line-height: 1.6;
+		color: var(--sa-muted);
+		margin: 0 0 1.4rem;
+	}
+	.sp-lead--center { text-align: center; margin-inline: auto; max-width: 38rem; margin-bottom: 1.6rem; }
+	.sp-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		font-weight: 800;
+		font-size: 0.95rem;
+		color: var(--sa-acc);
+		border-bottom: 2px solid color-mix(in srgb, var(--sa-acc) 45%, transparent);
+		padding-bottom: 0.15rem;
+		transition: border-color 0.25s ease, gap 0.25s ease;
+	}
+	.sp-link:hover { gap: 0.7rem; border-color: var(--sa-acc); }
+
+	.sa-glare {
+		position: absolute;
+		inset: 0;
+		border-radius: inherit;
+		background: radial-gradient(340px 220px at var(--gx, 50%) var(--gy, 20%), color-mix(in srgb, var(--c, var(--sa-acc)) 12%, transparent), transparent 70%);
+		opacity: 0;
+		transition: opacity 0.3s ease;
+		pointer-events: none;
+		z-index: 2;
+	}
+	[data-fa-tilt]:hover .sa-glare { opacity: 1; }
+
+	/* ── A · entrance ── */
+	.sp-open {
+		display: grid;
+		gap: clamp(1.5rem, 4vw, 3.5rem);
+		align-items: end;
+		margin-bottom: clamp(2rem, 4vw, 3rem);
+	}
+	@media (min-width: 920px) {
+		.sp-open { grid-template-columns: 1.15fr 0.85fr; }
+	}
+	.sp-open-side { max-width: 34rem; }
+	.sp-wings {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 1rem;
+		list-style: none;
+		margin: 0;
+		padding: 1.4rem 0 0;
+		border-top: 1px solid var(--sa-line);
+	}
+	.sp-wings li {
+		display: grid;
+		gap: 0.15rem;
+		padding-left: 1rem;
+		border-left: 1px solid var(--sa-line);
+	}
+	.sp-wings li strong {
+		font-size: clamp(1.6rem, 3vw, 2.3rem);
+		font-weight: 850;
+		letter-spacing: -0.02em;
+		color: var(--sa-acc);
+	}
+	.sp-wings li span {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 0.86rem;
+		color: var(--sa-faint);
+	}
+	@media (max-width: 620px) {
+		.sp-wings { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 1.4rem; }
+	}
+
+	/* ── B · exhibitions ── */
+	.sp-ex {
+		display: grid;
+		gap: clamp(1.5rem, 3.5vw, 3rem);
+		align-items: center;
+		padding-block: clamp(1.25rem, 3vw, 2.25rem);
+	}
+	@media (min-width: 920px) {
+		.sp-ex { grid-template-columns: 1.05fr 0.95fr; }
+		.sp-ex--rev .sp-exmedia { order: 2; }
+		.sp-ex--rev .sp-excopy { order: 1; }
+	}
+	.sp-exmedia {
+		position: relative;
+		display: block;
+		overflow: hidden;
+		border-radius: 0.4rem;
+		border: 1px solid var(--sa-line);
+		box-shadow:
+			inset 0 0 0 10px color-mix(in srgb, var(--sa-ink) 5%, transparent),
+			0 36px 80px -34px rgba(0, 0, 0, 0.7);
+		aspect-ratio: 16 / 10;
+		background: var(--sa-card);
+	}
+	.sp-exmedia img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: top;
+		transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.sp-ex:hover .sp-exmedia img { transform: scale(1.04); }
+	.sp-exveil {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(180deg, transparent 55%, rgba(10, 6, 9, 0.55));
+		pointer-events: none;
+	}
+	.sp-exroom {
+		position: absolute;
+		left: 1rem;
+		bottom: 0.9rem;
+		font-size: 0.68rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: #fff;
+		padding: 0.3rem 0.75rem;
+		border-radius: 9999px;
+		background: color-mix(in srgb, var(--c, var(--sa-acc)) 78%, #000);
+	}
+	.sp-exkick {
+		display: block;
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--c, var(--sa-acc));
+		margin-bottom: 0.6rem;
+	}
+	.sp-exname {
+		margin: 0 0 0.3rem;
+		font-size: clamp(1.7rem, 3.5vw, 2.6rem);
+		font-weight: 850;
+		letter-spacing: -0.02em;
+		line-height: 1;
+	}
+	.sp-extag {
+		margin: 0 0 0.7rem;
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: clamp(1.02rem, 1.8vw, 1.25rem);
+		color: var(--c, var(--sa-acc));
+	}
+	.sp-exblurb {
+		margin: 0 0 1rem;
+		max-width: 34rem;
+		font-size: 0.96rem;
+		line-height: 1.65;
+		color: var(--sa-muted);
+	}
+	.sp-extags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		margin-bottom: 1.1rem;
+	}
+	.sp-extags i {
+		font-style: normal;
+		font-size: 0.72rem;
+		font-weight: 700;
+		padding: 0.25rem 0.6rem;
+		border-radius: 9999px;
+		border: 1px solid var(--sa-line);
+		color: var(--sa-muted);
+	}
+
+	/* ── C · the wall ── */
+	.sp-filter { display: block; }
+	.sp-radio { position: absolute; opacity: 0; pointer-events: none; }
+	.sp-tabs {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.55rem;
+		margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
+	}
+	.sp-tab {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 0.45rem;
+		padding: 0.5rem 1rem;
+		border-radius: 9999px;
+		border: 1px solid var(--sa-line);
+		font-size: 0.78rem;
+		font-weight: 800;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--sa-muted);
+		cursor: pointer;
+		transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+	}
+	.sp-tab:hover { transform: translateY(-2px); color: var(--sa-ink); }
+	.sp-tab em {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 0.82rem;
+		text-transform: none;
+		letter-spacing: 0;
+		color: var(--sa-acc);
+	}
+	#spf-all:checked ~ .sp-tabs [for='spf-all'],
+	#spf-agri:checked ~ .sp-tabs [for='spf-agri'],
+	#spf-health:checked ~ .sp-tabs [for='spf-health'],
+	#spf-property:checked ~ .sp-tabs [for='spf-property'],
+	#spf-media:checked ~ .sp-tabs [for='spf-media'],
+	#spf-commerce:checked ~ .sp-tabs [for='spf-commerce'],
+	#spf-product:checked ~ .sp-tabs [for='spf-product'] {
+		color: #fff;
+		background: linear-gradient(95deg, var(--sa-acc), #a855f7);
+		border-color: transparent;
+	}
+	#spf-all:checked ~ .sp-tabs [for='spf-all'] em,
+	#spf-agri:checked ~ .sp-tabs [for='spf-agri'] em,
+	#spf-health:checked ~ .sp-tabs [for='spf-health'] em,
+	#spf-property:checked ~ .sp-tabs [for='spf-property'] em,
+	#spf-media:checked ~ .sp-tabs [for='spf-media'] em,
+	#spf-commerce:checked ~ .sp-tabs [for='spf-commerce'] em,
+	#spf-product:checked ~ .sp-tabs [for='spf-product'] em { color: #ffe1f0; }
+
+	.sp-wall {
+		display: grid;
+		gap: 1.3rem;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+	@media (max-width: 980px) {
+		.sp-wall { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	}
+	@media (max-width: 560px) {
+		.sp-wall { grid-template-columns: 1fr; }
+	}
+	.sp-art { display: none; margin: 0; }
+	#spf-all:checked ~ .sp-wall .sp-art { display: block; }
+	#spf-agri:checked ~ .sp-wall .s-agri,
+	#spf-health:checked ~ .sp-wall .s-health,
+	#spf-property:checked ~ .sp-wall .s-property,
+	#spf-media:checked ~ .sp-wall .s-media,
+	#spf-commerce:checked ~ .sp-wall .s-commerce,
+	#spf-product:checked ~ .sp-wall .s-product { display: block; }
+	.sp-art-link { display: block; color: inherit; }
+	.sp-art-frame {
+		position: relative;
+		display: block;
+		aspect-ratio: 16 / 10;
+		overflow: hidden;
+		border-radius: 0.4rem;
+		border: 1px solid var(--sa-line);
+		box-shadow: inset 0 0 0 8px color-mix(in srgb, var(--sa-ink) 5%, transparent), 0 26px 60px -30px rgba(0, 0, 0, 0.7);
+		background: var(--sa-card);
+		transition: border-color 0.3s ease, box-shadow 0.3s ease;
+	}
+	.sp-art:hover .sp-art-frame {
+		border-color: color-mix(in srgb, var(--c, var(--sa-acc)) 55%, transparent);
+		box-shadow:
+			inset 0 0 0 8px color-mix(in srgb, var(--sa-ink) 5%, transparent),
+			0 30px 70px -28px color-mix(in srgb, var(--c, var(--sa-acc)) 45%, transparent);
+	}
+	.sp-art-frame img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: top;
+		transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.sp-art:hover .sp-art-frame img { transform: scale(1.05); }
+	.sp-art-ribbon {
+		position: absolute;
+		left: 0.7rem;
+		bottom: 0.7rem;
+		font-size: 0.62rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: #fff;
+		padding: 0.26rem 0.65rem;
+		border-radius: 9999px;
+		background: color-mix(in srgb, var(--c, var(--sa-acc)) 80%, #000);
+	}
+	.sp-art-view {
+		position: absolute;
+		right: 0.7rem;
+		bottom: 0.7rem;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3rem;
+		font-size: 0.66rem;
+		font-weight: 800;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: #fff;
+		padding: 0.28rem 0.7rem;
+		border-radius: 9999px;
+		background: rgba(10, 6, 9, 0.72);
+		border: 1px solid rgba(255, 255, 255, 0.25);
+		opacity: 0;
+		transform: translateY(6px);
+		transition: opacity 0.3s ease, transform 0.3s ease;
+	}
+	.sp-art:hover .sp-art-view { opacity: 1; transform: translateY(0); }
+
+	.sp-plaque {
+		display: inline-flex;
+		flex-direction: column;
+		gap: 0.12rem;
+		margin-top: 0.7rem;
+		padding: 0.5rem 0.85rem;
+		background: rgba(12, 8, 11, 0.66);
+		-webkit-backdrop-filter: blur(12px) saturate(130%);
+		backdrop-filter: blur(12px) saturate(130%);
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		border-left: 3px solid var(--c, var(--sa-acc));
+		border-radius: 0 0.5rem 0.5rem 0;
+		box-shadow: 0 14px 30px -14px rgba(0, 0, 0, 0.6);
+		max-width: fit-content;
+	}
+	.sp-plaque strong {
+		font-size: 0.8rem;
+		font-weight: 850;
+		color: #fff;
+	}
+	.sp-plaque span {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 0.72rem;
+		color: rgba(255, 255, 255, 0.62);
+	}
+
+	/* the reserved slot */
+	.sp-next { display: none; }
+	.sp-next-frame {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.4rem;
+		aspect-ratio: 16 / 10;
+		border-radius: 0.4rem;
+		border: 1.5px dashed color-mix(in srgb, var(--sa-acc) 50%, transparent);
+		background: color-mix(in srgb, var(--sa-acc) 5%, transparent);
+		color: var(--sa-muted);
+		text-align: center;
+		padding: 1rem;
+		transition: background 0.25s ease, border-color 0.25s ease;
+	}
+	.sp-next:hover .sp-next-frame {
+		background: color-mix(in srgb, var(--sa-acc) 10%, transparent);
+		border-color: var(--sa-acc);
+	}
+	.sp-next-frame :global(svg) { color: var(--sa-acc); }
+	.sp-next-frame strong { font-size: 0.95rem; font-weight: 800; color: var(--sa-ink); }
+	.sp-next-frame em {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 0.84rem;
+		color: var(--sa-faint);
+	}
+
+	/* ── D · commission desk ── */
+	.sp-sec--cta { padding-bottom: clamp(1.5rem, 3vw, 2.5rem); }
+	.sp-cta { text-align: center; }
+	.sp-display--cta { font-size: clamp(2.4rem, 6vw, 4.6rem); margin-bottom: 1.25rem; }
+	.sp-cta-row {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 1.4rem;
+		flex-wrap: wrap;
+	}
+	.sp-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.6rem;
+		padding: 1rem 1.9rem;
+		border-radius: 9999px;
+		font-weight: 800;
+		font-size: 0.95rem;
+		color: #fff;
+		background: linear-gradient(95deg, var(--sa-acc), #a855f7);
+		box-shadow: 0 18px 44px -16px color-mix(in srgb, var(--sa-acc) 80%, transparent);
+		transition: box-shadow 0.25s ease, filter 0.25s ease;
+		will-change: transform;
+	}
+	.sp-btn:hover { filter: brightness(1.07); }
+	.sp-call { font-size: 0.95rem; color: var(--sa-muted); }
+	.sp-call strong {
+		font-weight: 850;
+		color: var(--sa-ink);
+		transition: color 0.25s ease;
+	}
+	.sp-call:hover strong { color: var(--sa-acc); }
+
+	/* ── reveals ── */
+	.sd-rev {
+		opacity: 0;
+		transform: translateY(22px);
+		transition: opacity 0.65s ease, transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+		transition-delay: calc(var(--i, 0) * 0.06s);
+	}
+	.sd-rev.is-on { opacity: 1; transform: translateY(0); }
+
+	@media (prefers-reduced-motion: reduce) {
+		.sd-rev { opacity: 1; transform: none; transition: none; }
+	}
+</style>
