@@ -192,9 +192,18 @@ const isActive = (href: string) => {
 				{links.map((link) =>
 					link === 'services' ? (
 						<details class="m-nav-dd" open={onServices}>
-							<summary class:list={['m-nav-link', { active: onServices }]}>
-								<span>{formatLink(link)}</span>
-								<svg class="m-nav-caret" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9" /></svg>
+							<summary class="m-nav-ddrow" aria-label="Services menu">
+								<a
+									href="/services"
+									class:list={['m-nav-link', 'm-nav-link--dd', { active: onServices }]}
+									onclick="event.stopPropagation()"
+								>
+									<span>{formatLink(link)}</span>
+									<svg class="m-nav-go" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6" /></svg>
+								</a>
+								<span class="m-nav-expand" role="button" aria-label="Toggle services list">
+									<svg class="m-nav-caret" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9" /></svg>
+								</span>
 							</summary>
 							<div class="m-nav-sub">
 								{disciplines.map((d) => (
@@ -362,9 +371,29 @@ const isActive = (href: string) => {
 	.m-nav-link:hover .m-nav-go { opacity: 0.9; transform: translateX(3px); }
 	.m-nav-caret { opacity: 0.7; transition: transform 0.25s ease; flex-shrink: 0; }
 
-	/* Services accordion — clean icon rows inside an inset panel */
+	/* Services accordion — clean icon rows inside an inset panel.
+	   The label is a real link to /services; only the caret pad toggles the list. */
 	.m-nav-dd { border-radius: 0.85rem; }
-	.m-nav-dd[open] > summary:not(.active) { background: var(--m-surface); }
+	.m-nav-ddrow {
+		display: flex;
+		align-items: stretch;
+		gap: 0.3rem;
+		list-style: none;
+		cursor: pointer;
+	}
+	.m-nav-ddrow::-webkit-details-marker { display: none; }
+	.m-nav-link--dd { flex: 1; min-width: 0; }
+	.m-nav-expand {
+		display: grid;
+		place-items: center;
+		width: 3rem;
+		flex-shrink: 0;
+		border-radius: 0.85rem;
+		background: var(--m-surface);
+		transition: background 0.2s ease;
+	}
+	.m-nav-expand:hover { background: var(--m-hover); }
+	.m-nav-dd[open] .m-nav-expand { background: var(--m-hover); }
 	.m-nav-dd[open] .m-nav-caret { transform: rotate(180deg); }
 	.m-nav-sub {
 		display: grid;
