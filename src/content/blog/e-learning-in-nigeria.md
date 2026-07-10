@@ -10,7 +10,7 @@ author: Swizel Team
 featured: false
 draft: false
 ---
-The internet has become a popular tool among the world’s young population. It’s safe to say “we all use the internet' in one way or the other, and for several reasons too. Yes, we research, download movies, pictures and applications, send and receive emails, messages, and get important news updates from the internet but internet technology has proven over the years to be more than that.
+The internet now has become a popular tool among the world’s young population. It’s safe to say “we all use the internet' in one way or the other, and for several reasons too. Yes, we research, download movies, pictures and applications, send and receive emails, messages, and get important news updates from the internet but internet technology has proven over the years to be more than that.
 
 Schooling has since been taken to the net. Different schools and programs now integrate internet technology in their learning process by giving assignments, lectures, projects, and even tests and exams via the internet. This is what is called E-Learning today. It is a mixture of physical school administrative processes with online technological interventions to aid in faster, better and more accurate delivery.
 
