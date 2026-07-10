@@ -10,6 +10,7 @@ import BlogBoardroom from '../../components/sections/BlogBoardroom.astro';
 import BlogFounder from '../../components/sections/BlogFounder.astro';
 import BlogBuilder from '../../components/sections/BlogBuilder.astro';
 import BlogStudio from '../../components/sections/BlogStudio.astro';
+import BlogCampus from '../../components/sections/BlogCampus.astro';
 
 // Published posts, newest first. Drafts (draft: true) are kept out of the build.
 export const posts = (await getCollection('blog', ({ data }) => data.draft !== true)).sort(
@@ -35,6 +36,9 @@ export const posts = (await getCollection('blog', ({ data }) => data.draft !== t
 	<!-- Studio world: the Reading Room of the gallery. -->
 	<BlogStudio posts={posts} />
 
+	<!-- Campus world: the school paper. -->
+	<BlogCampus posts={posts} />
+
 	<!-- Fallback for the remaining worlds. -->
 	<div class="alt-view-only blog-fallback">
 		<Breadcrumb title="Articles" desc="" />
@@ -59,7 +63,8 @@ export const posts = (await getCollection('blog', ({ data }) => data.draft !== t
 	   generic fallback there. */
 	html[data-view='founder'] .blog-fallback,
 	html[data-view='builder'] .blog-fallback,
-	html[data-view='studio'] .blog-fallback {
+	html[data-view='studio'] .blog-fallback,
+	html[data-view='campus'] .blog-fallback {
 		display: none !important;
 	}
 </style>
