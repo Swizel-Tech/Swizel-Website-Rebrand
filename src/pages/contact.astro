@@ -37,6 +37,7 @@ const channels = [
 				<span class="ct-t ct-t--founder">Tell us what you <span class="ct-grad">imagine.</span></span>
 				<span class="ct-t ct-t--builder">Tell us what to <span class="ct-grad">build.</span></span>
 				<span class="ct-t ct-t--studio">Tell us what to <span class="ct-grad">craft.</span></span>
+				<span class="ct-t ct-t--campus">Tell us what you <span class="ct-grad">dream.</span></span>
 			</h1>
 			<p class="ct-lead">
 				Whether it is a fully formed brief or a rough idea, tell us where you want to go.
@@ -163,14 +164,17 @@ const channels = [
 	.ct-title { font-family: 'Bebas Neue', sans-serif; font-weight: 400; line-height: 0.95; letter-spacing: 0.5px; font-size: clamp(2.6rem, 7vw, 4.6rem); margin-bottom: 1rem; }
 	.ct-grad { background: linear-gradient(120deg, var(--bd-accent), #8dfeea); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 	/* per-view headline: founder reads "Tell us what you imagine.",
-	   builder "Tell us what to build.", studio "Tell us what to craft." */
-	.ct-t--founder, .ct-t--builder, .ct-t--studio { display: none; }
+	   builder "Tell us what to build.", studio "Tell us what to craft.",
+	   campus "Tell us what you dream." */
+	.ct-t--founder, .ct-t--builder, .ct-t--studio, .ct-t--campus { display: none; }
 	:global(html[data-view='founder']) .ct-t--default { display: none; }
 	:global(html[data-view='founder']) .ct-t--founder { display: inline; }
 	:global(html[data-view='builder']) .ct-t--default { display: none; }
 	:global(html[data-view='builder']) .ct-t--builder { display: inline; }
 	:global(html[data-view='studio']) .ct-t--default { display: none; }
 	:global(html[data-view='studio']) .ct-t--studio { display: inline; }
+	:global(html[data-view='campus']) .ct-t--default { display: none; }
+	:global(html[data-view='campus']) .ct-t--campus { display: inline; }
 	.ct-lead { max-width: 36rem; margin: 0 auto; color: var(--bd-muted); font-size: 1.02rem; line-height: 1.65; }
 
 	.ct-grid { max-width: 64rem; margin: clamp(2rem, 4vw, 3rem) auto 0; display: grid; gap: clamp(1.2rem, 2.5vw, 1.8rem); align-items: start; perspective: 1500px; }
@@ -340,10 +344,18 @@ const channels = [
 	html[data-view='founder'] .ct {
 		--ct-cta2: #ec4899;
 	}
-	/* light mode: translucent-white inputs read as fields, not voids */
+	/* light mode: translucent-white inputs read as fields, not voids —
+	   and the text you type in them must be DARK, not the form's white
+	   (white-on-white typing was invisible). */
 	html:not(.dark) .ct .ct-formcard #contact-form input,
 	html:not(.dark) .ct .ct-formcard #contact-form textarea {
 		background: rgba(255, 255, 255, 0.75) !important;
+		color: #14162a !important;
+		caret-color: #14162a;
+	}
+	html:not(.dark) .ct .ct-formcard #contact-form input::placeholder,
+	html:not(.dark) .ct .ct-formcard #contact-form textarea::placeholder {
+		color: rgba(20, 22, 40, 0.45) !important;
 	}
 
 	/* ── Builder world skin for the contact page ─────────────────
@@ -435,4 +447,53 @@ const channels = [
 	html[data-view='studio'] .ct .ct-form-k::before,
 	html[data-view='studio'] .ct .ct-aside-k::before,
 	html[data-view='studio'] .ct .ct-kicker::before { content: '— '; opacity: 0.7; }
+
+	/* ── Campus world skin for the contact page ──────────────────
+	   Same page, school dress: amber leads, coral secondary, handwritten
+	   eyebrow and kickers. */
+	html[data-view='campus'] .ct {
+		--bd-accent: #f59e0b;
+		--ct-cta2: #fb7185;
+	}
+	html[data-view='campus']:not(.dark) .ct {
+		--bd-accent: #b45309;
+	}
+	html[data-view='campus'] .ct .ct-grad {
+		background: linear-gradient(120deg, #fbbf24, var(--bd-accent) 55%, #fb7185);
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	html[data-view='campus'] .ct .ct-orb--2 {
+		background: radial-gradient(circle, rgba(251, 113, 133, 0.38), transparent 70%);
+	}
+	/* eyebrow = a note passed in class: handwritten, dashed */
+	html[data-view='campus'] .ct .ct-eyebrow {
+		font-family: 'Bradley Hand', 'Segoe Print', 'Comic Sans MS', cursive;
+		font-weight: 700;
+		font-size: 0.95rem;
+		letter-spacing: 0.02em;
+		text-transform: none;
+		border-style: dashed;
+		border-radius: 0.6rem;
+		transform: rotate(-1.2deg);
+	}
+	/* kickers go handwritten too */
+	html[data-view='campus'] .ct .ct-form-k,
+	html[data-view='campus'] .ct .ct-aside-k,
+	html[data-view='campus'] .ct .ct-kicker {
+		font-family: 'Bradley Hand', 'Segoe Print', 'Comic Sans MS', cursive;
+		font-weight: 700;
+		font-size: 0.98rem;
+		letter-spacing: 0.02em;
+		text-transform: none;
+	}
+	html[data-view='campus'] .ct .ct-form-k::before,
+	html[data-view='campus'] .ct .ct-aside-k::before,
+	html[data-view='campus'] .ct .ct-kicker::before { content: '✏️ '; }
+	/* submit reads school-bus yellow with dark ink */
+	html[data-view='campus'] .ct .ct-formcard #contact-form button {
+		color: #2b1500 !important;
+		background: linear-gradient(95deg, #fbbf24, #f59e0b) !important;
+	}
 </style>
