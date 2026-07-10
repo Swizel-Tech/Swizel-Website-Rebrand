@@ -1,0 +1,938 @@
+---
+// Case study · Campus world — the launch as a gold-star project write-up.
+// Same data as every other case study telling (story, challenge, approach,
+// highlights, results, gallery, quote, press, next), tinted by the
+// project's colour and dressed as school: an assignment header, the brief
+// on the whiteboard, a marked lesson plan, sticker highlights, a scoreboard,
+// the class scrapbook and the teacher's comment. Root carries `cbody`
+// (campus engine: .cp-rev + [data-count]) and `ccs` (motion engine: tilt /
+// glare / magnetic / .fa-journey draw).
+import { Icon } from 'astro-icon/components';
+import type { Project } from '../../data/projects';
+
+interface Props {
+	project: Project;
+	others: Project[];
+}
+const { project: p, others } = Astro.props;
+const cs = p.caseStudy!;
+
+const galVideo = cs.gallery.find((g) => g.kind === 'video');
+const galImages = cs.gallery.filter((g) => g.kind !== 'video');
+const heroBadges = cs.results.slice(0, 2);
+---
+
+<div class="ccs cbody view-body view-body-campus" style={`--c:${p.color}`}>
+	<!-- ── A · the assignment header ───────────────────────── -->
+	<section class="cc-sec" data-cursor="book">
+		<div class="cc-wrap cc-open">
+			<div class="cc-copy cp-rev">
+				<nav class="cc-crumb" aria-label="Breadcrumb">
+					<a href="/portfolio">Show & tell</a>
+					<span>→</span>
+					<span class="cc-crumb-here">{p.slug}</span>
+				</nav>
+				<span class="cc-badge">⭐ Gold-star project · {cs.meta.year}</span>
+				<h1 class="cc-h cc-h--xl">{p.name}<em>.</em></h1>
+				<p class="cc-tagline">{p.tagline}</p>
+				<p class="cc-p">{cs.intro}</p>
+				<div class="cc-label cp-rev">
+					<i><b>Client</b>{cs.meta.client}</i>
+					<i><b>Subject</b>{cs.meta.sector}</i>
+					<i><b>Scope</b>{cs.meta.scope}</i>
+				</div>
+				<div class="cc-row">
+					{
+						cs.liveUrl && (
+							<a
+								href={cs.liveUrl}
+								target="_blank"
+								rel="noopener noreferrer"
+								data-leaving=""
+								data-leaving-name={p.name}
+								class="cc-cta fa-cta"
+							>
+								<Icon width={16} name="mdi:open-in-new" />
+								See it live
+							</a>
+						)
+					}
+					<a href="/contact" class="cc-link">
+						Start your own
+						<Icon width={15} name="mdi:arrow-right" />
+					</a>
+				</div>
+			</div>
+
+			<!-- the project, pinned up with its grade -->
+			<figure class="cc-piece cp-rev" data-fa-tilt="4">
+				<span class="cc-pin" aria-hidden="true"></span>
+				<span class="cc-glare" aria-hidden="true"></span>
+				<a
+					class="cc-frame"
+					href={cs.liveUrl ?? undefined}
+					target={cs.liveUrl ? '_blank' : undefined}
+					rel={cs.liveUrl ? 'noopener noreferrer' : undefined}
+					data-leaving={cs.liveUrl ? '' : undefined}
+					data-leaving-name={cs.liveUrl ? p.name : undefined}
+					aria-label={p.name}
+				>
+					<img src={p.img} alt={p.name} loading="eager" />
+				</a>
+				<span class="cc-grade-stamp" aria-hidden="true">A+</span>
+				{
+					heroBadges.map((r, i) => (
+						<span class:list={['cc-float', `cc-float--${i}`]}>
+							<strong>{r.stat}</strong>
+							<em>{r.label}</em>
+						</span>
+					))
+				}
+				<figcaption class="cc-tape">
+					<strong>{p.name} · {cs.meta.year}</strong>
+					<em>{cs.meta.sector}</em>
+				</figcaption>
+			</figure>
+		</div>
+	</section>
+
+	<!-- ── B · the brief (on the whiteboard) ───────────────── -->
+	<section class="cc-sec" data-cursor="pen">
+		<div class="cc-wrap">
+			<div class="cc-head cp-rev">
+				<span class="cc-kick">📋 The assignment</span>
+				<h2 class="cc-h">What the client <em>asked for.</em></h2>
+			</div>
+			<div class="cc-board cp-rev" data-fa-tilt="3">
+				<p class="cc-board-title">the brief <span class="cc-board-swish" aria-hidden="true"></span></p>
+				<p class="cc-board-text">{cs.challenge}</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── C · how we solved it (lesson plan) ──────────────── -->
+	<section class="cc-sec" data-cursor="pen">
+		<div class="cc-wrap">
+			<div class="cc-head cp-rev">
+				<span class="cc-kick">✏️ Our working</span>
+				<h2 class="cc-h">Show your <em>work.</em></h2>
+			</div>
+			<div class="cc-steps fa-journey">
+				<span class="cc-spine" aria-hidden="true"></span>
+				{
+					cs.approach.map((a, i) => (
+						<article class="cc-step cp-rev" style={`--i:${i}`}>
+							<span class="cc-step-node" aria-hidden="true" />
+							<span class="cc-step-n">{i + 1}.</span>
+							<div>
+								<h3 class="cc-step-t">{a.title}</h3>
+								<p class="cc-step-d">{a.desc}</p>
+							</div>
+						</article>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── D · the best bits (highlights) ──────────────────── -->
+	<section class="cc-sec" data-cursor="layers">
+		<div class="cc-wrap">
+			<div class="cc-head cp-rev">
+				<span class="cc-kick">🌟 The best bits</span>
+				<h2 class="cc-h">Extra credit, <em>earned.</em></h2>
+			</div>
+			<div class="cc-hl">
+				{
+					cs.highlights.map((h, i) => (
+						<article class="cc-hl-card cp-rev" style={`--i:${i % 2}`} data-fa-tilt="7">
+							<span class="cc-glare" aria-hidden="true" />
+							<span class="cc-hl-star" aria-hidden="true">⭐</span>
+							<h3>{h.title}</h3>
+							<p>{h.desc}</p>
+						</article>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── E · the scoreboard (results) ────────────────────── -->
+	<section class="cc-sec" data-cursor="repo">
+		<div class="cc-wrap">
+			<div class="cc-head cp-rev">
+				<span class="cc-kick">🏅 The scoreboard</span>
+				<h2 class="cc-h">What it did <em>in the world.</em></h2>
+			</div>
+			<ul class="cc-results cp-rev">
+				{
+					cs.results.map((r) => (
+						<li>
+							<strong>{r.stat}</strong>
+							<span>{r.label}</span>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+	</section>
+
+	<!-- ── F · the class scrapbook (gallery) ───────────────── -->
+	<section class="cc-sec" data-cursor="play">
+		<div class="cc-wrap">
+			<div class="cc-head cp-rev">
+				<span class="cc-kick">📸 The scrapbook</span>
+				<h2 class="cc-h">Pics or it didn't <em>happen.</em></h2>
+			</div>
+			<div class="cc-media cp-rev">
+				{
+					galVideo && (
+						<div class="cc-mframe cc-mframe--wide">
+							<Icon width={34} name="mdi:play-circle-outline" />
+							<span class="cc-mname">{galVideo.label}</span>
+							{galVideo.caption && <span class="cc-msub">{galVideo.caption}</span>}
+						</div>
+					)
+				}
+				{
+					galImages.map((g) => (
+						<div class="cc-mframe">
+							{g.src ? (
+								<img src={g.src} alt={g.caption || g.label} loading="lazy" />
+							) : (
+								<>
+									<Icon width={24} name="mdi:image-outline" />
+									<span class="cc-mname">{g.label}</span>
+								</>
+							)}
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── G · the teacher's comment (quote) ───────────────── -->
+	{
+		cs.quote && (
+			<section class="cc-sec" data-cursor="quote">
+				<div class="cc-wrap">
+					<figure class="cc-note cp-rev" data-fa-tilt="4">
+						<span class="cc-note-pin" aria-hidden="true" />
+						<span class="cc-note-k">Client's comment ✍️</span>
+						<blockquote>
+							<p>“{cs.quote.text}”</p>
+							<footer>— {cs.quote.who}</footer>
+						</blockquote>
+					</figure>
+				</div>
+			</section>
+		)
+	}
+
+	<!-- ── H · in the school paper (press) ─────────────────── -->
+	{
+		cs.press && cs.press.items.length > 0 && (
+			<section class="cc-sec" data-cursor="repo">
+				<div class="cc-wrap">
+					<div class="cc-head cp-rev">
+						<span class="cc-kick">📰 In the paper</span>
+						<h2 class="cc-h">{cs.press.intro || 'Word got around.'}</h2>
+					</div>
+					<ul class="cc-press">
+						{cs.press.items.map((it, i) => {
+							const Tag = it.url ? 'a' : 'div';
+							return (
+								<li class="cp-rev" style={`--i:${i}`}>
+									<Tag
+										class="cc-press-row"
+										href={it.url || undefined}
+										target={it.url ? '_blank' : undefined}
+										rel={it.url ? 'noopener noreferrer' : undefined}
+									>
+										<span class="cc-press-outlet">{it.outlet}</span>
+										<span class="cc-press-title">{it.title}</span>
+										<span class="cc-press-date">{it.date || 'coming'}</span>
+										{it.url && <Icon width={15} name="mdi:arrow-top-right" />}
+									</Tag>
+								</li>
+							);
+						})}
+					</ul>
+				</div>
+			</section>
+		)
+	}
+
+	<!-- ── I · more gold stars + the bell ──────────────────── -->
+	<section class="cc-sec cc-sec--last" data-cursor="phone">
+		<div class="cc-wrap">
+			<div class="cc-others cp-rev">
+				<span class="cc-others-h">⭐ More gold-star projects</span>
+				<div class="cc-others-grid">
+					{
+						others.slice(0, 3).map((o) => (
+							<a href={`/work/${o.slug}`} class="cc-other" style={`--oc:${o.color}`}>
+								<span class="cc-other-frame">
+									<img src={o.img} alt={o.name} loading="lazy" />
+								</span>
+								<span class="cc-other-tape">
+									<strong>{o.name}</strong>
+									<em>{o.caseStudy?.meta.sector} · {o.year}</em>
+								</span>
+							</a>
+						))
+					}
+				</div>
+			</div>
+			<div class="cc-ctabox cp-rev">
+				<span class="cc-badge">🔔 The bell rang</span>
+				<h2 class="cc-h cc-h--cta">Your project could <em>earn the star.</em></h2>
+				<p class="cc-p cc-p--center">
+					Every write-up here started as somebody's rough idea. Bring
+					yours — we design it, build it, ship it, and grow it.
+				</p>
+				<div class="cc-row cc-row--center">
+					<a href="/contact" class="cc-cta fa-cta">
+						Start your project
+						<Icon width={17} name="mdi:arrow-right" />
+					</a>
+					<a href="tel:+2348100204570" class="cc-call">
+						or call <strong>+234 810 020 4570</strong>
+					</a>
+				</div>
+			</div>
+		</div>
+	</section>
+</div>
+
+<style>
+	/* ── Campus case study — school dress, tinted by the project. ── */
+	.ccs {
+		--cp-ink: #fdf6ea;
+		--cp-muted: rgba(253, 246, 234, 0.62);
+		--cp-faint: rgba(253, 246, 234, 0.4);
+		--cp-line: rgba(255, 255, 255, 0.09);
+		--cp-card: rgba(255, 255, 255, 0.035);
+		--cp-marker: 'Bradley Hand', 'Segoe Print', 'Comic Sans MS', cursive;
+		font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+		position: relative;
+		isolation: isolate;
+		overflow: hidden;
+		background:
+			radial-gradient(1000px 540px at 82% -6%, color-mix(in srgb, var(--c) 13%, transparent), transparent 62%),
+			radial-gradient(820px 480px at 6% 44%, rgba(251, 113, 133, 0.06), transparent 60%),
+			linear-gradient(180deg, #120c04 0%, #160f08 50%, #0e0903 100%);
+		color: var(--cp-ink);
+		padding: clamp(2rem, 4vw, 3rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 4rem);
+		transition: background 0.4s ease, color 0.4s ease;
+	}
+	:global(html:not(.dark)) .ccs {
+		--cp-ink: #2b1c08;
+		--cp-muted: rgba(43, 28, 8, 0.68);
+		--cp-faint: rgba(43, 28, 8, 0.46);
+		--cp-line: rgba(43, 28, 8, 0.1);
+		--cp-card: rgba(43, 28, 8, 0.045);
+		background:
+			radial-gradient(1000px 540px at 82% -6%, color-mix(in srgb, var(--c) 10%, transparent), transparent 62%),
+			linear-gradient(180deg, #fdf4e3 0%, #faecd4 55%, #fdf4e3 100%);
+	}
+
+	.cc-sec { padding-block: clamp(2rem, 4.5vw, 3.5rem); }
+	.cc-sec--last { padding-bottom: clamp(1.5rem, 3vw, 2.5rem); }
+	.cc-wrap { max-width: 76rem; margin: 0 auto; }
+
+	.cc-crumb {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-family: ui-monospace, monospace;
+		font-size: 0.78rem;
+		font-weight: 700;
+		color: var(--cp-faint);
+		margin-bottom: 1rem;
+	}
+	.cc-crumb a { color: var(--cp-faint); transition: color 0.2s ease; }
+	.cc-crumb a:hover { color: var(--c); }
+	.cc-crumb-here { color: var(--c); }
+	.cc-badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		font-family: ui-monospace, monospace;
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--c);
+		border: 1px solid color-mix(in srgb, var(--c) 40%, transparent);
+		background: color-mix(in srgb, var(--c) 9%, transparent);
+		padding: 0.4rem 0.9rem;
+		border-radius: 9999px;
+		margin-bottom: 1.1rem;
+	}
+	.cc-kick {
+		display: block;
+		font-family: ui-monospace, monospace;
+		font-size: 0.74rem;
+		font-weight: 800;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--c);
+		margin-bottom: 0.6rem;
+	}
+	.cc-h {
+		font-size: clamp(1.9rem, 4vw, 3rem);
+		font-weight: 850;
+		letter-spacing: -0.02em;
+		line-height: 1.05;
+		margin: 0 0 0.9rem;
+	}
+	.cc-h--xl { font-size: clamp(2.3rem, 5.2vw, 4.2rem); line-height: 1; }
+	.cc-h--cta { font-size: clamp(1.9rem, 4.4vw, 3.2rem); }
+	.cc-h em {
+		font-style: normal;
+		background: linear-gradient(95deg, var(--c), color-mix(in srgb, var(--c) 45%, #fb7185));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	.cc-tagline {
+		margin: 0 0 0.9rem;
+		font-family: var(--cp-marker);
+		font-size: clamp(1.05rem, 2vw, 1.35rem);
+		color: var(--c);
+	}
+	.cc-p {
+		font-size: clamp(0.96rem, 1.5vw, 1.08rem);
+		line-height: 1.7;
+		color: var(--cp-muted);
+		max-width: 34rem;
+		margin: 0 0 1.2rem;
+	}
+	.cc-p--center { text-align: center; margin-inline: auto; max-width: 36rem; }
+	.cc-head { text-align: center; margin-bottom: clamp(1.5rem, 3vw, 2.25rem); }
+	.cc-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		font-weight: 800;
+		font-size: 0.92rem;
+		color: var(--c);
+		border-bottom: 2px solid color-mix(in srgb, var(--c) 45%, transparent);
+		padding-bottom: 0.15rem;
+		transition: border-color 0.25s ease, gap 0.25s ease;
+	}
+	.cc-link:hover { gap: 0.7rem; border-color: var(--c); }
+	.cc-cta {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+		padding: 0.9rem 1.7rem;
+		border-radius: 9999px;
+		font-weight: 800;
+		font-size: 0.92rem;
+		color: #fff;
+		background: linear-gradient(95deg, var(--c), color-mix(in srgb, var(--c) 55%, #f59e0b));
+		box-shadow: 0 18px 44px -16px color-mix(in srgb, var(--c) 75%, transparent);
+		transition: box-shadow 0.25s ease, filter 0.25s ease;
+		will-change: transform;
+	}
+	.cc-cta:hover { filter: brightness(1.07); }
+	.cc-row { display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap; }
+	.cc-row--center { justify-content: center; }
+	.cc-call { font-size: 0.95rem; color: var(--cp-muted); }
+	.cc-call strong { font-weight: 850; color: var(--cp-ink); transition: color 0.25s ease; }
+	.cc-call:hover strong { color: var(--c); }
+
+	.cc-glare {
+		position: absolute;
+		inset: 0;
+		border-radius: inherit;
+		background: radial-gradient(320px 200px at var(--gx, 50%) var(--gy, 20%), color-mix(in srgb, var(--c) 12%, transparent), transparent 70%);
+		opacity: 0;
+		transition: opacity 0.3s ease;
+		pointer-events: none;
+		z-index: 2;
+	}
+	[data-fa-tilt]:hover .cc-glare { opacity: 1; }
+
+	/* ── A · assignment header ── */
+	.cc-open {
+		display: grid;
+		gap: clamp(1.75rem, 4vw, 3.5rem);
+		align-items: center;
+	}
+	@media (min-width: 960px) {
+		.cc-open { grid-template-columns: 1.02fr 0.98fr; }
+	}
+	.cc-label {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin-bottom: 1.4rem;
+	}
+	.cc-label i {
+		display: grid;
+		gap: 0.1rem;
+		font-style: normal;
+		font-size: 0.85rem;
+		font-weight: 700;
+		padding: 0.5rem 0.9rem;
+		border-radius: 0.7rem;
+		border: 1px solid var(--cp-line);
+		background: var(--cp-card);
+		color: var(--cp-ink);
+	}
+	.cc-label i b {
+		font-family: ui-monospace, monospace;
+		font-size: 0.6rem;
+		font-weight: 800;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--cp-faint);
+	}
+
+	/* the pinned-up project */
+	.cc-piece {
+		position: relative;
+		margin: 0;
+		transform: rotate(1deg);
+	}
+	@media (max-width: 959px) {
+		.cc-piece { transform: none; margin-top: 1.4rem; }
+	}
+	.cc-pin {
+		position: absolute;
+		top: -8px;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 15px;
+		height: 15px;
+		border-radius: 50%;
+		background: radial-gradient(circle at 35% 30%, #fda4af, #e11d48 65%);
+		box-shadow: 0 3px 6px rgba(0, 0, 0, 0.45);
+		z-index: 3;
+	}
+	.cc-frame {
+		position: relative;
+		display: block;
+		aspect-ratio: 16 / 10;
+		overflow: hidden;
+		border-radius: 0.8rem;
+		border: 8px solid #fbfaf7;
+		background: #fbfaf7;
+		box-shadow:
+			0 0 55px -14px color-mix(in srgb, var(--c) 40%, transparent),
+			0 40px 90px -36px rgba(0, 0, 0, 0.8);
+	}
+	.cc-frame img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: top;
+		border-radius: 0.35rem;
+		transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.cc-piece:hover .cc-frame img { transform: scale(1.04); }
+	.cc-grade-stamp {
+		position: absolute;
+		top: 0.6rem;
+		right: 0.9rem;
+		font-family: var(--cp-marker);
+		font-size: 2.1rem;
+		font-weight: 700;
+		color: #dc2626;
+		transform: rotate(8deg);
+		text-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+		z-index: 2;
+	}
+	.cc-float {
+		position: absolute;
+		display: grid;
+		gap: 0.05rem;
+		padding: 0.55rem 0.9rem;
+		border-radius: 0.6rem;
+		background: rgba(20, 13, 4, 0.82);
+		-webkit-backdrop-filter: blur(10px);
+		backdrop-filter: blur(10px);
+		border: 1px solid color-mix(in srgb, var(--c) 40%, rgba(255, 255, 255, 0.14));
+		box-shadow: 0 16px 34px -16px rgba(0, 0, 0, 0.7);
+		z-index: 2;
+	}
+	.cc-float strong {
+		font-size: 1.05rem;
+		font-weight: 850;
+		color: var(--c);
+	}
+	.cc-float em {
+		font-family: var(--cp-marker);
+		font-size: 0.74rem;
+		font-style: normal;
+		color: rgba(253, 246, 234, 0.75);
+	}
+	.cc-float--0 { top: 1rem; left: -0.6rem; }
+	.cc-float--1 { bottom: 3.6rem; right: -0.6rem; }
+	@media (max-width: 560px) {
+		.cc-float--0 { left: 0.4rem; }
+		.cc-float--1 { right: 0.4rem; }
+	}
+	.cc-tape {
+		display: inline-grid;
+		gap: 0.02rem;
+		margin: 0.9rem 0 0 0.4rem;
+		padding: 0.5rem 0.95rem 0.6rem;
+		background: #fef08a;
+		color: #44403c;
+		box-shadow: 0 10px 22px -8px rgba(0, 0, 0, 0.4);
+		transform: rotate(-1.6deg);
+	}
+	.cc-tape strong { font-family: var(--cp-marker); font-size: 0.98rem; font-weight: 700; }
+	.cc-tape em { font-family: var(--cp-marker); font-size: 0.8rem; font-style: normal; color: #78716c; }
+
+	/* ── B · the brief board ── */
+	.cc-board {
+		position: relative;
+		max-width: 56rem;
+		margin: 0 auto;
+		background: #fdfdfb;
+		border-radius: 0.9rem;
+		border: 10px solid #e7e2d8;
+		box-shadow: 0 34px 80px -30px rgba(0, 0, 0, 0.55);
+		padding: 1.4rem 1.5rem 1.6rem;
+		color: #44403c;
+	}
+	.cc-board-title {
+		font-family: var(--cp-marker);
+		font-size: clamp(1.15rem, 2.2vw, 1.45rem);
+		font-weight: 700;
+		color: #1c1917;
+		margin: 0 0 0.8rem;
+		position: relative;
+		display: inline-block;
+	}
+	.cc-board-swish {
+		position: absolute;
+		left: 0;
+		right: -6px;
+		bottom: -4px;
+		height: 5px;
+		border-radius: 999px;
+		background: color-mix(in srgb, var(--c) 55%, transparent);
+	}
+	.cc-board-text {
+		margin: 0;
+		font-family: var(--cp-marker);
+		font-size: clamp(1.02rem, 1.9vw, 1.3rem);
+		line-height: 1.65;
+		color: #292524;
+	}
+
+	/* ── C · show your work ── */
+	.cc-steps {
+		position: relative;
+		display: grid;
+		gap: clamp(1.4rem, 3vw, 2rem);
+		padding-left: clamp(1.6rem, 4vw, 2.6rem);
+		max-width: 56rem;
+		margin: 0 auto;
+	}
+	.cc-spine {
+		position: absolute;
+		top: 0.4rem;
+		bottom: 0.4rem;
+		left: 8px;
+		width: 2px;
+		background: linear-gradient(180deg, var(--c), color-mix(in srgb, var(--c) 25%, transparent));
+		transform: scaleY(0);
+		transform-origin: top;
+		transition: transform 1.6s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.cc-steps.is-drawing .cc-spine { transform: scaleY(1); }
+	.cc-step { position: relative; display: grid; grid-template-columns: auto 1fr; gap: 1rem; align-items: start; }
+	.cc-step-node {
+		position: absolute;
+		left: calc(-1 * clamp(1.6rem, 4vw, 2.6rem) + 3px);
+		top: 0.45rem;
+		width: 12px;
+		height: 12px;
+		border-radius: 50%;
+		background: var(--c);
+		box-shadow: 0 0 0 4px color-mix(in srgb, var(--c) 22%, transparent);
+	}
+	.cc-step-n {
+		font-family: var(--cp-marker);
+		font-size: clamp(1.2rem, 2.4vw, 1.7rem);
+		line-height: 1;
+		color: var(--c);
+		min-width: 2.2rem;
+	}
+	.cc-step-t { margin: 0.1rem 0 0.25rem; font-size: clamp(1.1rem, 2vw, 1.35rem); font-weight: 800; }
+	.cc-step-d { margin: 0; max-width: 42rem; font-size: 0.94rem; line-height: 1.6; color: var(--cp-muted); }
+
+	/* ── D · the best bits ── */
+	.cc-hl {
+		display: grid;
+		gap: 1.1rem;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+	@media (max-width: 760px) {
+		.cc-hl { grid-template-columns: 1fr; }
+	}
+	.cc-hl-card {
+		position: relative;
+		padding: 1.35rem;
+		border-radius: 0.9rem;
+		border: 1px solid var(--cp-line);
+		background: var(--cp-card);
+		transition: border-color 0.25s ease;
+	}
+	.cc-hl-card:hover { border-color: color-mix(in srgb, var(--c) 50%, transparent); }
+	.cc-hl-star {
+		position: absolute;
+		top: 0.85rem;
+		right: 1rem;
+		font-size: 1.15rem;
+		transform: rotate(8deg);
+		filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.35));
+	}
+	.cc-hl-card h3 { margin: 0 0 0.4rem; font-size: 1.05rem; font-weight: 800; padding-right: 2rem; }
+	.cc-hl-card p { margin: 0; font-size: 0.92rem; line-height: 1.62; color: var(--cp-muted); }
+
+	/* ── E · scoreboard ── */
+	.cc-results {
+		display: grid;
+		grid-auto-flow: column;
+		grid-auto-columns: minmax(0, 1fr);
+		gap: 1rem;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	@media (max-width: 860px) {
+		.cc-results { grid-auto-flow: row; grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 1.4rem; }
+		.cc-results li:last-child:nth-child(odd) { grid-column: span 2; }
+	}
+	.cc-results li {
+		display: grid;
+		gap: 0.15rem;
+		padding-left: 1rem;
+		border-left: 1px solid var(--cp-line);
+	}
+	.cc-results li strong {
+		font-size: clamp(1.5rem, 2.8vw, 2.2rem);
+		font-weight: 850;
+		background: linear-gradient(135deg, #fbbf24, var(--c));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	.cc-results li span {
+		font-family: var(--cp-marker);
+		font-size: 0.88rem;
+		color: var(--cp-faint);
+	}
+
+	/* ── F · scrapbook ── */
+	.cc-media {
+		display: grid;
+		gap: 1rem;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
+	.cc-mframe {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.45rem;
+		aspect-ratio: 4 / 3;
+		overflow: hidden;
+		border-radius: 0.7rem;
+		border: 1.5px dashed color-mix(in srgb, var(--cp-ink) 22%, transparent);
+		background: var(--cp-card);
+		color: var(--cp-muted);
+		padding: 0.8rem;
+	}
+	.cc-mframe img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: top;
+	}
+	.cc-mframe:has(img) { padding: 0; border-style: solid; border-color: var(--cp-line); }
+	.cc-mframe--wide { grid-column: span 2; grid-row: span 2; aspect-ratio: auto; }
+	.cc-mname {
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.07em;
+		text-transform: uppercase;
+		text-align: center;
+	}
+	.cc-msub { font-family: var(--cp-marker); font-size: 0.85rem; color: var(--cp-faint); text-align: center; }
+	@media (max-width: 760px) {
+		.cc-media { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+		.cc-mframe--wide { grid-column: span 2; grid-row: auto; aspect-ratio: 16 / 9; }
+	}
+
+	/* ── G · the comment ── */
+	.cc-note {
+		position: relative;
+		margin: 0 auto;
+		max-width: 44rem;
+		padding: 1.8rem 1.8rem 1.5rem;
+		background: #fef9c3;
+		color: #44403c;
+		box-shadow: 0 24px 55px -22px rgba(0, 0, 0, 0.55);
+		transform: rotate(-0.8deg);
+	}
+	.cc-note-pin {
+		position: absolute;
+		top: -7px;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 14px;
+		height: 14px;
+		border-radius: 50%;
+		background: radial-gradient(circle at 35% 30%, #93c5fd, #1d4ed8 65%);
+		box-shadow: 0 3px 6px rgba(0, 0, 0, 0.45);
+	}
+	.cc-note-k {
+		display: block;
+		font-family: ui-monospace, monospace;
+		font-size: 0.66rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: #a16207;
+		margin-bottom: 0.6rem;
+	}
+	.cc-note blockquote { margin: 0; }
+	.cc-note p {
+		font-family: var(--cp-marker);
+		font-size: clamp(1.1rem, 2.2vw, 1.5rem);
+		line-height: 1.55;
+		margin: 0 0 0.8rem;
+		color: #1c1917;
+	}
+	.cc-note footer {
+		font-family: var(--cp-marker);
+		font-size: 0.95rem;
+		font-weight: 700;
+		color: #78716c;
+	}
+
+	/* ── H · press ── */
+	.cc-press {
+		display: grid;
+		gap: 0.6rem;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	.cc-press-row {
+		display: flex;
+		align-items: baseline;
+		gap: 1rem;
+		padding: 0.85rem 1.1rem;
+		border: 1px solid var(--cp-line);
+		border-radius: 0.8rem;
+		background: var(--cp-card);
+		color: var(--cp-ink);
+		transition: border-color 0.25s ease, transform 0.25s ease;
+	}
+	a.cc-press-row:hover { border-color: color-mix(in srgb, var(--c) 55%, transparent); transform: translateX(4px); }
+	.cc-press-outlet {
+		flex-shrink: 0;
+		font-family: ui-monospace, monospace;
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--c);
+		min-width: 9rem;
+	}
+	.cc-press-title { flex: 1; font-size: 0.92rem; font-weight: 600; min-width: 0; }
+	.cc-press-date {
+		font-family: var(--cp-marker);
+		font-size: 0.84rem;
+		color: var(--cp-faint);
+		flex-shrink: 0;
+	}
+	.cc-press-row :global(svg) { color: var(--cp-faint); flex-shrink: 0; align-self: center; }
+	@media (max-width: 640px) {
+		.cc-press-row { flex-wrap: wrap; gap: 0.3rem 1rem; }
+		.cc-press-outlet { min-width: 0; }
+		.cc-press-title { flex-basis: 100%; }
+	}
+
+	/* ── I · more stars + bell ── */
+	.cc-others { text-align: center; margin-bottom: clamp(2.5rem, 5vw, 3.5rem); }
+	.cc-others-h {
+		display: block;
+		font-family: ui-monospace, monospace;
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--cp-faint);
+		margin-bottom: 1rem;
+	}
+	.cc-others-grid {
+		display: grid;
+		gap: 1.1rem;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+	@media (max-width: 860px) {
+		.cc-others-grid { grid-template-columns: 1fr; }
+	}
+	.cc-other { display: grid; justify-items: start; color: inherit; text-align: left; }
+	.cc-other-frame {
+		display: block;
+		width: 100%;
+		aspect-ratio: 16 / 9;
+		overflow: hidden;
+		border-radius: 0.8rem;
+		border: 1px solid var(--cp-line);
+		background: var(--cp-card);
+		transition: border-color 0.3s ease;
+	}
+	.cc-other:hover .cc-other-frame { border-color: color-mix(in srgb, var(--oc) 55%, transparent); }
+	.cc-other-frame img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: top;
+		transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.cc-other:hover .cc-other-frame img { transform: scale(1.05); }
+	.cc-other-tape {
+		display: inline-grid;
+		gap: 0.02rem;
+		margin: 0.55rem 0 0 0.3rem;
+		padding: 0.4rem 0.8rem 0.5rem;
+		background: #fef08a;
+		color: #44403c;
+		box-shadow: 0 8px 18px -8px rgba(0, 0, 0, 0.4);
+		transform: rotate(-1.2deg);
+	}
+	.cc-other-tape strong { font-family: var(--cp-marker); font-size: 0.9rem; font-weight: 700; }
+	.cc-other-tape em { font-family: var(--cp-marker); font-size: 0.74rem; font-style: normal; color: #78716c; }
+	.cc-ctabox { text-align: center; }
+
+	/* ── reveals ── */
+	.cp-rev {
+		opacity: 0;
+		transform: translateY(22px);
+		transition: opacity 0.65s ease, transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+		transition-delay: calc(var(--i, 0) * 0.08s);
+	}
+	.cp-rev.is-on { opacity: 1; transform: translateY(0); }
+
+	@media (prefers-reduced-motion: reduce) {
+		.cp-rev { opacity: 1; transform: none; transition: none; }
+		.cc-spine { transform: none; transition: none; }
+	}
+</style>
