@@ -21,9 +21,11 @@ html.is-leaving .transition-main { opacity: 0; }
   overflow: hidden;
   display: grid;
   place-items: center;
+  /* the glow takes the ACTIVE VIEW's accent, so the wipe belongs to the
+     world you're in (teal in builder, violet in founder, pink in studio…) */
   background:
-    radial-gradient(70% 60% at 50% 42%, rgba(40, 166, 236, 0.3), transparent 70%),
-    linear-gradient(135deg, #090b16 0%, #11254a 50%, #090b16 100%);
+    radial-gradient(70% 60% at 50% 42%, color-mix(in srgb, var(--view-accent, #28a6ec) 26%, transparent), transparent 70%),
+    linear-gradient(135deg, #090b16 0%, color-mix(in srgb, var(--view-accent, #28a6ec) 16%, #0b1020) 50%, #090b16 100%);
   transform: translateY(101%);
   transition: transform 0.55s cubic-bezier(0.76, 0, 0.24, 1);
   will-change: transform;
@@ -31,12 +33,33 @@ html.is-leaving .transition-main { opacity: 0; }
 .page-curtain__mark {
   position: relative;
   z-index: 1;
+  display: grid;
+  justify-items: center;
+  gap: 0.9rem;
   color: #fff;
   opacity: 0;
   transform: translateY(16px) scale(0.94);
   transition: opacity 0.35s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.page-curtain__mark svg { width: clamp(132px, 22vw, 196px); height: auto; }
+.page-curtain__mark svg {
+  width: clamp(132px, 22vw, 196px);
+  height: auto;
+  filter: drop-shadow(0 0 16px color-mix(in srgb, var(--view-accent, #28a6ec) 40%, transparent));
+}
+/* the permanent signature rides the curtain too */
+.page-curtain__tag {
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  white-space: nowrap;
+  padding-left: 0.34em; /* optically re-centre the tracked text */
+}
+.page-curtain__tag b {
+  font-weight: 800;
+  color: color-mix(in srgb, var(--view-accent, #28a6ec) 80%, #fff);
+}
 /* a soft light-beam that sweeps across while the curtain holds */
 .page-curtain__sheen {
   position: absolute;
@@ -47,11 +70,35 @@ html.is-leaving .transition-main { opacity: 0; }
   background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.12), transparent);
   transform: skewX(-18deg);
 }
+/* a thin accent pulse racing along the curtain's leading edge */
+.page-curtain__bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--view-accent, #28a6ec), transparent);
+  background-size: 45% 100%;
+  background-repeat: no-repeat;
+  background-position: -45% 0;
+  opacity: 0;
+}
 
 /* cover (out phase + the swap gap) */
 html.is-changing .page-curtain { transform: translateY(0); }
 html.is-changing .page-curtain__mark { opacity: 1; transform: translateY(0) scale(1); }
+html.is-changing .page-curtain__mark svg { animation: curtain-breathe 1s ease-in-out 0.15s infinite alternate; }
 html.is-changing .page-curtain__sheen { animation: curtain-sheen 0.85s cubic-bezier(0.4, 0, 0.2, 1) 0.1s; }
+html.is-changing .page-curtain__bar { opacity: 1; animation: curtain-bar 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.05s infinite; }
+
+@keyframes curtain-breathe {
+  from { filter: drop-shadow(0 0 12px color-mix(in srgb, var(--view-accent, #28a6ec) 32%, transparent)); transform: scale(1); }
+  to { filter: drop-shadow(0 0 26px color-mix(in srgb, var(--view-accent, #28a6ec) 62%, transparent)); transform: scale(1.025); }
+}
+@keyframes curtain-bar {
+  from { background-position: -45% 0; }
+  to { background-position: 145% 0; }
+}
 /* reveal (in phase) — sweep the curtain off the top */
 html.is-rendering .page-curtain { transform: translateY(-101%); }
 /* snap back below the fold when idle, with no animation */
@@ -417,6 +464,35 @@ html.dark {
   --nav-cta-border: rgba(255, 255, 255, 0.45);
   --nav-active-grad: linear-gradient(95deg, #2ee6c6, #56bbf6);
   --nav-shadow: 0 6px 24px -16px rgba(0, 0, 0, 0.6);
+}
+/* ── Dark nav tones with the ACTIVE WORLD ─────────────────────────────
+   Each view's dark stage has its own temperature (teal-black builder,
+   violet founder, plum studio, warm-amber campus). One navy bar clashed
+   on all of them — so the bar's base, border and active gradient take a
+   whisper of the world's colour instead. */
+html.dark[data-view="founder"] {
+  --nav-bg: rgba(15, 10, 24, 0.74);            /* violet-black */
+  --nav-border: rgba(167, 139, 250, 0.14);
+  --nav-active-grad: linear-gradient(95deg, #a78bfa, #f472b6);
+}
+html.dark[data-view="builder"] {
+  --nav-bg: rgba(5, 11, 13, 0.76);             /* teal-black */
+  --nav-border: rgba(24, 222, 190, 0.13);
+  --nav-active-grad: linear-gradient(95deg, #2ee6c6, #56bbf6);
+}
+html.dark[data-view="studio"] {
+  --nav-bg: rgba(18, 10, 15, 0.74);            /* plum-black */
+  --nav-border: rgba(236, 72, 153, 0.14);
+  --nav-active-grad: linear-gradient(95deg, #f472b6, #c084fc);
+}
+html.dark[data-view="campus"] {
+  --nav-bg: rgba(20, 13, 5, 0.76);             /* warm-black */
+  --nav-border: rgba(245, 158, 11, 0.15);
+  --nav-active-grad: linear-gradient(95deg, #fbbf24, #fb7185);
+}
+html.dark[data-view="boardroom"] {
+  --nav-bg: rgba(10, 12, 22, 0.74);            /* the navy it was born with */
+  --nav-border: rgba(40, 166, 236, 0.13);
 }
 .site-header {
   --nav-h: 92px;

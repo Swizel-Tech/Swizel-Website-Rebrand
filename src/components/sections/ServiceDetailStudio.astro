@@ -35,10 +35,10 @@ const roman = ['I', 'II', 'III', 'IV', 'V', 'VI'];
 			</div>
 			<div class="sr-open">
 				<div class="sr-open-copy">
-					<h1 class="sr-display sd-rev">
+					<h2 class="sr-display sd-rev">
 						{d.tagline.replace(/\.$/, '').split(' ').slice(0, -1).join(' ')}
 						<em>{d.tagline.replace(/\.$/, '').split(' ').slice(-1)}.</em>
-					</h1>
+					</h2>
 					<p class="sr-lead sd-rev">{d.heroDesc}</p>
 					<div class="sr-chips sd-rev">
 						{clarifierChips.map((c) => <i>{c}</i>)}

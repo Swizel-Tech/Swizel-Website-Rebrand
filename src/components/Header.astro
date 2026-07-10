@@ -550,4 +550,26 @@ const isActive = (href: string) => {
 	html:not([data-view='campus']) .nav-bootcamp {
 		display: none !important;
 	}
+
+	/* The mobile drawer tones with the active world in dark mode, same as
+	   the desktop bar (see the --nav-* view overrides in global.css). */
+	html.dark[data-view='founder'] #mobile-menu {
+		--m-bg: linear-gradient(195deg, #171029 0%, #0e0a1a 60%, #090612 100%);
+		--m-border: rgba(167, 139, 250, 0.12);
+		--m-accent: #a78bfa;
+	}
+	html.dark[data-view='builder'] #mobile-menu {
+		--m-bg: linear-gradient(195deg, #0b1a1c 0%, #060d0f 60%, #04090a 100%);
+		--m-border: rgba(24, 222, 190, 0.12);
+	}
+	html.dark[data-view='studio'] #mobile-menu {
+		--m-bg: linear-gradient(195deg, #1c1017 0%, #120a0f 60%, #0b0609 100%);
+		--m-border: rgba(236, 72, 153, 0.13);
+		--m-accent: #ec4899;
+	}
+	html.dark[data-view='campus'] #mobile-menu {
+		--m-bg: linear-gradient(195deg, #1d1408 0%, #120c04 60%, #0c0803 100%);
+		--m-border: rgba(245, 158, 11, 0.14);
+		--m-accent: #f59e0b;
+	}
 </style>
