@@ -1,0 +1,64 @@
+# Pages CMS configuration — edit the Swizel blog from a browser.
+# Sign in at https://app.pagescms.org with GitHub and pick this repo.
+# Every save commits to main, which auto-deploys on Vercel.
+
+media:
+  input: public/blogpost
+  output: /blogpost
+
+content:
+  - name: blog
+    label: Blog posts
+    type: collection
+    path: src/content/blog
+    filename:
+      template: '{title}.md'
+      field: create
+    view:
+      fields: [title, category, pubDate, featured, draft]
+      primary: title
+      sort: [pubDate, title]
+      default:
+        sort: pubDate
+        order: desc
+    fields:
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: description
+        label: Description
+        description: 'One or two sentences — shows on the blog cards and in Google results.'
+        type: text
+        required: true
+      - name: pubDate
+        label: Publish date
+        type: date
+        required: true
+      - name: heroImage
+        label: Hero image
+        description: 'The big picture on the card and at the top of the article.'
+        type: image
+        required: true
+      - name: category
+        label: Category
+        type: select
+        default: Insights
+        options:
+          values: [EdTech, Fintech, Marketing, Technology, Insights]
+          creatable: true
+      - name: author
+        label: Author
+        type: string
+        default: Swizel Team
+      - name: featured
+        label: 'Featured (pinned as the front-page story — only one post should have this)'
+        type: boolean
+        default: false
+      - name: draft
+        label: 'Draft (hidden from the live site while you write)'
+        type: boolean
+        default: false
+      - name: body
+        label: Article
+        type: rich-text
