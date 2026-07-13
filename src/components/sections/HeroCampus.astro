@@ -284,4 +284,61 @@ const builds = [
 		.campus--sub { font-size: 1rem; margin-bottom: 1.4rem; }
 	}
 	@media (prefers-reduced-motion: reduce) { .campus--dot { animation: none !important; } }
+
+	/* ══ Light mode: sunny paper stage, ink type, frosted widget. ══ */
+	:global(html:not(.dark)) .campus--stage,
+	:global(html:not(.dark)) .campus--bg {
+		background:
+			repeating-linear-gradient(180deg, transparent 0 38px, rgba(180, 83, 9, 0.06) 38px 39px),
+			linear-gradient(90deg, transparent 0 64px, rgba(225, 29, 72, 0.06) 64px 65px, transparent 65px 100%),
+			radial-gradient(900px 520px at 78% -10%, rgba(245, 158, 11, 0.18), transparent 60%),
+			linear-gradient(180deg, #fdf7ea 0%, #faf1e0 55%, #f7ecd8 100%);
+		color: #241703;
+	}
+	:global(html:not(.dark)) .campus--glow { opacity: 0.5; }
+	:global(html:not(.dark)) .campus--eyebrow {
+		color: #b45309;
+		border-color: rgba(180, 83, 9, 0.45);
+		box-shadow: 2.5px 2.5px 0 rgba(180, 83, 9, 0.25);
+	}
+	:global(html:not(.dark)) .campus--sub { color: rgba(36, 23, 3, 0.68); }
+	:global(html:not(.dark)) .campus--tour {
+		color: #241703;
+		border-color: rgba(180, 83, 9, 0.45);
+	}
+	:global(html:not(.dark)) .campus--tour:hover { color: #b45309; }
+	:global(html:not(.dark)) .campus--stats { border-top-color: rgba(36, 23, 3, 0.12); }
+	:global(html:not(.dark)) .campus--statnum {
+		background: linear-gradient(135deg, #d97706, #b45309);
+		-webkit-background-clip: text;
+		background-clip: text;
+	}
+	:global(html:not(.dark)) .campus--statlabel { color: rgba(36, 23, 3, 0.55); }
+	:global(html:not(.dark)) .campus--widget {
+		background: rgba(255, 255, 255, 0.82);
+		border-color: rgba(180, 83, 9, 0.25);
+		box-shadow: 0 40px 90px -44px rgba(36, 23, 3, 0.35);
+	}
+	:global(html:not(.dark)) .cw--title { color: #241703; }
+	:global(html:not(.dark)) .cw--subt { color: rgba(36, 23, 3, 0.55); }
+	:global(html:not(.dark)) .cw--level { color: #b45309; }
+	:global(html:not(.dark)) .cw--xp { color: #241703; }
+	:global(html:not(.dark)) .cw--bar { background: rgba(36, 23, 3, 0.1); }
+	:global(html:not(.dark)) .cw--nodedot { background: rgba(36, 23, 3, 0.18); }
+	:global(html:not(.dark)) .cw--nodename { color: rgba(36, 23, 3, 0.55); }
+	:global(html:not(.dark)) .cw--node.is-on .cw--nodename { color: #b45309; }
+	:global(html:not(.dark)) .cw--badge {
+		border-color: rgba(36, 23, 3, 0.14);
+		background: rgba(255, 255, 255, 0.5);
+		color: rgba(36, 23, 3, 0.6);
+	}
+	:global(html:not(.dark)) .cw--badge.is-on {
+		border-color: rgba(180, 83, 9, 0.5);
+		background: rgba(245, 158, 11, 0.14);
+		color: #92400e;
+	}
+	:global(html:not(.dark)) .cw--builds { border-top-color: rgba(36, 23, 3, 0.14); }
+	:global(html:not(.dark)) .cw--builds-label { color: rgba(36, 23, 3, 0.55); }
+	:global(html:not(.dark)) .cw--build-name { color: #241703; }
+	:global(html:not(.dark)) .cw--build-tag { color: #b45309; }
 </style>

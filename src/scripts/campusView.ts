@@ -99,7 +99,7 @@ export function initCampusView() {
 		},
 		{
 			sel: '#view-banner .vw-head',
-			title: 'Six worlds, one Swizel',
+			title: 'Five worlds, one Swizel',
 			body: 'This site reshapes around you. Step into any world, anytime — nothing is locked.',
 		},
 		{

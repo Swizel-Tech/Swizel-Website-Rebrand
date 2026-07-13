@@ -167,6 +167,12 @@ export function initViewExperience() {
 	root
 		.querySelector('[data-vo-skip]')
 		?.addEventListener('click', () => close());
+	// Links inside the modal ("Start a project") navigate via swup behind the
+	// overlay — close the modal (and release the body scroll lock) so the
+	// navigation is actually seen instead of looking like a dead click.
+	root
+		.querySelectorAll<HTMLAnchorElement>('a[href]')
+		.forEach((a) => a.addEventListener('click', () => close()));
 	root.querySelector('.vo__scrim')?.addEventListener('click', () => close());
 	root
 		.querySelectorAll('[data-vo-back]')
@@ -191,7 +197,14 @@ export function initViewExperience() {
 
 	cards.forEach((card) => {
 		card.addEventListener('click', () => {
-			const id = card.dataset.viewId;
+			let id = card.dataset.viewId;
+			// "Surprise me" — roll a random world (never the one you're in)
+			if (id === 'surprise') {
+				const current =
+					document.documentElement.getAttribute('data-view') || 'boardroom';
+				const pool = recommendableOrder.filter((v) => v !== current);
+				id = pool[Math.floor(Math.random() * pool.length)];
+			}
 			if (id) applyView(id);
 			close();
 			// The view "worlds" only render on the home page. If a world is

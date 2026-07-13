@@ -244,6 +244,11 @@ const filterCss = cats
 	.bl-news-input:focus { outline: none; border-color: color-mix(in srgb, var(--bd-accent) 70%, #fff); background: rgba(255, 255, 255, 0.12); }
 	.bl-news-btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.85rem 1.6rem; border-radius: 9999px; font-size: 0.95rem; font-weight: 700; color: #06121a; background: linear-gradient(95deg, #8dfeea, #18debe, #28a6ec); border: none; cursor: pointer; transition: transform 0.25s ease, gap 0.25s ease; }
 	.bl-news-btn:hover { transform: translateY(-2px); gap: 0.6rem; }
+	@media (max-width: 640px) {
+		/* phones: input and Subscribe button run edge to edge */
+		.bl-news-input { width: 100%; flex: 1 0 100%; }
+		.bl-news-btn { width: 100%; justify-content: center; }
+	}
 	.bl-news-note { display: block; margin-top: 1rem; font-size: 0.78rem; color: rgba(245, 245, 247, 0.45); }
 	.bl-hp { position: absolute; left: -9999px; }
 

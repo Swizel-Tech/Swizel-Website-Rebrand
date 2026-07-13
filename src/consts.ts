@@ -100,14 +100,6 @@ export const views = [
     accent: "#ec4899",
     icon: "mdi:palette-outline",
   },
-  {
-    id: "legacy",
-    name: "Swizel Legacy",
-    audience: "the original swizel.co",
-    blurb: "The classic Swizel experience you already know.",
-    accent: "#428876",
-    icon: "mdi:history",
-  },
 ] as const;
 
 export type ViewId = (typeof views)[number]["id"];

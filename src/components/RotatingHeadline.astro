@@ -25,7 +25,7 @@ const words = ['Build.', 'Design.', 'Scale.', 'Launch.'];
 		</span>
 		<span class="rhead__sr">We build, design, scale and launch.</span>
 	</span>
-</h1>
+</h2>
 
 <style>
 	.rhead {
@@ -37,6 +37,11 @@ const words = ['Build.', 'Design.', 'Scale.', 'Launch.'];
 		color: #fff;
 		-webkit-text-fill-color: #fff;
 		font-size: clamp(2.6rem, 6vw, 5rem);
+	}
+	/* light mode: the hero stages go light too, so the signature flips to ink */
+	:global(html:not(.dark)) .rhead {
+		color: #14162a;
+		-webkit-text-fill-color: #14162a;
 	}
 	.rhead__l1 {
 		display: block;

@@ -307,6 +307,7 @@ const incCols = d.included.length % 4 === 0 ? 4 : 3;
 		font-size: 0.72rem;
 		font-weight: 800;
 		letter-spacing: 0.14em;
+		line-height: 1.6; /* tight when the label wraps on phones */
 		text-transform: uppercase;
 		color: var(--c);
 		border: 1px solid color-mix(in srgb, var(--c) 40%, transparent);
@@ -475,7 +476,10 @@ const incCols = d.included.length % 4 === 0 ? 4 : 3;
 	}
 	.cd-sticky :global(svg) { color: #b45309; flex-shrink: 0; }
 	@media (max-width: 560px) {
-		.cd-sticky { right: 0.3rem; }
+		.cd-sticky { right: 0.3rem; max-width: 13rem; font-size: 0.82rem; }
+		/* phones: clear space under the projected visual so the sticky note
+		   lands on the board frame, never on the widget's buttons or stats */
+		.cd-board { padding-bottom: 3.6rem; }
 	}
 
 	/* ── B · modules ── */

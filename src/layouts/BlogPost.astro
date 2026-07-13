@@ -270,8 +270,8 @@ const wa = `https://wa.me/?text=${encodeURIComponent(title + ' ' + shareUrl)}`;
 	.br-meta-sep { flex: 1; }
 	.br-meta-bit { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.84rem; color: var(--bd-muted); }
 
-	/* Hero image */
-	.br-figure { max-width: 60rem; margin: clamp(1.6rem, 4vw, 2.6rem) auto 0; border-radius: 1.4rem; overflow: hidden; border: 1px solid var(--bd-glass-border); box-shadow: var(--bd-shadow); }
+	/* Hero image — same width as the text column (frame = text length on every page) */
+	.br-figure { max-width: 46rem; margin: clamp(1.6rem, 4vw, 2.6rem) auto 0; border-radius: 1.4rem; overflow: hidden; border: 1px solid var(--bd-glass-border); box-shadow: var(--bd-shadow); }
 	.br-figure img { width: 100%; display: block; max-height: 540px; object-fit: cover; }
 
 	/* Body / prose */

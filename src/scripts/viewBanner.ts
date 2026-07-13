@@ -27,8 +27,15 @@ export function initViewBanner() {
 
 	cards.forEach((c) =>
 		c.addEventListener('click', () => {
-			const id = c.dataset.switchView;
+			let id = c.dataset.switchView;
 			if (!id || c.classList.contains('is-current')) return;
+			// the "Surprise me" poster: roll a random world (never the current one)
+			if (id === 'surprise') {
+				const current =
+					document.documentElement.getAttribute('data-view') || DEFAULT_VIEW;
+				const pool = views.map((v) => v.id).filter((v) => v !== current);
+				id = pool[Math.floor(Math.random() * pool.length)];
+			}
 			applyView(id); // applyView now handles the scroll-to-top
 		})
 	);

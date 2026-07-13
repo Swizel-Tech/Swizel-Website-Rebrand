@@ -526,11 +526,13 @@ const chat = [
 	.fd-cta {
 		display: inline-flex;
 		align-items: center;
+		justify-content: center;
 		gap: 0.55rem;
 		padding: 0.85rem 1.7rem;
 		border-radius: 9999px;
 		font-weight: 800;
 		font-size: 0.95rem;
+		line-height: 1.3;
 		color: #fff;
 		background: linear-gradient(95deg, var(--fd-acc), var(--fd-acc2));
 		border: 1px solid rgba(255, 255, 255, 0.3);
@@ -545,9 +547,10 @@ const chat = [
 			inset 0 1px 0 rgba(255, 255, 255, 0.4),
 			0 22px 48px -14px color-mix(in srgb, var(--fd-acc2) 70%, transparent);
 	}
+	/* one CTA size across the board (tosky: no oversized buttons) */
 	.fd-cta--big {
-		font-size: 1.05rem;
-		padding: 1rem 2rem;
+		font-size: 0.95rem;
+		padding: 0.85rem 1.7rem;
 	}
 
 	/* ── A · open ── */

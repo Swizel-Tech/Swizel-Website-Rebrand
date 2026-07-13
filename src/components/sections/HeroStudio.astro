@@ -216,4 +216,38 @@ const projects = [
 		.studio--sub { font-size: 1rem; margin-bottom: 1.4rem; }
 		.sg--name { font-size: 1.4rem; }
 	}
+
+	/* ══ Light mode: museum-white gallery wall, ink type. ══ */
+	:global(html:not(.dark)) .studio--stage,
+	:global(html:not(.dark)) .studio--bg {
+		background:
+			repeating-linear-gradient(90deg, transparent 0 119px, rgba(190, 24, 98, 0.05) 119px 120px),
+			repeating-linear-gradient(180deg, transparent 0 119px, rgba(30, 12, 24, 0.03) 119px 120px),
+			radial-gradient(800px 480px at 82% -8%, rgba(236, 72, 153, 0.14), transparent 60%),
+			linear-gradient(180deg, #fdf6fa 0%, #f9eff5 55%, #f5e9f0 100%);
+		color: #23101c;
+	}
+	:global(html:not(.dark)) .studio--glow { opacity: 0.5; }
+	:global(html:not(.dark)) .studio--eyebrow {
+		color: #be1862;
+		border-color: rgba(190, 24, 98, 0.4);
+	}
+	:global(html:not(.dark)) .studio--sub { color: rgba(35, 16, 28, 0.68); }
+	:global(html:not(.dark)) .studio--tour {
+		color: #23101c;
+		border-color: rgba(190, 24, 98, 0.4);
+	}
+	:global(html:not(.dark)) .studio--tour:hover { color: #be1862; }
+	:global(html:not(.dark)) .studio--stats { border-top-color: rgba(35, 16, 28, 0.1); }
+	:global(html:not(.dark)) .studio--statnum {
+		background: linear-gradient(135deg, #db2777, #be1862);
+		-webkit-background-clip: text;
+		background-clip: text;
+	}
+	:global(html:not(.dark)) .studio--statlabel { color: rgba(35, 16, 28, 0.55); }
+	:global(html:not(.dark)) .sg--stage {
+		border-color: rgba(190, 24, 98, 0.25);
+		box-shadow: 0 40px 90px -44px rgba(35, 16, 28, 0.4);
+		background: #fff;
+	}
 </style>

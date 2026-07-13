@@ -443,5 +443,8 @@ const filterCss = cats
 	@media (max-width: 640px) {
 		.bj-grid { grid-template-columns: minmax(0, 1fr); }
 		.bj-mag { grid-template-columns: 100px minmax(0, 1fr); }
+		/* phones: newsletter input + button run edge to edge */
+		.bj-news-input { flex: 1 0 100%; max-width: none; }
+		.bj-news-btn { width: 100%; justify-content: center; }
 	}
 </style>

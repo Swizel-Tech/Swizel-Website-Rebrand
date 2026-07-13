@@ -31,7 +31,7 @@ const {
 		<div class="portfolio--overlay absolute inset-0 grid items-end md:p-8 p-6">
 			<div class="flex items-end justify-between gap-4">
 				<span
-					class="bg-white/95 text-darker px-4 py-2 uppercase leading-normal tracking-wider w-fit rounded-full text-[0.7rem] font-bold"
+					class="portfolio--cat bg-white/95 text-darker px-4 py-2 uppercase tracking-wider w-fit rounded-full text-[0.7rem] font-bold"
 				>
 					{category}
 				</span>
@@ -49,6 +49,17 @@ const {
 </div>
 
 <style>
+	.portfolio--cat {
+		line-height: 1.5;
+	}
+	@media (max-width: 640px) {
+		/* phones: a modest tag, not a banner across the artwork */
+		.portfolio--cat {
+			font-size: 0.6rem;
+			padding: 0.35rem 0.75rem;
+			max-width: 85%;
+		}
+	}
 	.portfolio--img {
 		transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 	}

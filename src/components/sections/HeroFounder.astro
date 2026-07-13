@@ -377,8 +377,65 @@ const launched = [
 		.fw--body { flex-direction: column; }
 		.fw--ring { width: 128px; height: 128px; }
 		.fw--ringsvg { width: 128px; height: 128px; }
+		/* stacked layout: the stage list runs the full width of the widget */
+		.fw--stages { width: 100%; }
 	}
 	@media (prefers-reduced-motion: reduce) {
 		.founder--rise { animation: none !important; }
 	}
+
+	/* ══ Light mode: the founder stage goes bright — lavender paper,
+	   ink type; the pipeline widget frosts white. ══ */
+	:global(html:not(.dark)) .founder--stage,
+	:global(html:not(.dark)) .founder--bg {
+		background:
+			radial-gradient(900px 520px at 80% -10%, rgba(139, 92, 246, 0.16), transparent 60%),
+			linear-gradient(180deg, #faf8ff 0%, #f4f0fc 55%, #efeaf9 100%);
+		color: #171331;
+	}
+	:global(html:not(.dark)) .founder--glow { opacity: 0.5; }
+	:global(html:not(.dark)) .founder--eyebrow {
+		color: #6d28d9;
+		border-color: rgba(109, 40, 217, 0.45);
+	}
+	:global(html:not(.dark)) .founder--sub { color: rgba(23, 19, 49, 0.68); }
+	:global(html:not(.dark)) .founder--tour {
+		color: #171331;
+		border-color: rgba(109, 40, 217, 0.4);
+	}
+	:global(html:not(.dark)) .founder--tour:hover { color: #6d28d9; }
+	:global(html:not(.dark)) .founder--stats { border-top-color: rgba(23, 19, 49, 0.1); }
+	:global(html:not(.dark)) .founder--statnum {
+		background: linear-gradient(135deg, #7c3aed, #6d28d9);
+		-webkit-background-clip: text;
+		background-clip: text;
+	}
+	:global(html:not(.dark)) .founder--statlabel { color: rgba(23, 19, 49, 0.55); }
+	:global(html:not(.dark)) .founder--widget {
+		background: rgba(255, 255, 255, 0.82);
+		border-color: rgba(109, 40, 217, 0.18);
+		box-shadow: 0 40px 90px -44px rgba(23, 19, 49, 0.35);
+	}
+	:global(html:not(.dark)) .fw--title { color: #171331; }
+	:global(html:not(.dark)) .fw--eta { color: rgba(23, 19, 49, 0.55); }
+	:global(html:not(.dark)) .fw--ringbg { stroke: rgba(23, 19, 49, 0.08); }
+	:global(html:not(.dark)) .fw--pct { color: #171331; }
+	:global(html:not(.dark)) .fw--ringlabel { color: rgba(23, 19, 49, 0.5); }
+	:global(html:not(.dark)) .fw--stage {
+		border-color: rgba(23, 19, 49, 0.1);
+		background: rgba(23, 19, 49, 0.03);
+	}
+	:global(html:not(.dark)) .fw--stage.is-done {
+		border-color: rgba(139, 92, 246, 0.5);
+		background: rgba(139, 92, 246, 0.1);
+	}
+	:global(html:not(.dark)) .fw--stagenum { color: rgba(23, 19, 49, 0.4); }
+	:global(html:not(.dark)) .fw--stage.is-done .fw--stagenum { color: #6d28d9; }
+	:global(html:not(.dark)) .fw--stagename { color: #171331; }
+	:global(html:not(.dark)) .fw--stageweek { color: rgba(23, 19, 49, 0.5); }
+	:global(html:not(.dark)) .fw--check { background: rgba(23, 19, 49, 0.08); }
+	:global(html:not(.dark)) .fw--launched { border-top-color: rgba(23, 19, 49, 0.12); }
+	:global(html:not(.dark)) .fw--launched-label { color: rgba(23, 19, 49, 0.5); }
+	:global(html:not(.dark)) .fw--card-name { color: #171331; }
+	:global(html:not(.dark)) .fw--card-sector { color: #6d28d9; }
 </style>

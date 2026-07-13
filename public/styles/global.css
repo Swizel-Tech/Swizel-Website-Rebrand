@@ -125,6 +125,13 @@ body {
      scroll container is created and position:sticky keeps working). */
   overflow-x: clip;
 }
+
+/* Bootcamp lives in the Campus world (for now) — hide any bootcamp
+   link tagged .nav-bootcamp (footer nav, 404 quick links, etc.)
+   everywhere except the campus view. */
+html:not([data-view="campus"]) .nav-bootcamp {
+  display: none !important;
+}
 .clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -673,7 +680,6 @@ html[data-view="boardroom"] { --view-accent: #28a6ec; }
 html[data-view="founder"]   { --view-accent: #8b5cf6; }
 html[data-view="campus"]    { --view-accent: #f59e0b; }
 html[data-view="studio"]    { --view-accent: #ec4899; }
-html[data-view="legacy"]    { --view-accent: #428876; }
 
 .view-switch {
   display: inline-flex;
@@ -822,21 +828,13 @@ html[data-view="campus"] .hero-campus .btn--accent {
   box-shadow: 0 10px 24px -10px rgba(245, 158, 11, 0.55);
 }
 
-/* Studio + Legacy view hero visibility + CTA tints */
+/* Studio view hero visibility + CTA tint */
 .hero-studio { display: none; }
 html[data-view="studio"] .hero-boardroom { display: none; }
 html[data-view="studio"] .hero-studio { display: block; }
 html[data-view="studio"] .hero-studio .btn--accent {
   background-image: linear-gradient(95deg, #f9a8d4, #ec4899);
   box-shadow: 0 10px 24px -10px rgba(236, 72, 153, 0.55);
-}
-
-.hero-legacy { display: none; }
-html[data-view="legacy"] .hero-boardroom { display: none; }
-html[data-view="legacy"] .hero-legacy { display: block; }
-html[data-view="legacy"] .hero-legacy .btn--accent {
-  background-image: linear-gradient(95deg, #5bbfa6, #428876);
-  box-shadow: 0 10px 24px -10px rgba(66, 136, 118, 0.55);
 }
 
 /* =========================================================
@@ -983,8 +981,7 @@ html[data-view="boardroom"] #swizel-cursor .cur-boardroom,
 html[data-view="builder"] #swizel-cursor .cur-builder,
 html[data-view="founder"] #swizel-cursor .cur-founder,
 html[data-view="campus"] #swizel-cursor .cur-campus,
-html[data-view="studio"] #swizel-cursor .cur-studio,
-html[data-view="legacy"] #swizel-cursor .cur-legacy { display: block; }
+html[data-view="studio"] #swizel-cursor .cur-studio { display: block; }
 
 /* Active nav item: darker brand gradient (more visible than solid navy) */
 .site-header nav a.active {
@@ -1045,12 +1042,10 @@ html:not([data-view]) body:has(.bd-about) #swizel-cursor .cur-builder,
 html:not([data-view]) body:has(.bd-about) #swizel-cursor .cur-founder,
 html:not([data-view]) body:has(.bd-about) #swizel-cursor .cur-campus,
 html:not([data-view]) body:has(.bd-about) #swizel-cursor .cur-studio,
-html:not([data-view]) body:has(.bd-about) #swizel-cursor .cur-legacy,
 html:not([data-view]) body:has(.bd-services) #swizel-cursor .cur-builder,
 html:not([data-view]) body:has(.bd-services) #swizel-cursor .cur-founder,
 html:not([data-view]) body:has(.bd-services) #swizel-cursor .cur-campus,
-html:not([data-view]) body:has(.bd-services) #swizel-cursor .cur-studio,
-html:not([data-view]) body:has(.bd-services) #swizel-cursor .cur-legacy { display: none; }
+html:not([data-view]) body:has(.bd-services) #swizel-cursor .cur-studio { display: none; }
 html:not([data-view]) body:has(.bd-about) #swizel-cursor:not([data-icon]) .cur-boardroom,
 html[data-view='boardroom'] body:has(.bd-about) #swizel-cursor:not([data-icon]) .cur-boardroom,
 html:not([data-view]) body:has(.bd-services) #swizel-cursor:not([data-icon]) .cur-boardroom,
@@ -1094,8 +1089,7 @@ html[data-view="boardroom"] .default-body { display: none; }
 html[data-view="builder"] .alt-view-only,
 html[data-view="founder"] .alt-view-only,
 html[data-view="campus"] .alt-view-only,
-html[data-view="studio"] .alt-view-only,
-html[data-view="legacy"] .alt-view-only { display: block; }
+html[data-view="studio"] .alt-view-only { display: block; }
 
 /* =========================================================
    Boardroom light-mode contrast: the gradient text (.bd-grad)

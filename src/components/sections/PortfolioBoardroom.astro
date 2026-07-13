@@ -411,7 +411,13 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 		80%  { transform: translate(20px, 20px) rotate(0.5deg) scale(0.975);  z-index: 40; }
 		100% { transform: translate(0, 0) rotate(-3deg) scale(1);             z-index: 50; }
 	}
-	@media (max-width: 939px) { .pf-deck { margin-top: 1rem; min-height: clamp(300px, 76vw, 460px); padding-bottom: 2.4rem; } .pf-deck-hint { bottom: 0.4rem; } }
+	@media (max-width: 939px) {
+		.pf-deck { margin-top: 1rem; min-height: clamp(300px, 76vw, 460px); padding-bottom: 2.4rem; margin-bottom: 1.5rem; }
+		.pf-deck-hint { bottom: 0.4rem; }
+		/* phones: fix the card frame so tall screenshots never spill over the
+		   sections below — crop from the top, like a browser viewport */
+		.pf-deck-card img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; display: block; }
+	}
 
 	/* ── Full-bleed scrolling wall (two rows, opposite ways, zoom) ── */
 	.pf-wall { position: relative; margin: clamp(1rem, 3vw, 2.5rem) calc(-1 * clamp(1rem, 3vw, 2rem)) clamp(1rem, 3vw, 2rem); }

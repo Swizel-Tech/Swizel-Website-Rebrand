@@ -9,7 +9,7 @@ const services = [
 	{ icon: 'mdi:bullhorn-outline', label: 'Marketing & growth', sub: 'SEO, ads, content', hue: '#f59e0b' },
 	{ icon: 'mdi:compass-outline', label: 'Product strategy', sub: 'From idea to roadmap', hue: '#8b5cf6' },
 	{ icon: 'mdi:server', label: 'Hosting & maintenance', sub: 'We stay after launch', hue: '#3b82f6' },
-	{ icon: 'mdi:school-outline', label: 'Free tech bootcamp', sub: 'Learn, build, get hired', hue: '#22c55e' },
+	{ icon: 'mdi:school-outline', label: 'Free tech education', sub: 'Learn, build, get hired', hue: '#22c55e' },
 ];
 
 const proof = [
@@ -192,6 +192,25 @@ const proof = [
 						</button>
 					))
 				}
+				<button
+					class="vo__card vo__card--surprise"
+					type="button"
+					data-view-id="surprise"
+					style="--va:#18debe"
+				>
+					<span class="vo__card-top">
+						<span class="vo__card-ico">
+							<Icon width={22} name="mdi:dice-multiple-outline" />
+						</span>
+					</span>
+					<span class="vo__card-name">Surprise me</span>
+					<span class="vo__card-aud">for the adventurous</span>
+					<span class="vo__card-blurb">Roll the dice — we drop you into a random world.</span>
+					<span class="vo__card-cta">
+						Roll the dice
+						<Icon width={15} name="mdi:dice-5-outline" />
+					</span>
+				</button>
 			</div>
 		</section>
 	</div>
@@ -641,6 +660,19 @@ const proof = [
 		.vo__service-txt strong { font-size: 0.76rem; }
 		.vo__service-txt em { font-size: 0.66rem; }
 		.vo__services { gap: 0.4rem; margin-bottom: 0.7rem; }
+
+		/* Phones: the twist ("this website reshapes itself around you") must be
+		   visible without scrolling — lift it above the services list. */
+		.vo__step[data-step='intro'].is-active { display: flex; flex-direction: column; }
+		.vo__step[data-step='intro'] .vo__hello { order: 1; }
+		.vo__step[data-step='intro'] .vo__kicker { order: 2; }
+		.vo__step[data-step='intro'] .vo__title { order: 3; margin-bottom: 0.5rem; }
+		.vo__step[data-step='intro'] .vo__lead { order: 4; }
+		.vo__step[data-step='intro'] .vo__divider { order: 5; }
+		.vo__step[data-step='intro'] .vo__lead--tight { order: 6; }
+		.vo__step[data-step='intro'] .vo__services { order: 7; }
+		.vo__step[data-step='intro'] .vo__proof { order: 8; }
+		.vo__step[data-step='intro'] .vo__actions { order: 9; }
 	}
 	.vo__cta {
 		display: inline-flex;
@@ -780,6 +812,15 @@ const proof = [
 		transition: border-color 0.25s ease, background 0.25s ease,
 			transform 0.25s ease;
 		position: relative;
+	}
+	/* the wildcard: dashed mystery box, every accent at once */
+	.vo__card--surprise {
+		border-style: dashed;
+		background:
+			radial-gradient(80% 100% at 85% 0%, rgba(24, 222, 190, 0.12), transparent 70%),
+			radial-gradient(70% 90% at 10% 100%, rgba(139, 92, 246, 0.12), transparent 70%),
+			radial-gradient(55% 75% at 90% 90%, rgba(236, 72, 153, 0.1), transparent 70%),
+			var(--ob-card);
 	}
 	.vo__card:hover {
 		transform: translateY(-4px);

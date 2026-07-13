@@ -84,6 +84,11 @@ const organizationSchema = {
 				document.documentElement.classList.add('dark');
 			}
 			var view = localStorage.getItem('swizel-view');
+			// the Legacy world was retired — send old visitors to the default view
+			if (view === 'legacy') {
+				view = 'boardroom';
+				localStorage.setItem('swizel-view', view);
+			}
 			if (view) {
 				document.documentElement.setAttribute('data-view', view);
 			}

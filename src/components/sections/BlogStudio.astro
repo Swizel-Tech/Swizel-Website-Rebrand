@@ -573,6 +573,11 @@ const filterCss = cats
 		border-color: var(--sa-acc);
 		box-shadow: 0 0 0 4px color-mix(in srgb, var(--sa-acc) 20%, transparent);
 	}
+	@media (max-width: 640px) {
+		/* phones: the invite runs edge to edge */
+		.sb-invite-input { flex: 1 0 100%; max-width: none; }
+		.sb-invite-btn { width: 100%; justify-content: center; }
+	}
 	.sb-invite-btn {
 		display: inline-flex;
 		align-items: center;

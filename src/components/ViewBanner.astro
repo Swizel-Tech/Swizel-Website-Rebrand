@@ -15,7 +15,7 @@ import { views } from '../consts';
 			</h2>
 			<p class="vw-sub">
 				Made <span id="vb-aud">for executives and leaders</span>, and
-				it's one of six. Same Swizel, six worlds. Step into another:
+				it's one of five. Same Swizel, five worlds. Step into another:
 			</p>
 		</div>
 	</div>
@@ -23,36 +23,63 @@ import { views } from '../consts';
 	<div class="vw-rail" role="group" aria-label="Switch view" data-cursor="play">
 		<div class="vw-track">
 			{
-				[0, 1].map((copy) =>
-					views.map((v) => (
+				[0, 1].map((copy) => (
+					<>
+						{views.map((v) => (
+							<button
+								class="vw-card"
+								type="button"
+								data-switch-view={v.id}
+								style={`--va:${v.accent}`}
+								aria-hidden={copy === 1 ? 'true' : undefined}
+								tabindex={copy === 1 ? -1 : undefined}
+							>
+								<span class="vw-card-media" aria-hidden="true">
+									<span class="vw-card-glow" />
+									<Icon class="vw-card-watermark" width={64} name={v.icon} />
+									<span class="vw-card-film">
+										<Icon width={15} name="mdi:movie-open-outline" />
+										Preview film placeholder
+									</span>
+								</span>
+								<span class="vw-card-overlay">
+									<span class="vw-card-name">{v.name}</span>
+									<span class="vw-card-aud">{v.audience}</span>
+									<span class="vw-card-go">
+										Enter
+										<Icon width={14} name="mdi:arrow-right" />
+									</span>
+								</span>
+								<span class="vw-card-here">You are here</span>
+							</button>
+						))}
 						<button
-							class="vw-card"
+							class="vw-card vw-card--surprise"
 							type="button"
-							data-switch-view={v.id}
-							style={`--va:${v.accent}`}
+							data-switch-view="surprise"
+							style="--va:#18debe"
 							aria-hidden={copy === 1 ? 'true' : undefined}
 							tabindex={copy === 1 ? -1 : undefined}
 						>
 							<span class="vw-card-media" aria-hidden="true">
 								<span class="vw-card-glow" />
-								<Icon class="vw-card-watermark" width={64} name={v.icon} />
+								<Icon class="vw-card-watermark" width={64} name="mdi:dice-multiple-outline" />
 								<span class="vw-card-film">
-									<Icon width={15} name="mdi:movie-open-outline" />
-									Preview film placeholder
+									<Icon width={15} name="mdi:auto-fix" />
+									Feeling lucky?
 								</span>
 							</span>
 							<span class="vw-card-overlay">
-								<span class="vw-card-name">{v.name}</span>
-								<span class="vw-card-aud">{v.audience}</span>
+								<span class="vw-card-name">Surprise me</span>
+								<span class="vw-card-aud">for the adventurous</span>
 								<span class="vw-card-go">
-									Enter
-									<Icon width={14} name="mdi:arrow-right" />
+									Roll the dice
+									<Icon width={14} name="mdi:dice-5-outline" />
 								</span>
 							</span>
-							<span class="vw-card-here">You are here</span>
 						</button>
-					))
-				)
+					</>
+				))
 			}
 		</div>
 	</div>
@@ -113,7 +140,7 @@ import { views } from '../consts';
 		position: absolute;
 		left: 0;
 		right: 0;
-		bottom: -0.12em;
+		bottom: 0.02em; /* hug the letters (Bebas leaves dead space under the baseline) */
 		height: 3px;
 		border-radius: 9999px;
 		background: linear-gradient(
@@ -199,6 +226,22 @@ import { views } from '../consts';
 	.vw-card-media {
 		position: absolute;
 		inset: 0;
+	}
+	/* the wildcard poster: every world's accent at once, dashed like a mystery box */
+	.vw-card--surprise {
+		background:
+			radial-gradient(70% 90% at 80% 0%, rgba(24, 222, 190, 0.28), transparent 70%),
+			radial-gradient(60% 80% at 10% 100%, rgba(139, 92, 246, 0.24), transparent 70%),
+			radial-gradient(50% 70% at 90% 90%, rgba(236, 72, 153, 0.18), transparent 70%),
+			radial-gradient(45% 65% at 30% 10%, rgba(245, 158, 11, 0.16), transparent 70%);
+	}
+	.vw-card--surprise::after {
+		content: '';
+		position: absolute;
+		inset: 6px;
+		border-radius: 1rem;
+		border: 1.5px dashed rgba(255, 255, 255, 0.28);
+		pointer-events: none;
 	}
 	/* glossy sweep across the poster */
 	.vw-card-glow {

@@ -25,7 +25,7 @@ const ateliers = [
 	{ n: '03', icon: 'mdi:bullhorn-outline', title: 'Marketing', desc: 'We grow your audience across every platform that matters, and co-market the products we ship.' },
 	{ n: '04', icon: 'mdi:compass-outline', title: 'Strategy', desc: 'Research, define, lock the goal — a tailored product roadmap before a line of code is written.' },
 	{ n: '05', icon: 'mdi:wrench-outline', title: 'Maintenance', desc: 'Improving existing products and keeping complex systems healthy, secure and online, year after year.' },
-	{ n: '06', icon: 'mdi:school-outline', title: 'Education', desc: 'A free bootcamp and The Brevarium, putting real, job-ready skills in the hands of the next makers.' },
+	{ n: '06', icon: 'mdi:school-outline', title: 'Education', desc: 'Free training and The Brevarium, putting real, job-ready skills in the hands of the next makers.' },
 ];
 
 // the real road — same milestones as every About world, as exhibition volumes
@@ -35,7 +35,7 @@ const history = [
 	{ year: '2022', vol: 'Vol. III', title: 'Mobile joins the collection.', desc: 'Native iOS and Android join the practice. The same house now ships across web and phone.' },
 	{ year: '2023', vol: 'Vol. IV', title: 'At home in every sector.', desc: 'Fintech, real estate, sports, education, logistics — the work spreads across the industries that move Africa.' },
 	{ year: '2024', vol: 'Vol. V', title: 'Crossing borders.', desc: 'The work goes global. ConvertMyBetCode serves users in 10+ countries, and the first Brevarium is published.' },
-	{ year: '2025', vol: 'Vol. VI', title: 'Teaching the next ones.', desc: 'We open a free tech bootcamp — training new engineers, designers and marketers on real products.' },
+	{ year: '2025', vol: 'Vol. VI', title: 'Teaching the next ones.', desc: 'We open our free training programme — growing new engineers, designers and marketers on real products.' },
 	{ year: '2026', vol: 'Vol. VII', title: '65+ and counting.', desc: 'Seven years in, more than sixty-five products live in the market, and we are only warming up.' },
 ];
 
@@ -623,6 +623,7 @@ const studioFrames = [
 		display: inline-flex;
 		align-items: center;
 		gap: 0.5rem;
+		line-height: 1.6; /* tight when the label wraps on phones */
 		padding: 0.42rem 0.9rem;
 		border: 1px dashed color-mix(in srgb, var(--sa-acc) 45%, transparent);
 		border-radius: 9999px;
@@ -1139,6 +1140,10 @@ const studioFrames = [
 	}
 	@media (min-width: 880px) {
 		.sa-cat { grid-template-columns: 0.9fr 1.1fr; }
+	}
+	@media (max-width: 640px) {
+		/* phones: a framed journal on the wall, not a full-screen poster */
+		.sa-cat-cover { max-width: 14rem; margin: 0 auto; justify-items: stretch; }
 	}
 	.sa-cat-cover {
 		position: relative;

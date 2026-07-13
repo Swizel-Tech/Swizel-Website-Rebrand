@@ -89,7 +89,7 @@ const journey = [
 	{
 		tag: '2025',
 		title: 'Teaching the next ones.',
-		desc: 'We open a free tech bootcamp, training new engineers, designers and marketers on real products.',
+		desc: 'We open our free training programme, growing new engineers, designers and marketers on real products.',
 	},
 	{
 		tag: 'Today',
@@ -153,8 +153,8 @@ const services = [
 	{
 		icon: 'mdi:school-outline',
 		title: 'Education',
-		desc: 'A free bootcamp and The Brevarium, putting real, job-ready skills in the hands of the next builders.',
-		tag: 'Bootcamp · Brevarium · Mentoring',
+		desc: 'Free training and The Brevarium, putting real, job-ready skills in the hands of the next builders.',
+		tag: 'Training · Brevarium · Mentoring',
 	},
 ];
 
@@ -514,16 +514,16 @@ const values = [
 					<span class="fa-media-sheen" aria-hidden="true"></span>
 					<Icon width={26} name="mdi:image-outline" />
 					<span class="fa-media-label">Image placeholder</span>
-					<span class="fa-media-sub">Bootcamp, in session</span>
+					<span class="fa-media-sub">Training, in session</span>
 				</div>
 				<div class="fa-inside-copy">
 					<h3 class="fa-h fa-h--sm">Education <em>at heart.</em></h3>
 					<p class="fa-p">
-						From our free bootcamp to The Brevarium, we put real skills
+						From free training to The Brevarium, we put real skills
 						in the hands of the next generation of builders.
 					</p>
-					<a href="/bootcamp" class="fa-link">
-						See the bootcamp
+					<a href="#fa-brevarium" class="fa-link">
+						Read The Brevarium
 						<Icon width={15} name="mdi:chevron-right" />
 					</a>
 				</div>
@@ -534,7 +534,7 @@ const values = [
 	<!-- ── E3 · The Brevarium, our magazine (same as Boardroom) ── -->
 	<section class="fa-sec" data-cursor="repo">
 		<div class="fa-wrap">
-			<div class="fa-brev fd-rev">
+			<div class="fa-brev fd-rev" id="fa-brevarium">
 				<div class="fa-brev-cover" data-fa-tilt="10">
 					<img
 						src="/images/brevarium-cover.jpg"
@@ -1063,6 +1063,7 @@ const values = [
 	.fa-mate {
 		position: relative;
 		width: 100%;
+		height: 100%; /* equal frames even when a role wraps to two lines */
 		text-align: center;
 		border: 1px solid var(--fa-line);
 		border-radius: 1.1rem;

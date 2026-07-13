@@ -447,5 +447,8 @@ const filterCss = cats
 	@media (max-width: 640px) {
 		.fb-grid { grid-template-columns: minmax(0, 1fr); }
 		.fb-mag { grid-template-columns: 110px minmax(0, 1fr); }
+		/* phones: newsletter input + button run edge to edge */
+		.fb-news-input { flex: 1 0 100%; max-width: none; }
+		.fb-news-btn { width: 100%; justify-content: center; }
 	}
 </style>

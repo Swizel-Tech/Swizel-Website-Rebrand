@@ -23,7 +23,7 @@ const pkgs = [
 	{ name: '@swizel/marketing', icon: 'mdi:bullhorn-outline', desc: 'We grow your audience across every platform that matters, and co-market the products we ship.', tags: ['seo', 'ads', 'content'] },
 	{ name: '@swizel/strategy', icon: 'mdi:compass-outline', desc: 'Research, define and lock the goal, a tailored product roadmap before a line of code is written.', tags: ['research', 'roadmaps', 'mvp'] },
 	{ name: '@swizel/maintenance', icon: 'mdi:wrench-outline', desc: 'Improving existing products and keeping complex systems healthy, secure and online, year after year.', tags: ['support', 'devops', 'uptime'] },
-	{ name: '@swizel/education', icon: 'mdi:school-outline', desc: 'A free bootcamp and The Brevarium, putting real, job-ready skills in the hands of the next builders.', tags: ['bootcamp', 'brevarium', 'mentoring'] },
+	{ name: '@swizel/education', icon: 'mdi:school-outline', desc: 'Free training and The Brevarium, putting real, job-ready skills in the hands of the next builders.', tags: ['training', 'brevarium', 'mentoring'] },
 ];
 
 // the real road — same milestones as Boardroom/Founder, as release tags
@@ -33,7 +33,7 @@ const releases = [
 	{ tag: 'v2022.0', hash: 'c5e2022', title: 'Mobile, everywhere.', desc: 'Native iOS and Android join the practice. The same team now ships across web and phone.' },
 	{ tag: 'v2023.0', hash: 'd7a2023', title: 'At home in every sector.', desc: 'Fintech, real estate, sports, education, logistics, the work spreads across the industries that move Africa.' },
 	{ tag: 'v2024.0', hash: 'e9c2024', title: 'Crossing borders.', desc: 'The work goes global. ConvertMyBetCode serves users in 10+ countries, and the first Brevarium is published.' },
-	{ tag: 'v2025.0', hash: 'f1b2025', title: 'Teaching the next ones.', desc: 'We open a free tech bootcamp, training new engineers, designers and marketers on real products.' },
+	{ tag: 'v2025.0', hash: 'f1b2025', title: 'Teaching the next ones.', desc: 'We open our free training programme, growing new engineers, designers and marketers on real products.' },
 	{ tag: 'v2026.0', hash: 'a2d2026', title: '65+ and counting.', desc: 'Seven years in, more than sixty-five products live in the market, and we are only warming up.' },
 ];
 
@@ -316,15 +316,15 @@ const quotes = [
 				<span class="bb-glare" aria-hidden="true"></span>
 				<span class="ba-sheen" aria-hidden="true"></span>
 				<Icon width={24} name="mdi:image-outline" />
-				<span class="ba-asset-name">assets/bootcamp-in-session.jpg</span>
-				<span class="ba-asset-sub">Education at heart — the free bootcamp + The Brevarium</span>
-				<a href="/bootcamp" class="ba-link">See the bootcamp <Icon width={14} name="mdi:chevron-right" /></a>
+				<span class="ba-asset-name">assets/training-in-session.jpg</span>
+				<span class="ba-asset-sub">Education at heart — free training + The Brevarium</span>
+				<a href="#ba-brevarium" class="ba-link">Read The Brevarium <Icon width={14} name="mdi:chevron-right" /></a>
 			</div>
 		</div>
 	</section>
 
 	<!-- ── 07 · docs/ — The Brevarium ──────────────────────── -->
-	<section class="ba-sec" data-cursor="repo">
+	<section class="ba-sec" data-cursor="repo" id="ba-brevarium">
 		<div class="ba-wrap">
 			<div class="ba-brev bb-rev" data-fa-tilt="4">
 				<span class="bb-glare" aria-hidden="true"></span>
@@ -639,9 +639,9 @@ const quotes = [
 	.ba-rel p { font-size: 0.9rem; line-height: 1.6; color: var(--bu-muted); margin: 0.3rem 0 0; max-width: 38rem; }
 
 	/* ── 05 · contributors ── */
-	.ba-team { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; list-style: none; margin: 0; padding: 0; }
+	.ba-team { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; list-style: none; margin: 0; padding: 0; align-items: stretch; }
 	.ba-mate {
-		position: relative; overflow: hidden; width: 100%; text-align: center; cursor: pointer;
+		position: relative; overflow: hidden; width: 100%; height: 100%; text-align: center; cursor: pointer;
 		border: 1px solid var(--bu-line); border-radius: 1rem;
 		background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 55%), var(--bu-card);
 		padding: 1.2rem 0.8rem 1.1rem; color: var(--bu-ink);
@@ -847,7 +847,9 @@ const quotes = [
 		.ba-stats li { padding: 0.1rem 0.5rem; }
 		.ba-stats strong { font-size: 1.05rem; }
 		.ba-stats span { font-size: 0.58rem; }
-		.ba-brev { grid-template-columns: 110px minmax(0, 1fr); }
+		/* phones: the magazine stacks — cover on top, copy + editions beneath */
+		.ba-brev { grid-template-columns: minmax(0, 1fr); }
+		.ba-brev-cover { max-width: 13rem; margin: 0 auto; }
 		.ba-mate-photo { width: 70px; height: 70px; }
 		.ba-git { padding-left: 1.8rem; }
 		.ba-node { left: -1.8rem; }

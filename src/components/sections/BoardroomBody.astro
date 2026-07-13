@@ -870,6 +870,8 @@ const logos = [
 	@media (max-width: 640px) {
 		.bd-tile--quote {
 			height: 21rem;
+			/* phones: no stylish overlap — clear breathing room between cards */
+			margin-top: 1.25rem;
 		}
 		.bd-quote p {
 			font-size: 1.12rem;
@@ -1362,6 +1364,11 @@ const logos = [
 	.bd-call-num :global(svg) {
 		color: var(--bd-accent);
 		-webkit-text-fill-color: initial;
+	}
+	/* phones: keep the number on one line at a calmer size, icon snug beside it */
+	@media (max-width: 600px) {
+		.bd-call-num { font-size: 1.35rem; gap: 0.45rem; white-space: nowrap; }
+		.bd-call-num :global(svg) { width: 20px; height: 20px; }
 	}
 	.bd-call:hover .bd-call-num {
 		transform: scale(1.03);

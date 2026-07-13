@@ -85,7 +85,7 @@ const milestones = [
 	{
 		year: '2025',
 		title: 'Teaching the next ones.',
-		desc: 'We open a free tech bootcamp, training new engineers, designers and marketers on real products.',
+		desc: 'We open our free training programme, growing new engineers, designers and marketers on real products.',
 	},
 	{
 		year: '2026',
@@ -196,8 +196,8 @@ const services = [
 	{
 		icon: 'mdi:school-outline',
 		title: 'Education',
-		desc: 'A free bootcamp and The Brevarium, putting real, job-ready skills in the hands of the next builders.',
-		tag: 'Bootcamp · Brevarium · Mentoring',
+		desc: 'Free training and The Brevarium, putting real, job-ready skills in the hands of the next builders.',
+		tag: 'Training · Brevarium · Mentoring',
 	},
 ];
 
@@ -229,7 +229,7 @@ const footerPhones = [
 	{ num: '+1 701 498 1811', flag: '🇺🇸' },
 ];
 
-const footerNav = ['Home', 'About', 'Services', 'Portfolio', 'Blog', 'Bootcamp', 'Contact'];
+const footerNav = ['Home', 'About', 'Services', 'Portfolio', 'Blog', 'Contact'];
 const currentYear = new Date().getFullYear();
 ---
 
@@ -609,11 +609,11 @@ const currentYear = new Date().getFullYear();
 			<div class="bd-tile-copy">
 				<h3 class="bd-h bd-h--sm">Education at heart.</h3>
 				<p class="bd-p">
-					From our free bootcamp to The Brevarium, we put real skills in
+					From free training to The Brevarium, we put real skills in
 					the hands of the next generation of builders.
 				</p>
-				<a href="/bootcamp" class="bd-link">
-					See the bootcamp
+				<a href="#bd-brevarium" class="bd-link">
+					Read The Brevarium
 					<Icon width={15} name="mdi:chevron-right" />
 				</a>
 			</div>
@@ -621,14 +621,14 @@ const currentYear = new Date().getFullYear();
 				<span class="bd-media-sheen" aria-hidden="true"></span>
 				<Icon width={26} name="mdi:image-outline" />
 				<span class="bd-media-label">Image placeholder</span>
-				<span class="bd-media-sub">Bootcamp, in session</span>
+				<span class="bd-media-sub">Training, in session</span>
 			</div>
 		</section>
 	</div>
 
 	<!-- ── The Brevarium — our magazine, free to download ────── -->
 	<div class="bd-grid bd-grid--narrow">
-		<section class="bd-tile bd-tile--full bd-brev bd-reveal" data-cursor="repo">
+		<section class="bd-tile bd-tile--full bd-brev bd-reveal" data-cursor="repo" id="bd-brevarium">
 			<div class="bd-brev-cover">
 				<img src="/images/brevarium-cover.jpg" alt="The Brevarium by Swizel — latest edition" loading="lazy" />
 				<span class="bd-brev-shine" aria-hidden="true"></span>
@@ -1686,7 +1686,11 @@ const currentYear = new Date().getFullYear();
 		padding: 0;
 		cursor: pointer;
 		width: 100%;
-		display: block;
+		/* equal frames: the photo stretches to absorb any height difference
+		   (roles that wrap to two lines made neighbouring cards taller) */
+		height: 100%;
+		display: flex;
+		flex-direction: column;
 		margin: 0;
 		border-radius: 1.4rem;
 		overflow: hidden;
@@ -1705,6 +1709,8 @@ const currentYear = new Date().getFullYear();
 		position: relative;
 		aspect-ratio: 3 / 3.4;
 		overflow: hidden;
+		flex: 1; /* fill the card so every photo frame matches */
+		min-height: 0;
 	}
 	.bd-member-photo img {
 		position: absolute;
@@ -2291,7 +2297,7 @@ const currentYear = new Date().getFullYear();
 		outline: 1px solid rgba(20, 22, 40, 0.08);
 	}
 	@media (max-width: 720px) {
-		.bd-brev { flex-direction: column; text-align: center; }
+		.bd-brev { flex-direction: column; text-align: center; padding-top: 2rem; margin-top: 1.25rem; }
 		.bd-brev .bd-eyebrow { width: 100%; }
 		.bd-brev-copy .bd-p { margin-inline: auto; }
 		.bd-brev-actions { justify-content: center; }

@@ -647,6 +647,10 @@ const classPhotos = [
 	.ca-sticky--p { bottom: 1rem; right: -0.7rem; background: #fbcfe8; transform: rotate(3deg); }
 	@media (max-width: 560px) {
 		.ca-sticky--p { right: 0.4rem; }
+		/* the est. 2019 sticky was sitting on the board title — smaller, higher,
+		   and the board gets top clearance so the title stays readable */
+		.ca-sticky--y { top: -1.3rem; left: 0.8rem; font-size: 0.8rem; padding: 0.55rem 0.65rem 0.7rem; }
+		.ca-board { padding-top: 2rem; }
 	}
 	.ca-marker-tray {
 		position: absolute;
@@ -956,6 +960,10 @@ const classPhotos = [
 		border-radius: 0.7rem;
 		max-width: 24rem;
 	}
+	@media (max-width: 640px) {
+		/* phones: the cover is a book on the desk, not a full-screen poster */
+		.ca-book-cover { max-width: 14rem; margin: 0 auto; }
+	}
 	.ca-book-cover img {
 		width: 100%;
 		border-radius: 0.7rem;
@@ -968,7 +976,7 @@ const classPhotos = [
 		list-style: none;
 		margin: 0;
 		padding: 0;
-		max-width: 26rem;
+		/* fill the text column — the rows should run as wide as the copy above */
 	}
 	.ca-book-eds a {
 		display: flex;
