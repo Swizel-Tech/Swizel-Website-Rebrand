@@ -178,9 +178,15 @@ const { d } = Astro.props;
 	.dvg-type { display: flex; align-items: center; gap: 1rem; }
 	.dvg-type b { font-size: clamp(2.8rem, 7vw, 3.8rem); font-weight: 800; line-height: 0.9; letter-spacing: -0.04em; color: var(--c); }
 	.dvg-type span { font-size: 0.92rem; line-height: 1.4; color: var(--bd-muted); }
-	.dvg-ui { display: flex; align-items: center; gap: 0.7rem; }
-	.dvg-btn { padding: 0.6rem 1.2rem; border-radius: 9999px; font-size: 0.88rem; font-weight: 600; color: #fff; background: linear-gradient(180deg, color-mix(in srgb, var(--c) 88%, #fff), var(--c)); box-shadow: 0 10px 24px -10px color-mix(in srgb, var(--c) 70%, transparent); }
-	.dvg-chip { padding: 0.6rem 1.1rem; border-radius: 9999px; font-size: 0.88rem; font-weight: 600; color: var(--bd-ink); border: 1px solid color-mix(in srgb, var(--c) 40%, var(--bd-glass-border)); }
+	.dvg-ui { display: flex; align-items: center; flex-wrap: wrap; gap: 0.7rem; }
+	.dvg-btn, .dvg-chip {
+		display: inline-flex; align-items: center; justify-content: center;
+		padding: 0.6rem 1.2rem; border-radius: 9999px;
+		font-size: 0.88rem; font-weight: 600; line-height: 1.2;
+		white-space: nowrap;
+	}
+	.dvg-btn { color: #fff; background: linear-gradient(180deg, color-mix(in srgb, var(--c) 88%, #fff), var(--c)); box-shadow: 0 10px 24px -10px color-mix(in srgb, var(--c) 70%, transparent); }
+	.dvg-chip { color: var(--bd-ink); border: 1px solid color-mix(in srgb, var(--c) 40%, var(--bd-glass-border)); }
 
 	@media (prefers-reduced-motion: reduce) {
 		.dvc-dot, .dvs-live { animation: none; }

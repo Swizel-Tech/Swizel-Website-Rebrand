@@ -961,8 +961,9 @@ const classPhotos = [
 		max-width: 24rem;
 	}
 	@media (max-width: 640px) {
-		/* phones: the cover is a book on the desk, not a full-screen poster */
-		.ca-book-cover { max-width: 14rem; margin: 0 auto; }
+		/* phones: the cover fills the width as a shorter banner, not a tall poster */
+		.ca-book-cover { max-width: none; margin: 0; }
+		.ca-book-cover img { aspect-ratio: 16 / 10; height: auto; object-fit: cover; object-position: center 30%; }
 	}
 	.ca-book-cover img {
 		width: 100%;

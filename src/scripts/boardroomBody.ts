@@ -3,7 +3,10 @@ export function initBoardroomBody() {
 	if (!body) return;
 	const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-	// calm scroll reveals
+	// calm scroll reveals — threshold 0 (not 0.18) so elements TALLER than the
+	// viewport (e.g. a full blog article body) still reveal; 18% of a long
+	// article is never on screen at once, which used to leave the body stuck at
+	// opacity:0. rootMargin trims a little off the bottom so it eases in.
 	const reveals = Array.from(body.querySelectorAll<HTMLElement>('.bd-reveal'));
 	if (reveals.length) {
 		const io = new IntersectionObserver(
@@ -15,9 +18,16 @@ export function initBoardroomBody() {
 					}
 				});
 			},
-			{ threshold: 0.18 }
+			{ threshold: 0, rootMargin: '0px 0px -8% 0px' }
 		);
-		reveals.forEach((r) => io.observe(r));
+		reveals.forEach((r) => {
+			// anything already in (or above) the viewport on load reveals at once
+			if (r.getBoundingClientRect().top < window.innerHeight * 0.92) {
+				r.classList.add('is-on');
+			} else {
+				io.observe(r);
+			}
+		});
 	}
 
 	// counters (supports decimals for the 5.0 rating)
