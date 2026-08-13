@@ -8,9 +8,10 @@ export interface Props {
 	description: string;
 	image?: string;
 	/**
-	 * Optional 1200x1200 variant. Mobile chat apps (WhatsApp etc.) often crop
-	 * landscape cards; offering a square as a second og:image lets scrapers
-	 * that prefer squares pick it, while everything else keeps the landscape.
+	 * @deprecated Kept so existing pages keep compiling. We now emit exactly
+	 * ONE og:image — the 1200x630 landscape. A second square tag made
+	 * WhatsApp fall back to its small thumbnail layout instead of the big
+	 * preview, which buried the card.
 	 */
 	imageSquare?: string;
 	/** Set to "article" on blog posts so social cards render correctly. */
@@ -23,10 +24,6 @@ const {
 	title,
 	description,
 	image = '/images/og-default.jpg',
-	// Only default the square when the landscape is also the default —
-	// pages with their own custom image (e.g. case studies) shouldn't get
-	// an unrelated square card.
-	imageSquare = Astro.props.image ? undefined : '/images/og-default-sq.jpg',
 	type = 'website',
 } = Astro.props;
 
@@ -39,9 +36,6 @@ const {
 const deployedHost = process.env.VERCEL_PROJECT_PRODUCTION_URL;
 const shareBase = deployedHost ? `https://${deployedHost}` : Astro.site;
 const socialImageURL = new URL(image, shareBase);
-const socialImageSquareURL = imageSquare
-	? new URL(imageSquare, shareBase)
-	: undefined;
 
 // Organization structured data for rich results in Google.
 const organizationSchema = {
@@ -131,15 +125,8 @@ const organizationSchema = {
 <meta property="og:image" content={socialImageURL} />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
-{
-	socialImageSquareURL && (
-		<>
-			<meta property="og:image" content={socialImageSquareURL} />
-			<meta property="og:image:width" content="1200" />
-			<meta property="og:image:height" content="1200" />
-		</>
-	)
-}
+<meta property="og:image:type" content="image/jpeg" />
+<meta property="og:image:alt" content={title} />
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image" />
