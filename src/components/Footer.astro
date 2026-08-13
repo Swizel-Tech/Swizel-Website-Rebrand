@@ -219,11 +219,28 @@ const phones = [
 
 	<div class="ft-bottom">
 		<span>&copy; <span id="footer-year"></span> <span class="ft-co-full">Swizel Technologies Limited</span><span class="ft-co-short">Swizel Tech LTD</span></span>
-		<button class="ft-film" type="button" data-open-film>
-			<span class="ft-film-ic" aria-hidden="true">
-				<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M10 9.5l5 2.5-5 2.5z" fill="currentColor" stroke="none"/></svg>
+		<button class="ft-film" type="button" data-open-film aria-label="Watch the welcome film">
+			<span class="ft-film-reel" aria-hidden="true">
+				<svg viewBox="0 0 48 48">
+					<defs>
+						<linearGradient id="ftFilmG" x1="0" y1="0" x2="1" y2="1">
+							<stop offset="0%" stop-color="#13b6a0" />
+							<stop offset="55%" stop-color="#13a8bf" />
+							<stop offset="100%" stop-color="#1f8fd6" />
+						</linearGradient>
+					</defs>
+					<circle class="ft-reel-ring" cx="24" cy="24" r="21" fill="none" stroke="url(#ftFilmG)" stroke-width="2" stroke-dasharray="5 7" stroke-linecap="round" />
+					<circle cx="24" cy="24" r="16.5" fill="none" stroke="currentColor" stroke-width="1.4" opacity="0.45" />
+					<g class="ft-reel-holes" fill="currentColor" opacity="0.55">
+						<circle cx="24" cy="12.5" r="2.1" />
+						<circle cx="35.5" cy="24" r="2.1" />
+						<circle cx="24" cy="35.5" r="2.1" />
+						<circle cx="12.5" cy="24" r="2.1" />
+					</g>
+					<path class="ft-reel-play" d="M20.5 17.8 32 24l-11.5 6.2z" fill="url(#ftFilmG)" />
+				</svg>
 			</span>
-			Watch the welcome film
+			<span class="ft-film-tip">Watch the welcome film</span>
 		</button>
 		<span class="ft-bottom-globe">You Imagine, We Build <span class="ft-globe">🌍</span></span>
 	</div>
@@ -368,29 +385,100 @@ const phones = [
 	}
 
 	/* Bottom */
-	/* the welcome film is too good to be seen once — this reopens it anywhere */
+	/* the welcome film is too good to be seen once — this reopens it anywhere.
+	   A spinning reel with a play head: it reads on its own, no label needed. */
 	.ft-film {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.45rem;
-		padding: 0.4rem 0.9rem;
+		position: relative;
+		display: grid;
+		place-items: center;
+		width: 3rem;
+		height: 3rem;
+		padding: 0;
+		border: 0;
+		border-radius: 9999px;
+		background: none;
+		color: var(--ft-ink);
+		cursor: pointer;
+		flex: none;
+	}
+	.ft-film::before {
+		content: '';
+		position: absolute;
+		inset: -0.35rem;
+		border-radius: 9999px;
+		background: radial-gradient(closest-side, color-mix(in srgb, var(--view-accent, #18debe) 30%, transparent), transparent 70%);
+		opacity: 0;
+		transform: scale(0.75);
+		transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.ft-film:hover::before,
+	.ft-film:focus-visible::before { opacity: 1; transform: scale(1); }
+	.ft-film-reel { display: block; width: 100%; height: 100%; }
+	.ft-film-reel svg { width: 100%; height: 100%; display: block; }
+	/* the reel idles slowly and speeds up when you reach for it */
+	.ft-reel-ring {
+		transform-origin: 50% 50%;
+		animation: ft-reel 14s linear infinite;
+	}
+	.ft-film:hover .ft-reel-ring { animation-duration: 3.5s; }
+	.ft-reel-holes { transform-origin: 50% 50%; animation: ft-reel 22s linear infinite reverse; }
+	.ft-film:hover .ft-reel-holes { animation-duration: 6s; }
+	@keyframes ft-reel { to { transform: rotate(1turn); } }
+	.ft-reel-play { transform-origin: 50% 50%; transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
+	.ft-film:hover .ft-reel-play { transform: scale(1.12); }
+	/* the label is a hover whisper on pointer devices, spoken aloud to
+	   screen readers, and a plain caption on phones */
+	.ft-film-tip {
+		position: absolute;
+		bottom: calc(100% + 0.45rem);
+		left: 50%;
+		transform: translate(-50%, 0.35rem);
+		padding: 0.3rem 0.65rem;
 		border-radius: 9999px;
 		border: 1px solid var(--ft-border);
-		background: none;
-		color: var(--ft-faint);
-		font-size: 0.72rem;
+		background: var(--ft-card, rgba(10, 12, 22, 0.92));
+		color: var(--ft-ink);
+		font-size: 0.68rem;
 		font-style: normal;
 		font-weight: 700;
-		letter-spacing: 0.04em;
-		cursor: pointer;
-		transition: color 0.22s ease, border-color 0.22s ease, transform 0.22s ease;
+		letter-spacing: 0.02em;
+		white-space: nowrap;
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 0.24s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 	}
-	.ft-film:hover {
-		color: var(--ft-ink, #fff);
-		border-color: color-mix(in srgb, var(--view-accent, #18debe) 60%, transparent);
-		transform: translateY(-1px);
+	.ft-film:hover .ft-film-tip,
+	.ft-film:focus-visible .ft-film-tip { opacity: 1; transform: translate(-50%, 0); }
+	@media (prefers-reduced-motion: reduce) {
+		.ft-reel-ring, .ft-reel-holes { animation: none; }
 	}
-	.ft-film-ic { display: grid; place-items: center; color: var(--view-accent, #18debe); }
+	@media (max-width: 640px) {
+		/* on a phone it stands on its own line, bigger, with the label under it */
+		.ft-film {
+			width: 100%;
+			height: auto;
+			grid-auto-flow: row;
+			gap: 0.4rem;
+			padding: 0.9rem 0;
+			margin: 0.2rem 0 0.1rem;
+			border: 1px solid var(--ft-border);
+			border-radius: 0.9rem;
+			background: color-mix(in srgb, var(--view-accent, #18debe) 6%, transparent);
+		}
+		.ft-film-reel { width: 2.6rem; height: 2.6rem; }
+		.ft-film-tip {
+			position: static;
+			transform: none;
+			opacity: 1;
+			padding: 0;
+			border: 0;
+			background: none;
+			font-size: 0.74rem;
+			letter-spacing: 0.06em;
+			text-transform: uppercase;
+			color: var(--ft-faint);
+		}
+	}
 	.ft-bottom { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding-top: 1.5rem; border-top: 1px solid var(--ft-border); display: flex; flex-wrap: wrap; gap: 0.4rem 1.2rem; align-items: center; justify-content: space-between; font-size: 0.72rem; font-style: italic; color: var(--ft-faint); }
 	.ft-globe { display: inline-block; animation: ft-spin 6s linear infinite; }
 	/* full legal name on desktop, compact on mobile */
