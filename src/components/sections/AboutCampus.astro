@@ -72,10 +72,28 @@ const reportCard = [
 	{ name: 'Cheta', img: '/testimonial/cheta.jpeg', grade: 'A+', body: 'Thorough, polite and always on time. They make hard things feel easy.' },
 ];
 
+// real photographs from the Abuja studio — placeholders only where footage is
+// still to come
 const classPhotos = [
-	{ wide: true, video: true, name: 'a-day-at-swizel.mp4 — video placeholder', sub: 'Walk the halls with us' },
-	{ video: false, name: 'demo-friday.jpg' },
-	{ video: false, name: 'the-lab.jpg' },
+	{
+		wide: true,
+		img: '/images/campus/demo-day.jpg',
+		alt: 'The Swizel team reviewing a build together on demo day',
+		name: 'demo-day.jpg',
+		sub: 'Review day, the whole class on one build',
+	},
+	{
+		img: '/images/campus/class-in-session.jpg',
+		alt: 'A full class in session around the studio table in Abuja',
+		name: 'class-in-session.jpg',
+		sub: 'A full house, mid term',
+	},
+	{
+		img: '/images/campus/the-lab.jpg',
+		alt: 'Two Swizel builders pairing on a live product in the lab',
+		name: 'the-lab.jpg',
+		sub: 'Pairing in the lab',
+	},
 	{ video: true, name: 'launch-night.mp4 — video' },
 	{ video: false, name: 'field-trip.jpg' },
 ];
@@ -273,10 +291,22 @@ const classPhotos = [
 			<div class="ca-media cp-rev">
 				{
 					classPhotos.map((f) => (
-						<div class:list={['ca-frame', { 'ca-frame--wide': f.wide }]}>
-							<Icon width={f.wide ? 34 : 24} name={f.video ? 'mdi:play-circle-outline' : 'mdi:image-outline'} />
-							<span class="ca-frame-name">{f.name}</span>
-							{f.sub && <span class="ca-frame-sub">{f.sub}</span>}
+						<div class:list={['ca-frame', { 'ca-frame--wide': f.wide, 'ca-frame--photo': f.img }]}>
+							{f.img ? (
+								<>
+									<img src={f.img} alt={f.alt} loading="lazy" />
+									<span class="ca-tape" aria-hidden="true" />
+									<span class="ca-frame-cap">
+										{f.sub ?? f.name}
+									</span>
+								</>
+							) : (
+								<>
+									<Icon width={f.wide ? 34 : 24} name={f.video ? 'mdi:play-circle-outline' : 'mdi:image-outline'} />
+									<span class="ca-frame-name">{f.name}</span>
+									{f.sub && <span class="ca-frame-sub">{f.sub}</span>}
+								</>
+							)}
 						</div>
 					))
 				}
@@ -932,6 +962,61 @@ const classPhotos = [
 		padding: 0.8rem;
 	}
 	.ca-frame--wide { grid-column: span 2; grid-row: span 2; aspect-ratio: auto; }
+	/* real photographs: pinned-up prints with masking tape + a marker caption */
+	.ca-frame--photo {
+		position: relative;
+		overflow: hidden;
+		padding: 0;
+		border-style: solid;
+		border-color: color-mix(in srgb, var(--cp-ink) 12%, transparent);
+		background: #0d0a05;
+		transform: rotate(-0.5deg);
+		transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
+		box-shadow: 0 12px 30px -18px rgba(0, 0, 0, 0.65);
+	}
+	.ca-frame--photo:nth-of-type(even) { transform: rotate(0.6deg); }
+	.ca-frame--photo:hover { transform: rotate(0deg) translateY(-4px); box-shadow: 0 22px 44px -20px rgba(0, 0, 0, 0.7); }
+	.ca-frame--photo img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: center 38%;
+		display: block;
+		transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.ca-frame--photo:hover img { transform: scale(1.04); }
+	.ca-frame--photo::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(to top, rgba(6, 4, 1, 0.72), rgba(6, 4, 1, 0.05) 55%);
+		pointer-events: none;
+	}
+	.ca-tape {
+		position: absolute;
+		top: 0.45rem;
+		left: 50%;
+		width: 4.4rem;
+		height: 1.05rem;
+		transform: translateX(-50%) rotate(-3deg);
+		background: color-mix(in srgb, var(--cp-acc) 32%, #fff8e6);
+		opacity: 0.75;
+		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+		z-index: 2;
+	}
+	.ca-frame-cap {
+		position: absolute;
+		left: 0.75rem;
+		right: 0.75rem;
+		bottom: 0.6rem;
+		z-index: 2;
+		font-family: var(--cp-marker);
+		font-size: 0.95rem;
+		line-height: 1.25;
+		color: #fff6e2;
+		text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+	}
+	.ca-frame--wide.ca-frame--photo .ca-frame-cap { font-size: 1.1rem; }
 	.ca-frame-name {
 		font-size: 0.7rem;
 		font-weight: 800;

@@ -44,4 +44,4 @@ Yes, so many schools in Nigeria claim to have embraced E-learning, but few actua
 
 Meanwhile, E-learning platforms can create a classroom atmosphere away from school. Students no longer compulsorily need to be in a class to have real time access to a lecture or material. This way, the lecturer only gets to teach a topic once or as when needed, and the lecture can be circulated throughout the student population in real-time, or through downloads and streams. This would make for a less stressful atmosphere and a seamless process.
 
-Would you like to explore the possibilities of Virtual Schooling in Nigeria? Stay connected to [Swizel Technologies Ltd](mailto:contact@swizel.com)
+Would you like to explore the possibilities of Virtual Schooling in Nigeria? Stay connected to [Swizel Technologies Limited](mailto:contact@swizel.com)

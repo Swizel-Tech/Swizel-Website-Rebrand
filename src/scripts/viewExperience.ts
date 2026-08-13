@@ -123,6 +123,9 @@ export function initViewExperience() {
 		root.dataset.open = 'true';
 		root.setAttribute('aria-hidden', 'false');
 		document.body.style.overflow = 'hidden';
+		// same house rules as the film: park the floating furniture and wear
+		// the Swizel mark as the pointer
+		document.documentElement.classList.add('wf-open');
 		if (atResults) {
 			recommend();
 			show('results');
@@ -135,6 +138,7 @@ export function initViewExperience() {
 		root.dataset.open = 'false';
 		root.setAttribute('aria-hidden', 'true');
 		document.body.style.overflow = '';
+		document.documentElement.classList.remove('wf-open');
 		try {
 			localStorage.setItem(ONBOARDED_KEY, '1');
 		} catch (e) {}
@@ -149,7 +153,16 @@ export function initViewExperience() {
 
 	const goBack = () => {
 		const idx = order.indexOf(current());
-		if (idx > 0) show(order[idx - 1], 'back');
+		// Back from the first question rewinds to the beginning of the whole
+		// welcome, not to a text screen nobody asked for.
+		if (idx <= 1) {
+			close();
+			const film = (window as any).openWelcomeFilm;
+			if (typeof film === 'function') film();
+			else show(order[0], 'back');
+			return;
+		}
+		show(order[idx - 1], 'back');
 	};
 
 	// wire controls
@@ -165,8 +178,8 @@ export function initViewExperience() {
 		show('results');
 	});
 	root
-		.querySelector('[data-vo-skip]')
-		?.addEventListener('click', () => close());
+		.querySelectorAll('[data-vo-skip]')
+		.forEach((b) => b.addEventListener('click', () => close()));
 	// Links inside the modal ("Start a project") navigate via swup behind the
 	// overlay — close the modal (and release the body scroll lock) so the
 	// navigation is actually seen instead of looking like a dead click.
@@ -228,17 +241,18 @@ export function initViewExperience() {
 
 	// expose for the nav "switch view" control
 	(window as any).openViewPicker = () => open(true);
+	// The welcome film owns the first visit now; its "Make it mine" button
+	// drops people straight into the questions, skipping the old text intro
+	// (nobody should have to read a pitch before they know who we are).
+	(window as any).openViewQuiz = () => {
+		answers = {};
+		root
+			.querySelectorAll('.vo__opt.is-selected')
+			.forEach((o) => o.classList.remove('is-selected'));
+		open(false);
+		show(order[1] || 'intro');
+	};
 	document
 		.querySelectorAll('[data-open-views]')
 		.forEach((b) => b.addEventListener('click', () => open(true)));
-
-	// auto-open for first-time visitors
-	let onboarded = false;
-	try {
-		onboarded = !!localStorage.getItem(ONBOARDED_KEY);
-	} catch (e) {}
-	if (!onboarded) {
-		// slight delay so the page paints first
-		window.setTimeout(() => open(false), 650);
-	}
 }

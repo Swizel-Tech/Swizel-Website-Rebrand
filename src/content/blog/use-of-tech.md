@@ -28,5 +28,5 @@ We envision a time when field trips will be turned to webinars, so that students
 
 We envision a time when self learning can be encouraged, practiced and rewarded. A time when we can achieve equitable access to learning material and content to every individual.
 
-**A step further is Swizel Technologies' latest solution "Project Appman"**
-**In the realm of Tech, Swizel Technologies has broken ground with the Project Appman. This web portal/mobile application was built to revolutionize how education is being delivered and managed in Nigeria. Just log on to the Swizel Technologies website for more information on the projects completed and those ongoing.**
+**A step further is Swizel Technologies Limited's latest solution "Project Appman"**
+**In the realm of Tech, Swizel Technologies Limited has broken ground with the Project Appman. This web portal/mobile application was built to revolutionize how education is being delivered and managed in Nigeria. Just log on to the Swizel Technologies Limited website for more information on the projects completed and those ongoing.**

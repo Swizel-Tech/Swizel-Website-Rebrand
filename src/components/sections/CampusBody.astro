@@ -403,19 +403,33 @@ const voices = [
 				<h2 class="cp-h">From past <em>bootcamps.</em></h2>
 			</div>
 			<div class="cp-gallery cp-rev">
-				<div class="cp-shot cp-shot--wide">
-					<Icon width={30} name="mdi:play-circle-outline" />
-					<span class="cp-shot-name">bootcamp-2025-recap.mp4 — video placeholder</span>
-					<span class="cp-shot-sub">Last cohort, start to graduation</span>
-				</div>
-				<div class="cp-shot">
-					<Icon width={22} name="mdi:image-outline" />
-					<span class="cp-shot-name">graduation-day.jpg</span>
-				</div>
-				<div class="cp-shot">
-					<Icon width={22} name="mdi:image-outline" />
-					<span class="cp-shot-name">whiteboard-wars.jpg</span>
-				</div>
+				<figure class="cp-shot cp-shot--wide cp-shot--photo">
+					<img
+						src="/images/campus/demo-day.jpg"
+						alt="Swizel mentors and students reviewing a build together on demo day"
+						loading="lazy"
+					/>
+					<span class="cp-tape" aria-hidden="true"></span>
+					<figcaption class="cp-shot-cap">Demo day, the whole room on one build</figcaption>
+				</figure>
+				<figure class="cp-shot cp-shot--photo">
+					<img
+						src="/images/campus/class-in-session.jpg"
+						alt="A class in session around the studio table at the Swizel campus in Abuja"
+						loading="lazy"
+					/>
+					<span class="cp-tape" aria-hidden="true"></span>
+					<figcaption class="cp-shot-cap">Class in session</figcaption>
+				</figure>
+				<figure class="cp-shot cp-shot--photo">
+					<img
+						src="/images/campus/the-lab.jpg"
+						alt="Two Swizel builders pairing on a live product in the lab"
+						loading="lazy"
+					/>
+					<span class="cp-tape" aria-hidden="true"></span>
+					<figcaption class="cp-shot-cap">Pairing in the lab</figcaption>
+				</figure>
 				<div class="cp-shot">
 					<Icon width={26} name="mdi:play-circle-outline" />
 					<span class="cp-shot-name">demo-day.mp4 — video</span>
@@ -1305,6 +1319,61 @@ const voices = [
 		grid-column: span 2;
 		grid-row: span 2;
 	}
+	/* real photographs from the Abuja campus: taped-up prints */
+	.cp-shot--photo {
+		position: relative;
+		overflow: hidden;
+		margin: 0;
+		border-style: solid;
+		border-color: color-mix(in srgb, var(--cp-ink) 12%, transparent);
+		background: #0d0a05;
+		transform: rotate(-0.5deg);
+		transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
+		box-shadow: 0 14px 34px -20px rgba(0, 0, 0, 0.7);
+	}
+	.cp-shot--photo:nth-of-type(3) { transform: rotate(0.7deg); }
+	.cp-shot--photo:hover { transform: rotate(0deg) translateY(-5px); box-shadow: 0 26px 50px -22px rgba(0, 0, 0, 0.75); }
+	.cp-shot--photo img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: center 38%;
+		display: block;
+		transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.cp-shot--photo:hover img { transform: scale(1.05); }
+	.cp-shot--photo::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(to top, rgba(6, 4, 1, 0.75), rgba(6, 4, 1, 0.04) 58%);
+		pointer-events: none;
+	}
+	.cp-tape {
+		position: absolute;
+		top: 0.5rem;
+		left: 50%;
+		width: 4.8rem;
+		height: 1.1rem;
+		transform: translateX(-50%) rotate(-3deg);
+		background: color-mix(in srgb, var(--cp-acc) 32%, #fff8e6);
+		opacity: 0.75;
+		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+		z-index: 2;
+	}
+	.cp-shot-cap {
+		position: absolute;
+		left: 0.85rem;
+		right: 0.85rem;
+		bottom: 0.7rem;
+		z-index: 2;
+		font-family: var(--cp-marker);
+		font-size: 0.95rem;
+		line-height: 1.25;
+		color: #fff6e2;
+		text-shadow: 0 2px 8px rgba(0, 0, 0, 0.65);
+	}
+	.cp-shot--wide .cp-shot-cap { font-size: 1.15rem; }
 	@media (max-width: 760px) {
 		.cp-shot--wide {
 			grid-column: span 1;

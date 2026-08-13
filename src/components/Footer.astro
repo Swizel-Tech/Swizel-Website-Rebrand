@@ -38,8 +38,8 @@ const offices = [
 const socials = [
 	{ name: 'X (Twitter)', handle: '@swizelhq', icon: 'twitter', href: 'https://twitter.com/swizelhq', tag: 'Daily build updates', color: '#e9eaf2', peek: 'Ship week at Swizel. Another product just went live. Follow along for launches and behind-the-build threads.' },
 	{ name: 'Instagram', handle: '@swizelhq', icon: 'instagram', href: 'https://instagram.com/swizelhq', tag: 'Behind the scenes', color: '#e1486c', peek: 'The studio, unfiltered. Whiteboards, late builds, launch days and the team behind it all.' },
-	{ name: 'LinkedIn', handle: 'Swizel Technologies', icon: 'linkedin', href: 'https://www.linkedin.com/company/swizel-technologies-limited/', tag: 'Company & careers', color: '#0a8bd4', peek: 'Company news, open roles and stories from the products we ship across 10+ countries.' },
-	{ name: 'Facebook', handle: 'Swizel Technologies', icon: 'facebook', href: 'https://www.facebook.com/SWIZELTECHNOLOGIESLIMITED/', tag: 'Community & news', color: '#3b82f6', peek: 'Our community home for announcements, events and milestones from the Swizel family.' },
+	{ name: 'LinkedIn', handle: 'Swizel Technologies Limited', icon: 'linkedin', href: 'https://www.linkedin.com/company/swizel-technologies-limited/', tag: 'Company & careers', color: '#0a8bd4', peek: 'Company news, open roles and stories from the products we ship across 10+ countries.' },
+	{ name: 'Facebook', handle: 'Swizel Technologies Limited', icon: 'facebook', href: 'https://www.facebook.com/SWIZELTECHNOLOGIESLIMITED/', tag: 'Community & news', color: '#3b82f6', peek: 'Our community home for announcements, events and milestones from the Swizel family.' },
 ];
 
 // Local number first, then international lines — flags, no labels.
@@ -219,6 +219,12 @@ const phones = [
 
 	<div class="ft-bottom">
 		<span>&copy; <span id="footer-year"></span> <span class="ft-co-full">Swizel Technologies Limited</span><span class="ft-co-short">Swizel Tech LTD</span></span>
+		<button class="ft-film" type="button" data-open-film>
+			<span class="ft-film-ic" aria-hidden="true">
+				<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M10 9.5l5 2.5-5 2.5z" fill="currentColor" stroke="none"/></svg>
+			</span>
+			Watch the welcome film
+		</button>
 		<span class="ft-bottom-globe">You Imagine, We Build <span class="ft-globe">🌍</span></span>
 	</div>
 </footer>
@@ -362,6 +368,29 @@ const phones = [
 	}
 
 	/* Bottom */
+	/* the welcome film is too good to be seen once — this reopens it anywhere */
+	.ft-film {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		padding: 0.4rem 0.9rem;
+		border-radius: 9999px;
+		border: 1px solid var(--ft-border);
+		background: none;
+		color: var(--ft-faint);
+		font-size: 0.72rem;
+		font-style: normal;
+		font-weight: 700;
+		letter-spacing: 0.04em;
+		cursor: pointer;
+		transition: color 0.22s ease, border-color 0.22s ease, transform 0.22s ease;
+	}
+	.ft-film:hover {
+		color: var(--ft-ink, #fff);
+		border-color: color-mix(in srgb, var(--view-accent, #18debe) 60%, transparent);
+		transform: translateY(-1px);
+	}
+	.ft-film-ic { display: grid; place-items: center; color: var(--view-accent, #18debe); }
 	.ft-bottom { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding-top: 1.5rem; border-top: 1px solid var(--ft-border); display: flex; flex-wrap: wrap; gap: 0.4rem 1.2rem; align-items: center; justify-content: space-between; font-size: 0.72rem; font-style: italic; color: var(--ft-faint); }
 	.ft-globe { display: inline-block; animation: ft-spin 6s linear infinite; }
 	/* full legal name on desktop, compact on mobile */

@@ -939,40 +939,93 @@ html.dark { --nav-active: #86e2ef; }
 /* =========================================================
    Themed animated custom cursor (per view), shown over heroes
    ========================================================= */
+/* The themed glyph IS the pointer: the OS arrow is switched off across the
+   whole document (only once JS confirms a fine pointer and mounts the engine,
+   so touch devices and no-JS visitors keep their native cursor). Typing
+   surfaces and embedded frames deliberately hand the native cursor back. */
 @media (pointer: fine) {
-  .hero-view, .hero-view * { cursor: none !important; }
+  html.swz-cursor,
+  html.swz-cursor body,
+  html.swz-cursor * { cursor: none !important; }
+
+  html.swz-cursor input:not([type='button']):not([type='submit']):not([type='reset']):not([type='checkbox']):not([type='radio']):not([type='range']):not([type='color']):not([type='file']),
+  html.swz-cursor textarea,
+  html.swz-cursor select,
+  html.swz-cursor [contenteditable='true'],
+  html.swz-cursor iframe,
+  html.swz-cursor embed,
+  html.swz-cursor object { cursor: auto !important; }
 }
 #swizel-cursor {
   position: fixed;
   top: 0;
   left: 0;
-  width: 30px;
-  height: 30px;
-  margin: -15px 0 0 -15px;
-  z-index: 2000;
+  width: 28px;
+  height: 28px;
+  /* hotspot sits at the glyph's top-left, the way a real arrow does, so the
+     thing you point with is the thing you see */
+  margin: -3px 0 0 -3px;
+  z-index: 2147483000;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.15s ease;
   color: var(--view-accent, #18debe);
   will-change: transform;
 }
 #swizel-cursor.is-active { opacity: 1; }
+#swizel-cursor.is-hidden { opacity: 0 !important; }
+/* the precise point: a small accent dot exactly under the pointer */
+#swizel-cursor::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px 0 0 -2.5px;
+  border-radius: 9999px;
+  background: currentColor;
+  box-shadow: 0 0 0 1.5px rgba(0, 0, 0, 0.35), 0 0 10px currentColor;
+  transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.18s ease;
+}
+/* a ring that blooms on anything clickable */
+#swizel-cursor::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 44px;
+  height: 44px;
+  margin: -22px 0 0 -22px;
+  border-radius: 9999px;
+  border: 1.5px solid currentColor;
+  opacity: 0;
+  transform: scale(0.55);
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.22s ease;
+}
+#swizel-cursor.is-link::after { opacity: 0.5; transform: scale(1); }
+#swizel-cursor.is-press::after { opacity: 0.75; transform: scale(0.78); }
+#swizel-cursor.is-press::before { transform: scale(1.6); }
 #swizel-cursor svg {
   width: 100%;
   height: 100%;
   display: none;
-  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.45));
-  transform-origin: center;
-  animation: cur-float 3s ease-in-out infinite;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
+  transform-origin: 22% 22%;
+  transform: scale(var(--cs, 1));
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
 }
-@keyframes cur-float {
-  0%, 100% { transform: translateY(0) rotate(-3deg); }
-  50% { transform: translateY(-2px) rotate(3deg); }
-}
-#swizel-cursor.is-idle svg { animation: cur-idle 1.5s ease-in-out infinite; }
+#swizel-cursor.is-link { --cs: 1.18; }
+#swizel-cursor.is-press { --cs: 0.85; }
+/* only when the hand stops moving does the glyph play — never while it is
+   tracking, so it can never drift away from the real pointer */
+#swizel-cursor.is-idle svg { animation: cur-idle 1.6s ease-in-out infinite; }
 @keyframes cur-idle {
-  0%, 100% { transform: rotate(0) scale(1); }
-  50% { transform: rotate(10deg) scale(1.22); }
+  0%, 100% { transform: scale(var(--cs, 1)) rotate(0); }
+  50% { transform: scale(calc(var(--cs, 1) * 1.16)) rotate(9deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #swizel-cursor.is-idle svg { animation: none; }
 }
 /* show the icon matching the active view (boardroom is the default) */
 #swizel-cursor .cur-boardroom { display: block; }
@@ -1007,10 +1060,7 @@ html[data-view="studio"] #swizel-cursor .cur-studio { display: block; }
 html[data-view="builder"] .view-body-builder { display: block; }
 html[data-view="builder"] .default-body { display: none; }
 
-@media (pointer: fine) {
-  .view-body, .view-body *,
-  .view-worlds, .view-worlds * { cursor: none !important; }
-}
+/* (the OS cursor is now hidden document-wide by html.swz-cursor above) */
 #swizel-cursor[data-icon] svg { display: none !important; }
 #swizel-cursor[data-icon="term"] .cur-term,
 #swizel-cursor[data-icon="pkg"] .cur-pkg,
@@ -1167,3 +1217,19 @@ html:not(.dark) .leave-stay:hover { background: rgba(20, 22, 40, 0.05); }
 .leave-go { color: #06121a; background: linear-gradient(135deg, #8dfeea, #18debe 55%, #28a6ec); border: none; box-shadow: 0 14px 30px -12px rgba(24, 222, 190, 0.5); }
 .leave-go:hover { transform: translateY(-2px); }
 @media (prefers-reduced-motion: reduce) { .leave-card, .leave-backdrop { transition: none; } }
+
+/* =========================================================
+   Welcome film: while the cinema is open, the page's floating
+   furniture (chat bubble, back-to-top, third-party chat frame)
+   must not sit on top of it.
+   ========================================================= */
+html.wf-open #swizel-chat-fab,
+html.wf-open #back-to-top,
+html.wf-open iframe[title*='chat' i],
+html.wf-open .widget-visible { display: none !important; }
+
+/* Inside the welcome film every visitor is brand new, so the pointer wears the
+   Swizel mark rather than whichever world happens to be stored. */
+html.wf-open #swizel-cursor { color: #18debe; }
+html.wf-open #swizel-cursor svg { display: none !important; }
+html.wf-open #swizel-cursor .cur-swizel { display: block !important; }

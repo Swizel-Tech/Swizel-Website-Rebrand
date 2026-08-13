@@ -5,6 +5,7 @@ import Header from '../components/Header.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 import ToastContainer from '../components/elements/ToastContainer.astro';
 import ViewOnboarding from '../components/ViewOnboarding.astro';
+import WelcomeFilm from '../components/WelcomeFilm.astro';
 import Logo from '../components/Logo.astro';
 
 export interface Props {
@@ -68,6 +69,7 @@ const {
 			{!hideFooter && <Footer />}
 			<ToastContainer />
 			<ViewOnboarding />
+			<WelcomeFilm />
 		</main>
 		<button id="back-to-top" type="button" aria-label="Back to top">
 			<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
@@ -109,6 +111,7 @@ const {
 			<svg class="cur-term" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 8 9 12 5 16"></polyline><line x1="11.5" y1="16" x2="18" y2="16"></line></svg>
 			<svg class="cur-pkg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5v8l9 5 9-5z"></path><path d="M3 8l9 5 9-5M12 13v8"></path></svg>
 			<svg class="cur-branch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="6.5" cy="6" r="2.3"></circle><circle cx="6.5" cy="18" r="2.3"></circle><circle cx="17.5" cy="8" r="2.3"></circle><path d="M6.5 8.3v7.4M9.6 7.2c5 .6 7.9 2.6 7.9 7.3"></path></svg>
+			<svg class="cur-swizel" viewBox="-6 -14 62 62" fill="currentColor"><path d="M30.1778 20.2051H40.0144V33.0823H30.1778V20.2051Z"/><path d="M30.0466 0.904297H44.569C47.4137 0.904297 49.7198 3.21041 49.7198 6.05514V18.7893H30.0466V0.904297Z"/><path d="M0.00012207 6.05514C0.00012207 3.21041 2.30624 0.904297 5.15097 0.904297H28.6158V33.0973H0.00012207V6.05514Z"/></svg>
 			<svg class="cur-repo" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l2.7 5.5 6 .9-4.3 4.2 1 6L12 16.9 6.6 19.6l1-6L3.3 9.4l6-.9z"></path></svg>
 		</div>
 		<!-- Branded page-transition curtain: sweeps up to cover the screen while
@@ -137,6 +140,7 @@ const {
 
 	import { handleDropDown } from '../scripts/handleDropDown';
 	import { initViewExperience } from '../scripts/viewExperience';
+	import { initWelcomeFilm } from '../scripts/welcomeFilm';
 	import { initViewBanner } from '../scripts/viewBanner';
 	import { initBuilderView } from '../scripts/builderView';
 	import { initBuilderBody } from '../scripts/builderBody';
@@ -517,6 +521,9 @@ const {
 		[
 			initPortfolioDeck,
 			initViewExperience,
+			// the film must init after the view experience: it hands "Make it
+			// mine" over to window.openViewQuiz
+			initWelcomeFilm,
 			initViewBanner,
 			initBuilderView,
 			initBuilderBody,
@@ -766,40 +773,69 @@ const {
 	// run after every additional navigation by swup
 	swup.on('contentReplaced', init);
 
-	// Themed animated custom cursor (attached once; element lives outside #swup)
+	// Themed cursor (attached once; the element lives outside #swup).
+	// The glyph replaces the OS arrow entirely: the native cursor is hidden
+	// document-wide via html.swz-cursor, and the glyph is written straight to
+	// the pointer coordinates on every event so there is nothing to "track".
 	const swizelCursor = document.getElementById('swizel-cursor');
-	if (swizelCursor && window.matchMedia('(pointer: fine)').matches) {
+	const finePointer =
+		window.matchMedia('(pointer: fine)').matches &&
+		!window.matchMedia('(pointer: coarse)').matches;
+	if (swizelCursor && finePointer && !(window as any).__swzCursorBound) {
+		(window as any).__swzCursorBound = true;
+
+		// surfaces that are better served by the real cursor (a caret to type
+		// with, and iframes we get no pointer events from)
+		const NATIVE =
+			'input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]), textarea, select, [contenteditable="true"], iframe, embed, object, video';
+		const CLICKY =
+			'a[href], button, summary, label[for], [role="button"], [role="link"], [role="tab"], [data-switch-view], [data-open-views], [tabindex]:not([tabindex="-1"]), input[type="submit"], input[type="button"], .btn';
+
 		let idleTimer = 0;
 		let lastX = -1;
 		let lastY = -1;
 
 		const applyZone = (el: Element | null) => {
-			const zone = el && el.closest('.hero-view, .view-body, .view-worlds');
-			swizelCursor.classList.toggle('is-active', !!zone);
-			const cz = el && el.closest('[data-cursor]');
+			if (!el) return;
+			const native = !!el.closest(NATIVE);
+			swizelCursor.classList.toggle('is-hidden', native);
+			swizelCursor.classList.toggle('is-link', !native && !!el.closest(CLICKY));
+			const cz = el.closest('[data-cursor]');
 			const icon = cz && cz.getAttribute('data-cursor');
 			if (icon) swizelCursor.setAttribute('data-icon', icon);
 			else swizelCursor.removeAttribute('data-icon');
 		};
 
+		const place = (x: number, y: number) => {
+			swizelCursor.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+		};
+
 		window.addEventListener(
 			'pointermove',
 			(e) => {
+				if (e.pointerType && e.pointerType !== 'mouse') return;
 				lastX = e.clientX;
 				lastY = e.clientY;
-				swizelCursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+				place(e.clientX, e.clientY);
+				// hand over from the OS arrow only once we know where the
+				// pointer is, so the screen is never left without a cursor
+				if (!document.documentElement.classList.contains('swz-cursor')) {
+					document.documentElement.classList.add('swz-cursor');
+				}
+				swizelCursor.classList.add('is-active');
 				applyZone(e.target instanceof Element ? e.target : null);
 				swizelCursor.classList.remove('is-idle');
 				window.clearTimeout(idleTimer);
 				idleTimer = window.setTimeout(
 					() => swizelCursor.classList.add('is-idle'),
-					700
+					900
 				);
 			},
 			{ passive: true }
 		);
-		// scrolling moves the page under a stationary pointer — re-check the
-		// zone so the cursor never disappears between sections
+
+		// scrolling moves the page under a stationary pointer — re-read what is
+		// underneath so the icon and its hover state stay truthful
 		window.addEventListener(
 			'scroll',
 			() => {
@@ -808,8 +844,27 @@ const {
 			},
 			{ passive: true }
 		);
+
+		document.addEventListener('pointerdown', () =>
+			swizelCursor.classList.add('is-press')
+		);
+		document.addEventListener('pointerup', () =>
+			swizelCursor.classList.remove('is-press')
+		);
+		// leaving the window (or clicking into an iframe) parks the glyph
 		document.addEventListener('mouseleave', () =>
 			swizelCursor.classList.remove('is-active')
 		);
+		document.addEventListener('mouseenter', () => {
+			if (lastX >= 0) swizelCursor.classList.add('is-active');
+		});
+		window.addEventListener('blur', () =>
+			swizelCursor.classList.remove('is-active', 'is-press')
+		);
+		// after a swup swap the pointer may not move again — refresh from where
+		// it already is
+		document.addEventListener('swup:contentReplaced', () => {
+			if (lastX >= 0) applyZone(document.elementFromPoint(lastX, lastY));
+		});
 	}
 </script>
