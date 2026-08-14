@@ -44,10 +44,12 @@ export function initWelcomeFilm() {
 	const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 	let raf = 0;
-	let startedAt = 0;
+	let lastTick = 0;
 	let elapsed = 0;
 	let playing = false;
 	let currentId = '';
+	let rate = 1;
+	const RATES = [1, 1.5, 2, 0.5];
 
 	const sceneEl = (id: string) => scenes.find((s) => s.dataset.scene === id);
 
@@ -92,17 +94,28 @@ export function initWelcomeFilm() {
 	};
 
 	const setProgress = (ms: number) => {
-		if (bar) bar.style.width = `${Math.min(100, (ms / DURATION) * 100)}%`;
+		const pct = Math.min(100, (ms / DURATION) * 100);
+		if (bar) bar.style.width = `${pct}%`;
+		const k = root.querySelector<HTMLElement>('#wf-knob');
+		if (k) k.style.left = `${pct}%`;
+		root.querySelector('#wf-scrub')?.setAttribute('aria-valuenow', String(Math.round(pct)));
+	};
+
+	// which scene the clock is currently sitting in
+	const sceneAt = (ms: number) => {
+		let id = SCENES[0].id;
+		for (const s of SCENES) if (ms >= s.at) id = s.id;
+		return id;
 	};
 
 	const frame = (now: number) => {
 		if (!playing) return;
-		elapsed = now - startedAt;
+		const dt = lastTick ? now - lastTick : 0;
+		lastTick = now;
+		// the clock advances at the chosen speed, so 2x really is twice as fast
+		elapsed = Math.min(DURATION, elapsed + dt * rate);
 		setProgress(elapsed);
-		// pick the last scene whose start time has passed
-		let id = SCENES[0].id;
-		for (const s of SCENES) if (elapsed >= s.at) id = s.id;
-		showScene(id);
+		showScene(sceneAt(elapsed));
 		if (elapsed >= DURATION) {
 			finish();
 			return;
@@ -110,22 +123,40 @@ export function initWelcomeFilm() {
 		raf = requestAnimationFrame(frame);
 	};
 
-	const play = (from = 0) => {
+	const play = (from?: number) => {
 		cancelAnimationFrame(raf);
-		elapsed = from;
-		startedAt = performance.now() - from;
+		if (typeof from === 'number') elapsed = from;
+		lastTick = 0;
 		playing = true;
 		root.dataset.ended = 'false';
+		root.dataset.paused = 'false';
 		raf = requestAnimationFrame(frame);
 	};
 
-	const pause = () => {
+	const pause = (byHand = false) => {
 		playing = false;
 		cancelAnimationFrame(raf);
+		lastTick = 0;
+		// only say "paused" when a person did it, not when we stop internally
+		if (byHand) root.dataset.paused = 'true';
+	};
+
+	// move the reel to any point; landing in a scene replays it from its start
+	const seek = (ms: number, replay = true) => {
+		elapsed = Math.max(0, Math.min(DURATION, ms));
+		setProgress(elapsed);
+		if (root.dataset.ended === 'true' && elapsed < DURATION) {
+			root.dataset.ended = 'false';
+			root.querySelector('#wf-finale')?.setAttribute('aria-hidden', 'true');
+			if (!reduce) root.dataset.curtain = 'open';
+		}
+		if (replay) currentId = '';
+		showScene(sceneAt(elapsed));
 	};
 
 	const finish = () => {
 		pause();
+		root.dataset.paused = 'false';
 		elapsed = DURATION;
 		setProgress(DURATION);
 		showScene('end');
@@ -145,6 +176,8 @@ export function initWelcomeFilm() {
 		// nothing sits on top of the cinema
 		document.documentElement.classList.add('wf-open');
 		currentId = '';
+		root.dataset.paused = 'false';
+		rate = 1;
 		if (reduce) {
 			// no house lights, no film: straight to the choices
 			root.dataset.curtain = 'open';
@@ -199,10 +232,58 @@ export function initWelcomeFilm() {
 	// tapping the screen pauses/resumes, like any player
 	stage?.addEventListener('click', (e) => {
 		const t = e.target as HTMLElement;
-		if (t.closest('button, a')) return;
+		if (t.closest('button, a, #wf-scrub')) return;
 		if (root.dataset.ended === 'true') return;
-		if (playing) pause();
-		else play(elapsed);
+		if (playing) pause(true);
+		else play();
+	});
+
+	// ── scrubbing: drag the counter to move the reel ────────────────────
+	const scrub = root.querySelector<HTMLElement>('#wf-scrub');
+	if (scrub) {
+		let dragging = false;
+		let resumeAfter = false;
+		const msFromX = (x: number) => {
+			const r = scrub.getBoundingClientRect();
+			return ((x - r.left) / r.width) * DURATION;
+		};
+		scrub.addEventListener('pointerdown', (e) => {
+			if (root.dataset.ended === 'true') return;
+			dragging = true;
+			resumeAfter = playing;
+			root.dataset.scrub = 'true';
+			scrub.setPointerCapture(e.pointerId);
+			pause();
+			seek(msFromX(e.clientX), false);
+		});
+		scrub.addEventListener('pointermove', (e) => {
+			if (dragging) seek(msFromX(e.clientX), false);
+		});
+		const endDrag = () => {
+			if (!dragging) return;
+			dragging = false;
+			root.dataset.scrub = 'false';
+			// land properly: replay the scene we stopped in
+			seek(elapsed, true);
+			if (resumeAfter) play();
+			else root.dataset.paused = 'true';
+		};
+		scrub.addEventListener('pointerup', endDrag);
+		scrub.addEventListener('pointercancel', endDrag);
+		scrub.addEventListener('keydown', (e) => {
+			if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+				e.preventDefault();
+				seek(elapsed + (e.key === 'ArrowRight' ? 3000 : -3000));
+			}
+		});
+	}
+
+	// ── speed ───────────────────────────────────────────────────────────
+	const rateBtn = root.querySelector<HTMLButtonElement>('#wf-rate');
+	rateBtn?.addEventListener('click', () => {
+		rate = RATES[(RATES.indexOf(rate) + 1) % RATES.length];
+		rateBtn.textContent = `${rate}\u00d7`;
+		rateBtn.setAttribute('aria-label', `Playback speed ${rate} times`);
 	});
 
 	// Watch again: the velvet sweeps back in, the house resets, and it opens
@@ -295,7 +376,12 @@ export function initWelcomeFilm() {
 		if (e.key === ' ' || e.key === 'Spacebar') {
 			e.preventDefault();
 			if (root.dataset.ended === 'true') return;
-			playing ? pause() : play(elapsed);
+			playing ? pause(true) : play();
+		}
+		if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+			if (root.dataset.ended === 'true') return;
+			e.preventDefault();
+			seek(elapsed + (e.key === 'ArrowRight' ? 3000 : -3000));
 		}
 	});
 
@@ -303,7 +389,7 @@ export function initWelcomeFilm() {
 	document.addEventListener('visibilitychange', () => {
 		if (root.dataset.open !== 'true' || root.dataset.ended === 'true') return;
 		if (document.hidden) pause();
-		else if (!playing) play(elapsed);
+		else if (!playing && root.dataset.paused !== 'true') play();
 	});
 
 	// let anything on the site replay the welcome

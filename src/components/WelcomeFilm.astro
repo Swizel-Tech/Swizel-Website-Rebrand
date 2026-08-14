@@ -108,6 +108,7 @@ const sparks = Array.from({ length: 18 }, (_, i) => i);
 					<button class="wf__icon-btn" type="button" id="wf-sound" hidden aria-label="Turn sound on">
 						<Icon width={17} name="mdi:volume-off" />
 					</button>
+					<button class="wf__rate" type="button" id="wf-rate" aria-label="Playback speed">1&#215;</button>
 					<button class="wf__skip" type="button" data-wf-skip>
 						<span class="wf__skip-lbl">Skip</span>
 						<svg class="wf__skip-glyph" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
@@ -283,7 +284,21 @@ const sparks = Array.from({ length: 18 }, (_, i) => i);
 						</a>
 					</div>
 				</div>
-				<span class="wf__progress" aria-hidden="true"><span class="wf__bar" id="wf-bar"></span></span>
+				<!-- paused state, said out loud -->
+				<div class="wf__paused" aria-hidden="true">
+					<span class="wf__paused-ic">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 6.5 19 12 9 17.5z" /></svg>
+					</span>
+					<span class="wf__paused-lbl">Paused</span>
+					<span class="wf__paused-sub">Tap the screen to keep watching</span>
+				</div>
+
+				<!-- the reel counter doubles as a scrubber: drag it anywhere -->
+				<div class="wf__progress" id="wf-scrub" role="slider" aria-label="Seek"
+					aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
+					<span class="wf__track"><span class="wf__bar" id="wf-bar"></span></span>
+					<span class="wf__knob" id="wf-knob"></span>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -1501,16 +1516,26 @@ const sparks = Array.from({ length: 18 }, (_, i) => i);
 	}
 	.wf__link:hover { color: #fff; }
 	.wf__dot { width: 3px; height: 3px; border-radius: 9999px; background: rgba(233, 240, 255, 0.45); }
-	/* the reel counter runs along the very bottom edge of the screen */
+	/* the reel counter runs along the bottom edge and doubles as a scrubber */
 	.wf__progress {
 		position: absolute;
-		z-index: 7;
+		z-index: 8;
 		left: 0;
 		right: 0;
 		bottom: 0;
+		height: 22px;
+		display: flex;
+		align-items: flex-end;
+		cursor: pointer;
+		touch-action: none;
+	}
+	.wf__track {
+		position: relative;
+		display: block;
+		width: 100%;
 		height: 3px;
-		background: rgba(255, 255, 255, 0.08);
-		overflow: hidden;
+		background: rgba(255, 255, 255, 0.12);
+		transition: height 0.18s ease;
 	}
 	.wf__bar {
 		display: block;
@@ -1518,6 +1543,88 @@ const sparks = Array.from({ length: 18 }, (_, i) => i);
 		width: 0%;
 		background: linear-gradient(95deg, #13b6a0, #13a8bf, #1f8fd6);
 		box-shadow: 0 0 14px rgba(19, 168, 191, 0.9);
+	}
+	.wf__knob {
+		position: absolute;
+		bottom: -3.5px;
+		left: 0;
+		width: 12px;
+		height: 12px;
+		margin-left: -6px;
+		border-radius: 9999px;
+		background: #fff;
+		box-shadow: 0 0 0 3px rgba(19, 168, 191, 0.35), 0 2px 8px rgba(0, 0, 0, 0.6);
+		opacity: 0;
+		transform: scale(0.6);
+		transition: opacity 0.18s ease, transform 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+		pointer-events: none;
+	}
+	.wf__progress:hover .wf__track,
+	.wf[data-scrub='true'] .wf__track { height: 6px; }
+	.wf__progress:hover .wf__knob,
+	.wf__progress:focus-visible .wf__knob,
+	.wf[data-scrub='true'] .wf__knob { opacity: 1; transform: scale(1); }
+
+	/* playback speed */
+	.wf__rate {
+		min-width: 2.6rem;
+		padding: 0.3rem 0.5rem;
+		border-radius: 3px;
+		border: 1px solid rgba(255, 255, 255, 0.18);
+		background: rgba(10, 12, 22, 0.5);
+		backdrop-filter: blur(8px);
+		color: rgba(246, 248, 255, 0.75);
+		font-family: 'Bebas Neue', Impact, sans-serif;
+		font-size: 0.95rem;
+		letter-spacing: 0.12em;
+		cursor: pointer;
+		transition: color 0.2s ease, border-color 0.2s ease;
+	}
+	.wf__rate:hover { color: #fff; border-color: rgba(255, 255, 255, 0.38); }
+
+	/* paused: unmistakable, and it tells you how to carry on */
+	.wf__paused {
+		position: absolute;
+		inset: 0;
+		z-index: 7;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.6rem;
+		background: rgba(4, 5, 10, 0.55);
+		backdrop-filter: blur(2px);
+		opacity: 0;
+		visibility: hidden;
+		transition: opacity 0.22s ease, visibility 0.22s;
+		pointer-events: none;
+	}
+	.wf[data-paused='true'] .wf__paused { opacity: 1; visibility: visible; }
+	.wf__paused-ic {
+		display: grid;
+		place-items: center;
+		width: clamp(4.2rem, 9vw, 5.4rem);
+		height: clamp(4.2rem, 9vw, 5.4rem);
+		border-radius: 9999px;
+		border: 2px solid rgba(255, 255, 255, 0.7);
+		background: rgba(10, 12, 22, 0.45);
+		color: #fff;
+		transform: scale(0.86);
+		transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.wf[data-paused='true'] .wf__paused-ic { transform: scale(1); }
+	.wf__paused-ic svg { width: 45%; height: 45%; margin-left: 6%; }
+	.wf__paused-lbl {
+		font-family: 'Bebas Neue', Impact, sans-serif;
+		font-size: clamp(1.1rem, 3vw, 1.5rem);
+		letter-spacing: 0.4em;
+		text-indent: 0.4em;
+		text-transform: uppercase;
+		color: #fff;
+	}
+	.wf__paused-sub {
+		font-size: clamp(0.72rem, 2vw, 0.82rem);
+		color: rgba(233, 240, 255, 0.6);
 	}
 
 	/* ═══ the finale ═══ */
