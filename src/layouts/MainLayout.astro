@@ -784,6 +784,29 @@ const {
 	if (swizelCursor && finePointer && !(window as any).__swzCursorBound) {
 		(window as any).__swzCursorBound = true;
 
+		// The rule that hides the OS pointer ships HERE, with the engine, rather
+		// than living only in global.css — a stale cached stylesheet would
+		// otherwise leave the native arrow trailing our glyph. A 1x1
+		// transparent GIF is used alongside `none`, because a few
+		// engines/platforms quietly ignore `none` on its own.
+		if (!document.getElementById('swz-cursor-hide')) {
+			const blank =
+				'url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7") 0 0, none';
+			const hide = document.createElement('style');
+			hide.id = 'swz-cursor-hide';
+			hide.textContent =
+				'@media (pointer: fine){' +
+				'html.swz-cursor,html.swz-cursor body,html.swz-cursor *,' +
+				'html.swz-cursor *::before,html.swz-cursor *::after{cursor:' + blank + ' !important}' +
+				'html.swz-cursor input:not([type=button]):not([type=submit]):not([type=reset])' +
+				':not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]):not([type=file]),' +
+				'html.swz-cursor textarea,html.swz-cursor select,' +
+				'html.swz-cursor [contenteditable="true"],html.swz-cursor iframe,' +
+				'html.swz-cursor embed,html.swz-cursor object{cursor:auto !important}' +
+				'}';
+			document.head.appendChild(hide);
+		}
+
 		// surfaces that are better served by the real cursor (a caret to type
 		// with, and iframes we get no pointer events from)
 		const NATIVE =
@@ -868,7 +891,23 @@ const {
 		// after a swup swap the pointer may not move again — refresh from where
 		// it already is
 		document.addEventListener('swup:contentReplaced', () => {
-			if (lastX >= 0) applyZone(document.elementFromPoint(lastX, lastY));
+			// a page swap must never leave us with two pointers
+			if (lastX >= 0) {
+				document.documentElement.classList.add('swz-cursor');
+				applyZone(document.elementFromPoint(lastX, lastY));
+			}
+		});
+		// belt and braces: if anything ever rewrites the class list, put it back
+		new MutationObserver(() => {
+			if (
+				lastX >= 0 &&
+				!document.documentElement.classList.contains('swz-cursor')
+			) {
+				document.documentElement.classList.add('swz-cursor');
+			}
+		}).observe(document.documentElement, {
+			attributes: true,
+			attributeFilter: ['class'],
 		});
 	}
 </script>

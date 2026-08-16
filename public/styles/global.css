@@ -946,7 +946,13 @@ html.dark { --nav-active: #86e2ef; }
 @media (pointer: fine) {
   html.swz-cursor,
   html.swz-cursor body,
-  html.swz-cursor * { cursor: none !important; }
+  html.swz-cursor *,
+  html.swz-cursor *::before,
+  html.swz-cursor *::after {
+    /* a 1x1 transparent GIF as well as `none`: some platforms quietly ignore
+       `none` on its own and leave the native arrow trailing our glyph */
+    cursor: url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7") 0 0, none !important;
+  }
 
   html.swz-cursor input:not([type='button']):not([type='submit']):not([type='reset']):not([type='checkbox']):not([type='radio']):not([type='range']):not([type='color']):not([type='file']),
   html.swz-cursor textarea,
