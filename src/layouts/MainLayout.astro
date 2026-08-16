@@ -801,7 +801,11 @@ const {
 			swizelCursor.classList.toggle('is-hidden', native);
 			swizelCursor.classList.toggle('is-link', !native && !!el.closest(CLICKY));
 			const cz = el.closest('[data-cursor]');
-			const icon = cz && cz.getAttribute('data-cursor');
+			let icon = cz && cz.getAttribute('data-cursor');
+			// A play glyph on top of a play button reads as two cursors fighting
+			// each other. Media blocks already show their own play affordance,
+			// so over those the pointer keeps the world's own mark.
+			if (icon === 'play') icon = null;
 			if (icon) swizelCursor.setAttribute('data-icon', icon);
 			else swizelCursor.removeAttribute('data-icon');
 		};
