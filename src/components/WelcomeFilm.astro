@@ -560,13 +560,16 @@ const sparks = Array.from({ length: 18 }, (_, i) => i);
 		height: 6px;
 		border-radius: 9999px;
 		background: var(--wf-warm);
-		box-shadow: 0 0 8px 2px rgba(247, 198, 107, 0.75);
+		box-shadow: 0 0 8px 2px rgba(247, 198, 107, 0.55);
+		/* opacity only: animating box-shadow on 26 bulbs repaints the whole
+		   valance every frame, which is what made weaker machines crawl */
 		animation: wf-bulb 1.4s ease-in-out infinite;
 		animation-delay: calc(var(--i) * 0.07s);
+		will-change: opacity;
 	}
 	@keyframes wf-bulb {
-		0%, 100% { opacity: 0.28; box-shadow: 0 0 4px 1px rgba(247, 198, 107, 0.35); }
-		50% { opacity: 1; box-shadow: 0 0 10px 3px rgba(247, 198, 107, 0.85); }
+		0%, 100% { opacity: 0.3; }
+		50% { opacity: 1; }
 	}
 	.wf[data-curtain='open'] .wf__valance,
 	.wf[data-curtain='half'] .wf__valance { transform: translateY(-104%); opacity: 0; }
@@ -760,10 +763,12 @@ const sparks = Array.from({ length: 18 }, (_, i) => i);
 		inset: -120px;
 		z-index: 4;
 		pointer-events: none;
-		opacity: 0.24;
-		mix-blend-mode: overlay;
+		opacity: 0.14;
+		/* no mix-blend-mode: blending a full screen layer every frame is the
+		   single most expensive thing on integrated graphics */
 		background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
-		animation: wf-grain 0.7s steps(4) infinite;
+		animation: wf-grain 0.9s steps(3) infinite;
+		will-change: transform;
 	}
 	@keyframes wf-grain {
 		0% { transform: translate(0, 0); }
@@ -806,8 +811,7 @@ const sparks = Array.from({ length: 18 }, (_, i) => i);
 		padding: 0.42rem 0.55rem;
 		border-radius: 3px;
 		border: 1px solid rgba(255, 255, 255, 0.18);
-		background: rgba(10, 12, 22, 0.5);
-		backdrop-filter: blur(8px);
+		background: rgba(10, 12, 22, 0.72);
 		color: var(--wf-ink);
 		cursor: pointer;
 		transition: background 0.22s ease, border-color 0.22s ease;
@@ -1127,8 +1131,8 @@ const sparks = Array.from({ length: 18 }, (_, i) => i);
 		flex: none;
 	}
 	@keyframes wf-live {
-		0%, 100% { box-shadow: 0 0 0 3px rgba(61, 220, 151, 0.16); }
-		50% { box-shadow: 0 0 0 6px rgba(61, 220, 151, 0.05); }
+		0%, 100% { opacity: 1; transform: scale(1); }
+		50% { opacity: 0.55; transform: scale(0.82); }
 	}
 	.wf-scene.is-on .wf-stamp {
 		animation: wf-stampin 0.5s cubic-bezier(0.3, 1.4, 0.5, 1) both;
@@ -1497,8 +1501,7 @@ const sparks = Array.from({ length: 18 }, (_, i) => i);
 		box-shadow: 0 14px 34px -16px rgba(19, 168, 191, 0.95);
 	}
 	.wf__cta--ghost {
-		background: rgba(10, 12, 22, 0.5);
-		backdrop-filter: blur(8px);
+		background: rgba(10, 12, 22, 0.74);
 		border-color: rgba(255, 255, 255, 0.24);
 		color: var(--wf-ink);
 	}
@@ -1592,8 +1595,7 @@ const sparks = Array.from({ length: 18 }, (_, i) => i);
 		align-items: center;
 		justify-content: center;
 		gap: 0.6rem;
-		background: rgba(4, 5, 10, 0.55);
-		backdrop-filter: blur(2px);
+		background: rgba(4, 5, 10, 0.66);
 		opacity: 0;
 		visibility: hidden;
 		transition: opacity 0.22s ease, visibility 0.22s;
@@ -1845,6 +1847,42 @@ const sparks = Array.from({ length: 18 }, (_, i) => i);
 		.wf-scene { padding-bottom: 4.6rem; }
 		.wf__picks { grid-template-columns: 1fr 1fr; }
 		.wf__finale-mark, .wf-endflags { display: none; }
+	}
+
+	/* ═══ lite mode ═══
+	   Set by the engine when the reel drops below ~45fps. Everything that
+	   costs a repaint per frame goes; the film keeps its structure, cuts and
+	   type, so it still reads as the same piece. */
+	.wf[data-lite='true'] .wf__grain,
+	.wf[data-lite='true'] .wf__beam,
+	.wf[data-lite='true'] .wf__sprockets,
+	.wf[data-lite='true'] .wf-arcs,
+	.wf[data-lite='true'] .wf-burst { display: none !important; }
+	.wf[data-lite='true'] .wf__bulbs i,
+	.wf[data-lite='true'] .wf-stamp-dot,
+	.wf[data-lite='true'] .wf-tile-live::before,
+	.wf[data-lite='true'] .wf-scene.is-on .wf-tile,
+	.wf[data-lite='true'] .wf-scene.is-on .wf-build,
+	.wf[data-lite='true'] .wf-scene.is-on .wf-spark,
+	.wf[data-lite='true'] .wf-scene.is-on .wf-shot,
+	.wf[data-lite='true'] .wf-scene.is-on .wf-ph--1 { animation: none !important; }
+	.wf[data-lite='true'] .wf-scene.is-on .wf-tile { opacity: 1; transform: none; }
+	.wf[data-lite='true'] .wf-scene.is-on .wf-build { opacity: 1; transform: none; }
+	.wf[data-lite='true'] .wf-tile-sheen { display: none; }
+	.wf[data-lite='true'] .wf__glow,
+	.wf[data-lite='true'] .wf__finale-glow { filter: none; }
+	.wf[data-lite='true'] .wf-scene.is-on .wf-d1,
+	.wf[data-lite='true'] .wf-scene.is-on .wf-d2,
+	.wf[data-lite='true'] .wf-scene.is-on .wf-d3,
+	.wf[data-lite='true'] .wf-scene.is-on .wf-d4,
+	.wf[data-lite='true'] .wf-scene.is-on .wf-d5,
+	.wf[data-lite='true'] .wf-scene.is-on .wf-d6 {
+		/* keep the stagger, drop the blur — blur animates by repainting */
+		animation-name: wf-rise-lite;
+	}
+	@keyframes wf-rise-lite {
+		from { opacity: 0; transform: translateY(0.8rem); }
+		to { opacity: 1; transform: none; }
 	}
 
 	@media (prefers-reduced-motion: reduce) {

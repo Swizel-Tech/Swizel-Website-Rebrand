@@ -110,6 +110,7 @@ export function initWelcomeFilm() {
 
 	const frame = (now: number) => {
 		if (!playing) return;
+		if (!fpsChecked) watchFps(now);
 		const dt = lastTick ? now - lastTick : 0;
 		lastTick = now;
 		// the clock advances at the chosen speed, so 2x really is twice as fast
@@ -121,6 +122,29 @@ export function initWelcomeFilm() {
 			return;
 		}
 		raf = requestAnimationFrame(frame);
+	};
+
+	// ── keep an eye on the frame rate while the reel runs ────────────────
+	// Weaker machines (integrated graphics, older laptops) cannot afford the
+	// grain, the spotlights and the blurred glows. Rather than guess from the
+	// user agent, watch real frames: if we cannot hold ~45fps, drop into lite
+	// mode for the rest of the session.
+	let fpsFrames = 0;
+	let fpsStart = 0;
+	let fpsChecked = false;
+	const watchFps = (now: number) => {
+		if (!fpsStart) fpsStart = now;
+		fpsFrames++;
+		const span = now - fpsStart;
+		if (span < 1200) return;
+		fpsChecked = true;
+		const fps = (fpsFrames * 1000) / span;
+		if (fps < 45) {
+			root.dataset.lite = 'true';
+			try {
+				sessionStorage.setItem('swizel-lite', '1');
+			} catch (e) {}
+		}
 	};
 
 	const play = (from?: number) => {
@@ -178,6 +202,14 @@ export function initWelcomeFilm() {
 		currentId = '';
 		root.dataset.paused = 'false';
 		rate = 1;
+		// a device that struggled earlier in this session starts lite
+		try {
+			if (sessionStorage.getItem('swizel-lite') === '1') root.dataset.lite = 'true';
+		} catch (e) {}
+		// so do devices that tell us up front they are modest
+		const cores = (navigator as any).hardwareConcurrency;
+		const mem = (navigator as any).deviceMemory;
+		if ((cores && cores <= 4) || (mem && mem <= 4)) root.dataset.lite = 'true';
 		if (reduce) {
 			// no house lights, no film: straight to the choices
 			root.dataset.curtain = 'open';
