@@ -790,14 +790,12 @@ const {
 		// transparent GIF is used alongside `none`, because a few
 		// engines/platforms quietly ignore `none` on its own.
 		if (!document.getElementById('swz-cursor-hide')) {
-			const blank =
-				'url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7") 0 0, none';
 			const hide = document.createElement('style');
 			hide.id = 'swz-cursor-hide';
 			hide.textContent =
 				'@media (pointer: fine){' +
 				'html.swz-cursor,html.swz-cursor body,html.swz-cursor *,' +
-				'html.swz-cursor *::before,html.swz-cursor *::after{cursor:' + blank + ' !important}' +
+				'html.swz-cursor *::before,html.swz-cursor *::after{cursor:none !important}' +
 				'html.swz-cursor input:not([type=button]):not([type=submit]):not([type=reset])' +
 				':not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]):not([type=file]),' +
 				'html.swz-cursor textarea,html.swz-cursor select,' +
@@ -837,8 +835,24 @@ const {
 			else swizelCursor.removeAttribute('data-icon');
 		};
 
-		const place = (x: number, y: number) => {
-			swizelCursor.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+		// A pointer device fires far more often than the screen refreshes, and
+		// every style write costs. Coordinates are stashed and written ONCE per
+		// frame, which is what makes the motion read as smooth rather than
+		// stepped.
+		let frameQueued = false;
+		let pendingTarget: Element | null = null;
+		const drawFrame = () => {
+			frameQueued = false;
+			swizelCursor.style.transform = `translate3d(${lastX}px, ${lastY}px, 0)`;
+			if (pendingTarget) {
+				applyZone(pendingTarget);
+				pendingTarget = null;
+			}
+		};
+		const queueFrame = () => {
+			if (frameQueued) return;
+			frameQueued = true;
+			requestAnimationFrame(drawFrame);
 		};
 
 		window.addEventListener(
@@ -847,15 +861,19 @@ const {
 				if (e.pointerType && e.pointerType !== 'mouse') return;
 				lastX = e.clientX;
 				lastY = e.clientY;
-				place(e.clientX, e.clientY);
+				pendingTarget = e.target instanceof Element ? e.target : pendingTarget;
+				queueFrame();
 				// hand over from the OS arrow only once we know where the
 				// pointer is, so the screen is never left without a cursor
 				if (!document.documentElement.classList.contains('swz-cursor')) {
 					document.documentElement.classList.add('swz-cursor');
 				}
-				swizelCursor.classList.add('is-active');
-				applyZone(e.target instanceof Element ? e.target : null);
-				swizelCursor.classList.remove('is-idle');
+				if (!swizelCursor.classList.contains('is-active')) {
+					swizelCursor.classList.add('is-active');
+				}
+				if (swizelCursor.classList.contains('is-idle')) {
+					swizelCursor.classList.remove('is-idle');
+				}
 				window.clearTimeout(idleTimer);
 				idleTimer = window.setTimeout(
 					() => swizelCursor.classList.add('is-idle'),
@@ -866,12 +884,18 @@ const {
 		);
 
 		// scrolling moves the page under a stationary pointer — re-read what is
-		// underneath so the icon and its hover state stay truthful
+		// underneath so the icon and its hover state stay truthful. elementFromPoint
+		// forces layout, so it is capped to one read per frame.
+		let scrollQueued = false;
 		window.addEventListener(
 			'scroll',
 			() => {
-				if (lastX < 0) return;
-				applyZone(document.elementFromPoint(lastX, lastY));
+				if (lastX < 0 || scrollQueued) return;
+				scrollQueued = true;
+				requestAnimationFrame(() => {
+					scrollQueued = false;
+					applyZone(document.elementFromPoint(lastX, lastY));
+				});
 			},
 			{ passive: true }
 		);

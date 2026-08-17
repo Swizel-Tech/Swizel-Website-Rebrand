@@ -949,9 +949,10 @@ html.dark { --nav-active: #86e2ef; }
   html.swz-cursor *,
   html.swz-cursor *::before,
   html.swz-cursor *::after {
-    /* a 1x1 transparent GIF as well as `none`: some platforms quietly ignore
-       `none` on its own and leave the native arrow trailing our glyph */
-    cursor: url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7") 0 0, none !important;
+    /* plain `none`, nothing else. Handing macOS a 1x1 transparent cursor
+       IMAGE makes it reject the image and draw the system arrow instead —
+       Windows tolerated it, macOS did not. */
+    cursor: none !important;
   }
 
   html.swz-cursor input:not([type='button']):not([type='submit']):not([type='reset']):not([type='checkbox']):not([type='radio']):not([type='range']):not([type='color']):not([type='file']),
@@ -964,6 +965,10 @@ html.dark { --nav-active: #86e2ef; }
 }
 #swizel-cursor {
   position: fixed;
+  /* keep the glyph on its own compositor layer: no layout or paint work
+     leaks into the page while it moves */
+  contain: layout style paint;
+  backface-visibility: hidden;
   top: 0;
   left: 0;
   width: 28px;
@@ -1001,7 +1006,6 @@ html.dark { --nav-active: #86e2ef; }
   width: 100%;
   height: 100%;
   display: none;
-  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
   transform-origin: 22% 22%;
   transform: scale(var(--cs, 1));
   transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
