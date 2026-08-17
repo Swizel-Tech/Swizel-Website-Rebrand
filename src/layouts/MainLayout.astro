@@ -803,7 +803,11 @@ const {
 				'html.swz-cursor textarea,html.swz-cursor select,' +
 				'html.swz-cursor [contenteditable="true"],html.swz-cursor iframe,' +
 				'html.swz-cursor embed,html.swz-cursor object{cursor:auto !important}' +
-				'}';
+				'}' +
+				// the old "precision dot" read as a second pointer trailing the
+				// glyph. Killed here as well as in global.css, so a cached
+				// stylesheet can never put it back.
+				'#swizel-cursor::before{display:none !important;content:none !important}';
 			document.head.appendChild(hide);
 		}
 
