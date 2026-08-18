@@ -135,6 +135,23 @@ const organizationSchema = {
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={socialImageURL} />
 
+<!-- Performance mode: decided before first paint so the page never starts
+     heavy and then downgrades in front of the visitor. A machine that
+     struggled earlier this session, or one that tells us it is modest, gets
+     the calm version of every decorative layer. -->
+<script is:inline>
+	(function () {
+		try {
+			var n = navigator;
+			var weak =
+				(n.hardwareConcurrency && n.hardwareConcurrency <= 4) ||
+				(n.deviceMemory && n.deviceMemory <= 4);
+			var flagged = sessionStorage.getItem('swizel-lite') === '1';
+			if (weak || flagged) document.documentElement.classList.add('perf-lite');
+		} catch (e) {}
+	})();
+</script>
+
 <!-- Structured data -->
 <script
 	type="application/ld+json"

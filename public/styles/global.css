@@ -1228,3 +1228,43 @@ html.wf-open .widget-visible { display: none !important; }
 html.wf-open #swizel-cursor { color: #18debe; }
 html.wf-open #swizel-cursor svg { display: none !important; }
 html.wf-open #swizel-cursor .cur-swizel { display: block !important; }
+
+
+/* =========================================================
+   PERFORMANCE MODE (html.perf-lite)
+   Set by the inline probe in BaseHead, or by the frame-rate watchdog in
+   MainLayout when the page cannot hold ~45fps. The layout, type and
+   colour of every page stay exactly as designed — only the effects that
+   cost a repaint on every single frame are stood down.
+   ========================================================= */
+html.perf-lite *,
+html.perf-lite *::before,
+html.perf-lite *::after {
+  /* blurring a live region is the most expensive thing on the page */
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+/* decorative layers: keep them, stop them moving */
+html.perf-lite [class*='orb'],
+html.perf-lite [class*='glow'],
+html.perf-lite [class*='aura'],
+html.perf-lite [class*='halo'],
+html.perf-lite [class*='sheen'],
+html.perf-lite [class*='shimmer'],
+html.perf-lite [class*='beam'],
+html.perf-lite [class*='grain'],
+html.perf-lite [class*='spark'] {
+  animation: none !important;
+}
+/* pure particle emitters earn nothing on a machine that is already busy */
+html.perf-lite .ft-spark,
+html.perf-lite .vo__orbs,
+html.perf-lite .wf__grain,
+html.perf-lite [class*='confetti'] {
+  display: none !important;
+}
+/* an animated blur is the worst of both worlds */
+html.perf-lite [class*='grain'],
+html.perf-lite [class*='sheen'] {
+  filter: none !important;
+}

@@ -141,6 +141,7 @@ export function initWelcomeFilm() {
 		const fps = (fpsFrames * 1000) / span;
 		if (fps < 45) {
 			root.dataset.lite = 'true';
+			document.documentElement.classList.add('perf-lite');
 			try {
 				sessionStorage.setItem('swizel-lite', '1');
 			} catch (e) {}
@@ -202,14 +203,11 @@ export function initWelcomeFilm() {
 		currentId = '';
 		root.dataset.paused = 'false';
 		rate = 1;
-		// a device that struggled earlier in this session starts lite
-		try {
-			if (sessionStorage.getItem('swizel-lite') === '1') root.dataset.lite = 'true';
-		} catch (e) {}
-		// so do devices that tell us up front they are modest
-		const cores = (navigator as any).hardwareConcurrency;
-		const mem = (navigator as any).deviceMemory;
-		if ((cores && cores <= 4) || (mem && mem <= 4)) root.dataset.lite = 'true';
+		// one signal for the whole site: the probe in BaseHead and the
+		// watchdog in MainLayout both speak through html.perf-lite
+		if (document.documentElement.classList.contains('perf-lite')) {
+			root.dataset.lite = 'true';
+		}
 		if (reduce) {
 			// no house lights, no film: straight to the choices
 			root.dataset.curtain = 'open';
