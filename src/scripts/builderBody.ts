@@ -128,7 +128,7 @@ export function initBuilderBody() {
 			for (let i = 0; i < 16; i++) {
 				const s = document.createElement('span');
 				s.className = 'bb-spark';
-				s.textContent = sparks[i % sparks.length];
+				s.textContent = sparks[i % sparks.length]!;
 				s.style.setProperty('--x', 15 + Math.random() * 70 + '%');
 				s.style.setProperty('--y', 55 + Math.random() * 25 + '%');
 				s.style.setProperty('--dx', (Math.random() - 0.5) * 220 + 'px');
@@ -150,7 +150,7 @@ export function initBuilderBody() {
 			let i = 0;
 			const tick = () => {
 				if (i < steps.length) {
-					msg.textContent = steps[i];
+					msg.textContent = steps[i] ?? '';
 					fill.style.width = ((i + 1) / steps.length) * 100 + '%';
 					i++;
 					window.setTimeout(tick, reduce ? 60 : 650);
@@ -181,15 +181,15 @@ export function initBuilderBody() {
 			pass?.classList.remove('is-on');
 			const next = () => {
 				if (i > 0) {
-					steps[i - 1].classList.remove('is-running');
-					steps[i - 1].classList.add('is-done');
+					steps[i - 1]!.classList.remove('is-running');
+					steps[i - 1]!.classList.add('is-done');
 				}
 				if (i >= steps.length) {
 					pass?.classList.add('is-on');
 					timer = window.setTimeout(cycle, 2600);
 					return;
 				}
-				steps[i].classList.add('is-running');
+				steps[i]!.classList.add('is-running');
 				i++;
 				timer = window.setTimeout(next, 900);
 			};
@@ -247,7 +247,7 @@ export function initBuilderBody() {
 						if (e.isIntersecting && !auto) {
 							auto = window.setInterval(() => {
 								const i = tabs.findIndex((t) => t.classList.contains('is-on'));
-								select(tabs[(i + 1) % tabs.length]);
+								select(tabs[(i + 1) % tabs.length]!);
 							}, 3200);
 						} else if (!e.isIntersecting && auto) {
 							window.clearInterval(auto);
@@ -298,7 +298,7 @@ export function initBuilderBody() {
 				if (running) return;
 				running = true;
 				while (visible) {
-					const d = data[i % data.length];
+					const d = data[i % data.length]!;
 					i++;
 					const command = `swizel deploy ${d.slug} --prod`;
 					cmd.textContent = '';

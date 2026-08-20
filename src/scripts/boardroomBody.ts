@@ -76,9 +76,9 @@ export function initBoardroomBody() {
 		let i = 0;
 		let timer = 0;
 		const showNext = () => {
-			const cur = quotes[i];
+			const cur = quotes[i]!;
 			i = (i + 1) % quotes.length;
-			const nxt = quotes[i];
+			const nxt = quotes[i]!;
 			cur.classList.add('is-leaving');
 			cur.classList.remove('is-live');
 			window.setTimeout(() => {

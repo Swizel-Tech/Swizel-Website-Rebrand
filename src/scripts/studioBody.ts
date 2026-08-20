@@ -35,15 +35,15 @@ export function initStudioBody() {
 
 		const show = (n: number) => {
 			cur = (n + items.length) % items.length;
-			const it = items[cur];
+			const it = items[cur]!;
 			// the light dips while the piece is swapped
 			spot.classList.add('sp-dim');
-			const back = imgs[1 - front];
+			const back = imgs[1 - front]!;
 			back.src = it.img;
 			back.alt = it.name;
 			requestAnimationFrame(() => {
 				back.classList.add('is-on');
-				imgs[front].classList.remove('is-on');
+				imgs[front]!.classList.remove('is-on');
 				front = 1 - front;
 				spot.style.setProperty('--c', it.color);
 				name.textContent = it.name;
@@ -106,9 +106,9 @@ export function initStudioBody() {
 		let i = 0;
 		let timer = 0;
 		const show = (n: number) => {
-			quotes[i].classList.remove('is-live');
+			quotes[i]!.classList.remove('is-live');
 			i = (n + quotes.length) % quotes.length;
-			quotes[i].classList.add('is-live');
+			quotes[i]!.classList.add('is-live');
 			ticks.forEach((t, ti) => t.classList.toggle('is-on', ti === i));
 		};
 		const start = () => {

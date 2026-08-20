@@ -35,15 +35,15 @@ export function initCampusBody() {
 
 		const goTo = (n: number) => {
 			cur = (n + items.length) % items.length;
-			const it = items[cur];
+			const it = items[cur]!;
 			// the projector flashes as the slide clicks over
 			show.classList.add('cf-click-over');
-			const back = imgs[1 - front];
+			const back = imgs[1 - front]!;
 			back.src = it.img;
 			back.alt = it.name;
 			window.setTimeout(() => {
 				back.classList.add('is-on');
-				imgs[front].classList.remove('is-on');
+				imgs[front]!.classList.remove('is-on');
 				front = 1 - front;
 				show.style.setProperty('--c', it.color);
 				name.textContent = it.name;
@@ -148,9 +148,9 @@ export function initCampusBody() {
 		let i = 0;
 		let timer = 0;
 		const show = (n: number) => {
-			facts[i].classList.remove('is-live');
+			facts[i]!.classList.remove('is-live');
 			i = (n + facts.length) % facts.length;
-			facts[i].classList.add('is-live');
+			facts[i]!.classList.add('is-live');
 			if (count) count.textContent = `${i + 1} / ${facts.length}`;
 		};
 		const start = () => {

@@ -37,7 +37,7 @@ export function startTour(steps: TourStep[]) {
 			return;
 		}
 		idx = n;
-		const s = steps[idx];
+		const s = steps[idx]!;
 		const el = document.querySelector<HTMLElement>(s.sel);
 		if (!el) {
 			go(n + 1);

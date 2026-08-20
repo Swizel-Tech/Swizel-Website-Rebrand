@@ -105,7 +105,7 @@ export function initViewExperience() {
 			if (recKicker) recKicker.textContent = 'Recommendation';
 			if (recTitle)
 				recTitle.firstChild &&
-					(recTitle.childNodes[0].nodeValue = 'We think you fit best in ');
+					(recTitle.childNodes[0]!.nodeValue = 'We think you fit best in ');
 			// float the recommended card to the front
 			if (card && card.parentElement) {
 				card.parentElement.prepend(card);
@@ -147,6 +147,7 @@ export function initViewExperience() {
 	const goNextAfter = (qStep: string) => {
 		const idx = order.indexOf(qStep);
 		const next = order[idx + 1];
+		if (!next) return;
 		if (next === 'results') recommend();
 		show(next);
 	};
@@ -159,16 +160,16 @@ export function initViewExperience() {
 			close();
 			const film = (window as any).openWelcomeFilm;
 			if (typeof film === 'function') film();
-			else show(order[0], 'back');
+			else show(order[0] ?? 'intro', 'back');
 			return;
 		}
-		show(order[idx - 1], 'back');
+		show(order[idx - 1] ?? 'intro', 'back');
 	};
 
 	// wire controls
 	root
 		.querySelector('[data-vo-start]')
-		?.addEventListener('click', () => show(order[1]));
+		?.addEventListener('click', () => show(order[1] ?? 'intro'));
 	root.querySelector('[data-vo-explore]')?.addEventListener('click', () => {
 		answers = {};
 		root

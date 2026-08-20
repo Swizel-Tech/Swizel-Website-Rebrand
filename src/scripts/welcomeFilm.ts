@@ -22,7 +22,8 @@ const SCENES: Scene[] = [
 	{ id: '6', at: 28400 }, // the twist
 	{ id: 'end', at: 32600 },
 ];
-const DURATION = SCENES[SCENES.length - 1].at;
+const LAST = SCENES[SCENES.length - 1] as Scene;
+const DURATION = LAST.at;
 // how long the house takes before the first frame: marquee card, then velvet
 const CURTAIN_HOLD = 1900;
 const CURTAIN_PART = 150;
@@ -103,7 +104,7 @@ export function initWelcomeFilm() {
 
 	// which scene the clock is currently sitting in
 	const sceneAt = (ms: number) => {
-		let id = SCENES[0].id;
+		let id = (SCENES[0] as Scene).id;
 		for (const s of SCENES) if (ms >= s.at) id = s.id;
 		return id;
 	};
@@ -311,7 +312,7 @@ export function initWelcomeFilm() {
 	// ── speed ───────────────────────────────────────────────────────────
 	const rateBtn = root.querySelector<HTMLButtonElement>('#wf-rate');
 	rateBtn?.addEventListener('click', () => {
-		rate = RATES[(RATES.indexOf(rate) + 1) % RATES.length];
+		rate = RATES[(RATES.indexOf(rate) + 1) % RATES.length] ?? 1;
 		rateBtn.textContent = `${rate}\u00d7`;
 		rateBtn.setAttribute('aria-label', `Playback speed ${rate} times`);
 	});

@@ -150,11 +150,11 @@ function bindFounderMotion(root: HTMLElement) {
 				fan.querySelectorAll<HTMLElement>('.fp-fan-card')
 			);
 			if (cards.length < 2) return;
-			const top = cards[cards.length - 1];
+			const top = cards[cards.length - 1]!;
 			top.classList.add('fp-fly');
 			window.setTimeout(() => {
 				// dive under: repaint at the bottom of the stack, re-slot everyone
-				fan.insertBefore(top, cards[0]);
+				fan.insertBefore(top, cards[0]!);
 				top.classList.remove('fp-fly');
 				Array.from(
 					fan.querySelectorAll<HTMLElement>('.fp-fan-card')
