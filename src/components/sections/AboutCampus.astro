@@ -8,7 +8,7 @@
 // reveals + [data-count] counters) binds, and `cabout` so the motion
 // engine (tilt / glare / team modal / magnetic / journey draw) binds too.
 import { Icon } from 'astro-icon/components';
-import { teamDetails } from '../../consts';
+import { teamDetails, MISSION, VISION, CORE_VALUES } from '../../consts';
 
 const stats = [
 	{ to: 65, suffix: '+', label: 'products shipped' },
@@ -192,26 +192,24 @@ const classPhotos = [
 				<article class="ca-poster cp-rev" data-fa-tilt="6" style="--r:-1.2deg">
 					<span class="ca-pin" aria-hidden="true"></span>
 					<span class="ca-poster-k">Our mission</span>
-					<p class="ca-poster-t">
-						To drive the digitalisation of African business — turning
-						bold ideas into software people love.
-					</p>
+					<p class="ca-poster-t">{MISSION}</p>
 				</article>
 				<article class="ca-poster cp-rev" data-fa-tilt="6" style="--i:1; --r:1.4deg">
 					<span class="ca-pin" aria-hidden="true"></span>
 					<span class="ca-poster-k">Our vision</span>
-					<p class="ca-poster-t">
-						A world where every ambitious African business runs on
-						world-class software, built at home.
-					</p>
+					<p class="ca-poster-t">{VISION}</p>
 				</article>
 			</div>
 			<div class="ca-values cp-rev">
 				<span class="ca-values-label">Core values — school rules</span>
 				<ul class="ca-values-row">
-					<li><Icon width={16} name="mdi:lightbulb-on-outline" /> Innovative products</li>
-					<li><Icon width={16} name="mdi:handshake-outline" /> Client-centric culture</li>
-					<li><Icon width={16} name="mdi:clock-check-outline" /> Timely delivery</li>
+					{
+						CORE_VALUES.map((v) => (
+							<li>
+								<Icon width={16} name={v.icon} /> {v.name}
+							</li>
+						))
+					}
 				</ul>
 			</div>
 		</div>

@@ -5,7 +5,7 @@
 // Foundational content mirrors AboutBoardroom (same team, same years,
 // same client voices) — only the telling changes per view.
 import { Icon } from 'astro-icon/components';
-import { teamDetails } from '../../consts';
+import { teamDetails, MISSION, VISION, CORE_VALUES } from '../../consts';
 
 // Same crew as the Boardroom About, founder-style presentation.
 const teamOrder = [
@@ -103,18 +103,18 @@ const mvv = [
 	{
 		icon: 'mdi:flag-outline',
 		title: 'Our mission',
-		desc: 'To drive the digitalisation of African business, turning bold ideas into software people love.',
+		desc: MISSION,
 	},
 	{
 		icon: 'mdi:telescope',
 		title: 'Our vision',
-		desc: 'A world where every ambitious African business runs on world-class software, built at home.',
+		desc: VISION,
 	},
 	{
 		icon: 'mdi:diamond-stone',
 		title: 'Core values',
-		desc: 'The three things we never trade away, on any build, for any client.',
-		chips: ['Innovative products', 'Client-centric culture', 'Timely delivery'],
+		desc: 'The four we never trade away, on any build, for any client.',
+		chips: CORE_VALUES.map((v) => v.name),
 	},
 ];
 
@@ -263,8 +263,8 @@ const values = [
 		<div class="fa-mission-ring fd-rev">
 			<blockquote class="fa-mission">
 				<p>
-					We exist to drive the digitalisation of
-					<em>African business.</em>
+					We exist to turn bold ideas into
+					<em>products people love.</em>
 				</p>
 			</blockquote>
 		</div>

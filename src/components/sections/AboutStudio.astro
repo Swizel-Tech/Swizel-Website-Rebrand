@@ -9,7 +9,7 @@
 // guestbook rotation) binds, and `sabout` so the shared motion engine
 // (tilt / glare / team modal / magnetic CTAs) binds too.
 import { Icon } from 'astro-icon/components';
-import { teamDetails } from '../../consts';
+import { teamDetails, MISSION, VISION, CORE_VALUES } from '../../consts';
 
 const stats = [
 	{ n: '65+', label: 'works shipped' },
@@ -194,26 +194,24 @@ const studioFrames = [
 				<article class="sa-placard sd-rev" data-fa-tilt="7">
 					<span class="sa-glare" aria-hidden="true"></span>
 					<span class="sa-placard-k">Mission</span>
-					<p class="sa-placard-t">
-						To drive the digitalisation of African business — turning
-						bold ideas into software people love.
-					</p>
+					<p class="sa-placard-t">{MISSION}</p>
 				</article>
 				<article class="sa-placard sd-rev" style="--i:1" data-fa-tilt="7">
 					<span class="sa-glare" aria-hidden="true"></span>
 					<span class="sa-placard-k">Vision</span>
-					<p class="sa-placard-t">
-						A world where every ambitious African business runs on
-						world-class software, built at home.
-					</p>
+					<p class="sa-placard-t">{VISION}</p>
 				</article>
 			</div>
 			<div class="sa-values sd-rev">
 				<span class="sa-values-label">Core values</span>
 				<ul class="sa-values-row">
-					<li><Icon width={16} name="mdi:lightbulb-on-outline" /> Innovative products</li>
-					<li><Icon width={16} name="mdi:handshake-outline" /> Client-centric culture</li>
-					<li><Icon width={16} name="mdi:clock-check-outline" /> Timely delivery</li>
+					{
+						CORE_VALUES.map((v) => (
+							<li>
+								<Icon width={16} name={v.icon} /> {v.name}
+							</li>
+						))
+					}
 				</ul>
 			</div>
 		</div>

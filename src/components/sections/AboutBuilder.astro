@@ -7,7 +7,7 @@
 // [data-count] counters, #bb-git draw) and the motion engine (tilt/glare/
 // magnetic via .bbody) both bind for free.
 import { Icon } from 'astro-icon/components';
-import { teamDetails } from '../../consts';
+import { teamDetails, MISSION, VISION, CORE_VALUES } from '../../consts';
 
 const stats = [
 	{ to: 65, suffix: '+', label: 'products shipped' },
@@ -144,20 +144,25 @@ const quotes = [
 				<article class="ba-mvv-card bb-rev" data-fa-tilt="8">
 					<span class="bb-glare" aria-hidden="true"></span>
 					<span class="ba-mvv-key"><i>const</i> mission =</span>
-					<p>"To drive the digitalisation of African business, turning bold ideas into software people love."</p>
+					<p>"{MISSION}"</p>
 				</article>
 				<article class="ba-mvv-card bb-rev" style="--i:1" data-fa-tilt="8">
 					<span class="bb-glare" aria-hidden="true"></span>
 					<span class="ba-mvv-key"><i>const</i> vision =</span>
-					<p>"A world where every ambitious African business runs on world-class software, built at home."</p>
+					<p>"{VISION}"</p>
 				</article>
 				<article class="ba-mvv-card bb-rev" style="--i:2" data-fa-tilt="8">
 					<span class="bb-glare" aria-hidden="true"></span>
 					<span class="ba-mvv-key"><i>const</i> coreValues = [</span>
 					<span class="ba-mvv-vals">
-						<i>'innovative-products'</i>,
-						<i>'client-centric-culture'</i>,
-						<i>'timely-delivery'</i>
+						{
+							CORE_VALUES.map((v, i) => (
+								<>
+									<i>'{v.name.toLowerCase().replace(/ /g, '-')}'</i>
+									{i < CORE_VALUES.length - 1 ? ',' : ''}
+								</>
+							))
+						}
 					</span>
 					<span class="ba-mvv-key">]</span>
 				</article>

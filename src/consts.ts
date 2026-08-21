@@ -5,7 +5,44 @@ export const SITE_TITLE =
   "Swizel Technologies Limited | Digital Solutions for Smart Businesses";
 
 export const SITE_DESCRIPTION =
-  "Swizel is an IT solution company with primary emphasis on harnessing web technologies to deliver solutions which aim at improving way of life and ease of doing business across all sectors of human life";
+  "Swizel Technologies Limited helps ambitious businesses anywhere turn bold ideas into products people love. We design, build, market and maintain software, from launch to legacy. 65+ products live across 10+ countries.";
+
+// ── What we stand for ──────────────────────────────────────────────────
+// One source of truth. Every About world (Boardroom, Founder, Builder,
+// Campus, Studio) reads these, so the wording can never drift apart again.
+
+export const MISSION =
+  "To help ambitious businesses anywhere turn bold ideas into products people love, from launch to legacy.";
+
+export const MISSION_SUPPORT =
+  "We design it, build it, take it to market and keep it running. One team, from the blank page to the product's tenth year.";
+
+export const VISION =
+  "A world where great products can come from anywhere, and thrive everywhere.";
+
+/** Told in the order the work actually happens: build, ship, stay, teach. */
+export const CORE_VALUES = [
+  {
+    name: "We build for the user",
+    icon: "mdi:gesture-tap",
+    desc: "Zero to market, shaped around whoever actually uses it, not whoever signs for it.",
+  },
+  {
+    name: "We ship when we said",
+    icon: "mdi:clock-check-outline",
+    desc: "A date is a date. 98% on time, and we count.",
+  },
+  {
+    name: "We stay long after launch",
+    icon: "mdi:hand-heart-outline",
+    desc: "Launch day is the middle of the job. We market it, maintain it and keep it growing.",
+  },
+  {
+    name: "We give away the playbook",
+    icon: "mdi:book-open-variant",
+    desc: "Knowledge should not sit in a silo. Free bootcamps, free books, so no builder has to rely on luck.",
+  },
+] as const;
 
 export const categorise = [
   "all",

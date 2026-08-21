@@ -4,7 +4,7 @@
 // the themed custom cursor. Locked to the boardroom blue accent so the page
 // always reads as "Swizel for business", whatever view the visitor last chose.
 import { Icon } from 'astro-icon/components';
-import { teamDetails } from '../../consts';
+import { teamDetails, CORE_VALUES } from '../../consts';
 
 // Years in business, computed from the founding year so it self-increments
 // every year (build-time value; a tiny runtime script below also corrects it).
@@ -343,19 +343,17 @@ const currentYear = new Date().getFullYear();
 				<div class="bd-mv-item">
 					<span class="bd-mv-tag">Mission</span>
 					<p class="bd-mv-text">
-						To help businesses turn their ideas into
-						<span class="bd-grad">successful products</span>,
-						driving the digitalisation of African enterprise, one
-						launch at a time.
+						To help ambitious businesses anywhere turn bold ideas into
+						<span class="bd-grad">products people love</span>, from
+						launch to legacy.
 					</p>
 				</div>
 				<span class="bd-mv-divide" aria-hidden="true"></span>
 				<div class="bd-mv-item">
 					<span class="bd-mv-tag">Vision</span>
 					<p class="bd-mv-text">
-						A world where any ambitious business, wherever it is,
-						can ship software <span class="bd-grad">as good as the
-						giants</span>, and keep it growing for years.
+						A world where great products can come from anywhere, and
+						<span class="bd-grad">thrive everywhere.</span>
 					</p>
 				</div>
 			</div>
@@ -462,10 +460,10 @@ const currentYear = new Date().getFullYear();
 		<span class="bd-eyebrow">Core values</span>
 		<div class="bd-corevals-row">
 			{
-				['Innovative products', 'Client-centric culture', 'Timely delivery'].map((c, i) => (
+				CORE_VALUES.map((c, i) => (
 					<span class="bd-coreval">
 						<i>{String(i + 1).padStart(2, '0')}</i>
-						{c}
+						{c.name}
 					</span>
 				))
 			}
@@ -1410,19 +1408,30 @@ const currentYear = new Date().getFullYear();
 		text-align: center;
 	}
 	.bd-corevals-row {
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: center;
-		gap: 0.8rem 2.6rem;
+		/* four values, so a grid rather than a wrapping row: an even 4 across,
+		   2x2 on tablets, stacked on phones. A flex row left the fourth value
+		   stranded on its own line. */
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		justify-items: center;
+		gap: 0.9rem 1.1rem;
 		margin-top: 0.9rem;
+	}
+	@media (max-width: 1080px) {
+		.bd-corevals-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 	}
 	.bd-coreval {
 		display: inline-flex;
 		align-items: baseline;
 		gap: 0.6rem;
-		font-size: clamp(1.05rem, 2vw, 1.35rem);
+		/* sized so all four sit on one line each at desktop widths; if a value
+		   does wrap, the second line stays left aligned under the first rather
+		   than centring under the number */
+		font-size: clamp(0.98rem, 1.35vw, 1.1rem);
 		font-weight: 800;
 		letter-spacing: -0.01em;
+		text-align: left;
+		text-wrap: balance;
 	}
 	.bd-coreval i {
 		font-style: normal;
@@ -1432,7 +1441,7 @@ const currentYear = new Date().getFullYear();
 		color: var(--bd-accent, #28a6ec);
 	}
 	@media (max-width: 700px) {
-		.bd-corevals-row { flex-direction: column; gap: 0.7rem; align-items: center; }
+		.bd-corevals-row { grid-template-columns: 1fr; gap: 0.7rem; }
 	}
 
 	.bd-svc-ic {
