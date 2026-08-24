@@ -20,68 +20,72 @@ import { views } from '../consts';
 		</div>
 	</div>
 
-	<div class="vw-rail" role="group" aria-label="Switch view" data-cursor="play">
-		<div class="vw-track">
-			{
-				[0, 1].map((copy) => (
-					<>
-						{views.map((v) => (
-							<button
-								class="vw-card"
-								type="button"
-								data-switch-view={v.id}
-								style={`--va:${v.accent}`}
-								aria-hidden={copy === 1 ? 'true' : undefined}
-								tabindex={copy === 1 ? -1 : undefined}
-							>
-								<span class="vw-card-media" aria-hidden="true">
-									<span class="vw-card-glow" />
-									<Icon class="vw-card-watermark" width={64} name={v.icon} />
-									<span class="vw-card-film">
-										<Icon width={15} name="mdi:movie-open-outline" />
-										Preview film placeholder
-									</span>
-								</span>
-								<span class="vw-card-overlay">
-									<span class="vw-card-name">{v.name}</span>
-									<span class="vw-card-aud">{v.audience}</span>
-									<span class="vw-card-go">
-										Enter
-										<Icon width={14} name="mdi:arrow-right" />
-									</span>
-								</span>
-								<span class="vw-card-here">You are here</span>
-							</button>
-						))}
+	<div class="vw-railwrap">
+		<button class="vw-nav vw-nav--prev" type="button" data-vw-prev aria-label="Previous worlds">
+			<Icon width={22} name="mdi:chevron-left" />
+		</button>
+
+		<div class="vw-rail" id="vw-rail" role="group" aria-label="Switch view" data-cursor="play">
+			<div class="vw-track">
+				{
+					views.map((v) => (
 						<button
-							class="vw-card vw-card--surprise"
+							class="vw-card"
 							type="button"
-							data-switch-view="surprise"
-							style="--va:#18debe"
-							aria-hidden={copy === 1 ? 'true' : undefined}
-							tabindex={copy === 1 ? -1 : undefined}
+							data-switch-view={v.id}
+							style={`--va:${v.accent}`}
 						>
 							<span class="vw-card-media" aria-hidden="true">
 								<span class="vw-card-glow" />
-								<Icon class="vw-card-watermark" width={64} name="mdi:dice-multiple-outline" />
+								<Icon class="vw-card-watermark" width={64} name={v.icon} />
 								<span class="vw-card-film">
-									<Icon width={15} name="mdi:auto-fix" />
-									Feeling lucky?
+									<Icon width={15} name="mdi:movie-open-outline" />
+									Preview film placeholder
 								</span>
 							</span>
 							<span class="vw-card-overlay">
-								<span class="vw-card-name">Surprise me</span>
-								<span class="vw-card-aud">for the adventurous</span>
+								<span class="vw-card-name">{v.name}</span>
+								<span class="vw-card-aud">{v.audience}</span>
 								<span class="vw-card-go">
-									Roll the dice
-									<Icon width={14} name="mdi:dice-5-outline" />
+									Enter
+									<Icon width={14} name="mdi:arrow-right" />
 								</span>
 							</span>
+							<span class="vw-card-here">You are here</span>
 						</button>
-					</>
-				))
-			}
+					))
+				}
+				<button
+					class="vw-card vw-card--surprise"
+					type="button"
+					data-switch-view="surprise"
+					style="--va:#18debe"
+				>
+					<span class="vw-card-media" aria-hidden="true">
+						<span class="vw-card-glow" />
+						<Icon class="vw-card-watermark" width={64} name="mdi:dice-multiple-outline" />
+						<span class="vw-card-film">
+							<Icon width={15} name="mdi:auto-fix" />
+							Feeling lucky?
+						</span>
+					</span>
+					<span class="vw-card-overlay">
+						<span class="vw-card-name">Surprise me</span>
+						<span class="vw-card-aud">for the adventurous</span>
+						<span class="vw-card-go">
+							Roll the dice
+							<Icon width={14} name="mdi:dice-5-outline" />
+						</span>
+					</span>
+				</button>
+			</div>
 		</div>
+
+		<button class="vw-nav vw-nav--next" type="button" data-vw-next aria-label="More worlds">
+			<Icon width={22} name="mdi:chevron-right" />
+		</button>
+
+		<span class="vw-progress" aria-hidden="true"><i id="vw-progress-bar"></i></span>
 	</div>
 
 	<p class="vw-foot">
@@ -171,30 +175,83 @@ import { views } from '../consts';
 	}
 
 	/* ── The rail ── */
+	/* A real scroller now, not a marquee: drag it, swipe it, or use the
+	   arrows. It still glides on its own, but any touch hands control over
+	   and it waits before taking the wheel back. */
+	.vw-railwrap { position: relative; }
 	.vw-rail {
-		overflow: hidden;
-		-webkit-mask-image: linear-gradient(
-			90deg,
-			transparent,
-			#000 6%,
-			#000 94%,
-			transparent
-		);
-		mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+		overflow-x: auto;
+		overflow-y: hidden;
+		scroll-snap-type: x proximity;
+		scroll-behavior: smooth;
+		scrollbar-width: none;
+		-ms-overflow-style: none;
+		overscroll-behavior-x: contain;
+		-webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+		mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
 	}
+	.vw-rail::-webkit-scrollbar { display: none; }
+	.vw-rail.is-dragging { scroll-behavior: auto; cursor: grabbing; }
+	.vw-rail.is-dragging .vw-card { pointer-events: none; }
 	.vw-track {
 		display: flex;
 		width: max-content;
-		animation: vw-glide 36s linear infinite;
+		padding: 0.4rem clamp(1rem, 5vw, 4rem);
 	}
-	.vw-rail:hover .vw-track,
-	.vw-rail:focus-within .vw-track {
-		animation-play-state: paused;
+	.vw-card { scroll-snap-align: center; }
+
+	/* ── the controls ── */
+	.vw-nav {
+		position: absolute;
+		top: 50%;
+		z-index: 3;
+		display: grid;
+		place-items: center;
+		width: 3.1rem;
+		height: 3.1rem;
+		margin-top: -1.55rem;
+		border-radius: 9999px;
+		border: 1px solid var(--vw-line, rgba(20, 22, 40, 0.14));
+		background: var(--vw-navbg, rgba(255, 255, 255, 0.9));
+		color: var(--vw-ink);
+		cursor: pointer;
+		box-shadow: 0 18px 36px -20px rgba(0, 0, 0, 0.5);
+		transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), background 0.25s ease,
+			opacity 0.25s ease, box-shadow 0.25s ease;
 	}
-	@keyframes vw-glide {
-		to {
-			transform: translateX(-50%);
-		}
+	.vw-nav:hover { transform: scale(1.08); box-shadow: 0 22px 44px -18px rgba(0, 0, 0, 0.6); }
+	.vw-nav:active { transform: scale(0.96); }
+	.vw-nav--prev { left: clamp(0.4rem, 2vw, 1.6rem); }
+	.vw-nav--next { right: clamp(0.4rem, 2vw, 1.6rem); }
+	.vw-nav[disabled] { opacity: 0.25; pointer-events: none; }
+	:global(html.dark) .vw-nav {
+		border-color: rgba(255, 255, 255, 0.18);
+		background: rgba(12, 14, 26, 0.82);
+		backdrop-filter: blur(10px);
+		color: #eef2ff;
+	}
+
+	/* how far along the rail you are */
+	.vw-progress {
+		display: block;
+		width: min(220px, 40%);
+		height: 3px;
+		margin: clamp(0.9rem, 2vw, 1.3rem) auto 0;
+		border-radius: 9999px;
+		background: var(--vw-line, rgba(20, 22, 40, 0.12));
+		overflow: hidden;
+	}
+	.vw-progress i {
+		display: block;
+		width: 22%;
+		height: 100%;
+		border-radius: inherit;
+		background: linear-gradient(90deg, #13b6a0, #13a8bf, #1f8fd6);
+		transform: translateX(0);
+		transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), width 0.35s ease;
+	}
+	@media (max-width: 620px) {
+		.vw-nav { width: 2.6rem; height: 2.6rem; margin-top: -1.3rem; }
 	}
 
 	/* ── Poster cards ── */
@@ -396,11 +453,7 @@ import { views } from '../consts';
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.vw-track {
-			animation: none;
-			width: auto;
-			overflow-x: auto;
-		}
+		.vw-track { width: max-content; }
 		.vw-card-glow,
 		.vw-title-accent::after {
 			animation: none;
