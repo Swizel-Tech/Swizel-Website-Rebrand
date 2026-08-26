@@ -2816,6 +2816,63 @@ const currentYear = new Date().getFullYear();
 	}
 	.bd-mf-card:hover .bd-mf-card-rule { width: 4.5rem; }
 
+	/* ── light mode ──────────────────────────────────────────────────
+	   The manifesto was a dark slab on a light page, so the heading sat
+	   invisible on it. In daylight the whole block turns to paper: white
+	   panels, ink type, and the accent doing the highlighting instead of
+	   the background. */
+	:global(html:not(.dark)) .bd-manifesto {
+		border-color: rgba(20, 22, 42, 0.1);
+		background:
+			radial-gradient(900px 420px at 50% -10%, color-mix(in srgb, var(--bd-accent) 12%, transparent), transparent 70%),
+			linear-gradient(180deg, #ffffff, #f4f7fc);
+		box-shadow: 0 30px 70px -50px rgba(20, 22, 42, 0.5);
+	}
+	:global(html:not(.dark)) .bd-mf-veil {
+		background: radial-gradient(120% 80% at 50% 120%, color-mix(in srgb, var(--bd-accent) 8%, transparent), transparent 65%);
+	}
+	:global(html:not(.dark)) .bd-mf-panel,
+	:global(html:not(.dark)) .bd-mf-card {
+		border-color: rgba(20, 22, 42, 0.1);
+		background: linear-gradient(165deg, #ffffff, #f7fafe 65%);
+		box-shadow: 0 18px 40px -30px rgba(20, 22, 42, 0.45);
+	}
+	:global(html:not(.dark)) .bd-mf-statement {
+		color: #14162a;
+		text-shadow: none;
+	}
+	:global(html:not(.dark)) .bd-mf-support,
+	:global(html:not(.dark)) .bd-mf-vsub,
+	:global(html:not(.dark)) .bd-mf-card-d { color: rgba(20, 22, 42, 0.62); }
+	:global(html:not(.dark)) .bd-mf-card-t { color: #14162a; }
+	:global(html:not(.dark)) .bd-mf-arc-step { color: rgba(20, 22, 42, 0.5); }
+	:global(html:not(.dark)) .bd-mf-arc-step i {
+		background: rgba(20, 22, 42, 0.18);
+		box-shadow: 0 0 0 4px rgba(20, 22, 42, 0.05);
+	}
+	:global(html:not(.dark)) .bd-mf-card-ic {
+		background:
+			radial-gradient(120% 120% at 30% 20%, color-mix(in srgb, var(--bd-accent) 22%, transparent), transparent 70%),
+			rgba(20, 22, 42, 0.03);
+		color: color-mix(in srgb, var(--bd-accent) 85%, #14162a);
+	}
+	:global(html:not(.dark)) .bd-mf-card-sheen {
+		background: linear-gradient(100deg, transparent, rgba(20, 22, 42, 0.06), transparent);
+	}
+	/* the gravity field and the horizon read as ink on paper */
+	:global(html:not(.dark)) .bd-gravity-ring { border-color: color-mix(in srgb, var(--bd-accent) 40%, transparent); }
+	:global(html:not(.dark)) .bd-gravity-dot { background: color-mix(in srgb, var(--bd-accent) 85%, #14162a); }
+	:global(html:not(.dark)) .bd-gravity-core {
+		background: radial-gradient(circle, #fff, color-mix(in srgb, var(--bd-accent) 85%, transparent) 55%, transparent 72%);
+		box-shadow: 0 0 30px color-mix(in srgb, var(--bd-accent) 40%, transparent);
+	}
+	:global(html:not(.dark)) .bd-horizon-sky {
+		background:
+			radial-gradient(120% 70% at 50% 108%, color-mix(in srgb, var(--bd-accent) 18%, transparent), transparent 62%),
+			linear-gradient(180deg, transparent 40%, rgba(19, 182, 160, 0.04));
+	}
+	:global(html:not(.dark)) .bd-horizon-star { background: rgba(20, 22, 42, 0.35); }
+
 	/* the calm version */
 	html.perf-lite .bd-gravity-dot,
 	html.perf-lite .bd-gravity-ring,

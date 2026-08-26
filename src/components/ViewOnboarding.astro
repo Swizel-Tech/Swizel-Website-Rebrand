@@ -668,6 +668,70 @@ const orbs = [0, 1, 2, 3, 4];
 	}
 	.vo__filmlink:hover { color: #fff; border-color: rgba(255, 255, 255, 0.36); }
 
+	/* ── light mode: the same room with the lights on ─────────────────
+	   This modal opens over a page that may be in daylight, so it cannot
+	   stay a black box. Paper panel, ink type, accent doing the work. */
+	:global(html:not(.dark)) .vo__scrim { background: rgba(228, 234, 244, 0.86); }
+	:global(html:not(.dark)) .vo__panel {
+		border-color: rgba(184, 134, 47, 0.3);
+		background: radial-gradient(120% 80% at 50% -10%, #ffffff 0%, #f5f8fc 55%, #eef3f9 100%);
+		box-shadow: 0 50px 100px -50px rgba(20, 22, 42, 0.5), inset 0 1px 0 rgba(184, 134, 47, 0.16);
+	}
+	:global(html:not(.dark)) .vo { --vo-ink: #14162a; --vo-dim: rgba(20, 22, 42, 0.62); --vo-warm: #b8862f; }
+	:global(html:not(.dark)) .vo__grain { display: none; }
+	:global(html:not(.dark)) .vo__beam { opacity: 0.5; }
+	:global(html:not(.dark)) .vo__orbs i { background: color-mix(in srgb, var(--vo-acc) 60%, #14162a); }
+	:global(html:not(.dark)) .vo__mark { color: #14162a; }
+	:global(html:not(.dark)) .vo__h { color: #14162a; }
+	:global(html:not(.dark)) .vo__count { color: rgba(20, 22, 42, 0.5); }
+	:global(html:not(.dark)) .vo__hint,
+	:global(html:not(.dark)) .vo__lede,
+	:global(html:not(.dark)) .vo__sub { color: rgba(20, 22, 42, 0.66); }
+	:global(html:not(.dark)) .vo__progress { background: rgba(20, 22, 42, 0.1); }
+	:global(html:not(.dark)) .vo__x {
+		border-color: rgba(20, 22, 42, 0.16);
+		background: rgba(20, 22, 42, 0.04);
+		color: rgba(20, 22, 42, 0.6);
+	}
+	:global(html:not(.dark)) .vo__x:hover { color: #14162a; border-color: rgba(20, 22, 42, 0.4); }
+	:global(html:not(.dark)) .vo__opt {
+		border-color: rgba(20, 22, 42, 0.12);
+		background: #ffffff;
+		color: #14162a;
+		box-shadow: 0 12px 30px -24px rgba(20, 22, 42, 0.5);
+	}
+	:global(html:not(.dark)) .vo__opt:hover {
+		background: color-mix(in srgb, var(--hue) 8%, #ffffff);
+		box-shadow: 0 20px 40px -22px color-mix(in srgb, var(--hue) 60%, transparent);
+	}
+	:global(html:not(.dark)) .vo__opt-ic { background: color-mix(in srgb, var(--hue) 14%, #ffffff); }
+	:global(html:not(.dark)) .vo__opt-txt em { color: rgba(20, 22, 42, 0.6); }
+	:global(html:not(.dark)) .vo__opt-go { background: rgba(20, 22, 42, 0.06); color: rgba(20, 22, 42, 0.55); }
+	:global(html:not(.dark)) .vo__opt-sheen {
+		background: linear-gradient(100deg, transparent, rgba(20, 22, 42, 0.06), transparent);
+	}
+	:global(html:not(.dark)) .vo__card {
+		background:
+			radial-gradient(130% 90% at 0% 0%, color-mix(in srgb, var(--acc) 14%, transparent), transparent 62%),
+			#ffffff;
+		color: #14162a;
+		box-shadow: 0 16px 36px -26px rgba(20, 22, 42, 0.45);
+	}
+	:global(html:not(.dark)) .vo__card-blurb { color: rgba(20, 22, 42, 0.6); }
+	:global(html:not(.dark)) .vo__card-ic { background: color-mix(in srgb, var(--acc) 12%, #ffffff); }
+	:global(html:not(.dark)) .vo__card-badge { color: #ffffff; }
+	:global(html:not(.dark)) .vo__promise-ic { background: rgba(20, 22, 42, 0.05); }
+	:global(html:not(.dark)) .vo__promises li { color: rgba(20, 22, 42, 0.75); }
+	:global(html:not(.dark)) .vo__filmlink {
+		border-color: rgba(20, 22, 42, 0.16);
+		color: rgba(20, 22, 42, 0.6);
+	}
+	:global(html:not(.dark)) .vo__filmlink:hover { color: #14162a; border-color: rgba(20, 22, 42, 0.4); }
+	:global(html:not(.dark)) .vo__ghost { color: rgba(20, 22, 42, 0.6); }
+	:global(html:not(.dark)) .vo__ghost:hover { color: #14162a; }
+	:global(html:not(.dark)) .vo__back { color: rgba(20, 22, 42, 0.55); }
+	:global(html:not(.dark)) .vo__back:hover { color: #14162a; }
+
 	/* ═══ phones ═══ */
 	@media (max-width: 640px) {
 		.vo__panel { padding: 1rem 0.9rem 1.4rem; }

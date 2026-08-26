@@ -366,6 +366,31 @@ const {
 			});
 		}
 
+		// The house light follows the pointer across the whole stage. One
+		// write per frame, and only when the machine can afford it.
+		const stageLight = hero.querySelector<HTMLElement>('.hero--spotlight');
+		if (stageLight && !reduce && !document.documentElement.classList.contains('perf-lite')) {
+			let lx = 0;
+			let ly = 0;
+			let queued = false;
+			hero.addEventListener(
+				'pointermove',
+				(ev) => {
+					const r = hero.getBoundingClientRect();
+					lx = ((ev.clientX - r.left) / r.width) * 100;
+					ly = ((ev.clientY - r.top) / r.height) * 100;
+					if (queued) return;
+					queued = true;
+					requestAnimationFrame(() => {
+						queued = false;
+						stageLight.style.setProperty('--hx', `${lx}%`);
+						stageLight.style.setProperty('--hy', `${ly}%`);
+					});
+				},
+				{ passive: true }
+			);
+		}
+
 		// Auto-cycling highlight across the industry chips
 		const sectorWrap = hero.querySelector<HTMLElement>('#hero-sectors');
 		if (sectorWrap && !reduce) {

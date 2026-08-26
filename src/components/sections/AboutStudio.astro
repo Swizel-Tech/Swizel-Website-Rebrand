@@ -202,13 +202,32 @@ const studioFrames = [
 					<p class="sa-placard-t">{VISION}</p>
 				</article>
 			</div>
+			<!-- the values, hung like four works in a row -->
 			<div class="sa-values sd-rev">
-				<span class="sa-values-label">Core values</span>
+				<div class="sa-values-head">
+					<span class="sa-values-label">Core values</span>
+					<span class="sa-values-note">Four, in the order the work happens</span>
+				</div>
 				<ul class="sa-values-row">
 					{
-						CORE_VALUES.map((v) => (
-							<li>
-								<Icon width={16} name={v.icon} /> {v.name}
+						CORE_VALUES.map((v, i) => (
+							<li class="sa-val" style={`--i:${i}`}>
+								<span class="sa-val-frame" style={`--i:${i}`}>
+									<span class="sa-val-mat" aria-hidden="true">
+										<span class="sa-val-ghost">{String(i + 1).padStart(2, '0')}</span>
+										<span class="sa-val-sweep" />
+										<span class="sa-val-corner sa-val-corner--tl" />
+										<span class="sa-val-corner sa-val-corner--tr" />
+										<span class="sa-val-corner sa-val-corner--bl" />
+										<span class="sa-val-corner sa-val-corner--br" />
+									</span>
+										<span class="sa-val-ic"><Icon width={46} name={v.icon} /></span>
+									<span class="sa-val-wire" aria-hidden="true" />
+								</span>
+								<span class="sa-val-plate">
+									<b>{v.name}</b>
+									<em>{v.desc}</em>
+								</span>
 							</li>
 						))
 					}
@@ -886,35 +905,212 @@ const studioFrames = [
 		line-height: 1.45;
 		color: var(--sa-ink);
 	}
-	.sa-values { display: grid; gap: 0.7rem; }
+	/* ── the values, hung on the wall ──────────────────────────────────
+	   Four plaques with a nail and a wire, in the studio's own language.
+	   They were pills before, which read as tags rather than promises. */
+	.sa-values { display: grid; gap: 1.2rem; margin-top: clamp(1.6rem, 4vw, 2.6rem); }
+	.sa-values-head {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 1rem;
+		padding-bottom: 0.7rem;
+		border-bottom: 1px solid var(--sa-line);
+	}
 	.sa-values-label {
-		font-size: 0.7rem;
+		font-size: 0.72rem;
 		font-weight: 800;
-		letter-spacing: 0.18em;
+		letter-spacing: 0.22em;
 		text-transform: uppercase;
+		color: var(--sa-acc);
+	}
+	.sa-values-note {
+		font-family: var(--sa-serif, Georgia, serif);
+		font-style: italic;
+		font-size: 0.92rem;
 		color: var(--sa-faint);
 	}
 	.sa-values-row {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.7rem;
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: clamp(0.8rem, 2vw, 1.5rem);
 		list-style: none;
 		margin: 0;
-		padding: 0;
+		padding: 0.9rem 0 0;
 	}
-	.sa-values-row li {
-		display: inline-flex;
+	@media (max-width: 980px) { .sa-values-row { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+	@media (max-width: 560px) { .sa-values-row { grid-template-columns: 1fr; } }
+
+	.sa-val {
+		display: flex;
+		flex-direction: column;
 		align-items: center;
-		gap: 0.5rem;
-		padding: 0.55rem 1rem;
-		border: 1px solid color-mix(in srgb, var(--sa-acc) 40%, transparent);
-		border-radius: 9999px;
-		font-size: 0.88rem;
-		font-weight: 700;
-		color: var(--sa-ink);
-		background: color-mix(in srgb, var(--sa-acc) 8%, transparent);
+		text-align: center;
+		opacity: 0;
+		transform: translateY(1rem);
 	}
-	.sa-values-row li :global(svg) { color: var(--sa-acc); }
+	.sd-rev.is-on .sa-val {
+		animation: sa-val-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+		animation-delay: calc(var(--i) * 0.1s);
+	}
+	@keyframes sa-val-in { to { opacity: 1; transform: none; } }
+
+	/* the frame: a nail above it, a wire, and the piece itself */
+	.sa-val-frame {
+		position: relative;
+		display: grid;
+		place-items: center;
+		width: 100%;
+		aspect-ratio: 1 / 1;
+		border: 1px solid var(--sa-line);
+		background:
+			radial-gradient(120% 100% at 50% 0%, color-mix(in srgb, var(--sa-acc) 12%, transparent), transparent 70%),
+			color-mix(in srgb, var(--sa-ink) 4%, transparent);
+		color: var(--sa-acc);
+		transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.45s ease,
+			border-color 0.45s ease;
+	}
+	.sa-val-frame::before {
+		/* the nail */
+		content: '';
+		position: absolute;
+		top: -1.55rem;
+		left: 50%;
+		width: 7px;
+		height: 7px;
+		margin-left: -3.5px;
+		border-radius: 9999px;
+		background: var(--sa-acc);
+		box-shadow: 0 0 0 3px color-mix(in srgb, var(--sa-acc) 18%, transparent);
+	}
+	.sa-val-wire {
+		position: absolute;
+		top: -1.35rem;
+		left: 50%;
+		width: 64%;
+		height: 1.4rem;
+		margin-left: -32%;
+		border-top: 1px solid color-mix(in srgb, var(--sa-acc) 45%, transparent);
+		border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+		transform-origin: top center;
+	}
+	.sa-val:hover .sa-val-frame {
+		transform: translateY(-5px) rotate(-0.6deg);
+		border-color: color-mix(in srgb, var(--sa-acc) 55%, transparent);
+		box-shadow: 0 24px 44px -26px color-mix(in srgb, var(--sa-acc) 90%, transparent);
+	}
+	/* the mat inside the frame — where the piece actually lives */
+	.sa-val-mat {
+		position: absolute;
+		inset: 0.9rem;
+		display: grid;
+		place-items: center;
+		overflow: hidden;
+		border: 1px solid color-mix(in srgb, var(--sa-acc) 22%, transparent);
+		background:
+			radial-gradient(90% 80% at 50% 20%, color-mix(in srgb, var(--sa-acc) 10%, transparent), transparent 72%);
+	}
+	.sa-val-ghost {
+		position: absolute;
+		right: 0.5rem;
+		bottom: -1rem;
+		font-family: var(--sa-serif, Georgia, serif);
+		font-size: clamp(4rem, 8vw, 6.5rem);
+		font-style: italic;
+		font-weight: 700;
+		line-height: 1;
+		color: color-mix(in srgb, var(--sa-acc) 16%, transparent);
+		transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.sa-val:hover .sa-val-ghost { transform: translate(-4px, -6px); }
+	.sa-val-sweep {
+		position: absolute;
+		inset: 0 auto 0 0;
+		width: 45%;
+		background: linear-gradient(
+			100deg,
+			transparent,
+			color-mix(in srgb, var(--sa-acc) 16%, transparent),
+			transparent
+		);
+		transform: translateX(-140%);
+	}
+	.sd-rev.is-on .sa-val-sweep {
+		animation: sa-sweep 6.5s ease-in-out infinite;
+		animation-delay: calc(var(--i) * 0.9s);
+	}
+	@keyframes sa-sweep {
+		0%, 55% { transform: translateX(-140%); }
+		100% { transform: translateX(320%); }
+	}
+	.sa-val-corner {
+		position: absolute;
+		width: 0.75rem;
+		height: 0.75rem;
+		border: 0 solid color-mix(in srgb, var(--sa-acc) 60%, transparent);
+		transition: inset 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.sa-val-corner--tl { top: 0.4rem; left: 0.4rem; border-top-width: 1.5px; border-left-width: 1.5px; }
+	.sa-val-corner--tr { top: 0.4rem; right: 0.4rem; border-top-width: 1.5px; border-right-width: 1.5px; }
+	.sa-val-corner--bl { bottom: 0.4rem; left: 0.4rem; border-bottom-width: 1.5px; border-left-width: 1.5px; }
+	.sa-val-corner--br { bottom: 0.4rem; right: 0.4rem; border-bottom-width: 1.5px; border-right-width: 1.5px; }
+	.sa-val-ic {
+		position: relative;
+		z-index: 2;
+		display: grid;
+		place-items: center;
+		width: 5rem;
+		height: 5rem;
+		border-radius: 9999px;
+		color: var(--sa-acc);
+		background:
+			radial-gradient(circle at 50% 30%, color-mix(in srgb, var(--sa-acc) 34%, transparent), color-mix(in srgb, var(--sa-acc) 12%, transparent) 70%);
+		box-shadow: 0 0 0 1px color-mix(in srgb, var(--sa-acc) 55%, transparent),
+			0 0 26px -6px color-mix(in srgb, var(--sa-acc) 60%, transparent);
+		transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+			box-shadow 0.5s ease, background 0.5s ease;
+	}
+	.sa-val-ic :global(svg) { width: 2.1rem; height: 2.1rem; }
+	.sa-val:hover .sa-val-ic {
+		transform: translateY(-3px) scale(1.06);
+		background: color-mix(in srgb, var(--sa-acc) 20%, transparent);
+		box-shadow: 0 0 0 1px color-mix(in srgb, var(--sa-acc) 55%, transparent),
+			0 16px 34px -20px color-mix(in srgb, var(--sa-acc) 95%, transparent);
+	}
+	@media (prefers-reduced-motion: reduce) { .sa-val-sweep { animation: none !important; } }
+
+	.sa-val-no {
+		position: absolute;
+		z-index: 2;
+		top: 0.7rem;
+		left: 0.8rem;
+		font-family: var(--sa-serif, Georgia, serif);
+		font-size: 0.85rem;
+		font-style: italic;
+		color: var(--sa-faint);
+	}
+	/* the plaque underneath, the way a gallery labels a work */
+	.sa-val-plate {
+		display: grid;
+		gap: 0.3rem;
+		margin-top: 0.9rem;
+		padding-top: 0.8rem;
+		border-top: 2px solid var(--sa-ink);
+		width: 100%;
+	}
+	.sa-val-plate b {
+		font-size: clamp(0.95rem, 1.8vw, 1.05rem);
+		font-weight: 800;
+		letter-spacing: -0.01em;
+		color: var(--sa-ink);
+	}
+	.sa-val-plate em {
+		font-family: var(--sa-serif, Georgia, serif);
+		font-style: italic;
+		font-size: 0.88rem;
+		line-height: 1.5;
+		color: var(--sa-faint);
+	}
 
 	/* ── E · the ateliers ── */
 	.sa-ateliers {
