@@ -182,8 +182,9 @@ import { views } from '../consts';
 	.vw-rail {
 		overflow-x: auto;
 		overflow-y: hidden;
-		scroll-snap-type: x proximity;
-		scroll-behavior: smooth;
+		/* no snapping and no smooth: the glide is driven frame by frame in
+		   JS, and snap points would fight it every time it wrapped */
+		scroll-behavior: auto;
 		scrollbar-width: none;
 		-ms-overflow-style: none;
 		overscroll-behavior-x: contain;
@@ -198,7 +199,6 @@ import { views } from '../consts';
 		width: max-content;
 		padding: 0.4rem clamp(1rem, 5vw, 4rem);
 	}
-	.vw-card { scroll-snap-align: center; }
 
 	/* ── the controls ── */
 	.vw-nav {
@@ -287,18 +287,42 @@ import { views } from '../consts';
 	/* the wildcard poster: every world's accent at once, dashed like a mystery box */
 	.vw-card--surprise {
 		background:
-			radial-gradient(70% 90% at 80% 0%, rgba(24, 222, 190, 0.28), transparent 70%),
-			radial-gradient(60% 80% at 10% 100%, rgba(139, 92, 246, 0.24), transparent 70%),
-			radial-gradient(50% 70% at 90% 90%, rgba(236, 72, 153, 0.18), transparent 70%),
-			radial-gradient(45% 65% at 30% 10%, rgba(245, 158, 11, 0.16), transparent 70%);
+			radial-gradient(70% 90% at 80% 0%, rgba(24, 222, 190, 0.34), transparent 70%),
+			radial-gradient(60% 80% at 10% 100%, rgba(139, 92, 246, 0.3), transparent 70%),
+			radial-gradient(50% 70% at 90% 90%, rgba(236, 72, 153, 0.24), transparent 70%),
+			radial-gradient(45% 65% at 30% 10%, rgba(245, 158, 11, 0.2), transparent 70%),
+			linear-gradient(160deg, #181a2c, #0c0e1b 70%);
+		border-color: rgba(24, 222, 190, 0.42);
+	}
+	/* the four hues drift, so the mystery box never sits still */
+	.vw-card--surprise .vw-card-media::before {
+		content: '';
+		position: absolute;
+		inset: -30%;
+		background:
+			radial-gradient(28% 34% at 30% 30%, rgba(24, 222, 190, 0.5), transparent 70%),
+			radial-gradient(26% 32% at 70% 60%, rgba(139, 92, 246, 0.45), transparent 70%),
+			radial-gradient(24% 30% at 45% 75%, rgba(236, 72, 153, 0.4), transparent 70%);
+		filter: blur(6px);
+		animation: vw-wild 14s ease-in-out infinite alternate;
+	}
+	@keyframes vw-wild {
+		0% { transform: translate(-6%, -4%) rotate(0deg) scale(1); }
+		50% { transform: translate(5%, 4%) rotate(8deg) scale(1.1); }
+		100% { transform: translate(-3%, 6%) rotate(-6deg) scale(1.04); }
 	}
 	.vw-card--surprise::after {
 		content: '';
 		position: absolute;
 		inset: 6px;
 		border-radius: 1rem;
-		border: 1.5px dashed rgba(255, 255, 255, 0.28);
+		border: 1.5px dashed rgba(255, 255, 255, 0.34);
 		pointer-events: none;
+		animation: vw-dash 5s ease-in-out infinite;
+	}
+	@keyframes vw-dash {
+		0%, 100% { opacity: 0.45; box-shadow: inset 0 0 18px -8px rgba(24, 222, 190, 0.5); }
+		50% { opacity: 0.95; box-shadow: inset 0 0 26px -4px rgba(24, 222, 190, 0.9); }
 	}
 	/* glossy sweep across the poster */
 	.vw-card-glow {

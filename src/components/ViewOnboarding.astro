@@ -129,6 +129,7 @@ const orbs = [0, 1, 2, 3, 4];
 							style={`--acc:${v.accent};--i:${i}`}
 						>
 							<span class="vo__card-ring" aria-hidden="true" />
+							<span class="vo__card-edge" aria-hidden="true" />
 							<span class="vo__card-ic">
 								<Icon width={22} name={v.icon} />
 							</span>
@@ -144,6 +145,7 @@ const orbs = [0, 1, 2, 3, 4];
 					))
 				}
 				<button class="vo__card vo__card--wild" type="button" data-view-id="surprise" style="--acc:#3ddc97;--i:5">
+					<span class="vo__card-edge" aria-hidden="true" />
 					<span class="vo__card-ic"><Icon width={22} name="mdi:dice-5-outline" /></span>
 					<b class="vo__card-name">Surprise me</b>
 					<span class="vo__card-aud">for the adventurous</span>
@@ -649,6 +651,45 @@ const orbs = [0, 1, 2, 3, 4];
 	}
 	.vo__card.is-recommended .vo__card-ring { opacity: 0.5; animation: vo-spin 5s linear infinite; }
 	@keyframes vo-spin { to { transform: rotate(1turn); } }
+	/* a light that runs the rim of every card — the thing that was missing
+	   in daylight, where a flat white box has nothing to catch the eye */
+	.vo__card-edge {
+		position: absolute;
+		inset: -1px;
+		border-radius: inherit;
+		padding: 1.5px;
+		background: conic-gradient(
+			from var(--vo-turn, 0deg),
+			transparent 0deg,
+			color-mix(in srgb, var(--acc) 95%, #fff) 40deg,
+			transparent 110deg,
+			transparent 360deg
+		);
+		-webkit-mask:
+			linear-gradient(#000 0 0) content-box,
+			linear-gradient(#000 0 0);
+		-webkit-mask-composite: xor;
+		mask:
+			linear-gradient(#000 0 0) content-box,
+			linear-gradient(#000 0 0);
+		mask-composite: exclude;
+		opacity: 0.55;
+		pointer-events: none;
+		animation: vo-rim 6s linear infinite;
+		animation-delay: calc(var(--i) * -0.9s);
+	}
+	.vo__card:hover .vo__card-edge { opacity: 1; animation-duration: 2.4s; }
+	@property --vo-turn {
+		syntax: '<angle>';
+		inherits: false;
+		initial-value: 0deg;
+	}
+	@keyframes vo-rim { to { --vo-turn: 360deg; } }
+	/* browsers without @property still get a rotating rim */
+	@supports not (background: conic-gradient(from var(--x, 0deg), red, blue)) {
+		.vo__card-edge { animation: vo-spin 6s linear infinite; }
+	}
+
 	.vo__card--wild { border-style: dashed; }
 
 	.vo__foot { display: flex; justify-content: center; width: 100%; margin-top: 1rem; }
@@ -671,22 +712,48 @@ const orbs = [0, 1, 2, 3, 4];
 	/* ── light mode: the same room with the lights on ─────────────────
 	   This modal opens over a page that may be in daylight, so it cannot
 	   stay a black box. Paper panel, ink type, accent doing the work. */
-	:global(html:not(.dark)) .vo__scrim { background: rgba(228, 234, 244, 0.86); }
+	:global(html:not(.dark)) .vo__scrim { background: rgba(16, 20, 34, 0.34); }
 	:global(html:not(.dark)) .vo__panel {
-		border-color: rgba(184, 134, 47, 0.3);
-		background: radial-gradient(120% 80% at 50% -10%, #ffffff 0%, #f5f8fc 55%, #eef3f9 100%);
-		box-shadow: 0 50px 100px -50px rgba(20, 22, 42, 0.5), inset 0 1px 0 rgba(184, 134, 47, 0.16);
+		border-color: color-mix(in srgb, var(--vo-acc) 26%, rgba(20, 22, 42, 0.12));
+		/* warm paper rather than a lightbox — the old near-white blew out */
+		background:
+			radial-gradient(120% 80% at 50% -10%, color-mix(in srgb, var(--vo-acc) 14%, #f2f5fa) 0%, #e6ebf4 48%, #d9e0ec 100%);
+		box-shadow: 0 60px 120px -50px rgba(16, 20, 34, 0.55),
+			inset 0 1px 0 rgba(255, 255, 255, 0.9);
+	}
+	/* the panel keeps a slow tinted wash moving behind the content */
+	:global(html:not(.dark)) .vo__panel::after {
+		content: '';
+		position: absolute;
+		inset: -20%;
+		z-index: 0;
+		pointer-events: none;
+		background:
+			radial-gradient(15% 20% at 20% 24%, color-mix(in srgb, var(--vo-acc) 42%, transparent), transparent 72%),
+			radial-gradient(14% 19% at 78% 60%, rgba(139, 92, 246, 0.34), transparent 72%),
+			radial-gradient(13% 18% at 48% 90%, rgba(236, 72, 153, 0.26), transparent 72%),
+			radial-gradient(12% 16% at 88% 18%, rgba(245, 158, 11, 0.22), transparent 72%);
+		filter: blur(10px);
+		animation: vo-wash 18s ease-in-out infinite alternate;
+	}
+	@keyframes vo-wash {
+		0% { transform: translate(-4%, -3%) scale(1); }
+		50% { transform: translate(4%, 3%) scale(1.08); }
+		100% { transform: translate(-2%, 5%) scale(1.03); }
 	}
 	:global(html:not(.dark)) .vo { --vo-ink: #14162a; --vo-dim: rgba(20, 22, 42, 0.62); --vo-warm: #b8862f; }
 	:global(html:not(.dark)) .vo__grain { display: none; }
-	:global(html:not(.dark)) .vo__beam { opacity: 0.5; }
-	:global(html:not(.dark)) .vo__orbs i { background: color-mix(in srgb, var(--vo-acc) 60%, #14162a); }
+	:global(html:not(.dark)) .vo__beam { opacity: 0.45; filter: blur(46px); }
+	:global(html:not(.dark)) .vo__orbs i {
+		background: color-mix(in srgb, var(--vo-acc) 78%, #14162a);
+		box-shadow: 0 0 8px color-mix(in srgb, var(--vo-acc) 55%, transparent);
+	}
 	:global(html:not(.dark)) .vo__mark { color: #14162a; }
 	:global(html:not(.dark)) .vo__h { color: #14162a; }
 	:global(html:not(.dark)) .vo__count { color: rgba(20, 22, 42, 0.5); }
 	:global(html:not(.dark)) .vo__hint,
 	:global(html:not(.dark)) .vo__lede,
-	:global(html:not(.dark)) .vo__sub { color: rgba(20, 22, 42, 0.66); }
+	:global(html:not(.dark)) .vo__sub { color: rgba(20, 22, 42, 0.78); }
 	:global(html:not(.dark)) .vo__progress { background: rgba(20, 22, 42, 0.1); }
 	:global(html:not(.dark)) .vo__x {
 		border-color: rgba(20, 22, 42, 0.16);
@@ -712,24 +779,42 @@ const orbs = [0, 1, 2, 3, 4];
 	}
 	:global(html:not(.dark)) .vo__card {
 		background:
-			radial-gradient(130% 90% at 0% 0%, color-mix(in srgb, var(--acc) 14%, transparent), transparent 62%),
-			#ffffff;
+			radial-gradient(130% 90% at 0% 0%, color-mix(in srgb, var(--acc) 24%, transparent), transparent 58%),
+			linear-gradient(180deg, #ffffff, color-mix(in srgb, var(--acc) 7%, #f4f7fb));
 		color: #14162a;
-		box-shadow: 0 16px 36px -26px rgba(20, 22, 42, 0.45);
+		box-shadow: 0 18px 40px -26px rgba(16, 20, 34, 0.5),
+			0 0 0 1px color-mix(in srgb, var(--acc) 16%, transparent);
 	}
-	:global(html:not(.dark)) .vo__card-blurb { color: rgba(20, 22, 42, 0.6); }
+	:global(html:not(.dark)) .vo__card:hover {
+		box-shadow: 0 30px 56px -26px color-mix(in srgb, var(--acc) 65%, transparent),
+			0 0 0 1px color-mix(in srgb, var(--acc) 55%, transparent);
+	}
+	:global(html:not(.dark)) .vo__card-edge { opacity: 0.75; }
+	:global(html:not(.dark)) .vo__card-blurb { color: rgba(20, 22, 42, 0.68); }
+	/* the eyebrow was accent-on-white and all but gone — run it deeper */
+	:global(html:not(.dark)) .vo__card-aud {
+		color: color-mix(in srgb, var(--acc) 68%, #101426);
+	}
+	:global(html:not(.dark)) .vo__card-go {
+		color: color-mix(in srgb, var(--acc) 72%, #101426);
+	}
+	:global(html:not(.dark)) .vo__rec {
+		color: color-mix(in srgb, var(--vo-acc) 70%, #101426);
+	}
+	:global(html:not(.dark)) .vo__kicker { color: color-mix(in srgb, var(--vo-warm) 80%, #101426); }
 	:global(html:not(.dark)) .vo__card-ic { background: color-mix(in srgb, var(--acc) 12%, #ffffff); }
 	:global(html:not(.dark)) .vo__card-badge { color: #ffffff; }
 	:global(html:not(.dark)) .vo__promise-ic { background: rgba(20, 22, 42, 0.05); }
 	:global(html:not(.dark)) .vo__promises li { color: rgba(20, 22, 42, 0.75); }
 	:global(html:not(.dark)) .vo__filmlink {
-		border-color: rgba(20, 22, 42, 0.16);
-		color: rgba(20, 22, 42, 0.6);
+		border-color: rgba(20, 22, 42, 0.22);
+		background: rgba(255, 255, 255, 0.7);
+		color: rgba(20, 22, 42, 0.78);
 	}
 	:global(html:not(.dark)) .vo__filmlink:hover { color: #14162a; border-color: rgba(20, 22, 42, 0.4); }
 	:global(html:not(.dark)) .vo__ghost { color: rgba(20, 22, 42, 0.6); }
 	:global(html:not(.dark)) .vo__ghost:hover { color: #14162a; }
-	:global(html:not(.dark)) .vo__back { color: rgba(20, 22, 42, 0.55); }
+	:global(html:not(.dark)) .vo__back { color: rgba(20, 22, 42, 0.72); }
 	:global(html:not(.dark)) .vo__back:hover { color: #14162a; }
 
 	/* ═══ phones ═══ */
@@ -755,6 +840,7 @@ const orbs = [0, 1, 2, 3, 4];
 		.vo__beam,
 		.vo__orbs i,
 		.vo__spot,
+		.vo__card-edge,
 		.vo__card.is-recommended .vo__card-ring { animation: none !important; }
 		.vo__grain { display: none; }
 	}
