@@ -80,9 +80,30 @@ export function initCampusView() {
 
 	const isCampus = () =>
 		document.documentElement.getAttribute('data-view') === 'campus';
-	if (isCampus()) setTimeout(launch, 500);
+
+	// the board moved out of the hero, so it no longer plays to an empty
+	// room: it runs the first time it actually scrolls into view
+	let seen = false;
+	const io = new IntersectionObserver(
+		(entries) => {
+			entries.forEach((en) => {
+				if (!en.isIntersecting || seen || !isCampus()) return;
+				seen = true;
+				setTimeout(launch, 250);
+			});
+		},
+		{ threshold: 0.35 }
+	);
+	io.observe(w);
+
 	window.addEventListener('swizel:viewchange', (e) => {
-		if ((e as CustomEvent).detail === 'campus') setTimeout(launch, 350);
+		if ((e as CustomEvent).detail !== 'campus') return;
+		seen = false;
+		const r = w.getBoundingClientRect();
+		if (r.top < window.innerHeight && r.bottom > 0) {
+			seen = true;
+			setTimeout(launch, 350);
+		}
 	});
 
 	// the tour walks the whole campus world, hero to footer
@@ -93,19 +114,24 @@ export function initCampusView() {
 			body: 'You imagine it. We build, design, scale and launch it.',
 		},
 		{
-			sel: '#campus-widget [data-tour="track"]',
-			title: 'Level up to hired',
-			body: 'Watch the journey from newbie to hired — zero to job ready.',
+			sel: '.hero-campus [data-tour="class"]',
+			title: 'Sit in on a class',
+			body: 'A real lecture, projected on the board. Play it, speed it up, take it full screen. The controls are part of the board.',
 		},
 		{
 			sel: '#view-banner .vw-head',
 			title: 'Five worlds, one Swizel',
-			body: 'This site reshapes around you. Step into any world, anytime — nothing is locked.',
+			body: 'This site reshapes around you. Step into any world, anytime, nothing is locked.',
 		},
 		{
-			sel: '.cbody .cp-open',
+			sel: '.cbody .cp-copy',
 			title: 'Player 1: you',
 			body: 'A free, hands-on bootcamp run by the team that ships real products.',
+		},
+		{
+			sel: '#campus-widget [data-tour="track"]',
+			title: 'Level up to hired',
+			body: 'Watch the journey from newbie to hired, zero to job ready.',
 		},
 		{
 			sel: '.cp-tracks',

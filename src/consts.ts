@@ -40,7 +40,7 @@ export const CORE_VALUES = [
   {
     name: "We give away the playbook",
     icon: "mdi:book-open-variant",
-    desc: "Knowledge should not sit in a silo. Free bootcamps, free books, so no builder has to rely on luck.",
+    desc: "Knowledge should not sit in a silo. Open books, open mentorship, so no builder has to rely on luck.",
   },
 ] as const;
 
@@ -216,7 +216,7 @@ export const viewQuiz = [
       },
       {
         label: "Learn tech skills & get hired",
-        sub: "The free bootcamp",
+        sub: "Internships and NYSC placement",
         icon: "mdi:book-open-variant",
         scores: { campus: 3 },
       },
@@ -490,34 +490,44 @@ export const faq = [
 
 export const bootCampFaq: typeof faq = [
   {
-    question: "Is it free ?",
+    question: "Is this the old free bootcamp?",
     answer:
-      "YES! our boot camp program is completely free however there's an affordable fee attached to the certification exam at the end of the program.",
+      "No. We no longer run the open bootcamp. There are two ways in now: an IT / SIWES internship, or your NYSC service year with us. Both are applied for, and both are selective.",
   },
   {
-    question: "How long is the program ?",
+    question: "Why is it selective?",
     answer:
-      "3 months. You also have an additional 3 months of free mentorship and 3 months of paid internship if you qualify for the internship position.",
+      "Because you are put on a live client project, not a practice exercise. Real deadlines and real users mean we can only take a small cohort each intake, so the application has to be strong.",
   },
   {
-    question: "What do I learn ?",
+    question: "How long is it?",
     answer:
-      "You will learn how to make beautiful websites, applications and fun games, beautiful designs, manage projects, manage ads, make websites easier to find and much more depending on the program you choose.",
+      "The internship runs to your school's requirement, so three or six months depending on your institution. The NYSC placement runs the full service year.",
   },
   {
-    question: "Do I get a job after the program with your parent company?",
+    question: "What will I be doing?",
     answer:
-      "The short answer is YES. You can qualify for a paid internship position if you meet our selection criteria from this particular program, we will also retain Interns for job positions if they perform satisfactorily.",
+      "Shipping. You join a squad building websites, web and mobile applications, designs, or growth campaigns for paying clients, with a mentor reviewing your work the whole way.",
   },
   {
-    question: "Is it an online program?",
+    question: "Is there a fee?",
     answer:
-      "We have both virtual(Online) programs and a physical coaching program. schedules are flexible and will be set with your coaches/mentors. ",
+      "There is no tuition. This is a placement, not a course. Interns who perform are considered for paid roles, and NYSC members are placed on the normal service terms.",
   },
   {
-    question: "Is the Webinar Free?",
+    question: "Do I need experience already?",
     answer:
-      "Yes. The webinar is free if you register. In the webinar, we will tell you all the cool stuff you will be doing on the program, plus you get to meet your coaches and fellow tech bros/sis' ",
+      "You need enough to show us you can build something, however small. A portfolio, a repository, a design file, a campaign you ran. What we look for is evidence that you finish things.",
+  },
+  {
+    question: "Can I do it remotely?",
+    answer:
+      "Some squads run remote and some run from the Abuja office. Tell us which you need in your application and we will be straight with you about what is available.",
+  },
+  {
+    question: "What happens after I apply?",
+    answer:
+      "We review every application. If it is a fit you will hear from us for a short conversation and a small practical task, then a decision. We would rather say no quickly than leave you waiting.",
   },
 ];
 

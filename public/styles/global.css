@@ -770,6 +770,31 @@ html[data-view="builder"] .hero-builder { display: block; }
 .tour-btn--ghost { color: rgba(255, 255, 255, 0.75); border: 1px solid rgba(255, 255, 255, 0.2); }
 .tour-btn--primary { color: #06231c; background: linear-gradient(95deg, #8dfeea, #18debe); }
 
+/* Daylight: the coachmarks are a card on the page, not a black box on it.
+   Every world's tour uses these same classes, so this covers all of them
+   on every page. */
+html:not(.dark) .tour-hole {
+  box-shadow: 0 0 0 9999px rgba(20, 22, 42, 0.42);
+}
+html:not(.dark) .tour-pop {
+  background: #ffffff;
+  color: #14162a;
+  border-color: rgba(20, 22, 42, 0.12);
+  box-shadow: 0 30px 60px -22px rgba(20, 22, 42, 0.35);
+}
+html:not(.dark) .tour-pop p { color: rgba(20, 22, 42, 0.68); }
+html:not(.dark) .tour-pop__count { color: rgba(20, 22, 42, 0.45); }
+html:not(.dark) .tour-btn--ghost {
+  color: rgba(20, 22, 42, 0.72);
+  border-color: rgba(20, 22, 42, 0.2);
+}
+html:not(.dark) .tour-btn--ghost:hover { background: rgba(20, 22, 42, 0.05); }
+html:not(.dark) .tour-pop__close { color: rgba(20, 22, 42, 0.5); }
+html:not(.dark) .tour-pop__close:hover {
+  color: #14162a;
+  background: rgba(20, 22, 42, 0.07);
+}
+
 /* =========================================================
    Builder IDE console output (injected via JS — must be global)
    ========================================================= */
@@ -1072,7 +1097,8 @@ html[data-view="builder"] .default-body { display: none; }
 #swizel-cursor[data-icon="book"] .cur-book,
 #swizel-cursor[data-icon="pen"] .cur-pen,
 #swizel-cursor[data-icon="palette"] .cur-palette,
-#swizel-cursor[data-icon="vector"] .cur-vector { display: block !important; }
+#swizel-cursor[data-icon="vector"] .cur-vector,
+#swizel-cursor[data-icon="video"] .cur-video { display: block !important; }
 
 /* Tailor the cursor to the page's world — but ONLY while the Boardroom
    world is actually active. Pages carry every view's sections in the DOM

@@ -4,12 +4,13 @@
 // societies on a corkboard, a chalkboard that teaches you something, and
 // an arcade START button at the end. School spirit, real outcomes.
 import { Icon } from 'astro-icon/components';
+import CampusJourney from '../CampusJourney.astro';
 
 const stats = [
-	{ n: '3 mo', label: 'bootcamp' },
-	{ n: '100%', label: 'hands-on' },
-	{ n: '65+', label: 'products' },
-	{ n: '₦0', label: 'tuition' },
+	{ n: '3–6 mo', label: 'IT internship' },
+	{ n: '12 mo', label: 'NYSC year' },
+	{ n: '100%', label: 'live projects' },
+	{ n: '65+', label: 'products shipped' },
 ];
 
 const courses = [
@@ -56,17 +57,15 @@ const ships = [
 ];
 
 const programs = [
-	{ icon: 'mdi:school-outline', title: 'Annual Bootcamp', fee: 'FREE', hot: true, desc: '3 months, once a year. Learn, build, get hired, pay only for the certification exam.' },
-	{ icon: 'mdi:book-open-page-variant-outline', title: 'Beginner Classes', fee: 'small fee', desc: "New to tech? Year-round beginner courses that start from absolute zero." },
-	{ icon: 'mdi:badge-account-outline', title: 'SIWES / IT Internship', fee: 'small fee', desc: 'Do your 6-month school industrial training with a team that ships real products.' },
-	{ icon: 'mdi:flag-outline', title: 'NYSC Placement', fee: 'small fee', desc: 'Serve your NYSC year at Swizel, real projects, real mentorship, a real head start.' },
+	{ icon: 'mdi:badge-account-outline', title: 'SIWES / IT Internship', fee: 'apply', hot: true, href: '/bootcamp#internship', desc: 'Do your three or six month industrial training on a live client product, with a mentor on your work every week.' },
+	{ icon: 'mdi:flag-outline', title: 'NYSC Placement', fee: 'apply', hot: true, href: '/bootcamp#nysc', desc: 'Serve your year with the team that ships. Real projects, real reviews, and a portfolio at the end of it.' },
 ];
 
 const sectors = ['Fintech', 'Real estate', 'Sports', 'E-commerce', 'Education', 'Healthcare', 'Logistics', 'Beauty', 'Energy', 'Media', 'Travel'];
 const logos = ['betslipswitch.svg', 'trueverdict.png', 'brix market logo.svg', 'ejike-fc.svg', 'purple-panda.svg', 'saros-sgp.svg', 'my eya homes.svg', 'the-presidential-diary.png', 'hemamsynergy.png'];
 
 const achievements = [
-	{ icon: 'mdi:gift-outline', title: 'Free Start', desc: 'Learn for free. Pay only for the certification exam.' },
+	{ icon: 'mdi:shield-star-outline', title: 'Selective Intake', desc: 'A small cohort each round, so every place is earned.' },
 	{ icon: 'mdi:account-heart-outline', title: 'Mentor Backed', desc: 'Guided by working engineers and designers.' },
 	{ icon: 'mdi:cash-multiple', title: 'Paid Internship', desc: 'Top students earn a paid spot with the team.' },
 	{ icon: 'mdi:briefcase-check-outline', title: 'Job-Ready Portfolio', desc: 'Graduate with real, shipped projects.' },
@@ -83,13 +82,13 @@ const voices = [
 	<!-- ── A · orientation day ─────────────────────────────── -->
 	<section class="cp-sec">
 		<div class="cp-wrap cp-open">
-			<div class="cp-copy cp-rev">
+			<div class="cp-copy cp-copy--mid cp-rev">
 				<span class="cp-badge">🎓 Orientation · Cohort '26</span>
 				<h2 class="cp-h cp-h--xl">Welcome to class. <em>Leave with a career.</em></h2>
-				<p class="cp-p">
-					A free, hands-on bootcamp that feels like school and pays like
-					a head start: lecture rooms, whiteboards, coursemates — and
-					mentors who ship real products for a living.
+				<p class="cp-p cp-p--center">
+					Two ways in: your industrial training, or your service year.
+					Both put you on a live client product beside the people who
+					build it for a living. Both are applied for.
 				</p>
 				<ul class="cp-stats">
 					{
@@ -103,7 +102,7 @@ const voices = [
 				</ul>
 				<div class="cp-row">
 					<a href="/bootcamp" class="cp-cta">
-						Enroll free
+						Start your application
 						<Icon width={17} name="mdi:school-outline" />
 					</a>
 					<a href="#cp-quest" class="cp-link">
@@ -113,23 +112,9 @@ const voices = [
 				</div>
 			</div>
 
-			<!-- the whiteboard: white in every theme, like real life -->
-			<div class="cp-board cp-rev" data-cursor="pen">
-				<span class="cp-board-date" id="cp-board-date">Mon, 1 Jan</span>
-				<p class="cp-board-title">today: build something real <span class="cp-board-swish" aria-hidden="true"></span></p>
-				<div class="cp-board-video">
-					<Icon width={30} name="mdi:play-circle-outline" />
-					<span class="cp-board-vname">lecture-day-1.mp4 — video placeholder</span>
-					<span class="cp-board-vsub">A real class, projected here</span>
-				</div>
-				<span class="cp-sticky cp-sticky--y">ship &gt; perfect</span>
-				<span class="cp-sticky cp-sticky--p">demo friday!</span>
-				<span class="cp-marker-tray" aria-hidden="true">
-					<i class="cp-marker cp-marker--r"></i>
-					<i class="cp-marker cp-marker--b"></i>
-					<i class="cp-marker cp-marker--g"></i>
-					<i class="cp-eraser"></i>
-				</span>
+			<!-- the journey board: the game the hero used to hold, with room -->
+			<div class="cp-game cp-rev" data-cursor="pen">
+				<CampusJourney />
 			</div>
 		</div>
 	</section>
@@ -141,8 +126,8 @@ const voices = [
 				<span class="cp-badge">Course registration</span>
 				<h2 class="cp-h">Pick <em>your course.</em></h2>
 				<p class="cp-p cp-p--center">
-					Taught year-round for a small fee — and completely free during
-					the annual 3-month bootcamp.
+					Whichever path you apply through, you pick the discipline you
+					want to be trained in and shipped on.
 				</p>
 			</div>
 			<div class="cp-tracks">
@@ -214,7 +199,7 @@ const voices = [
 			<div class="cp-programs">
 				{
 					programs.map((g, i) => (
-						<a href="/bootcamp" class:list={['cp-program', 'cp-rev', { 'cp-program--hot': g.hot }]} style={`--i:${i}`}>
+						<a href={g.href} class:list={['cp-program', 'cp-rev', { 'cp-program--hot': g.hot }]} style={`--i:${i}`}>
 							<span class="cp-program-fee">{g.fee}</span>
 							<span class="cp-program-ic">
 								<Icon width={26} name={g.icon} />
@@ -395,12 +380,12 @@ const voices = [
 		</div>
 	</section>
 
-	<!-- ── G · from past bootcamps ─────────────────────────── -->
+	<!-- ── G · from past cohorts ────────────────────────────── -->
 	<section class="cp-sec" data-cursor="play">
 		<div class="cp-wrap">
 			<div class="cp-head cp-rev">
 				<span class="cp-badge">The archives</span>
-				<h2 class="cp-h">From past <em>bootcamps.</em></h2>
+				<h2 class="cp-h">From past <em>cohorts.</em></h2>
 			</div>
 			<div class="cp-gallery cp-rev">
 				<figure class="cp-shot cp-shot--wide cp-shot--photo">
@@ -504,12 +489,12 @@ const voices = [
 			<span class="cp-badge">New semester</span>
 			<h2 class="cp-h cp-h--xl">Enrollment <em>is open.</em></h2>
 			<p class="cp-p cp-p--center">
-				The next cohort is forming. Three months from now you could be
-				shipping, for free, with real mentors and coursemates.
+				The next cohort is forming, and it is a small one. Make the
+				case for your place and you could be shipping with us.
 			</p>
 			<a href="/bootcamp" class="cp-start">
 				<Icon width={20} name="mdi:gamepad-variant-outline" />
-				START: join the bootcamp
+				START: apply for a place
 			</a>
 			<p class="cp-alt">
 				<span>Questions before you enroll?</span>
@@ -663,17 +648,15 @@ const voices = [
 	.cp-open {
 		display: grid;
 		grid-template-columns: 1fr;
-		gap: clamp(1.75rem, 4vw, 3.5rem);
+		gap: clamp(1.75rem, 4vw, 2.75rem);
 		align-items: center;
 	}
-	@media (min-width: 920px) {
-		.cp-open {
-			grid-template-columns: 1fr 1.05fr;
-		}
-	}
-	/* allow columns to shrink below the video frame's intrinsic width
-	   (aspect-ratio + min-height would otherwise force ~427px) */
 	.cp-open > * { min-width: 0; }
+	/* the opening address is read to the whole room, so it sits centred */
+	.cp-copy--mid { text-align: center; }
+	.cp-copy--mid .cp-stats { margin-inline: auto; }
+	.cp-copy--mid .cp-row { justify-content: center; }
+	.cp-game { position: relative; }
 	.cp-stats {
 		display: grid;
 		grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -707,115 +690,6 @@ const voices = [
 	.cp-stats span {
 		font-size: 0.78rem;
 		color: var(--cp-faint);
-	}
-
-	/* the whiteboard — white in both themes, aluminium frame, marker ink */
-	.cp-board {
-		position: relative;
-		background: #fbfcfd;
-		border: 7px solid #d4dae1;
-		border-bottom-width: 10px;
-		border-radius: 0.9rem;
-		padding: 1.5rem 1.5rem 2.2rem;
-		transform: rotate(-1deg);
-		box-shadow: 0 34px 80px -30px rgba(0, 0, 0, 0.55);
-		transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-	}
-	.cp-board:hover {
-		transform: rotate(0deg);
-	}
-	.cp-board-title {
-		position: relative;
-		display: inline-block;
-		font-family: var(--cp-marker);
-		font-size: clamp(1.2rem, 2.4vw, 1.6rem);
-		font-weight: 700;
-		color: #1d4ed8;
-		margin: 0 0 1rem;
-		transform: rotate(-1deg);
-	}
-	.cp-board-swish {
-		position: absolute;
-		left: 0;
-		right: -6px;
-		bottom: -7px;
-		height: 5px;
-		border-radius: 9999px;
-		background: #dc2626;
-		opacity: 0.85;
-		transform: rotate(-0.6deg);
-	}
-	.cp-board-video {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		gap: 0.4rem;
-		width: 100%;
-		min-width: 0;
-		aspect-ratio: 16 / 9;
-		min-height: clamp(200px, 26vw, 380px);
-		border: 2px dashed rgba(29, 78, 216, 0.35);
-		border-radius: 0.7rem;
-		color: #475569;
-		background: radial-gradient(420px 200px at 70% 10%, rgba(29, 78, 216, 0.06), transparent);
-	}
-	.cp-board-vname {
-		font-size: 0.78rem;
-		font-weight: 800;
-		letter-spacing: 0.07em;
-		text-transform: uppercase;
-		text-align: center;
-		padding-inline: 0.75rem;
-	}
-	.cp-board-vsub {
-		font-size: 0.76rem;
-		color: #94a3b8;
-	}
-	.cp-sticky {
-		position: absolute;
-		font-family: var(--cp-marker);
-		font-size: 0.95rem;
-		font-weight: 700;
-		color: #44403c;
-		padding: 0.8rem 0.9rem 1rem;
-		box-shadow: 0 10px 22px -8px rgba(0, 0, 0, 0.35);
-	}
-	.cp-sticky--y {
-		top: -16px;
-		right: 26px;
-		background: #fde68a;
-		transform: rotate(3deg);
-	}
-	.cp-sticky--p {
-		bottom: 14px;
-		right: -14px;
-		background: #fbcfe8;
-		transform: rotate(-4deg);
-	}
-	.cp-marker-tray {
-		position: absolute;
-		left: 1.4rem;
-		bottom: -7px;
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-	}
-	.cp-marker {
-		display: block;
-		width: 44px;
-		height: 9px;
-		border-radius: 9999px;
-	}
-	.cp-marker--r { background: #dc2626; }
-	.cp-marker--b { background: #1d4ed8; }
-	.cp-marker--g { background: #16a34a; }
-	.cp-eraser {
-		display: block;
-		width: 30px;
-		height: 13px;
-		border-radius: 3px;
-		background: #64748b;
 	}
 
 	/* ── B · course cards ── */
@@ -1595,17 +1469,6 @@ const voices = [
 	}
 
 
-	/* ── whiteboard date, as the teacher wrote it ── */
-	.cp-board-date {
-		position: absolute;
-		top: 1.1rem;
-		right: 1.4rem;
-		font-family: var(--cp-marker);
-		font-size: 1rem;
-		font-weight: 700;
-		color: #16a34a;
-		transform: rotate(1.5deg);
-	}
 
 	/* ── to-do board details ── */
 	.cp-check {
@@ -1654,11 +1517,10 @@ const voices = [
 	/* ── programs & admissions ── */
 	.cp-programs {
 		display: grid;
-		grid-template-columns: repeat(4, minmax(0, 1fr));
+		grid-template-columns: repeat(2, minmax(0, 1fr));
 		gap: clamp(0.9rem, 2vw, 1.25rem);
-	}
-	@media (max-width: 980px) {
-		.cp-programs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+		max-width: 54rem;
+		margin-inline: auto;
 	}
 	@media (max-width: 540px) {
 		.cp-programs { grid-template-columns: 1fr; }
@@ -1921,7 +1783,6 @@ const voices = [
 		.cp-start {
 			animation: none;
 		}
-		.cp-board,
 		.cp-pin {
 			transform: none;
 		}

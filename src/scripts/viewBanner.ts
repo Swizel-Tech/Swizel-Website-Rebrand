@@ -79,7 +79,7 @@ export function initViewBanner() {
 		// px per second — slow enough to read a poster as it passes. The
 		// drift is one scrollLeft write per frame, so it is cheap enough to
 		// keep on a weak machine; lite mode only slows it down.
-		const speed = () => (lite() ? 16 : 26);
+		const speed = () => (lite() ? 26 : 42);
 
 		// one copy of the track; the wrap point
 		const loop = () => Math.max(1, rail.scrollWidth / 2);

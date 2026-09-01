@@ -3,40 +3,22 @@ import { Icon } from 'astro-icon/components';
 import CustomButton from '../CustomButton.astro';
 import Section from '../HTML/Section.astro';
 import RotatingHeadline from '../RotatingHeadline.astro';
-import TeamChip from '../TeamChip.astro';
+import MentorsBand from '../MentorsBand.astro';
+import WhiteboardVideo from '../WhiteboardVideo.astro';
 
+// No counters here: two of these are ranges, not numbers.
 const stats = [
-	{ to: 3, suffix: ' mo', label: 'Bootcamp' },
-	{ to: 65, suffix: '+', label: 'Products' },
-	{ to: 7, suffix: '+', label: 'Mentoring' },
-	{ to: 100, suffix: '%', label: 'Hands-on' },
+	{ n: '3\u20136 mo', label: 'IT internship' },
+	{ n: '12 mo', label: 'NYSC placement' },
+	{ n: '7 yrs+', label: 'Mentoring' },
+	{ n: '65+', label: 'Live products' },
 ];
 
-const levels = [
-	{ name: 'Learn', pct: 20 },
-	{ name: 'Build', pct: 50 },
-	{ name: 'Ship', pct: 80 },
-	{ name: 'Hired', pct: 100 },
-];
-
-const badges = [
-	{ name: 'Web', pct: 18 },
-	{ name: 'Mobile', pct: 42 },
-	{ name: 'Design', pct: 66 },
-	{ name: 'Marketing', pct: 88 },
-];
-
-const builds = [
-	{ name: 'Physio clinic', tag: 'like Anchorstep' },
-	{ name: 'Sports platform', tag: 'like Betslipswitch' },
-	{ name: 'Online store', tag: 'like Brixmarket' },
-	{ name: 'Brand campaign', tag: 'like Purple Panda' },
-];
 ---
 
 <Section
 	sectionClass="hero--stage hero-view hero-campus campus--stage relative overflow-hidden"
-	divClass="relative z-10 pb-16 sm:pb-24"
+	divClass="relative z-10 pb-10 sm:pb-16"
 >
 	<div class="campus--bg" aria-hidden="true">
 		<span class="campus--glow"></span>
@@ -47,29 +29,33 @@ const builds = [
 		<div class="campus--copy">
 			<span class="campus--eyebrow">
 				<Icon width={15} name="mdi:school-outline" />
-				Admissions open · Cohort '26 · Free
+				Few seats open
 			</span>
 
 			<RotatingHeadline class="campus--head" />
 
 			<p class="campus--sub">
-				Start from zero and level up with the same team that ships real
-				products. Learn by building things people actually use.
+				Do your IT or your service year on a live product with the team
+				that ships it. Learn by building products people actually use.
 			</p>
 
 			<div class="campus--cta">
 				<CustomButton
 					variant="accent"
 					elementType="a"
-					href="/bootcamp"
+					href="/bootcamp#internship"
 					class="flex items-center justify-center gap-2"
 				>
-					Join the bootcamp
-					<Icon width={18} name="mdi:arrow-right" />
+					Internship Path
+					<Icon width={17} name="mdi:arrow-right" />
 				</CustomButton>
+				<a class="campus--alt" href="/bootcamp#nysc">
+					<Icon width={15} name="mdi:flag-outline" />
+					NYSC Path
+				</a>
 				<button class="campus--tour" type="button" data-tour-start="campus">
-					<Icon width={16} name="mdi:compass-outline" />
-					Take the 20s tour
+					<Icon width={15} name="mdi:compass-outline" />
+					Take a Tour
 				</button>
 			</div>
 
@@ -77,81 +63,35 @@ const builds = [
 				{
 					stats.map((s) => (
 						<li class="campus--stat">
-							<span class="campus--statnum" data-count-to={s.to} data-suffix={s.suffix}>
-								{s.to}
-								{s.suffix}
-							</span>
+							<span class="campus--statnum">{s.n}</span>
 							<span class="campus--statlabel">{s.label}</span>
 						</li>
 					))
 				}
 			</ul>
 
-			<TeamChip kicker="// the mentors in your corner" label="Meet your mentors" />
+			<MentorsBand />
 		</div>
 
-		<!-- Gamified journey widget -->
-		<div class="campus--widget" id="campus-widget" data-tour="game">
-			<div class="cw--confetti" aria-hidden="true">
-				{Array.from({ length: 14 }).map((_, i) => <span style={`--i:${i}`} />)}
-			</div>
-
-			<div class="cw--head">
-				<div>
-					<span class="cw--title">Your tech journey</span>
-					<span class="cw--subt">from newbie to hired</span>
-				</div>
-				<button class="cw--start" type="button" data-cw-start>
-					<Icon width={14} name="mdi:play" />
-					<span class="cw--start-txt">Start</span>
-				</button>
-			</div>
-
-			<div class="cw--xprow">
-				<span class="cw--level" id="cw-level">Level 0 · Newbie</span>
-				<span class="cw--xp" id="cw-xp">0 XP</span>
-			</div>
-
-			<div class="cw--track" data-tour="track">
-				<div class="cw--bar"><span class="cw--fill" id="cw-fill"></span></div>
-				<span class="cw--avatar" id="cw-avatar"><Icon width={16} name="mdi:rocket-launch" /></span>
-				<ol class="cw--levels">
-					{
-						levels.map((l) => (
-							<li class="cw--node" data-pct={l.pct}>
-								<span class="cw--nodedot" />
-								<span class="cw--nodename">{l.name}</span>
-							</li>
-						))
-					}
-				</ol>
-			</div>
-
-			<div class="cw--badges" data-tour="badges">
-				{
-					badges.map((bdg) => (
-						<span class="cw--badge" data-pct={bdg.pct}>
-							<Icon width={13} name="mdi:check-decagram" />
-							{bdg.name}
-						</span>
-					))
-				}
-			</div>
-
-			<div class="cw--builds" data-tour="builds">
-				<span class="cw--builds-label">You will build, across sectors</span>
-				<div class="cw--buildcards">
-					{
-						builds.map((bld, i) => (
-							<span class="cw--buildcard" style={`--i:${i}`}>
-								<span class="cw--build-name">{bld.name}</span>
-								<span class="cw--build-tag">{bld.tag}</span>
-							</span>
-						))
-					}
-				</div>
-			</div>
+		<!-- The class, projected on the board -->
+		<div class="campus--boardwrap" data-tour="class">
+			<span class="campus--tape" aria-hidden="true"></span>
+			<WhiteboardVideo
+				videoId="noEhs-8ywag"
+				title="today: build something real"
+				kicker="Inside the internship"
+				stickyA="ship > perfect"
+				stickyB="demo friday!"
+				ctaHref="/bootcamp#internship"
+				ctaLabel="Start your application"
+			/>
+			<p class="campus--boardnote">
+				<Icon width={14} name="mdi:cursor-default-click-outline" />
+				Press play. Speed it up, scrub it, take it full screen. Every
+				control lives on the board.
+			</p>
 		</div>
+
 	</div>
 </Section>
 
@@ -213,75 +153,122 @@ const builds = [
 		100% { transform: translateY(112vh) rotate(360deg); opacity: 0; }
 	}
 
-	.campus--layout { position: relative; z-index: 1; display: grid; gap: 2.5rem; align-items: start; min-height: calc(100vh - 240px); padding-top: 2rem; padding-bottom: 1.5rem; }
+	.campus--layout { position: relative; z-index: 1; display: grid; gap: 2.5rem; align-items: start; min-height: calc(100vh - 260px); padding-top: 2rem; padding-bottom: 1rem; }
 	@media (min-width: 1024px) {
-		.campus--layout { grid-template-columns: 0.92fr 1.08fr; gap: 3rem; }
-		/* start the widget at the headline, not the eyebrow chip above it */
-		.campus--widget { margin-top: 3.6rem; }
+		/* The board is the tallest thing in the row, so let it set the
+		   row height. A min-height here would make the row taller than
+		   both columns and leave the board floating above the floor. */
+		.campus--layout { grid-template-columns: 0.86fr 1.14fr; gap: 2.25rem; align-items: stretch; min-height: 0; }
+		/* the column stretches to the height of the board beside it and the
+		   auto margin drops the mentors band onto its floor, so the two
+		   columns finish on the same line */
+		/* A flex column stretches its children by default, which is what
+		   blew the eyebrow pill out to the full column width. Everything
+		   sizes to its own content now; only the two full-bleed rows are
+		   asked to fill. space-between then spreads the leftover height
+		   evenly and lands the mentors band on the column's floor, level
+		   with the note under the board. */
+		.campus--copy {
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
+			justify-content: space-between;
+		}
+		.campus--copy > * { flex: none; }
+		.campus--copy .campus--stats,
+		.campus--copy > :global(.mband) { width: 100%; }
+		.campus--copy > :global(.mband) { margin-top: 0; margin-bottom: 0; }
+		/* the gaps come from space-between now, not from stacked margins */
+		.campus--copy .campus--eyebrow,
+		.campus--copy .campus--sub,
+		.campus--copy .campus--cta { margin-bottom: 0; }
+		/* End-aligned, not centred: when the board is the taller column this
+		   is an exact fit, and when the copy runs longer (narrow desktops,
+		   where the three buttons wrap) the board stays pinned to the floor
+		   so its note still lines up with the mentors band. */
+		.campus--boardwrap { align-self: end; }
 	}
 
-	.campus--eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.74rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #fcd34d; border: 1.5px solid rgba(252, 211, 77, 0.45); padding: 0.35rem 0.85rem; border-radius: 0.4rem; box-shadow: 2.5px 2.5px 0 rgba(252, 211, 77, 0.3); margin-bottom: 1.2rem; }
-	.campus--head { font-size: clamp(2.6rem, 6vw, 5.2rem); margin-bottom: 1.4rem; }
-	.campus--sub { max-width: 30rem; color: rgba(253, 243, 227, 0.7); font-size: 1.08rem; line-height: 1.65; margin-bottom: 1.8rem; }
-	.campus--cta { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem; }
-	.campus--tour { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; font-weight: 600; color: #fdf3e3; padding: 0.85rem 1.2rem; border-radius: 9999px; border: 1px dashed rgba(252, 211, 77, 0.5); transition: 0.25s ease; }
+	.campus--eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.74rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #fcd34d; border: 1.5px solid rgba(252, 211, 77, 0.45); padding: 0.3rem 0.8rem; border-radius: 0.4rem; box-shadow: 2.5px 2.5px 0 rgba(252, 211, 77, 0.3); margin-bottom: 0.7rem; }
+	:global(.campus--head) { font-size: clamp(2.3rem, 5vw, 4.2rem) !important; margin-bottom: 0.8rem !important; }
+	.campus--sub { max-width: 34rem; color: rgba(253, 243, 227, 0.7); font-size: 0.95rem; line-height: 1.58; margin-bottom: 0.9rem; }
+	.campus--cta { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.1rem; }
+	/* second track: NYSC. Quieter than the primary, still a real button. */
+	.campus--alt { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.86rem; font-weight: 700; white-space: nowrap; color: #fdf3e3; padding: 0.8rem 1.05rem; border-radius: 0.8rem; border: 1px solid rgba(252, 211, 77, 0.45); background: rgba(245, 158, 11, 0.08); transition: 0.25s ease; }
+	.campus--alt:hover { border-color: #f59e0b; color: #fcd34d; background: rgba(245, 158, 11, 0.16); transform: translateY(-1px); }
+
+	.campus--tour { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.86rem; font-weight: 700; white-space: nowrap; color: #fdf3e3; padding: 0.8rem 1.05rem; border-radius: 0.8rem; border: 1px dashed rgba(252, 211, 77, 0.45); transition: 0.25s ease; }
 	.campus--tour:hover { border-color: #f59e0b; color: #fcd34d; background: rgba(245, 158, 11, 0.1); }
-	.campus--stats { display: flex; justify-content: space-between; gap: clamp(0.8rem, 2vw, 1.6rem); flex-wrap: wrap; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.08); }
+	.campus--stats { display: flex; justify-content: space-between; gap: clamp(0.8rem, 2vw, 1.6rem); flex-wrap: wrap; padding-top: 0.9rem; border-top: 1px solid rgba(255, 255, 255, 0.08); }
 	@media (max-width: 600px) { .campus--stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem 1rem; } .campus--stat { min-width: 0; } }
-	.campus--statnum { font-family: 'Bebas Neue', sans-serif; font-size: clamp(1.6rem, 2.4vw, 2.2rem); line-height: 1; background: linear-gradient(135deg, #fde68a, #f59e0b); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
-	.campus--statlabel { display: block; font-size: 0.74rem; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(253, 243, 227, 0.5); margin-top: 0.3rem; max-width: 9rem; }
+	.campus--statnum { font-family: 'Bebas Neue', sans-serif; font-size: clamp(1.4rem, 2vw, 1.9rem); line-height: 1; background: linear-gradient(135deg, #fde68a, #f59e0b); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
+	.campus--statlabel { display: block; font-size: 0.74rem; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(253, 243, 227, 0.5); margin-top: 0.2rem; max-width: 9rem; }
 
-	/* ===== gamified widget ===== */
-	.campus--widget { position: relative; border-radius: 1.25rem; padding: 1.4rem; background: rgba(29, 22, 6, 0.6); border: 1px solid rgba(245, 158, 11, 0.25); backdrop-filter: blur(14px); box-shadow: 0 40px 90px -40px rgba(0, 0, 0, 0.85); overflow: hidden; }
-	.cw--head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
-	.cw--title { font-size: 1.15rem; font-weight: 800; color: #fff; }
-	.cw--subt { display: block; font-size: 0.8rem; color: rgba(253, 243, 227, 0.55); }
-	.cw--start { display: inline-flex; align-items: center; gap: 0.45rem; font-size: 0.8rem; font-weight: 800; color: #2a1c02; background: linear-gradient(95deg, #fde68a, #f59e0b); padding: 0.6rem 1.1rem; border-radius: 9999px; cursor: pointer; transition: transform 0.2s ease, filter 0.2s ease; }
-	.cw--start:hover { transform: translateY(-1px); filter: brightness(1.05); }
+	/* ===== the board in the hero ===== */
+	.campus--boardwrap {
+		position: relative;
+		min-width: 0;
+	}
+	/* a strip of masking tape holding the board to the wall */
+	.campus--tape {
+		position: absolute;
+		top: -18px;
+		left: 50%;
+		width: 132px;
+		height: 30px;
+		margin-left: -66px;
+		z-index: 7;
+		background: linear-gradient(180deg, rgba(253, 230, 138, 0.92), rgba(252, 211, 77, 0.82));
+		box-shadow: 0 6px 14px -8px rgba(0, 0, 0, 0.55);
+		transform: rotate(-2.2deg);
+		clip-path: polygon(3% 0, 97% 4%, 100% 96%, 2% 100%);
+		pointer-events: none;
+	}
+	.campus--boardnote {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.45rem;
+		margin-top: 1.1rem;
+		font-size: 0.8rem;
+		line-height: 1.5;
+		color: rgba(253, 243, 227, 0.55);
+	}
+	.campus--boardnote :global(svg) { flex: none; margin-top: 0.15rem; color: #fcd34d; }
 
-	.cw--xprow { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem; }
-	.cw--level { font-size: 0.82rem; font-weight: 700; color: #fcd34d; }
-	.cw--xp { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: #fff; letter-spacing: 1px; }
-
-	.cw--track { position: relative; margin-bottom: 1.6rem; }
-	.cw--bar { height: 12px; border-radius: 9999px; background: rgba(255, 255, 255, 0.08); overflow: hidden; }
-	.cw--fill { display: block; height: 100%; width: 0%; border-radius: 9999px; background: linear-gradient(90deg, #fde68a, #f59e0b, #fb7185); }
-	.cw--avatar { position: absolute; top: -8px; left: 0%; transform: translateX(-50%); width: 30px; height: 30px; display: grid; place-items: center; border-radius: 9999px; background: #f59e0b; color: #2a1c02; box-shadow: 0 6px 16px -4px rgba(245, 158, 11, 0.7); }
-	.cw--levels { display: flex; justify-content: space-between; margin-top: 0.9rem; }
-	.cw--node { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
-	.cw--nodedot { width: 11px; height: 11px; border-radius: 9999px; background: rgba(255, 255, 255, 0.15); transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease; }
-	.cw--node.is-on .cw--nodedot { background: #f59e0b; transform: scale(1.3); box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.25); }
-	.cw--nodename { font-size: 0.72rem; color: rgba(253, 243, 227, 0.5); }
-	.cw--node.is-on .cw--nodename { color: #fcd34d; font-weight: 700; }
-
-	.cw--badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin-bottom: 1.4rem; }
-	.cw--badge { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.76rem; font-weight: 600; padding: 0.35rem 0.7rem; border-radius: 9999px; border: 1px solid rgba(255, 255, 255, 0.12); background: rgba(255, 255, 255, 0.03); color: rgba(253, 243, 227, 0.55); opacity: 0.45; transform: scale(0.92); transition: all 0.3s ease; }
-	.cw--badge :global(svg) { opacity: 0.5; }
-	.cw--badge.is-on { opacity: 1; transform: scale(1); border-color: rgba(245, 158, 11, 0.5); background: rgba(245, 158, 11, 0.12); color: #fcd34d; }
-
-	.cw--builds { padding-top: 1rem; border-top: 1px dashed rgba(255, 255, 255, 0.1); }
-	.cw--builds-label { display: block; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(253, 243, 227, 0.5); margin-bottom: 0.7rem; }
-	.cw--buildcards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.55rem; }
-	.cw--buildcard { display: flex; flex-direction: column; padding: 0.6rem 0.75rem; border-radius: 0.7rem; border: 1px solid rgba(245, 158, 11, 0.22); background: rgba(245, 158, 11, 0.07); opacity: 0; transform: translateY(8px); }
-	.campus--widget.is-complete .cw--buildcard { animation: cwcard 0.45s ease forwards; animation-delay: calc(var(--i) * 0.1s); }
-	@keyframes cwcard { to { opacity: 1; transform: translateY(0); } }
-	.cw--build-name { font-size: 0.84rem; font-weight: 700; color: #fff; }
-	.cw--build-tag { font-size: 0.7rem; color: #fcd34d; }
-
-	/* confetti */
-	.cw--confetti { position: absolute; inset: 0; pointer-events: none; }
-	.cw--confetti span { position: absolute; top: 30%; left: calc(8% + var(--i) * 6.5%); width: 8px; height: 8px; border-radius: 2px; background: hsl(calc(20 + var(--i) * 26) 90% 60%); opacity: 0; }
-	.campus--widget.is-complete .cw--confetti span { animation: cwfetti 1.1s ease-out forwards; animation-delay: calc(var(--i) * 0.03s); }
-	@keyframes cwfetti {
-		0% { opacity: 1; transform: translateY(0) rotate(0); }
-		100% { opacity: 0; transform: translateY(220px) rotate(540deg); }
+	/* Between 1024 and 1280 the copy column is narrow enough that three
+	   buttons wrap, which pushes the mentors band below the board's floor.
+	   Tighten the chrome so the row survives on one line. */
+	@media (min-width: 1024px) and (max-width: 1279px) {
+		.campus--cta { gap: 0.45rem; }
+		.campus--alt,
+		.campus--tour { font-size: 0.78rem; padding: 0.7rem 0.8rem; gap: 0.3rem; }
+		.campus--cta :global(.btn--accent) {
+			padding-left: 1.1rem;
+			padding-right: 1.1rem;
+			font-size: 0.78rem;
+		}
 	}
 
-	@media (max-width: 1023px) { .campus--layout { min-height: auto; } }
+	/* On a phone the board should not be a scroll away: the copy hands
+	   straight over to it, and the numbers close the section underneath. */
+	@media (max-width: 1023px) {
+		.campus--layout { min-height: auto; display: flex; flex-direction: column; align-items: flex-start; gap: 1.6rem; }
+		.campus--copy { display: contents; }
+		.campus--eyebrow { order: 1; margin-bottom: 0; }
+		/* the headline is rendered by RotatingHeadline, so a scoped
+		   selector never reaches it and it kept sorting to the top */
+		.campus--layout :global(.campus--head) { order: 2; margin-bottom: 0 !important; }
+		.campus--sub { order: 3; margin-bottom: 0; }
+		.campus--cta { order: 4; margin-bottom: 0; }
+		.campus--boardwrap { order: 5; width: 100%; }
+		.campus--stats { width: 100%; }
+		.campus--stats { order: 6; }
+		.campus--layout :global(.mband) { order: 7; width: 100%; }
+	}
 	@media (max-width: 768px) {
 		.campus--layout { gap: 1.75rem; padding-top: 0.5rem; }
 		.campus--head { font-size: clamp(2.2rem, 9.5vw, 3.2rem); }
-		.campus--sub { font-size: 1rem; margin-bottom: 1.4rem; }
+		.campus--sub { font-size: 0.98rem; margin-bottom: 1.4rem; }
 	}
 	@media (prefers-reduced-motion: reduce) { .campus--dot { animation: none !important; } }
 
@@ -307,6 +294,16 @@ const builds = [
 		border-color: rgba(180, 83, 9, 0.45);
 	}
 	:global(html:not(.dark)) .campus--tour:hover { color: #b45309; }
+	:global(html:not(.dark)) .campus--alt {
+		color: #241703;
+		border-color: rgba(180, 83, 9, 0.45);
+		background: rgba(245, 158, 11, 0.14);
+	}
+	:global(html:not(.dark)) .campus--alt:hover {
+		color: #7c2d12;
+		border-color: #b45309;
+		background: rgba(245, 158, 11, 0.24);
+	}
 	:global(html:not(.dark)) .campus--stats { border-top-color: rgba(36, 23, 3, 0.12); }
 	:global(html:not(.dark)) .campus--statnum {
 		background: linear-gradient(135deg, #d97706, #b45309);
@@ -314,31 +311,9 @@ const builds = [
 		background-clip: text;
 	}
 	:global(html:not(.dark)) .campus--statlabel { color: rgba(36, 23, 3, 0.55); }
-	:global(html:not(.dark)) .campus--widget {
-		background: rgba(255, 255, 255, 0.82);
-		border-color: rgba(180, 83, 9, 0.25);
-		box-shadow: 0 40px 90px -44px rgba(36, 23, 3, 0.35);
+	:global(html:not(.dark)) .campus--boardnote { color: rgba(36, 23, 3, 0.6); }
+	:global(html:not(.dark)) .campus--boardnote :global(svg) { color: #b45309; }
+	:global(html:not(.dark)) .campus--tape {
+		background: linear-gradient(180deg, rgba(214, 211, 209, 0.85), rgba(190, 187, 184, 0.8));
 	}
-	:global(html:not(.dark)) .cw--title { color: #241703; }
-	:global(html:not(.dark)) .cw--subt { color: rgba(36, 23, 3, 0.55); }
-	:global(html:not(.dark)) .cw--level { color: #b45309; }
-	:global(html:not(.dark)) .cw--xp { color: #241703; }
-	:global(html:not(.dark)) .cw--bar { background: rgba(36, 23, 3, 0.1); }
-	:global(html:not(.dark)) .cw--nodedot { background: rgba(36, 23, 3, 0.18); }
-	:global(html:not(.dark)) .cw--nodename { color: rgba(36, 23, 3, 0.55); }
-	:global(html:not(.dark)) .cw--node.is-on .cw--nodename { color: #b45309; }
-	:global(html:not(.dark)) .cw--badge {
-		border-color: rgba(36, 23, 3, 0.14);
-		background: rgba(255, 255, 255, 0.5);
-		color: rgba(36, 23, 3, 0.6);
-	}
-	:global(html:not(.dark)) .cw--badge.is-on {
-		border-color: rgba(180, 83, 9, 0.5);
-		background: rgba(245, 158, 11, 0.14);
-		color: #92400e;
-	}
-	:global(html:not(.dark)) .cw--builds { border-top-color: rgba(36, 23, 3, 0.14); }
-	:global(html:not(.dark)) .cw--builds-label { color: rgba(36, 23, 3, 0.55); }
-	:global(html:not(.dark)) .cw--build-name { color: #241703; }
-	:global(html:not(.dark)) .cw--build-tag { color: #b45309; }
 </style>

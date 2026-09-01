@@ -1,0 +1,1032 @@
+---
+// A whiteboard with a real class projected on it. The video is a YouTube
+// embed with YouTube's own chrome switched off: every control you see is
+// drawn into the board furniture (the aluminium ledge, a marker seek line,
+// marker-cap buttons). When the reel ends we cover the frame with our own
+// "that's the class" card before YouTube can offer anybody else's videos.
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+	videoId: string;
+	title?: string;
+	kicker?: string;
+	stickyA?: string;
+	stickyB?: string;
+	ctaHref?: string;
+	ctaLabel?: string;
+	class?: string;
+	tilt?: boolean;
+}
+
+const {
+	videoId,
+	title = 'today: build something real',
+	kicker = 'Lecture recording',
+	stickyA = 'ship > perfect',
+	stickyB = 'demo friday!',
+	ctaHref = '/bootcamp',
+	ctaLabel = 'Join the bootcamp',
+	class: klass = '',
+	tilt = true,
+} = Astro.props;
+
+const rates = [0.5, 0.75, 1, 1.25, 1.5, 2];
+---
+
+<div
+	class:list={['wbv', klass, tilt && 'wbv--tilt']}
+	data-wbv
+	data-video-id={videoId}
+	tabindex="0"
+	role="region"
+	aria-label="Class recording"
+>
+	<!-- board head: date + marker headline -->
+	<div class="wbv__head">
+		<p class="wbv__title">
+			{title}
+			<span class="wbv__swish" aria-hidden="true"></span>
+		</p>
+		<span class="wbv__date" data-wbv-date>Mon, 1 Jan</span>
+	</div>
+
+	<!-- the projected screen -->
+	<div class="wbv__screen" data-wbv-screen data-cursor="video">
+		<div class="wbv__mount" data-wbv-mount></div>
+
+		<!-- YouTube never sees a pointer, so it never draws its own chrome -->
+		<button class="wbv__shield" type="button" data-wbv-shield hidden aria-label="Play or pause"></button>
+
+		<!-- our paused state, in place of YouTube's -->
+		<div class="wbv__paused" data-wbv-paused hidden aria-hidden="true">
+			<span class="wbv__paused-ic"><Icon width={30} name="mdi:pause" /></span>
+			<span class="wbv__paused-t">paused</span>
+			<span class="wbv__paused-s">click the board to carry on</span>
+		</div>
+
+		<!-- facade: nothing from YouTube loads until this is pressed -->
+		<button class="wbv__poster" type="button" data-wbv-play aria-label="Play the class recording">
+			<img
+				class="wbv__thumb"
+				src={`https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`}
+				data-wbv-thumb
+				data-fallback={`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`}
+				alt=""
+				loading="lazy"
+				decoding="async"
+				width="1280"
+				height="720"
+			/>
+			<span class="wbv__scrim" aria-hidden="true"></span>
+
+			<span class="wbv__cue" aria-hidden="true">
+				<span class="wbv__bigwrap">
+					<span class="wbv__pulse"></span>
+					<svg class="wbv__ring" viewBox="0 0 100 100">
+						<circle class="wbv__ring-bg" cx="50" cy="50" r="46" />
+						<circle class="wbv__ring-fg" cx="50" cy="50" r="46" />
+					</svg>
+					<span class="wbv__big">
+						<Icon width={34} name="mdi:play" />
+					</span>
+				</span>
+				<span class="wbv__count" data-wbv-count hidden>
+					class starts in <b data-wbv-countn>4</b>
+				</span>
+			</span>
+
+			<span class="wbv__label">
+				<b>Watch a real class</b>
+				<i>{kicker}</i>
+			</span>
+		</button>
+
+		<button class="wbv__sound" type="button" data-wbv-sound hidden>
+			<span class="wbv__sound-ic"><Icon width={20} name="mdi:volume-off" /></span>
+			<span class="wbv__sound-txt">
+				<b>Sound is off</b>
+				<i>tap to hear the class</i>
+			</span>
+		</button>
+
+		<!-- spinner while the player boots -->
+		<span class="wbv__boot" data-wbv-boot hidden aria-hidden="true">
+			<i></i><i></i><i></i>
+		</span>
+
+		<!-- our own end card. YouTube never gets to suggest anything. -->
+		<div class="wbv__end" data-wbv-end hidden>
+			<span class="wbv__end-mark" aria-hidden="true"></span>
+			<p class="wbv__end-t">that's the class.</p>
+			<p class="wbv__end-s">Now go build something people actually use.</p>
+			<div class="wbv__end-row">
+				<button class="wbv__replay" type="button" data-wbv-replay>
+					<Icon width={19} name="mdi:replay" />
+					Watch again
+				</button>
+				<a class="wbv__end-cta" href={ctaHref}>
+					{ctaLabel}
+					<Icon width={16} name="mdi:arrow-right" />
+				</a>
+			</div>
+		</div>
+	</div>
+
+	<!-- the seek line: drawn on the board in marker -->
+	<div class="wbv__seekrow" data-wbv-tray hidden>
+		<span class="wbv__t" data-wbv-cur>0:00</span>
+		<span class="wbv__seek">
+			<span class="wbv__seek-line" aria-hidden="true"></span>
+			<span class="wbv__seek-buf" data-wbv-buf aria-hidden="true"></span>
+			<span class="wbv__seek-fill" data-wbv-fill aria-hidden="true"></span>
+			<span class="wbv__seek-cap" data-wbv-cap aria-hidden="true"></span>
+			<input
+				class="wbv__range"
+				type="range"
+				min="0"
+				max="1000"
+				value="0"
+				step="1"
+				aria-label="Seek through the recording"
+				data-wbv-range
+			/>
+		</span>
+		<span class="wbv__t wbv__t--dur" data-wbv-dur>0:00</span>
+	</div>
+
+	<!-- the ledge: markers on the left, the controls on the right -->
+	<div class="wbv__ledge">
+		<span class="wbv__markers" aria-hidden="true">
+			<i class="wbv__marker wbv__marker--r"></i>
+			<i class="wbv__marker wbv__marker--b"></i>
+			<i class="wbv__marker wbv__marker--g"></i>
+			<i class="wbv__eraser"></i>
+		</span>
+
+		<div class="wbv__btns">
+			<button class="wbv__btn wbv__btn--main" type="button" data-wbv-toggle aria-label="Play">
+				<Icon class="wbv__i-play" width={19} name="mdi:play" />
+				<Icon class="wbv__i-pause" width={19} name="mdi:pause" />
+			</button>
+			<button class="wbv__btn" type="button" data-wbv-back aria-label="Back 10 seconds">
+				<Icon width={18} name="mdi:rewind-10" />
+			</button>
+			<button class="wbv__btn" type="button" data-wbv-fwd aria-label="Forward 10 seconds">
+				<Icon width={18} name="mdi:fast-forward-10" />
+			</button>
+
+			<span class="wbv__gap"></span>
+
+			<span class="wbv__speed">
+				<button
+					class="wbv__btn wbv__btn--rate"
+					type="button"
+					data-wbv-speed
+					aria-haspopup="true"
+					aria-expanded="false"
+					aria-label="Playback speed"
+				>
+					<b data-wbv-rate>1&times;</b>
+				</button>
+				<span class="wbv__menu" data-wbv-menu hidden role="menu">
+					<em>Speed</em>
+					{
+						rates.map((r) => (
+							<button
+								class:list={['wbv__rate', r === 1 && 'is-on']}
+								type="button"
+								role="menuitem"
+								data-rate={r}
+							>
+								{r === 1 ? 'Normal' : `${r}×`}
+							</button>
+						))
+					}
+				</span>
+			</span>
+
+			<button class="wbv__btn wbv__btn--mute" type="button" data-wbv-mute aria-label="Mute">
+				<Icon class="wbv__i-vol" width={18} name="mdi:volume-high" />
+				<Icon class="wbv__i-mute" width={18} name="mdi:volume-off" />
+				<b class="wbv__mutelabel">Muted</b>
+			</button>
+			<input
+				class="wbv__vol"
+				type="range"
+				min="0"
+				max="100"
+				value="100"
+				step="1"
+				aria-label="Volume"
+				data-wbv-vol
+			/>
+
+			<button class="wbv__btn" type="button" data-wbv-fs aria-label="Full screen">
+				<Icon class="wbv__i-fs" width={18} name="mdi:fullscreen" />
+				<Icon class="wbv__i-fsx" width={18} name="mdi:fullscreen-exit" />
+			</button>
+		</div>
+	</div>
+
+	<span class="wbv__sticky wbv__sticky--y">{stickyA}</span>
+	<span class="wbv__sticky wbv__sticky--p">{stickyB}</span>
+</div>
+
+<style>
+	.wbv {
+		--wbv-marker: 'Bradley Hand', 'Segoe Print', 'Comic Sans MS', cursive;
+		--wbv-blue: #1d4ed8;
+		--wbv-red: #dc2626;
+		--wbv-frame: #d4dae1;
+		position: relative;
+		background: #fbfcfd;
+		border: 7px solid var(--wbv-frame);
+		border-bottom-width: 7px;
+		border-radius: 0.9rem;
+		padding: 1.15rem 1.15rem 0;
+		box-shadow:
+			inset 0 0 60px rgba(29, 78, 216, 0.04),
+			0 34px 80px -30px rgba(0, 0, 0, 0.55);
+		transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+		outline: none;
+		/* faint ghost of yesterday's lesson, wiped but never quite gone */
+		background-image:
+			radial-gradient(420px 160px at 82% 4%, rgba(29, 78, 216, 0.05), transparent 70%),
+			radial-gradient(360px 140px at 8% 92%, rgba(220, 38, 38, 0.04), transparent 70%);
+	}
+	.wbv--tilt { transform: rotate(-1deg); }
+	.wbv--tilt:hover,
+	.wbv:focus-visible { transform: rotate(0deg); }
+	.wbv:focus-visible { box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.45), 0 34px 80px -30px rgba(0, 0, 0, 0.55); }
+
+	/* ── head ── */
+	.wbv__head {
+		display: flex;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: 1rem;
+		margin-bottom: 0.9rem;
+	}
+	.wbv__title {
+		position: relative;
+		display: inline-block;
+		font-family: var(--wbv-marker);
+		font-size: clamp(1.1rem, 2.2vw, 1.5rem);
+		font-weight: 700;
+		color: var(--wbv-blue);
+		margin: 0;
+		transform: rotate(-1deg);
+	}
+	.wbv__swish {
+		position: absolute;
+		left: 0;
+		right: -6px;
+		bottom: -7px;
+		height: 5px;
+		border-radius: 9999px;
+		background: var(--wbv-red);
+		opacity: 0.85;
+		transform: rotate(-0.6deg);
+	}
+	.wbv__date {
+		font-family: var(--wbv-marker);
+		font-size: 0.86rem;
+		color: #64748b;
+		white-space: nowrap;
+	}
+
+	/* ── the screen ── */
+	.wbv__screen {
+		position: relative;
+		width: 100%;
+		min-width: 0;
+		aspect-ratio: 16 / 9;
+		border-radius: 0.7rem;
+		overflow: hidden;
+		background: #0b1220;
+		box-shadow:
+			0 0 0 2px rgba(29, 78, 216, 0.18),
+			0 18px 40px -22px rgba(15, 23, 42, 0.7);
+	}
+	.wbv__mount,
+	.wbv__screen :global(iframe) {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		border: 0;
+		display: block;
+	}
+
+	/* facade */
+	.wbv__poster {
+		position: absolute;
+		inset: 0;
+		z-index: 3;
+		display: grid;
+		place-items: center;
+		cursor: pointer;
+		border: 0;
+		padding: 0;
+		background: #0b1220;
+		overflow: hidden;
+	}
+	.wbv__thumb {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transform: scale(1.02);
+		transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), filter 0.4s ease;
+	}
+	.wbv__poster:hover .wbv__thumb { transform: scale(1.06); filter: brightness(1.05); }
+	.wbv__scrim {
+		position: absolute;
+		inset: 0;
+		background:
+			radial-gradient(58% 58% at 50% 46%, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.34) 100%),
+			linear-gradient(180deg, transparent 52%, rgba(4, 8, 18, 0.72));
+	}
+	/* the cue: play button, countdown ring, and the line underneath */
+	.wbv__cue {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.85rem;
+		transform: translateY(-4px);
+	}
+	.wbv__bigwrap {
+		position: relative;
+		display: grid;
+		place-items: center;
+		width: 78px;
+		height: 78px;
+	}
+	.wbv__ring {
+		position: absolute;
+		inset: -14px;
+		width: calc(100% + 28px);
+		height: calc(100% + 28px);
+		transform: rotate(-90deg);
+		opacity: 0;
+		transition: opacity 0.3s ease;
+	}
+	.wbv__ring-bg,
+	.wbv__ring-fg {
+		fill: none;
+		stroke-width: 4;
+		stroke-linecap: round;
+	}
+	.wbv__ring-bg { stroke: rgba(4, 8, 18, 0.55); stroke-width: 5; }
+	.wbv__ring-fg {
+		stroke: #fcd34d;
+		stroke-width: 5;
+		stroke-dasharray: 289;
+		stroke-dashoffset: 289;
+		filter: drop-shadow(0 0 6px rgba(252, 211, 77, 0.75));
+	}
+	.wbv[data-counting] .wbv__ring { opacity: 1; }
+	.wbv[data-counting] .wbv__ring-fg {
+		animation: wbv-ring var(--wbv-cd, 4s) linear forwards;
+	}
+	@keyframes wbv-ring { to { stroke-dashoffset: 0; } }
+	/* while it counts down, the button asks to be pressed */
+	.wbv[data-counting] .wbv__big { animation: wbv-throb 0.85s ease-in-out infinite; }
+	@keyframes wbv-throb {
+		0%, 100% { transform: scale(1); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 14px 34px -10px rgba(245, 158, 11, 0.75); }
+		50% { transform: scale(1.09); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 18px 46px -8px rgba(245, 158, 11, 0.95); }
+	}
+	.wbv__count {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-family: var(--wbv-marker);
+		font-size: 1rem;
+		font-weight: 700;
+		color: #fff;
+		padding: 0.3rem 0.4rem 0.3rem 0.85rem;
+		border-radius: 9999px;
+		background: rgba(4, 8, 18, 0.72);
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		box-shadow: 0 12px 28px -14px rgba(0, 0, 0, 0.9);
+	}
+	.wbv__count[hidden] { display: none; }
+	.wbv__count b {
+		display: inline-grid;
+		place-items: center;
+		min-width: 1.75rem;
+		height: 1.75rem;
+		padding: 0 0.35rem;
+		border-radius: 0.5rem;
+		font-size: 1.05rem;
+		color: #2b1c08;
+		background: linear-gradient(180deg, #fde68a, #f59e0b);
+		text-shadow: none;
+	}
+
+	/* A reel that starts itself must start silent, so the fact that it is
+	   silent has to be unmissable — tosky thought his speakers had died. */
+	.wbv__sound {
+		position: absolute;
+		left: 50%;
+		bottom: 1.1rem;
+		z-index: 4;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.65rem;
+		text-align: left;
+		color: #2b1c08;
+		background: linear-gradient(180deg, #fde68a, #f59e0b);
+		padding: 0.55rem 1.1rem 0.55rem 0.6rem;
+		border-radius: 9999px;
+		cursor: pointer;
+		border: 1px solid rgba(120, 67, 5, 0.35);
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.6),
+			0 14px 34px -12px rgba(0, 0, 0, 0.85);
+		transform: translateX(-50%);
+		animation:
+			wbv-soundin 0.45s cubic-bezier(0.22, 1, 0.36, 1) both,
+			wbv-soundbeat 1.9s ease-in-out 0.5s infinite;
+	}
+	.wbv__sound[hidden] { display: none; }
+	.wbv__sound:hover { filter: brightness(1.06); }
+	.wbv__sound-ic {
+		display: grid;
+		place-items: center;
+		width: 34px;
+		height: 34px;
+		flex: none;
+		border-radius: 9999px;
+		color: #fff;
+		background: #b91c1c;
+		box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.22);
+	}
+	.wbv__sound-txt { display: flex; flex-direction: column; line-height: 1.15; white-space: nowrap; }
+	.wbv__sound-txt b { font-size: 0.9rem; font-weight: 900; letter-spacing: -0.01em; }
+	.wbv__sound-txt i {
+		font-style: normal;
+		font-size: 0.72rem;
+		font-weight: 700;
+		opacity: 0.72;
+		white-space: nowrap;
+	}
+	@keyframes wbv-soundin { from { opacity: 0; transform: translateX(-50%) translateY(8px); } to { opacity: 1; transform: translateX(-50%); } }
+	@keyframes wbv-soundbeat {
+		0%, 100% { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 14px 34px -12px rgba(0, 0, 0, 0.85), 0 0 0 0 rgba(245, 158, 11, 0.55); }
+		55% { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 14px 34px -12px rgba(0, 0, 0, 0.85), 0 0 0 12px rgba(245, 158, 11, 0); }
+	}
+
+	/* the ledge button says it in words too */
+	.wbv__mutelabel { display: none; }
+	.wbv[data-muted] .wbv__btn--mute {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: auto;
+		height: 34px;
+		gap: 0.35rem;
+		padding: 0 0.65rem;
+		color: #fff;
+		background: linear-gradient(180deg, #ef4444, #b91c1c);
+		border-color: rgba(127, 29, 29, 0.6);
+		animation: wbv-mutebeat 1.6s ease-in-out infinite;
+	}
+	.wbv[data-muted] .wbv__btn--mute:hover { color: #fff; background: linear-gradient(180deg, #f87171, #dc2626); }
+	.wbv[data-muted] .wbv__mutelabel {
+		display: inline-block;
+		line-height: 1;
+		font-size: 0.72rem;
+		font-weight: 900;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+	}
+	@keyframes wbv-mutebeat {
+		0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.5); }
+		60% { box-shadow: 0 0 0 8px rgba(220, 38, 38, 0); }
+	}
+	.wbv[data-muted] .wbv__vol { opacity: 0.4; }
+
+	.wbv__big {
+		position: relative;
+		display: grid;
+		place-items: center;
+		width: 78px;
+		height: 78px;
+		border-radius: 9999px;
+		color: #2b1c08;
+		background: linear-gradient(180deg, #fde68a, #f59e0b);
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.6),
+			0 14px 34px -10px rgba(245, 158, 11, 0.75);
+		transition: transform 0.25s ease;
+	}
+	.wbv__big :global(svg) { margin-left: 4px; }
+	.wbv__poster:hover .wbv__big { transform: scale(1.07); }
+	.wbv__pulse {
+		position: absolute;
+		inset: 0;
+		border-radius: 9999px;
+		border: 2px solid rgba(252, 211, 77, 0.7);
+		animation: wbv-pulse 2.4s ease-out infinite;
+	}
+	@keyframes wbv-pulse {
+		0% { transform: scale(1); opacity: 0.75; }
+		70% { transform: scale(1.9); opacity: 0; }
+		100% { opacity: 0; }
+	}
+	.wbv__label {
+		position: absolute;
+		left: 1rem;
+		bottom: 0.95rem;
+		display: flex;
+		flex-direction: column;
+		text-align: left;
+		color: #fff;
+	}
+	.wbv__label b { font-size: 0.98rem; font-weight: 800; letter-spacing: -0.01em; }
+	.wbv__label i {
+		font-style: normal;
+		font-size: 0.72rem;
+		font-weight: 700;
+		letter-spacing: 0.13em;
+		text-transform: uppercase;
+		color: #fcd34d;
+		margin-top: 0.15rem;
+	}
+
+	/* the shield: swallows every pointer event bound for the embed */
+	.wbv__shield {
+		position: absolute;
+		inset: 0;
+		z-index: 2;
+		border: 0;
+		padding: 0;
+		background: transparent;
+		cursor: pointer;
+	}
+	.wbv__shield[hidden] { display: none; }
+
+	/* our paused card, so YouTube's never gets a turn */
+	.wbv__paused {
+		position: absolute;
+		inset: 0;
+		z-index: 3;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.15rem;
+		pointer-events: none;
+		background:
+			radial-gradient(60% 60% at 50% 45%, rgba(4, 8, 18, 0.55), rgba(4, 8, 18, 0.86) 100%);
+		animation: wbv-fade 0.22s ease both;
+	}
+	.wbv__paused[hidden] { display: none; }
+	@keyframes wbv-fade { from { opacity: 0; } to { opacity: 1; } }
+	.wbv__paused-ic {
+		display: grid;
+		place-items: center;
+		width: 68px;
+		height: 68px;
+		border-radius: 9999px;
+		color: #2b1c08;
+		background: linear-gradient(180deg, #fde68a, #f59e0b);
+		box-shadow: 0 14px 34px -12px rgba(245, 158, 11, 0.8);
+		margin-bottom: 0.6rem;
+	}
+	.wbv__paused-t {
+		font-family: var(--wbv-marker);
+		font-size: 1.5rem;
+		font-weight: 700;
+		color: #fff;
+		transform: rotate(-1.5deg);
+	}
+	.wbv__paused-s {
+		font-size: 0.76rem;
+		letter-spacing: 0.02em;
+		color: rgba(255, 255, 255, 0.6);
+	}
+	@media (max-width: 620px) {
+		.wbv__paused-ic { width: 54px; height: 54px; }
+		.wbv__paused-t { font-size: 1.2rem; }
+	}
+
+	/* boot spinner */
+	.wbv__boot {
+		position: absolute;
+		inset: 0;
+		z-index: 4;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 7px;
+		background: rgba(11, 18, 32, 0.9);
+	}
+	.wbv__boot[hidden] { display: none; }
+	.wbv__boot i {
+		width: 9px;
+		height: 9px;
+		border-radius: 9999px;
+		background: #fcd34d;
+		animation: wbv-boot 1s ease-in-out infinite;
+	}
+	.wbv__boot i:nth-child(2) { animation-delay: 0.14s; }
+	.wbv__boot i:nth-child(3) { animation-delay: 0.28s; }
+	@keyframes wbv-boot {
+		0%, 100% { transform: translateY(0); opacity: 0.45; }
+		50% { transform: translateY(-8px); opacity: 1; }
+	}
+
+	/* end card — opaque, so nothing of YouTube's shows through */
+	.wbv__end {
+		position: absolute;
+		inset: 0;
+		z-index: 5;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.35rem;
+		padding: 1.25rem;
+		text-align: center;
+		background:
+			radial-gradient(70% 70% at 50% 0%, rgba(245, 158, 11, 0.18), transparent 70%),
+			linear-gradient(180deg, #0e1526 0%, #070b14 100%);
+		animation: wbv-endin 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+	}
+	.wbv__end[hidden] { display: none; }
+	@keyframes wbv-endin {
+		from { opacity: 0; transform: scale(1.02); }
+		to { opacity: 1; transform: none; }
+	}
+	.wbv__end-mark {
+		width: 46px;
+		height: 5px;
+		border-radius: 9999px;
+		background: linear-gradient(90deg, #fde68a, #f59e0b, #fb7185);
+		margin-bottom: 0.7rem;
+	}
+	.wbv__end-t {
+		font-family: var(--wbv-marker);
+		font-size: clamp(1.5rem, 3.4vw, 2.3rem);
+		font-weight: 700;
+		color: #fff;
+		margin: 0;
+		transform: rotate(-1deg);
+	}
+	.wbv__end-s {
+		font-size: clamp(0.8rem, 1.4vw, 0.95rem);
+		color: rgba(255, 255, 255, 0.66);
+		margin: 0 0 1rem;
+		max-width: 26rem;
+	}
+	.wbv__end-row {
+		display: flex;
+		align-items: center;
+		gap: 0.7rem;
+		flex-wrap: wrap;
+		justify-content: center;
+	}
+	.wbv__replay {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 0.92rem;
+		font-weight: 800;
+		color: #2b1c08;
+		background: linear-gradient(180deg, #fde68a, #f59e0b);
+		padding: 0.7rem 1.35rem;
+		border-radius: 0.75rem;
+		cursor: pointer;
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.55),
+			0 5px 0 rgba(120, 67, 5, 0.9);
+		transition: transform 0.15s ease, box-shadow 0.15s ease;
+	}
+	.wbv__replay:hover {
+		transform: translateY(2px);
+		box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 3px 0 rgba(120, 67, 5, 0.9);
+	}
+	.wbv__end-cta {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		font-size: 0.88rem;
+		font-weight: 700;
+		color: #fff;
+		padding: 0.7rem 1.1rem;
+		border-radius: 0.75rem;
+		border: 1px dashed rgba(252, 211, 77, 0.6);
+		transition: 0.25s ease;
+	}
+	.wbv__end-cta:hover { background: rgba(245, 158, 11, 0.14); color: #fcd34d; }
+
+	/* ── seek line, drawn on the board ── */
+	.wbv__seekrow {
+		display: flex;
+		align-items: center;
+		gap: 0.7rem;
+		padding: 0.85rem 0.15rem 0.55rem;
+	}
+	.wbv__seekrow[hidden] { display: none; }
+	.wbv__t {
+		font-family: var(--wbv-marker);
+		font-size: 0.9rem;
+		font-weight: 700;
+		color: #334155;
+		min-width: 2.6rem;
+		font-variant-numeric: tabular-nums;
+	}
+	.wbv__t--dur { text-align: right; }
+	.wbv__seek {
+		position: relative;
+		flex: 1;
+		height: 22px;
+		display: flex;
+		align-items: center;
+		min-width: 0;
+	}
+	.wbv__seek-line,
+	.wbv__seek-buf,
+	.wbv__seek-fill {
+		position: absolute;
+		left: 0;
+		height: 6px;
+		border-radius: 9999px;
+		pointer-events: none;
+	}
+	.wbv__seek-line { right: 0; background: rgba(15, 23, 42, 0.12); }
+	.wbv__seek-buf { width: 0%; background: rgba(15, 23, 42, 0.2); }
+	.wbv__seek-fill {
+		width: 0%;
+		background: linear-gradient(90deg, var(--wbv-blue), #0ea5e9);
+		box-shadow: 0 0 0 1px rgba(29, 78, 216, 0.15);
+	}
+	.wbv__seek-cap {
+		position: absolute;
+		left: 0;
+		width: 16px;
+		height: 16px;
+		margin-left: -8px;
+		border-radius: 4px;
+		background: var(--wbv-red);
+		box-shadow: 0 3px 8px -2px rgba(220, 38, 38, 0.7);
+		transform: rotate(-8deg);
+		pointer-events: none;
+		transition: transform 0.18s ease;
+	}
+	.wbv__seek:hover .wbv__seek-cap { transform: rotate(-8deg) scale(1.15); }
+	.wbv__range {
+		position: relative;
+		z-index: 2;
+		width: 100%;
+		height: 22px;
+		margin: 0;
+		background: transparent;
+		-webkit-appearance: none;
+		appearance: none;
+		cursor: pointer;
+	}
+	.wbv__range::-webkit-slider-thumb {
+		-webkit-appearance: none;
+		width: 22px;
+		height: 22px;
+		border-radius: 9999px;
+		background: transparent;
+	}
+	.wbv__range::-moz-range-thumb {
+		width: 22px;
+		height: 22px;
+		border: 0;
+		border-radius: 9999px;
+		background: transparent;
+	}
+	.wbv__range:focus-visible { outline: 2px solid rgba(29, 78, 216, 0.5); outline-offset: 3px; border-radius: 9999px; }
+
+	/* ── the ledge ── */
+	.wbv__ledge {
+		position: relative;
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		margin: 0 -1.15rem;
+		padding: 0.55rem 1rem;
+		border-radius: 0 0 0.55rem 0.55rem;
+		background: linear-gradient(180deg, #eef1f5 0%, #dfe4ea 42%, #c9d0d8 100%);
+		box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 6px 14px -8px rgba(15, 23, 42, 0.5);
+	}
+	.wbv__markers { display: flex; align-items: center; gap: 0.45rem; flex: none; }
+	.wbv__marker { display: block; width: 34px; height: 8px; border-radius: 9999px; }
+	.wbv__marker--r { background: #dc2626; }
+	.wbv__marker--b { background: #1d4ed8; }
+	.wbv__marker--g { background: #16a34a; }
+	.wbv__eraser { display: block; width: 26px; height: 12px; border-radius: 3px; background: #64748b; }
+
+	.wbv__btns {
+		display: flex;
+		align-items: center;
+		gap: 0.3rem;
+		margin-left: auto;
+		flex-wrap: wrap;
+		justify-content: flex-end;
+	}
+	.wbv__gap { flex: 1; min-width: 0.15rem; }
+	.wbv__btn {
+		display: inline-grid;
+		place-items: center;
+		width: 34px;
+		height: 34px;
+		border-radius: 0.55rem;
+		color: #334155;
+		background: rgba(255, 255, 255, 0.75);
+		border: 1px solid rgba(15, 23, 42, 0.1);
+		cursor: pointer;
+		transition: transform 0.16s ease, background 0.2s ease, color 0.2s ease;
+	}
+	.wbv__btn:hover { background: #fff; color: var(--wbv-blue); transform: translateY(-1px); }
+	.wbv__btn:active { transform: translateY(1px); }
+	.wbv__btn--main {
+		width: 40px;
+		height: 40px;
+		color: #2b1c08;
+		background: linear-gradient(180deg, #fde68a, #f59e0b);
+		border-color: rgba(120, 67, 5, 0.3);
+		box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 3px 0 rgba(120, 67, 5, 0.55);
+	}
+	.wbv__btn--main:hover { color: #2b1c08; background: linear-gradient(180deg, #fef0b8, #f7ae1f); }
+	.wbv__btn--rate { width: auto; padding: 0 0.6rem; font-size: 0.78rem; font-weight: 800; }
+	.wbv__i-pause, .wbv__i-fsx, .wbv__i-mute { display: none; }
+	.wbv[data-playing] .wbv__i-play { display: none; }
+	.wbv[data-playing] .wbv__i-pause { display: block; }
+	.wbv[data-muted] .wbv__i-vol { display: none; }
+	.wbv[data-muted] .wbv__i-mute { display: block; }
+	.wbv:fullscreen .wbv__i-fs { display: none; }
+	.wbv:fullscreen .wbv__i-fsx { display: block; }
+
+	/* speed menu */
+	.wbv__speed { position: relative; display: inline-flex; }
+	.wbv__menu {
+		position: absolute;
+		bottom: calc(100% + 0.5rem);
+		right: 0;
+		z-index: 8;
+		display: flex;
+		flex-direction: column;
+		gap: 0.1rem;
+		min-width: 7.5rem;
+		padding: 0.4rem;
+		border-radius: 0.65rem;
+		background: #fff;
+		border: 1px solid rgba(15, 23, 42, 0.12);
+		box-shadow: 0 22px 44px -20px rgba(15, 23, 42, 0.55);
+		animation: wbv-menu 0.18s ease both;
+	}
+	.wbv__menu[hidden] { display: none; }
+	@keyframes wbv-menu { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+	.wbv__menu em {
+		font-style: normal;
+		font-size: 0.64rem;
+		font-weight: 800;
+		letter-spacing: 0.13em;
+		text-transform: uppercase;
+		color: #94a3b8;
+		padding: 0.25rem 0.5rem 0.35rem;
+	}
+	.wbv__rate {
+		text-align: left;
+		font-size: 0.82rem;
+		font-weight: 700;
+		color: #334155;
+		padding: 0.4rem 0.55rem;
+		border-radius: 0.4rem;
+		cursor: pointer;
+		transition: background 0.16s ease, color 0.16s ease;
+	}
+	.wbv__rate:hover { background: rgba(29, 78, 216, 0.08); color: var(--wbv-blue); }
+	.wbv__rate.is-on { background: var(--wbv-blue); color: #fff; }
+
+	.wbv__vol {
+		width: 68px;
+		height: 6px;
+		margin: 0 0.15rem;
+		border-radius: 9999px;
+		background: rgba(15, 23, 42, 0.18);
+		-webkit-appearance: none;
+		appearance: none;
+		cursor: pointer;
+	}
+	.wbv__vol::-webkit-slider-thumb {
+		-webkit-appearance: none;
+		width: 13px;
+		height: 13px;
+		border-radius: 9999px;
+		background: var(--wbv-blue);
+		box-shadow: 0 2px 5px -1px rgba(29, 78, 216, 0.7);
+	}
+	.wbv__vol::-moz-range-thumb {
+		width: 13px;
+		height: 13px;
+		border: 0;
+		border-radius: 9999px;
+		background: var(--wbv-blue);
+	}
+
+	/* ── sticky notes ── */
+	.wbv__sticky {
+		position: absolute;
+		font-family: var(--wbv-marker);
+		font-size: 0.92rem;
+		font-weight: 700;
+		color: #44403c;
+		padding: 0.75rem 0.85rem 0.95rem;
+		box-shadow: 0 10px 22px -8px rgba(0, 0, 0, 0.35);
+		z-index: 6;
+		pointer-events: none;
+	}
+	.wbv__sticky--y { top: -16px; right: 26px; background: #fde68a; transform: rotate(3deg); }
+	.wbv__sticky--p { bottom: 108px; right: -18px; background: #fbcfe8; transform: rotate(-4deg); }
+
+	/* ── full screen: the board becomes the room ── */
+	.wbv:fullscreen {
+		transform: none;
+		border-radius: 0;
+		border-width: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		background: #05070d;
+		box-shadow: none;
+	}
+	.wbv:fullscreen .wbv__head,
+	.wbv:fullscreen .wbv__sticky,
+	.wbv:fullscreen .wbv__markers { display: none; }
+	.wbv:fullscreen .wbv__screen { border-radius: 0; box-shadow: none; }
+	.wbv:fullscreen .wbv__seekrow { padding-inline: 1.2rem; }
+	.wbv:fullscreen .wbv__t { color: #e2e8f0; }
+	.wbv:fullscreen .wbv__seek-line { background: rgba(255, 255, 255, 0.2); }
+	.wbv:fullscreen .wbv__seek-buf { background: rgba(255, 255, 255, 0.32); }
+	.wbv:fullscreen .wbv__ledge {
+		margin: 0;
+		background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
+		box-shadow: none;
+	}
+	.wbv:fullscreen .wbv__btn { color: #e2e8f0; background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.16); }
+	.wbv:fullscreen .wbv__btn--main { color: #2b1c08; background: linear-gradient(180deg, #fde68a, #f59e0b); }
+
+	/* ── small screens ── */
+	@media (max-width: 860px) {
+		.wbv__vol { display: none; }
+	}
+	@media (max-width: 620px) {
+		.wbv { padding: 0.9rem 0.9rem 0; border-width: 5px; }
+		.wbv--tilt { transform: none; }
+		.wbv__sticky { display: none; }
+		.wbv__ledge { margin: 0 -0.9rem; padding: 0.5rem 0.7rem; gap: 0.4rem; }
+		.wbv__markers { display: none; }
+		.wbv__btns { width: 100%; justify-content: space-between; gap: 0.25rem; }
+		.wbv__gap { display: none; }
+		.wbv__btn { width: 38px; height: 38px; }
+		.wbv__btn--main { width: 42px; height: 42px; }
+		.wbv__big, .wbv__bigwrap { width: 62px; height: 62px; }
+		/* the picture is short on a phone: the clock goes up top so it
+		   never lands on the caption in the corner */
+		.wbv__cue { gap: 0; }
+		.wbv__count {
+			position: absolute;
+			bottom: calc(100% + 0.75rem);
+			left: 50%;
+			transform: translateX(-50%);
+			white-space: nowrap;
+			font-size: 0.88rem;
+			padding: 0.25rem 0.35rem 0.25rem 0.75rem;
+		}
+		.wbv__count b { min-width: 1.5rem; height: 1.5rem; font-size: 0.95rem; }
+		.wbv__sound { bottom: 0.6rem; padding: 0.45rem 0.85rem 0.45rem 0.5rem; gap: 0.5rem; }
+		.wbv__sound-ic { width: 28px; height: 28px; }
+		.wbv__sound-txt b { font-size: 0.8rem; }
+		.wbv__sound-txt i { font-size: 0.66rem; }
+		.wbv[data-muted] .wbv__mutelabel { display: none; }
+		.wbv[data-muted] .wbv__btn--mute { width: 38px; padding: 0; }
+		.wbv__label b { font-size: 0.86rem; }
+		.wbv__seekrow { padding-top: 0.7rem; }
+		.wbv__date { display: none; }
+		.wbv__menu { right: auto; left: 50%; transform: translateX(-50%); }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.wbv, .wbv__thumb, .wbv__big { transition: none; }
+		.wbv__pulse, .wbv__boot i { animation: none; }
+		.wbv__end { animation: none; }
+	}
+	:global(html.perf-lite) .wbv__pulse { animation: none; }
+	@media (prefers-reduced-motion: reduce) {
+		.wbv__ring-fg,
+		.wbv[data-counting] .wbv__big,
+		.wbv__sound,
+		.wbv[data-muted] .wbv__btn--mute { animation: none; }
+	}
+</style>
