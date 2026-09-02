@@ -91,7 +91,7 @@ export const portfolio = [
   },
 ] as const;
 
-export const links = ["about", "services", "portfolio", "blog", "bootcamp"];
+export const links = ["about", "services", "portfolio", "blog", "programs"];
 
 // ── Multi-view experience ────────────────────────────────────────────
 // Same information, reframed for different audiences. The onboarding quiz

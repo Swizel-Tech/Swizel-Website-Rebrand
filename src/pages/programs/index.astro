@@ -1,0 +1,686 @@
+---
+// The application page. Two tracks, what each one actually involves, and
+// one form that carries enough for us to make a decision without a chase
+// of follow-up emails.
+import { Icon } from 'astro-icon/components';
+import MainLayout from '../../layouts/MainLayout.astro';
+import { bootCampFaq } from '../../consts';
+
+const SEO_TITLE = 'Internships & NYSC Placement | Swizel Technologies Limited';
+const SEO_DESC =
+	'Do your IT / SIWES industrial training or your NYSC service year at Swizel Technologies Limited, building live client products beside working engineers and designers. A small, selective intake. Apply here.';
+
+const tracks = [
+	{
+		id: 'internship',
+		icon: 'mdi:badge-account-outline',
+		kicker: 'Track one',
+		name: 'IT / SIWES Internship',
+		length: 'Three or six months',
+		who: 'Undergraduates whose institution requires industrial training.',
+		does: [
+			'Placed in a squad on a live client product from week one',
+			'A named mentor who reviews your work every week',
+			'Your school logbook and ITF paperwork signed off properly',
+			'Real tickets, real deadlines, real code review',
+		],
+		wants: [
+			'Proof you can finish something, however small',
+			'Your school letter and the dates you must cover',
+			'Enough of a foundation to be useful by week two',
+		],
+	},
+	{
+		id: 'nysc',
+		icon: 'mdi:flag-outline',
+		kicker: 'Track two',
+		name: 'NYSC Placement',
+		length: 'The full service year',
+		who: 'Corps members posted to, or able to redeploy to, Abuja.',
+		does: [
+			'Treated as part of the team, not an errand runner',
+			'Ownership of features that ship with your name on them',
+			'Monthly allowance on the normal service terms',
+			'The ones who deliver are considered for a paid role after',
+		],
+		wants: [
+			'Your call-up letter or posting details',
+			'A portfolio, repository or campaign we can look at',
+			'A year you are willing to spend building seriously',
+		],
+	},
+];
+
+const steps = [
+	{ n: '01', t: 'You apply', d: 'This form. Take your time with the last two questions, they are the ones we read closely.' },
+	{ n: '02', t: 'A short call', d: 'Twenty minutes. We want to hear how you think, not quiz you on syntax.' },
+	{ n: '03', t: 'A small task', d: 'Something practical and scoped to a few hours. You keep whatever you build.' },
+	{ n: '04', t: 'A straight answer', d: 'Yes or no, quickly. We would rather tell you now than leave you waiting on us.' },
+];
+
+const disciplines = [
+	'Web development',
+	'Mobile development',
+	'Product design',
+	'Digital marketing',
+];
+
+const levels = ['100 level', '200 level', '300 level', '400 level', '500 level', 'Graduate', 'NYSC corps member'];
+---
+
+<MainLayout title={SEO_TITLE} description={SEO_DESC} image="/images/og/og-bootcamp.jpg">
+	<article class="pg">
+		<!-- ── hero ── -->
+		<header class="pg-hero">
+			<div class="pg-wrap">
+				<span class="pg-eyebrow">
+					<Icon width={14} name="mdi:school-outline" />
+					Applications open · Limited seats
+				</span>
+				<h1 class="pg-title">Two ways in. <em>Both are earned.</em></h1>
+				<p class="pg-lead">
+					We do not run an open bootcamp any more. You join us for your
+					industrial training or for your service year, and either way
+					you are put on a live client product beside the people who
+					build it for a living. That is why the intake is small and
+					why the application matters.
+				</p>
+				<div class="pg-herocta">
+					<a href="#internship" class="pg-btn">
+						IT / SIWES Internship
+						<Icon width={17} name="mdi:arrow-down" />
+					</a>
+					<a href="#nysc" class="pg-btn pg-btn--ghost">
+						NYSC Placement
+						<Icon width={17} name="mdi:arrow-down" />
+					</a>
+				</div>
+			</div>
+		</header>
+
+		<!-- ── the two tracks ── -->
+		<section class="pg-sec">
+			<div class="pg-wrap pg-tracks">
+				{
+					tracks.map((t) => (
+						<div class="pg-track" id={t.id}>
+							<div class="pg-track-head">
+								<span class="pg-track-ic"><Icon width={22} name={t.icon} /></span>
+								<div>
+									<span class="pg-track-kicker">{t.kicker}</span>
+									<h2 class="pg-track-name">{t.name}</h2>
+								</div>
+							</div>
+							<p class="pg-track-len">
+								<Icon width={15} name="mdi:clock-outline" />
+								{t.length}
+							</p>
+							<p class="pg-track-who">{t.who}</p>
+
+							<span class="pg-track-label">What you actually do</span>
+							<ul class="pg-list">
+								{t.does.map((d) => (
+									<li>
+										<Icon width={15} name="mdi:check-circle-outline" />
+										<span>{d}</span>
+									</li>
+								))}
+							</ul>
+
+							<span class="pg-track-label">What we look for</span>
+							<ul class="pg-list pg-list--want">
+								{t.wants.map((wt) => (
+									<li>
+										<Icon width={15} name="mdi:circle-medium" />
+										<span>{wt}</span>
+									</li>
+								))}
+							</ul>
+
+							<a href="#apply" class="pg-track-go" data-pick-track={t.name}>
+								Apply for this track
+								<Icon width={16} name="mdi:arrow-right" />
+							</a>
+						</div>
+					))
+				}
+			</div>
+		</section>
+
+		<!-- ── how it goes ── -->
+		<section class="pg-sec pg-sec--steps">
+			<div class="pg-wrap">
+				<h2 class="pg-h">How the application goes</h2>
+				<ol class="pg-steps">
+					{
+						steps.map((st) => (
+							<li class="pg-step">
+								<span class="pg-step-n">{st.n}</span>
+								<h3 class="pg-step-t">{st.t}</h3>
+								<p class="pg-step-d">{st.d}</p>
+							</li>
+						))
+					}
+				</ol>
+			</div>
+		</section>
+
+		<!-- ── the form ── -->
+		<section class="pg-sec" id="apply">
+			<div class="pg-wrap pg-formwrap">
+				<div class="pg-formhead">
+					<h2 class="pg-h">Your application</h2>
+					<p class="pg-formlead">
+						Everything here is read by a person. The last two questions
+						carry the most weight, so answer them in your own words
+						rather than the words you think we want.
+					</p>
+				</div>
+
+				<form id="pg-form" class="pg-form" novalidate>
+					<div class="pg-grid">
+						<label class="pg-field">
+							<span class="pg-label">Full name <em>*</em></span>
+							<input type="text" name="fullName" placeholder="As it appears on your school records" required />
+						</label>
+						<label class="pg-field">
+							<span class="pg-label">Email address <em>*</em></span>
+							<input type="email" name="email" placeholder="you@example.com" required />
+						</label>
+						<label class="pg-field">
+							<span class="pg-label">Phone number <em>*</em></span>
+							<input type="tel" name="phone" placeholder="+234 800 000 0000" required />
+						</label>
+						<label class="pg-field">
+							<span class="pg-label">Which track? <em>*</em></span>
+							<span class="pg-select">
+								<select name="track" required>
+									<option value="">Choose a track</option>
+									<option value="IT / SIWES Internship">IT / SIWES Internship</option>
+									<option value="NYSC Placement">NYSC Placement</option>
+								</select>
+								<Icon class="pg-caret" width={18} name="mdi:chevron-down" />
+							</span>
+						</label>
+
+						<label class="pg-field">
+							<span class="pg-label">Institution <em>*</em></span>
+							<input type="text" name="institution" placeholder="University, polytechnic or college" required />
+						</label>
+						<label class="pg-field">
+							<span class="pg-label">Course of study <em>*</em></span>
+							<input type="text" name="course" placeholder="e.g. Computer Engineering" required />
+						</label>
+						<label class="pg-field">
+							<span class="pg-label">Level <em>*</em></span>
+							<span class="pg-select">
+								<select name="level" required>
+									<option value="">Choose your level</option>
+									{levels.map((l) => <option value={l}>{l}</option>)}
+								</select>
+								<Icon class="pg-caret" width={18} name="mdi:chevron-down" />
+							</span>
+						</label>
+						<label class="pg-field">
+							<span class="pg-label">Discipline you want <em>*</em></span>
+							<span class="pg-select">
+								<select name="discipline" required>
+									<option value="">Choose a discipline</option>
+									{disciplines.map((d) => <option value={d}>{d}</option>)}
+								</select>
+								<Icon class="pg-caret" width={18} name="mdi:chevron-down" />
+							</span>
+						</label>
+
+						<label class="pg-field pg-field--full">
+							<span class="pg-label">Home address <em>*</em></span>
+							<input type="text" name="address" placeholder="Street, area, city, state" required />
+						</label>
+
+						<label class="pg-field">
+							<span class="pg-label">When can you start? <em>*</em></span>
+							<input type="text" name="startDate" placeholder="e.g. March 2026, or immediately" required />
+						</label>
+						<label class="pg-field">
+							<span class="pg-label">Portfolio or repository <span class="pg-opt">(optional)</span></span>
+							<input type="url" name="portfolio" placeholder="GitHub, Behance, a live link" />
+						</label>
+
+						<label class="pg-field pg-field--full">
+							<span class="pg-label">Tell us about something you have built <em>*</em></span>
+							<textarea
+								name="built"
+								rows="4"
+								placeholder="It does not have to be impressive. It has to be finished, and it has to be yours. Tell us what it was, what broke, and what you did about it."
+								required></textarea>
+						</label>
+
+						<label class="pg-field pg-field--full">
+							<span class="pg-label">What do you hope to get out of this? <em>*</em></span>
+							<textarea
+								name="goal"
+								rows="4"
+								placeholder="Be specific. What do you want to be able to do at the end of this that you cannot do today?"
+								required></textarea>
+						</label>
+					</div>
+
+					<div class="pg-submitrow">
+						<button type="submit" class="pg-submit" id="pg-submit">
+							Submit application
+							<Icon width={18} name="mdi:arrow-right" />
+						</button>
+						<p class="pg-fine">
+							<Icon width={15} name="mdi:lock-outline" />
+							We read every application. If it is a fit you will hear from
+							us by email or phone, usually within a week.
+						</p>
+					</div>
+				</form>
+			</div>
+		</section>
+
+		<!-- ── questions ── -->
+		<section class="pg-sec pg-sec--faq">
+			<div class="pg-wrap">
+				<h2 class="pg-h">Before you ask</h2>
+				<div class="pg-faq">
+					{
+						bootCampFaq.map((f) => (
+							<details class="pg-q">
+								<summary>
+									<span>{f.question}</span>
+									<Icon width={18} name="mdi:plus" />
+								</summary>
+								<p>{f.answer}</p>
+							</details>
+						))
+					}
+				</div>
+			</div>
+		</section>
+	</article>
+</MainLayout>
+
+<style>
+	.pg {
+		--pg-acc: #f59e0b;
+		--pg-acc2: #fb7185;
+		--pg-ink: #fdf6ea;
+		--pg-muted: rgba(253, 246, 234, 0.64);
+		--pg-faint: rgba(253, 246, 234, 0.42);
+		--pg-line: rgba(255, 255, 255, 0.1);
+		--pg-card: rgba(255, 255, 255, 0.035);
+		--pg-input: rgba(255, 255, 255, 0.045);
+		color: var(--pg-ink);
+		background:
+			radial-gradient(1000px 540px at 82% -6%, rgba(245, 158, 11, 0.13), transparent 62%),
+			radial-gradient(820px 480px at 6% 40%, rgba(251, 113, 133, 0.07), transparent 60%),
+			linear-gradient(180deg, #120c04 0%, #160f08 50%, #0e0903 100%);
+	}
+	:global(html:not(.dark)) .pg {
+		--pg-acc: #b45309;
+		--pg-ink: #2b1c08;
+		--pg-muted: rgba(43, 28, 8, 0.7);
+		--pg-faint: rgba(43, 28, 8, 0.48);
+		--pg-line: rgba(43, 28, 8, 0.12);
+		--pg-card: rgba(255, 255, 255, 0.7);
+		--pg-input: rgba(255, 255, 255, 0.8);
+		background:
+			radial-gradient(1000px 540px at 82% -6%, rgba(245, 158, 11, 0.14), transparent 62%),
+			linear-gradient(180deg, #fdf4e3 0%, #faecd4 55%, #fdf4e3 100%);
+	}
+
+	.pg-wrap { max-width: 74rem; margin-inline: auto; padding-inline: clamp(1rem, 3vw, 2rem); }
+	.pg-sec { padding-block: clamp(2.6rem, 6vw, 4.5rem); position: relative; }
+	.pg-sec + .pg-sec::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 50%;
+		transform: translateX(-50%);
+		width: min(74rem, calc(100% - 2rem));
+		height: 1px;
+		background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--pg-acc) 30%, transparent) 18%, color-mix(in srgb, var(--pg-acc) 30%, transparent) 82%, transparent);
+	}
+
+	/* ── hero ── */
+	.pg-hero { padding-block: clamp(3rem, 8vw, 5.5rem) clamp(2rem, 5vw, 3rem); }
+	.pg-eyebrow {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		font-family: ui-monospace, monospace;
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.13em;
+		text-transform: uppercase;
+		color: var(--pg-acc);
+		border: 1.5px solid color-mix(in srgb, var(--pg-acc) 45%, transparent);
+		padding: 0.32rem 0.8rem;
+		border-radius: 0.4rem;
+		box-shadow: 2.5px 2.5px 0 color-mix(in srgb, var(--pg-acc) 30%, transparent);
+	}
+	.pg-title {
+		font-size: clamp(2.3rem, 6vw, 4.4rem);
+		font-weight: 850;
+		letter-spacing: -0.03em;
+		line-height: 1.03;
+		margin: 1.1rem 0 1rem;
+	}
+	.pg-title em {
+		font-style: normal;
+		background: linear-gradient(95deg, var(--pg-acc), var(--pg-acc2));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	.pg-lead { max-width: 44rem; font-size: 1.02rem; line-height: 1.7; color: var(--pg-muted); margin: 0 0 1.6rem; }
+	.pg-herocta { display: flex; flex-wrap: wrap; gap: 0.7rem; }
+	.pg-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 0.9rem;
+		font-weight: 800;
+		color: #2b1c08;
+		background: linear-gradient(180deg, #fcd34d, #f59e0b);
+		padding: 0.85rem 1.5rem;
+		border-radius: 0.8rem;
+		border: 1px solid rgba(255, 255, 255, 0.35);
+		box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 6px 0 rgba(120, 67, 5, 0.75);
+		transition: transform 0.15s ease, box-shadow 0.15s ease;
+	}
+	.pg-btn:hover { transform: translateY(2px); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 4px 0 rgba(120, 67, 5, 0.75); }
+	.pg-btn--ghost {
+		color: var(--pg-ink);
+		background: color-mix(in srgb, var(--pg-acc) 10%, transparent);
+		border: 1px solid color-mix(in srgb, var(--pg-acc) 45%, transparent);
+		box-shadow: none;
+	}
+	.pg-btn--ghost:hover { transform: translateY(-1px); box-shadow: none; background: color-mix(in srgb, var(--pg-acc) 18%, transparent); }
+
+	/* ── tracks ── */
+	.pg-tracks { display: grid; gap: clamp(1rem, 2.5vw, 1.75rem); }
+	@media (min-width: 900px) { .pg-tracks { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+	.pg-track {
+		display: flex;
+		flex-direction: column;
+		padding: clamp(1.25rem, 2.6vw, 1.9rem);
+		border-radius: 1.25rem;
+		border: 1px solid var(--pg-line);
+		background: var(--pg-card);
+		scroll-margin-top: 6rem;
+	}
+	.pg-track-head { display: flex; align-items: center; gap: 0.85rem; margin-bottom: 0.9rem; }
+	.pg-track-ic {
+		display: grid;
+		place-items: center;
+		width: 46px;
+		height: 46px;
+		flex: none;
+		border-radius: 0.85rem;
+		color: #2b1c08;
+		background: linear-gradient(180deg, #fcd34d, #f59e0b);
+	}
+	.pg-track-kicker {
+		display: block;
+		font-family: ui-monospace, monospace;
+		font-size: 0.66rem;
+		font-weight: 800;
+		letter-spacing: 0.13em;
+		text-transform: uppercase;
+		color: var(--pg-faint);
+	}
+	.pg-track-name { font-size: clamp(1.2rem, 2.2vw, 1.5rem); font-weight: 850; letter-spacing: -0.02em; margin: 0.1rem 0 0; }
+	.pg-track-len {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		width: fit-content;
+		font-size: 0.78rem;
+		font-weight: 700;
+		color: var(--pg-acc);
+		background: color-mix(in srgb, var(--pg-acc) 12%, transparent);
+		padding: 0.28rem 0.65rem;
+		border-radius: 9999px;
+		margin: 0 0 0.8rem;
+	}
+	.pg-track-who { font-size: 0.92rem; line-height: 1.6; color: var(--pg-muted); margin: 0 0 1.2rem; }
+	.pg-track-label {
+		display: block;
+		font-size: 0.66rem;
+		font-weight: 800;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--pg-faint);
+		margin-bottom: 0.55rem;
+	}
+	.pg-list { list-style: none; margin: 0 0 1.3rem; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+	.pg-list li { display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.88rem; line-height: 1.55; color: var(--pg-muted); }
+	.pg-list :global(svg) { flex: none; margin-top: 0.15rem; color: var(--pg-acc); }
+	.pg-list--want :global(svg) { color: var(--pg-faint); }
+	.pg-track-go {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		width: fit-content;
+		margin-top: auto;
+		font-size: 0.88rem;
+		font-weight: 800;
+		color: var(--pg-acc);
+		border-bottom: 1px solid color-mix(in srgb, var(--pg-acc) 45%, transparent);
+		padding-bottom: 2px;
+		transition: gap 0.25s ease;
+	}
+	.pg-track-go:hover { gap: 0.8rem; }
+
+	/* ── steps ── */
+	.pg-h { font-size: clamp(1.6rem, 3.4vw, 2.4rem); font-weight: 850; letter-spacing: -0.025em; margin: 0 0 1.6rem; }
+	.pg-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: clamp(0.9rem, 2vw, 1.25rem); }
+	@media (min-width: 760px) { .pg-steps { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+	.pg-step { padding: 1.1rem 1.2rem; border-radius: 1rem; border: 1px solid var(--pg-line); background: var(--pg-card); }
+	.pg-step-n {
+		font-family: 'Bebas Neue', sans-serif;
+		font-size: 1.6rem;
+		line-height: 1;
+		color: var(--pg-acc);
+		letter-spacing: 1px;
+	}
+	.pg-step-t { font-size: 1rem; font-weight: 800; margin: 0.5rem 0 0.35rem; }
+	.pg-step-d { font-size: 0.84rem; line-height: 1.55; color: var(--pg-muted); margin: 0; }
+
+	/* ── form ── */
+	.pg-formwrap { scroll-margin-top: 6rem; }
+	.pg-formhead { max-width: 44rem; margin-bottom: 1.8rem; }
+	.pg-formlead { font-size: 0.96rem; line-height: 1.65; color: var(--pg-muted); margin: 0; }
+	.pg-form {
+		padding: clamp(1.25rem, 3vw, 2.25rem);
+		border-radius: 1.35rem;
+		border: 1px solid var(--pg-line);
+		background: var(--pg-card);
+	}
+	.pg-grid { display: grid; gap: 1rem; }
+	@media (min-width: 720px) { .pg-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+	.pg-field { display: flex; flex-direction: column; gap: 0.4rem; min-width: 0; }
+	.pg-field--full { grid-column: 1 / -1; }
+	.pg-label { font-size: 0.76rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--pg-faint); }
+	.pg-label em { font-style: normal; color: var(--pg-acc2); margin-left: 0.15rem; }
+	.pg-opt { font-weight: 600; text-transform: none; letter-spacing: 0; opacity: 0.7; }
+	.pg-field input,
+	.pg-field textarea,
+	.pg-field select {
+		width: 100%;
+		font: inherit;
+		font-size: 0.92rem;
+		color: var(--pg-ink);
+		background: var(--pg-input);
+		border: 1px solid var(--pg-line);
+		border-radius: 0.7rem;
+		padding: 0.75rem 0.9rem;
+		transition: border-color 0.2s ease, box-shadow 0.2s ease;
+	}
+	.pg-field textarea { resize: vertical; line-height: 1.6; }
+	.pg-field input::placeholder,
+	.pg-field textarea::placeholder { color: var(--pg-faint); }
+	.pg-field input:focus,
+	.pg-field textarea:focus,
+	.pg-field select:focus {
+		outline: none;
+		border-color: color-mix(in srgb, var(--pg-acc) 60%, transparent);
+		box-shadow: 0 0 0 3px color-mix(in srgb, var(--pg-acc) 18%, transparent);
+	}
+	.pg-field.is-bad input,
+	.pg-field.is-bad textarea,
+	.pg-field.is-bad select { border-color: #f87171; box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.18); }
+	.pg-select { position: relative; display: block; }
+	.pg-select select { appearance: none; padding-right: 2.4rem; cursor: pointer; }
+	.pg-caret { position: absolute; right: 0.85rem; top: 50%; transform: translateY(-50%); color: var(--pg-acc); pointer-events: none; }
+
+	.pg-submitrow { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.5rem; margin-top: 1.6rem; }
+	.pg-submit {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+		font-size: 0.95rem;
+		font-weight: 800;
+		color: #2b1c08;
+		background: linear-gradient(180deg, #fcd34d, #f59e0b);
+		padding: 0.9rem 1.8rem;
+		border-radius: 0.8rem;
+		cursor: pointer;
+		border: 1px solid rgba(255, 255, 255, 0.35);
+		box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 6px 0 rgba(120, 67, 5, 0.75);
+		transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.2s ease;
+	}
+	.pg-submit:hover { transform: translateY(2px); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 4px 0 rgba(120, 67, 5, 0.75); }
+	.pg-submit[disabled] { filter: saturate(0.5) brightness(0.9); cursor: progress; }
+	.pg-fine { display: flex; align-items: flex-start; gap: 0.45rem; flex: 1; min-width: 16rem; font-size: 0.8rem; line-height: 1.55; color: var(--pg-faint); margin: 0; }
+	.pg-fine :global(svg) { flex: none; margin-top: 0.15rem; }
+
+	/* ── faq ── */
+	.pg-faq { display: grid; gap: 0.6rem; max-width: 52rem; }
+	.pg-q { border: 1px solid var(--pg-line); border-radius: 0.9rem; background: var(--pg-card); overflow: hidden; }
+	.pg-q summary {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 0.95rem 1.15rem;
+		font-size: 0.95rem;
+		font-weight: 700;
+		cursor: pointer;
+		list-style: none;
+	}
+	.pg-q summary::-webkit-details-marker { display: none; }
+	.pg-q summary :global(svg) { flex: none; color: var(--pg-acc); transition: transform 0.25s ease; }
+	.pg-q[open] summary :global(svg) { transform: rotate(45deg); }
+	.pg-q p { margin: 0; padding: 0 1.15rem 1.1rem; font-size: 0.9rem; line-height: 1.65; color: var(--pg-muted); }
+
+	@media (prefers-reduced-motion: reduce) {
+		.pg-btn, .pg-submit, .pg-track-go, .pg-q summary :global(svg) { transition: none; }
+	}
+</style>
+
+<script>
+	import emailjs from '@emailjs/browser';
+	import toaster from '../../scripts/toast';
+
+	const toast = toaster();
+	emailjs.init('6seJt_G90tNz7cnD5');
+
+	const form = document.querySelector<HTMLFormElement>('#pg-form');
+	const submit = document.querySelector<HTMLButtonElement>('#pg-submit');
+
+	// clicking a track card's link pre-selects that track in the form
+	document.querySelectorAll<HTMLElement>('[data-pick-track]').forEach((el) => {
+		el.addEventListener('click', () => {
+			const sel = form?.querySelector<HTMLSelectElement>('select[name="track"]');
+			if (sel) sel.value = el.dataset.pickTrack || '';
+		});
+	});
+
+	const LABELS: Record<string, string> = {
+		fullName: 'Full name',
+		email: 'Email',
+		phone: 'Phone',
+		track: 'Track',
+		institution: 'Institution',
+		course: 'Course of study',
+		level: 'Level',
+		discipline: 'Discipline',
+		address: 'Home address',
+		startDate: 'Available from',
+		portfolio: 'Portfolio',
+		built: 'Something they built',
+		goal: 'What they hope to achieve',
+	};
+
+	form?.addEventListener('submit', (e) => {
+		e.preventDefault();
+		if (!form || !submit) return;
+
+		const data = new FormData(form);
+		const values: Record<string, string> = {};
+		LABELS && Object.keys(LABELS).forEach((k) => {
+			values[k] = String(data.get(k) ?? '').trim();
+		});
+
+		// mark what is missing rather than failing silently
+		let firstBad: HTMLElement | null = null;
+		form.querySelectorAll<HTMLElement>('.pg-field').forEach((f) => f.classList.remove('is-bad'));
+		form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>(
+			'[required]'
+		).forEach((el) => {
+			if (el.value.trim()) return;
+			const field = el.closest<HTMLElement>('.pg-field');
+			field?.classList.add('is-bad');
+			if (!firstBad) firstBad = field || el;
+		});
+		if (firstBad) {
+			toast('danger', 'Please fill in every required field.');
+			(firstBad as HTMLElement).scrollIntoView({ block: 'center', behavior: 'smooth' });
+			return;
+		}
+		if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(values.email)) {
+			form.querySelector('input[name="email"]')?.closest('.pg-field')?.classList.add('is-bad');
+			toast('danger', 'That email address does not look right.');
+			return;
+		}
+
+		const message = Object.keys(LABELS)
+			.map((k) => `${LABELS[k]}: ${values[k] || 'Not given'}`)
+			.join('\n');
+
+		const original = submit.textContent;
+		submit.disabled = true;
+		submit.textContent = 'Sending…';
+
+		emailjs
+			.send('service_xtbicfb', 'template_gp3qzsk', {
+				from_name: values.fullName,
+				name: values.fullName,
+				email: values.email,
+				reply_to: values.email,
+				phoneNumber: values.phone,
+				to_email: 'swizelhq@swizel.co',
+				subject: `Application: ${values.track} — ${values.fullName}`,
+				message: `NEW APPLICATION\n\n${message}`,
+			})
+			.then(() => {
+				toast('success', 'Application received. We read every one, and we will be in touch.');
+				form.reset();
+			})
+			.catch((err) => {
+				console.error('[application]', err);
+				toast(
+					'danger',
+					'That did not go through. Please email swizelhq@swizel.co directly, or try the live chat.'
+				);
+			})
+			.finally(() => {
+				submit.disabled = false;
+				submit.textContent = original;
+			});
+	});
+</script>

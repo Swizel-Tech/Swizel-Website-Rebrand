@@ -1,0 +1,954 @@
+---
+// The prospectus. A bound book on the reading desk: two pages a spread,
+// two courses a page, turning itself unless you take the controls off it.
+// Pick a course and the page lifts a card out of the book rather than
+// pushing the whole section further down the scroll.
+import { Icon } from 'astro-icon/components';
+
+const courses = [
+	{
+		code: 'WEB 101', icon: 'mdi:web', title: 'Web Development', hue: 28,
+		desc: 'HTML, CSS, JavaScript and React, zero to deployed.',
+		chips: ['react', 'node', 'git'], room: 'Lecture Hall A',
+		brief: 'You start on the page and finish on the server. Layout first, then JavaScript that does something, then React, then a real deployment with a domain on it. By the end you can take a design and put it in front of people.',
+		learn: ['Semantic HTML and modern CSS layout', 'JavaScript, then React and component thinking', 'APIs, state and talking to a backend', 'Git, review and shipping to production'],
+	},
+	{
+		code: 'MOB 201', icon: 'mdi:cellphone', title: 'Mobile Development', hue: 190,
+		desc: 'Real apps for Android and iOS that people install.',
+		chips: ['flutter', 'react native'], room: 'Lab 2',
+		brief: 'Phones are unforgiving. Small screens, bad networks, app stores with opinions. You build for both platforms from one codebase, handle the offline case properly, and take something all the way through a store submission.',
+		learn: ['Flutter or React Native, your pick', 'Navigation, state and local storage', 'Working against a slow or missing network', 'Builds, signing and store submission'],
+	},
+	{
+		code: 'DSN 110', icon: 'mdi:palette-outline', title: 'Product Design', hue: 320,
+		desc: 'UI, UX and prototyping that gets you hired.',
+		chips: ['figma', 'ui', 'ux'], room: 'Design Studio',
+		brief: 'Design here means decisions, not decoration. You research, you draw, you prototype, you hand off to an engineer sitting an arm away, and then you watch a real person use it and find out what you got wrong.',
+		learn: ['Research and framing the actual problem', 'Figma, systems, components and tokens', 'Prototyping and testing on real people', 'Handoff a developer can build from'],
+	},
+	{
+		code: 'MKT 105', icon: 'mdi:bullhorn-outline', title: 'Digital Marketing', hue: 8,
+		desc: 'SEO, ads and social that actually grows products.',
+		chips: ['seo', 'ads', 'social'], room: 'Lecture Hall B',
+		brief: 'Growth you can point at. Where attention comes from, what it costs, and how to tell a campaign that worked from one that only looked busy on a slide.',
+		learn: ['Search, on-page and technical SEO', 'Paid campaigns and reading the numbers', 'Social and content that earns attention', 'Analytics and honest reporting'],
+	},
+	{
+		code: 'VBC 130', icon: 'mdi:auto-fix', title: 'Vibecoding', hue: 265,
+		desc: 'Composing software with AI, and catching it when it lies.',
+		chips: ['ai tools', 'prompting', 'review'], room: 'Studio 3',
+		brief: 'The quick ones compose as much as they type now. You learn to drive the tooling hard, and more importantly to read what comes back, catch the confident nonsense, and stay the person answerable for the code.',
+		learn: ['Driving AI tooling on real codebases', 'Prompting for architecture, not snippets', 'Reviewing generated code like a senior would', 'Where it helps, and where it quietly costs you'],
+	},
+	{
+		code: 'OPS 210', icon: 'mdi:cloud-cog-outline', title: 'DevOps & Cloud', hue: 205,
+		desc: 'Azure and AWS, pipelines, and the 2am phone call.',
+		chips: ['azure', 'aws', 'ci/cd'], room: 'The Lab',
+		brief: 'Code that only runs on your laptop is a hobby. Containerise it, ship it through a pipeline, put it on Azure or AWS, watch it, and be the one who can say why it fell over.',
+		learn: ['Linux, containers and images', 'CI/CD pipelines that actually gate', 'Azure and AWS core services', 'Monitoring, logs and incident response'],
+	},
+	{
+		code: 'SEC 220', icon: 'mdi:shield-lock-outline', title: 'Cyber Security', hue: 150,
+		desc: 'Break it on purpose so nobody breaks it by accident.',
+		chips: ['appsec', 'osint', 'hardening'], room: 'Secure Room',
+		brief: 'How applications get taken apart, and then how to build ones that do not come apart. Hands on with the common classes of attack, on systems we own, with the rules of engagement written down first.',
+		learn: ['The OWASP classes and how they really happen', 'Recon, tooling and reading a target', 'Hardening apps, servers and pipelines', 'Writing a report someone can act on'],
+	},
+	{
+		code: 'PMT 140', icon: 'mdi:clipboard-check-outline', title: 'Project Management', hue: 45,
+		desc: 'Scope, schedule and the awkward conversations.',
+		chips: ['agile', 'scope', 'delivery'], room: 'Lecture Hall A',
+		brief: 'Somebody has to hold it together. Scope work honestly, run a board people trust, spot a slipping deadline three weeks early, and tell a client the truth in a way they can do something with.',
+		learn: ['Scoping, estimating and cutting well', 'Standups, sprints and boards', 'Risk, dependency and change control', 'Client conversations when it is going wrong'],
+	},
+	{
+		code: 'CNT 115', icon: 'mdi:video-outline', title: 'Content Creation', hue: 350,
+		desc: 'Shoot it, cut it, write it, publish it.',
+		chips: ['video', 'copy', 'brand'], room: 'Studio 1',
+		brief: 'The brand is whatever people actually see. Plan a shoot, hold a camera, cut something watchable, write the words around it, and keep a channel fed without running dry by week three.',
+		learn: ['Planning, shooting and lighting basics', 'Editing for short form and long form', 'Copy and hooks that carry the piece', 'Calendars, repurposing, staying consistent'],
+	},
+];
+
+// two courses a page, four a spread; the last page is the open invitation
+const spreads = [
+	{ n: [1, 2], left: courses.slice(0, 2), right: courses.slice(2, 4) },
+	{ n: [3, 4], left: courses.slice(4, 6), right: courses.slice(6, 8) },
+	{ n: [5, 6], left: courses.slice(8, 9), right: 'more' as const },
+];
+
+const marginalia = [
+	'this one fills first',
+	'ask about the lab',
+	'bring a laptop',
+];
+---
+
+<div class="bk" data-library>
+	<span class="bk__desk" aria-hidden="true"></span>
+	<span class="bk__lamp" aria-hidden="true"></span>
+
+	<div class="bk__stage">
+		<div class="bk__book" data-bk-book>
+			<span class="bk__drop" aria-hidden="true"></span>
+			<span class="bk__edge bk__edge--l" aria-hidden="true"></span>
+			<span class="bk__edge bk__edge--r" aria-hidden="true"></span>
+			<span class="bk__spine" aria-hidden="true"></span>
+			<span class="bk__ribbon" aria-hidden="true"></span>
+
+			{
+				spreads.map((sp, si) => (
+					<div class:list={['bk__spread', si === 0 && 'is-open']} data-spread={si}>
+						{[sp.left, sp.right].map((side, pi) => (
+							<div class:list={['bk__page', pi === 0 ? 'bk__page--l' : 'bk__page--r']}>
+								<span class="bk__grain" aria-hidden="true"></span>
+								{side === 'more' ? (
+									<div class="bk__more">
+										<span class="bk__more-rule" aria-hidden="true"></span>
+										<h3 class="bk__more-t">And the rest of it</h3>
+										<p class="bk__more-p">
+											Data, QA, technical writing, motion, whatever the
+											squads are short of this quarter. The board is
+											never quite finished. If the thing you want to
+											learn is not printed here, write it into your
+											application and tell us why it matters to you.
+										</p>
+										<a href="/programs#apply" class="bk__more-go">
+											Name your discipline
+											<Icon width={15} name="mdi:arrow-right" />
+										</a>
+										<span class="bk__stamp" aria-hidden="true">
+											<em>open</em>
+											<b>intake</b>
+										</span>
+									</div>
+								) : (
+									<div class="bk__cards">
+										{(side as typeof courses).map((c) => (
+											<button
+												class="bk__card"
+												type="button"
+												style={`--hue:${c.hue}`}
+												data-course={c.code}
+											>
+												<span class="bk__card-top">
+													<span class="bk__card-ic"><Icon width={19} name={c.icon} /></span>
+													<span class="bk__card-code">{c.code}</span>
+												</span>
+												<span class="bk__card-t">{c.title}</span>
+												<span class="bk__card-d">{c.desc}</span>
+												<span class="bk__card-chips">
+													{c.chips.map((ch) => <i>{ch}</i>)}
+												</span>
+												<span class="bk__card-foot">
+													<i class="bk__card-room">
+														<Icon width={12} name="mdi:map-marker-outline" />
+														{c.room}
+													</i>
+													<i class="bk__card-go">Read it</i>
+												</span>
+											</button>
+										))}
+									</div>
+								)}
+								<span class="bk__folio">
+									<i>{sp.n[pi]}</i>
+									{pi === 1 && <em class="bk__scribble">{marginalia[si]}</em>}
+								</span>
+							</div>
+						))}
+					</div>
+				))
+			}
+
+			<!-- the shadow the lifting page throws on the paper below -->
+			<span class="bk__cast" aria-hidden="true"></span>
+
+			<!-- the leaf that actually turns -->
+			<div class="bk__leaf" data-bk-leaf hidden aria-hidden="true">
+				<div class="bk__face bk__face--front" data-bk-front></div>
+				<div class="bk__face bk__face--back" data-bk-back></div>
+			</div>
+		</div>
+	</div>
+
+	<!-- controls -->
+	<div class="bk__controls">
+		<button class="bk__ctl" type="button" data-bk-prev aria-label="Previous pages">
+			<Icon width={18} name="mdi:chevron-left" />
+		</button>
+		<div class="bk__dots" data-bk-dots>
+			{spreads.map((_, i) => (
+				<button
+					class:list={['bk__dot', i === 0 && 'is-on']}
+					type="button"
+					data-bk-go={i}
+					aria-label={`Pages ${i * 2 + 1} and ${i * 2 + 2}`}
+				></button>
+			))}
+		</div>
+		<button class="bk__ctl bk__ctl--play" type="button" data-bk-play aria-label="Pause turning">
+			<span class="bk__ring" data-bk-ring aria-hidden="true"></span>
+			<Icon class="bk__i-pause" width={16} name="mdi:pause" />
+			<Icon class="bk__i-play" width={16} name="mdi:play" />
+		</button>
+		<button class="bk__ctl" type="button" data-bk-next aria-label="Next pages">
+			<Icon width={18} name="mdi:chevron-right" />
+		</button>
+	</div>
+
+	<!-- the card that lifts out when you pick a course -->
+	<div class="bk__sheet" data-bk-sheet hidden>
+		<span class="bk__sheet-scrim" data-bk-close></span>
+		<div class="bk__sheet-card" role="dialog" aria-modal="true" aria-label="Course details">
+			<button class="bk__sheet-x" type="button" data-bk-close aria-label="Close">
+				<Icon width={18} name="mdi:close" />
+			</button>
+			<div data-bk-sheet-body></div>
+		</div>
+	</div>
+
+	<!-- the briefs, kept out of the pages until they are asked for -->
+	<div class="bk__briefs" hidden>
+		{
+			courses.map((c) => (
+				<template data-brief={c.code}>
+					<div class="bkd" style={`--hue:${c.hue}`}>
+						<span class="bkd__top">
+							<span class="bkd__ic"><Icon width={22} name={c.icon} /></span>
+							<span>
+								<span class="bkd__code">{c.code} · {c.room}</span>
+								<h3 class="bkd__t">{c.title}</h3>
+							</span>
+						</span>
+						<p class="bkd__p">{c.brief}</p>
+						<span class="bkd__label">What you come out with</span>
+						<ul class="bkd__list">
+							{c.learn.map((l) => (
+								<li>
+									<Icon width={14} name="mdi:check" />
+									<span>{l}</span>
+								</li>
+							))}
+						</ul>
+						<a href="/programs#apply" class="bkd__go">
+							Apply with this discipline
+							<Icon width={15} name="mdi:arrow-right" />
+						</a>
+					</div>
+				</template>
+			))
+		}
+	</div>
+</div>
+
+<style>
+	/* Paper is paper in both themes, like the whiteboard in the hero. Only
+	   the desk it lies on changes. */
+	.bk {
+		/* The desk is what needs clipping, and only sideways — it is wider
+		   than the section. Clipping vertically as well cut the top off the
+		   sheet whenever it stood up: at ninety degrees a turning page
+		   reaches about 95px above the book, and there was nowhere near
+		   that much room. clip + visible is a legal pair; hidden is not. */
+		overflow-x: clip;
+		overflow-y: visible;
+		--paper: #f4e9d2;
+		--paper2: #ead9ba;
+		--ink: #2b2119;
+		--ink2: rgba(43, 33, 25, 0.66);
+		--ink3: rgba(43, 33, 25, 0.42);
+		--rule: rgba(90, 66, 40, 0.22);
+		position: relative;
+		/* headroom for the standing sheet above, and below it the controls
+		   used to sit flush on the clip edge, so the hover lift and the
+		   focus ring were shaved off */
+		padding: clamp(2rem, 6vw, 5.5rem) 0 clamp(1.6rem, 3.5vw, 2.6rem);
+	}
+
+	/* ── the desk ── */
+	.bk__desk {
+		position: absolute;
+		inset: 0 -2%;
+		z-index: 0;
+		pointer-events: none;
+		background:
+			/* the grid he liked, kept */
+			repeating-linear-gradient(91deg, transparent 0 46px, rgba(255, 226, 178, 0.035) 46px 47px),
+			repeating-linear-gradient(1deg, transparent 0 46px, rgba(255, 226, 178, 0.035) 46px 47px),
+			/* long grain, so it reads as a desk rather than a gradient */
+			repeating-linear-gradient(
+				88deg,
+				rgba(255, 214, 150, 0.018) 0 2px,
+				transparent 2px 7px,
+				rgba(0, 0, 0, 0.05) 7px 8px,
+				transparent 8px 19px
+			),
+			radial-gradient(75% 48% at 50% 6%, rgba(255, 176, 74, 0.2), transparent 70%),
+			radial-gradient(120% 82% at 50% 46%, rgba(96, 56, 18, 0.42), transparent 68%),
+			linear-gradient(180deg, #1d1207, #120c05 52%, #080502);
+		-webkit-mask-image: radial-gradient(122% 94% at 50% 45%, #000 58%, transparent);
+		mask-image: radial-gradient(122% 94% at 50% 45%, #000 58%, transparent);
+	}
+	/* in daylight the desk has to be a shade of wood, not another sheet of
+	   paper — at #f7ead3 the parchment sat on parchment and the book
+	   stopped looking like an object */
+	:global(html:not(.dark)) .bk .bk__desk {
+		background:
+			repeating-linear-gradient(91deg, transparent 0 46px, rgba(88, 58, 26, 0.07) 46px 47px),
+			repeating-linear-gradient(1deg, transparent 0 46px, rgba(88, 58, 26, 0.07) 46px 47px),
+			radial-gradient(90% 60% at 50% 12%, rgba(196, 130, 46, 0.4), transparent 66%),
+			linear-gradient(180deg, #e2c79c, #d6b483 58%, #c9a370);
+	}
+	:global(html:not(.dark)) .bk .bk__drop {
+		background: #5a3a12;
+		opacity: 0.42;
+	}
+	/* the pool of light the book lies in */
+	.bk__lamp {
+		position: absolute;
+		top: -6%;
+		left: 50%;
+		width: 78%;
+		height: 62%;
+		margin-left: -39%;
+		z-index: 0;
+		pointer-events: none;
+		background: radial-gradient(closest-side, rgba(253, 224, 150, 0.22), transparent 72%);
+		filter: blur(28px);
+		animation: bk-lamp 9s ease-in-out infinite alternate;
+	}
+	@keyframes bk-lamp { from { opacity: 0.7; } to { opacity: 1; } }
+	.bk.is-turning .bk__lamp,
+	.bk.is-turning-back .bk__lamp { animation-play-state: paused; }
+
+	/* ── the book ── */
+	.bk__stage {
+		position: relative;
+		z-index: 1;
+		perspective: 2600px;
+		perspective-origin: 50% 42%;
+		padding-inline: clamp(0.5rem, 2vw, 1.5rem);
+	}
+	.bk__book {
+		position: relative;
+		width: min(100%, 64rem);
+		margin-inline: auto;
+		aspect-ratio: 2 / 1.06;
+		transform-style: preserve-3d;
+		transform: rotateX(7deg);
+	}
+	/* the shadow the book casts, as a static sheet parked behind the block.
+	   It used to be a drop-shadow filter on .bk__book itself, which is a
+	   grouping property: it flattened the 3D and made the browser
+	   re-rasterise all four pages every frame of a turn. */
+	.bk__drop {
+		position: absolute;
+		inset: 3% 0 -2%;
+		border-radius: 1.4rem;
+		background: #000;
+		opacity: 0.62;
+		filter: blur(34px);
+		transform: translateZ(-60px);
+		pointer-events: none;
+	}
+	@media (max-width: 860px) {
+		/* stacked, the two pages need real height or four cards squash */
+		.bk__book { aspect-ratio: 1 / 1.88; transform: none; }
+	}
+	@media (max-width: 520px) {
+		/* measured: a pocket card wants ~140px, two of them plus the gutter
+		   need ~295px of paper — this ratio hands the page exactly that */
+		.bk__book { aspect-ratio: 1 / 1.98; }
+	}
+
+	/* the block of pages either side, so it reads as bound not printed */
+	.bk__edge {
+		position: absolute;
+		top: 1.4%;
+		bottom: 1.4%;
+		width: 12px;
+		border-radius: 3px;
+		background: repeating-linear-gradient(90deg, var(--paper2) 0 1px, rgba(160, 130, 90, 0.5) 1px 2px);
+		box-shadow: 0 12px 26px -10px rgba(0, 0, 0, 0.7);
+	}
+	.bk__edge--l { left: -11px; }
+	.bk__edge--r { right: -11px; }
+	@media (max-width: 860px) { .bk__edge { display: none; } }
+
+	.bk__spine {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 50%;
+		width: 42px;
+		margin-left: -21px;
+		z-index: 4;
+		pointer-events: none;
+		background: linear-gradient(
+			90deg,
+			rgba(0, 0, 0, 0) 0%,
+			rgba(74, 50, 26, 0.28) 38%,
+			rgba(56, 36, 16, 0.42) 50%,
+			rgba(74, 50, 26, 0.28) 62%,
+			rgba(0, 0, 0, 0) 100%
+		);
+	}
+	@media (max-width: 860px) { .bk__spine { display: none; } }
+
+	.bk__ribbon {
+		position: absolute;
+		top: -2.5%;
+		left: 47.4%;
+		width: 10px;
+		height: 46%;
+		z-index: 5;
+		pointer-events: none;
+		background: linear-gradient(180deg, #a83420, #7d2214);
+		clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 86%, 0 100%);
+		box-shadow: 2px 0 8px -2px rgba(0, 0, 0, 0.5);
+		opacity: 0.85;
+	}
+	@media (max-width: 860px) { .bk__ribbon { display: none; } }
+
+	/* ── spreads ── */
+	.bk__spread {
+		position: absolute;
+		inset: 0;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		opacity: 0;
+		visibility: hidden;
+	}
+	.bk__spread.is-open { opacity: 1; visibility: visible; }
+	/* mid-turn the book shows two spreads at once, half of each: the side
+	   you are not turning stays where it was, and the side you are turning
+	   onto is already underneath waiting */
+	.bk__spread.is-half-l,
+	.bk__spread.is-half-r { opacity: 1; visibility: visible; }
+	.bk__spread.is-half-l { clip-path: inset(0 50% 0 0); }
+	.bk__spread.is-half-r { clip-path: inset(0 0 0 50%); }
+	@media (max-width: 860px) {
+		.bk__spread { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+		.bk__spread.is-half-l { clip-path: inset(0 0 50% 0); }
+		.bk__spread.is-half-r { clip-path: inset(50% 0 0 0); }
+	}
+
+	.bk__page {
+		position: relative;
+		overflow: hidden;
+		padding: clamp(1rem, 2.2vw, 1.8rem);
+		background: linear-gradient(180deg, var(--paper), var(--paper2));
+		color: var(--ink);
+	}
+	.bk__page--l {
+		border-radius: 1rem 0.2rem 0.2rem 1rem;
+		box-shadow: inset -22px 0 32px -26px rgba(60, 38, 14, 0.85);
+	}
+	.bk__page--r {
+		border-radius: 0.2rem 1rem 1rem 0.2rem;
+		box-shadow: inset 22px 0 32px -26px rgba(60, 38, 14, 0.85);
+	}
+	@media (max-width: 860px) {
+		.bk__page--l { border-radius: 1rem 1rem 0.2rem 0.2rem; box-shadow: inset 0 -18px 26px -22px rgba(60, 38, 14, 0.8); }
+		.bk__page--r { border-radius: 0.2rem 0.2rem 1rem 1rem; box-shadow: inset 0 18px 26px -22px rgba(60, 38, 14, 0.8); }
+	}
+	/* paper tooth */
+	.bk__grain {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		opacity: 0.17;
+		background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.32'/%3E%3C/svg%3E");
+	}
+
+	/* ── the cards printed on the page ── */
+	.bk__cards {
+		position: relative;
+		z-index: 1;
+		display: grid;
+		/* one card fills the page, two share it evenly — the last spread
+		   should look printed, not half empty */
+		grid-auto-rows: 1fr;
+		gap: clamp(0.7rem, 1.6vw, 1.1rem);
+		height: 100%;
+		padding-bottom: 1.4rem;
+	}
+	.bk__card {
+		--c: hsl(var(--hue, 30) 58% 38%);
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		text-align: left;
+		min-height: 0;
+		overflow: hidden;
+		padding: clamp(0.75rem, 1.6vw, 1.05rem);
+		border-radius: 0.5rem;
+		border: 1px solid var(--rule);
+		background: linear-gradient(180deg, color-mix(in srgb, var(--c) 7%, rgba(255, 255, 255, 0.5)), rgba(255, 255, 255, 0.16));
+		cursor: pointer;
+		transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.28s ease,
+			border-color 0.28s ease;
+	}
+	.bk__card:hover,
+	.bk__card:focus-visible {
+		transform: translateY(-3px);
+		border-color: color-mix(in srgb, var(--c) 55%, transparent);
+		box-shadow: 0 16px 30px -18px rgba(60, 38, 14, 0.75);
+		outline: none;
+	}
+	.bk__card-top { display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 0.5rem; }
+	.bk__card-ic {
+		display: grid;
+		place-items: center;
+		width: 34px;
+		height: 34px;
+		border-radius: 0.45rem;
+		color: var(--c);
+		background: color-mix(in srgb, var(--c) 14%, transparent);
+		border: 1px solid color-mix(in srgb, var(--c) 32%, transparent);
+	}
+	.bk__card-code {
+		font-family: ui-monospace, monospace;
+		font-size: 0.62rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		color: var(--ink3);
+		border: 1px solid var(--rule);
+		padding: 0.15rem 0.4rem;
+		border-radius: 0.25rem;
+	}
+	.bk__card-t { font-size: clamp(0.95rem, 1.5vw, 1.1rem); font-weight: 800; letter-spacing: -0.015em; }
+	.bk__card-d { font-size: clamp(0.76rem, 1vw, 0.85rem); line-height: 1.5; color: var(--ink2); margin-top: 0.2rem; }
+	.bk__card-chips { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.55rem; }
+	.bk__card-chips i {
+		font-style: normal;
+		font-family: ui-monospace, monospace;
+		font-size: 0.6rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+		color: var(--ink3);
+		border: 1px solid var(--rule);
+		border-radius: 9999px;
+		padding: 0.14rem 0.45rem;
+	}
+	.bk__card-foot {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.5rem;
+		width: 100%;
+		margin-top: auto;
+		padding-top: 0.6rem;
+	}
+	.bk__card-room { display: inline-flex; align-items: center; gap: 0.25rem; font-style: normal; font-size: 0.68rem; color: var(--ink3); }
+	.bk__card-go {
+		font-style: normal;
+		font-family: ui-monospace, monospace;
+		font-size: 0.65rem;
+		font-weight: 800;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--c);
+		border-bottom: 1px solid color-mix(in srgb, var(--c) 40%, transparent);
+	}
+
+	/* ── the closing page ── */
+	.bk__more {
+		position: relative;
+		z-index: 1;
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		padding-bottom: 1.4rem;
+	}
+	.bk__more-rule { display: block; width: 3.2rem; height: 3px; border-radius: 9999px; background: #8d5a1e; margin-bottom: 0.9rem; }
+	.bk__more-t { font-size: clamp(1.15rem, 2.2vw, 1.7rem); font-weight: 850; letter-spacing: -0.02em; margin: 0 0 0.7rem; }
+	.bk__more-p { font-size: clamp(0.8rem, 1.1vw, 0.92rem); line-height: 1.7; color: var(--ink2); margin: 0 0 1.1rem; max-width: 26rem; }
+	.bk__more-go {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		width: fit-content;
+		font-size: 0.85rem;
+		font-weight: 800;
+		color: #8d5a1e;
+		border-bottom: 1px solid rgba(141, 90, 30, 0.45);
+		padding-bottom: 2px;
+		transition: gap 0.25s ease;
+	}
+	.bk__more-go:hover { gap: 0.7rem; }
+	.bk__stamp {
+		position: absolute;
+		right: clamp(0.5rem, 2vw, 2rem);
+		bottom: clamp(1.6rem, 4vw, 3rem);
+		display: grid;
+		place-items: center;
+		padding: 0.5rem 0.9rem;
+		border: 2px solid rgba(160, 42, 28, 0.5);
+		border-radius: 0.35rem;
+		color: rgba(160, 42, 28, 0.62);
+		transform: rotate(-9deg);
+		text-align: center;
+		line-height: 1;
+	}
+	.bk__stamp em { font-style: normal; font-size: 0.56rem; font-weight: 800; letter-spacing: 0.22em; text-transform: uppercase; }
+	.bk__stamp b { font-family: 'Bebas Neue', sans-serif; font-size: 1.25rem; letter-spacing: 0.06em; }
+
+	/* ── folio + a hand in the margin ── */
+	.bk__folio {
+		position: absolute;
+		left: clamp(1rem, 2.2vw, 1.8rem);
+		right: clamp(1rem, 2.2vw, 1.8rem);
+		bottom: 0.6rem;
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 1rem;
+		font-size: 0.7rem;
+		color: var(--ink3);
+	}
+	.bk__folio i { font-style: normal; font-variant-numeric: tabular-nums; }
+	.bk__scribble {
+		font-family: 'Bradley Hand', 'Segoe Print', 'Comic Sans MS', cursive;
+		font-style: normal;
+		font-size: 0.82rem;
+		color: rgba(31, 78, 121, 0.62);
+		transform: rotate(-2deg);
+	}
+
+	/* ── the leaf that turns ──
+	   Paper does not pivot like a door: it bows away from the spine, lifts
+	   off the block at the halfway point and flattens again as it lands.
+	   The rotation carries the lift, and two overlays on each face carry
+	   the bow — a shadow that deepens into the gutter and a highlight that
+	   travels out to the free edge as the sheet passes the light. */
+	.bk__leaf {
+		position: absolute;
+		top: 0;
+		left: 50%;
+		width: 50%;
+		height: 100%;
+		z-index: 6;
+		transform-style: preserve-3d;
+		transform-origin: left center;
+		pointer-events: none;
+		will-change: transform;
+	}
+	.bk__leaf[hidden] { display: none; }
+	.bk__leaf .bk__grain { display: none; }
+	.bk__leaf.is-back { left: 0; transform-origin: right center; }
+	.bk__leaf.is-turning { animation: bk-turn var(--bk-turn, 880ms) cubic-bezier(0.42, 0.03, 0.22, 1) forwards; }
+	.bk__leaf.is-turning.is-back { animation-name: bk-turn-back; }
+
+	/* the squeeze is the bow: a sheet that curves away from you covers less
+	   width than a flat one, and the free edge dips as it goes over */
+	@keyframes bk-turn {
+		0% { transform: rotateY(0deg) translateZ(0) rotateZ(0deg) rotateX(0deg) scaleX(1); }
+		32% { transform: rotateY(-56deg) translateZ(15px) rotateZ(0.9deg) rotateX(1.6deg) scaleX(0.972); }
+		50% { transform: rotateY(-90deg) translateZ(20px) rotateZ(1.2deg) rotateX(2deg) scaleX(0.962); }
+		68% { transform: rotateY(-124deg) translateZ(15px) rotateZ(0.9deg) rotateX(1.6deg) scaleX(0.972); }
+		100% { transform: rotateY(-180deg) translateZ(0) rotateZ(0deg) rotateX(0deg) scaleX(1); }
+	}
+	@keyframes bk-turn-back {
+		0% { transform: rotateY(0deg) translateZ(0) rotateZ(0deg) rotateX(0deg) scaleX(1); }
+		32% { transform: rotateY(56deg) translateZ(15px) rotateZ(-0.9deg) rotateX(1.6deg) scaleX(0.972); }
+		50% { transform: rotateY(90deg) translateZ(20px) rotateZ(-1.2deg) rotateX(2deg) scaleX(0.962); }
+		68% { transform: rotateY(124deg) translateZ(15px) rotateZ(-0.9deg) rotateX(1.6deg) scaleX(0.972); }
+		100% { transform: rotateY(180deg) translateZ(0) rotateZ(0deg) rotateX(0deg) scaleX(1); }
+	}
+
+	.bk__face {
+		position: absolute;
+		inset: 0;
+		backface-visibility: hidden;
+		overflow: hidden;
+		border-radius: 0.2rem 1rem 1rem 0.2rem;
+		background: linear-gradient(180deg, var(--paper), var(--paper2));
+	}
+	.bk__face--back { transform: rotateY(180deg); border-radius: 1rem 0.2rem 0.2rem 1rem; }
+
+	/* the gutter shadow: shallow while the page lies flat, deep at the
+	   moment the sheet is standing on its edge */
+	.bk__face::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: 3;
+		pointer-events: none;
+		opacity: 0.55;
+		background: linear-gradient(
+			90deg,
+			rgba(52, 32, 10, 0.5),
+			rgba(52, 32, 10, 0.14) 24%,
+			transparent 48%,
+			rgba(52, 32, 10, 0.06) 88%
+		);
+	}
+	.bk__face--back::after {
+		background: linear-gradient(
+			270deg,
+			rgba(52, 32, 10, 0.5),
+			rgba(52, 32, 10, 0.14) 24%,
+			transparent 48%,
+			rgba(52, 32, 10, 0.06) 88%
+		);
+	}
+	/* the highlight that runs out to the free edge as the sheet bows */
+	.bk__face::before {
+		content: '';
+		position: absolute;
+		top: -8%;
+		bottom: -8%;
+		left: -70%;
+		width: 62%;
+		z-index: 4;
+		opacity: 0;
+		pointer-events: none;
+		background: linear-gradient(
+			92deg,
+			transparent,
+			rgba(255, 250, 236, 0.28) 26%,
+			rgba(255, 250, 236, 0.66) 48%,
+			rgba(255, 250, 236, 0.2) 70%,
+			transparent
+		);
+	}
+	.bk__leaf.is-turning .bk__face::after { animation: bk-bow var(--bk-turn, 880ms) ease-in-out both; }
+	.bk__leaf.is-turning .bk__face::before { animation: bk-gloss var(--bk-turn, 880ms) ease-in-out both; }
+	@keyframes bk-bow {
+		0% { opacity: 0.4; }
+		50% { opacity: 1; }
+		100% { opacity: 0.4; }
+	}
+	@keyframes bk-gloss {
+		0% { opacity: 0; transform: translateX(0); }
+		30% { opacity: 1; }
+		75% { opacity: 0.55; }
+		100% { opacity: 0; transform: translateX(300%); }
+	}
+
+	/* the shadow the sheet throws on the paper it is uncovering */
+	.bk__cast {
+		position: absolute;
+		will-change: opacity;
+		top: 1%;
+		bottom: 1%;
+		left: 50%;
+		width: 50%;
+		z-index: 5;
+		opacity: 0;
+		pointer-events: none;
+		border-radius: 0.2rem 1rem 1rem 0.2rem;
+		background: linear-gradient(90deg, rgba(28, 16, 3, 0.55), rgba(28, 16, 3, 0.18) 42%, transparent 74%);
+	}
+	.bk.is-turning-back .bk__cast { left: 0; transform: scaleX(-1); }
+	.bk.is-turning .bk__cast,
+	.bk.is-turning-back .bk__cast { animation: bk-cast var(--bk-turn, 880ms) ease-in-out both; }
+	@keyframes bk-cast {
+		0% { opacity: 0; }
+		34% { opacity: 0.85; }
+		100% { opacity: 0; }
+	}
+
+	/* stacked, the sheet turns over its long edge instead of the spine */
+	@media (max-width: 860px) {
+		.bk__cast { display: none; }
+		.bk__leaf { top: 50%; left: 0; width: 100%; height: 50%; transform-origin: center top; }
+		.bk__leaf.is-back { top: 0; transform-origin: center bottom; }
+		.bk__face { border-radius: 0.2rem 0.2rem 1rem 1rem; }
+		.bk__face--back { transform: rotateX(180deg); border-radius: 1rem 1rem 0.2rem 0.2rem; }
+		.bk__face::before { display: none; }
+		.bk__leaf.is-turning { animation-name: bk-turn-m; }
+		.bk__leaf.is-turning.is-back { animation-name: bk-turn-m-back; }
+	}
+	@keyframes bk-turn-m {
+		0% { transform: rotateX(0deg) translateZ(0) scaleY(1); }
+		50% { transform: rotateX(90deg) translateZ(24px) scaleY(0.96); }
+		100% { transform: rotateX(180deg) translateZ(0) scaleY(1); }
+	}
+	@keyframes bk-turn-m-back {
+		0% { transform: rotateX(0deg) translateZ(0) scaleY(1); }
+		50% { transform: rotateX(-90deg) translateZ(24px) scaleY(0.96); }
+		100% { transform: rotateX(-180deg) translateZ(0) scaleY(1); }
+	}
+
+	/* ── controls ── */
+	.bk__controls {
+		position: relative;
+		z-index: 2;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.6rem;
+		margin-top: clamp(1.2rem, 3vw, 2rem);
+	}
+	.bk__ctl {
+		display: grid;
+		place-items: center;
+		width: 38px;
+		height: 38px;
+		border-radius: 9999px;
+		color: var(--cp-ink, #fdf6ea);
+		border: 1px solid color-mix(in srgb, var(--cp-acc, #f59e0b) 35%, transparent);
+		background: color-mix(in srgb, var(--cp-acc, #f59e0b) 10%, transparent);
+		cursor: pointer;
+		transition: background 0.22s ease, transform 0.22s ease, color 0.22s ease;
+	}
+	.bk__ctl:hover { background: color-mix(in srgb, var(--cp-acc, #f59e0b) 22%, transparent); transform: translateY(-1px); }
+
+	/* how long you have got before it turns itself.
+	   The ring drains around the pause button and resets on every turn, so
+	   the page never moves without warning. */
+	@property --bkp {
+		syntax: '<percentage>';
+		inherits: false;
+		initial-value: 0%;
+	}
+	.bk__ctl--play { position: relative; }
+	.bk__ring {
+		position: absolute;
+		inset: -5px;
+		border-radius: 9999px;
+		pointer-events: none;
+		opacity: 0;
+		transition: opacity 0.3s ease;
+		background: conic-gradient(
+			from -90deg,
+			var(--cp-acc, #f59e0b) var(--bkp, 0%),
+			color-mix(in srgb, var(--cp-acc, #f59e0b) 16%, transparent) 0
+		);
+		-webkit-mask-image: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2.5px));
+		mask-image: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2.5px));
+	}
+	.bk__ring.is-live {
+		opacity: 0.95;
+		animation: bk-dwell var(--bk-dwell, 7000ms) linear both;
+	}
+	@keyframes bk-dwell {
+		from { --bkp: 0%; opacity: 0.95; }
+		to { --bkp: 100%; opacity: 0.95; }
+	}
+
+	.bk__i-play { display: none; }
+	.bk[data-paused] .bk__i-play { display: block; }
+	.bk[data-paused] .bk__i-pause { display: none; }
+	.bk__dots { display: flex; align-items: center; gap: 0.4rem; padding-inline: 0.35rem; }
+	.bk__dot {
+		width: 9px;
+		height: 9px;
+		border-radius: 9999px;
+		border: 1px solid color-mix(in srgb, var(--cp-acc, #f59e0b) 50%, transparent);
+		background: transparent;
+		cursor: pointer;
+		transition: background 0.25s ease, transform 0.25s ease, width 0.25s ease;
+	}
+	.bk__dot.is-on { background: var(--cp-acc, #f59e0b); width: 22px; }
+
+	/* ── the lifted card ── */
+	.bk__sheet { position: fixed; inset: 0; z-index: 1200; display: grid; place-items: center; padding: clamp(1rem, 4vw, 2rem); }
+	.bk__sheet[hidden] { display: none; }
+	.bk__sheet-scrim { position: absolute; inset: 0; background: rgba(8, 6, 3, 0.62); backdrop-filter: blur(5px); animation: bk-fade 0.25s ease both; }
+	@keyframes bk-fade { from { opacity: 0; } to { opacity: 1; } }
+	.bk__sheet-card {
+		position: relative;
+		width: min(100%, 34rem);
+		max-height: min(84vh, 46rem);
+		overflow: auto;
+		padding: clamp(1.3rem, 3.5vw, 2.1rem);
+		border-radius: 0.7rem;
+		background: linear-gradient(180deg, var(--paper), var(--paper2));
+		color: var(--ink);
+		box-shadow: 0 50px 90px -30px rgba(0, 0, 0, 0.8);
+		animation: bk-lift 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+	}
+	@keyframes bk-lift { from { opacity: 0; transform: translateY(16px) rotateX(6deg) scale(0.97); } to { opacity: 1; transform: none; } }
+	.bk__sheet-x {
+		position: absolute;
+		top: 0.7rem;
+		right: 0.7rem;
+		display: grid;
+		place-items: center;
+		width: 32px;
+		height: 32px;
+		border-radius: 9999px;
+		color: var(--ink2);
+		border: 1px solid var(--rule);
+		cursor: pointer;
+		transition: background 0.2s ease, color 0.2s ease;
+	}
+	.bk__sheet-x:hover { background: rgba(60, 38, 14, 0.1); color: var(--ink); }
+
+	/* the brief itself */
+	.bkd { --c: hsl(var(--hue, 30) 58% 36%); }
+	.bkd__top { display: flex; align-items: center; gap: 0.85rem; margin-bottom: 1rem; padding-right: 2rem; }
+	.bkd__ic {
+		display: grid;
+		place-items: center;
+		width: 46px;
+		height: 46px;
+		flex: none;
+		border-radius: 0.6rem;
+		color: var(--c);
+		background: color-mix(in srgb, var(--c) 14%, transparent);
+		border: 1px solid color-mix(in srgb, var(--c) 32%, transparent);
+	}
+	.bkd__code { display: block; font-family: ui-monospace, monospace; font-size: 0.66rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink3); }
+	.bkd__t { font-size: clamp(1.25rem, 3vw, 1.6rem); font-weight: 850; letter-spacing: -0.02em; margin: 0.1rem 0 0; }
+	.bkd__p { font-size: 0.92rem; line-height: 1.7; color: var(--ink2); margin: 0 0 1.2rem; }
+	.bkd__label { display: block; font-size: 0.64rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink3); margin-bottom: 0.6rem; }
+	.bkd__list { list-style: none; margin: 0 0 1.4rem; padding: 0; display: grid; gap: 0.5rem; }
+	.bkd__list li { display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.88rem; line-height: 1.5; color: var(--ink2); }
+	.bkd__list :global(svg) { flex: none; margin-top: 0.15rem; color: var(--c); }
+	.bkd__go {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		font-size: 0.88rem;
+		font-weight: 800;
+		color: var(--c);
+		border-bottom: 1px solid color-mix(in srgb, var(--c) 45%, transparent);
+		padding-bottom: 2px;
+		transition: gap 0.25s ease;
+	}
+	.bkd__go:hover { gap: 0.75rem; }
+
+	/* ── the pocket edition ──
+	   Stacked, each page is half the height it had, so the card sheds the
+	   chips and the room line and keeps the title, the one-liner and the
+	   way in. Everything else is a tap away in the lifted card. */
+	@media (max-width: 860px) {
+		.bk__page { padding: 0.85rem 0.9rem; }
+		/* even rows, deliberately: two cards of the same height read as a
+		   printed page. The paper above was sized to fit them, so 1fr never
+		   has to squeeze anything. */
+		.bk__cards { gap: 0.55rem; padding-bottom: 1rem; }
+		.bk__card { padding: 0.6rem 0.75rem; }
+		.bk__card-top { margin-bottom: 0.3rem; }
+		.bk__card-ic { width: 27px; height: 27px; border-radius: 0.4rem; }
+		.bk__card-ic svg { width: 15px; height: 15px; }
+		.bk__card-code { font-size: 0.55rem; padding: 0.1rem 0.32rem; }
+		.bk__card-t { font-size: 0.9rem; line-height: 1.2; }
+		/* no line-clamp here: -webkit-box-orient gets stripped out of
+		   scoped styles by the build and the text disappears entirely */
+		.bk__card-d { font-size: 0.74rem; line-height: 1.4; margin-top: 0.15rem; }
+		.bk__card-chips,
+		.bk__card-room { display: none; }
+		.bk__card-foot { justify-content: flex-end; padding-top: 0.35rem; }
+		.bk__card-go { font-size: 0.6rem; }
+		.bk__more-p { font-size: 0.82rem; line-height: 1.6; }
+		.bk__stamp { bottom: 1.2rem; padding: 0.4rem 0.7rem; }
+		.bk__scribble { display: none; }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.bk__ring { display: none; }
+		.bk__lamp { animation: none; }
+		.bk__sheet-card, .bk__sheet-scrim { animation: none; }
+		.bk__card { transition: none; }
+	}
+	:global(html.perf-lite) .bk__lamp,
+	:global(html.perf-lite) .bk__grain { animation: none; }
+</style>

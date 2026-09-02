@@ -126,12 +126,10 @@ body {
   overflow-x: clip;
 }
 
-/* Bootcamp lives in the Campus world (for now) — hide any bootcamp
-   link tagged .nav-bootcamp (footer nav, 404 quick links, etc.)
-   everywhere except the campus view. */
-html:not([data-view="campus"]) .nav-bootcamp {
-  display: none !important;
-}
+/* Programs used to be hidden outside the Campus world. It is in every
+   world's nav now; following it switches worlds, and programsNotice.ts
+   says so on the way. The .nav-bootcamp hook is kept on the markup in
+   case we ever want to scope a nav entry to one world again. */
 .clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;

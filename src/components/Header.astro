@@ -111,7 +111,7 @@ const isActive = (href: string) => {
 							</div>
 						) : (
 							<Link
-								class:list={['capitalize', { 'nav-bootcamp': link === 'bootcamp' }]}
+								class:list={['capitalize', { 'nav-bootcamp': link === 'programs' }]}
 								href={`/${link}`}
 							>
 								{formatLink(link)}
@@ -225,7 +225,7 @@ const isActive = (href: string) => {
 					) : (
 						<a
 							href={`/${link}`}
-							class:list={['m-nav-link', { active: isActive('/' + link), 'nav-bootcamp': link === 'bootcamp' }]}
+							class:list={['m-nav-link', { active: isActive('/' + link), 'nav-bootcamp': link === 'programs' }]}
 						>
 							<span>{formatLink(link)}</span>
 							<svg class="m-nav-go" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6" /></svg>
@@ -496,16 +496,28 @@ const isActive = (href: string) => {
 		display: grid;
 		gap: 0.1rem;
 		border-radius: 1.1rem;
-		background: #12152a;
-		border: 1px solid rgba(255, 255, 255, 0.12);
-		box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.7);
+		/* the panel used to be a fixed navy in every world, which sat badly
+		   in the warm ones — it takes the active view's accent now */
+		background:
+			linear-gradient(180deg, color-mix(in srgb, var(--view-accent, #28a6ec) 12%, transparent), transparent 55%),
+			color-mix(in srgb, var(--view-accent, #28a6ec) 13%, #0b0c12);
+		border: 1px solid color-mix(in srgb, var(--view-accent, #28a6ec) 26%, rgba(255, 255, 255, 0.1));
+		box-shadow:
+			0 40px 90px -30px rgba(0, 0, 0, 0.75),
+			0 0 0 1px rgba(255, 255, 255, 0.03) inset;
 		opacity: 0;
 		visibility: hidden;
 		pointer-events: none;
 		transition: opacity 0.25s ease, transform 0.32s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.25s;
 		z-index: 50;
 	}
-	:global(html:not(.dark)) .nav-dd-panel { background: #ffffff; border-color: rgba(20, 22, 40, 0.1); box-shadow: 0 40px 90px -30px rgba(20, 22, 40, 0.28); }
+	:global(html:not(.dark)) .nav-dd-panel {
+		background:
+			linear-gradient(180deg, color-mix(in srgb, var(--view-accent, #28a6ec) 9%, transparent), transparent 55%),
+			color-mix(in srgb, var(--view-accent, #28a6ec) 5%, #ffffff);
+		border-color: color-mix(in srgb, var(--view-accent, #28a6ec) 22%, rgba(20, 22, 40, 0.1));
+		box-shadow: 0 40px 90px -30px rgba(20, 22, 40, 0.28);
+	}
 	/* invisible bridge so the gap doesn't drop the hover */
 	.nav-dd-panel::before { content: ''; position: absolute; left: 0; right: 0; top: -16px; height: 16px; }
 	.nav-dd:hover .nav-dd-panel,
@@ -530,8 +542,12 @@ const isActive = (href: string) => {
 	.nav-dd-txt { display: flex; flex-direction: column; line-height: 1.2; min-width: 0; }
 	.nav-dd-txt strong { font-size: 0.92rem; font-weight: 700; }
 	.nav-dd-txt em { font-style: normal; font-size: 0.74rem; opacity: 0.6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-	.nav-dd-item--over .nav-dd-ic { color: #9bd8ff; background: rgba(155, 216, 255, 0.14); border-color: rgba(155, 216, 255, 0.3); }
-	.nav-dd-sep { display: block; height: 1px; margin: 0.35rem 0.6rem; background: rgba(255, 255, 255, 0.1); }
+		.nav-dd-item--over .nav-dd-ic {
+		color: var(--view-accent, #9bd8ff);
+		background: color-mix(in srgb, var(--view-accent, #9bd8ff) 16%, transparent);
+		border-color: color-mix(in srgb, var(--view-accent, #9bd8ff) 32%, transparent);
+	}
+	.nav-dd-sep { display: block; height: 1px; margin: 0.35rem 0.6rem; background: color-mix(in srgb, var(--view-accent, #ffffff) 22%, rgba(255, 255, 255, 0.08)); }
 	:global(html:not(.dark)) .nav-dd-sep { background: rgba(20, 22, 40, 0.1); }
 
 	/* ── Mobile Services accordion ── */
@@ -545,10 +561,51 @@ const isActive = (href: string) => {
 </style>
 
 <style is:global>
-	/* Bootcamp lives in the Campus world (for now) — hide its nav entry
-	   everywhere else, desktop nav AND the mobile drawer. */
-	html:not([data-view='campus']) .nav-bootcamp {
-		display: none !important;
+	/* Programs is in every world's nav now. The page itself lives in the
+	   Campus world, so following it from anywhere else switches worlds —
+	   programsNotice.ts says so before it happens instead of leaving
+	   somebody wondering why the site changed colour. */
+	.nav-programs-notice {
+		position: fixed;
+		left: 50%;
+		bottom: clamp(1.2rem, 5vw, 2.5rem);
+		z-index: 1300;
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		max-width: min(92vw, 27rem);
+		padding: 0.75rem 1.1rem 0.75rem 0.85rem;
+		border-radius: 9999px;
+		font-size: 0.84rem;
+		line-height: 1.4;
+		color: #fdf6ea;
+		background: color-mix(in srgb, var(--view-accent, #f59e0b) 16%, rgba(12, 10, 6, 0.94));
+		border: 1px solid color-mix(in srgb, var(--view-accent, #f59e0b) 40%, transparent);
+		box-shadow: 0 26px 60px -24px rgba(0, 0, 0, 0.8);
+		transform: translate(-50%, 14px);
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 0.32s ease, transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.nav-programs-notice.is-on { opacity: 1; transform: translate(-50%, 0); }
+	.nav-programs-notice b { font-weight: 800; }
+	.nav-programs-notice i {
+		display: grid;
+		place-items: center;
+		flex: none;
+		width: 28px;
+		height: 28px;
+		border-radius: 9999px;
+		font-style: normal;
+		color: #2b1c08;
+		background: var(--view-accent, #f59e0b);
+	}
+	html:not(.dark) .nav-programs-notice {
+		color: #241703;
+		background: color-mix(in srgb, var(--view-accent, #f59e0b) 14%, rgba(255, 255, 255, 0.96));
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.nav-programs-notice { transition: none; }
 	}
 
 	/* The mobile drawer tones with the active world in dark mode, same as

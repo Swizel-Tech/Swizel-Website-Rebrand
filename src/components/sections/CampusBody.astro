@@ -5,6 +5,7 @@
 // an arcade START button at the end. School spirit, real outcomes.
 import { Icon } from 'astro-icon/components';
 import CampusJourney from '../CampusJourney.astro';
+import CampusLibrary from '../CampusLibrary.astro';
 
 const stats = [
 	{ n: '3–6 mo', label: 'IT internship' },
@@ -13,12 +14,6 @@ const stats = [
 	{ n: '65+', label: 'products shipped' },
 ];
 
-const courses = [
-	{ code: 'WEB 101', icon: 'mdi:web', title: 'Web Development', desc: 'HTML, CSS, JavaScript and React, zero to deployed.', chips: ['react', 'node', 'git'], room: 'Lecture Hall A' },
-	{ code: 'MOB 201', icon: 'mdi:cellphone', title: 'Mobile Development', desc: 'Real apps for Android and iOS that people use.', chips: ['flutter', 'react native'], room: 'Lab 2' },
-	{ code: 'DSN 110', icon: 'mdi:palette-outline', title: 'Product Design', desc: 'UI, UX and prototyping that gets you hired.', chips: ['figma', 'ui', 'ux'], room: 'Design Studio' },
-	{ code: 'MKT 105', icon: 'mdi:bullhorn-outline', title: 'Digital Marketing', desc: 'SEO, ads and social that actually grows products.', chips: ['seo', 'ads', 'social'], room: 'Lecture Hall B' },
-];
 
 const roadmap = [
 	{ lvl: 'Term 1', xp: '+500 XP', title: 'Lectures', desc: 'Whiteboards, markers and fundamentals, taught live by working engineers.' },
@@ -57,8 +52,8 @@ const ships = [
 ];
 
 const programs = [
-	{ icon: 'mdi:badge-account-outline', title: 'SIWES / IT Internship', fee: 'apply', hot: true, href: '/bootcamp#internship', desc: 'Do your three or six month industrial training on a live client product, with a mentor on your work every week.' },
-	{ icon: 'mdi:flag-outline', title: 'NYSC Placement', fee: 'apply', hot: true, href: '/bootcamp#nysc', desc: 'Serve your year with the team that ships. Real projects, real reviews, and a portfolio at the end of it.' },
+	{ icon: 'mdi:badge-account-outline', title: 'SIWES / IT Internship', fee: 'apply', hot: true, href: '/programs#internship', desc: 'Do your three or six month industrial training on a live client product, with a mentor on your work every week.' },
+	{ icon: 'mdi:flag-outline', title: 'NYSC Placement', fee: 'apply', hot: true, href: '/programs#nysc', desc: 'Serve your year with the team that ships. Real projects, real reviews, and a portfolio at the end of it.' },
 ];
 
 const sectors = ['Fintech', 'Real estate', 'Sports', 'E-commerce', 'Education', 'Healthcare', 'Logistics', 'Beauty', 'Energy', 'Media', 'Travel'];
@@ -80,12 +75,12 @@ const voices = [
 
 <div class="cbody view-body view-body-campus">
 	<!-- ── A · orientation day ─────────────────────────────── -->
-	<section class="cp-sec">
+	<section class="cp-sec cp-sec--open">
 		<div class="cp-wrap cp-open">
-			<div class="cp-copy cp-copy--mid cp-rev">
+			<div class="cp-copy cp-rev">
 				<span class="cp-badge">🎓 Orientation · Cohort '26</span>
 				<h2 class="cp-h cp-h--xl">Welcome to class. <em>Leave with a career.</em></h2>
-				<p class="cp-p cp-p--center">
+				<p class="cp-p">
 					Two ways in: your industrial training, or your service year.
 					Both put you on a live client product beside the people who
 					build it for a living. Both are applied for.
@@ -101,7 +96,7 @@ const voices = [
 					}
 				</ul>
 				<div class="cp-row">
-					<a href="/bootcamp" class="cp-cta">
+					<a href="/programs" class="cp-cta">
 						Start your application
 						<Icon width={17} name="mdi:school-outline" />
 					</a>
@@ -120,39 +115,19 @@ const voices = [
 	</section>
 
 	<!-- ── B · course registration ─────────────────────────── -->
-	<section class="cp-sec" data-cursor="book">
+	<section class="cp-sec cp-sec--courses" data-cursor="book">
+		<span class="cp-courses-bg" aria-hidden="true"></span>
 		<div class="cp-wrap">
 			<div class="cp-head cp-rev">
-				<span class="cp-badge">Course registration</span>
+				<span class="cp-badge">The prospectus</span>
 				<h2 class="cp-h">Pick <em>your course.</em></h2>
 				<p class="cp-p cp-p--center">
-					Whichever path you apply through, you pick the discipline you
-					want to be trained in and shipped on.
+					Nine disciplines, printed and bound. It turns its own pages,
+					or you can take the controls. Pull one out to read it properly.
 				</p>
 			</div>
-			<div class="cp-tracks">
-				{
-					courses.map((t, i) => (
-						<a href="/bootcamp" class="cp-track cp-rev" style={`--i:${i}`}>
-							<span class="cp-track-top">
-								<span class="cp-track-ic">
-									<Icon width={24} name={t.icon} />
-								</span>
-								<span class="cp-track-code">{t.code}</span>
-							</span>
-							<h3 class="cp-track-t">{t.title}</h3>
-							<p class="cp-track-d">{t.desc}</p>
-							<span class="cp-chips">
-								{t.chips.map((c) => <span class="cp-chip">{c}</span>)}
-							</span>
-							<span class="cp-track-room">
-								<Icon width={13} name="mdi:map-marker-outline" />
-								{t.room}
-							</span>
-							<span class="cp-track-go">Register ▸</span>
-						</a>
-					))
-				}
+			<div class="cp-rev">
+				<CampusLibrary />
 			</div>
 		</div>
 	</section>
@@ -492,7 +467,7 @@ const voices = [
 				The next cohort is forming, and it is a small one. Make the
 				case for your place and you could be shipping with us.
 			</p>
-			<a href="/bootcamp" class="cp-start">
+			<a href="/programs" class="cp-start">
 				<Icon width={20} name="mdi:gamepad-variant-outline" />
 				START: apply for a place
 			</a>
@@ -515,6 +490,7 @@ const voices = [
 		--cp-line: rgba(255, 255, 255, 0.09);
 		--cp-card: rgba(255, 255, 255, 0.035);
 		--cp-marker: 'Bradley Hand', 'Segoe Print', 'Comic Sans MS', cursive;
+		--cp-seam: #140e05;
 		font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
 			Roboto, sans-serif;
 		position: relative;
@@ -534,14 +510,54 @@ const voices = [
 		--cp-acc: #b45309;
 		--cp-line: rgba(43, 28, 8, 0.1);
 		--cp-card: rgba(43, 28, 8, 0.045);
+		--cp-seam: #fbf0dc;
 		background:
 			radial-gradient(1000px 540px at 82% -6%, rgba(245, 158, 11, 0.14), transparent 62%),
 			linear-gradient(180deg, #fdf4e3 0%, #faecd4 55%, #fdf4e3 100%);
 	}
 
+	/* Sections used to run into each other with nothing but whitespace
+	   between them. Each one now opens on a hairline the width of the
+	   content, with a small marker sitting on it, so the page reads as a
+	   set of rooms rather than one long scroll. */
 	.cp-sec {
-		padding-block: clamp(2rem, 5vw, 3.5rem);
+		position: relative;
+		padding-block: clamp(2.6rem, 6vw, 4.25rem);
 	}
+	.cp-sec + .cp-sec::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 50%;
+		transform: translateX(-50%);
+		width: min(74rem, calc(100% - 2rem));
+		height: 1px;
+		background: linear-gradient(
+			90deg,
+			transparent,
+			color-mix(in srgb, var(--cp-acc) 32%, transparent) 18%,
+			color-mix(in srgb, var(--cp-acc) 32%, transparent) 82%,
+			transparent
+		);
+	}
+	.cp-sec + .cp-sec::after {
+		content: '';
+		position: absolute;
+		top: -3px;
+		left: 50%;
+		width: 7px;
+		height: 7px;
+		margin-left: -3.5px;
+		border-radius: 2px;
+		transform: rotate(45deg);
+		background: var(--cp-acc);
+		box-shadow: 0 0 0 4px var(--cp-seam), 0 0 14px -2px color-mix(in srgb, var(--cp-acc) 70%, transparent);
+	}
+	/* the belts and the closing CTA carry their own edges already */
+	.cp-sec--belts::before,
+	.cp-sec--belts::after,
+	.cp-sec--cta::before,
+	.cp-sec--cta::after { display: none; }
 	.cp-wrap {
 		max-width: 74rem;
 		margin: 0 auto;
@@ -645,17 +661,29 @@ const voices = [
 	}
 
 	/* ── A · open + the whiteboard ── */
+	/* The opening reads left to right: the address on one side, the board
+	   you will be marked on beside it. Centring it made the whole section
+	   float with nothing to anchor the eye. */
 	.cp-open {
 		display: grid;
 		grid-template-columns: 1fr;
-		gap: clamp(1.75rem, 4vw, 2.75rem);
+		gap: clamp(1.75rem, 4vw, 3rem);
 		align-items: center;
 	}
+	@media (min-width: 1024px) {
+		.cp-open { grid-template-columns: 0.84fr 1.16fr; gap: clamp(2rem, 4vw, 3.5rem); }
+	}
 	.cp-open > * { min-width: 0; }
-	/* the opening address is read to the whole room, so it sits centred */
-	.cp-copy--mid { text-align: center; }
-	.cp-copy--mid .cp-stats { margin-inline: auto; }
-	.cp-copy--mid .cp-row { justify-content: center; }
+	/* four figures will not fit across the narrower left column without
+	   clipping "3-6 mo", so they pair up instead */
+	.cp-open .cp-stats { max-width: none; }
+	@media (min-width: 1024px) {
+		.cp-open .cp-stats {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 1.1rem 1.5rem;
+			max-width: 26rem;
+		}
+	}
 	.cp-game { position: relative; }
 	.cp-stats {
 		display: grid;
@@ -692,122 +720,49 @@ const voices = [
 		color: var(--cp-faint);
 	}
 
-	/* ── B · course cards ── */
-	.cp-tracks {
-		display: grid;
-		grid-template-columns: repeat(4, minmax(0, 1fr));
-		gap: clamp(0.9rem, 2vw, 1.25rem);
+	/* ── B · the prospectus room ──
+	   Its own ground: a ruled desk that recedes, so the book has somewhere
+	   to lie instead of floating on the same brown as everything else. */
+	.cp-sec--courses { isolation: isolate; }
+	.cp-courses-bg {
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		pointer-events: none;
+		/* the angled rules below are inset -20%, which reached 275px past
+		   the section on either side and gave the whole page 243px of
+		   sideways scroll — keep them inside the ground they draw */
+		overflow: clip;
+		background:
+			repeating-linear-gradient(90deg, transparent 0 92px, rgba(253, 224, 150, 0.05) 92px 93px),
+			repeating-linear-gradient(180deg, transparent 0 92px, rgba(253, 224, 150, 0.035) 92px 93px),
+			radial-gradient(130% 78% at 50% -8%, rgba(245, 158, 11, 0.14), transparent 60%),
+			radial-gradient(90% 60% at 50% 108%, rgba(251, 113, 133, 0.07), transparent 62%),
+			linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.12));
+		-webkit-mask-image: linear-gradient(180deg, transparent, #000 6%, #000 94%, transparent);
+		mask-image: linear-gradient(180deg, transparent, #000 6%, #000 94%, transparent);
 	}
-	@media (max-width: 980px) {
-		.cp-tracks {
-			grid-template-columns: repeat(2, minmax(0, 1fr));
-		}
+	/* a second, finer rule set that runs at a slight angle, so the ground
+	   reads as a surface rather than graph paper */
+	.cp-courses-bg::after {
+		content: '';
+		position: absolute;
+		inset: -20%;
+		background: repeating-linear-gradient(
+			-14deg,
+			transparent 0 34px,
+			rgba(255, 255, 255, 0.014) 34px 35px
+		);
 	}
-	@media (max-width: 540px) {
-		.cp-tracks {
-			grid-template-columns: 1fr;
-		}
+	:global(html:not(.dark)) .cbody .cp-courses-bg {
+		background:
+			repeating-linear-gradient(90deg, transparent 0 92px, rgba(120, 72, 24, 0.07) 92px 93px),
+			repeating-linear-gradient(180deg, transparent 0 92px, rgba(120, 72, 24, 0.05) 92px 93px),
+			radial-gradient(130% 78% at 50% -8%, rgba(245, 158, 11, 0.16), transparent 60%),
+			linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(120, 72, 24, 0.05));
 	}
-	.cp-track {
-		display: flex;
-		flex-direction: column;
-		align-items: flex-start;
-		padding: 1.3rem 1.25rem 1.15rem;
-		border-radius: 1.1rem;
-		border: 1px solid var(--cp-line);
-		background: var(--cp-card);
-		transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-			border-color 0.3s ease, box-shadow 0.3s ease;
-	}
-	.cp-track:hover {
-		transform: translateY(-6px) rotate(-0.6deg);
-		border-color: color-mix(in srgb, var(--cp-acc) 55%, transparent);
-		box-shadow: 0 26px 56px -24px color-mix(in srgb, var(--cp-acc) 45%, transparent);
-	}
-	.cp-track-top {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		width: 100%;
-		margin-bottom: 0.9rem;
-	}
-	.cp-track-ic {
-		display: grid;
-		place-items: center;
-		width: 48px;
-		height: 48px;
-		border-radius: 0.9rem;
-		background: linear-gradient(135deg, color-mix(in srgb, var(--cp-acc) 26%, transparent), color-mix(in srgb, var(--cp-acc) 8%, transparent));
-		border: 1px solid color-mix(in srgb, var(--cp-acc) 35%, transparent);
-		color: var(--cp-acc);
-	}
-	.cp-track-code {
-		font-family: ui-monospace, monospace;
-		font-size: 0.7rem;
-		font-weight: 800;
-		letter-spacing: 0.1em;
-		color: var(--cp-faint);
-		border: 1px solid var(--cp-line);
-		padding: 0.2rem 0.5rem;
-		border-radius: 0.35rem;
-	}
-	.cp-track-t {
-		font-size: 1.06rem;
-		font-weight: 800;
-		margin: 0 0 0.35rem;
-	}
-	.cp-track-d {
-		font-size: 0.86rem;
-		line-height: 1.55;
-		color: var(--cp-muted);
-		margin: 0 0 0.9rem;
-	}
-	.cp-chips {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.35rem;
-		margin-bottom: 0.9rem;
-	}
-	.cp-chip {
-		font-family: ui-monospace, monospace;
-		font-size: 0.68rem;
-		font-weight: 700;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		padding: 0.22rem 0.55rem;
-		border-radius: 9999px;
-		border: 1px solid color-mix(in srgb, var(--cp-ink) 16%, transparent);
-		color: color-mix(in srgb, var(--cp-ink) 55%, transparent);
-	}
-	.cp-track-room {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.3rem;
-		font-size: 0.74rem;
-		color: var(--cp-faint);
-		margin-bottom: 0.7rem;
-	}
-	.cp-track-go {
-		margin-top: auto;
-		font-family: ui-monospace, monospace;
-		font-size: 0.78rem;
-		font-weight: 800;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-		color: var(--cp-acc);
-		opacity: 0;
-		transform: translateX(-6px);
-		transition: opacity 0.25s ease, transform 0.25s ease;
-	}
-	.cp-track:hover .cp-track-go {
-		opacity: 1;
-		transform: translateX(0);
-	}
-	@media (pointer: coarse) {
-		.cp-track-go {
-			opacity: 1;
-			transform: none;
-		}
+	:global(html:not(.dark)) .cbody .cp-courses-bg::after {
+		background: repeating-linear-gradient(-14deg, transparent 0 34px, rgba(120, 72, 24, 0.03) 34px 35px);
 	}
 
 	/* ── C · roadmap (quest line) ── */

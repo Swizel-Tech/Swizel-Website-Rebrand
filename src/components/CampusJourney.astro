@@ -1,29 +1,33 @@
 ---
-// The gamified journey board. It used to live in the campus hero; the
-// class recording took that seat, so the game moved down here where it
-// has room to be a proper scoreboard. The DOM contract (#campus-widget,
-// .cw--* hooks, data-pct) is unchanged — campusView.ts still drives it.
+// The journey board. It sits beside the opening address now, not under
+// it, so it reads as a tall ladder rather than a wide bar: five rungs
+// from application to hire, each one lighting as the run passes it.
+// campusView.ts drives it through --p on the root plus the .is-on
+// classes, so the DOM contract (#campus-widget, .cw--*, data-pct,
+// .is-complete, [data-cw-start]) is unchanged.
 import { Icon } from 'astro-icon/components';
 
-const levels = [
-	{ name: 'Learn', pct: 20 },
-	{ name: 'Build', pct: 50 },
-	{ name: 'Ship', pct: 80 },
-	{ name: 'Hired', pct: 100 },
+const rungs = [
+	{ name: 'Apply', pct: 8, note: 'A real application, not a form fill' },
+	{ name: 'Onboard', pct: 30, note: 'Squad, mentor, first ticket' },
+	{ name: 'Build', pct: 55, note: 'Your code on a client product' },
+	{ name: 'Ship', pct: 80, note: 'It goes live, with your name on it' },
+	{ name: 'Hired', pct: 100, note: 'The ones who deliver, we keep' },
+];
+
+// what the ladder is worth, shown beside it as it fills
+const proof = [
+	{ pct: 12, k: 'Week 1', v: 'First ticket', n: 'Not a tour of the office' },
+	{ pct: 38, k: 'Week 4', v: 'First merge', n: 'Reviewed line by line' },
+	{ pct: 68, k: 'Month 3', v: 'Shipped', n: 'Live, in front of users' },
+	{ pct: 92, k: 'The end', v: 'A portfolio', n: 'Real work, real clients' },
 ];
 
 const badges = [
-	{ name: 'Web', pct: 18 },
-	{ name: 'Mobile', pct: 42 },
+	{ name: 'Web', pct: 22 },
+	{ name: 'Mobile', pct: 44 },
 	{ name: 'Design', pct: 66 },
 	{ name: 'Marketing', pct: 88 },
-];
-
-const builds = [
-	{ name: 'Physio clinic', tag: 'like Anchorstep' },
-	{ name: 'Sports platform', tag: 'like Betslipswitch' },
-	{ name: 'Online store', tag: 'like Brixmarket' },
-	{ name: 'Brand campaign', tag: 'like Purple Panda' },
 ];
 ---
 
@@ -32,154 +36,439 @@ const builds = [
 		{Array.from({ length: 14 }).map((_, i) => <span style={`--i:${i}`} />)}
 	</div>
 
-	<div class="cw--head">
-		<div>
-			<span class="cw--title">Your tech journey</span>
-			<span class="cw--subt">from newbie to hired</span>
+	<header class="cw--head">
+		<div class="cw--headtxt">
+			<span class="cw--eyebrow">The board you are marked on</span>
+			<span class="cw--title">Application to hire</span>
 		</div>
 		<button class="cw--start" type="button" data-cw-start>
 			<Icon width={14} name="mdi:play" />
 			<span class="cw--start-txt">Start</span>
 		</button>
+	</header>
+
+	<div class="cw--meter">
+		<span class="cw--level" id="cw-level">Level 0 · Newbie</span>
+		<span class="cw--xp" id="cw-xp">0 XP</span>
 	</div>
 
-	<div class="cw--grid">
-		<div class="cw--left">
-			<div class="cw--xprow">
-				<span class="cw--level" id="cw-level">Level 0 · Newbie</span>
-				<span class="cw--xp" id="cw-xp">0 XP</span>
-			</div>
+	<div class="cw--body">
+	<!-- the ladder -->
+	<ol class="cw--ladder" data-tour="track">
+		<span class="cw--rail" aria-hidden="true">
+			<span class="cw--fill" id="cw-fill"></span>
+			<span class="cw--avatar" id="cw-avatar"><Icon width={14} name="mdi:rocket-launch" /></span>
+		</span>
+		{
+			rungs.map((r) => (
+				<li class="cw--node" data-pct={r.pct}>
+					<span class="cw--nodedot" aria-hidden="true" />
+					<span class="cw--nodebody">
+						<span class="cw--nodename">{r.name}</span>
+						<span class="cw--nodenote">{r.note}</span>
+					</span>
+				</li>
+			))
+		}
+	</ol>
 
-			<div class="cw--track" data-tour="track">
-				<div class="cw--bar"><span class="cw--fill" id="cw-fill"></span></div>
-				<span class="cw--avatar" id="cw-avatar"><Icon width={16} name="mdi:rocket-launch" /></span>
-				<ol class="cw--levels">
-					{
-						levels.map((l) => (
-							<li class="cw--node" data-pct={l.pct}>
-								<span class="cw--nodedot" />
-								<span class="cw--nodename">{l.name}</span>
-							</li>
-						))
-					}
-				</ol>
-			</div>
-
-			<div class="cw--badges" data-tour="badges">
+		<!-- what each stretch of the ladder is actually worth -->
+		<aside class="cw--proof" aria-hidden="true">
+			<span class="cw--proof-label">What that buys you</span>
+			<ul class="cw--proof-list">
 				{
-					badges.map((bdg) => (
-						<span class="cw--badge" data-pct={bdg.pct}>
-							<Icon width={13} name="mdi:check-decagram" />
-							{bdg.name}
-						</span>
+					proof.map((pr) => (
+						<li class="cw--proof-item" data-pct={pr.pct}>
+							<span class="cw--proof-k">{pr.k}</span>
+							<span class="cw--proof-v">{pr.v}</span>
+							<span class="cw--proof-n">{pr.n}</span>
+						</li>
 					))
 				}
+			</ul>
+			<div class="cw--seats">
+				<span class="cw--seats-bar"><i></i></span>
+				<span class="cw--seats-txt">Cohort filling · few seats</span>
 			</div>
-		</div>
-
-		<div class="cw--builds" data-tour="builds">
-			<span class="cw--builds-label">What you will build, across sectors</span>
-			<div class="cw--buildcards">
-				{
-					builds.map((bld, i) => (
-						<span class="cw--buildcard" style={`--i:${i}`}>
-							<span class="cw--build-name">{bld.name}</span>
-							<span class="cw--build-tag">{bld.tag}</span>
-						</span>
-					))
-				}
-			</div>
-		</div>
+		</aside>
 	</div>
+
+	<footer class="cw--foot">
+		<span class="cw--footlabel">Pick a discipline</span>
+		<div class="cw--badges" data-tour="badges">
+			{
+				badges.map((b) => (
+					<span class="cw--badge" data-pct={b.pct}>
+						<Icon width={12} name="mdi:check-decagram" />
+						{b.name}
+					</span>
+				))
+			}
+		</div>
+	</footer>
 </div>
 
 <style>
-	/* ===== gamified widget ===== */
-	.campus--widget { position: relative; border-radius: 1.25rem; padding: clamp(1.2rem, 2.6vw, 2rem); background: rgba(29, 22, 6, 0.6); border: 1px solid rgba(245, 158, 11, 0.25); backdrop-filter: blur(14px); box-shadow: 0 40px 90px -40px rgba(0, 0, 0, 0.85); overflow: hidden; }
-	.cw--head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.4rem; }
-	.cw--title { font-size: clamp(1.15rem, 2.2vw, 1.5rem); font-weight: 800; color: #fff; }
-	.cw--subt { display: block; font-size: 0.8rem; color: rgba(253, 243, 227, 0.55); }
-	.cw--start { display: inline-flex; align-items: center; gap: 0.45rem; font-size: 0.8rem; font-weight: 800; color: #2a1c02; background: linear-gradient(95deg, #fde68a, #f59e0b); padding: 0.6rem 1.1rem; border-radius: 9999px; cursor: pointer; transition: transform 0.2s ease, filter 0.2s ease; flex: none; }
-	.cw--start:hover { transform: translateY(-1px); filter: brightness(1.05); }
-
-	/* wide slot: the game on the left, what you will build on the right */
-	.cw--grid { display: grid; gap: clamp(1.4rem, 3vw, 2.4rem); align-items: start; }
-	@media (min-width: 900px) { .cw--grid { grid-template-columns: 1.15fr 0.85fr; } }
-	.cw--grid > * { min-width: 0; }
-
-	.cw--xprow { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 0.7rem; }
-	.cw--level { font-size: 0.86rem; font-weight: 700; color: #fcd34d; }
-	.cw--xp { font-family: 'Bebas Neue', sans-serif; font-size: clamp(1.4rem, 2.6vw, 1.9rem); color: #fff; letter-spacing: 1px; }
-
-	.cw--track { position: relative; margin-bottom: 1.6rem; }
-	.cw--bar { height: 14px; border-radius: 9999px; background: rgba(255, 255, 255, 0.08); overflow: hidden; }
-	.cw--fill { display: block; height: 100%; width: 0%; border-radius: 9999px; background: linear-gradient(90deg, #fde68a, #f59e0b, #fb7185); }
-	.cw--avatar { position: absolute; top: -8px; left: 0%; transform: translateX(-50%); width: 30px; height: 30px; display: grid; place-items: center; border-radius: 9999px; background: #f59e0b; color: #2a1c02; box-shadow: 0 6px 16px -4px rgba(245, 158, 11, 0.7); }
-	.cw--levels { display: flex; justify-content: space-between; margin-top: 0.9rem; padding: 0; list-style: none; }
-	.cw--node { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
-	.cw--nodedot { width: 11px; height: 11px; border-radius: 9999px; background: rgba(255, 255, 255, 0.15); transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease; }
-	.cw--node.is-on .cw--nodedot { background: #f59e0b; transform: scale(1.3); box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.25); }
-	.cw--nodename { font-size: 0.74rem; color: rgba(253, 243, 227, 0.5); }
-	.cw--node.is-on .cw--nodename { color: #fcd34d; font-weight: 700; }
-
-	.cw--badges { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-	.cw--badge { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.78rem; font-weight: 600; padding: 0.4rem 0.75rem; border-radius: 9999px; border: 1px solid rgba(255, 255, 255, 0.12); background: rgba(255, 255, 255, 0.03); color: rgba(253, 243, 227, 0.55); opacity: 0.45; transform: scale(0.92); transition: all 0.3s ease; }
-	.cw--badge :global(svg) { opacity: 0.5; }
-	.cw--badge.is-on { opacity: 1; transform: scale(1); border-color: rgba(245, 158, 11, 0.5); background: rgba(245, 158, 11, 0.12); color: #fcd34d; }
-
-	.cw--builds { padding-top: 1rem; border-top: 1px dashed rgba(255, 255, 255, 0.1); }
-	@media (min-width: 900px) { .cw--builds { padding-top: 0; border-top: 0; border-left: 1px dashed rgba(255, 255, 255, 0.1); padding-left: clamp(1.4rem, 3vw, 2.4rem); } }
-	.cw--builds-label { display: block; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(253, 243, 227, 0.5); margin-bottom: 0.7rem; }
-	.cw--buildcards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.55rem; }
-	.cw--buildcard { display: flex; flex-direction: column; gap: 0.1rem; padding: 0.75rem 0.9rem; border-radius: 0.7rem; border: 1px solid rgba(245, 158, 11, 0.16); background: rgba(245, 158, 11, 0.04); opacity: 0.5; transition: opacity 0.3s ease; }
-	/* they sit there quietly, then light up when you finish the run */
-	.campus--widget.is-complete .cw--buildcard { animation: cwcard 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards; animation-delay: calc(var(--i) * 0.1s); }
-	@keyframes cwcard {
-		0% { opacity: 0.5; transform: translateY(6px) scale(0.985); }
-		100% { opacity: 1; transform: none; border-color: rgba(245, 158, 11, 0.34); background: rgba(245, 158, 11, 0.09); }
+	.campus--widget {
+		--p: 0%;
+		position: relative;
+		border-radius: 1.35rem;
+		padding: clamp(1.15rem, 2.4vw, 1.75rem);
+		background:
+			linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015)),
+			rgba(29, 22, 6, 0.55);
+		border: 1px solid rgba(245, 158, 11, 0.22);
+		backdrop-filter: blur(14px);
+		box-shadow: 0 40px 90px -40px rgba(0, 0, 0, 0.85);
+		overflow: hidden;
 	}
-	.cw--build-name { font-size: 0.86rem; font-weight: 700; color: #fff; }
-	.cw--build-tag { font-size: 0.72rem; color: #fcd34d; }
 
-	/* confetti */
+	/* ── head ── */
+	.cw--head {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 1rem;
+		padding-bottom: 0.9rem;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+	}
+	.cw--headtxt { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+	.cw--eyebrow {
+		font-family: ui-monospace, monospace;
+		font-size: 0.66rem;
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: rgba(253, 243, 227, 0.45);
+	}
+	.cw--title { font-size: clamp(1.1rem, 2vw, 1.35rem); font-weight: 800; letter-spacing: -0.015em; color: #fff; }
+	.cw--start {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		flex: none;
+		font-size: 0.76rem;
+		font-weight: 800;
+		color: #2a1c02;
+		background: linear-gradient(95deg, #fde68a, #f59e0b);
+		padding: 0.5rem 0.95rem;
+		border-radius: 9999px;
+		cursor: pointer;
+		transition: transform 0.2s ease, filter 0.2s ease;
+	}
+	.cw--start:hover { transform: translateY(-1px); filter: brightness(1.06); }
+
+	/* ── meter ── */
+	.cw--meter {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 0.9rem 0 1.1rem;
+	}
+	.cw--level { font-size: 0.82rem; font-weight: 700; color: #fcd34d; }
+	.cw--xp {
+		font-family: 'Bebas Neue', sans-serif;
+		font-size: clamp(1.5rem, 3vw, 2.1rem);
+		line-height: 1;
+		letter-spacing: 1px;
+		color: #fff;
+	}
+
+	/* ── the ladder: a rail with rungs, filling downward ── */
+	.cw--ladder {
+		position: relative;
+		list-style: none;
+		margin: 0;
+		padding: 0 0 0 2.15rem;
+		display: flex;
+		flex-direction: column;
+		gap: clamp(0.7rem, 1.6vw, 1rem);
+	}
+	.cw--rail {
+		position: absolute;
+		left: 0.62rem;
+		/* the rail runs dot to dot, not edge to edge, so the rocket lands
+		   ON the Hired marker instead of past it */
+		top: 0.73rem;
+		bottom: 1.7rem;
+		width: 3px;
+		border-radius: 9999px;
+		background: rgba(255, 255, 255, 0.1);
+	}
+	.cw--fill {
+		position: absolute;
+		inset: 0 0 auto 0;
+		height: var(--p);
+		border-radius: 9999px;
+		background: linear-gradient(180deg, #fde68a, #f59e0b 55%, #fb7185);
+		transition: height 0.12s linear;
+	}
+	.cw--avatar {
+		position: absolute;
+		left: 50%;
+		top: var(--p);
+		transform: translate(-50%, -50%);
+		width: 26px;
+		height: 26px;
+		display: grid;
+		place-items: center;
+		border-radius: 9999px;
+		background: #f59e0b;
+		color: #2a1c02;
+		box-shadow: 0 6px 16px -4px rgba(245, 158, 11, 0.8);
+		transition: top 0.12s linear;
+	}
+
+	.cw--node { position: relative; display: flex; align-items: flex-start; gap: 0.7rem; }
+	.cw--nodedot {
+		position: absolute;
+		left: -1.62rem;
+		top: 0.42rem;
+		width: 10px;
+		height: 10px;
+		border-radius: 9999px;
+		background: rgba(255, 255, 255, 0.16);
+		box-shadow: 0 0 0 3px rgba(29, 22, 6, 0.9);
+		transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+	}
+	.cw--node.is-on .cw--nodedot {
+		background: #f59e0b;
+		transform: scale(1.25);
+		box-shadow: 0 0 0 3px rgba(29, 22, 6, 0.9), 0 0 0 7px rgba(245, 158, 11, 0.2);
+	}
+	.cw--nodebody { display: flex; flex-direction: column; gap: 0.05rem; min-width: 0; }
+	.cw--nodename {
+		font-size: 0.92rem;
+		font-weight: 700;
+		color: rgba(253, 243, 227, 0.55);
+		transition: color 0.3s ease;
+	}
+	.cw--node.is-on .cw--nodename { color: #fff; }
+	.cw--nodenote {
+		font-size: 0.76rem;
+		line-height: 1.45;
+		color: rgba(253, 243, 227, 0.38);
+		transition: color 0.3s ease;
+	}
+	.cw--node.is-on .cw--nodenote { color: rgba(253, 243, 227, 0.62); }
+
+	/* ── the ladder sits beside what it is worth ── */
+	.cw--body { display: grid; gap: clamp(1.1rem, 2.4vw, 1.8rem); align-items: start; }
+	@media (min-width: 620px) {
+		.cw--body { grid-template-columns: minmax(0, 1fr) minmax(0, 0.92fr); }
+	}
+	.cw--body > * { min-width: 0; }
+
+	.cw--proof { display: flex; flex-direction: column; }
+	@media (min-width: 620px) {
+		.cw--proof { padding-left: clamp(1.1rem, 2.4vw, 1.8rem); border-left: 1px dashed rgba(255, 255, 255, 0.12); }
+	}
+	.cw--proof-label {
+		display: block;
+		font-size: 0.66rem;
+		font-weight: 800;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: rgba(253, 243, 227, 0.42);
+		margin-bottom: 0.75rem;
+	}
+	.cw--proof-list { list-style: none; margin: 0 0 1.1rem; padding: 0; display: grid; gap: 0.5rem; }
+	.cw--proof-item {
+		position: relative;
+		padding: 0.6rem 0.75rem 0.65rem 0.85rem;
+		border-radius: 0.7rem;
+		border: 1px solid rgba(255, 255, 255, 0.09);
+		background: rgba(255, 255, 255, 0.025);
+		opacity: 0.4;
+		transform: translateX(6px);
+		transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+			border-color 0.4s ease, background 0.4s ease;
+	}
+	/* a bar of the accent grows up the left edge as it turns on */
+	.cw--proof-item::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0.55rem;
+		bottom: 0.55rem;
+		width: 2px;
+		border-radius: 9999px;
+		background: linear-gradient(180deg, #fde68a, #f59e0b);
+		transform: scaleY(0);
+		transform-origin: top;
+		transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.cw--proof-item.is-on {
+		opacity: 1;
+		transform: none;
+		border-color: rgba(245, 158, 11, 0.32);
+		background: rgba(245, 158, 11, 0.07);
+	}
+	.cw--proof-item.is-on::before { transform: scaleY(1); }
+	.cw--proof-k {
+		display: block;
+		font-family: ui-monospace, monospace;
+		font-size: 0.62rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: #fcd34d;
+	}
+	.cw--proof-v { display: block; font-size: 0.92rem; font-weight: 800; color: #fff; margin-top: 0.1rem; }
+	.cw--proof-n { display: block; font-size: 0.74rem; line-height: 1.4; color: rgba(253, 243, 227, 0.45); margin-top: 0.1rem; }
+
+	/* seats: the same clock the hero runs, quietly */
+	.cw--seats { margin-top: auto; }
+	.cw--seats-bar {
+		display: block;
+		height: 5px;
+		border-radius: 9999px;
+		background: rgba(255, 255, 255, 0.09);
+		overflow: hidden;
+	}
+	.cw--seats-bar i {
+		display: block;
+		height: 100%;
+		width: 78%;
+		border-radius: inherit;
+		background: linear-gradient(90deg, #fde68a, #f59e0b, #fb7185);
+		box-shadow: 0 0 12px -2px rgba(245, 158, 11, 0.8);
+		animation: cw-seats 2.6s ease-in-out infinite alternate;
+	}
+	@keyframes cw-seats {
+		from { opacity: 0.75; }
+		to { opacity: 1; }
+	}
+	.cw--seats-txt {
+		display: block;
+		font-size: 0.7rem;
+		font-weight: 700;
+		letter-spacing: 0.02em;
+		color: rgba(253, 243, 227, 0.45);
+		margin-top: 0.45rem;
+	}
+
+	/* ── foot ── */
+	.cw--foot {
+		margin-top: clamp(1.1rem, 2.4vw, 1.5rem);
+		padding-top: 1rem;
+		border-top: 1px dashed rgba(255, 255, 255, 0.12);
+	}
+	.cw--footlabel {
+		display: block;
+		font-size: 0.68rem;
+		font-weight: 700;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: rgba(253, 243, 227, 0.42);
+		margin-bottom: 0.6rem;
+	}
+	.cw--badges { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+	.cw--badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.28rem;
+		font-size: 0.74rem;
+		font-weight: 700;
+		padding: 0.32rem 0.65rem;
+		border-radius: 9999px;
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		background: rgba(255, 255, 255, 0.03);
+		color: rgba(253, 243, 227, 0.5);
+		opacity: 0.5;
+		transition: all 0.3s ease;
+	}
+	.cw--badge :global(svg) { opacity: 0.5; }
+	.cw--badge.is-on {
+		opacity: 1;
+		border-color: rgba(245, 158, 11, 0.5);
+		background: rgba(245, 158, 11, 0.12);
+		color: #fcd34d;
+	}
+	.cw--badge.is-on :global(svg) { opacity: 1; }
+
+	/* confetti on completion */
 	.cw--confetti { position: absolute; inset: 0; pointer-events: none; }
-	.cw--confetti span { position: absolute; top: 30%; left: calc(8% + var(--i) * 6.5%); width: 8px; height: 8px; border-radius: 2px; background: hsl(calc(20 + var(--i) * 26) 90% 60%); opacity: 0; }
-	.campus--widget.is-complete .cw--confetti span { animation: cwfetti 1.1s ease-out forwards; animation-delay: calc(var(--i) * 0.03s); }
+	.cw--confetti span {
+		position: absolute;
+		top: 22%;
+		left: calc(8% + var(--i) * 6.5%);
+		width: 8px;
+		height: 8px;
+		border-radius: 2px;
+		background: hsl(calc(20 + var(--i) * 26) 90% 60%);
+		opacity: 0;
+	}
+	.campus--widget.is-complete .cw--confetti span {
+		animation: cwfetti 1.2s ease-out forwards;
+		animation-delay: calc(var(--i) * 0.03s);
+	}
 	@keyframes cwfetti {
 		0% { opacity: 1; transform: translateY(0) rotate(0); }
-		100% { opacity: 0; transform: translateY(220px) rotate(540deg); }
+		100% { opacity: 0; transform: translateY(260px) rotate(540deg); }
 	}
+
 	@media (max-width: 520px) {
 		.cw--head { flex-wrap: wrap; }
-		.cw--buildcards { grid-template-columns: 1fr; }
+		.cw--nodenote { font-size: 0.72rem; }
 	}
 
 	/* ══ Light mode ══ */
 	:global(html:not(.dark)) .campus--widget {
-		background: rgba(255, 255, 255, 0.82);
-		border-color: rgba(180, 83, 9, 0.25);
+		background: rgba(255, 255, 255, 0.86);
+		border-color: rgba(180, 83, 9, 0.22);
 		box-shadow: 0 40px 90px -44px rgba(36, 23, 3, 0.35);
 	}
+	:global(html:not(.dark)) .cw--head { border-bottom-color: rgba(36, 23, 3, 0.1); }
+	:global(html:not(.dark)) .cw--eyebrow { color: rgba(36, 23, 3, 0.45); }
 	:global(html:not(.dark)) .cw--title { color: #241703; }
-	:global(html:not(.dark)) .cw--subt { color: rgba(36, 23, 3, 0.55); }
 	:global(html:not(.dark)) .cw--level { color: #b45309; }
 	:global(html:not(.dark)) .cw--xp { color: #241703; }
-	:global(html:not(.dark)) .cw--bar { background: rgba(36, 23, 3, 0.1); }
-	:global(html:not(.dark)) .cw--nodedot { background: rgba(36, 23, 3, 0.18); }
+	:global(html:not(.dark)) .cw--rail { background: rgba(36, 23, 3, 0.12); }
+	:global(html:not(.dark)) .cw--nodedot {
+		background: rgba(36, 23, 3, 0.18);
+		box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.9);
+	}
+	:global(html:not(.dark)) .cw--node.is-on .cw--nodedot {
+		background: #d97706;
+		box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.9), 0 0 0 7px rgba(245, 158, 11, 0.22);
+	}
 	:global(html:not(.dark)) .cw--nodename { color: rgba(36, 23, 3, 0.55); }
-	:global(html:not(.dark)) .cw--node.is-on .cw--nodename { color: #b45309; }
+	:global(html:not(.dark)) .cw--node.is-on .cw--nodename { color: #241703; }
+	:global(html:not(.dark)) .cw--nodenote { color: rgba(36, 23, 3, 0.42); }
+	:global(html:not(.dark)) .cw--node.is-on .cw--nodenote { color: rgba(36, 23, 3, 0.66); }
+	:global(html:not(.dark)) .cw--proof { border-left-color: rgba(36, 23, 3, 0.14); }
+	:global(html:not(.dark)) .cw--proof-label { color: rgba(36, 23, 3, 0.45); }
+	:global(html:not(.dark)) .cw--proof-item {
+		border-color: rgba(36, 23, 3, 0.1);
+		background: rgba(255, 255, 255, 0.55);
+	}
+	:global(html:not(.dark)) .cw--proof-item.is-on {
+		border-color: rgba(180, 83, 9, 0.32);
+		background: rgba(245, 158, 11, 0.1);
+	}
+	:global(html:not(.dark)) .cw--proof-k { color: #b45309; }
+	:global(html:not(.dark)) .cw--proof-v { color: #241703; }
+	:global(html:not(.dark)) .cw--proof-n { color: rgba(36, 23, 3, 0.5); }
+	:global(html:not(.dark)) .cw--seats-bar { background: rgba(36, 23, 3, 0.1); }
+	:global(html:not(.dark)) .cw--seats-txt { color: rgba(36, 23, 3, 0.5); }
+	:global(html:not(.dark)) .cw--foot { border-top-color: rgba(36, 23, 3, 0.14); }
+	:global(html:not(.dark)) .cw--footlabel { color: rgba(36, 23, 3, 0.45); }
 	:global(html:not(.dark)) .cw--badge {
 		border-color: rgba(36, 23, 3, 0.14);
-		background: rgba(255, 255, 255, 0.5);
-		color: rgba(36, 23, 3, 0.6);
+		background: rgba(255, 255, 255, 0.6);
+		color: rgba(36, 23, 3, 0.55);
 	}
 	:global(html:not(.dark)) .cw--badge.is-on {
 		border-color: rgba(180, 83, 9, 0.5);
 		background: rgba(245, 158, 11, 0.14);
 		color: #92400e;
 	}
-	:global(html:not(.dark)) .cw--builds { border-top-color: rgba(36, 23, 3, 0.14); border-left-color: rgba(36, 23, 3, 0.14); }
-	:global(html:not(.dark)) .cw--builds-label { color: rgba(36, 23, 3, 0.55); }
-	:global(html:not(.dark)) .cw--build-name { color: #241703; }
-	:global(html:not(.dark)) .cw--build-tag { color: #b45309; }
+
+	@media (prefers-reduced-motion: reduce) {
+		.cw--fill, .cw--avatar, .cw--proof-item, .cw--proof-item::before { transition: none; }
+		.cw--seats-bar i { animation: none; }
+		.campus--widget.is-complete .cw--confetti span { animation: none; }
+	}
 </style>

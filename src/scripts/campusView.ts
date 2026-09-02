@@ -11,6 +11,8 @@ export function initCampusView() {
 	const btnTxt = w.querySelector<HTMLElement>('.cw--start-txt');
 	const nodes = Array.from(w.querySelectorAll<HTMLElement>('.cw--node'));
 	const badges = Array.from(w.querySelectorAll<HTMLElement>('.cw--badge'));
+	// the proof column beside the ladder lights in step with it
+	const proofs = Array.from(w.querySelectorAll<HTMLElement>('.cw--proof-item'));
 	const MAX_XP = 2400;
 	let raf = 0;
 	let running = false;
@@ -26,20 +28,22 @@ export function initCampusView() {
 	const reset = () => {
 		nodes.forEach((n) => n.classList.remove('is-on'));
 		badges.forEach((b) => b.classList.remove('is-on'));
+		proofs.forEach((pr) => pr.classList.remove('is-on'));
 		w.classList.remove('is-complete');
-		if (fill) fill.style.width = '0%';
-		if (avatar) avatar.style.left = '0%';
+		w.style.setProperty('--p', '0%');
+		if (fill) fill.style.width = '';
+		if (avatar) avatar.style.left = '';
 		if (xp) xp.textContent = '0 XP';
 		if (level) level.textContent = labelFor(0);
 	};
 
 	const finish = () => {
-		if (fill) fill.style.width = '100%';
-		if (avatar) avatar.style.left = '100%';
+		w.style.setProperty('--p', '100%');
 		if (xp) xp.textContent = MAX_XP.toLocaleString() + ' XP';
 		if (level) level.textContent = labelFor(100);
 		nodes.forEach((n) => n.classList.add('is-on'));
 		badges.forEach((b) => b.classList.add('is-on'));
+		proofs.forEach((pr) => pr.classList.add('is-on'));
 		w.classList.add('is-complete');
 		if (btnTxt) btnTxt.textContent = 'Replay';
 		running = false;
@@ -60,8 +64,7 @@ export function initCampusView() {
 			const p = Math.min((now - start) / dur, 1);
 			const eased = 1 - Math.pow(1 - p, 2);
 			const v = Math.round(eased * 100);
-			if (fill) fill.style.width = v + '%';
-			if (avatar) avatar.style.left = v + '%';
+			w.style.setProperty('--p', v + '%');
 			if (xp) xp.textContent = Math.round(eased * MAX_XP).toLocaleString() + ' XP';
 			if (level) level.textContent = labelFor(v);
 			nodes.forEach((n) => {
@@ -69,6 +72,9 @@ export function initCampusView() {
 			});
 			badges.forEach((b) => {
 				if (v >= Number(b.dataset.pct || '100')) b.classList.add('is-on');
+			});
+			proofs.forEach((pr) => {
+				if (v >= Number(pr.dataset.pct || '100')) pr.classList.add('is-on');
 			});
 			if (p < 1) raf = requestAnimationFrame(tick);
 			else finish();

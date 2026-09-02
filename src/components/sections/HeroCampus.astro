@@ -43,13 +43,13 @@ const stats = [
 				<CustomButton
 					variant="accent"
 					elementType="a"
-					href="/bootcamp#internship"
+					href="/programs#internship"
 					class="flex items-center justify-center gap-2"
 				>
 					Internship Path
 					<Icon width={17} name="mdi:arrow-right" />
 				</CustomButton>
-				<a class="campus--alt" href="/bootcamp#nysc">
+				<a class="campus--alt" href="/programs#nysc">
 					<Icon width={15} name="mdi:flag-outline" />
 					NYSC Path
 				</a>
@@ -82,7 +82,7 @@ const stats = [
 				kicker="Inside the internship"
 				stickyA="ship > perfect"
 				stickyB="demo friday!"
-				ctaHref="/bootcamp#internship"
+				ctaHref="/programs#internship"
 				ctaLabel="Start your application"
 			/>
 			<p class="campus--boardnote">
@@ -259,7 +259,21 @@ const stats = [
 		   selector never reaches it and it kept sorting to the top */
 		.campus--layout :global(.campus--head) { order: 2; margin-bottom: 0 !important; }
 		.campus--sub { order: 3; margin-bottom: 0; }
-		.campus--cta { order: 4; margin-bottom: 0; }
+		/* three on one row on a phone too: the labels carry it, the icons
+		   are what will not fit */
+		.campus--cta { order: 4; margin-bottom: 0; width: 100%; flex-wrap: nowrap; gap: 0.4rem; }
+		.campus--cta > * { flex: 1 1 0; min-width: 0; justify-content: center; text-align: center; }
+		.campus--cta :global(.btn--accent) {
+			padding: 0.7rem 0.5rem !important;
+			font-size: 0.68rem !important;
+			letter-spacing: 0.01em;
+			white-space: nowrap;
+		}
+		.campus--cta :global(.btn--accent svg) { display: none; }
+		.campus--alt,
+		.campus--tour { padding: 0.7rem 0.5rem; font-size: 0.68rem; gap: 0; }
+		.campus--alt :global(svg),
+		.campus--tour :global(svg) { display: none; }
 		.campus--boardwrap { order: 5; width: 100%; }
 		.campus--stats { width: 100%; }
 		.campus--stats { order: 6; }

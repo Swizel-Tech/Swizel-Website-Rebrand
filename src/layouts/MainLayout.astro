@@ -156,6 +156,8 @@ const {
 	import { initBoardroomView } from '../scripts/boardroomView';
 	import { initWhiteboardVideo } from '../scripts/whiteboardVideo';
 	import { initMentorsBand } from '../scripts/mentorsBand';
+	import { initCampusLibrary } from '../scripts/campusLibrary';
+	import { initProgramsNotice } from '../scripts/programsNotice';
 
 	const handleMenuToggle = () => {
 		const menuWrapper = document.querySelector<HTMLElement>('#mobile-wrapper');
@@ -566,6 +568,8 @@ const {
 			initBoardroomView,
 			initWhiteboardVideo,
 			initMentorsBand,
+			initCampusLibrary,
+			initProgramsNotice,
 			handleFooter,
 		].forEach(safe);
 

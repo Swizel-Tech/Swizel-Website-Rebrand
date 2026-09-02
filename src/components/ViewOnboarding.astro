@@ -195,7 +195,9 @@ const orbs = [0, 1, 2, 3, 4];
 		overflow: auto;
 		overscroll-behavior: contain;
 		scrollbar-width: none;
-		padding: clamp(1.1rem, 3vw, 2.2rem) clamp(1rem, 3.4vw, 2.6rem) clamp(1.4rem, 3vw, 2.4rem);
+		--vo-py: clamp(1.1rem, 3vw, 2.2rem);
+		--vo-px: clamp(1rem, 3.4vw, 2.6rem);
+		padding: var(--vo-py) var(--vo-px) clamp(1.4rem, 3vw, 2.4rem);
 		border-radius: clamp(0.9rem, 1.8vw, 1.4rem);
 		/* the same gold hairline the marquee and the finale card wear */
 		border: 1px solid rgba(247, 198, 107, 0.28);
@@ -266,13 +268,23 @@ const orbs = [0, 1, 2, 3, 4];
 	}
 
 	/* ── the top rail ── */
+	/* The panel is what scrolls, so the rail with the close button used to
+	   travel away with it — reach the bottom of the worlds list and you had
+	   to scroll all the way back up to shut the thing. It stays put now. */
 	.vo__top {
-		position: relative;
-		z-index: 2;
+		position: sticky;
+		top: 0;
+		z-index: 6;
 		display: flex;
 		align-items: center;
 		gap: clamp(0.8rem, 2.5vw, 1.6rem);
-		margin-bottom: clamp(1.1rem, 3vw, 1.9rem);
+		margin: calc(-1 * var(--vo-py)) calc(-1 * var(--vo-px)) clamp(1.1rem, 3vw, 1.9rem);
+		padding: var(--vo-py) var(--vo-px) 0.75rem;
+		background: linear-gradient(180deg, rgba(11, 13, 24, 0.97) 0 84%, rgba(11, 13, 24, 0));
+		backdrop-filter: blur(10px);
+	}
+	:global(html:not(.dark)) .vo__top {
+		background: linear-gradient(180deg, rgba(236, 240, 248, 0.97) 0 84%, rgba(236, 240, 248, 0));
 	}
 	.vo__mark { display: block; width: clamp(92px, 12vw, 128px); color: #fff; opacity: 0.9; flex: none; }
 	.vo__mark :global(svg) { width: 100%; height: auto; }
