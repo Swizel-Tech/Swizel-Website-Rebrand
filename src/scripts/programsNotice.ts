@@ -1,56 +1,86 @@
-// Programs sits in the nav of every world, but the page itself is a
-// Campus room. Following it from Builder or Studio therefore changes the
-// world underneath you, which is disorienting if nobody says so. This
-// intercepts the click, says one sentence, switches the world, and then
-// goes — about half a second, no dialog to dismiss.
-import { DEFAULT_VIEW } from '../consts';
+// Programs sits in the nav of every world, but the page itself is a Campus
+// room. Following it from Builder or Studio therefore changes the world
+// underneath you.
+//
+// The first attempt held the click, showed a pill and then navigated. It
+// was easy to miss — you are looking at the link you just clicked, not at
+// the bottom of the screen — and it did nothing about the actual problem,
+// which is finding your way back. So: no delay and no interruption on the
+// way out. We just remember which world you came from, and the Programs
+// page offers you the door back.
+import { views, DEFAULT_VIEW } from '../consts';
+
+const KEY = 'swizel-came-from';
 
 export function initProgramsNotice() {
-	if (window.__swzProgramsNotice) return;
-	window.__swzProgramsNotice = true;
+	// ── on the way out: remember the world, switch it, let the click go ──
+	if (!window.__swzProgramsNotice) {
+		window.__swzProgramsNotice = true;
+		document.addEventListener(
+			'click',
+			(e) => {
+				const link = (e.target as HTMLElement | null)?.closest<HTMLAnchorElement>(
+					'a[href="/programs"], a[href^="/programs#"]'
+				);
+				if (!link) return;
+				if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || link.target === '_blank') return;
 
-	const HOLD = 1150;
+				const view = document.documentElement.getAttribute('data-view') || DEFAULT_VIEW;
+				if (view === 'campus') return; // already home, nothing to explain
 
-	document.addEventListener(
-		'click',
-		(e) => {
-			const link = (e.target as HTMLElement | null)?.closest<HTMLAnchorElement>(
-				'a[href="/programs"], a[href^="/programs#"]'
-			);
-			if (!link) return;
-			// let a new tab, a download or a modified click behave normally
-			if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || link.target === '_blank') return;
+				try {
+					sessionStorage.setItem(KEY, view);
+					localStorage.setItem('swizel-view', 'campus');
+				} catch (err) {
+					/* private mode; the page still loads, just without the door back */
+				}
+				document.documentElement.setAttribute('data-view', 'campus');
+			},
+			true
+		);
+	}
 
-			const view = document.documentElement.getAttribute('data-view') || DEFAULT_VIEW;
-			if (view === 'campus') return; // already home, nothing to explain
+	// ── on arrival: if you came from elsewhere, show the door back ──
+	const bar = document.querySelector<HTMLElement>('[data-came-from]');
+	if (!bar) return;
 
-			e.preventDefault();
+	let from = '';
+	try {
+		from = sessionStorage.getItem(KEY) || '';
+	} catch (err) {
+		from = '';
+	}
+	if (!from || from === 'campus') return;
 
-			const el = document.createElement('div');
-			el.className = 'nav-programs-notice';
-			el.setAttribute('role', 'status');
-			el.innerHTML =
-				'<i>&#9788;</i><span>Programs lives in the <b>Campus</b> world. Taking you there.</span>';
-			document.body.appendChild(el);
-			// a timer, not rAF: a backgrounded or throttled tab never runs the
-			// frame callback and the notice would never appear
-			window.setTimeout(() => el.classList.add('is-on'), 20);
+	const world = views.find((v) => v.id === from);
+	if (!world) return;
 
-			// set the world before we go, so the page arrives already dressed
-			try {
-				localStorage.setItem('swizel-view', 'campus');
-			} catch (err) {
-				/* private mode; the page will still load */
-			}
-			document.documentElement.setAttribute('data-view', 'campus');
+	const name = bar.querySelector<HTMLElement>('[data-came-from-name]');
+	const link = bar.querySelector<HTMLAnchorElement>('[data-came-from-link]');
+	if (name) name.textContent = world.name;
+	bar.style.setProperty('--from-accent', world.accent);
+	bar.removeAttribute('hidden');
 
-			window.setTimeout(() => {
-				el.classList.remove('is-on');
-				window.location.href = link.getAttribute('href') || '/programs';
-			}, HOLD);
-		},
-		true
-	);
+	link?.addEventListener('click', (e) => {
+		e.preventDefault();
+		try {
+			localStorage.setItem('swizel-view', from);
+			sessionStorage.removeItem(KEY);
+		} catch (err) {
+			/* nothing to clean up */
+		}
+		document.documentElement.setAttribute('data-view', from);
+		window.location.href = '/';
+	});
+
+	bar.querySelector<HTMLElement>('[data-came-from-x]')?.addEventListener('click', () => {
+		bar.setAttribute('hidden', '');
+		try {
+			sessionStorage.removeItem(KEY);
+		} catch (err) {
+			/* nothing to clean up */
+		}
+	});
 }
 
 declare global {

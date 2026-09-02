@@ -16,20 +16,55 @@ const stats = [
 
 
 const roadmap = [
-	{ lvl: 'Term 1', xp: '+500 XP', title: 'Lectures', desc: 'Whiteboards, markers and fundamentals, taught live by working engineers.' },
-	{ lvl: 'Term 2', xp: '+1500 XP', title: 'Practicals', desc: 'Out of the lecture room: ship real projects into your portfolio.' },
-	{ lvl: 'Term 3', xp: '+3000 XP', title: 'Internship', desc: 'Top students earn a paid seat on our product team.' },
-	{ lvl: 'Graduation', xp: '🏆 HIRED', title: 'Job market', desc: 'CV, portfolio, interview prep, and our backing till you land it.' },
+	{ lvl: 'Week 1', xp: '+500 XP', title: 'Onboarding', desc: 'Meet your mentor, get your access, and pick up your first real ticket.' },
+	{ lvl: 'Month 1', xp: '+1500 XP', title: 'On the product', desc: 'Live client work, reviewed line by line until it is good enough to merge.' },
+	{ lvl: 'Mid-placement', xp: '+3000 XP', title: 'You ship', desc: 'Your work goes live, in front of the client and their actual users.' },
+	{ lvl: 'Sign-off', xp: '🏆 HIRED', title: 'Job market', desc: 'A portfolio of shipped work, a reference, and our backing till you land it.' },
 ];
 
-// the to-do board — school + life, balanced
+// the to-do board — school + life, balanced. Tickable, so it is a real
+// list rather than a picture of one.
 const todos = [
 	{ icon: '📖', task: 'Read chapter 4', when: 'before Tuesday', done: true },
 	{ icon: '🐍', task: 'Study Python', when: 'lab on Wednesday', done: false },
 	{ icon: '⚛️', task: 'Test React build', when: 'push by Thursday', done: false },
 	{ icon: '⚽', task: 'Play football', when: 'Saturday 4pm', done: true },
-	{ icon: '🎤', task: 'Demo Day prep', when: 'end of term', done: false },
+	{ icon: '🎤', task: 'Demo day prep', when: 'end of placement', done: false },
 	{ icon: '😴', task: 'Sleep 8 hours', when: 'tonight. seriously', done: false },
+];
+
+// the pop quiz pinned next to it — five questions, red pen at the end
+const quiz = [
+	{
+		q: 'What does HTML actually stand for?',
+		a: ['HyperText Markup Language', 'How To Make Links', 'Home Tool Markup Language', 'Hyper Transfer Mail Link'],
+		c: 0,
+		why: 'Markup, not programming. It describes the page; it does not do the thinking.',
+	},
+	{
+		q: 'A software “bug” got its name from…',
+		a: ['A real moth taped into a logbook', 'A computer virus', 'A typing mistake', 'A fly on a monitor'],
+		c: 0,
+		why: 'Harvard, 1947. The moth is still taped to the page, and the page is in a museum.',
+	},
+	{
+		q: 'In Git, what does a commit actually do?',
+		a: ['Saves a snapshot of your changes', 'Uploads your work to the internet', 'Deletes your branch', 'Renames the project'],
+		c: 0,
+		why: 'Committing is local and yours. Push is the one that sends it to everybody else.',
+	},
+	{
+		q: 'Which of these is CSS’s job?',
+		a: ['Laying out and styling the page', 'Storing user accounts', 'Routing server requests', 'Running your tests'],
+		c: 0,
+		why: 'CSS decides how it looks. HTML decides what it is. JavaScript decides what it does.',
+	},
+	{
+		q: 'It is 4pm on Friday and you just broke the build. First move?',
+		a: ['Tell the team, then fix it', 'Say nothing and hope', 'Push another commit blindly', 'Log off, it is Friday'],
+		c: 0,
+		why: 'The one we grade hardest. Breaking things is fine here — hiding it is not.',
+	},
 ];
 
 const facts = [
@@ -60,10 +95,10 @@ const sectors = ['Fintech', 'Real estate', 'Sports', 'E-commerce', 'Education', 
 const logos = ['betslipswitch.svg', 'trueverdict.png', 'brix market logo.svg', 'ejike-fc.svg', 'purple-panda.svg', 'saros-sgp.svg', 'my eya homes.svg', 'the-presidential-diary.png', 'hemamsynergy.png'];
 
 const achievements = [
-	{ icon: 'mdi:shield-star-outline', title: 'Selective Intake', desc: 'A small cohort each round, so every place is earned.' },
+	{ icon: 'mdi:shield-star-outline', title: 'Selective Intake', desc: 'A handful of seats each intake, so every place is earned.' },
 	{ icon: 'mdi:account-heart-outline', title: 'Mentor Backed', desc: 'Guided by working engineers and designers.' },
-	{ icon: 'mdi:cash-multiple', title: 'Paid Internship', desc: 'Top students earn a paid spot with the team.' },
-	{ icon: 'mdi:briefcase-check-outline', title: 'Job-Ready Portfolio', desc: 'Graduate with real, shipped projects.' },
+	{ icon: 'mdi:rocket-launch-outline', title: 'Live Client Work', desc: 'Real products, real deadlines, real users on the other end.' },
+	{ icon: 'mdi:briefcase-check-outline', title: 'Job-Ready Portfolio', desc: 'Finish with real, shipped projects to your name.' },
 ];
 
 const voices = [
@@ -137,10 +172,10 @@ const voices = [
 		<div class="cp-wrap">
 			<div class="cp-head cp-rev">
 				<span class="cp-badge">The roadmap</span>
-				<h2 class="cp-h">Lecture room <em>→ job market.</em></h2>
+				<h2 class="cp-h">First ticket <em>→ job market.</em></h2>
 				<p class="cp-p cp-p--center">
-					Three terms, one graduation. XP is earned by shipping — not by
-					watching videos.
+					One placement, four checkpoints. XP is earned by shipping — not
+					by watching videos.
 				</p>
 			</div>
 
@@ -165,10 +200,10 @@ const voices = [
 		<div class="cp-wrap">
 			<div class="cp-head cp-rev">
 				<span class="cp-badge">Programs & admissions</span>
-				<h2 class="cp-h">Four doors <em>into tech.</em></h2>
+				<h2 class="cp-h">Two roads <em>into tech.</em></h2>
 				<p class="cp-p cp-p--center">
-					Whatever stage you're at — brand new, in school, serving, or
-					ready to sprint — there's a desk for you here.
+					One if you are still in school, one if you are serving. Both
+					put you on a live client product with a mentor on your work.
 				</p>
 			</div>
 			<div class="cp-programs">
@@ -189,41 +224,166 @@ const voices = [
 		</div>
 	</section>
 
-	<!-- ── D · the to-do board: campus life, balanced ──────── -->
+	<!-- ── C3 · the archives ───────────────────────────────── -->
+	<section class="cp-sec" data-cursor="play">
+		<div class="cp-wrap">
+			<div class="cp-head cp-rev">
+				<span class="cp-badge">The archives</span>
+				<h2 class="cp-h">Inside <em>the room.</em></h2>
+				<p class="cp-p cp-p--center">
+					Demo days, classes, late nights in the lab. This is what the
+					placement actually looks like from the inside.
+				</p>
+			</div>
+			<div class="cp-gallery cp-rev">
+				<figure class="cp-shot cp-shot--wide cp-shot--photo">
+					<img
+						src="/images/campus/demo-day.jpg"
+						alt="Swizel mentors and students reviewing a build together on demo day"
+						loading="lazy"
+					/>
+					<span class="cp-tape" aria-hidden="true"></span>
+					<figcaption class="cp-shot-cap">Demo day, the whole room on one build</figcaption>
+				</figure>
+				<figure class="cp-shot cp-shot--photo">
+					<img
+						src="/images/campus/class-in-session.jpg"
+						alt="A class in session around the studio table at the Swizel campus in Abuja"
+						loading="lazy"
+					/>
+					<span class="cp-tape" aria-hidden="true"></span>
+					<figcaption class="cp-shot-cap">Class in session</figcaption>
+				</figure>
+				<figure class="cp-shot cp-shot--photo">
+					<img
+						src="/images/campus/the-lab.jpg"
+						alt="Two Swizel builders pairing on a live product in the lab"
+						loading="lazy"
+					/>
+					<span class="cp-tape" aria-hidden="true"></span>
+					<figcaption class="cp-shot-cap">Pairing in the lab</figcaption>
+				</figure>
+				<div class="cp-shot">
+					<Icon width={26} name="mdi:play-circle-outline" />
+					<span class="cp-shot-name">demo-day.mp4 — video</span>
+				</div>
+				<div class="cp-shot">
+					<Icon width={22} name="mdi:image-outline" />
+					<span class="cp-shot-name">class-of-25.jpg</span>
+				</div>
+				<div class="cp-shot">
+					<Icon width={22} name="mdi:image-outline" />
+					<span class="cp-shot-name">hackathon-night.jpg</span>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── D · the board: a real week, and a pop quiz ───────── -->
 	<section class="cp-sec" data-cursor="pen">
 		<div class="cp-wrap">
 			<div class="cp-head cp-rev">
 				<span class="cp-badge">Campus life</span>
-				<h2 class="cp-h">The to-do board: <em>work, play, repeat.</em></h2>
+				<h2 class="cp-h">The board: <em>work, play, repeat.</em></h2>
 				<p class="cp-p cp-p--center">
-					School isn't only syllabus. Study hard, ship things — and
-					still make Saturday football. Balance is the real curriculum.
+					School isn't only syllabus. Tick your week off, then sit the
+					pop quiz — nobody in this room gets full marks first try.
 				</p>
 			</div>
-			<div class="cp-cork cp-rev">
-				{
-					todos.map((c, i) => (
-						<div class:list={['cp-pin', { 'cp-pin--done': c.done }]} style={`--r:${(i % 3) - 1}`}>
+
+			<div class="cp-board cp-rev">
+				<!-- left: the week, actually tickable -->
+				<div class="cp-board-week">
+					<h3 class="cp-board-t">
+						This week <span>tap a note to tick it</span>
+					</h3>
+					<ul class="cp-todos" data-todos>
+						{
+							todos.map((c, i) => (
+								<li>
+									<button
+										class:list={['cp-pin', { 'is-done': c.done }]}
+										type="button"
+										style={`--r:${(i % 3) - 1}`}
+										data-todo
+										aria-pressed={c.done ? 'true' : 'false'}
+									>
+										<span class="cp-pin-tack" aria-hidden="true">📌</span>
+										<span class="cp-pin-icon">{c.icon}</span>
+										<strong><i class="cp-check" aria-hidden="true" />{c.task}</strong>
+										<em>{c.when}</em>
+									</button>
+								</li>
+							))
+						}
+					</ul>
+					<div class="cp-week">
+						<span class="cp-week-bar" aria-hidden="true"><i data-week-fill /></span>
+						<span class="cp-week-n" data-week-label>2 of 6 done</span>
+						<button class="cp-week-reset" type="button" data-week-reset>
+							clear the board
+						</button>
+					</div>
+					<div class="cp-photos">
+						<figure class="cp-photo" style="--r:-1">
 							<span class="cp-pin-tack" aria-hidden="true">📌</span>
-							<span class="cp-pin-icon">{c.icon}</span>
-							<strong><i class="cp-check" aria-hidden="true">{c.done ? '☑' : '☐'}</i> {c.task}</strong>
-							<em>{c.when}</em>
-						</div>
-					))
-				}
-				<div class="cp-pin cp-pin--photo" style="--r:1">
-					<span class="cp-pin-tack" aria-hidden="true">📌</span>
-					<span class="cp-pin-ph">
-						<Icon width={20} name="mdi:image-outline" />
-						sports-day.jpg
-					</span>
+							<img src="/images/illustrations/crew-cheer.png" alt="The Swizel crew celebrating a shipped build" loading="lazy" />
+							<figcaption>sports-day.jpg</figcaption>
+						</figure>
+						<figure class="cp-photo" style="--r:1">
+							<span class="cp-pin-tack" aria-hidden="true">📌</span>
+							<img src="/images/illustrations/workspace.png" alt="A Swizel workstation mid-build" loading="lazy" />
+							<figcaption>late-night.jpg</figcaption>
+						</figure>
+					</div>
 				</div>
-				<div class="cp-pin cp-pin--photo" style="--r:-1">
-					<span class="cp-pin-tack" aria-hidden="true">📌</span>
-					<span class="cp-pin-ph">
-						<Icon width={20} name="mdi:image-outline" />
-						club-night.jpg
-					</span>
+
+				<!-- right: the pop quiz, pinned to the same board -->
+				<div class="cp-quiz" data-quiz>
+					<span class="cp-pin-tack cp-quiz-tack" aria-hidden="true">📌</span>
+					<div class="cp-quiz-head">
+						<span class="cp-quiz-ttl">Pop quiz</span>
+						<span class="cp-quiz-name">Name: <i>________</i></span>
+					</div>
+					<div class="cp-quiz-body">
+						{
+							quiz.map((q, i) => (
+								<div class:list={['cp-q', { 'is-live': i === 0 }]} data-q={i}>
+									<p class="cp-q-t"><b>{i + 1}.</b> {q.q}</p>
+									<ul class="cp-q-opts">
+										{q.a.map((opt, oi) => (
+											<li>
+												<button
+													class="cp-opt"
+													type="button"
+													data-opt={oi}
+													data-right={oi === q.c ? '1' : '0'}
+												>
+													<i>{'ABCD'[oi]}</i>
+													<span>{opt}</span>
+												</button>
+											</li>
+										))}
+									</ul>
+									<p class="cp-q-why" hidden>{q.why}</p>
+								</div>
+							))
+						}
+						<div class="cp-q-done" data-result hidden>
+							<span class="cp-grade" data-grade>A+</span>
+							<p class="cp-grade-note" data-note />
+							<button class="cp-retake" type="button" data-retake>
+								<Icon width={15} name="mdi:refresh" />
+								Sit it again
+							</button>
+						</div>
+					</div>
+					<div class="cp-quiz-foot">
+						<span class="cp-quiz-dots" aria-hidden="true">
+							{quiz.map((_, i) => <i class:list={[{ 'is-on': i === 0 }]} />)}
+						</span>
+						<span class="cp-quiz-xp" data-score>0 XP</span>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -355,57 +515,6 @@ const voices = [
 		</div>
 	</section>
 
-	<!-- ── G · from past cohorts ────────────────────────────── -->
-	<section class="cp-sec" data-cursor="play">
-		<div class="cp-wrap">
-			<div class="cp-head cp-rev">
-				<span class="cp-badge">The archives</span>
-				<h2 class="cp-h">From past <em>cohorts.</em></h2>
-			</div>
-			<div class="cp-gallery cp-rev">
-				<figure class="cp-shot cp-shot--wide cp-shot--photo">
-					<img
-						src="/images/campus/demo-day.jpg"
-						alt="Swizel mentors and students reviewing a build together on demo day"
-						loading="lazy"
-					/>
-					<span class="cp-tape" aria-hidden="true"></span>
-					<figcaption class="cp-shot-cap">Demo day, the whole room on one build</figcaption>
-				</figure>
-				<figure class="cp-shot cp-shot--photo">
-					<img
-						src="/images/campus/class-in-session.jpg"
-						alt="A class in session around the studio table at the Swizel campus in Abuja"
-						loading="lazy"
-					/>
-					<span class="cp-tape" aria-hidden="true"></span>
-					<figcaption class="cp-shot-cap">Class in session</figcaption>
-				</figure>
-				<figure class="cp-shot cp-shot--photo">
-					<img
-						src="/images/campus/the-lab.jpg"
-						alt="Two Swizel builders pairing on a live product in the lab"
-						loading="lazy"
-					/>
-					<span class="cp-tape" aria-hidden="true"></span>
-					<figcaption class="cp-shot-cap">Pairing in the lab</figcaption>
-				</figure>
-				<div class="cp-shot">
-					<Icon width={26} name="mdi:play-circle-outline" />
-					<span class="cp-shot-name">demo-day.mp4 — video</span>
-				</div>
-				<div class="cp-shot">
-					<Icon width={22} name="mdi:image-outline" />
-					<span class="cp-shot-name">class-of-25.jpg</span>
-				</div>
-				<div class="cp-shot">
-					<Icon width={22} name="mdi:image-outline" />
-					<span class="cp-shot-name">hackathon-night.jpg</span>
-				</div>
-			</div>
-		</div>
-	</section>
-
 	<!-- ── H · achievements ────────────────────────────────── -->
 	<section class="cp-sec" data-cursor="layers">
 		<div class="cp-wrap">
@@ -437,7 +546,7 @@ const voices = [
 		<div class="cp-wrap">
 			<div class="cp-head cp-rev">
 				<span class="cp-badge">Alumni board</span>
-				<h2 class="cp-h">Grads, <em>five stars in.</em></h2>
+				<h2 class="cp-h">They did it, <em>five stars in.</em></h2>
 			</div>
 			<div class="cp-voices">
 				{
@@ -461,18 +570,18 @@ const voices = [
 	<!-- ── J · enrollment is open ──────────────────────────── -->
 	<section class="cp-sec cp-sec--cta" data-cursor="phone">
 		<div class="cp-wrap cp-ctabox cp-rev">
-			<span class="cp-badge">New semester</span>
-			<h2 class="cp-h cp-h--xl">Enrollment <em>is open.</em></h2>
+			<span class="cp-badge">Next intake</span>
+			<h2 class="cp-h cp-h--xl">Applications <em>are open.</em></h2>
 			<p class="cp-p cp-p--center">
-				The next cohort is forming, and it is a small one. Make the
-				case for your place and you could be shipping with us.
+				Seats are limited and every one of them is earned. Make the case
+				for yours and you could be shipping with us.
 			</p>
 			<a href="/programs" class="cp-start">
 				<Icon width={20} name="mdi:gamepad-variant-outline" />
 				START: apply for a place
 			</a>
 			<p class="cp-alt">
-				<span>Questions before you enroll?</span>
+				<span>Questions before you apply?</span>
 				<a href="tel:+2348100204570" class="cp-phone">+234&nbsp;810&nbsp;020&nbsp;4570</a>
 			</p>
 		</div>
@@ -887,14 +996,15 @@ const voices = [
 		}
 	}
 
-	/* ── D · the corkboard ── */
-	.cp-cork {
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: center;
-		align-items: stretch;
-		gap: clamp(0.9rem, 2vw, 1.4rem);
-		padding: clamp(1.5rem, 3vw, 2.5rem);
+	/* ── D · the corkboard ──
+	   Cork, two zones: the week on the left, the quiz on the right. On a
+	   phone the notes ride a swipe rail instead of stacking into a mile of
+	   vertical board. */
+	.cp-board {
+		display: grid;
+		grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+		gap: clamp(1rem, 2.4vw, 1.9rem);
+		padding: clamp(1.1rem, 2.6vw, 2rem);
 		border-radius: 1.2rem;
 		border: 8px solid #7c4a23;
 		background:
@@ -903,23 +1013,60 @@ const voices = [
 			linear-gradient(160deg, #c89a6b, #b07f4e);
 		box-shadow: inset 0 0 50px rgba(60, 35, 12, 0.35), 0 30px 70px -30px rgba(0, 0, 0, 0.6);
 	}
+	.cp-board-week { display: flex; flex-direction: column; min-width: 0; }
+	.cp-board-t {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 0.5rem;
+		margin: 0 0 0.9rem;
+		font-family: var(--cp-marker);
+		font-size: 1.15rem;
+		color: #3f2a14;
+	}
+	.cp-board-t span {
+		font-family: 'Inter', sans-serif;
+		font-size: 0.68rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: rgba(63, 42, 20, 0.55);
+	}
+	.cp-todos {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+		gap: 0.75rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.cp-todos > li { display: flex; min-width: 0; }
+
 	.cp-pin {
 		position: relative;
 		display: flex;
 		flex-direction: column;
+		align-items: flex-start;
+		text-align: left;
 		gap: 0.15rem;
-		min-width: 11rem;
-		padding: 1.3rem 1.1rem 0.9rem;
+		width: 100%;
+		padding: 1.25rem 0.9rem 0.8rem;
+		border: 0;
 		background: #fffdf5;
 		color: #44403c;
+		cursor: pointer;
 		box-shadow: 0 12px 26px -10px rgba(0, 0, 0, 0.45);
-		transform: rotate(calc(var(--r, 0) * 2deg));
-		transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+		transform: rotate(calc(var(--r, 0) * 1.6deg));
+		transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
 	}
-	.cp-pin:hover {
+	.cp-pin:hover,
+	.cp-pin:focus-visible {
 		transform: rotate(0deg) scale(1.04);
+		box-shadow: 0 18px 34px -12px rgba(0, 0, 0, 0.5);
+		outline: none;
 		z-index: 2;
 	}
+	.cp-pin:active { transform: rotate(0deg) scale(0.98); }
 	.cp-pin-tack {
 		position: absolute;
 		top: -10px;
@@ -928,36 +1075,344 @@ const voices = [
 		font-size: 1.15rem;
 		filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.3));
 	}
-	.cp-pin-icon {
-		font-size: 1.45rem;
-		line-height: 1;
-		margin-bottom: 0.3rem;
-	}
+	.cp-pin-icon { font-size: 1.4rem; line-height: 1; margin-bottom: 0.25rem; }
 	.cp-pin strong {
+		display: flex;
+		align-items: baseline;
+		gap: 0.35rem;
 		font-family: var(--cp-marker);
-		font-size: 1.02rem;
+		font-size: 1rem;
+		text-align: left;
 	}
-	.cp-pin em {
-		font-style: normal;
-		font-size: 0.74rem;
+	.cp-pin em { font-style: normal; font-size: 0.72rem; color: #78716c; }
+
+	/* the tick and the strike-through, drawn as if by hand */
+	.cp-check {
+		flex: none;
+		width: 0.85em;
+		height: 0.85em;
+		border: 2px solid #a8a29e;
+		border-radius: 3px;
+		position: relative;
+	}
+	.cp-pin.is-done .cp-check { border-color: #dc2626; }
+	.cp-pin.is-done .cp-check::after {
+		content: '';
+		position: absolute;
+		left: 12%;
+		top: -30%;
+		width: 60%;
+		height: 95%;
+		border-right: 2px solid #dc2626;
+		border-bottom: 2px solid #dc2626;
+		transform: rotate(42deg);
+	}
+	.cp-pin.is-done strong {
+		text-decoration: line-through;
+		text-decoration-thickness: 2px;
+		text-decoration-color: #dc2626;
+		opacity: 0.72;
+	}
+
+	/* the week meter under the notes */
+	.cp-week {
+		display: flex;
+		align-items: center;
+		gap: 0.7rem;
+		margin-top: 1rem;
+	}
+	.cp-week-bar {
+		position: relative;
+		flex: 1 1 auto;
+		height: 9px;
+		border-radius: 9999px;
+		background: rgba(63, 42, 20, 0.22);
+		overflow: hidden;
+	}
+	.cp-week-bar i {
+		position: absolute;
+		inset: 0 auto 0 0;
+		width: 0%;
+		border-radius: 9999px;
+		background: linear-gradient(90deg, #f59e0b, #fb7185);
+		transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.cp-week-n {
+		flex: none;
+		font-family: var(--cp-marker);
+		font-size: 0.9rem;
+		color: #3f2a14;
+	}
+	.cp-week-reset {
+		flex: none;
+		padding: 0.2rem 0.55rem;
+		border-radius: 9999px;
+		border: 1px dashed rgba(63, 42, 20, 0.4);
+		background: transparent;
+		font-size: 0.66rem;
+		font-weight: 700;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: rgba(63, 42, 20, 0.7);
+		cursor: pointer;
+		transition: background 0.2s ease, color 0.2s ease;
+	}
+	.cp-week-reset:hover { background: rgba(255, 253, 245, 0.6); color: #3f2a14; }
+
+	/* two real photographs, pinned crooked like everything else */
+	.cp-photos {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 0.9rem;
+		margin-top: 1.1rem;
+	}
+	.cp-photo {
+		position: relative;
+		margin: 0;
+		padding: 0.5rem 0.5rem 1.7rem;
+		background: #fffdf5;
+		box-shadow: 0 12px 26px -10px rgba(0, 0, 0, 0.45);
+		transform: rotate(calc(var(--r, 0) * 1.4deg));
+		transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+	}
+	.cp-photo:hover { transform: rotate(0deg) scale(1.03); z-index: 2; }
+	.cp-photo img {
+		display: block;
+		width: 100%;
+		aspect-ratio: 4 / 3;
+		object-fit: cover;
+		background: #e7e5e4;
+	}
+	.cp-photo figcaption {
+		position: absolute;
+		left: 0.6rem;
+		bottom: 0.45rem;
+		font-family: var(--cp-marker);
+		font-size: 0.78rem;
 		color: #78716c;
 	}
-	.cp-pin--photo {
-		justify-content: center;
-		align-items: center;
-		min-height: 7.5rem;
-		background: #f1f5f9;
-	}
-	.cp-pin-ph {
+
+	/* ── the pop quiz: an exam paper pinned to the same cork ── */
+	.cp-quiz {
+		position: relative;
 		display: flex;
 		flex-direction: column;
-		align-items: center;
-		gap: 0.3rem;
-		font-size: 0.7rem;
+		min-width: 0;
+		padding: 1.5rem 1.2rem 1rem;
+		background:
+			repeating-linear-gradient(180deg, transparent 0 27px, rgba(59, 130, 246, 0.12) 27px 28px),
+			#fffdf5;
+		box-shadow: 0 16px 34px -12px rgba(0, 0, 0, 0.5);
+		transform: rotate(-0.6deg);
+	}
+	/* the red margin rule down the left, like every exam paper ever */
+	.cp-quiz::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 2.1rem;
+		width: 1px;
+		background: rgba(220, 38, 38, 0.35);
+	}
+	.cp-quiz-tack { top: -11px; }
+	.cp-quiz-head {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 0.5rem;
+		padding-bottom: 0.6rem;
+		margin-bottom: 0.8rem;
+		border-bottom: 2px solid rgba(63, 42, 20, 0.25);
+	}
+	.cp-quiz-ttl {
+		font-family: var(--cp-marker);
+		font-size: 1.3rem;
 		font-weight: 700;
-		letter-spacing: 0.07em;
-		text-transform: uppercase;
-		color: #94a3b8;
+		color: #3f2a14;
+	}
+	.cp-quiz-name { font-size: 0.72rem; color: #a8a29e; }
+	.cp-quiz-name i { font-style: normal; letter-spacing: 0.1em; }
+	.cp-quiz-body { position: relative; flex: 1 1 auto; }
+
+	.cp-q { display: none; }
+	.cp-q.is-live { display: block; animation: cp-q-in 0.32s ease both; }
+	@keyframes cp-q-in {
+		from { opacity: 0; transform: translateX(10px); }
+		to { opacity: 1; transform: none; }
+	}
+	.cp-q-t {
+		margin: 0 0 0.75rem;
+		font-family: var(--cp-marker);
+		font-size: 1.02rem;
+		line-height: 1.45;
+		color: #292524;
+	}
+	.cp-q-t b { color: #dc2626; margin-right: 0.25rem; }
+	.cp-q-opts { display: grid; gap: 0.4rem; margin: 0; padding: 0; list-style: none; }
+	.cp-opt {
+		display: flex;
+		align-items: center;
+		gap: 0.55rem;
+		width: 100%;
+		padding: 0.5rem 0.6rem;
+		border: 1px solid rgba(63, 42, 20, 0.2);
+		border-radius: 0.45rem;
+		background: rgba(255, 255, 255, 0.55);
+		font-size: 0.82rem;
+		line-height: 1.35;
+		text-align: left;
+		color: #44403c;
+		cursor: pointer;
+		transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+	}
+	.cp-opt:hover:not(:disabled) {
+		background: #fff;
+		border-color: rgba(63, 42, 20, 0.45);
+		transform: translateX(2px);
+	}
+	.cp-opt i {
+		flex: none;
+		display: grid;
+		place-items: center;
+		width: 22px;
+		height: 22px;
+		border-radius: 9999px;
+		border: 1.5px solid rgba(63, 42, 20, 0.35);
+		font-style: normal;
+		font-size: 0.68rem;
+		font-weight: 800;
+		color: rgba(63, 42, 20, 0.7);
+	}
+	.cp-opt:disabled { cursor: default; }
+	/* marked in red pen */
+	.cp-opt.is-right {
+		border-color: #16a34a;
+		background: rgba(22, 163, 74, 0.12);
+		color: #14532d;
+	}
+	.cp-opt.is-right i { border-color: #16a34a; color: #16a34a; }
+	.cp-opt.is-wrong {
+		border-color: #dc2626;
+		background: rgba(220, 38, 38, 0.1);
+		color: #7f1d1d;
+		text-decoration: line-through;
+		text-decoration-color: rgba(220, 38, 38, 0.7);
+	}
+	.cp-opt.is-wrong i { border-color: #dc2626; color: #dc2626; }
+	.cp-q-why {
+		margin: 0.7rem 0 0;
+		padding-left: 0.7rem;
+		border-left: 3px solid rgba(220, 38, 38, 0.45);
+		font-family: var(--cp-marker);
+		font-size: 0.86rem;
+		line-height: 1.5;
+		color: #b91c1c;
+		animation: cp-q-in 0.3s ease both;
+	}
+
+	/* the grade, stamped at the end */
+	.cp-q-done { display: grid; place-items: center; gap: 0.5rem; padding: 0.6rem 0 0.2rem; text-align: center; }
+	.cp-q-done[hidden] { display: none; }
+	.cp-grade {
+		display: grid;
+		place-items: center;
+		min-width: 5.5rem;
+		padding: 0.35rem 0.9rem;
+		border: 3px solid #dc2626;
+		border-radius: 0.5rem;
+		font-family: var(--cp-marker);
+		font-size: 2.4rem;
+		font-weight: 800;
+		line-height: 1.1;
+		color: #dc2626;
+		transform: rotate(-8deg);
+		animation: cp-stamp 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+	}
+	@keyframes cp-stamp {
+		from { opacity: 0; transform: rotate(-8deg) scale(2.2); }
+		to { opacity: 1; transform: rotate(-8deg) scale(1); }
+	}
+	.cp-grade-note {
+		margin: 0.35rem 0 0;
+		font-family: var(--cp-marker);
+		font-size: 0.95rem;
+		line-height: 1.45;
+		color: #44403c;
+	}
+	.cp-retake {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		margin-top: 0.3rem;
+		padding: 0.45rem 0.9rem;
+		border-radius: 9999px;
+		border: 1px solid rgba(63, 42, 20, 0.35);
+		background: #fff;
+		font-size: 0.78rem;
+		font-weight: 700;
+		color: #44403c;
+		cursor: pointer;
+		transition: background 0.2s ease, transform 0.2s ease;
+	}
+	.cp-retake:hover { background: #fef3c7; transform: translateY(-1px); }
+
+	.cp-quiz-foot {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.6rem;
+		margin-top: 0.9rem;
+		padding-top: 0.6rem;
+		border-top: 1px dashed rgba(63, 42, 20, 0.28);
+	}
+	.cp-quiz-dots { display: flex; gap: 0.3rem; }
+	.cp-quiz-dots i {
+		width: 7px;
+		height: 7px;
+		border-radius: 9999px;
+		background: rgba(63, 42, 20, 0.22);
+		transition: background 0.25s ease, width 0.25s ease;
+	}
+	.cp-quiz-dots i.is-on { width: 18px; background: #dc2626; }
+	.cp-quiz-dots i.is-hit { background: #16a34a; }
+	.cp-quiz-xp {
+		font-family: var(--cp-marker);
+		font-size: 0.92rem;
+		font-weight: 700;
+		color: #b45309;
+	}
+
+	/* ── the pocket board ──
+	   Stacked, six notes plus two photos made a board you had to scroll for
+	   half a minute. The notes ride a swipe rail instead. */
+	@media (max-width: 860px) {
+		.cp-board { grid-template-columns: minmax(0, 1fr); }
+		.cp-todos {
+			display: flex;
+			gap: 0.7rem;
+			overflow-x: auto;
+			scroll-snap-type: x mandatory;
+			padding: 0.45rem 0.2rem 0.9rem;
+			margin-inline: -0.2rem;
+			scrollbar-width: none;
+		}
+		.cp-todos::-webkit-scrollbar { display: none; }
+		.cp-todos > li { flex: 0 0 9.5rem; scroll-snap-align: start; }
+		.cp-pin { padding: 1.15rem 0.75rem 0.7rem; }
+		.cp-pin strong { font-size: 0.94rem; }
+		.cp-photos { grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-top: 0.9rem; }
+		.cp-photo { padding: 0.4rem 0.4rem 1.5rem; }
+		.cp-week { margin-top: 0.4rem; }
+		.cp-week-n { font-size: 0.82rem; }
+	}
+	@media (max-width: 520px) {
+		.cp-board { padding: 0.9rem; border-width: 6px; }
+		.cp-quiz { padding: 1.3rem 0.9rem 0.9rem; }
+		.cp-quiz::before { left: 1.5rem; }
+		.cp-opt { font-size: 0.8rem; padding: 0.45rem 0.5rem; }
+		.cp-grade { font-size: 2rem; }
 	}
 
 	/* ── E · the chalkboard ── */
@@ -1424,18 +1879,6 @@ const voices = [
 	}
 
 
-
-	/* ── to-do board details ── */
-	.cp-check {
-		font-style: normal;
-		margin-right: 0.15rem;
-	}
-	.cp-pin--done strong {
-		text-decoration: line-through;
-		text-decoration-thickness: 2px;
-		text-decoration-color: #dc2626;
-		opacity: 0.75;
-	}
 
 	/* ── chalk prev/next: chalk-drawn arrow buttons on the board ── */
 	.cp-chalk-btn {

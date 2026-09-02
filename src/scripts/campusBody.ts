@@ -182,6 +182,133 @@ export function initCampusBody() {
 		chalk.addEventListener('pointerleave', start);
 	}
 
+	// ── the board: a week you can actually tick off ──
+	const todoList = body.querySelector<HTMLElement>('[data-todos]');
+	if (todoList && !todoList.dataset.cpBound) {
+		todoList.dataset.cpBound = '1';
+		const pins = Array.from(todoList.querySelectorAll<HTMLButtonElement>('[data-todo]'));
+		const fill = body.querySelector<HTMLElement>('[data-week-fill]');
+		const label = body.querySelector<HTMLElement>('[data-week-label]');
+		const reset = body.querySelector<HTMLButtonElement>('[data-week-reset]');
+		// what the board says back to you, so ticking the last one is worth it
+		const lines = [
+			'nothing done yet. the week is young',
+			'one down. keep going',
+			'halfway to a good week',
+			'more done than not. nice',
+			'one left. finish it',
+			'all done — go and play football',
+		];
+
+		const paint = () => {
+			const done = pins.filter((p) => p.classList.contains('is-done')).length;
+			const pct = pins.length ? (done / pins.length) * 100 : 0;
+			if (fill) fill.style.width = `${pct}%`;
+			if (label) {
+				const note = done === pins.length ? lines[5] : lines[Math.min(done, 4)];
+				label.textContent = `${done} of ${pins.length} done — ${note}`;
+			}
+		};
+
+		pins.forEach((pin) =>
+			pin.addEventListener('click', () => {
+				const done = pin.classList.toggle('is-done');
+				pin.setAttribute('aria-pressed', done ? 'true' : 'false');
+				paint();
+			})
+		);
+		reset?.addEventListener('click', () => {
+			pins.forEach((p) => {
+				p.classList.remove('is-done');
+				p.setAttribute('aria-pressed', 'false');
+			});
+			paint();
+		});
+		paint();
+	}
+
+	// ── the pop quiz: one question at a time, red pen at the end ──
+	const quiz = body.querySelector<HTMLElement>('[data-quiz]');
+	if (quiz && !quiz.dataset.cpBound) {
+		quiz.dataset.cpBound = '1';
+		const qs = Array.from(quiz.querySelectorAll<HTMLElement>('[data-q]'));
+		const dots = Array.from(quiz.querySelectorAll<HTMLElement>('.cp-quiz-dots i'));
+		const result = quiz.querySelector<HTMLElement>('[data-result]');
+		const grade = quiz.querySelector<HTMLElement>('[data-grade]');
+		const note = quiz.querySelector<HTMLElement>('[data-note]');
+		const score = quiz.querySelector<HTMLElement>('[data-score]');
+		const retake = quiz.querySelector<HTMLButtonElement>('[data-retake]');
+		// grade, then what the teacher wrote in the margin
+		const marks: [string, string][] = [
+			['SEE ME', 'Come and sit at the front. We will start again from the top.'],
+			['D', 'A start. Most of this is on the chalkboard two sections up.'],
+			['C', 'Passable. Read it once more and try again.'],
+			['B', 'Solid. You would keep up here.'],
+			['A', 'Very good. One slip, and everybody slips.'],
+			['A+', 'Full marks. Show-off. Come and sit the real one.'],
+		];
+		let at = 0;
+		let right = 0;
+
+		const showQ = (n: number) => {
+			qs.forEach((q, i) => q.classList.toggle('is-live', i === n));
+			dots.forEach((d, i) => d.classList.toggle('is-on', i === n));
+		};
+
+		const finish = () => {
+			qs.forEach((q) => q.classList.remove('is-live'));
+			const [g, n] = marks[right] ?? marks[0]!;
+			if (grade) grade.textContent = g;
+			if (note) note.textContent = `${right} of ${qs.length}. ${n}`;
+			result?.removeAttribute('hidden');
+			dots.forEach((d) => d.classList.remove('is-on'));
+		};
+
+		qs.forEach((q, qi) => {
+			q.querySelectorAll<HTMLButtonElement>('.cp-opt').forEach((opt) => {
+				opt.addEventListener('click', () => {
+					if (q.dataset.answered) return;
+					q.dataset.answered = '1';
+					const correct = opt.dataset.right === '1';
+					if (correct) {
+						right += 1;
+						dots[qi]?.classList.add('is-hit');
+					}
+					q.querySelectorAll<HTMLButtonElement>('.cp-opt').forEach((o) => {
+						o.disabled = true;
+						if (o.dataset.right === '1') o.classList.add('is-right');
+						else if (o === opt) o.classList.add('is-wrong');
+					});
+					q.querySelector('.cp-q-why')?.removeAttribute('hidden');
+					if (score) score.textContent = `${right * 100} XP`;
+					// a beat to read the red pen before the page turns
+					window.setTimeout(() => {
+						at = qi + 1;
+						if (at >= qs.length) finish();
+						else showQ(at);
+					}, correct ? 1150 : 1900);
+				});
+			});
+		});
+
+		retake?.addEventListener('click', () => {
+			at = 0;
+			right = 0;
+			qs.forEach((q) => {
+				delete q.dataset.answered;
+				q.querySelector('.cp-q-why')?.setAttribute('hidden', '');
+				q.querySelectorAll<HTMLButtonElement>('.cp-opt').forEach((o) => {
+					o.disabled = false;
+					o.classList.remove('is-right', 'is-wrong');
+				});
+			});
+			dots.forEach((d) => d.classList.remove('is-hit'));
+			result?.setAttribute('hidden', '');
+			if (score) score.textContent = '0 XP';
+			showQ(0);
+		});
+	}
+
 	// ── quest bar + achievements unlock when they enter view ──
 	['#cp-questline', '#cp-achvs'].forEach((sel) => {
 		const el = body.querySelector<HTMLElement>(sel);
