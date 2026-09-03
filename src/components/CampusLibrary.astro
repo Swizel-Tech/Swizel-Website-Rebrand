@@ -353,14 +353,19 @@ const marginalia = [
 		transform: translateZ(-60px);
 		pointer-events: none;
 	}
+	/* Stacked, the paper is sized so two cards plus a margin fill it. A
+	   card's height comes from its text, not from the screen width, so a
+	   wide phone needs a squarer page than a narrow one or the cards float
+	   in a lake of empty paper. */
 	@media (max-width: 860px) {
-		/* stacked, the two pages need real height or four cards squash */
-		.bk__book { aspect-ratio: 1 / 1.88; transform: none; }
+		.bk__book { aspect-ratio: 1 / 1.5; transform: none; }
 	}
-	@media (max-width: 520px) {
-		/* measured: a pocket card wants ~140px, two of them plus the gutter
-		   need ~295px of paper — this ratio hands the page exactly that */
-		.bk__book { aspect-ratio: 1 / 1.98; }
+	@media (max-width: 560px) {
+		.bk__book { aspect-ratio: 1 / 1.72; }
+	}
+	@media (max-width: 400px) {
+		/* measured at 390px: a card wants ~141px, so a page needs ~330px */
+		.bk__book { aspect-ratio: 1 / 1.95; }
 	}
 
 	/* the block of pages either side, so it reads as bound not printed */
@@ -921,10 +926,15 @@ const marginalia = [
 	   way in. Everything else is a tap away in the lifted card. */
 	@media (max-width: 860px) {
 		.bk__page { padding: 0.85rem 0.9rem; }
-		/* even rows, deliberately: two cards of the same height read as a
-		   printed page. The paper above was sized to fit them, so 1fr never
-		   has to squeeze anything. */
-		.bk__cards { gap: 0.55rem; padding-bottom: 1rem; }
+		/* Cards hug their own content and sit centred on the paper. Left on
+		   1fr they stretched to fill the page, so a tall phone turned two
+		   modest cards into two slabs with the text stranded at the top. */
+		.bk__cards {
+			gap: 0.6rem;
+			padding-bottom: 0.9rem;
+			grid-auto-rows: min-content;
+			align-content: center;
+		}
 		.bk__card { padding: 0.6rem 0.75rem; }
 		.bk__card-top { margin-bottom: 0.3rem; }
 		.bk__card-ic { width: 27px; height: 27px; border-radius: 0.4rem; }

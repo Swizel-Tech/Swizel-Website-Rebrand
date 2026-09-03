@@ -63,15 +63,15 @@ const quiz = [
 		q: 'It is 4pm on Friday and you just broke the build. First move?',
 		a: ['Tell the team, then fix it', 'Say nothing and hope', 'Push another commit blindly', 'Log off, it is Friday'],
 		c: 0,
-		why: 'The one we grade hardest. Breaking things is fine here — hiding it is not.',
+		why: 'The one we grade hardest. Breaking things is fine here. Hiding it is not.',
 	},
 ];
 
 const facts = [
-	'The first computer "bug" was a real moth — taped into a logbook at Harvard in 1947.',
+	'The first computer "bug" was a real moth, taped into a logbook at Harvard in 1947.',
 	'JavaScript was written in just 10 days. It now runs most of the web.',
-	'The first website ever made is still online — info.cern.ch. Go visit it.',
-	'Nigeria has more tech startups than any other country in Africa — and Abuja is rising fast.',
+	'The first website ever made is still online at info.cern.ch. Go and visit it.',
+	'Nigeria has more tech startups than any other country in Africa, and Abuja is rising fast.',
 	'The first 1GB hard drive (1980) weighed over 250 kg. Your phone holds 256× more.',
 ];
 
@@ -103,7 +103,7 @@ const live = [
 		name: 'AnchorStep Physiotherapy',
 		host: 'anchorsteppt.com',
 		url: 'https://anchorsteppt.com/',
-		what: 'A home-visit physio practice in Abuja, taken from a blank page to a bookable brand — and the audience grown from zero.',
+		what: 'A home visit physio practice in Abuja, taken from a blank page to a bookable brand, with the audience grown from zero.',
 		img: '/images/portfolio/shot-anchorstep.jpg',
 		tags: ['Website', 'Branding', 'Growth'],
 		hue: '#2f8f6a',
@@ -113,7 +113,7 @@ const live = [
 		name: 'Hemam Synergy',
 		host: 'hemamsynergy.com',
 		url: 'https://hemamsynergy.com/',
-		what: 'Agritech lifting rural smallholder farmers — and a presence credible enough to help unlock roughly €850,000 in grant funding.',
+		what: 'Agritech lifting rural smallholder farmers, with a presence credible enough to help unlock roughly €850,000 in grant funding.',
 		img: '/images/portfolio/shot-hemamsynergy.jpg',
 		tags: ['Website', 'Branding', 'Hosting'],
 		hue: '#2f9e44',
@@ -133,7 +133,7 @@ const live = [
 		name: 'African Energy Advocacy Initiative',
 		host: 'africaneai.org',
 		url: 'https://africaneai.org/',
-		what: 'Clean-energy advocacy and consultancy — solar lighting and efficient cookstoves for communities that need them most.',
+		what: 'Clean energy advocacy and consultancy. Solar lighting and efficient cookstoves for the communities that need them most.',
 		img: '/images/portfolio/shot-africaneai.jpg',
 		tags: ['Website', 'Energy', 'Non-profit'],
 		hue: '#10b981',
@@ -228,7 +228,7 @@ const voices = [
 				<span class="cp-badge">The roadmap</span>
 				<h2 class="cp-h">First ticket <em>→ job market.</em></h2>
 				<p class="cp-p cp-p--center">
-					One placement, four checkpoints. XP is earned by shipping — not
+					One placement, four checkpoints. XP is earned by shipping, never
 					by watching videos.
 				</p>
 			</div>
@@ -319,7 +319,7 @@ const voices = [
 				</figure>
 				<div class="cp-shot">
 					<Icon width={26} name="mdi:play-circle-outline" />
-					<span class="cp-shot-name">demo-day.mp4 — video</span>
+					<span class="cp-shot-name">demo-day.mp4 · video</span>
 				</div>
 				<div class="cp-shot">
 					<Icon width={22} name="mdi:image-outline" />
@@ -341,7 +341,7 @@ const voices = [
 				<h2 class="cp-h">The board: <em>work, play, repeat.</em></h2>
 				<p class="cp-p cp-p--center">
 					School isn't only syllabus. Tick your week off, then sit the
-					pop quiz — nobody in this room gets full marks first try.
+					pop quiz. Nobody in this room gets full marks first try.
 				</p>
 			</div>
 
@@ -451,7 +451,7 @@ const voices = [
 				<h2 class="cp-h">Learn something <em>right now.</em></h2>
 				<p class="cp-p">
 					Class is always in session. Real tech history, rotating on the
-					board — the kind of trivia that wins arguments.
+					board. The kind of trivia that wins arguments.
 				</p>
 			</div>
 			<div class="cp-chalk cp-rev" id="cp-chalk">
@@ -483,12 +483,12 @@ const voices = [
 				<span class="cp-badge">Practicals</span>
 				<h2 class="cp-h">You'll build <em>real things.</em></h2>
 				<p class="cp-p cp-p--center">
-					Not toy to-do apps. Every site below is live right now, for a
-					paying client — and the work you'd be put on looks exactly
-					like it. Open any of them and see for yourself.
+					Real products for real clients. Every platform below is
+					currently live and operational, offering a clear preview of
+					the production-grade work you will deliver. Explore any link
+					to see our standard in action.
 				</p>
 				<span class="cp-live-note">
-					<i aria-hidden="true"></i>
 					Six live sites · real clients · tap one to visit
 				</span>
 			</div>
@@ -678,8 +678,8 @@ const voices = [
 			<h3 class="cp-exit-t" id="cp-exit-t">You're leaving Swizel</h3>
 			<p class="cp-exit-p">
 				<b data-exit-name>This site</b> is a live client site our team
-				built. It opens in a new tab — this page stays exactly where you
-				left it.
+				built. It opens in a new tab, so this page stays exactly where
+				you left it.
 			</p>
 			<span class="cp-exit-url" data-exit-host>example.com</span>
 			<div class="cp-exit-row">
@@ -1845,12 +1845,36 @@ const voices = [
 	@media (max-width: 1100px) {
 		.cp-live { grid-column: span 6; --ar: 4 / 3; }
 	}
+	/* On a phone the frames were reading as six huge slabs, so the whole
+	   wall tightens: shorter crops, smaller chrome, less air between. */
 	@media (max-width: 760px) {
-		.cp-wall { gap: 1.4rem; }
-		.cp-live { grid-column: span 12; --ar: 16 / 11; }
-		.cp-live-meta em { font-size: 0.84rem; }
+		.cp-wall { gap: 1.15rem; }
+		.cp-live { grid-column: span 12; gap: 0.65rem; --ar: 16 / 10; }
+		.cp-live-frame { border-radius: 0.7rem; }
+		.cp-live-bar { padding: 0.4rem 0.5rem; gap: 0.3rem; }
+		.cp-live-bar > i { width: 7px; height: 7px; }
+		.cp-live-url { font-size: 0.62rem; padding: 0.15rem 0.5rem; }
+		.cp-live-dot { font-size: 0.5rem; padding: 0.1rem 0.35rem; }
+		.cp-live-meta strong { font-size: 1rem; }
+		.cp-live-meta em { font-size: 0.8rem; line-height: 1.5; }
+		.cp-live-tags i { font-size: 0.58rem; padding: 0.16rem 0.42rem; }
 		/* no hover on a phone, so the button is simply there */
-		.cp-live-open { opacity: 1; transform: translate(-50%, 0); font-size: 0.72rem; padding: 0.4rem 0.8rem; }
+		.cp-live-open { opacity: 1; transform: translate(-50%, 0); font-size: 0.68rem; padding: 0.34rem 0.7rem; bottom: 0.65rem; }
+	}
+	/* two up as soon as there is room for it, which is most phones in
+	   landscape and every small tablet */
+	@media (min-width: 560px) and (max-width: 760px) {
+		.cp-live { grid-column: span 6; --ar: 4 / 3; }
+	}
+	/* One up on a phone, but sized so two of them are on screen at once
+	   rather than one slab filling the whole display. The tags go: the
+	   screenshot and the sentence are what earn the space. */
+	@media (max-width: 559px) {
+		.cp-live { --ar: 16 / 11; gap: 0.55rem; }
+		.cp-live-tags { display: none; }
+		.cp-live-meta { gap: 0.28rem; }
+		.cp-live-meta strong { font-size: 0.95rem; }
+		.cp-live-meta em { font-size: 0.78rem; line-height: 1.45; }
 	}
 
 	/* ── leaving Swizel ── */
@@ -2431,27 +2455,44 @@ const voices = [
 		color: var(--cp-acc);
 		border-color: var(--cp-acc);
 	}
+	/* The old belt painted every logo into a white silhouette, which is why
+	   it read as a row of smudges. Real logos are mostly dark, so on a dark
+	   ground they need something to sit on: each brand gets its own little
+	   plate, keeps its own colours, and lifts off the belt on hover. */
 	.cp-blogo {
 		flex-shrink: 0;
 		display: grid;
 		place-items: center;
-		margin-right: clamp(1.8rem, 3.5vw, 3rem);
+		margin-right: clamp(1rem, 2vw, 1.6rem);
+		padding: 0.65rem 1rem;
+		border-radius: 0.75rem;
+		background: rgba(255, 255, 255, 0.9);
+		border: 1px solid rgba(255, 255, 255, 0.14);
+		box-shadow: 0 10px 22px -14px rgba(0, 0, 0, 0.8);
+		opacity: 0.86;
+		transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1),
+			background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease,
+			opacity 0.3s ease;
 	}
 	.cp-blogo img {
-		height: 26px;
+		height: 30px;
 		width: auto;
-		max-width: 120px;
+		max-width: 132px;
 		object-fit: contain;
-		filter: grayscale(1) brightness(0) invert(1);
-		opacity: 0.45;
-		transition: opacity 0.3s ease, filter 0.3s ease;
 	}
-	:global(html:not(.dark)) .cbody .cp-blogo img {
-		filter: grayscale(1) brightness(0);
+	:global(html:not(.dark)) .cbody .cp-blogo {
+		background: #fff;
+		border-color: rgba(90, 66, 40, 0.14);
+		box-shadow: 0 10px 22px -16px rgba(90, 66, 40, 0.6);
+		opacity: 0.92;
 	}
-	.cp-blogo:hover img {
-		filter: none;
+	.cp-blogo:hover {
 		opacity: 1;
+		background: #fff;
+		transform: translateY(-5px) scale(1.06);
+		border-color: color-mix(in srgb, var(--cp-acc) 55%, transparent);
+		box-shadow: 0 18px 34px -16px rgba(0, 0, 0, 0.85),
+			0 0 0 3px color-mix(in srgb, var(--cp-acc) 22%, transparent);
 	}
 
 	/* ── the business CTA: pops in Swizel brand teal-blue ── */

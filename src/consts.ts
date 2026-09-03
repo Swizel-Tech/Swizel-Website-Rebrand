@@ -188,7 +188,7 @@ export const viewQuiz = [
   },
   {
     q: "What do you want?",
-    hint: "Pick the closest one — you can explore everything after.",
+    hint: "Pick the closest one. You can explore everything after.",
     options: [
       {
         label: "Build a product or app",

@@ -36,13 +36,20 @@ const offices = [
 ];
 
 const socials = [
-	{ name: 'X (Twitter)', handle: '@swizelhq', icon: 'twitter', href: 'https://twitter.com/swizelhq', tag: 'Daily build updates', color: '#e9eaf2', peek: 'Ship week at Swizel. Another product just went live. Follow along for launches and behind-the-build threads.' },
-	{ name: 'Instagram', handle: '@swizelhq', icon: 'instagram', href: 'https://instagram.com/swizelhq', tag: 'Behind the scenes', color: '#e1486c', peek: 'The studio, unfiltered. Whiteboards, late builds, launch days and the team behind it all.' },
-	{ name: 'LinkedIn', handle: 'Swizel Technologies Limited', icon: 'linkedin', href: 'https://www.linkedin.com/company/swizel-technologies-limited/', tag: 'Company & careers', color: '#0a8bd4', peek: 'Company news, open roles and stories from the products we ship across 10+ countries.' },
-	{ name: 'Facebook', handle: 'Swizel Technologies Limited', icon: 'facebook', href: 'https://www.facebook.com/SWIZELTECHNOLOGIESLIMITED/', tag: 'Community & news', color: '#3b82f6', peek: 'Our community home for announcements, events and milestones from the Swizel family.' },
+	{ name: 'X (Twitter)', short: '@swizelhq', handle: '@swizelhq', icon: 'twitter', href: 'https://twitter.com/swizelhq', tag: 'Daily build updates', color: '#e9eaf2', peek: 'Ship week at Swizel. Another product just went live. Follow along for launches and behind-the-build threads.' },
+	{ name: 'Instagram', short: '@swizelhq', handle: '@swizelhq', icon: 'instagram', href: 'https://instagram.com/swizelhq', tag: 'Behind the scenes', color: '#e1486c', peek: 'The studio, unfiltered. Whiteboards, late builds, launch days and the team behind it all.' },
+	{ name: 'LinkedIn', short: 'Swizel Tech', handle: 'Swizel Technologies Limited', icon: 'linkedin', href: 'https://www.linkedin.com/company/swizel-technologies-limited/', tag: 'Company & careers', color: '#0a8bd4', peek: 'Company news, open roles and stories from the products we ship across 10+ countries.' },
+	{ name: 'Facebook', short: 'Swizel Tech', handle: 'Swizel Technologies Limited', icon: 'facebook', href: 'https://www.facebook.com/SWIZELTECHNOLOGIESLIMITED/', tag: 'Community & news', color: '#3b82f6', peek: 'Our community home for announcements, events and milestones from the Swizel family.' },
 ];
 
-// Local number first, then international lines — flags, no labels.
+// The channel's uploads playlist is simply UU + the channel id minus its
+// UC prefix, so the TV in the footer always plays the newest videos with
+// nothing to keep up to date by hand.
+const YT_CHANNEL = 'UCZlQKVfjUd1Y0t362gQDgDg';
+const YT_UPLOADS = `UU${YT_CHANNEL.slice(2)}`;
+const YT_URL = 'https://www.youtube.com/@SwizelTechnologiesLtd';
+
+// Local number first, then international lines. Flags, no labels.
 const phones = [
 	{ num: '+234 810 020 4570', flag: '🇳🇬' },
 	{ num: '+1 701 498 1811', flag: '🇺🇸' },
@@ -83,6 +90,37 @@ const phones = [
 				A global product studio. We design, build, market and maintain
 				software people love, across every sector.
 			</p>
+			<!-- Campus TV: the channel's own uploads playlist, newest first,
+			     rolling one into the next. It only loads once you have
+			     scrolled to it, and it starts muted. -->
+			<div class="ft-tv" data-ft-tv data-list={YT_UPLOADS}>
+				<span class="ft-tv-top">
+					<span class="ft-tv-badge">
+						<i aria-hidden="true"></i>
+						Swizel TV
+					</span>
+					<a class="ft-tv-link" href={YT_URL} target="_blank" rel="noopener noreferrer">
+						the channel
+						<Icon width={13} name="mdi:arrow-top-right" />
+					</a>
+				</span>
+				<div class="ft-tv-screen">
+					<div class="ft-tv-mount" data-ft-tv-mount></div>
+					<button class="ft-tv-poster" type="button" data-ft-tv-play>
+						<span class="ft-tv-play" aria-hidden="true">
+							<Icon width={26} name="mdi:play" />
+						</span>
+						<span class="ft-tv-poster-t">Play the channel</span>
+						<span class="ft-tv-poster-s">Latest uploads, back to back</span>
+					</button>
+					<span class="ft-tv-scan" aria-hidden="true"></span>
+				</div>
+				<button class="ft-tv-sound" type="button" data-ft-tv-sound hidden>
+					<Icon width={14} name="mdi:volume-off" />
+					Muted. Tap for sound
+				</button>
+			</div>
+
 			<div class="ft-newsletter">
 				<span class="ft-h">Stay in the loop</span>
 				<form id="footer-newsletter" class="ft-news-form">
@@ -158,6 +196,33 @@ const phones = [
 
 		<div class="ft-col ft-social-col">
 			<span class="ft-h">Follow the build</span>
+
+			<!-- Campus keeps its own: a noticeboard of pinned cards rather
+			     than a stack of logos, since we cannot pull live posts. -->
+			<div class="ft-pinboard">
+				{
+					socials.map((sc, i) => (
+						<a
+							class="ft-pin"
+							href={sc.href}
+							target="_blank"
+							rel="noopener noreferrer"
+							style={`--pk:${sc.color}; --i:${i}; --r:${(i % 3) - 1}`}
+						>
+							<span class="ft-pin-tack" aria-hidden="true">📌</span>
+							<span class="ft-pin-ic">
+								<Icon size={18} name={sc.icon} />
+							</span>
+							<strong class="ft-pin-handle">{sc.short}</strong>
+							<em class="ft-pin-tag">{sc.tag}</em>
+							<span class="ft-pin-go" aria-hidden="true">
+								<Icon width={13} name="mdi:arrow-top-right" />
+							</span>
+						</a>
+					))
+				}
+			</div>
+
 			<div class="ft-socials">
 				{
 					socials.map((s) => (
@@ -295,6 +360,205 @@ const phones = [
 	.ft-pitch { color: var(--ft-muted); font-size: 0.98rem; line-height: 1.65; margin: 1.1rem 0 1.5rem; max-width: 26rem; }
 	.ft-h { display: block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ft-faint); margin-bottom: 1rem; }
 	.ft-h-2 { margin-top: 1.8rem; }
+
+	/* ── Campus TV ──
+	   The uploads playlist rolls one video into the next. Nothing loads
+	   until you scroll to it, and it starts muted, so a footer never
+	   ambushes anybody with sound. */
+	.ft-tv { max-width: 22rem; margin-bottom: 1.8rem; }
+	.ft-tv-top {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.6rem;
+		margin-bottom: 0.55rem;
+	}
+	.ft-tv-badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.42rem;
+		font-size: 0.68rem;
+		font-weight: 800;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--ft-ink);
+	}
+	.ft-tv-badge i {
+		width: 7px;
+		height: 7px;
+		border-radius: 9999px;
+		background: #ef4444;
+		box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6);
+		animation: ft-tv-pulse 2.4s ease-out infinite;
+	}
+	@keyframes ft-tv-pulse {
+		0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.55); }
+		70% { box-shadow: 0 0 0 7px rgba(239, 68, 68, 0); }
+		100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+	}
+	.ft-tv-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.25rem;
+		font-size: 0.72rem;
+		font-weight: 600;
+		color: var(--ft-muted);
+		transition: color 0.2s ease;
+	}
+	.ft-tv-link:hover { color: var(--view-accent, #28a6ec); }
+
+	.ft-tv-screen {
+		position: relative;
+		aspect-ratio: 16 / 9;
+		border-radius: 0.8rem;
+		overflow: hidden;
+		border: 1px solid var(--ft-border);
+		background: #0a0a0f;
+		box-shadow: 0 22px 44px -24px rgba(0, 0, 0, 0.8);
+	}
+	.ft-tv-mount { position: absolute; inset: 0; }
+	.ft-tv-mount :global(iframe) { width: 100%; height: 100%; border: 0; display: block; }
+	.ft-tv-poster {
+		position: absolute;
+		inset: 0;
+		z-index: 2;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.3rem;
+		border: 0;
+		cursor: pointer;
+		color: #fff;
+		background:
+			radial-gradient(70% 60% at 50% 40%, color-mix(in srgb, var(--view-accent, #28a6ec) 26%, transparent), transparent 70%),
+			linear-gradient(160deg, #1a1408, #0a0a0f);
+		transition: opacity 0.35s ease, visibility 0.35s ease;
+	}
+	.ft-tv[data-playing] .ft-tv-poster { opacity: 0; visibility: hidden; }
+	.ft-tv-play {
+		display: grid;
+		place-items: center;
+		width: 46px;
+		height: 46px;
+		border-radius: 9999px;
+		color: #fff;
+		background: #ef4444;
+		box-shadow: 0 10px 24px -8px rgba(239, 68, 68, 0.8);
+		transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+	}
+	.ft-tv-poster:hover .ft-tv-play { transform: scale(1.1); }
+	.ft-tv-poster-t { font-size: 0.85rem; font-weight: 800; margin-top: 0.35rem; }
+	.ft-tv-poster-s { font-size: 0.7rem; color: rgba(255, 255, 255, 0.62); }
+	/* the faint sweep of a screen that is on */
+	.ft-tv-scan {
+		position: absolute;
+		inset: 0;
+		z-index: 3;
+		pointer-events: none;
+		background: linear-gradient(115deg, rgba(255, 255, 255, 0.07) 0 16%, transparent 32%);
+	}
+	.ft-tv-sound {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		margin-top: 0.5rem;
+		padding: 0.3rem 0.7rem;
+		border-radius: 9999px;
+		border: 1px solid var(--ft-border);
+		background: var(--ft-card);
+		font-size: 0.7rem;
+		font-weight: 600;
+		color: var(--ft-muted);
+		cursor: pointer;
+		transition: color 0.2s ease, border-color 0.2s ease;
+	}
+	.ft-tv-sound:hover { color: var(--ft-ink); border-color: var(--view-accent, #28a6ec); }
+	.ft-tv-sound[hidden] { display: none; }
+
+	/* ── the noticeboard (Campus only) ──
+	   We cannot pull live posts, so rather than fake a feed the socials
+	   become pinned index cards, the same corkboard the page already uses. */
+	.ft-pinboard { display: none; }
+	:global(html[data-view='campus']) .ft-pinboard {
+		display: grid;
+		align-items: stretch;
+		grid-template-columns: 1fr 1fr;
+		gap: 0.7rem;
+		padding: 0.9rem;
+		border-radius: 0.9rem;
+		border: 6px solid #7c4a23;
+		background:
+			radial-gradient(7px 7px at 22% 32%, rgba(0, 0, 0, 0.06), transparent),
+			linear-gradient(160deg, #c89a6b, #b07f4e);
+		box-shadow: inset 0 0 34px rgba(60, 35, 12, 0.35);
+	}
+	:global(html[data-view='campus']) .ft-socials { display: none; }
+
+	.ft-pin {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		gap: 0.1rem;
+		padding: 1.15rem 0.7rem 0.65rem;
+		background: #fffdf5;
+		color: #44403c;
+		box-shadow: 0 10px 22px -10px rgba(0, 0, 0, 0.5);
+		transform: rotate(calc(var(--r, 0) * 1.5deg));
+		transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+	}
+	.ft-pin:hover {
+		transform: rotate(0deg) scale(1.05);
+		box-shadow: 0 16px 30px -12px rgba(0, 0, 0, 0.55);
+		z-index: 2;
+	}
+	.ft-pin-tack {
+		position: absolute;
+		top: -9px;
+		left: 50%;
+		transform: translateX(-50%) rotate(14deg);
+		font-size: 1rem;
+		filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.3));
+	}
+	.ft-pin-ic {
+		display: grid;
+		place-items: center;
+		width: 28px;
+		height: 28px;
+		border-radius: 0.45rem;
+		margin-bottom: 0.3rem;
+		color: #fff;
+		background: var(--pk, #44403c);
+	}
+	.ft-pin-handle {
+		font-size: 0.8rem;
+		font-weight: 800;
+		line-height: 1.25;
+		word-break: break-word;
+	}
+	.ft-pin-tag {
+		font-style: normal;
+		font-size: 0.68rem;
+		line-height: 1.35;
+		color: #78716c;
+	}
+	.ft-pin-go {
+		position: absolute;
+		top: 0.45rem;
+		right: 0.45rem;
+		color: #a8a29e;
+		opacity: 0;
+		transition: opacity 0.25s ease;
+	}
+	.ft-pin:hover .ft-pin-go { opacity: 1; }
+
+	@media (max-width: 460px) {
+		.ft-pinboard { grid-template-columns: 1fr; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.ft-tv-badge i { animation: none; }
+		.ft-pin { transition: none; }
+	}
 
 	/* Newsletter */
 	.ft-news-form { display: flex; gap: 0.5rem; max-width: 22rem; }
