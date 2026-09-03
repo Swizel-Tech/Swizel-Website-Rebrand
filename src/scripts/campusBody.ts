@@ -309,6 +309,50 @@ export function initCampusBody() {
 		});
 	}
 
+	// ── the live work wall: nobody leaves swizel.co unasked ──
+	const exit = body.querySelector<HTMLElement>('[data-exit]');
+	if (exit && !exit.dataset.cpBound) {
+		exit.dataset.cpBound = '1';
+		const nameEl = exit.querySelector<HTMLElement>('[data-exit-name]');
+		const hostEl = exit.querySelector<HTMLElement>('[data-exit-host]');
+		const go = exit.querySelector<HTMLButtonElement>('[data-exit-go]');
+		let target = '';
+		let opener: HTMLElement | null = null;
+
+		const close = () => {
+			exit.setAttribute('hidden', '');
+			document.documentElement.style.removeProperty('overflow');
+			opener?.focus();
+			opener = null;
+		};
+
+		body.querySelectorAll<HTMLAnchorElement>('[data-live-site]').forEach((card) => {
+			card.addEventListener('click', (e) => {
+				// a modified click still behaves like a normal link
+				if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+				e.preventDefault();
+				target = card.getAttribute('href') || '';
+				opener = card;
+				if (nameEl) nameEl.textContent = card.dataset.name || 'This site';
+				if (hostEl) hostEl.textContent = card.dataset.host || target;
+				exit.removeAttribute('hidden');
+				document.documentElement.style.overflow = 'hidden';
+				go?.focus();
+			});
+		});
+
+		go?.addEventListener('click', () => {
+			if (target) window.open(target, '_blank', 'noopener,noreferrer');
+			close();
+		});
+		exit.querySelectorAll<HTMLElement>('[data-exit-close]').forEach((b) =>
+			b.addEventListener('click', close)
+		);
+		document.addEventListener('keydown', (e) => {
+			if (e.key === 'Escape' && !exit.hasAttribute('hidden')) close();
+		});
+	}
+
 	// ── quest bar + achievements unlock when they enter view ──
 	['#cp-questline', '#cp-achvs'].forEach((sel) => {
 		const el = body.querySelector<HTMLElement>(sel);

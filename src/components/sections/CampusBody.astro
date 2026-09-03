@@ -75,17 +75,71 @@ const facts = [
 	'The first 1GB hard drive (1980) weighed over 250 kg. Your phone holds 256× more.',
 ];
 
-const ships = [
-	{ name: 'A sports platform', tag: 'like Betslipswitch', img: '/images/portfolio/betslipswitch.jpg' },
-	{ name: 'A physio clinic site', tag: 'like Anchorstep', img: '' },
-	{ name: 'An online marketplace', tag: 'like Brixmarket', img: '/images/portfolio/brix%20marketplace.jpg' },
-	{ name: 'A delivery app', tag: 'like BuyGas', img: '' },
-	{ name: 'A learning platform', tag: 'like Saros', img: '/images/portfolio/sarosgp.jpg' },
-	{ name: 'An estate website', tag: 'like My Eya Estate', img: '/images/portfolio/my%20eya%20estate.jpg' },
-	{ name: 'A news magazine', tag: 'like TrueVerdict', img: '' },
-	{ name: 'A company portal', tag: 'like Hemam Synergy', img: '' },
+// Six live client sites, straight from the portfolio data. Every one of
+// these is up right now — the cards open the real thing, behind a
+// you-are-leaving confirm.
+const live = [
+	{
+		name: 'TrueVerdict',
+		host: 'trueverdict.com.ng',
+		url: 'https://trueverdict.com.ng/',
+		what: 'An independent newsroom, online. Politics, business and investigative reporting, built to stay fast under a heavy content load.',
+		img: '/images/portfolio/shot-trueverdict.jpg',
+		tags: ['Website', 'CMS', 'Publishing'],
+		hue: '#e0556b',
+		span: 7,
+	},
+	{
+		name: 'JobbLander',
+		host: 'jobblander.com',
+		url: 'https://jobblander.com/',
+		what: 'A career platform where AI does the pattern-matching and humans do the judgement. A real product, not a landing page.',
+		img: '/images/portfolio/shot-jobblander.jpg',
+		tags: ['Product', 'AI', 'Web app'],
+		hue: '#6366f1',
+		span: 5,
+	},
+	{
+		name: 'AnchorStep Physiotherapy',
+		host: 'anchorsteppt.com',
+		url: 'https://anchorsteppt.com/',
+		what: 'A home-visit physio practice in Abuja, taken from a blank page to a bookable brand — and the audience grown from zero.',
+		img: '/images/portfolio/shot-anchorstep.jpg',
+		tags: ['Website', 'Branding', 'Growth'],
+		hue: '#2f8f6a',
+		span: 5,
+	},
+	{
+		name: 'Hemam Synergy',
+		host: 'hemamsynergy.com',
+		url: 'https://hemamsynergy.com/',
+		what: 'Agritech lifting rural smallholder farmers — and a presence credible enough to help unlock roughly €850,000 in grant funding.',
+		img: '/images/portfolio/shot-hemamsynergy.jpg',
+		tags: ['Website', 'Branding', 'Hosting'],
+		hue: '#2f9e44',
+		span: 7,
+	},
+	{
+		name: 'Binas Residence',
+		host: 'binasresidence.com',
+		url: 'https://binasresidence.com/',
+		what: 'A luxury Abuja residence with a calm, upscale brand and a site whose whole job is turning a browser into a reservation.',
+		img: '/images/portfolio/shot-binasresidence.jpg',
+		tags: ['Website', 'Branding', 'Hospitality'],
+		hue: '#c08a3e',
+		span: 6,
+	},
+	{
+		name: 'African Energy Advocacy Initiative',
+		host: 'africaneai.org',
+		url: 'https://africaneai.org/',
+		what: 'Clean-energy advocacy and consultancy — solar lighting and efficient cookstoves for communities that need them most.',
+		img: '/images/portfolio/shot-africaneai.jpg',
+		tags: ['Website', 'Energy', 'Non-profit'],
+		hue: '#10b981',
+		span: 6,
+	},
 ];
-
 const programs = [
 	{ icon: 'mdi:badge-account-outline', title: 'SIWES / IT Internship', fee: 'apply', hot: true, href: '/programs#internship', desc: 'Do your three or six month industrial training on a live client product, with a mentor on your work every week.' },
 	{ icon: 'mdi:flag-outline', title: 'NYSC Placement', fee: 'apply', hot: true, href: '/programs#nysc', desc: 'Serve your year with the team that ships. Real projects, real reviews, and a portfolio at the end of it.' },
@@ -113,7 +167,7 @@ const voices = [
 	<section class="cp-sec cp-sec--open">
 		<div class="cp-wrap cp-open">
 			<div class="cp-copy cp-rev">
-				<span class="cp-badge">🎓 Orientation · Cohort '26</span>
+				<span class="cp-badge">🎓 Orientation · Next intake</span>
 				<h2 class="cp-h cp-h--xl">Welcome to class. <em>Leave with a career.</em></h2>
 				<p class="cp-p">
 					Two ways in: your industrial training, or your service year.
@@ -421,35 +475,61 @@ const voices = [
 		</div>
 	</section>
 
-	<!-- ── F · practicals: build real things ───────────────── -->
-	<section class="cp-sec" data-cursor="repo">
+	<!-- ── F · practicals: the live work wall ──────────────── -->
+	<section class="cp-sec cp-sec--live" data-cursor="repo">
+		<span class="cp-live-bg" aria-hidden="true"></span>
 		<div class="cp-wrap">
 			<div class="cp-head cp-rev">
 				<span class="cp-badge">Practicals</span>
 				<h2 class="cp-h">You'll build <em>real things.</em></h2>
 				<p class="cp-p cp-p--center">
-					Not toy todo-apps. Projects modeled on products we actually
-					shipped for clients.
+					Not toy to-do apps. Every site below is live right now, for a
+					paying client — and the work you'd be put on looks exactly
+					like it. Open any of them and see for yourself.
 				</p>
+				<span class="cp-live-note">
+					<i aria-hidden="true"></i>
+					Six live sites · real clients · tap one to visit
+				</span>
 			</div>
-			<div class="cp-ships cp-rev">
+
+			<div class="cp-wall">
 				{
-					ships.map((s) => (
-						<div class="cp-ship">
-							{s.img ? (
-								<img src={s.img} alt={`${s.name} ${s.tag}`} loading="lazy" />
-							) : (
-								<span class="cp-ship-ph">
-									<Icon width={22} name="mdi:image-outline" />
-									<span>screenshot placeholder</span>
+					live.map((s, i) => (
+						<a
+							class="cp-live cp-rev"
+							href={s.url}
+							style={`--span:${s.span}; --ar:${s.span === 7 ? '16 / 10' : s.span === 5 ? '8 / 7' : '4 / 3'}; --hue:${s.hue}; --i:${i}`}
+							data-live-site
+							data-host={s.host}
+							data-name={s.name}
+							rel="noopener noreferrer"
+						>
+							<span class="cp-live-frame">
+								<span class="cp-live-bar" aria-hidden="true">
+									<i /><i /><i />
+									<span class="cp-live-url">
+										<Icon width={11} name="mdi:lock-outline" />
+										{s.host}
+									</span>
+									<span class="cp-live-dot">live</span>
 								</span>
-							)}
-							<span class="cp-ship-veil" aria-hidden="true" />
-							<span class="cp-ship-meta">
-								<strong>{s.name}</strong>
-								<em>{s.tag}</em>
+								<span class="cp-live-shot">
+									<img src={s.img} alt={`The ${s.name} website`} loading="lazy" />
+								</span>
+								<span class="cp-live-open" aria-hidden="true">
+									Open the live site
+									<Icon width={15} name="mdi:arrow-top-right" />
+								</span>
 							</span>
-						</div>
+							<span class="cp-live-meta">
+								<strong>{s.name}</strong>
+								<em>{s.what}</em>
+								<span class="cp-live-tags">
+									{s.tags.map((t) => <i>{t}</i>)}
+								</span>
+							</span>
+						</a>
 					))
 				}
 			</div>
@@ -586,6 +666,31 @@ const voices = [
 			</p>
 		</div>
 	</section>
+
+	<!-- shown before any of the live client sites opens, so nobody is
+	     bounced off swizel.co without being asked first -->
+	<div class="cp-exit" data-exit hidden>
+		<span class="cp-exit-scrim" data-exit-close></span>
+		<div class="cp-exit-card" role="dialog" aria-modal="true" aria-labelledby="cp-exit-t">
+			<span class="cp-exit-ic" aria-hidden="true">
+				<Icon width={22} name="mdi:open-in-new" />
+			</span>
+			<h3 class="cp-exit-t" id="cp-exit-t">You're leaving Swizel</h3>
+			<p class="cp-exit-p">
+				<b data-exit-name>This site</b> is a live client site our team
+				built. It opens in a new tab — this page stays exactly where you
+				left it.
+			</p>
+			<span class="cp-exit-url" data-exit-host>example.com</span>
+			<div class="cp-exit-row">
+				<button class="cp-exit-go" type="button" data-exit-go>
+					Open the site
+					<Icon width={16} name="mdi:arrow-top-right" />
+				</button>
+				<button class="cp-exit-no" type="button" data-exit-close>Stay here</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 <style>
@@ -1404,8 +1509,12 @@ const voices = [
 		.cp-pin strong { font-size: 0.94rem; }
 		.cp-photos { grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-top: 0.9rem; }
 		.cp-photo { padding: 0.4rem 0.4rem 1.5rem; }
-		.cp-week { margin-top: 0.4rem; }
-		.cp-week-n { font-size: 0.82rem; }
+		.cp-week { margin-top: 0.4rem; flex-wrap: wrap; }
+		/* the meter takes its own line so the note can breathe instead of
+		   pushing the row 15px past the screen */
+		.cp-week-bar { flex: 1 0 100%; order: -1; }
+		.cp-week-n { flex: 1 1 8rem; min-width: 0; font-size: 0.8rem; line-height: 1.35; }
+		.cp-week-reset { margin-left: auto; }
 	}
 	@media (max-width: 520px) {
 		.cp-board { padding: 0.9rem; border-width: 6px; }
@@ -1498,81 +1607,362 @@ const voices = [
 		background: #fde68a;
 	}
 
-	/* ── F · ships ── */
-	.cp-ships {
-		display: grid;
-		grid-template-columns: repeat(4, minmax(0, 1fr));
-		grid-auto-rows: clamp(150px, 17vw, 210px);
-		gap: clamp(0.9rem, 2vw, 1.25rem);
-	}
-	@media (max-width: 880px) {
-		.cp-ships {
-			grid-template-columns: repeat(2, minmax(0, 1fr));
-		}
-	}
-	@media (max-width: 480px) {
-		.cp-ships {
-			grid-template-columns: 1fr;
-		}
-	}
-	.cp-ship {
-		position: relative;
-		border-radius: 1.1rem;
-		overflow: hidden;
-		border: 1px solid var(--cp-line);
-		box-shadow: 0 24px 56px -28px rgba(0, 0, 0, 0.6);
-	}
-	.cp-ship img {
+	/* ── F · the live work wall ──
+	   Six real client sites, each behind browser chrome so it reads as a
+	   thing that is actually running rather than a picture in a card. The
+	   grid is a twelve-column editorial rhythm — 7/5, 5/7, 6/6 — so the
+	   wall has movement instead of six identical boxes. */
+	.cp-sec--live { position: relative; isolation: isolate; }
+	.cp-live-bg {
 		position: absolute;
 		inset: 0;
+		z-index: -1;
+		pointer-events: none;
+		background:
+			radial-gradient(60% 40% at 18% 8%, color-mix(in srgb, var(--cp-acc) 16%, transparent), transparent 62%),
+			radial-gradient(52% 38% at 84% 82%, color-mix(in srgb, var(--cp-acc2) 13%, transparent), transparent 60%),
+			repeating-linear-gradient(90deg, transparent 0 118px, rgba(253, 224, 150, 0.038) 118px 119px),
+			repeating-linear-gradient(180deg, transparent 0 118px, rgba(253, 224, 150, 0.026) 118px 119px),
+			linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.16));
+		-webkit-mask-image: linear-gradient(180deg, transparent, #000 7%, #000 93%, transparent);
+		mask-image: linear-gradient(180deg, transparent, #000 7%, #000 93%, transparent);
+	}
+	:global(html:not(.dark)) .cbody .cp-live-bg {
+		background:
+			radial-gradient(60% 40% at 18% 8%, color-mix(in srgb, var(--cp-acc) 20%, transparent), transparent 62%),
+			radial-gradient(52% 38% at 84% 82%, color-mix(in srgb, var(--cp-acc2) 15%, transparent), transparent 60%),
+			repeating-linear-gradient(90deg, transparent 0 118px, rgba(120, 72, 24, 0.06) 118px 119px),
+			repeating-linear-gradient(180deg, transparent 0 118px, rgba(120, 72, 24, 0.045) 118px 119px),
+			linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(120, 72, 24, 0.06));
+	}
+
+	/* the line under the heading that says these are real */
+	.cp-live-note {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		margin-top: 1rem;
+		padding: 0.34rem 0.85rem;
+		border-radius: 9999px;
+		border: 1px solid color-mix(in srgb, var(--cp-acc) 30%, transparent);
+		background: color-mix(in srgb, var(--cp-acc) 9%, transparent);
+		font-size: 0.74rem;
+		font-weight: 600;
+		letter-spacing: 0.02em;
+		color: var(--cp-ink);
+	}
+	.cp-live-note i {
+		width: 7px;
+		height: 7px;
+		border-radius: 9999px;
+		background: #22c55e;
+		box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6);
+		animation: cp-pulse 2.2s ease-out infinite;
+	}
+	@keyframes cp-pulse {
+		0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.55); }
+		70% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+		100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+	}
+
+	.cp-wall {
+		display: grid;
+		grid-template-columns: repeat(12, minmax(0, 1fr));
+		gap: clamp(1rem, 2.2vw, 1.8rem);
+		margin-top: clamp(1.6rem, 3.5vw, 2.6rem);
+	}
+	.cp-live {
+		grid-column: span var(--span, 6);
+		display: flex;
+		flex-direction: column;
+		gap: 0.95rem;
+		text-decoration: none;
+		color: inherit;
+	}
+
+	/* the browser window */
+	.cp-live-frame {
+		position: relative;
+		display: block;
+		border-radius: 0.9rem;
+		overflow: hidden;
+		border: 1px solid color-mix(in srgb, var(--hue, #f59e0b) 26%, var(--cp-line));
+		background: #0b0906;
+		box-shadow: 0 30px 60px -34px rgba(0, 0, 0, 0.85);
+		transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+			box-shadow 0.45s ease, border-color 0.45s ease;
+	}
+	.cp-live:hover .cp-live-frame,
+	.cp-live:focus-visible .cp-live-frame {
+		transform: translateY(-6px);
+		border-color: color-mix(in srgb, var(--hue, #f59e0b) 62%, transparent);
+		box-shadow: 0 44px 80px -34px rgba(0, 0, 0, 0.9),
+			0 0 0 1px color-mix(in srgb, var(--hue, #f59e0b) 30%, transparent);
+	}
+	.cp-live:focus-visible { outline: none; }
+
+	.cp-live-bar {
+		position: relative;
+		z-index: 2;
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
+		padding: 0.55rem 0.7rem;
+		background: linear-gradient(180deg, rgba(38, 30, 20, 0.98), rgba(24, 19, 12, 0.98));
+		border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+	}
+	.cp-live-bar > i {
+		width: 9px;
+		height: 9px;
+		border-radius: 9999px;
+		background: rgba(255, 255, 255, 0.16);
+	}
+	.cp-live-bar > i:first-child { background: #f87171; }
+	.cp-live-bar > i:nth-child(2) { background: #fbbf24; }
+	.cp-live-bar > i:nth-child(3) { background: #4ade80; }
+	.cp-live-url {
+		flex: 1 1 auto;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.32rem;
+		min-width: 0;
+		margin-inline: 0.35rem;
+		padding: 0.2rem 0.7rem;
+		border-radius: 9999px;
+		background: rgba(255, 255, 255, 0.07);
+		font-family: ui-monospace, monospace;
+		font-size: 0.7rem;
+		color: rgba(253, 246, 234, 0.72);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.cp-live-dot {
+		flex: none;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3rem;
+		padding: 0.14rem 0.45rem;
+		border-radius: 9999px;
+		border: 1px solid rgba(34, 197, 94, 0.45);
+		background: rgba(34, 197, 94, 0.14);
+		font-size: 0.56rem;
+		font-weight: 800;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: #4ade80;
+	}
+
+	/* the page itself, which scrolls when you hover it */
+	.cp-live-shot {
+		position: relative;
+		display: block;
+		overflow: hidden;
+		aspect-ratio: var(--ar, 16 / 10);
+		background: color-mix(in srgb, var(--hue, #f59e0b) 12%, #14100a);
+	}
+	.cp-live-shot img {
+		display: block;
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
-		transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+		/* the top of a page is the part worth showing */
+		object-position: top center;
+		transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
 	}
-	.cp-ship:hover img {
-		transform: scale(1.06);
+	.cp-live:hover .cp-live-shot img,
+	.cp-live:focus-visible .cp-live-shot img {
+		transform: scale(1.05) translateY(-1.5%);
 	}
-	.cp-ship-ph {
+	/* the glass over the screen, so it reads as a screen */
+	.cp-live-shot::after {
+		content: '';
 		position: absolute;
 		inset: 0;
-		display: flex;
-		flex-direction: column;
+		pointer-events: none;
+		background: linear-gradient(
+			118deg,
+			rgba(255, 255, 255, 0.1) 0 18%,
+			transparent 34%
+		);
+	}
+
+	.cp-live-open {
+		position: absolute;
+		left: 50%;
+		bottom: 1rem;
+		z-index: 3;
+		display: inline-flex;
 		align-items: center;
-		justify-content: center;
-		gap: 0.3rem;
-		color: var(--cp-faint);
-		font-size: 0.7rem;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-		background:
-			radial-gradient(300px 160px at 70% 10%, color-mix(in srgb, var(--cp-acc) 12%, transparent), transparent),
-			var(--cp-card);
+		gap: 0.4rem;
+		padding: 0.5rem 1rem;
+		border-radius: 9999px;
+		background: color-mix(in srgb, var(--hue, #f59e0b) 88%, #120c04);
+		border: 1px solid rgba(255, 255, 255, 0.28);
+		font-size: 0.78rem;
+		font-weight: 700;
+		color: #fff;
+		white-space: nowrap;
+		opacity: 0;
+		transform: translate(-50%, 12px);
+		transition: opacity 0.32s ease, transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+		box-shadow: 0 14px 30px -12px rgba(0, 0, 0, 0.8);
 	}
-	.cp-ship-veil {
+	.cp-live:hover .cp-live-open,
+	.cp-live:focus-visible .cp-live-open {
+		opacity: 1;
+		transform: translate(-50%, 0);
+	}
+
+	.cp-live-meta { display: flex; flex-direction: column; gap: 0.4rem; }
+	.cp-live-meta strong {
+		font-size: clamp(1.05rem, 1.5vw, 1.3rem);
+		font-weight: 800;
+		letter-spacing: -0.015em;
+		color: var(--cp-ink);
+	}
+	.cp-live:hover .cp-live-meta strong { color: var(--hue, #f59e0b); }
+	.cp-live-meta em {
+		font-style: normal;
+		font-size: 0.88rem;
+		line-height: 1.6;
+		color: var(--cp-muted);
+	}
+	.cp-live-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.15rem; }
+	.cp-live-tags i {
+		font-style: normal;
+		font-size: 0.63rem;
+		font-weight: 700;
+		letter-spacing: 0.07em;
+		text-transform: uppercase;
+		padding: 0.2rem 0.5rem;
+		border-radius: 9999px;
+		border: 1px solid var(--cp-line);
+		color: var(--cp-faint);
+	}
+
+	@media (max-width: 1100px) {
+		.cp-live { grid-column: span 6; --ar: 4 / 3; }
+	}
+	@media (max-width: 760px) {
+		.cp-wall { gap: 1.4rem; }
+		.cp-live { grid-column: span 12; --ar: 16 / 11; }
+		.cp-live-meta em { font-size: 0.84rem; }
+		/* no hover on a phone, so the button is simply there */
+		.cp-live-open { opacity: 1; transform: translate(-50%, 0); font-size: 0.72rem; padding: 0.4rem 0.8rem; }
+	}
+
+	/* ── leaving Swizel ── */
+	.cp-exit {
+		position: fixed;
+		inset: 0;
+		z-index: 1400;
+		display: grid;
+		place-items: center;
+		padding: clamp(1rem, 4vw, 2rem);
+	}
+	.cp-exit[hidden] { display: none; }
+	.cp-exit-scrim {
 		position: absolute;
 		inset: 0;
-		background: linear-gradient(180deg, transparent 45%, rgba(18, 12, 4, 0.88));
+		background: rgba(8, 6, 3, 0.66);
+		backdrop-filter: blur(6px);
+		animation: cp-fade 0.24s ease both;
 	}
-	.cp-ship-meta {
-		position: absolute;
-		left: 1rem;
-		right: 1rem;
-		bottom: 0.85rem;
+	@keyframes cp-fade { from { opacity: 0; } to { opacity: 1; } }
+	.cp-exit-card {
+		position: relative;
+		width: min(100%, 25rem);
 		display: flex;
 		flex-direction: column;
-		line-height: 1.3;
-		color: #fff;
+		align-items: flex-start;
+		gap: 0.55rem;
+		padding: clamp(1.4rem, 3vw, 1.9rem);
+		border-radius: 1.1rem;
+		border: 1px solid color-mix(in srgb, var(--cp-acc) 28%, transparent);
+		background:
+			radial-gradient(120% 80% at 0% 0%, color-mix(in srgb, var(--cp-acc) 12%, transparent), transparent 60%),
+			#161009;
+		box-shadow: 0 40px 90px -34px rgba(0, 0, 0, 0.9);
+		animation: cp-exit-in 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
 	}
-	.cp-ship-meta strong {
-		font-size: 0.92rem;
+	@keyframes cp-exit-in {
+		from { opacity: 0; transform: translateY(14px) scale(0.97); }
+		to { opacity: 1; transform: none; }
+	}
+	:global(html:not(.dark)) .cbody .cp-exit-card {
+		background:
+			radial-gradient(120% 80% at 0% 0%, color-mix(in srgb, var(--cp-acc) 16%, transparent), transparent 60%),
+			#fffdf7;
+	}
+	.cp-exit-ic {
+		display: grid;
+		place-items: center;
+		width: 42px;
+		height: 42px;
+		border-radius: 0.7rem;
+		color: var(--cp-acc);
+		background: color-mix(in srgb, var(--cp-acc) 14%, transparent);
+		border: 1px solid color-mix(in srgb, var(--cp-acc) 30%, transparent);
+	}
+	.cp-exit-t {
+		margin: 0.3rem 0 0;
+		font-size: 1.2rem;
 		font-weight: 800;
+		letter-spacing: -0.02em;
+		color: var(--cp-ink);
 	}
-	.cp-ship-meta em {
-		font-style: normal;
-		font-size: 0.74rem;
-		color: rgba(255, 255, 255, 0.65);
+	.cp-exit-p {
+		margin: 0;
+		font-size: 0.88rem;
+		line-height: 1.6;
+		color: var(--cp-muted);
 	}
+	.cp-exit-p b { color: var(--cp-ink); font-weight: 700; }
+	.cp-exit-url {
+		display: inline-flex;
+		align-items: center;
+		max-width: 100%;
+		padding: 0.3rem 0.7rem;
+		border-radius: 0.5rem;
+		border: 1px solid var(--cp-line);
+		background: rgba(255, 255, 255, 0.04);
+		font-family: ui-monospace, monospace;
+		font-size: 0.76rem;
+		color: var(--cp-acc);
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	.cp-exit-row { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.7rem; }
+	.cp-exit-go {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		padding: 0.6rem 1.1rem;
+		border-radius: 9999px;
+		border: 0;
+		background: var(--cp-acc);
+		font-size: 0.85rem;
+		font-weight: 800;
+		color: #241703;
+		cursor: pointer;
+		transition: transform 0.2s ease, filter 0.2s ease;
+	}
+	.cp-exit-go:hover { transform: translateY(-1px); filter: brightness(1.08); }
+	.cp-exit-no {
+		padding: 0.6rem 1.1rem;
+		border-radius: 9999px;
+		border: 1px solid var(--cp-line);
+		background: transparent;
+		font-size: 0.85rem;
+		font-weight: 600;
+		color: var(--cp-muted);
+		cursor: pointer;
+		transition: color 0.2s ease, border-color 0.2s ease;
+	}
+	.cp-exit-no:hover { color: var(--cp-ink); border-color: var(--cp-acc); }
 
 	/* ── G · gallery ── */
 	.cp-gallery {

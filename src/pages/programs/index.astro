@@ -70,6 +70,24 @@ const levels = ['100 level', '200 level', '300 level', '400 level', '500 level',
 
 <MainLayout title={SEO_TITLE} description={SEO_DESC} image="/images/og/og-bootcamp.jpg">
 	<article class="pg">
+		<!-- Only when you followed Programs out of another world. It does not
+		     interrupt the click and it does not shout — a hairline strip in
+		     the colour of the world you left, saying where you are and
+		     offering the way back. -->
+		<div class="pg-from" data-came-from hidden>
+			<div class="pg-wrap pg-from-in">
+				<span class="pg-from-dot" aria-hidden="true"></span>
+				<p>Programs lives in the <b>Campus</b> world — that's the change of colour.</p>
+				<a href="/" data-came-from-link>
+					<Icon width={14} name="mdi:arrow-left" />
+					Back to <b data-came-from-name>Boardroom</b>
+				</a>
+				<button type="button" data-came-from-x aria-label="Dismiss">
+					<Icon width={14} name="mdi:close" />
+				</button>
+			</div>
+		</div>
+
 		<!-- ── hero ── -->
 		<header class="pg-hero">
 			<div class="pg-wrap">
@@ -345,6 +363,73 @@ const levels = ['100 level', '200 level', '300 level', '400 level', '500 level',
 	}
 
 	/* ── hero ── */
+	/* ── the quiet way back to the world you came from ── */
+	.pg-from {
+		border-bottom: 1px solid color-mix(in srgb, var(--from-accent, #28a6ec) 22%, transparent);
+		background: color-mix(in srgb, var(--from-accent, #28a6ec) 6%, transparent);
+		animation: pg-from-in 0.5s ease 0.35s both;
+	}
+	.pg-from[hidden] { display: none; }
+	@keyframes pg-from-in {
+		from { opacity: 0; }
+		to { opacity: 1; }
+	}
+	.pg-from-in {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.4rem 0.8rem;
+		padding-block: 0.55rem;
+	}
+	.pg-from-dot {
+		flex: none;
+		width: 7px;
+		height: 7px;
+		border-radius: 9999px;
+		background: var(--from-accent, #28a6ec);
+	}
+	.pg-from p {
+		flex: 1 1 12rem;
+		margin: 0;
+		font-size: 0.78rem;
+		line-height: 1.45;
+		color: var(--pg-muted);
+	}
+	.pg-from p b { color: var(--pg-ink); font-weight: 600; }
+	.pg-from a {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		font-size: 0.78rem;
+		font-weight: 500;
+		color: var(--pg-muted);
+		text-decoration: none;
+		border-bottom: 1px solid transparent;
+		transition: color 0.2s ease, border-color 0.2s ease;
+	}
+	.pg-from a b { font-weight: 700; color: var(--pg-ink); }
+	.pg-from a:hover {
+		color: var(--pg-ink);
+		border-bottom-color: color-mix(in srgb, var(--from-accent, #28a6ec) 70%, transparent);
+	}
+	.pg-from button {
+		display: grid;
+		place-items: center;
+		width: 22px;
+		height: 22px;
+		border-radius: 9999px;
+		border: 0;
+		background: transparent;
+		color: var(--pg-faint, var(--pg-muted));
+		cursor: pointer;
+		opacity: 0.6;
+		transition: opacity 0.2s ease;
+	}
+	.pg-from button:hover { opacity: 1; }
+	@media (prefers-reduced-motion: reduce) {
+		.pg-from { animation: none; }
+	}
+
 	.pg-hero { padding-block: clamp(3rem, 8vw, 5.5rem) clamp(2rem, 5vw, 3rem); }
 	.pg-eyebrow {
 		display: inline-flex;
