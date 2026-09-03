@@ -3,6 +3,7 @@ import { Icon } from 'astro-icon/components';
 import MainLayout from '../layouts/MainLayout.astro';
 import ContactForm from '../components/blocks/ContactForm.astro';
 import ToastContainer from '../components/elements/ToastContainer.astro';
+import ContactCampus from '../components/sections/ContactCampus.astro';
 import { faq } from '../consts';
 
 const SEO_TITLE = 'Contact Swizel Technologies Limited | Start Your Project';
@@ -20,6 +21,9 @@ const channels = [
 ---
 
 <MainLayout title={SEO_TITLE} description={SEO_DESC} image="/images/og/og-contact.jpg">
+	<!-- Campus world: the front office, with its own sheet and its own desk. -->
+	<ContactCampus />
+
 	<article class="bdbody ct">
 		<!-- animated ambience: drifting glow orbs + a faint signal grid -->
 		<div class="ct-bg" aria-hidden="true">
@@ -102,6 +106,11 @@ const channels = [
 	</article>
 	<ToastContainer />
 </MainLayout>
+
+<style is:global>
+	/* Campus has a contact page of its own now, so the shared one stands down. */
+	html[data-view='campus'] .ct { display: none !important; }
+</style>
 
 <style>
 	.ct {

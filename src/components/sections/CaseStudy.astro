@@ -14,14 +14,11 @@ const { project: p, others } = Astro.props;
 const cs = p.caseStudy!;
 const next = others[0];
 // gallery: one big video on the left, the images as a grid on the right
-const galVideo = cs.gallery.find((g) => g.kind === 'video');
-const galImages = cs.gallery.filter((g) => g.kind !== 'video');
-// Keep the right-hand 2-col grid balanced: when the video is present and the
-// image count is odd, pad one placeholder slot so no box is left orphaned.
-const galGrid: typeof galImages =
-	galVideo && galImages.length % 2 === 1
-		? [...galImages, { kind: 'image', label: 'More shots', caption: 'Drop another screen in here.' }]
-		: galImages;
+// only real media makes the gallery; an empty slot is simply not shown
+const shots = cs.gallery.filter((g) => g.src);
+const galVideo = shots.find((g) => g.kind === 'video');
+const galImages = shots.filter((g) => g.kind !== 'video');
+const galGrid = galImages;
 // the custom cursor adapts to the sector (health ≠ briefcase)
 const sectorCursor: Record<string, string> = { agri: 'branch', health: 'pulse', property: 'layers', media: 'book', commerce: 'pkg', product: 'repo' };
 const cur = sectorCursor[p.sector] ?? 'repo';
@@ -31,7 +28,10 @@ const cur = sectorCursor[p.sector] ?? 'repo';
 	<!-- ── Hero ───────────────────────────────────────────── -->
 	<header class="cs-hero bd-reveal">
 		<span class="cs-hero-aurora" aria-hidden="true"></span>
-		<a href="/portfolio" class="cs-back"><Icon width={15} name="mdi:arrow-left" /> All work</a>
+		<div class="cs-backrow">
+			<button type="button" class="cs-back" data-go-back><Icon width={15} name="mdi:arrow-left" /> Back</button>
+			<a href="/portfolio" class="cs-back cs-back--alt"><Icon width={15} name="mdi:view-grid-outline" /> All work</a>
+		</div>
 		<div class="cs-hero-grid">
 			<div class="cs-hero-text">
 				<span class="cs-eyebrow">{cs.meta.sector}</span>
@@ -112,11 +112,14 @@ const cur = sectorCursor[p.sector] ?? 'repo';
 		))}
 	</div>
 
-	<!-- ── Gallery: a big walkthrough video + a grid of shots ── -->
+	<!-- ── Gallery: the shots we have, and only those ───────── -->
+	{shots.length > 0 && (
 	<section class="bd-head bd-reveal">
 		<h2 class="bd-h bd-h--center">Inside the build.</h2>
-		<p class="bd-p bd-p--center">A closer look: the walkthrough on the left, the shots on the right.</p>
+		<p class="bd-p bd-p--center">A closer look at the work as it shipped.</p>
 	</section>
+	)}
+	{shots.length > 0 && (
 	<div class="cs-gallery-split">
 		{galVideo && (
 			<figure class="cs-gvideo bd-reveal" data-cursor="play">
@@ -150,6 +153,7 @@ const cur = sectorCursor[p.sector] ?? 'repo';
 			))}
 		</div>
 	</div>
+	)}
 
 	<!-- ── Results ─────────────────────────────────────────── -->
 	<section class="cs-results bd-reveal" data-cursor="chart">
@@ -301,7 +305,9 @@ const cur = sectorCursor[p.sector] ?? 'repo';
 	.cs-hero { position: relative; max-width: 84rem; margin: 0 auto clamp(2rem, 5vw, 3.5rem); }
 	.cs-hero-aurora { position: absolute; inset: -20% -10% auto; height: 80%; z-index: -1; pointer-events: none; background: radial-gradient(560px 380px at 25% 20%, color-mix(in srgb, var(--c) 32%, transparent), transparent 62%); filter: blur(54px); opacity: 0.6; }
 	:global(html:not(.dark)) .cs-hero-aurora { opacity: 0.4; }
-	.cs-back { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.88rem; font-weight: 600; color: var(--bd-muted); margin-bottom: 1.6rem; transition: gap 0.25s ease, color 0.25s ease; }
+	.cs-backrow { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 1.1rem; margin-bottom: 1.6rem; }
+	.cs-back { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.88rem; font-weight: 600; color: var(--bd-muted); background: none; border: 0; cursor: pointer; font-family: inherit; transition: gap 0.25s ease, color 0.25s ease; }
+	.cs-back--alt { opacity: 0.85; }
 	.cs-back:hover { gap: 0.55rem; color: var(--c); }
 	.cs-hero-grid { display: grid; gap: clamp(1.8rem, 4vw, 3rem); align-items: center; }
 	@media (min-width: 940px) { .cs-hero-grid { grid-template-columns: 0.92fr 1.08fr; } }

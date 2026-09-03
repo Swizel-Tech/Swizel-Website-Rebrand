@@ -181,6 +181,7 @@ const {
 	import { initFounderBody } from '../scripts/founderBody';
 	import { initAboutFounder, initAboutCampus } from '../scripts/aboutFounder';
 	import { initCampusBody } from '../scripts/campusBody';
+	import { initContactCampus } from '../scripts/contactCampus';
 	import { initStudioBody } from '../scripts/studioBody';
 	import { initBoardroomBody } from '../scripts/boardroomBody';
 	import { initFounderView } from '../scripts/founderView';
@@ -629,6 +630,7 @@ const {
 			initAboutFounder,
 			initAboutCampus,
 			initCampusBody,
+			initContactCampus,
 			initStudioBody,
 			initBoardroomBody,
 			initFounderView,
@@ -827,6 +829,30 @@ const {
 				},
 				{ passive: true }
 			);
+		}
+
+		// [data-go-back] means exactly that: one step back through the history
+		// this visit created. Landing straight on the page from a search or a
+		// shared link leaves nothing to go back to, so those fall through to
+		// the work index rather than throwing the person out of the site.
+		if (!(window as any).__backBound) {
+			(window as any).__backBound = true;
+			document.addEventListener('click', (e) => {
+				const el = (e.target as HTMLElement)?.closest?.('[data-go-back]');
+				if (!el) return;
+				e.preventDefault();
+				const sameSite =
+					!!document.referrer &&
+					(() => {
+						try {
+							return new URL(document.referrer).origin === location.origin;
+						} catch {
+							return false;
+						}
+					})();
+				if (sameSite && window.history.length > 1) window.history.back();
+				else window.location.href = el.getAttribute('data-go-back') || '/portfolio';
+			});
 		}
 
 		// "Leaving Swizel" interstitial for outbound product links ([data-leaving]).

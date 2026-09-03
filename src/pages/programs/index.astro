@@ -19,15 +19,17 @@ const tracks = [
 		length: 'Three or six months',
 		who: 'Undergraduates whose institution requires industrial training.',
 		does: [
-			'Placed in a squad on a live client product from week one',
+			'We teach you first: the fundamentals, our tools and how we actually work',
+			'Then a squad on a live client product, with tickets of your own',
 			'A named mentor who reviews your work every week',
 			'Your school logbook and ITF paperwork signed off properly',
 			'Real tickets, real deadlines, real code review',
 		],
 		wants: [
-			'Proof you can finish something, however small',
+			'Enough to show us you can build something, however small',
+			'A portfolio, a repository, a design file, a campaign you ran',
+			'Evidence that you finish what you start',
 			'Your school letter and the dates you must cover',
-			'Enough of a foundation to be useful by week two',
 		],
 	},
 	{
@@ -38,22 +40,33 @@ const tracks = [
 		length: 'The full service year',
 		who: 'Corps members posted to, or able to redeploy to, Abuja.',
 		does: [
+			'We teach you first, then you are placed on a live client product',
 			'Treated as part of the team, not an errand runner',
 			'Ownership of features that ship with your name on them',
-			'Monthly allowance on the normal service terms',
+			'A reference and a body of real work to show at the end of the year',
 			'The ones who deliver are considered for a paid role after',
 		],
 		wants: [
+			'Enough to show us you can build something, however small',
+			'A portfolio, a repository, a design file, a campaign you ran',
+			'Evidence that you finish what you start',
 			'Your call-up letter or posting details',
-			'A portfolio, repository or campaign we can look at',
-			'A year you are willing to spend building seriously',
 		],
 	},
 ];
 
+// the promise under both tracks, in the order it actually happens
+const plan = [
+	{ ic: '🧑\u200d🏫', t: 'We teach you' },
+	{ ic: '📚', t: 'You learn' },
+	{ ic: '🛠️', t: 'We place you on a project' },
+	{ ic: '⚡', t: 'You gain experience' },
+	{ ic: '🌱', t: 'You grow' },
+];
+
 const steps = [
 	{ n: '01', t: 'You apply', d: 'This form. Take your time with the last two questions, they are the ones we read closely.' },
-	{ n: '02', t: 'A short call', d: 'Twenty minutes. We want to hear how you think, not quiz you on syntax.' },
+	{ n: '02', t: 'A virtual meeting', d: 'Twenty minutes on a link we send you. We want to hear how you think, not quiz you on syntax.' },
 	{ n: '03', t: 'A small task', d: 'Something practical and scoped to a few hours. You keep whatever you build.' },
 	{ n: '04', t: 'A straight answer', d: 'Yes or no, quickly. We would rather tell you now than leave you waiting on us.' },
 ];
@@ -63,6 +76,7 @@ const disciplines = [
 	'Mobile development',
 	'Product design',
 	'Digital marketing',
+	'Project management',
 ];
 
 const levels = ['100 level', '200 level', '300 level', '400 level', '500 level', 'Graduate', 'NYSC corps member'];
@@ -98,30 +112,32 @@ const levels = ['100 level', '200 level', '300 level', '400 level', '500 level',
 				<h1 class="pg-title">Two ways in. <em>Both are earned.</em></h1>
 				<p class="pg-lead">
 					We do not run an open bootcamp any more. You join us for your
-					industrial training or for your service year, and either way
-					you are put on a live client product beside the people who
-					build it for a living. That is why the intake is small and
-					why the application matters.
+					industrial training or for your service year, and either way we
+					teach you first, then put you on a live client product beside the
+					people who build it for a living. You do not need experience to
+					start. You need to be willing to learn.
 				</p>
 				<div class="pg-herocta">
-					<a href="#internship" class="pg-btn">
+					<button type="button" class="pg-btn" data-focus="internship" aria-pressed="false">
 						IT / SIWES Internship
 						<Icon width={17} name="mdi:arrow-down" />
-					</a>
-					<a href="#nysc" class="pg-btn pg-btn--ghost">
+					</button>
+					<button type="button" class="pg-btn pg-btn--ghost" data-focus="nysc" aria-pressed="false">
 						NYSC Placement
 						<Icon width={17} name="mdi:arrow-down" />
-					</a>
+					</button>
 				</div>
 			</div>
 		</header>
 
 		<!-- ── the two tracks ── -->
-		<section class="pg-sec">
-			<div class="pg-wrap pg-tracks">
+		<!-- Pick one and the pair switches: the chosen track slides to the
+		     front and opens up to be read, the other steps back. -->
+		<section class="pg-sec" data-cursor="pen">
+			<div class="pg-wrap pg-tracks" id="pg-tracks">
 				{
 					tracks.map((t) => (
-						<div class="pg-track" id={t.id}>
+						<div class="pg-track" id={t.id} data-track={t.id}>
 							<div class="pg-track-head">
 								<span class="pg-track-ic"><Icon width={22} name={t.icon} /></span>
 								<div>
@@ -155,20 +171,66 @@ const levels = ['100 level', '200 level', '300 level', '400 level', '500 level',
 								))}
 							</ul>
 
+							<p class="pg-track-note">
+								No experience yet? Come anyway. We teach and guide you, for
+								as long as you are willing to learn.
+							</p>
+
 							<a href="#apply" class="pg-track-go" data-pick-track={t.name}>
 								Apply for this track
 								<Icon width={16} name="mdi:arrow-right" />
 							</a>
+							<button type="button" class="pg-track-back" data-focus-clear>
+								<Icon width={14} name="mdi:arrow-left" />
+								See both tracks
+							</button>
 						</div>
 					))
 				}
 			</div>
+
+			<!-- the promise, in the order it actually happens -->
+			<ol class="pg-wrap pg-plan" aria-label="How the year runs">
+				{
+					plan.map((st, i) => (
+						<li class="pg-plan-step" style={`--i:${i}`}>
+							<span class="pg-plan-ic" aria-hidden="true">{st.ic}</span>
+							<span class="pg-plan-t">{st.t}</span>
+						</li>
+					))
+				}
+			</ol>
 		</section>
 
 		<!-- ── how it goes ── -->
-		<section class="pg-sec pg-sec--steps">
+		<section class="pg-sec pg-sec--steps" data-cursor="pen">
 			<div class="pg-wrap">
-				<h2 class="pg-h">How the application goes</h2>
+				<div class="pg-hrow">
+					<h2 class="pg-h">How the application goes</h2>
+					<!-- a pen that signs the page: it draws itself the first time
+					     this section comes into view, then keeps a slow idle wobble
+					     so the page never feels like a form and nothing else. -->
+					<span class="pg-pen" aria-hidden="true" data-pen>
+						<svg viewBox="0 0 190 64" class="pg-pen-sig">
+							<path
+								class="pg-pen-line"
+								d="M6 44c14-22 22 6 33-4S58 8 66 14s-3 34 6 32 14-26 24-24 2 26 12 24 16-22 26-20 10 16 22 10"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="4"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							/>
+						</svg>
+						<svg viewBox="0 0 24 24" class="pg-pen-nib" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+							<path d="M4 20l1.2-4.2L16.4 4.6a2 2 0 0 1 2.8 0l.2.2a2 2 0 0 1 0 2.8L8.2 18.8z" />
+							<path d="M14.5 6.5l3 3" />
+						</svg>
+					</span>
+				</div>
+				<p class="pg-steps-lead">
+					Four steps, no games, and a real answer at the end of them.
+				</p>
 				<ol class="pg-steps">
 					{
 						steps.map((st) => (
@@ -290,8 +352,9 @@ const levels = ['100 level', '200 level', '300 level', '400 level', '500 level',
 						</button>
 						<p class="pg-fine">
 							<Icon width={15} name="mdi:lock-outline" />
-							We read every application. If it is a fit you will hear from
-							us by email or phone, usually within a week.
+							Your application goes straight to contact@swizel.co, where a
+							person reads it. We get back to every applicant, usually
+							within a week.
 						</p>
 					</div>
 				</form>
@@ -466,6 +529,8 @@ const levels = ['100 level', '200 level', '300 level', '400 level', '500 level',
 		display: inline-flex;
 		align-items: center;
 		gap: 0.5rem;
+		cursor: pointer;
+		font-family: inherit;
 		font-size: 0.9rem;
 		font-weight: 800;
 		color: #2b1c08;
@@ -486,8 +551,211 @@ const levels = ['100 level', '200 level', '300 level', '400 level', '500 level',
 	.pg-btn--ghost:hover { transform: translateY(-1px); box-shadow: none; background: color-mix(in srgb, var(--pg-acc) 18%, transparent); }
 
 	/* ── tracks ── */
-	.pg-tracks { display: grid; gap: clamp(1rem, 2.5vw, 1.75rem); }
+	.pg-tracks {
+		display: grid;
+		gap: clamp(1rem, 2.5vw, 1.75rem);
+		perspective: 1400px;
+		/* the chosen card grows a little; nothing may spill sideways for it */
+		overflow-x: clip;
+		overflow-y: visible;
+		padding: 0.6rem clamp(1rem, 3vw, 2rem);
+	}
 	@media (min-width: 900px) { .pg-tracks { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+	/* ── picking a track ──
+	   The pair swaps places and the chosen one opens up: bigger type, the
+	   full list, and an apply button you cannot miss. The other steps back
+	   rather than disappearing, so the choice is still reversible. */
+	.pg-track {
+		transition:
+			transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+			opacity 0.4s ease,
+			border-color 0.4s ease,
+			box-shadow 0.5s ease,
+			filter 0.4s ease;
+	}
+	.pg-tracks[data-focus] .pg-track { transform-origin: center top; }
+	.pg-tracks[data-focus='internship'] .pg-track[data-track='internship'],
+	.pg-tracks[data-focus='nysc'] .pg-track[data-track='nysc'] {
+		order: -1;
+		transform: scale(1.035);
+		border-color: color-mix(in srgb, var(--pg-acc) 55%, transparent);
+		box-shadow: 0 40px 90px -40px color-mix(in srgb, var(--pg-acc) 75%, transparent);
+		z-index: 2;
+	}
+	.pg-tracks[data-focus='internship'] .pg-track[data-track='nysc'],
+	.pg-tracks[data-focus='nysc'] .pg-track[data-track='internship'] {
+		transform: scale(0.93);
+		opacity: 0.42;
+		filter: saturate(0.75);
+	}
+	.pg-tracks[data-focus] .pg-track:not(.is-focus):hover { opacity: 0.75; }
+	.pg-track.is-focus .pg-track-name { font-size: clamp(1.45rem, 2.8vw, 1.95rem); }
+	.pg-track.is-focus .pg-list li { font-size: 0.95rem; }
+	.pg-track.is-focus .pg-track-who { font-size: 1rem; }
+	/* the apply button grows into a real call to action once a track is chosen */
+	.pg-track.is-focus .pg-track-go {
+		width: 100%;
+		justify-content: center;
+		margin-top: 1.1rem;
+		padding: 0.95rem 1.5rem;
+		border-radius: 9999px;
+		border-bottom: 0;
+		font-size: 1rem;
+		color: #2b1500;
+		background: linear-gradient(95deg, #fcd34d, var(--pg-acc));
+		box-shadow: 0 18px 40px -16px color-mix(in srgb, var(--pg-acc) 85%, transparent);
+	}
+	.pg-track-back {
+		display: none;
+		align-items: center;
+		gap: 0.4rem;
+		width: fit-content;
+		margin: 0.85rem auto 0;
+		padding: 0.35rem 0.6rem;
+		border: 0;
+		background: none;
+		cursor: pointer;
+		font-size: 0.8rem;
+		font-weight: 700;
+		color: var(--pg-faint);
+		transition: color 0.25s ease, gap 0.25s ease;
+	}
+	.pg-track-back:hover { color: var(--pg-ink); gap: 0.6rem; }
+	.pg-track.is-focus .pg-track-back { display: inline-flex; }
+	/* what went wrong, said next to the field it went wrong in */
+	.pg-err {
+		display: block;
+		margin-top: 0.35rem;
+		font-size: 0.76rem;
+		font-weight: 600;
+		line-height: 1.45;
+		color: #fb7185;
+	}
+	:global(html:not(.dark)) .pg-err { color: #be123c; }
+
+	.pg-track-note {
+		margin: 0.2rem 0 0;
+		padding: 0.7rem 0.85rem;
+		border-radius: 0.7rem;
+		border: 1px dashed color-mix(in srgb, var(--pg-acc) 35%, transparent);
+		background: color-mix(in srgb, var(--pg-acc) 7%, transparent);
+		font-size: 0.85rem;
+		line-height: 1.55;
+		color: var(--pg-muted);
+	}
+	.pg-btn[aria-pressed='true'] { box-shadow: 0 0 0 3px color-mix(in srgb, var(--pg-acc) 45%, transparent); }
+
+	/* ── the plan, as a row of stops ── */
+	.pg-plan {
+		list-style: none;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem 0.35rem;
+		margin: clamp(1.6rem, 3.5vw, 2.4rem) auto 0;
+		padding-inline: clamp(1rem, 3vw, 2rem);
+	}
+	.pg-plan-step {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		padding: 0.5rem 0.9rem;
+		border-radius: 9999px;
+		border: 1px solid var(--pg-line);
+		background: var(--pg-card);
+		font-size: 0.85rem;
+		font-weight: 700;
+		color: var(--pg-ink);
+		animation: pg-plan-pop 0.5s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+		animation-delay: calc(var(--i) * 90ms);
+	}
+	.pg-plan-step + .pg-plan-step::before {
+		content: '→';
+		margin-right: 0.35rem;
+		color: var(--pg-acc);
+	}
+	.pg-plan-ic { font-size: 1rem; line-height: 1; }
+	@keyframes pg-plan-pop {
+		from { opacity: 0; transform: translateY(10px) scale(0.94); }
+		to { opacity: 1; transform: none; }
+	}
+
+	/* ── the signing pen ── */
+	.pg-hrow {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1.5rem;
+		flex-wrap: wrap;
+	}
+	.pg-steps-lead {
+		margin: 0.4rem 0 1.6rem;
+		font-size: 0.95rem;
+		line-height: 1.6;
+		color: var(--pg-muted);
+	}
+	.pg-pen {
+		position: relative;
+		display: block;
+		width: clamp(140px, 18vw, 190px);
+		color: var(--pg-acc);
+	}
+	.pg-pen-sig { display: block; width: 100%; height: auto; overflow: visible; }
+	.pg-pen-line {
+		stroke-dasharray: 420;
+		stroke-dashoffset: 420;
+	}
+	.pg-pen.is-on .pg-pen-line { animation: pg-sign 2.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+	.pg-pen-nib {
+		position: absolute;
+		top: -6px;
+		left: 0;
+		width: 30px;
+		height: 30px;
+		color: var(--pg-ink);
+		opacity: 0;
+	}
+	.pg-pen.is-on .pg-pen-nib { animation: pg-nib 2.4s cubic-bezier(0.4, 0, 0.2, 1) forwards, pg-nib-idle 3.2s 2.6s ease-in-out infinite; }
+	@keyframes pg-sign {
+		to { stroke-dashoffset: 0; }
+	}
+	@keyframes pg-nib {
+		0% { opacity: 0; transform: translate(0, 6px) rotate(-8deg); }
+		8% { opacity: 1; transform: translate(6px, 0) rotate(-8deg); }
+		30% { transform: translate(46px, -14px) rotate(-8deg); }
+		55% { transform: translate(92px, 6px) rotate(-8deg); }
+		80% { transform: translate(134px, -10px) rotate(-8deg); }
+		100% { opacity: 1; transform: translate(168px, -2px) rotate(-8deg); }
+	}
+	@keyframes pg-nib-idle {
+		0%, 100% { transform: translate(168px, -2px) rotate(-8deg); }
+		50% { transform: translate(168px, -7px) rotate(-2deg); }
+	}
+	@media (max-width: 899px) {
+		/* no room to grow on a phone: the chosen track simply comes first
+		   and keeps full width, and the other one steps back in place */
+		.pg-tracks[data-focus='internship'] .pg-track[data-track='internship'],
+		.pg-tracks[data-focus='nysc'] .pg-track[data-track='nysc'] { transform: none; }
+		.pg-tracks[data-focus='internship'] .pg-track[data-track='nysc'],
+		.pg-tracks[data-focus='nysc'] .pg-track[data-track='internship'] {
+			transform: scale(0.97);
+			opacity: 0.55;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.pg-pen-line { stroke-dashoffset: 0; }
+		.pg-pen.is-on .pg-pen-line,
+		.pg-pen.is-on .pg-pen-nib { animation: none; }
+		.pg-pen-nib { opacity: 1; transform: translate(168px, -2px) rotate(-8deg); }
+		.pg-plan-step { animation: none; }
+		.pg-track { transition: none; }
+	}
+	@media (max-width: 620px) {
+		.pg-pen { display: none; }
+	}
+
 	.pg-track {
 		display: flex;
 		flex-direction: column;
@@ -685,6 +953,70 @@ const levels = ['100 level', '200 level', '300 level', '400 level', '500 level',
 		});
 	});
 
+	// ── picking a track ──
+	// The two cards swap places: the chosen one comes to the front, opens up
+	// and grows its apply button; the other steps back but stays clickable.
+	const tracksWrap = document.querySelector<HTMLElement>('#pg-tracks');
+	const focusBtns = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-focus]'));
+	const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-track]'));
+
+	const setFocus = (id: string | null, scroll = true) => {
+		if (!tracksWrap) return;
+		if (id) tracksWrap.dataset.focus = id;
+		else delete tracksWrap.dataset.focus;
+		cards.forEach((c) => c.classList.toggle('is-focus', !!id && c.dataset.track === id));
+		focusBtns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.focus === id)));
+		const sel = form?.querySelector<HTMLSelectElement>('select[name="track"]');
+		const card = cards.find((c) => c.dataset.track === id);
+		if (sel && card) {
+			const nm = card.querySelector('.pg-track-name')?.textContent?.trim();
+			if (nm) sel.value = nm;
+		}
+		if (scroll && card) {
+			window.setTimeout(
+				() => card.scrollIntoView({ block: 'center', behavior: 'smooth' }),
+				60
+			);
+		}
+	};
+
+	focusBtns.forEach((b) =>
+		b.addEventListener('click', () => {
+			const id = b.dataset.focus || null;
+			setFocus(tracksWrap?.dataset.focus === id ? null : id);
+		})
+	);
+	document.querySelectorAll<HTMLElement>('[data-focus-clear]').forEach((b) =>
+		b.addEventListener('click', () => setFocus(null, false))
+	);
+	// clicking the card that stepped back brings it forward instead
+	cards.forEach((c) =>
+		c.addEventListener('click', (e) => {
+			if (!tracksWrap?.dataset.focus) return;
+			if (c.classList.contains('is-focus')) return;
+			if ((e.target as HTMLElement).closest('a,button')) return;
+			setFocus(c.dataset.track || null);
+		})
+	);
+	// arriving on /programs#nysc opens that track straight away
+	const fromHash = location.hash.replace('#', '');
+	if (fromHash === 'nysc' || fromHash === 'internship') setFocus(fromHash, false);
+
+	// the pen signs itself when the section arrives
+	const pen = document.querySelector<HTMLElement>('[data-pen]');
+	if (pen) {
+		const io = new IntersectionObserver(
+			(entries) =>
+				entries.forEach((en) => {
+					if (!en.isIntersecting) return;
+					pen.classList.add('is-on');
+					io.disconnect();
+				}),
+			{ threshold: 0.4 }
+		);
+		io.observe(pen);
+	}
+
 	const LABELS: Record<string, string> = {
 		fullName: 'Full name',
 		email: 'Email',
@@ -711,25 +1043,61 @@ const levels = ['100 level', '200 level', '300 level', '400 level', '500 level',
 			values[k] = String(data.get(k) ?? '').trim();
 		});
 
-		// mark what is missing rather than failing silently
-		let firstBad: HTMLElement | null = null;
-		form.querySelectorAll<HTMLElement>('.pg-field').forEach((f) => f.classList.remove('is-bad'));
-		form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>(
-			'[required]'
-		).forEach((el) => {
-			if (el.value.trim()) return;
-			const field = el.closest<HTMLElement>('.pg-field');
-			field?.classList.add('is-bad');
-			if (!firstBad) firstBad = field || el;
+		// ── validation ──
+		// Every field is checked for the shape of answer it actually wants, so
+		// a phone number cannot arrive in the name box and a name cannot arrive
+		// in the phone box. The first thing that is wrong is named out loud and
+		// scrolled to, rather than the whole form going red at once.
+		const NAMEISH = /^[A-Za-zÀ-ÿ'’.\-\s]{2,}$/;
+		const rules: { name: string; test: (v: string) => boolean; msg: string }[] = [
+			{ name: 'fullName', test: (v) => NAMEISH.test(v) && v.trim().split(/\s+/).length >= 2, msg: 'Please give your full name in letters, first and last.' },
+			{ name: 'email', test: (v) => /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(v), msg: 'That email address does not look right.' },
+			{ name: 'phone', test: (v) => /^[+]?[\d][\d\s()\-]{7,19}$/.test(v) && (v.match(/\d/g) || []).length >= 8, msg: 'Please give a phone number we can actually reach, digits only.' },
+			{ name: 'track', test: (v) => !!v, msg: 'Choose the track you are applying for.' },
+			{ name: 'institution', test: (v) => NAMEISH.test(v) && v.trim().length >= 3, msg: 'Your institution name should be words, not numbers.' },
+			{ name: 'course', test: (v) => NAMEISH.test(v) && v.trim().length >= 3, msg: 'Your course of study should be words, not numbers.' },
+			{ name: 'level', test: (v) => !!v, msg: 'Choose your level.' },
+			{ name: 'discipline', test: (v) => !!v, msg: 'Choose the discipline you want.' },
+			{ name: 'address', test: (v) => v.trim().length >= 8 && /[A-Za-z]/.test(v), msg: 'Please give an address we could find, not just a number.' },
+			{ name: 'startDate', test: (v) => v.trim().length >= 3, msg: 'Tell us when you can start.' },
+			{ name: 'portfolio', test: (v) => !v || /^(https?:\/\/)?[\w.-]+\.[a-z]{2,}(\/\S*)?$/i.test(v), msg: 'That link does not look like a web address.' },
+			{ name: 'built', test: (v) => v.trim().split(/\s+/).length >= 12, msg: 'Tell us a little more about what you built, a dozen words at least.' },
+			{ name: 'goal', test: (v) => v.trim().split(/\s+/).length >= 12, msg: 'Tell us a little more about what you want out of this.' },
+		];
+
+		form.querySelectorAll<HTMLElement>('.pg-field').forEach((f) => {
+			f.classList.remove('is-bad');
+			f.querySelector('.pg-err')?.remove();
 		});
-		if (firstBad) {
-			toast('danger', 'Please fill in every required field.');
-			(firstBad as HTMLElement).scrollIntoView({ block: 'center', behavior: 'smooth' });
-			return;
+
+		let firstBad: HTMLElement | null = null;
+		let firstMsg = '';
+		for (const r of rules) {
+			const el = form.querySelector<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>(
+				`[name="${r.name}"]`
+			);
+			if (!el) continue;
+			const v = (values[r.name] ?? '').trim();
+			const required = el.hasAttribute('required');
+			const problem = required ? !v || !r.test(v) : !!v && !r.test(v);
+			if (!problem) continue;
+			const field = el.closest<HTMLElement>('.pg-field');
+			if (field) {
+				field.classList.add('is-bad');
+				const note = document.createElement('span');
+				note.className = 'pg-err';
+				note.textContent = v ? r.msg : 'This one is required.';
+				field.appendChild(note);
+			}
+			if (!firstBad) {
+				firstBad = field || el;
+				firstMsg = v ? r.msg : 'Please fill in every required field.';
+			}
 		}
-		if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(values.email)) {
-			form.querySelector('input[name="email"]')?.closest('.pg-field')?.classList.add('is-bad');
-			toast('danger', 'That email address does not look right.');
+		if (firstBad) {
+			toast('danger', firstMsg);
+			(firstBad as HTMLElement).scrollIntoView({ block: 'center', behavior: 'smooth' });
+			(firstBad as HTMLElement).querySelector<HTMLElement>('input,select,textarea')?.focus({ preventScroll: true });
 			return;
 		}
 
@@ -748,19 +1116,19 @@ const levels = ['100 level', '200 level', '300 level', '400 level', '500 level',
 				email: values.email,
 				reply_to: values.email,
 				phoneNumber: values.phone,
-				to_email: 'swizelhq@swizel.co',
+				to_email: 'contact@swizel.co',
 				subject: `Application: ${values.track} · ${values.fullName}`,
 				message: `NEW APPLICATION\n\n${message}`,
 			})
 			.then(() => {
-				toast('success', 'Application received. We read every one, and we will be in touch.');
+				toast('success', 'Application sent to contact@swizel.co. We read every one, and we will get back to you.');
 				form.reset();
 			})
 			.catch((err) => {
 				console.error('[application]', err);
 				toast(
 					'danger',
-					'That did not go through. Please email swizelhq@swizel.co directly, or try the live chat.'
+					'That did not go through. Please email contact@swizel.co directly, or try the live chat.'
 				);
 			})
 			.finally(() => {

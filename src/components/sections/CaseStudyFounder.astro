@@ -14,8 +14,10 @@ interface Props {
 const { project: p, others } = Astro.props;
 const cs = p.caseStudy!;
 
-const galVideo = cs.gallery.find((g) => g.kind === 'video');
-const galImages = cs.gallery.filter((g) => g.kind !== 'video');
+// only real media makes the gallery; an empty slot is simply not shown
+const shots = cs.gallery.filter((g) => g.src);
+const galVideo = shots.find((g) => g.kind === 'video');
+const galImages = shots.filter((g) => g.kind !== 'video');
 // two headline results float over the hero shot
 const heroBadges = cs.results.slice(0, 2);
 ---
@@ -30,11 +32,16 @@ const heroBadges = cs.results.slice(0, 2);
 	<section class="fc-sec">
 		<div class="fc-wrap fc-hero">
 			<div class="fd-rev">
-				<nav class="fc-crumb" aria-label="Breadcrumb">
-					<a href="/portfolio">Our work</a>
-					<Icon width={14} name="mdi:chevron-right" />
-					<span>{p.name}</span>
-				</nav>
+				<div class="fc-backrow">
+					<button class="fc-back" type="button" data-go-back>
+						<Icon width={15} name="mdi:arrow-left" />
+						Back
+					</button>
+					<a class="fc-back fc-back--alt" href="/portfolio">
+						<Icon width={15} name="mdi:view-grid-outline" />
+						View all the work
+					</a>
+				</div>
 				<span class="fc-stamp">{cs.meta.sector} · Founder mode</span>
 				<h2 class="fc-h fc-h--xl">{p.name}<em>.</em></h2>
 				<p class="fc-tagline">{p.tagline}</p>
@@ -197,45 +204,47 @@ const heroBadges = cs.results.slice(0, 2);
 	</section>
 
 	<!-- ── gallery ── -->
-	<section class="fc-sec" data-cursor="play">
-		<div class="fc-wrap">
-			<div class="fc-head fd-rev">
-				<span class="fc-stamp">Up close</span>
-				<h2 class="fc-h">The product, <em>in frames.</em></h2>
-			</div>
-			<div class="fc-gallery">
-				{
-					galVideo && (
-						<div class="fc-gal-video fd-rev">
-							<span class="fa-media-sheen fc-media-sheen" aria-hidden="true" />
-							<Icon width={36} name="mdi:play-circle-outline" />
-							<span class="fc-media-label">{galVideo.label}</span>
-							{galVideo.caption && <span class="fc-media-sub">{galVideo.caption}</span>}
-						</div>
-					)
-				}
-				<div class="fc-gal-grid">
+	{shots.length > 0 && (
+		<section class="fc-sec" data-cursor="play">
+			<div class="fc-wrap">
+				<div class="fc-head fd-rev">
+					<span class="fc-stamp">Up close</span>
+					<h2 class="fc-h">The product, <em>in frames.</em></h2>
+				</div>
+				<div class="fc-gallery">
 					{
-						galImages.map((g, i) =>
-							g.src ? (
-								<figure class="fc-gal-item fd-rev" style={`--i:${i % 4}`}>
-									<img src={g.src} alt={g.label} loading="lazy" />
-									{g.caption && <figcaption>{g.caption}</figcaption>}
-								</figure>
-							) : (
-								<div class="fc-gal-item fc-gal-item--ph fd-rev" style={`--i:${i % 4}`}>
-									<span class="fa-val-glare" aria-hidden="true" />
-									<Icon width={22} name="mdi:image-outline" />
-									<span class="fc-media-label">{g.label}</span>
-									{g.caption && <span class="fc-media-sub">{g.caption}</span>}
-								</div>
-							)
+						galVideo && (
+							<div class="fc-gal-video fd-rev">
+								<span class="fa-media-sheen fc-media-sheen" aria-hidden="true" />
+								<Icon width={36} name="mdi:play-circle-outline" />
+								<span class="fc-media-label">{galVideo.label}</span>
+								{galVideo.caption && <span class="fc-media-sub">{galVideo.caption}</span>}
+							</div>
 						)
 					}
+					<div class="fc-gal-grid">
+						{
+							galImages.map((g, i) =>
+								g.src ? (
+									<figure class="fc-gal-item fd-rev" style={`--i:${i % 4}`}>
+										<img src={g.src} alt={g.label} loading="lazy" />
+										{g.caption && <figcaption>{g.caption}</figcaption>}
+									</figure>
+								) : (
+									<div class="fc-gal-item fc-gal-item--ph fd-rev" style={`--i:${i % 4}`}>
+										<span class="fa-val-glare" aria-hidden="true" />
+										<Icon width={22} name="mdi:image-outline" />
+										<span class="fc-media-label">{g.label}</span>
+										{g.caption && <span class="fc-media-sub">{g.caption}</span>}
+									</div>
+								)
+							)
+						}
+					</div>
 				</div>
 			</div>
-		</div>
-	</section>
+		</section>
+	)}
 
 	<!-- ── quote ── -->
 	{
@@ -424,6 +433,24 @@ const heroBadges = cs.results.slice(0, 2);
 
 	/* hero */
 	.fc-hero { display: grid; grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr); gap: clamp(2rem, 4vw, 3.2rem); align-items: center; }
+	.fc-backrow { display: flex; flex-wrap: wrap; gap: 0.55rem; margin-bottom: 1rem; }
+	.fc-back {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		cursor: pointer;
+		padding: 0.5rem 1rem 0.5rem 0.85rem;
+		border-radius: 9999px;
+		border: 1px solid color-mix(in srgb, var(--c) 30%, transparent);
+		background: color-mix(in srgb, var(--c) 8%, transparent);
+		font-size: 0.85rem;
+		font-weight: 700;
+		color: var(--c);
+		transition: gap 0.25s ease, background 0.25s ease;
+	}
+	.fc-back:hover { gap: 0.7rem; background: color-mix(in srgb, var(--c) 16%, transparent); }
+	.fc-back--alt { background: transparent; border-style: dashed; color: var(--fa-muted); }
+	.fc-back--alt:hover { color: var(--c); }
 	.fc-crumb { display: flex; align-items: center; gap: 0.4rem; font-size: 0.82rem; font-weight: 600; color: var(--fa-muted); margin-bottom: 1rem; }
 	.fc-crumb a { color: var(--c); }
 	.fc-tagline { font-size: 1.1rem; font-weight: 700; color: var(--c); margin: 0 0 1rem; }

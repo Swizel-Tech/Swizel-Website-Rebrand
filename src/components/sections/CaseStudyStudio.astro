@@ -15,8 +15,10 @@ interface Props {
 const { project: p, others } = Astro.props;
 const cs = p.caseStudy!;
 
-const galVideo = cs.gallery.find((g) => g.kind === 'video');
-const galImages = cs.gallery.filter((g) => g.kind !== 'video');
+// only real media makes the gallery; an empty slot is simply not shown
+const shots = cs.gallery.filter((g) => g.src);
+const galVideo = shots.find((g) => g.kind === 'video');
+const galImages = shots.filter((g) => g.kind !== 'video');
 const heroBadges = cs.results.slice(0, 2);
 const roman = ['I', 'II', 'III', 'IV', 'V', 'VI'];
 ---
@@ -28,7 +30,10 @@ const roman = ['I', 'II', 'III', 'IV', 'V', 'VI'];
 			<div class="sc-folio sd-rev">
 				<span>Collection Wing — Exhibition</span>
 				<span>{cs.meta.sector}</span>
-				<span><a href="/portfolio" class="sc-folio-back">← The collection</a></span>
+				<span class="sc-folio-nav">
+					<button type="button" class="sc-folio-back" data-go-back>← Back</button>
+					<a href="/portfolio" class="sc-folio-back">The collection</a>
+				</span>
 			</div>
 			<div class="sc-open">
 				<div class="sc-open-copy">
@@ -192,39 +197,41 @@ const roman = ['I', 'II', 'III', 'IV', 'V', 'VI'];
 	</section>
 
 	<!-- ── F · the gallery ─────────────────────────────────── -->
-	<section class="sc-sec" data-cursor="play">
-		<div class="sc-wrap">
-			<div class="sc-rule sd-rev">
-				<span>The gallery</span>
-				<span>Frames & footage from the build</span>
+	{shots.length > 0 && (
+		<section class="sc-sec" data-cursor="play">
+			<div class="sc-wrap">
+				<div class="sc-rule sd-rev">
+					<span>The gallery</span>
+					<span>Frames & footage from the build</span>
+				</div>
+				<div class="sc-media sd-rev">
+					{
+						galVideo && (
+							<div class="sc-mframe sc-mframe--wide">
+								<Icon width={34} name="mdi:play-circle-outline" />
+								<span class="sc-mname">{galVideo.label}</span>
+								{galVideo.caption && <span class="sc-msub">{galVideo.caption}</span>}
+							</div>
+						)
+					}
+					{
+						galImages.map((g) => (
+							<div class="sc-mframe">
+								{g.src ? (
+									<img src={g.src} alt={g.caption || g.label} loading="lazy" />
+								) : (
+									<>
+										<Icon width={24} name="mdi:image-outline" />
+										<span class="sc-mname">{g.label}</span>
+									</>
+								)}
+							</div>
+						))
+					}
+				</div>
 			</div>
-			<div class="sc-media sd-rev">
-				{
-					galVideo && (
-						<div class="sc-mframe sc-mframe--wide">
-							<Icon width={34} name="mdi:play-circle-outline" />
-							<span class="sc-mname">{galVideo.label}</span>
-							{galVideo.caption && <span class="sc-msub">{galVideo.caption}</span>}
-						</div>
-					)
-				}
-				{
-					galImages.map((g) => (
-						<div class="sc-mframe">
-							{g.src ? (
-								<img src={g.src} alt={g.caption || g.label} loading="lazy" />
-							) : (
-								<>
-									<Icon width={24} name="mdi:image-outline" />
-									<span class="sc-mname">{g.label}</span>
-								</>
-							)}
-						</div>
-					))
-				}
-			</div>
-		</div>
-	</section>
+		</section>
+	)}
 
 	<!-- ── G · the guest note ──────────────────────────────── -->
 	{
@@ -371,7 +378,8 @@ const roman = ['I', 'II', 'III', 'IV', 'V', 'VI'];
 		margin-bottom: clamp(1.75rem, 4vw, 2.75rem);
 	}
 	.sc-folio span:first-child { color: var(--sa-ink); }
-	.sc-folio-back { color: var(--sa-faint); transition: color 0.2s ease; }
+	.sc-folio-nav { display: inline-flex; align-items: center; gap: 0.9rem; }
+	.sc-folio-back { color: var(--sa-faint); background: none; border: 0; padding: 0; cursor: pointer; font: inherit; transition: color 0.2s ease; }
 	.sc-folio-back:hover { color: var(--c); }
 	.sc-rule {
 		display: flex;

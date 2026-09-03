@@ -309,16 +309,15 @@ const phones = [
 		<button class="ft-film" type="button" data-open-film aria-label="Watch the welcome film">
 			<span class="ft-film-ic" aria-hidden="true">
 				<svg viewBox="0 0 40 40">
-					<defs>
-						<linearGradient id="ftFilmG" x1="0" y1="0" x2="1" y2="1">
-							<stop offset="0%" stop-color="#13b6a0" />
-							<stop offset="100%" stop-color="#1f8fd6" />
-						</linearGradient>
-					</defs>
 					<circle cx="20" cy="20" r="18.4" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3" />
-					<circle class="ft-film-arc" cx="20" cy="20" r="18.4" fill="none" stroke="url(#ftFilmG)"
+					<circle class="ft-film-arc" cx="20" cy="20" r="18.4" fill="none" stroke="currentColor"
 						stroke-width="1.4" stroke-linecap="round" stroke-dasharray="26 90" />
-					<path d="M16.8 13.9 27 20l-10.2 6.1z" fill="currentColor" />
+					<!-- the Swizel mark, wearing whichever world you are in -->
+					<g class="ft-film-mark" transform="translate(11.6 11.2) scale(0.345)" fill="currentColor">
+						<path d="M30.1778 20.2051H40.0144V33.0823H30.1778V20.2051Z" />
+						<path d="M30.0466 0.904297H44.569C47.4137 0.904297 49.7198 3.21041 49.7198 6.05514V18.7893H30.0466V0.904297Z" />
+						<path d="M0.00012207 6.05514C0.00012207 3.21041 2.30624 0.904297 5.15097 0.904297H28.6158V33.0973H0.00012207V6.05514Z" />
+					</g>
 				</svg>
 			</span>
 			<span class="ft-film-txt">Watch the intro</span>
@@ -1048,7 +1047,14 @@ const phones = [
 		cursor: pointer;
 		transition: color 0.28s ease;
 	}
-	.ft-film-ic { display: block; width: 1.55rem; height: 1.55rem; flex: none; }
+	.ft-film-ic {
+		display: block;
+		width: 1.55rem;
+		height: 1.55rem;
+		flex: none;
+		/* the mark takes the colour of whichever world you are standing in */
+		color: var(--view-accent, #13b6a0);
+	}
 	.ft-film-ic svg { width: 100%; height: 100%; display: block; }
 	/* the accent arc drifts round the ring, slowly */
 	.ft-film-arc {
@@ -1060,6 +1066,8 @@ const phones = [
 	@keyframes ft-arc { to { transform: rotate(1turn); } }
 	.ft-film:hover { color: var(--ft-ink); }
 	.ft-film:hover .ft-film-arc { opacity: 1; animation-duration: 5s; }
+	.ft-film-mark { transition: opacity 0.28s ease; opacity: 0.92; }
+	.ft-film:hover .ft-film-mark { opacity: 1; }
 	.ft-film-txt { white-space: nowrap; }
 	@media (prefers-reduced-motion: reduce) {
 		.ft-film-arc { animation: none; }

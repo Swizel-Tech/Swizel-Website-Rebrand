@@ -101,6 +101,130 @@ export function initCampusBody() {
 		io.observe(show);
 	}
 
+	// ── the write-up sheet: work with no page of its own ──
+	// Opened by a card in the cabinet, or straight from another page via
+	// /portfolio#work-<slug>.
+	const sheet = body.querySelector<HTMLElement>('#cf-sheet');
+	if (sheet && !sheet.dataset.wkBound) {
+		sheet.dataset.wkBound = '1';
+		const panels = Array.from(
+			sheet.querySelectorAll<HTMLElement>('[data-work-panel]')
+		);
+		const paper = sheet.querySelector<HTMLElement>('.cf-sheet-paper');
+		let last: HTMLElement | null = null;
+		// a stale lock would freeze the page, so start clean
+		document.documentElement.classList.remove('cf-locked');
+		body.classList.remove('is-sheeting');
+
+		const closeSheet = (restoreHash = true) => {
+			if (sheet.hidden) return;
+			sheet.classList.remove('is-on');
+			body.classList.remove('is-sheeting');
+			document.documentElement.classList.remove('cf-locked');
+			window.setTimeout(() => {
+				sheet.hidden = true;
+				panels.forEach((pn) => (pn.hidden = true));
+			}, 260);
+			if (restoreHash && location.hash.startsWith('#work-')) {
+				history.replaceState(null, '', location.pathname + location.search);
+			}
+			last?.focus({ preventScroll: true });
+		};
+
+		const openSheet = (slug: string, viaClick = true) => {
+			const panel = panels.find((pn) => pn.dataset.workPanel === slug);
+			if (!panel) return false;
+			panels.forEach((pn) => (pn.hidden = pn !== panel));
+			sheet.hidden = false;
+			body.classList.add('is-sheeting');
+			if (paper) paper.scrollTop = 0;
+			requestAnimationFrame(() => sheet.classList.add('is-on'));
+			document.documentElement.classList.add('cf-locked');
+			paper?.focus({ preventScroll: true });
+			if (viaClick) history.replaceState(null, '', `#work-${slug}`);
+			return true;
+		};
+
+		body.addEventListener('click', (e) => {
+			const card = (e.target as HTMLElement).closest<HTMLElement>('[data-work]');
+			if (card) {
+				e.preventDefault();
+				last = card;
+				openSheet(card.dataset.work || '');
+				return;
+			}
+		});
+		sheet.addEventListener('click', (e) => {
+			if ((e.target as HTMLElement).closest('[data-sheet-close]')) closeSheet();
+		});
+		document.addEventListener('keydown', (e) => {
+			if (e.key === 'Escape' && !sheet.hidden) closeSheet();
+		});
+
+		// arriving on a deep link from another page
+		const fromHash = () => {
+			const m = location.hash.match(/^#work-([\w-]+)$/);
+			if (m) openSheet(m[1]!, false);
+		};
+		fromHash();
+		window.addEventListener('hashchange', fromHash);
+	}
+
+	// ── the permission slip: it actually reaches the office now ──
+	const slip = body.querySelector<HTMLFormElement>('#cb-slip-form');
+	if (slip && !slip.dataset.slipBound) {
+		slip.dataset.slipBound = '1';
+		const note = document.getElementById('cb-slip-note');
+		const stamp = document.getElementById('cb-stamp');
+		const btn = document.getElementById('cb-slip-btn') as HTMLButtonElement | null;
+		slip.addEventListener('submit', async (e) => {
+			e.preventDefault();
+			const input = slip.querySelector<HTMLInputElement>('input[name="email"]');
+			const address = (input?.value || '').trim();
+			const trap = slip.querySelector<HTMLInputElement>('input[name="bot-field"]');
+			if (trap?.value) return;
+			if (!address || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(address)) {
+				if (note) {
+					note.textContent = 'That email does not look right. Try again?';
+					note.setAttribute('data-bad', '');
+				}
+				input?.focus();
+				return;
+			}
+			note?.removeAttribute('data-bad');
+			if (note) note.textContent = 'Handing your slip in…';
+			if (btn) btn.disabled = true;
+			try {
+				const { default: emailjs } = await import('@emailjs/browser');
+				emailjs.init('6seJt_G90tNz7cnD5');
+				await emailjs.send('service_xtbicfb', 'template_gp3qzsk', {
+					from_name: 'Newsletter sign-up',
+					name: 'Newsletter sign-up',
+					email: address,
+					reply_to: address,
+					phoneNumber: 'N/A',
+					to_email: 'contact@swizel.co',
+					subject: 'Newsletter sign-up',
+					message: `New newsletter sign-up from the blog.\n\nEmail: ${address}\nPage: ${window.location.href}`,
+				});
+				if (note) note.textContent = '';
+				slip.reset();
+				if (stamp) {
+					stamp.hidden = false;
+					window.setTimeout(() => (stamp.hidden = true), 4200);
+				}
+			} catch (err) {
+				console.log(err);
+				if (note) {
+					note.textContent = 'That did not send. Write to contact@swizel.co and we will add you.';
+					note.setAttribute('data-bad', '');
+				}
+			} finally {
+				if (btn) btn.disabled = false;
+			}
+		});
+	}
+
 	// ── scroll reveals ──
 	const reveals = Array.from(body.querySelectorAll<HTMLElement>('.cp-rev'));
 	if (reveals.length) {

@@ -1,0 +1,956 @@
+---
+// Contact · Campus world — the front office. The same job as every other
+// contact page (form, channels, chat, FAQ) told as school: a visitor's desk
+// with a live clock, an enrolment sheet you actually enjoy filling in, and
+// the corridor of other ways to reach us. Root carries `cbody` (campus
+// engine: .cp-rev reveals) and `ck` (its own widgets).
+import { Icon } from 'astro-icon/components';
+import { faq } from '../../consts';
+
+const briefs = [
+	{ id: 'site', ic: '🌐', label: 'A website', seed: 'We need a website. Here is what it has to do for us: ' },
+	{ id: 'app', ic: '📱', label: 'A mobile app', seed: 'We want to build a mobile app. The idea, in one paragraph: ' },
+	{ id: 'brand', ic: '🎨', label: 'A brand', seed: 'We need a brand people remember. Where we are today: ' },
+	{ id: 'growth', ic: '📈', label: 'Marketing & growth', seed: 'We want more of the right people finding us. Right now: ' },
+	{ id: 'team', ic: '🧑‍💻', label: 'A whole team', seed: 'We would like to hire a department from Swizel. What we need covered: ' },
+	{ id: 'other', ic: '💡', label: 'Something else', seed: 'Here is what is on my mind: ' },
+];
+
+const next = [
+	{ n: '1', t: 'It lands on a real desk', d: 'Straight to contact@swizel.co, where a person opens it. No ticket queue, no autoresponder pretending to be us.' },
+	{ n: '2', t: 'We reply within a business day', d: 'Usually the same day. If we are not the right people for it, we will say so and point you somewhere better.' },
+	{ n: '3', t: 'We meet, properly', d: 'A short virtual meeting to hear the whole thing, then a plan you can actually fund and follow.' },
+];
+
+const desks = [
+	{ ic: 'mdi:phone-outline', k: 'Call the office', v: '+234 810 020 4570', href: 'tel:+2348100204570', c: '#38bdf8' },
+	{ ic: 'mdi:email-outline', k: 'Write to us', v: 'contact@swizel.co', href: 'mailto:contact@swizel.co', c: '#f59e0b' },
+	{ ic: 'mdi:whatsapp', k: 'WhatsApp', v: 'Message us now', href: 'https://wa.me/2348100204570', c: '#25d366', out: true },
+	{ ic: 'mdi:map-marker-outline', k: 'Come and see us', v: '2155 Peculiar Estate, Lokogoma, Abuja', c: '#fb7185' },
+];
+
+const stats = [
+	{ to: 65, sfx: '+', l: 'projects shipped' },
+	{ to: 15, sfx: '+', l: 'sectors served' },
+	{ to: 1, sfx: ' day', l: 'to hear back' },
+];
+
+const ckFaq = faq.slice(0, 5);
+---
+
+<div class="ck cbody view-body view-body-campus">
+	<!-- ── A · the front desk ──────────────────────────────── -->
+	<section class="ck-sec" data-cursor="pen">
+		<div class="ck-wrap ck-desk">
+			<div class="ck-desk-copy cp-rev">
+				<span class="ck-badge">
+					<span class="ck-dot" aria-hidden="true"></span>
+					The front office · someone is in
+				</span>
+				<h1 class="ck-h ck-h--xl">Come and tell us what <em>you want to build.</em></h1>
+				<p class="ck-p">
+					No brief is too rough and no idea is too early. Half the things
+					in our trophy cabinet started as a paragraph somebody typed at
+					midnight, unsure whether it was any good. Type yours.
+				</p>
+				<ul class="ck-stats">
+					{
+						stats.map((s) => (
+							<li>
+								<strong data-count={s.to} data-suffix={s.sfx}>0{s.sfx}</strong>
+								<span>{s.l}</span>
+							</li>
+						))
+					}
+				</ul>
+				<a class="ck-jump" href="#ck-form">
+					Start the sheet
+					<Icon width={16} name="mdi:arrow-down" />
+				</a>
+			</div>
+
+			<!-- the visitor's pass, hanging on its lanyard -->
+			<div class="ck-pass cp-rev" data-fa-tilt="6">
+				<span class="ck-pass-string" aria-hidden="true"></span>
+				<span class="ck-pass-hole" aria-hidden="true"></span>
+				<span class="ck-pass-k">Visitor pass</span>
+				<strong class="ck-pass-name">You</strong>
+				<span class="ck-pass-role">Guest of the school</span>
+				<span class="ck-pass-row">
+					<span>Abuja time</span>
+					<b data-ck-clock>--:--</b>
+				</span>
+				<span class="ck-pass-row">
+					<span>Reply by</span>
+					<b>1 business day</b>
+				</span>
+				<span class="ck-pass-stamp" aria-hidden="true">WELCOME</span>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── B · the enrolment sheet ─────────────────────────── -->
+	<section class="ck-sec" id="ck-form" data-cursor="pen">
+		<div class="ck-wrap">
+			<div class="ck-head cp-rev">
+				<span class="ck-kick">📝 The enrolment sheet</span>
+				<h2 class="ck-h">Four boxes. <em>That is the whole hurdle.</em></h2>
+			</div>
+
+			<div class="ck-book cp-rev">
+				<span class="ck-rings" aria-hidden="true">
+					{Array.from({ length: 9 }).map(() => <i />)}
+				</span>
+
+				<!-- left page: pick what brings you here -->
+				<div class="ck-page ck-page--left">
+					<span class="ck-page-k">Tick what brings you here</span>
+					<div class="ck-picks">
+						{
+							briefs.map((b) => (
+								<button type="button" class="ck-pick" data-seed={b.seed} data-pick={b.id}>
+									<span class="ck-pick-box" aria-hidden="true">
+										<Icon width={13} name="mdi:check-bold" />
+									</span>
+									<span class="ck-pick-ic" aria-hidden="true">{b.ic}</span>
+									{b.label}
+								</button>
+							))
+						}
+					</div>
+					<p class="ck-hint" data-ck-hint>
+						Tick one and we will start the sentence for you. You take it from there.
+					</p>
+					<div class="ck-meter">
+						<span class="ck-meter-k">Sheet completed</span>
+						<span class="ck-meter-bar"><i data-ck-fill style="width:0%"></i></span>
+						<span class="ck-meter-n"><b data-ck-done>0</b> of 4 boxes</span>
+					</div>
+					<p class="ck-cheer" data-ck-cheer>Nothing filled in yet. Start anywhere you like.</p>
+				</div>
+
+				<!-- right page: the sheet itself -->
+				<div class="ck-page ck-page--right">
+					<form class="ck-form" id="ck-contact" novalidate>
+						<label class="ck-field">
+							<span class="ck-label">What should we call you? <em>*</em></span>
+							<input type="text" name="name" autocomplete="name" placeholder="Your full name" required />
+						</label>
+						<label class="ck-field">
+							<span class="ck-label">Where do we reply? <em>*</em></span>
+							<input type="email" name="email" autocomplete="email" placeholder="you@company.com" required />
+						</label>
+						<label class="ck-field">
+							<span class="ck-label">A number, if you like calls</span>
+							<input type="tel" name="phoneNumber" autocomplete="tel" placeholder="+234 800 000 0000" />
+						</label>
+						<label class="ck-field">
+							<span class="ck-label">Tell us the thing <em>*</em></span>
+							<textarea
+								name="message"
+								rows="5"
+								placeholder="What are you building, who is it for, and what does done look like? Rough is fine."
+								required></textarea>
+						</label>
+						<button type="submit" class="ck-send fa-cta" id="ck-send">
+							Hand it in
+							<Icon width={17} name="mdi:send" />
+						</button>
+						<p class="ck-fine">
+							<Icon width={14} name="mdi:lock-outline" />
+							Goes to contact@swizel.co. Read by a person, answered by a person.
+						</p>
+					</form>
+
+					<!-- the stamp that lands when the sheet is handed in -->
+					<div class="ck-stamp" id="ck-stamp" hidden>
+						<div class="ck-stamp-card">
+							<span class="ck-stamp-mark" aria-hidden="true"><Icon width={26} name="mdi:check-bold" /></span>
+							<strong>Received</strong>
+							<em>It is on our desk. We will get back to you, usually within a business day.</em>
+							<button type="button" class="ck-stamp-x" data-ck-stamp-close>Send another</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── C · what happens next ───────────────────────────── -->
+	<section class="ck-sec" data-cursor="book">
+		<div class="ck-wrap">
+			<div class="ck-head cp-rev">
+				<span class="ck-kick">🔔 After the bell</span>
+				<h2 class="ck-h">What happens <em>once you hit send.</em></h2>
+			</div>
+			<ol class="ck-next">
+				{
+					next.map((n, i) => (
+						<li class="ck-next-step cp-rev" style={`--i:${i}`}>
+							<span class="ck-next-n">{n.n}</span>
+							<strong>{n.t}</strong>
+							<p>{n.d}</p>
+						</li>
+					))
+				}
+			</ol>
+		</div>
+	</section>
+
+	<!-- ── D · the corridor + the chat desk ────────────────── -->
+	<section class="ck-sec" data-cursor="phone">
+		<div class="ck-wrap">
+			<div class="ck-head cp-rev">
+				<span class="ck-kick">🚪 The corridor</span>
+				<h2 class="ck-h">Not a form person? <em>Catch us anywhere.</em></h2>
+			</div>
+
+			<div class="ck-chatrow">
+				<button type="button" class="ck-chat ck-chat--live cp-rev" data-open-chat data-fa-tilt="5">
+					<span class="ck-chat-ic" aria-hidden="true">
+						<Icon width={26} name="mdi:message-text-outline" />
+						<span class="ck-chat-live"></span>
+					</span>
+					<span class="ck-chat-txt">
+						<span class="ck-chat-k">Live chat · someone is on the other end</span>
+						<strong>Talk to us right now</strong>
+						<em>Ask the awkward question. Budget, timeline, whether the idea is mad. We answer straight.</em>
+					</span>
+					<span class="ck-chat-go" aria-hidden="true"><Icon width={17} name="mdi:arrow-right" /></span>
+				</button>
+
+				<a
+					class="ck-chat ck-chat--wa cp-rev"
+					href="https://wa.me/2348100204570"
+					target="_blank"
+					rel="noopener noreferrer"
+					data-fa-tilt="5"
+				>
+					<span class="ck-chat-ic" aria-hidden="true"><Icon width={26} name="mdi:whatsapp" /></span>
+					<span class="ck-chat-txt">
+						<span class="ck-chat-k">WhatsApp · in your pocket</span>
+						<strong>Message us instead</strong>
+						<em>Voice notes welcome. Send the screenshot, the sketch, the link, whatever you have.</em>
+					</span>
+					<span class="ck-chat-go" aria-hidden="true"><Icon width={17} name="mdi:arrow-top-right" /></span>
+				</a>
+			</div>
+
+			<div class="ck-desks">
+				{
+					desks.map((d, i) => (
+						<div class="ck-note cp-rev" style={`--c:${d.c}; --r:${i % 2 === 0 ? -1.1 : 1.2}deg; --i:${i % 4}`}>
+							<span class="ck-note-pin" aria-hidden="true" />
+							<span class="ck-note-ic"><Icon width={18} name={d.ic} /></span>
+							<span class="ck-note-k">{d.k}</span>
+							{d.href ? (
+								<a
+									class="ck-note-v"
+									href={d.href}
+									target={d.out ? '_blank' : undefined}
+									rel={d.out ? 'noopener noreferrer' : undefined}
+								>
+									{d.v}
+								</a>
+							) : (
+								<span class="ck-note-v">{d.v}</span>
+							)}
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── E · questions ──────────────────────────────────── -->
+	<section class="ck-sec ck-sec--last" data-cursor="book">
+		<div class="ck-wrap ck-wrap--narrow">
+			<div class="ck-head cp-rev">
+				<span class="ck-kick">🙋 Hands up</span>
+				<h2 class="ck-h">Asked before <em>you ask.</em></h2>
+			</div>
+			<div class="ck-faq">
+				{
+					ckFaq.map((f) => (
+						<details class="ck-q cp-rev">
+							<summary>
+								<span>{f.question.replace(/\s+\?/g, '?').trim()}</span>
+								<Icon class="ck-q-caret" width={18} name="mdi:chevron-down" />
+							</summary>
+							<p>{f.answer.trim()}</p>
+						</details>
+					))
+				}
+			</div>
+		</div>
+	</section>
+</div>
+
+<style>
+	/* ── Campus Contact — the front office, in school dress. ── */
+	.ck {
+		--cp-ink: #fdf6ea;
+		--cp-muted: rgba(253, 246, 234, 0.64);
+		--cp-faint: rgba(253, 246, 234, 0.42);
+		--cp-acc: var(--view-accent, #f59e0b);
+		--cp-acc2: #fb7185;
+		--cp-line: rgba(255, 255, 255, 0.1);
+		--cp-card: rgba(255, 255, 255, 0.04);
+		--cp-marker: 'Bradley Hand', 'Segoe Print', 'Comic Sans MS', cursive;
+		--paper: #fdf8ec;
+		--paper2: #f4ead3;
+		font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+		position: relative;
+		isolation: isolate;
+		overflow-x: clip;
+		color: var(--cp-ink);
+		background:
+			radial-gradient(1000px 560px at 84% -8%, rgba(245, 158, 11, 0.14), transparent 62%),
+			radial-gradient(820px 480px at 4% 46%, rgba(251, 113, 133, 0.08), transparent 60%),
+			linear-gradient(180deg, #120c04 0%, #170f08 52%, #0e0903 100%);
+		padding: clamp(2rem, 4vw, 3rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 4rem);
+	}
+	:global(html:not(.dark)) .ck {
+		--cp-ink: #2b1c08;
+		--cp-muted: rgba(43, 28, 8, 0.7);
+		--cp-faint: rgba(43, 28, 8, 0.48);
+		--cp-acc: #b45309;
+		--cp-line: rgba(43, 28, 8, 0.12);
+		--cp-card: rgba(255, 255, 255, 0.6);
+		background:
+			radial-gradient(1000px 560px at 84% -8%, rgba(245, 158, 11, 0.16), transparent 62%),
+			linear-gradient(180deg, #fdf4e3 0%, #faecd4 55%, #fdf4e3 100%);
+	}
+
+	.ck-wrap { max-width: 76rem; margin: 0 auto; }
+	.ck-wrap--narrow { max-width: 52rem; }
+	.ck-sec { padding-block: clamp(2rem, 4.5vw, 3.5rem); }
+	.ck-sec--last { padding-bottom: clamp(1rem, 2vw, 1.5rem); }
+	.ck-head { text-align: center; margin-bottom: clamp(1.4rem, 3vw, 2.2rem); }
+	.ck-kick {
+		display: inline-block;
+		font-family: ui-monospace, monospace;
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--cp-acc);
+		margin-bottom: 0.5rem;
+	}
+	.ck-h {
+		margin: 0;
+		font-size: clamp(1.7rem, 3.4vw, 2.5rem);
+		font-weight: 850;
+		line-height: 1.12;
+		letter-spacing: -0.02em;
+	}
+	.ck-h--xl { font-size: clamp(2.1rem, 4.6vw, 3.4rem); }
+	.ck-h em {
+		font-style: normal;
+		background: linear-gradient(95deg, var(--cp-acc), var(--cp-acc2));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	.ck-p { font-size: clamp(0.98rem, 1.4vw, 1.08rem); line-height: 1.72; color: var(--cp-muted); }
+
+	/* ── A · the desk ── */
+	.ck-desk {
+		display: grid;
+		gap: clamp(1.6rem, 4vw, 3rem);
+		align-items: center;
+	}
+	@media (min-width: 900px) { .ck-desk { grid-template-columns: 1.25fr 0.75fr; } }
+	.ck-badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-family: ui-monospace, monospace;
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.13em;
+		text-transform: uppercase;
+		color: var(--cp-acc);
+		border: 1px solid color-mix(in srgb, var(--cp-acc) 38%, transparent);
+		background: color-mix(in srgb, var(--cp-acc) 8%, transparent);
+		padding: 0.35rem 0.8rem;
+		border-radius: 9999px;
+		margin-bottom: 1rem;
+	}
+	.ck-dot {
+		width: 7px;
+		height: 7px;
+		border-radius: 9999px;
+		background: #22c55e;
+		box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6);
+		animation: ck-pulse 2.4s ease-out infinite;
+	}
+	@keyframes ck-pulse {
+		to { box-shadow: 0 0 0 9px rgba(34, 197, 94, 0); }
+	}
+	.ck-desk-copy .ck-p { margin: 0.9rem 0 0; max-width: 40rem; }
+	.ck-stats {
+		list-style: none;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem 2.2rem;
+		margin: 1.4rem 0 1.3rem;
+		padding: 0;
+	}
+	.ck-stats li { display: grid; }
+	.ck-stats strong {
+		font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+		font-weight: 850;
+		line-height: 1;
+		background: linear-gradient(95deg, var(--cp-acc), var(--cp-acc2));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	.ck-stats span { font-family: var(--cp-marker); font-size: 0.85rem; color: var(--cp-faint); }
+	.ck-jump {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-weight: 800;
+		font-size: 0.93rem;
+		color: var(--cp-acc);
+		border-bottom: 2px solid color-mix(in srgb, var(--cp-acc) 45%, transparent);
+		padding-bottom: 0.15rem;
+		transition: gap 0.25s ease, border-color 0.25s ease;
+	}
+	.ck-jump:hover { gap: 0.8rem; border-color: var(--cp-acc); }
+	.ck-jump :global(svg) { animation: ck-nudge 2.2s ease-in-out infinite; }
+	@keyframes ck-nudge {
+		0%, 100% { transform: translateY(0); }
+		50% { transform: translateY(3px); }
+	}
+
+	/* the visitor's pass */
+	.ck-pass {
+		position: relative;
+		display: grid;
+		gap: 0.3rem;
+		max-width: 19rem;
+		margin: 2.4rem auto 0;
+		padding: 2.1rem 1.3rem 1.3rem;
+		border-radius: 0.9rem;
+		color: #2b1c08;
+		background: linear-gradient(180deg, var(--paper), var(--paper2));
+		box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.75);
+		transform: rotate(-1.6deg);
+		animation: ck-swing 7s ease-in-out infinite;
+		transform-origin: top center;
+	}
+	@keyframes ck-swing {
+		0%, 100% { transform: rotate(-1.6deg); }
+		50% { transform: rotate(1.4deg); }
+	}
+	.ck-pass-string {
+		position: absolute;
+		left: 50%;
+		top: -2.4rem;
+		width: 2px;
+		height: 2.4rem;
+		transform: translateX(-50%);
+		background: color-mix(in srgb, var(--cp-acc) 70%, #000);
+	}
+	.ck-pass-hole {
+		position: absolute;
+		left: 50%;
+		top: 0.7rem;
+		width: 42px;
+		height: 9px;
+		transform: translateX(-50%);
+		border-radius: 9999px;
+		background: rgba(43, 28, 8, 0.22);
+		box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
+	}
+	.ck-pass-k {
+		font-family: ui-monospace, monospace;
+		font-size: 0.62rem;
+		font-weight: 800;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: rgba(43, 28, 8, 0.5);
+	}
+	.ck-pass-name { font-family: var(--cp-marker); font-size: 1.9rem; font-weight: 700; line-height: 1.1; }
+	.ck-pass-role { font-size: 0.82rem; color: rgba(43, 28, 8, 0.62); margin-bottom: 0.5rem; }
+	.ck-pass-row {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+		font-size: 0.8rem;
+		padding: 0.4rem 0;
+		border-top: 1px dashed rgba(43, 28, 8, 0.18);
+		color: rgba(43, 28, 8, 0.6);
+	}
+	.ck-pass-row b { font-family: var(--cp-marker); font-size: 0.95rem; color: #2b1c08; }
+	.ck-pass-stamp {
+		position: absolute;
+		right: 0.6rem;
+		bottom: 0.5rem;
+		font-family: ui-monospace, monospace;
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.2em;
+		color: rgba(225, 29, 72, 0.55);
+		border: 2px solid rgba(225, 29, 72, 0.4);
+		border-radius: 0.3rem;
+		padding: 0.15rem 0.4rem;
+		transform: rotate(-9deg);
+	}
+</style>
+
+<style>
+	/* ── B · the enrolment sheet ── */
+	.ck-book {
+		position: relative;
+		display: grid;
+		gap: 0;
+		max-width: 68rem;
+		margin: 0 auto;
+		padding-top: 14px;
+		border-radius: 0.9rem;
+		background: linear-gradient(180deg, var(--paper), var(--paper2));
+		box-shadow: 0 40px 90px -40px rgba(0, 0, 0, 0.8);
+		color: #2b1c08;
+		overflow: hidden;
+	}
+	@media (min-width: 900px) { .ck-book { grid-template-columns: 0.85fr 1.15fr; } }
+	.ck-rings {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		display: flex;
+		justify-content: space-around;
+		padding-inline: 3%;
+		pointer-events: none;
+	}
+	.ck-rings i {
+		width: 11px;
+		height: 24px;
+		border-radius: 9999px;
+		border: 2.5px solid #b9bcc4;
+		border-top-color: #eceef2;
+		border-bottom-color: #82868f;
+	}
+	.ck-page { padding: clamp(1.5rem, 3vw, 2.2rem) clamp(1.2rem, 2.6vw, 2rem) clamp(1.6rem, 3vw, 2.2rem); }
+	.ck-page--left {
+		background:
+			repeating-linear-gradient(180deg, transparent 0 27px, rgba(59, 130, 246, 0.09) 27px 28px),
+			linear-gradient(180deg, rgba(245, 158, 11, 0.07), transparent);
+		border-bottom: 1px dashed rgba(43, 28, 8, 0.18);
+	}
+	@media (min-width: 900px) {
+		.ck-page--left { border-bottom: 0; border-right: 1px dashed rgba(43, 28, 8, 0.18); }
+	}
+	.ck-page--right { position: relative; }
+	.ck-page-k {
+		display: block;
+		font-family: ui-monospace, monospace;
+		font-size: 0.66rem;
+		font-weight: 800;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: rgba(43, 28, 8, 0.5);
+		margin-bottom: 0.8rem;
+	}
+	.ck-picks { display: grid; gap: 0.45rem; }
+	.ck-pick {
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		width: 100%;
+		text-align: left;
+		padding: 0.55rem 0.7rem;
+		border-radius: 0.55rem;
+		border: 1px solid transparent;
+		background: transparent;
+		cursor: pointer;
+		font-family: var(--cp-marker);
+		font-size: 1.02rem;
+		font-weight: 700;
+		color: #2b1c08;
+		transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+	}
+	.ck-pick:hover { background: rgba(245, 158, 11, 0.12); transform: translateX(3px); }
+	.ck-pick-box {
+		display: grid;
+		place-items: center;
+		width: 20px;
+		height: 20px;
+		flex: none;
+		border-radius: 0.3rem;
+		border: 2px solid rgba(43, 28, 8, 0.35);
+		color: transparent;
+		transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+	}
+	.ck-pick.is-on { border-color: rgba(180, 83, 9, 0.4); background: rgba(245, 158, 11, 0.16); }
+	.ck-pick.is-on .ck-pick-box { background: #b45309; border-color: #b45309; color: #fff; }
+	.ck-pick-ic { font-size: 1.05rem; line-height: 1; }
+	.ck-hint {
+		margin: 0.9rem 0 1.2rem;
+		font-size: 0.82rem;
+		line-height: 1.55;
+		color: rgba(43, 28, 8, 0.62);
+	}
+	.ck-meter { display: grid; gap: 0.35rem; }
+	.ck-meter-k,
+	.ck-meter-n {
+		font-family: ui-monospace, monospace;
+		font-size: 0.64rem;
+		font-weight: 800;
+		letter-spacing: 0.13em;
+		text-transform: uppercase;
+		color: rgba(43, 28, 8, 0.5);
+	}
+	.ck-meter-bar {
+		display: block;
+		height: 9px;
+		border-radius: 9999px;
+		background: rgba(43, 28, 8, 0.12);
+		overflow: hidden;
+	}
+	.ck-meter-bar i {
+		display: block;
+		height: 100%;
+		border-radius: 9999px;
+		background: linear-gradient(90deg, #fbbf24, #b45309);
+		transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.ck-meter-n b { color: #b45309; }
+	.ck-cheer {
+		margin: 0.8rem 0 0;
+		font-family: var(--cp-marker);
+		font-size: 1rem;
+		line-height: 1.5;
+		color: #b45309;
+	}
+
+	.ck-form { display: grid; gap: 0.9rem; }
+	.ck-field { display: grid; gap: 0.3rem; }
+	.ck-label {
+		font-family: var(--cp-marker);
+		font-size: 1rem;
+		font-weight: 700;
+		color: rgba(43, 28, 8, 0.78);
+	}
+	.ck-label em { font-style: normal; color: #e11d48; }
+	.ck-field input,
+	.ck-field textarea {
+		width: 100%;
+		font: inherit;
+		font-size: 0.95rem;
+		color: #2b1c08;
+		background: transparent;
+		border: 0;
+		border-bottom: 1.5px solid rgba(43, 28, 8, 0.28);
+		border-radius: 0;
+		padding: 0.5rem 0.2rem;
+		transition: border-color 0.25s ease, background 0.25s ease;
+	}
+	.ck-field textarea {
+		border: 1.5px solid rgba(43, 28, 8, 0.22);
+		border-radius: 0.5rem;
+		padding: 0.6rem 0.7rem;
+		resize: vertical;
+		background:
+			repeating-linear-gradient(180deg, transparent 0 25px, rgba(59, 130, 246, 0.1) 25px 26px);
+		line-height: 26px;
+	}
+	.ck-field input::placeholder,
+	.ck-field textarea::placeholder { color: rgba(43, 28, 8, 0.36); }
+	.ck-field input:focus,
+	.ck-field textarea:focus {
+		outline: none;
+		border-color: #b45309;
+		background: rgba(245, 158, 11, 0.07);
+	}
+	.ck-field.is-bad input,
+	.ck-field.is-bad textarea { border-color: #e11d48; }
+	.ck-err { font-size: 0.76rem; font-weight: 600; color: #be123c; }
+	.ck-send {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.55rem;
+		margin-top: 0.4rem;
+		padding: 0.95rem 1.6rem;
+		border: 0;
+		border-radius: 9999px;
+		cursor: pointer;
+		font-family: inherit;
+		font-size: 1rem;
+		font-weight: 800;
+		color: #2b1500;
+		background: linear-gradient(95deg, #fcd34d, #f59e0b);
+		box-shadow: 0 18px 40px -16px rgba(245, 158, 11, 0.85);
+		transition: filter 0.2s ease, transform 0.2s ease;
+	}
+	.ck-send:hover { filter: brightness(1.05); transform: translateY(-2px); }
+	.ck-send[disabled] { opacity: 0.65; cursor: progress; }
+	.ck-fine {
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
+		margin: 0;
+		font-size: 0.78rem;
+		color: rgba(43, 28, 8, 0.58);
+	}
+
+	.ck-stamp {
+		position: absolute;
+		inset: 0;
+		z-index: 3;
+		display: grid;
+		place-items: center;
+		padding: 1.2rem;
+		background: rgba(253, 244, 227, 0.86);
+		backdrop-filter: blur(4px);
+	}
+	.ck-stamp[hidden] { display: none; }
+	.ck-stamp-card {
+		display: grid;
+		justify-items: center;
+		gap: 0.4rem;
+		text-align: center;
+		max-width: 24rem;
+		padding: 1.6rem 1.4rem;
+		border-radius: 1rem;
+		border: 2px dashed rgba(180, 83, 9, 0.45);
+		background: #fffaf0;
+		box-shadow: 0 26px 60px -26px rgba(43, 28, 8, 0.5);
+		animation: ck-stamp-in 0.45s cubic-bezier(0.2, 1.5, 0.4, 1) both;
+	}
+	@keyframes ck-stamp-in {
+		from { opacity: 0; transform: scale(1.16) rotate(-3deg); }
+		to { opacity: 1; transform: none; }
+	}
+	.ck-stamp-mark {
+		display: grid;
+		place-items: center;
+		width: 3rem;
+		height: 3rem;
+		border-radius: 9999px;
+		color: #2b1500;
+		background: linear-gradient(95deg, #fcd34d, #f59e0b);
+	}
+	.ck-stamp-card strong { font-family: var(--cp-marker); font-size: 1.6rem; color: #2b1c08; }
+	.ck-stamp-card em { font-style: normal; font-size: 0.9rem; line-height: 1.55; color: rgba(43, 28, 8, 0.7); }
+	.ck-stamp-x {
+		margin-top: 0.5rem;
+		padding: 0.4rem 0.9rem;
+		border-radius: 9999px;
+		border: 1px solid rgba(43, 28, 8, 0.25);
+		background: none;
+		cursor: pointer;
+		font: inherit;
+		font-size: 0.82rem;
+		font-weight: 700;
+		color: rgba(43, 28, 8, 0.7);
+	}
+	.ck-stamp-x:hover { background: rgba(43, 28, 8, 0.06); }
+</style>
+
+<style>
+	/* ── C · what happens next ── */
+	.ck-next {
+		list-style: none;
+		display: grid;
+		gap: 1rem;
+		margin: 0;
+		padding: 0;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+	@media (max-width: 860px) { .ck-next { grid-template-columns: 1fr; } }
+	.ck-next-step {
+		position: relative;
+		padding: 1.3rem 1.2rem 1.2rem;
+		border-radius: 0.9rem;
+		border: 1px solid var(--cp-line);
+		background: var(--cp-card);
+	}
+	.ck-next-n {
+		display: grid;
+		place-items: center;
+		width: 2rem;
+		height: 2rem;
+		margin-bottom: 0.6rem;
+		border-radius: 9999px;
+		font-family: var(--cp-marker);
+		font-size: 1.1rem;
+		font-weight: 700;
+		color: #2b1500;
+		background: linear-gradient(95deg, #fcd34d, var(--cp-acc));
+	}
+	.ck-next-step strong { display: block; font-size: 1.02rem; font-weight: 850; margin-bottom: 0.3rem; }
+	.ck-next-step p { margin: 0; font-size: 0.88rem; line-height: 1.62; color: var(--cp-muted); }
+
+	/* ── D · the chat desk ── */
+	.ck-chatrow {
+		display: grid;
+		gap: 1rem;
+		margin-bottom: clamp(1.4rem, 3vw, 2.2rem);
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+	@media (max-width: 860px) { .ck-chatrow { grid-template-columns: 1fr; } }
+	.ck-chat {
+		display: flex;
+		align-items: center;
+		gap: 0.9rem;
+		width: 100%;
+		text-align: left;
+		padding: 1.15rem 1.2rem;
+		border-radius: 1rem;
+		border: 1px solid color-mix(in srgb, var(--ch, var(--cp-acc)) 35%, transparent);
+		background:
+			linear-gradient(120deg, color-mix(in srgb, var(--ch, var(--cp-acc)) 12%, transparent), transparent 65%),
+			var(--cp-card);
+		color: inherit;
+		cursor: pointer;
+		font: inherit;
+		transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+	}
+	.ck-chat--live { --ch: #18debe; }
+	.ck-chat--wa { --ch: #25d366; }
+	.ck-chat:hover {
+		border-color: var(--ch);
+		transform: translateY(-3px);
+		box-shadow: 0 30px 60px -30px color-mix(in srgb, var(--ch) 55%, transparent);
+	}
+	.ck-chat-ic {
+		position: relative;
+		display: grid;
+		place-items: center;
+		width: 3.2rem;
+		height: 3.2rem;
+		flex: none;
+		border-radius: 0.9rem;
+		color: #0b1207;
+		background: linear-gradient(150deg, color-mix(in srgb, var(--ch) 85%, #fff), var(--ch));
+	}
+	.ck-chat-live {
+		position: absolute;
+		top: -3px;
+		right: -3px;
+		width: 12px;
+		height: 12px;
+		border-radius: 9999px;
+		background: #22c55e;
+		border: 2px solid #0e0903;
+		animation: ck-pulse 2.4s ease-out infinite;
+	}
+	:global(html:not(.dark)) .ck-chat-live { border-color: #fdf4e3; }
+	.ck-chat-txt { display: grid; gap: 0.18rem; min-width: 0; }
+	.ck-chat-k {
+		font-family: ui-monospace, monospace;
+		font-size: 0.63rem;
+		font-weight: 800;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: color-mix(in srgb, var(--ch) 70%, var(--cp-ink));
+	}
+	.ck-chat-txt strong { font-size: 1.05rem; font-weight: 850; }
+	.ck-chat-txt em { font-style: normal; font-size: 0.85rem; line-height: 1.55; color: var(--cp-muted); }
+	.ck-chat-go {
+		margin-left: auto;
+		flex: none;
+		color: var(--ch);
+		transition: transform 0.25s ease;
+	}
+	.ck-chat:hover .ck-chat-go { transform: translateX(4px); }
+
+	/* the corridor notes */
+	.ck-desks {
+		display: grid;
+		gap: 1rem;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
+	@media (max-width: 980px) { .ck-desks { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+	@media (max-width: 520px) { .ck-desks { grid-template-columns: 1fr; } }
+	.ck-note {
+		position: relative;
+		display: grid;
+		gap: 0.3rem;
+		padding: 1.4rem 1rem 1.1rem;
+		border-radius: 0.4rem;
+		color: #2b1c08;
+		background: linear-gradient(180deg, #fdf8ec, #f3e8d0);
+		box-shadow: 0 22px 44px -26px rgba(0, 0, 0, 0.7);
+		transform: rotate(var(--r, 0deg));
+		transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
+	}
+	.ck-note:hover { transform: rotate(0deg) translateY(-4px); box-shadow: 0 30px 60px -28px rgba(0, 0, 0, 0.75); }
+	.ck-note-pin {
+		position: absolute;
+		top: -7px;
+		left: 50%;
+		width: 14px;
+		height: 14px;
+		transform: translateX(-50%);
+		border-radius: 9999px;
+		background: radial-gradient(circle at 32% 30%, #fff, var(--c, #fb7185) 60%);
+		box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+	}
+	.ck-note-ic { color: color-mix(in srgb, var(--c) 78%, #2b1c08); }
+	.ck-note-k {
+		font-family: ui-monospace, monospace;
+		font-size: 0.62rem;
+		font-weight: 800;
+		letter-spacing: 0.13em;
+		text-transform: uppercase;
+		color: rgba(43, 28, 8, 0.5);
+	}
+	.ck-note-v {
+		font-family: var(--cp-marker);
+		font-size: 1rem;
+		font-weight: 700;
+		line-height: 1.4;
+		color: #2b1c08;
+		word-break: break-word;
+	}
+	a.ck-note-v { border-bottom: 1.5px solid color-mix(in srgb, var(--c) 45%, transparent); width: fit-content; }
+	a.ck-note-v:hover { border-color: var(--c); }
+
+	/* ── E · questions ── */
+	.ck-faq { display: grid; gap: 0.6rem; }
+	.ck-q {
+		border-radius: 0.7rem;
+		border: 1px solid var(--cp-line);
+		background: var(--cp-card);
+		padding: 0.2rem 1rem;
+		transition: border-color 0.25s ease;
+	}
+	.ck-q[open] { border-color: color-mix(in srgb, var(--cp-acc) 45%, transparent); }
+	.ck-q summary {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 0.9rem 0;
+		cursor: pointer;
+		list-style: none;
+		font-size: 0.98rem;
+		font-weight: 750;
+	}
+	.ck-q summary::-webkit-details-marker { display: none; }
+	.ck-q-caret { flex: none; color: var(--cp-acc); transition: transform 0.25s ease; }
+	.ck-q[open] .ck-q-caret { transform: rotate(180deg); }
+	.ck-q p { margin: 0 0 1rem; font-size: 0.9rem; line-height: 1.7; color: var(--cp-muted); }
+
+	/* ── reveals ── */
+	.cp-rev {
+		opacity: 0;
+		transform: translateY(22px);
+		transition: opacity 0.65s ease, transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+		transition-delay: calc(var(--i, 0) * 0.08s);
+	}
+	.cp-rev.is-on { opacity: 1; transform: translateY(0); }
+	@media (prefers-reduced-motion: reduce) {
+		.cp-rev { opacity: 1; transform: none; transition: none; }
+		.ck-pass, .ck-dot, .ck-chat-live, .ck-jump :global(svg) { animation: none; }
+	}
+</style>
+

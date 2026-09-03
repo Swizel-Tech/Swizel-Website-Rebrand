@@ -12,8 +12,10 @@ interface Props {
 const { project: p, others } = Astro.props;
 const cs = p.caseStudy!;
 
-const galVideo = cs.gallery.find((g) => g.kind === 'video');
-const galImages = cs.gallery.filter((g) => g.kind !== 'video');
+// only real media makes the gallery; an empty slot is simply not shown
+const shots = cs.gallery.filter((g) => g.src);
+const galVideo = shots.find((g) => g.kind === 'video');
+const galImages = shots.filter((g) => g.kind !== 'video');
 const heroBadges = cs.results.slice(0, 2);
 ---
 
@@ -27,11 +29,16 @@ const heroBadges = cs.results.slice(0, 2);
 	<section class="cb-sec">
 		<div class="cb-wrap cb-hero">
 			<div class="bb-rev">
-				<nav class="cb-crumb" aria-label="Breadcrumb">
-					<a href="/portfolio">swizel/deployments</a>
-					<span>/</span>
-					<span class="cb-crumb-here">{p.slug}</span>
-				</nav>
+				<div class="cb-backrow">
+					<button class="cb-back" type="button" data-go-back>
+						<Icon width={14} name="mdi:arrow-left" />
+						cd ..
+					</button>
+					<a class="cb-back cb-back--alt" href="/portfolio">
+						<Icon width={14} name="mdi:folder-outline" />
+						open deployments/
+					</a>
+				</div>
 				<span class="cb-kick">// deploy report · {cs.meta.sector.toLowerCase()}</span>
 				<h2 class="cb-h cb-h--xl">{p.name}<span class="cb-accent">.</span></h2>
 				<p class="cb-tagline">{p.tagline}</p>
@@ -208,44 +215,46 @@ const heroBadges = cs.results.slice(0, 2);
 	</section>
 
 	<!-- ── assets/ gallery ── -->
-	<section class="cb-sec" data-cursor="repo">
-		<div class="cb-wrap">
-			<div class="cb-head bb-rev">
-				<span class="cb-kick">// assets/</span>
-				<h2 class="cb-h">The product, <span class="cb-accent">in frames.</span></h2>
-			</div>
-			<div class="cb-gallery">
-				{
-					galVideo && (
-						<div class="cb-gal-video bb-rev">
-							<span class="cb-sheen" aria-hidden="true" />
-							<Icon width={34} name="mdi:play-circle-outline" />
-							<span class="cb-media-label">{galVideo.label}</span>
-							{galVideo.caption && <span class="cb-media-sub">{galVideo.caption}</span>}
-						</div>
-					)
-				}
-				<div class="cb-gal-grid">
+	{shots.length > 0 && (
+		<section class="cb-sec" data-cursor="repo">
+			<div class="cb-wrap">
+				<div class="cb-head bb-rev">
+					<span class="cb-kick">// assets/</span>
+					<h2 class="cb-h">The product, <span class="cb-accent">in frames.</span></h2>
+				</div>
+				<div class="cb-gallery">
 					{
-						galImages.map((g, i) =>
-							g.src ? (
-								<figure class="cb-gal-item bb-rev" style={`--i:${i % 4}`}>
-									<img src={g.src} alt={g.label} loading="lazy" />
-									{g.caption && <figcaption>{g.caption}</figcaption>}
-								</figure>
-							) : (
-								<div class="cb-gal-item cb-gal-item--ph bb-rev" style={`--i:${i % 4}`}>
-									<Icon width={20} name="mdi:image-outline" />
-									<span class="cb-media-label">{g.label}</span>
-									{g.caption && <span class="cb-media-sub">{g.caption}</span>}
-								</div>
-							)
+						galVideo && (
+							<div class="cb-gal-video bb-rev">
+								<span class="cb-sheen" aria-hidden="true" />
+								<Icon width={34} name="mdi:play-circle-outline" />
+								<span class="cb-media-label">{galVideo.label}</span>
+								{galVideo.caption && <span class="cb-media-sub">{galVideo.caption}</span>}
+							</div>
 						)
 					}
+					<div class="cb-gal-grid">
+						{
+							galImages.map((g, i) =>
+								g.src ? (
+									<figure class="cb-gal-item bb-rev" style={`--i:${i % 4}`}>
+										<img src={g.src} alt={g.label} loading="lazy" />
+										{g.caption && <figcaption>{g.caption}</figcaption>}
+									</figure>
+								) : (
+									<div class="cb-gal-item cb-gal-item--ph bb-rev" style={`--i:${i % 4}`}>
+										<Icon width={20} name="mdi:image-outline" />
+										<span class="cb-media-label">{g.label}</span>
+										{g.caption && <span class="cb-media-sub">{g.caption}</span>}
+									</div>
+								)
+							)
+						}
+					</div>
 				</div>
 			</div>
-		</div>
-	</section>
+		</section>
+	)}
 
 	<!-- ── the client's approval ── -->
 	{
@@ -431,6 +440,24 @@ const heroBadges = cs.results.slice(0, 2);
 
 	/* hero */
 	.cb-hero { display: grid; grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr); gap: clamp(2rem, 4vw, 3.2rem); align-items: center; }
+	.cb-backrow { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+	.cb-back {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		cursor: pointer;
+		padding: 0.42rem 0.9rem 0.42rem 0.75rem;
+		border-radius: 0.5rem;
+		border: 1px solid color-mix(in srgb, var(--c) 34%, transparent);
+		background: color-mix(in srgb, var(--c) 9%, transparent);
+		font-family: var(--bu-mono);
+		font-size: 0.8rem;
+		color: var(--c);
+		transition: gap 0.25s ease, background 0.25s ease;
+	}
+	.cb-back:hover { gap: 0.7rem; background: color-mix(in srgb, var(--c) 18%, transparent); }
+	.cb-back--alt { background: transparent; border-style: dashed; color: var(--bu-faint); }
+	.cb-back--alt:hover { color: var(--c); }
 	.cb-crumb { display: flex; align-items: center; gap: 0.4rem; font-family: var(--bu-mono); font-size: 0.8rem; color: var(--bu-faint); margin-bottom: 1rem; }
 	.cb-crumb a { color: var(--c); }
 	.cb-crumb-here { color: var(--bu-ink); }

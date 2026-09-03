@@ -1,4 +1,4 @@
-// Real client work — powers the Portfolio index and the /work/<slug> case
+// Real client work. Powers the Portfolio index and the /work/<slug> case
 // studies. Screenshots of the live sites live in /public/images/portfolio.
 export type ProjectSector = 'agri' | 'health' | 'property' | 'media' | 'commerce' | 'product';
 
@@ -19,7 +19,7 @@ export interface PressItem {
 export interface CaseStudy {
 	intro: string; // the opening story
 	challenge: string;
-	approach: { title: string; desc: string }[]; // what we did — explained
+	approach: { title: string; desc: string }[]; // what we did, explained
 	highlights: { title: string; desc: string }[]; // solution feature blocks
 	results: { stat: string; label: string }[]; // impact numbers
 	quote?: { text: string; who: string };
@@ -66,7 +66,7 @@ export const projects: Project[] = [
 		name: 'Hemam Synergy',
 		tagline: 'The site behind an ~€850,000 funding win.',
 		blurb:
-			'An agritech outfit empowering rural smallholder farmers — and a digital presence credible enough to help unlock major grant funding.',
+			'An agritech outfit empowering rural smallholder farmers, with a digital presence credible enough to help unlock major grant funding.',
 		img: '/images/portfolio/shot-hemamsynergy.jpg',
 		url: 'https://hemamsynergy.com/',
 		host: 'hemamsynergy.com',
@@ -79,9 +79,9 @@ export const projects: Project[] = [
 			meta: { client: 'Hemam Synergy', sector: 'Agritech · Food security', year: '2023', scope: 'Brand · Website · Content · Hosting · Maintenance' },
 			liveUrl: 'https://hemamsynergy.com/',
 			intro:
-				'Hemam Synergy set out to do something hard and important: lift rural smallholder farmers across Nigeria with quality inputs, training, market linkages and solar-powered grain infrastructure. We were part of the team that made the digital side of that ambition real — and the result helped open a very big door, with the organisation going on to secure roughly €850,000 in funding.',
+				'Hemam Synergy set out to do something hard and important: lift rural smallholder farmers across Nigeria with quality inputs, training, market linkages and solar-powered grain infrastructure. We were part of the team that made the digital side of that ambition real, and the result helped open a very big door, with the organisation going on to secure roughly €850,000 in funding.',
 			challenge:
-				'To win partners and serious funding, Hemam had to look as credible online as the work was on the ground. The brief was unforgiving: communicate scale, climate-resilience and measurable impact to international funders and agro-industrial partners — clearly, quickly, and without a single weak page or a moment of doubt about who they are.',
+				'To win partners and serious funding, Hemam had to look as credible online as the work was on the ground. The brief was unforgiving: communicate scale, climate-resilience and measurable impact to international funders and agro-industrial partners: clearly, quickly, and without a single weak page or a moment of doubt about who they are.',
 			approach: [
 				{ title: 'Stakeholder discovery & positioning', desc: 'We sat with the team and mapped exactly what each audience needed to believe, funders need scale and governance; partners need reliability; farmers need trust. Every page got a job.' },
 				{ title: 'A serious-operator brand system', desc: 'A clean, earth-toned identity, type, colour, photography rules and components, that reads "established agribusiness", not "startup deck". Confidence in every pixel.' },
@@ -100,22 +100,20 @@ export const projects: Project[] = [
 				{ stat: '150,000 MT', label: 'warehouse capacity showcased' },
 				{ stat: '99.9%', label: 'uptime since launch' },
 			],
-			quote: { text: 'The site did exactly what we needed — it made serious people take us seriously.', who: 'Hemam Synergy team' },
+			quote: { text: 'The site did exactly what we needed. It made serious people take us seriously.', who: 'Hemam Synergy team' },
 			services: ['Brand & design', 'Web development', 'Content & copy', 'Hosting & maintenance'],
 			press: {
 				intro: 'The work landed where it mattered. Hemam went on to be selected for major grant funding, around €850,000, and the story was picked up in the press. The coverage:',
 				items: [
 					{ outlet: 'BusinessDay', title: 'Firm to boost Nigeria’s rice production via €850,000 grant', date: '2024', url: 'https://businessday.ng/news/article/firm-to-boost-nigerias-rice-production-via-e850000-grant/' },
 					{ outlet: 'Fund for Youth Employment', title: 'Nigeria selection: Hemam Synergy Ltd', date: '2024', url: 'https://fundforyouthemployment.nl/nigeria-selection-hemam-synergy-ltd/' },
-					{ outlet: 'LinkedIn · Video', title: 'Food security & policy — the team on the mission', date: '2024', url: 'https://www.linkedin.com/posts/hemamsynergylimited_foodsecurity-nigeriaagriculture-policymatters-activity-7330954291009966080-eVs1/' },
+					{ outlet: 'LinkedIn · Video', title: 'Food security and policy: the team on the mission', date: '2024', url: 'https://www.linkedin.com/posts/hemamsynergylimited_foodsecurity-nigeriaagriculture-policymatters-activity-7330954291009966080-eVs1/' },
 				],
 			},
 			gallery: [
-				{ kind: 'video', label: 'Field & impact reel', caption: 'Watch the team’s film on LinkedIn — or drop the MP4 in here.' },
 				{ kind: 'image', src: '/images/portfolio/shot-hemamsynergy.jpg', label: 'Homepage', caption: 'The landing experience funders see first.' },
-				{ kind: 'image', label: 'Programmes & impact', caption: 'Drop in a section shot.' },
-				{ kind: 'image', label: 'Infrastructure', caption: 'Warehouse / solar grain shots.' },
-				{ kind: 'image', label: 'Partners & proof', caption: 'Partner logos / metrics section.' },
+				{ kind: 'image', src: '/images/portfolio/shot-hemam-programmes.jpg', label: 'The solutions', caption: 'Inputs, market access and grain offtake, laid out plainly.' },
+				{ kind: 'image', src: '/images/portfolio/shot-hemam-partner.jpg', label: 'Partner with us', caption: 'The invitation funders and agro-partners land on.' },
 			],
 		},
 	},
@@ -137,9 +135,9 @@ export const projects: Project[] = [
 			meta: { client: 'AnchorStep Physiotherapy', sector: 'Health & wellness · Physiotherapy', year: '2025', scope: 'Brand · Booking site · Multi-platform growth' },
 			liveUrl: 'https://anchorsteppt.com/',
 			intro:
-				'AnchorStep Physiotherapy delivers expert, evidence-based physiotherapy — musculoskeletal, neurological, paediatric and therapeutic massage — in patients’ own homes across Abuja. When they came to us, none of that existed online: no brand, no website, no audience, no recognition. We took AnchorStep from a completely blank page to a presence people can find, trust and book — and then, crucially, we did the harder work of building the audience itself. This was not a one-off website project; it was an ongoing, multi-platform growth effort, and we grew it from absolute zero into a recognisable, bookable brand. The website is the anchor, but the brand now lives and grows across multiple channels, compounding month after month.',
+				'AnchorStep Physiotherapy delivers expert, evidence-based physiotherapy across musculoskeletal, neurological, paediatric and therapeutic massage, all in patients’ own homes across Abuja. When they came to us, none of that existed online: no brand, no website, no audience, no recognition. We took AnchorStep from a completely blank page to a presence people can find, trust and book, and then, crucially, we did the harder work of building the audience itself. This was not a one-off website project; it was an ongoing, multi-platform growth effort, and we grew it from absolute zero into a recognisable, bookable brand. The website is the anchor, but the brand now lives and grows across multiple channels, compounding month after month.',
 			challenge:
-				'A brand-new clinical practice carries a quiet, brutal problem: nobody knows you exist, and the people who need physiotherapy are choosing someone they already trust. AnchorStep had to feel established, safe and credible on day one, make booking an appointment effortless enough that intent never leaks away, and — the part most agencies skip — actually generate demand from nothing. Not just a launch, but momentum that keeps building.',
+				'A brand-new clinical practice carries a quiet, brutal problem: nobody knows you exist, and the people who need physiotherapy are choosing someone they already trust. AnchorStep had to feel established, safe and credible on day one, make booking an appointment effortless enough that intent never leaks away, and, the part most agencies skip, actually generate demand from nothing. Not just a launch, but momentum that keeps building.',
 			approach: [
 				{ title: 'A calm clinical brand', desc: 'An identity that signals expertise and warmth in the same breath, the kind that makes a brand-new practice feel safe and established.' },
 				{ title: 'A booking-first website', desc: 'Appointments scheduled in a couple of taps, with live chat, every visitor is one short step from becoming a patient.' },
@@ -156,13 +154,12 @@ export const projects: Project[] = [
 				{ stat: 'Multi-platform', label: 'web + social, growing together' },
 				{ stat: 'Same-week', label: 'appointments, booked online' },
 			],
-			quote: { text: 'They didn’t just build a website — they built our presence and our audience from scratch.', who: 'AnchorStep Physiotherapy' },
+			quote: { text: 'They didn’t just build a website. They built our presence and our audience from scratch.', who: 'AnchorStep Physiotherapy' },
 			services: ['Brand & design', 'Web development', 'Marketing & growth', 'Maintenance'],
 			gallery: [
 				{ kind: 'image', src: '/images/portfolio/shot-anchorstep.jpg', label: 'Homepage & booking', caption: 'Book-an-appointment, front and centre.' },
-				{ kind: 'image', label: 'Services & treatments', caption: 'Drop in a services shot.' },
-				{ kind: 'image', label: 'Social grid', caption: 'The social presence we grew from zero.' },
-				{ kind: 'video', label: 'Brand reel', caption: 'Add a short brand or clinic reel.' },
+				{ kind: 'image', src: '/images/portfolio/shot-anchorstep-services.jpg', label: 'Services & treatments', caption: 'Every treatment, in the words a patient would use.' },
+				{ kind: 'image', src: '/images/portfolio/shot-anchorstep-care.jpg', label: 'Why AnchorStep', caption: 'The trust case, made in one screen.' },
 			],
 		},
 	},
@@ -184,9 +181,9 @@ export const projects: Project[] = [
 			meta: { client: 'Binas Residence', sector: 'Hospitality · Luxury stays', year: '2024', scope: 'Brand · Website · Reservations' },
 			liveUrl: 'https://binasresidence.com/',
 			intro:
-				'Binas Residence is a premium residential hotel in Abuja — beautifully appointed standard, deluxe and master suites, a restaurant that cooks with locally sourced ingredients, a signature pool bar, 24/7 power and fibre, and the kind of anticipatory service that quietly turns a stay into a memory. A property like this is sold long before a guest arrives — in the first few seconds of looking at it online. So our job was to make the website feel exactly as considered, calm and expensive as the residence itself: a digital front door that says "you have chosen well" and then makes booking the easiest part of the trip.',
+				'Binas Residence is a premium residential hotel in Abuja, with beautifully appointed standard, deluxe and master suites, a restaurant that cooks with locally sourced ingredients, a signature pool bar, 24/7 power and fibre, and the kind of anticipatory service that quietly turns a stay into a memory. A property like this is sold long before a guest arrives, in the first few seconds of looking at it online. So our job was to make the website feel exactly as considered, calm and expensive as the residence itself: a digital front door that says "you have chosen well" and then makes booking the easiest part of the trip.',
 			challenge:
-				'Luxury hospitality lives or dies on first impressions, and online that impression is unforgiving — a stock-photo grid, a clumsy form or a slow page, and a discerning traveller is gone. The site had to feel restrained and premium without ever shouting, let the property’s own photography carry the emotion, and quietly do the commercial work: surfacing the right suite, answering the unspoken questions, and turning a curious browser into a confirmed reservation without a single moment of friction.',
+				'Luxury hospitality lives or dies on first impressions, and online that impression is unforgiving: a stock-photo grid, a clumsy form or a slow page, and a discerning traveller is gone. The site had to feel restrained and premium without ever shouting, let the property’s own photography carry the emotion, and quietly do the commercial work: surfacing the right suite, answering the unspoken questions, and turning a curious browser into a confirmed reservation without a single moment of friction.',
 			approach: [
 				{ title: 'A restrained, editorial brand', desc: 'Warm neutrals, generous white space and confident type, a brand that feels expensive and calm without ever shouting.' },
 				{ title: 'Room-and-suite architecture', desc: 'Structured to sell the experience, not just the nightly rate, every suite gets the staging it deserves.' },
@@ -206,8 +203,7 @@ export const projects: Project[] = [
 			services: ['Brand & design', 'Web development', 'Maintenance'],
 			gallery: [
 				{ kind: 'image', src: '/images/portfolio/shot-binasresidence.jpg', label: 'Homepage', caption: 'The first impression.' },
-				{ kind: 'image', label: 'Rooms & suites', caption: 'Drop in a suites shot.' },
-				{ kind: 'video', label: 'Property tour', caption: 'Add a walkthrough video.' },
+				{ kind: 'image', src: '/images/portfolio/shot-binas-rooms.jpg', label: 'Rooms & suites', caption: 'Every suite priced, photographed and one tap from booked.' },
 			],
 		},
 	},
@@ -216,7 +212,7 @@ export const projects: Project[] = [
 		name: 'JobbLander',
 		tagline: 'Job Application as a Service, AI-enhanced, human-perfected.',
 		blurb:
-			'A career-acceleration platform (JaaS) that pairs AI with human expertise to optimise CVs, LinkedIn and ATS — and land the interview.',
+			'A career-acceleration platform (JaaS) that pairs AI with human expertise to optimise CVs, LinkedIn and ATS, then land the interview.',
 		img: '/images/portfolio/shot-jobblander.jpg',
 		url: 'https://jobblander.com/',
 		host: 'jobblander.com',
@@ -229,9 +225,9 @@ export const projects: Project[] = [
 			meta: { client: 'JobbLander', sector: 'Careers · Job Application as a Service (JaaS)', year: '2025', scope: 'Product · Brand · Web app' },
 			liveUrl: 'https://jobblander.com/',
 			intro:
-				'JobbLander is a premium end-to-end career service that bridges the gap between technology and the human touch. While we utilize advanced AI to identify patterns and optimize for ATS algorithms, every CV, LinkedIn profile, and career strategy is meticulously refined by our human professionals. From career mapping to JaaS (Job Application as a Service), we ensure your professional story is authentic, data-driven, and designed to land you the interview. Our role was to make all of that legible and irresistible — to take a layered, human-plus-AI service and give it a brand, a product experience and a story premium enough that a serious professional trusts it with the thing they care about most: their next role.',
+				'JobbLander is a premium end-to-end career service that bridges the gap between technology and the human touch. While we utilize advanced AI to identify patterns and optimize for ATS algorithms, every CV, LinkedIn profile, and career strategy is meticulously refined by our human professionals. From career mapping to JaaS (Job Application as a Service), we ensure your professional story is authentic, data-driven, and designed to land you the interview. Our role was to make all of that legible and irresistible: to take a layered, human-plus-AI service and give it a brand, a product experience and a story premium enough that a serious professional trusts it with the thing they care about most: their next role.',
 			challenge:
-				'"AI for your career" is a crowded, sceptical category, crowded with one-click résumé generators that promise the moon and deliver a template. JobbLander is the opposite — a genuinely human, expert-led service with AI underneath — but that nuance is hard to convey in a glance. The challenge was to make the product feel unmistakably premium and trustworthy, to communicate the human-plus-AI difference instantly, and to turn a multi-step, high-touch service (career mapping, CV, LinkedIn, ATS optimisation, strategy) into a journey that feels simple, safe and clearly worth paying for.',
+				'"AI for your career" is a crowded, sceptical category, crowded with one-click résumé generators that promise the moon and deliver a template. JobbLander is the opposite, a genuinely human, expert-led service with AI underneath, and that nuance is hard to convey in a glance. The challenge was to make the product feel unmistakably premium and trustworthy, to communicate the human-plus-AI difference instantly, and to turn a multi-step, high-touch service (career mapping, CV, LinkedIn, ATS optimisation, strategy) into a journey that feels simple, safe and clearly worth paying for.',
 			approach: [
 				{ title: 'Positioned as JaaS', desc: 'We framed the product as Job Application as a Service, strategic career advancement, not another CV template, and built the whole story around that.' },
 				{ title: 'A premium, trustworthy brand', desc: 'An identity and site that sell the human-plus-AI difference and justify a premium price, "serious career partner", not gimmick.' },
@@ -251,8 +247,7 @@ export const projects: Project[] = [
 			services: ['Product strategy', 'Brand & design', 'Web development', 'AI & automation'],
 			gallery: [
 				{ kind: 'image', src: '/images/portfolio/shot-jobblander.jpg', label: 'Homepage', caption: 'The pitch, in one scroll.' },
-				{ kind: 'image', label: 'Product / dashboard', caption: 'Drop in a product shot.' },
-				{ kind: 'video', label: 'Product demo', caption: 'Add a short product demo.' },
+				{ kind: 'image', src: '/images/portfolio/shot-jobblander-services.jpg', label: 'The service tiers', caption: 'Four ways in, each one explained before it is sold.' },
 			],
 		},
 	},
@@ -261,7 +256,7 @@ export const projects: Project[] = [
 		name: 'African Energy Advocacy Initiative',
 		tagline: 'Energy, oil & gas and consultancy, with a conscience.',
 		blurb:
-			'A mission-driven platform for clean-energy advocacy and energy consultancy — solar lighting and efficient cookstoves for vulnerable communities.',
+			'A mission-driven platform for clean-energy advocacy and energy consultancy, with solar lighting and efficient cookstoves for vulnerable communities.',
 		img: '/images/portfolio/shot-africaneai.jpg',
 		url: 'https://africaneai.org/',
 		host: 'africaneai.org',
@@ -274,9 +269,9 @@ export const projects: Project[] = [
 			meta: { client: 'African Energy Advocacy Initiative', sector: 'Energy · Oil & gas · Consultancy', year: '2024', scope: 'Brand · Website · Content' },
 			liveUrl: 'https://africaneai.org/',
 			intro:
-				'The African Energy Advocacy Initiative works right across the energy spectrum — policy advocacy, energy and oil-and-gas consultancy, and on-the-ground clean-energy projects like solar lighting and efficient cookstoves that measurably improve safety, health and livelihoods for vulnerable communities. It is an unusually broad mandate: in one breath it speaks to ministries and industry, and in the next to a rural household choosing a cleaner stove. We were brought in to give all of that a single, coherent home — a brand and website that hold the policy, the consultancy and the grassroots impact together without any one of them feeling like an afterthought.',
+				'The African Energy Advocacy Initiative works right across the energy spectrum: policy advocacy, energy and oil-and-gas consultancy, and on-the-ground clean-energy projects like solar lighting and efficient cookstoves that measurably improve safety, health and livelihoods for vulnerable communities. It is an unusually broad mandate: in one breath it speaks to ministries and industry, and in the next to a rural household choosing a cleaner stove. We were brought in to give all of that a single, coherent home: a brand and website that hold the policy, the consultancy and the grassroots impact together without any one of them feeling like an afterthought.',
 			challenge:
-				'Most organisations do one thing; AEAI does several, for several very different audiences. A funder or government partner needs rigour, governance and credibility. A community partner needs warmth, clarity and proof that the work changes lives. The challenge was to build one home that serves both at once — institutional enough to be taken seriously in an energy-policy room, human enough to mean something in a village — and to make a sprawling, multi-mission organisation feel focused, legible and genuinely hopeful.',
+				'Most organisations do one thing; AEAI does several, for several very different audiences. A funder or government partner needs rigour, governance and credibility. A community partner needs warmth, clarity and proof that the work changes lives. The challenge was to build one home that serves both at once, institutional enough to be taken seriously in an energy-policy room and human enough to mean something in a village, then to make a sprawling, multi-mission organisation feel focused, legible and genuinely hopeful.',
 			approach: [
 				{ title: 'A vision-led narrative', desc: 'We found the thread that unifies advocacy, energy & oil-and-gas consultancy and grassroots clean-energy projects, one story, told with conviction.' },
 				{ title: 'A clean, optimistic brand', desc: 'An identity built around clean energy that reads credible to institutions and hopeful to the communities being served.' },
@@ -296,8 +291,7 @@ export const projects: Project[] = [
 			services: ['Brand & design', 'Web development', 'Content'],
 			gallery: [
 				{ kind: 'image', src: '/images/portfolio/shot-africaneai.jpg', label: 'Homepage', caption: 'Transforming lives through clean energy.' },
-				{ kind: 'image', label: 'Programmes', caption: 'Drop in a programmes shot.' },
-				{ kind: 'video', label: 'Impact film', caption: 'Add a field/impact film.' },
+				{ kind: 'image', src: '/images/portfolio/shot-africaneai-focus.jpg', label: 'Focus areas', caption: 'Advocacy, advisory, research and youth capacity, side by side.' },
 			],
 		},
 	},
@@ -306,7 +300,7 @@ export const projects: Project[] = [
 		name: 'Betslipswitch',
 		tagline: '100k+ downloads. No.2 sports app in Zambia.',
 		blurb:
-			'A free sports platform that converts bet codes across bookmakers in seconds — with livescores, rated predictions and a community — that grew to over 100,000 downloads and became the No.2 most-used sports app in Zambia.',
+			'A free sports platform that converts bet codes across bookmakers in seconds, wrapped in livescores, rated predictions and a community, and grown to over 100,000 downloads and became the No.2 most-used sports app in Zambia.',
 		img: '/images/portfolio/betslipswitch.jpg',
 		url: null,
 		host: 'Betslipswitch',
@@ -319,9 +313,9 @@ export const projects: Project[] = [
 		caseStudy: {
 			meta: { client: 'Betslipswitch', sector: 'Sports tech · Consumer app', year: '2022', scope: 'Product strategy · Web + mobile app · Brand · Growth' },
 			intro:
-				'Betslipswitch began as a genuinely useful idea: punters lose time and money re-typing bet codes when they want to play a slip from one bookmaker on another. We turned that single, sharp utility into a full consumer product — a free bet-code converter that switches codes across bookmakers in seconds, wrapped in livescores, rated predictions and a community of tipsters and sports fans, on the web and as a native app on the App Store and Play Store. It worked. The product crossed 100,000+ downloads and, three years ago, became the No.2 most-used sports app in Zambia — a market it was never even originally built for. That is the kind of pull a tool gets when the core job is flawless and the experience earns a daily open.',
+				'Betslipswitch began as a genuinely useful idea: punters lose time and money re-typing bet codes when they want to play a slip from one bookmaker on another. We turned that single, sharp utility into a full consumer product: a free bet-code converter that switches codes across bookmakers in seconds, wrapped in livescores, rated predictions and a community of tipsters and sports fans, on the web and as a native app on the App Store and Play Store. It worked. The product crossed 100,000+ downloads and, three years ago, became the No.2 most-used sports app in Zambia, a market it was never even originally built for. That is the kind of pull a tool gets when the core job is flawless and the experience earns a daily open.',
 			challenge:
-				'The hard part of a utility is that people use it once and leave. The brief was to take instant bet-code conversion and make it so fast and so reliable that it became a habit — then surround it with enough reasons to stay that it could grow into a real community product, scale across markets, and stay rock-solid on the busiest match days when thousands of people hit it at once.',
+				'The hard part of a utility is that people use it once and leave. The brief was to take instant bet-code conversion and make it so fast and so reliable that it became a habit, then surround it with enough reasons to stay that it could grow into a real community product, scale across markets, and stay rock-solid on the busiest match days when thousands of people hit it at once.',
 			approach: [
 				{ title: 'A converter that just works', desc: 'We obsessed over the core job, Sportybet to Nairabet and back in seconds, accurate every time. Speed and trust here are the entire product; if the conversion is ever wrong or slow, nothing else matters. So we made it flawless first.' },
 				{ title: 'Reasons to come back daily', desc: 'A converter is a once-in-a-while tool; a sports companion is a daily one. We wove in livescores and rated predictions so the app earns an open even when there is no code to convert, turning a utility into a habit.' },
@@ -341,11 +335,7 @@ export const projects: Project[] = [
 			quote: { text: 'It started as a converter and became the app everyone in the group chat was using.', who: 'Betslipswitch' },
 			services: ['Product strategy', 'Web & mobile development', 'Brand & design', 'Growth & maintenance'],
 			gallery: [
-				{ kind: 'video', label: 'App promo', caption: 'Add the "We are live" promo reel.' },
-				{ kind: 'image', src: '/images/portfolio/betslipswitch.jpg', label: 'Platform', caption: 'The bet-code converter.' },
-				{ kind: 'image', label: 'App screens', caption: 'Drop in the App Store / Play Store screens.' },
-				{ kind: 'image', label: 'Community & predictions', caption: 'The community and predictions surfaces.' },
-				{ kind: 'image', label: 'Store listing', caption: 'The ranked store listing.' },
+				{ kind: 'image', src: '/images/portfolio/betslipswitch.jpg', label: 'The platform', caption: 'Free bet-code conversion, the job the whole product was built around.' },
 			],
 		},
 	},
@@ -354,7 +344,7 @@ export const projects: Project[] = [
 		name: 'Afribarn Links',
 		tagline: 'Powering agriculture, energizing communities.',
 		blurb:
-			'A bold site for an agritech and clean-energy company — farmer empowerment, solar integration and agribusiness advisory across sub-Saharan Africa.',
+			'A bold site for an agritech and clean-energy company: farmer empowerment, solar integration and agribusiness advisory across sub-Saharan Africa.',
 		img: '/images/portfolio/shot-afribarnlinks.jpg',
 		url: 'https://afribarnlinks.com/',
 		host: 'afribarnlinks.com',
@@ -368,7 +358,7 @@ export const projects: Project[] = [
 		name: 'Skaldon Group',
 		tagline: 'Quality constructions, and more.',
 		blurb:
-			'A landmark-grade site for a construction and engineering firm — end-to-end projects, dependable teams and quality you can see.',
+			'A landmark-grade site for a construction and engineering firm: end-to-end projects, dependable teams and quality you can see.',
 		img: '/images/portfolio/shot-skaldongroup.jpg',
 		url: 'https://skaldongroup.netlify.app/',
 		host: 'skaldongroup.netlify.app',
@@ -382,7 +372,7 @@ export const projects: Project[] = [
 		name: 'Skaldon WatchTower ERP',
 		tagline: 'Precision infrastructure management.',
 		blurb:
-			'A custom operations hub for a construction group — projects, inventory, suppliers, procurement and roles in one secured, real-time dashboard.',
+			'A custom operations hub for a construction group: projects, inventory, suppliers, procurement and roles in one secured, real-time dashboard.',
 		img: '/images/portfolio/shot-skaldonerp.jpg',
 		url: 'https://skaldongrouperp.netlify.app/',
 		host: 'skaldongrouperp.netlify.app',
@@ -410,7 +400,7 @@ export const projects: Project[] = [
 		name: 'Younique Magazine',
 		tagline: 'Inspiration, news, culture, entertainment.',
 		blurb:
-			'A bold digital magazine — hard news, crime watch, lifestyle and culture, built to publish fast and read beautifully.',
+			'A bold digital magazine of hard news, crime watch, lifestyle and culture, built to publish fast and read beautifully.',
 		img: '/images/portfolio/shot-youniquemag.jpg',
 		url: 'https://youniquemagazine.com.ng/',
 		host: 'youniquemagazine.com.ng',
@@ -424,7 +414,7 @@ export const projects: Project[] = [
 		name: 'TrueVerdict',
 		tagline: 'Independent journalism, online.',
 		blurb:
-			'A fast, content-heavy news platform for an independent Nigerian publication — politics, business and investigative reporting.',
+			'A fast, content-heavy news platform for an independent Nigerian publication, covering politics, business and investigative reporting.',
 		img: '/images/portfolio/shot-trueverdict.jpg',
 		url: 'https://trueverdict.com.ng/',
 		host: 'trueverdict.com.ng',
@@ -438,7 +428,7 @@ export const projects: Project[] = [
 		name: 'Journalists Global Foundation',
 		tagline: 'Amplifying the people who report the world.',
 		blurb:
-			'A newsroom-style platform for a nonprofit that champions journalists — flash stories, editor’s picks and deep category coverage.',
+			'A newsroom-style platform for a nonprofit that champions journalists, with flash stories, editor’s picks and deep category coverage.',
 		img: '/images/portfolio/shot-jgfnews.jpg',
 		url: 'https://jgfnews.com.ng/',
 		host: 'jgfnews.com.ng',
@@ -450,22 +440,52 @@ export const projects: Project[] = [
 	{
 		slug: 'brixmarket',
 		name: 'Brixmarket',
-		tagline: 'A marketplace for real estate.',
+		tagline: 'A safe place to buy, lease and rent property in Nigeria.',
 		blurb:
-			'A property marketplace connecting buyers, sellers and agents — search, listings and the tooling to keep deals moving.',
+			'A property marketplace connecting buyers, sellers and agents, with search, listings and the tooling to keep deals moving.',
 		img: '/images/portfolio/brix%20marketplace.jpg',
 		url: null,
 		host: 'brixmarket',
 		sector: 'property',
-		tags: ['Web app', 'Marketing', 'Maintenance'],
+		tags: ['Brand', 'Web app', 'Mobile app', 'Marketing', 'SEO'],
 		color: '#3b82f6',
 		year: '2022',
+		featured: true,
+		caseStudy: {
+			intro:
+				'Brixmarket is an online marketplace for Nigerian real estate: commercial buildings, homes, land and whole estates, listed for sale, lease or rent in one place. We have been on it since December 2021, and we built the whole thing, the brand, the interface, the web app, the mobile app and the growth work that brings people to it. The brief was never only software. It was to make strangers comfortable enough with each other to do the largest transaction of their lives.',
+			challenge:
+				'Property in Nigeria is a market of volatility and mistrust: prices that move, values that are hard to predict, and buyers who cannot tell a real listing from a wasted trip across town. Every marketplace here fails in the same place, which is confidence. The product had to make a listing feel verifiable, make search feel honest, and hold buyers, sellers and agents in the same room without any of them feeling outnumbered.',
+			approach: [
+				{ title: 'A brand built on trust, not gloss', desc: 'Identity, tone and interface were designed to feel steady and adult rather than loud, because the thing being sold is confidence before it is property.' },
+				{ title: 'Search that respects the buyer', desc: 'Type, location, price range, bedrooms and status all sit on one screen, so a search narrows honestly instead of burying people in results they never wanted.' },
+				{ title: 'One product, web and mobile', desc: 'The same catalogue and the same journey on the desktop where agents work and the phone where buyers actually browse, with listings that carry their own photography.' },
+				{ title: 'Growth as part of the build', desc: 'SEO and social work ran alongside the product rather than after it, because a marketplace with no listings and no visitors is only a website.' },
+			],
+			highlights: [
+				{ title: 'Sale, lease or rent, in one catalogue', desc: 'Commercial buildings, homes, land and estates live side by side, with the transaction type set at the point of search rather than buried in the listing.' },
+				{ title: 'A room both sides can stand in', desc: 'Buyers, sellers and agents each get what they came for, which is what keeps a marketplace from tipping into a noticeboard.' },
+				{ title: 'Kept alive since 2021', desc: 'We did not hand it over and leave. The platform has been maintained, marketed and improved continuously since launch.' },
+			],
+			results: [
+				{ stat: 'Dec 2021', label: 'live, and looked after ever since' },
+				{ stat: 'Web + app', label: 'one marketplace, every screen' },
+				{ stat: 'Buy · Lease · Rent', label: 'three ways to transact, one flow' },
+			],
+			gallery: [
+				{ kind: 'image', src: '/images/portfolio/brix%20marketplace.jpg', label: 'The marketplace', caption: 'Search first: type, location and price, before anything else.' },
+				{ kind: 'image', src: '/projects/brixmarket--grid-1.jpg', label: 'Listings', caption: 'Every property photographed and priced, on web and on the phone.' },
+				{ kind: 'image', src: '/projects/brixmarket--grid-2-2.jpg', label: 'The app', caption: 'The same catalogue in the pocket of the person actually house-hunting.' },
+			],
+			services: ['Brand & identity', 'Product design', 'Web app', 'Mobile app', 'SEO & social', 'Maintenance'],
+			meta: { client: 'Brixmarket', sector: 'Property & Build', year: '2021 to date', scope: 'Brand · Web + mobile app · Growth · Maintenance' },
+		},
 	},
 	{
 		slug: 'my-eya-estate',
 		name: 'My Eya Estate',
 		tagline: 'Property, presented beautifully.',
-		blurb: 'A clean, trustworthy estate website — listings and enquiries that turn browsers into buyers.',
+		blurb: 'A clean, trustworthy estate website where listings and enquiries turn browsers into buyers.',
 		img: '/images/portfolio/my%20eya%20estate.jpg',
 		url: null,
 		host: 'myeyaestate',
@@ -479,7 +499,7 @@ export const projects: Project[] = [
 		name: 'AppMan',
 		tagline: 'School management, in the palm of your hand.',
 		blurb:
-			'A school-management platform — attendance via QR smart-IDs, computer-based testing and a parent/student portal, on web and mobile.',
+			'A school-management platform with attendance via QR smart-IDs, computer-based testing and a parent/student portal, on web and mobile.',
 		img: '/images/portfolio/shot-appman.jpg',
 		url: null,
 		host: 'AppMan',
@@ -494,7 +514,7 @@ export const projects: Project[] = [
 		name: 'BuyGas',
 		tagline: 'Cooking gas, delivered.',
 		blurb:
-			'A platform-as-a-service connecting gas merchants to customers — easy, affordable cooking-gas ordering and delivery, tracked from tap to doorstep.',
+			'A platform-as-a-service connecting gas merchants to customers: easy, affordable cooking-gas ordering and delivery, tracked from tap to doorstep.',
 		img: '/images/portfolio/shot-buygas.jpg',
 		url: null,
 		host: 'BuyGas',
@@ -508,7 +528,7 @@ export const projects: Project[] = [
 		slug: 'beauty-hive',
 		name: 'Beauty Hive',
 		tagline: 'Beauty commerce that converts.',
-		blurb: 'A beauty storefront built to sell — product merchandising, a smooth checkout and a brand that pops.',
+		blurb: 'A beauty storefront built to sell, with product merchandising, a smooth checkout and a brand that pops.',
 		img: '/images/portfolio/beauty-hive.webp',
 		url: null,
 		host: 'beautyhive',
@@ -521,7 +541,7 @@ export const projects: Project[] = [
 		slug: 'purple-panda',
 		name: 'Purple Panda',
 		tagline: 'A brand with a pulse.',
-		blurb: 'Brand and web for a marketing-led product — distinctive identity and a site tuned for growth and SEO.',
+		blurb: 'Brand and web for a marketing-led product: a distinctive identity and a site tuned for growth and SEO.',
 		img: '/images/portfolio/purplepanda%20world.jpg',
 		url: null,
 		host: 'purplepanda',
@@ -534,7 +554,7 @@ export const projects: Project[] = [
 		slug: 'saros',
 		name: 'Saros',
 		tagline: 'Learning, made simple.',
-		blurb: 'An education platform designed around the people who use it — clear, calm and dependable.',
+		blurb: 'An education platform designed around the people who use it: clear, calm and dependable.',
 		img: '/images/portfolio/sarosgp.jpg',
 		url: null,
 		host: 'sarosgp',
@@ -555,16 +575,11 @@ export const getProject = (slug: string) => projects.find((p) => p.slug === slug
 // the write-up below is shown in full.
 const legacyWriteups: Record<string, string> = {
 	betslipswitch: 'betslipswitch',
-	brixmarket: 'brixmarketplace',
 	'hemam-synergy': 'hemamsynergy',
 };
 
 /** The longer description shown when a project has no page of its own. */
 export const projectStories: Record<string, string[]> = {
-	brixmarket: [
-		'Brixmarket is an online marketplace for Nigerian real estate, built so buyers, sellers and agents can meet in one trustworthy place. Commercial buildings, homes, land and whole estates sit in a single searchable catalogue, listed for sale, lease or rent.',
-		'We handled the brand, the interface and the build across web and mobile, then stayed on for marketing and search. The work was mostly about trust: clear listings, honest search, and tooling that keeps a deal moving once two strangers decide to talk.',
-	],
 	'my-eya-estate': [
 		'My Eya Estate is a property business that needed to look as dependable online as it is in person. We built a calm, photography-led site where every listing is easy to scan and an enquiry is never more than a tap away.',
 		'Our part covered the website itself and the ongoing maintenance behind it, so listings stay current and the pages keep loading fast for someone browsing on a phone.',
