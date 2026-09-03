@@ -187,3 +187,53 @@ function bindFounderMotion(root: HTMLElement) {
 		});
 	}
 }
+
+// Campus About: the whiteboard film and the class register.
+//
+// The film is a facade — nothing from YouTube is fetched until somebody
+// presses play — and the register ticks its rows off one at a time when the
+// sheet comes into view.
+export function initAboutCampus() {
+	const film = document.querySelector<HTMLElement>('[data-ca-film]');
+	if (film && film.dataset.caBound !== '1') {
+		film.dataset.caBound = '1';
+		const mount = film.querySelector<HTMLElement>('[data-ca-film-mount]');
+		const go = film.querySelector<HTMLButtonElement>('[data-ca-film-go]');
+		const id = film.dataset.yt;
+		go?.addEventListener('click', () => {
+			if (!mount || !id || film.hasAttribute('data-playing')) return;
+			const frame = document.createElement('iframe');
+			frame.title = 'Meet Swizel';
+			frame.allow =
+				'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+			frame.setAttribute('allowfullscreen', '');
+			frame.referrerPolicy = 'strict-origin-when-cross-origin';
+			// the reel carries its own subtitles, so YouTube's stay off
+			frame.src =
+				`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0` +
+				'&modestbranding=1&playsinline=1&cc_load_policy=0&iv_load_policy=3';
+			mount.appendChild(frame);
+			film.setAttribute('data-playing', '');
+		});
+	}
+
+	const reg = document.querySelector<HTMLElement>('[data-ca-reg]');
+	if (reg && reg.dataset.caBound !== '1') {
+		reg.dataset.caBound = '1';
+		if ('IntersectionObserver' in window) {
+			const io = new IntersectionObserver(
+				(entries) => {
+					entries.forEach((e) => {
+						if (!e.isIntersecting) return;
+						reg.classList.add('is-marked');
+						io.disconnect();
+					});
+				},
+				{ threshold: 0.25 }
+			);
+			io.observe(reg);
+		} else {
+			reg.classList.add('is-marked');
+		}
+	}
+}

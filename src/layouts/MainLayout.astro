@@ -178,7 +178,7 @@ const {
 	import { initBuilderView } from '../scripts/builderView';
 	import { initBuilderBody } from '../scripts/builderBody';
 	import { initFounderBody } from '../scripts/founderBody';
-	import { initAboutFounder } from '../scripts/aboutFounder';
+	import { initAboutFounder, initAboutCampus } from '../scripts/aboutFounder';
 	import { initCampusBody } from '../scripts/campusBody';
 	import { initStudioBody } from '../scripts/studioBody';
 	import { initBoardroomBody } from '../scripts/boardroomBody';
@@ -626,6 +626,7 @@ const {
 			initBuilderBody,
 			initFounderBody,
 			initAboutFounder,
+			initAboutCampus,
 			initCampusBody,
 			initStudioBody,
 			initBoardroomBody,
@@ -883,7 +884,14 @@ const {
 	// swup with astro: https://navillus.dev/blog/astro-plus-swup
 	// @ts-ignore
 	const swup = new Swup({
-		plugins: [new SwupA11yPlugin(), new SwupHeadPlugin(), new SwupScrollPlugin()],
+		// awaitAssets holds the swap until the incoming page's stylesheets have
+		// actually loaded. Without it a slow connection swaps the markup in
+		// first and you get a screen of raw, unstyled HTML for a beat.
+		plugins: [
+			new SwupA11yPlugin(),
+			new SwupHeadPlugin({ awaitAssets: true }),
+			new SwupScrollPlugin(),
+		],
 		linkSelector: 'a[href]',
 		// The curtain drives the transition timing: swup waits for its transform
 		// transition, swapping the page while it fully covers the screen.
@@ -1100,3 +1108,123 @@ const {
 		});
 	}
 </script>
+
+<style is:global>
+/* Live-chat launcher. The button no longer opens Tawk straight away: it
+   opens a two-option pick, so somebody can answer here or carry the thread
+   to WhatsApp. */
+#swizel-chat {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 901;
+}
+.chat-pick {
+  position: absolute;
+  right: 0;
+  bottom: 66px;
+  width: 15.5rem;
+  display: grid;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(14, 15, 26, 0.96);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 26px 60px -22px rgba(0, 0, 0, 0.8);
+  transform-origin: bottom right;
+  animation: chat-pick-in 0.24s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.chat-pick[hidden] { display: none; }
+html:not(.dark) .chat-pick {
+  background: rgba(255, 255, 255, 0.97);
+  border-color: rgba(20, 22, 40, 0.12);
+  box-shadow: 0 26px 60px -26px rgba(20, 28, 60, 0.5);
+}
+@keyframes chat-pick-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.94); }
+  to { opacity: 1; transform: none; }
+}
+.chat-pick-opt {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border: 0;
+  border-radius: 11px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  color: #e9eaf2;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+html:not(.dark) .chat-pick-opt { color: #14162a; }
+.chat-pick-opt:hover { background: rgba(255, 255, 255, 0.08); transform: translateX(2px); }
+html:not(.dark) .chat-pick-opt:hover { background: rgba(20, 22, 40, 0.06); }
+.chat-pick-ic {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  color: #fff;
+}
+.chat-pick-ic--tawk { background: linear-gradient(135deg, #18debe, #28a6ec); color: #06121a; }
+.chat-pick-ic--wa { background: #25d366; }
+.chat-pick-txt { display: flex; flex-direction: column; line-height: 1.25; min-width: 0; }
+.chat-pick-txt strong { font-size: 0.86rem; font-weight: 700; }
+.chat-pick-txt em { font-style: normal; font-size: 0.72rem; opacity: 0.6; }
+
+/* the launcher itself */
+#swizel-chat-fab {
+  position: relative;
+  right: auto;
+  bottom: auto;
+  z-index: 1;
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  border-radius: 9999px;
+  border: none;
+  color: #06121a;
+  background: linear-gradient(135deg, #8dfeea, #18debe 55%, #28a6ec);
+  box-shadow: 0 16px 34px -12px rgba(24, 222, 190, 0.55), 0 4px 10px -4px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
+  animation: chatfab-in 0.4s 0.6s both;
+}
+#swizel-chat-fab:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 22px 44px -14px rgba(24, 222, 190, 0.65); }
+#swizel-chat-fab:active { transform: scale(0.96); }
+#swizel-chat-fab svg { filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.15)); }
+#swizel-chat-fab .chat-ic--campus { display: none; }
+html[data-view='campus'] #swizel-chat-fab .chat-ic--default { display: none; }
+html[data-view='campus'] #swizel-chat-fab .chat-ic--campus { display: block; }
+/* Campus runs warm, and the launcher should belong to the world it sits in */
+html[data-view='campus'] #swizel-chat-fab {
+  color: #2b1c08;
+  background: linear-gradient(135deg, #fde68a, #f59e0b 58%, #fb7185);
+  box-shadow: 0 16px 34px -12px rgba(245, 158, 11, 0.6), 0 4px 10px -4px rgba(0, 0, 0, 0.4);
+}
+html[data-view='campus'] #swizel-chat-fab:hover {
+  box-shadow: 0 22px 44px -14px rgba(245, 158, 11, 0.7);
+}
+html[data-view='campus'] .chat-pick-ic--tawk {
+  background: linear-gradient(135deg, #fcd34d, #f59e0b);
+  color: #2b1c08;
+}
+html[data-view='campus'] .chat-pick-txt strong,
+html[data-view='campus'] .chat-pick-txt em {
+  font-family: 'Bradley Hand', 'Segoe Print', 'Comic Sans MS', cursive;
+}
+html[data-view='campus'] .chat-pick-txt em { font-size: 0.78rem; }
+/* open state: a small press, no spin — the campus glyph is a raised hand
+   and a rotated hand reads as a mistake */
+#swizel-chat.is-open #swizel-chat-fab { transform: scale(0.94); }
+@media (max-width: 640px) {
+  #swizel-chat { right: 14px; bottom: 14px; }
+  #swizel-chat-fab { width: 50px; height: 50px; right: auto; bottom: auto; }
+  .chat-pick { width: min(15.5rem, calc(100vw - 40px)); bottom: 60px; }
+}
+</style>

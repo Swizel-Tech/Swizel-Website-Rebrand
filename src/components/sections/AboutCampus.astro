@@ -8,33 +8,35 @@
 // reveals + [data-count] counters) binds, and `cabout` so the motion
 // engine (tilt / glare / team modal / magnetic / journey draw) binds too.
 import { Icon } from 'astro-icon/components';
+import WhiteboardVideo from '../WhiteboardVideo.astro';
 import { teamDetails, MISSION, VISION, CORE_VALUES } from '../../consts';
 
 const stats = [
 	{ to: 65, suffix: '+', label: 'products shipped' },
 	{ to: 25, suffix: '+', label: 'mentors & makers' },
-	{ to: 7, suffix: '+', label: 'years teaching by doing' },
+	{ to: 7, suffix: '+', label: 'years of teaching' },
 	{ to: 10, suffix: '+', label: 'countries reached' },
 ];
 
 // six disciplines as the course catalogue — same content as every view
 const courses = [
-	{ code: 'SWZ 101', icon: 'mdi:palette-outline', title: 'Design', desc: 'Brand identity, graphics and product design — interfaces your customers find effortless.' },
+	{ code: 'SWZ 101', icon: 'mdi:palette-outline', title: 'Design', desc: 'Brand identity, graphics and product design. Interfaces your customers find effortless.' },
 	{ code: 'SWZ 102', icon: 'mdi:code-tags', title: 'Development', desc: 'Web and mobile engineering built to scale. We build, test and ship fast, without breaking things.' },
 	{ code: 'SWZ 103', icon: 'mdi:bullhorn-outline', title: 'Marketing', desc: 'We grow your audience across every platform that matters, and co-market the products we ship.' },
-	{ code: 'SWZ 104', icon: 'mdi:compass-outline', title: 'Strategy', desc: 'Research, define, lock the goal — a tailored product roadmap before a line of code is written.' },
+	{ code: 'SWZ 104', icon: 'mdi:compass-outline', title: 'Strategy', desc: 'Research, define and lock the goal, so there is a tailored roadmap before a line of code is written.' },
 	{ code: 'SWZ 105', icon: 'mdi:wrench-outline', title: 'Maintenance', desc: 'Improving existing products and keeping complex systems healthy, secure and online, year after year.' },
 	{ code: 'SWZ 106', icon: 'mdi:school-outline', title: 'Education', desc: 'Internships, NYSC placements and The Brevarium, putting real, job-ready skills in the hands of the next class.' },
 ];
 
 // the real road — same milestones as every About world, as school years
 const history = [
-	{ year: '2019', term: 'Founding class', title: 'The school opens.', desc: 'Swizel starts in Nigeria — a small, stubborn team taking on its first builds for local businesses.' },
-	{ year: '2020', term: 'Second session', title: 'Products, not projects.', desc: 'We stop thinking in deliverables and start thinking in products — software meant to live and grow.' },
+	{ year: '2019', term: 'Founding class', title: 'The school opens.', desc: 'Swizel starts in Nigeria as a small, stubborn team taking on its first builds for local businesses.' },
+	{ year: '2020', term: 'Second session', title: 'Products, not projects.', desc: 'We stop thinking in deliverables and start thinking in products, software meant to live and grow.' },
+	{ year: '2021', term: 'Third session', title: 'The practice grows up.', desc: 'Process arrives: design systems, code review and proper handover, so the work holds up after launch.' },
 	{ year: '2022', term: 'New department', title: 'Mobile joins the timetable.', desc: 'Native iOS and Android join the practice. The same team now ships across web and phone.' },
-	{ year: '2023', term: 'Field work', title: 'At home in every sector.', desc: 'Fintech, real estate, sports, education, logistics — the work spreads across the industries that move Africa.' },
+	{ year: '2023', term: 'Field work', title: 'At home in every sector.', desc: 'Fintech, real estate, sports, education and logistics. The work spreads across the industries that move Africa.' },
 	{ year: '2024', term: 'Exchange year', title: 'Crossing borders.', desc: 'The work goes global. ConvertMyBetCode serves users in 10+ countries, and the first Brevarium is published.' },
-	{ year: '2025', term: 'Open enrolment', title: 'We open the doors.', desc: 'We start training the next intake in house — training new engineers, designers and marketers on real products.' },
+	{ year: '2025', term: 'Open enrolment', title: 'We open the doors.', desc: 'We start training the next intake in house, on real products, alongside the people who ship them.' },
 	{ year: '2026', term: 'Present day', title: '65+ and counting.', desc: 'Seven years in, more than sixty-five products live in the market, and we are only warming up.' },
 ];
 
@@ -94,7 +96,7 @@ const classPhotos = [
 		name: 'the-lab.jpg',
 		sub: 'Pairing in the lab',
 	},
-	{ video: true, name: 'launch-night.mp4 — video' },
+	{ video: true, name: 'launch-night.mp4 · video' },
 	{ video: false, name: 'field-trip.jpg' },
 ];
 ---
@@ -105,11 +107,11 @@ const classPhotos = [
 		<div class="ca-wrap ca-open">
 			<div class="ca-copy cp-rev">
 				<span class="ca-badge">🏫 Open day · Est. 2019</span>
-				<h2 class="ca-h ca-h--xl">Meet the school <em>that ships.</em></h2>
+				<h2 class="ca-h ca-h--xl">Skip the theory. <em>Learn from builders.</em></h2>
 				<p class="ca-p">
-					Swizel isn't just a classroom — it's a real product studio.
-					The people who'll teach you design, code and marketing are the
-					same hands behind 65+ products in the market. Come look around.
+					At Swizel, you're not taught by instructors; you're mentored by
+					the core team behind 65+ live digital products. Come see what
+					we're building.
 				</p>
 				<ul class="ca-stats">
 					{
@@ -133,23 +135,23 @@ const classPhotos = [
 				</div>
 			</div>
 
-			<!-- the whiteboard: white in every theme, like real life -->
-			<div class="ca-board cp-rev" data-cursor="pen" data-fa-tilt="3">
-				<span class="ca-board-date">About us</span>
-				<p class="ca-board-title">who is swizel, really? <span class="ca-board-swish" aria-hidden="true"></span></p>
-				<div class="ca-board-video">
-					<Icon width={30} name="mdi:play-circle-outline" />
-					<span class="ca-board-vname">meet-swizel.mp4 — video placeholder</span>
-					<span class="ca-board-vsub">The team, projected here</span>
-				</div>
-				<span class="ca-sticky ca-sticky--y">est. 2019 ✏️</span>
-				<span class="ca-sticky ca-sticky--p">we ship!</span>
-				<span class="ca-marker-tray" aria-hidden="true">
-					<i class="ca-marker ca-marker--r"></i>
-					<i class="ca-marker ca-marker--b"></i>
-					<i class="ca-marker ca-marker--g"></i>
-					<i class="ca-eraser"></i>
-				</span>
+			<!-- the same board the home page uses, so every control lives on
+			     the furniture: seek, speed, volume, full screen, replay -->
+			<div class="ca-boardwrap cp-rev">
+				<WhiteboardVideo
+					videoId="p563SFG9Nwg"
+					title="who is swizel, really?"
+					kicker="Meet the team"
+					stickyA="est. 2019 ✏️"
+					stickyB="we ship!"
+					ctaHref="/programs"
+					ctaLabel="Apply for a place"
+				/>
+				<p class="ca-boardnote">
+					<Icon width={14} name="mdi:cursor-default-click-outline" />
+					Press play. Speed it up, scrub it, take it full screen. Every
+					control lives on the board.
+				</p>
 			</div>
 		</div>
 	</section>
@@ -161,22 +163,42 @@ const classPhotos = [
 				<span class="ca-kick">📚 The syllabus</span>
 				<h2 class="ca-h">Everything under <em>one roof.</em></h2>
 				<p class="ca-p ca-p--center">
-					Six departments, one campus. Every skill your product needs —
-					and every skill the bootcamp teaches — practised in-house.
+					Six departments, one campus. Every skill your product needs,
+					and every skill we teach, practised in house.
 				</p>
 			</div>
-			<div class="ca-courses">
-				{
-					courses.map((c, i) => (
-						<article class="ca-course cp-rev" style={`--i:${i % 3}`} data-fa-tilt="6">
-							<span class="ca-glare" aria-hidden="true" />
-							<span class="ca-course-code">{c.code}</span>
-							<span class="ca-course-ic"><Icon width={24} name={c.icon} /></span>
-							<h3 class="ca-course-t">{c.title}</h3>
-							<p class="ca-course-d">{c.desc}</p>
-						</article>
-					))
-				}
+			<div class="ca-reg cp-rev" data-ca-reg>
+				<span class="ca-reg-rings" aria-hidden="true">
+					{Array.from({ length: 9 }).map(() => <i />)}
+				</span>
+				<div class="ca-reg-sheet">
+					<span class="ca-reg-margin" aria-hidden="true"></span>
+					<div class="ca-reg-head">
+						<span class="ca-reg-title">Class register</span>
+						<span class="ca-reg-meta">Session 2026 · all present</span>
+					</div>
+					<ul class="ca-reg-rows">
+						{
+							courses.map((c, i) => (
+								<li class="ca-reg-row" style={`--i:${i}`}>
+									<span class="ca-reg-tick" aria-hidden="true">
+										<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+											<path d="M4 12.5 9.5 18 20 6" />
+										</svg>
+									</span>
+									<span class="ca-reg-code">{c.code}</span>
+									<span class="ca-reg-ic"><Icon width={17} name={c.icon} /></span>
+									<span class="ca-reg-body">
+										<strong>{c.title}</strong>
+										<em>{c.desc}</em>
+									</span>
+									<span class="ca-reg-mark" aria-hidden="true">✓</span>
+								</li>
+							))
+						}
+					</ul>
+					<span class="ca-reg-sign" aria-hidden="true">signed, the faculty</span>
+				</div>
 			</div>
 		</div>
 	</section>
@@ -201,7 +223,7 @@ const classPhotos = [
 				</article>
 			</div>
 			<div class="ca-values cp-rev">
-				<span class="ca-values-label">Core values — school rules</span>
+				<span class="ca-values-label">Core values · school rules</span>
 				<ul class="ca-values-row">
 					{
 						CORE_VALUES.map((v) => (
@@ -226,7 +248,10 @@ const classPhotos = [
 				<span class="ca-spine" aria-hidden="true"></span>
 				{
 					history.map((h, i) => (
-						<article class="ca-year cp-rev" style={`--i:${i}`}>
+						<article
+							class:list={['ca-year', 'cp-rev', i % 2 ? 'ca-year--r' : 'ca-year--l']}
+							style={`--i:${i}`}
+						>
 							<span class="ca-year-node" aria-hidden="true"></span>
 							<span class="ca-year-n">{h.year}</span>
 							<div class="ca-year-body">
@@ -324,14 +349,14 @@ const classPhotos = [
 					data-fa-tilt="5"
 				>
 					<span class="ca-glare" aria-hidden="true"></span>
-					<img src="/images/brevarium-cover.jpg" alt="The Brevarium by Swizel — latest edition" loading="lazy" />
+					<img src="/images/brevarium-cover.jpg" alt="The Brevarium by Swizel, latest edition" loading="lazy" />
 				</a>
 				<div class="ca-book-copy cp-rev">
-					<span class="ca-kick">📖 The set text — free</span>
+					<span class="ca-kick">📖 The set text, free</span>
 					<h2 class="ca-h">The Brevarium is <em>your textbook.</em></h2>
 					<p class="ca-p">
-						Everything the studio learns on the floor — design, code,
-						growth, the business of shipping — written down and given
+						Everything the studio learns on the floor: design, code,
+						growth and the business of shipping, written down and given
 						away. Education has never been easier, or smarter.
 					</p>
 					<ul class="ca-book-eds">
@@ -393,7 +418,9 @@ const classPhotos = [
 					<Icon width={17} name="mdi:school-outline" />
 				</a>
 				<a href="/contact" class="ca-call">
-					or <strong>start a project</strong>
+					<span class="ca-call-or">or</span>
+					Start a project
+					<Icon width={16} name="mdi:arrow-right" />
 				</a>
 			</div>
 		</div>
@@ -464,7 +491,100 @@ const classPhotos = [
 			linear-gradient(180deg, #fdf4e3 0%, #faecd4 55%, #fdf4e3 100%);
 	}
 
-	.ca-sec { padding-block: clamp(2rem, 4.5vw, 3.5rem); }
+	/* ── the grounds ──
+	   Every section used to sit on the same flat black. Each one now has a
+	   ground of its own, cycling through four so the page has a rhythm as
+	   you scroll, and each one is drawn twice: warm amber on the dark, and
+	   ink on cream in daylight, because a wash tuned for black turns to
+	   grey mud on white. */
+	.ca-sec {
+		position: relative;
+		isolation: isolate;
+		padding-block: clamp(2rem, 4.5vw, 3.5rem);
+	}
+	.ca-sec::before,
+	.ca-sec::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		pointer-events: none;
+		-webkit-mask-image: linear-gradient(180deg, transparent, #000 8%, #000 92%, transparent);
+		mask-image: linear-gradient(180deg, transparent, #000 8%, #000 92%, transparent);
+	}
+	/* ::after carries the light: a low, warm glow that anchors each band */
+	.ca-sec::after {
+		background: radial-gradient(78% 52% at 50% 100%, color-mix(in srgb, var(--cp-acc) 10%, transparent), transparent 70%);
+	}
+
+	/* 1 · the spotlight — two lamps and a fine dust of chalk */
+	.ca-sec:nth-of-type(4n + 1)::before {
+		background:
+			radial-gradient(2px 2px at 18% 22%, color-mix(in srgb, var(--cp-acc) 45%, transparent), transparent 60%),
+			radial-gradient(2px 2px at 74% 68%, color-mix(in srgb, var(--cp-acc2) 40%, transparent), transparent 60%),
+			radial-gradient(2px 2px at 46% 86%, color-mix(in srgb, var(--cp-acc) 35%, transparent), transparent 60%),
+			radial-gradient(58% 44% at 16% 2%, color-mix(in srgb, var(--cp-acc) 20%, transparent), transparent 66%),
+			radial-gradient(48% 38% at 88% 96%, color-mix(in srgb, var(--cp-acc2) 14%, transparent), transparent 62%);
+	}
+	/* 2 · exercise paper — ruling, a red margin, and a torn top edge */
+	.ca-sec:nth-of-type(4n + 2)::before {
+		background:
+			repeating-linear-gradient(180deg, transparent 0 41px, color-mix(in srgb, var(--cp-acc) 11%, transparent) 41px 42px),
+			linear-gradient(90deg, transparent 6.5%, rgba(239, 68, 68, 0.18) 6.5%, rgba(239, 68, 68, 0.18) calc(6.5% + 1px), transparent calc(6.5% + 1px)),
+			radial-gradient(66% 46% at 50% 0%, color-mix(in srgb, var(--cp-acc) 12%, transparent), transparent 70%);
+	}
+	/* 3 · graph paper — a fine grid with a heavier line every fifth */
+	.ca-sec:nth-of-type(4n + 3)::before {
+		background:
+			repeating-linear-gradient(90deg, transparent 0 23px, color-mix(in srgb, var(--cp-acc) 5%, transparent) 23px 24px),
+			repeating-linear-gradient(180deg, transparent 0 23px, color-mix(in srgb, var(--cp-acc) 4%, transparent) 23px 24px),
+			repeating-linear-gradient(90deg, transparent 0 119px, color-mix(in srgb, var(--cp-acc) 13%, transparent) 119px 120px),
+			repeating-linear-gradient(180deg, transparent 0 119px, color-mix(in srgb, var(--cp-acc) 10%, transparent) 119px 120px),
+			radial-gradient(56% 42% at 82% 6%, color-mix(in srgb, var(--cp-acc) 14%, transparent), transparent 66%);
+	}
+	/* 4 · the drafting wash — a long diagonal hatch */
+	.ca-sec:nth-of-type(4n)::before {
+		background:
+			repeating-linear-gradient(56deg, transparent 0 12px, color-mix(in srgb, var(--cp-acc) 4%, transparent) 12px 13px),
+			repeating-linear-gradient(56deg, transparent 0 96px, color-mix(in srgb, var(--cp-acc) 12%, transparent) 96px 97px),
+			radial-gradient(54% 40% at 10% 90%, color-mix(in srgb, var(--cp-acc2) 15%, transparent), transparent 64%);
+	}
+
+	/* ── daylight ──
+	   On cream the same washes go muddy, so the grounds are redrawn in ink:
+	   stronger rules, cooler blues for the paper, and the glow pulled right
+	   back so text keeps its contrast. */
+	:global(html:not(.dark)) .cabout .ca-sec::after {
+		background: radial-gradient(78% 52% at 50% 100%, color-mix(in srgb, var(--cp-acc) 13%, transparent), transparent 72%);
+	}
+	:global(html:not(.dark)) .cabout .ca-sec:nth-of-type(4n + 1)::before {
+		background:
+			radial-gradient(2px 2px at 18% 22%, rgba(146, 64, 14, 0.35), transparent 60%),
+			radial-gradient(2px 2px at 74% 68%, rgba(190, 24, 93, 0.28), transparent 60%),
+			radial-gradient(2px 2px at 46% 86%, rgba(146, 64, 14, 0.3), transparent 60%),
+			radial-gradient(58% 44% at 16% 2%, rgba(245, 158, 11, 0.2), transparent 66%),
+			radial-gradient(48% 38% at 88% 96%, rgba(251, 113, 133, 0.16), transparent 62%);
+	}
+	:global(html:not(.dark)) .cabout .ca-sec:nth-of-type(4n + 2)::before {
+		background:
+			repeating-linear-gradient(180deg, transparent 0 41px, rgba(59, 130, 246, 0.16) 41px 42px),
+			linear-gradient(90deg, transparent 6.5%, rgba(220, 38, 38, 0.3) 6.5%, rgba(220, 38, 38, 0.3) calc(6.5% + 1px), transparent calc(6.5% + 1px)),
+			radial-gradient(66% 46% at 50% 0%, rgba(245, 158, 11, 0.14), transparent 70%);
+	}
+	:global(html:not(.dark)) .cabout .ca-sec:nth-of-type(4n + 3)::before {
+		background:
+			repeating-linear-gradient(90deg, transparent 0 23px, rgba(37, 99, 235, 0.07) 23px 24px),
+			repeating-linear-gradient(180deg, transparent 0 23px, rgba(37, 99, 235, 0.06) 23px 24px),
+			repeating-linear-gradient(90deg, transparent 0 119px, rgba(37, 99, 235, 0.17) 119px 120px),
+			repeating-linear-gradient(180deg, transparent 0 119px, rgba(37, 99, 235, 0.14) 119px 120px),
+			radial-gradient(56% 42% at 82% 6%, rgba(245, 158, 11, 0.15), transparent 66%);
+	}
+	:global(html:not(.dark)) .cabout .ca-sec:nth-of-type(4n)::before {
+		background:
+			repeating-linear-gradient(56deg, transparent 0 12px, rgba(146, 64, 14, 0.05) 12px 13px),
+			repeating-linear-gradient(56deg, transparent 0 96px, rgba(146, 64, 14, 0.16) 96px 97px),
+			radial-gradient(54% 40% at 10% 90%, rgba(251, 113, 133, 0.18), transparent 64%);
+	}
 	.ca-sec--cta { padding-bottom: clamp(1.5rem, 3vw, 2.5rem); }
 	.ca-wrap { max-width: 76rem; margin: 0 auto; }
 
@@ -521,18 +641,31 @@ const classPhotos = [
 	.ca-head { text-align: center; margin-bottom: clamp(1.5rem, 3vw, 2.25rem); }
 	.ca-head .ca-kick { text-align: center; }
 
+	/* An underlined word next to a solid amber button read as an
+	   afterthought. It is an outlined button now: the same height and shape
+	   as its neighbour, clearly the second of two real choices. */
 	.ca-link {
 		display: inline-flex;
 		align-items: center;
-		gap: 0.45rem;
+		gap: 0.5rem;
+		padding: 0.95rem 1.6rem;
+		border-radius: 9999px;
 		font-weight: 800;
 		font-size: 0.92rem;
-		color: var(--cp-acc);
-		border-bottom: 2px solid color-mix(in srgb, var(--cp-acc) 45%, transparent);
-		padding-bottom: 0.15rem;
-		transition: border-color 0.25s ease, gap 0.25s ease;
+		color: var(--cp-ink);
+		border: 1.5px solid color-mix(in srgb, var(--cp-acc) 55%, transparent);
+		background: color-mix(in srgb, var(--cp-acc) 8%, transparent);
+		transition: background 0.28s ease, border-color 0.28s ease, color 0.28s ease,
+			transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.28s ease;
 	}
-	.ca-link:hover { gap: 0.7rem; border-color: var(--cp-acc); }
+	.ca-link :global(svg) { color: var(--cp-acc); transition: transform 0.28s ease; }
+	.ca-link:hover {
+		transform: translateY(-2px);
+		border-color: var(--cp-acc);
+		background: color-mix(in srgb, var(--cp-acc) 16%, transparent);
+		box-shadow: 0 16px 32px -18px color-mix(in srgb, var(--cp-acc) 70%, transparent);
+	}
+	.ca-link:hover :global(svg) { transform: translateX(3px); }
 	.ca-cta {
 		display: inline-flex;
 		align-items: center;
@@ -549,9 +682,41 @@ const classPhotos = [
 	}
 	.ca-cta:hover { filter: brightness(1.06); }
 	.ca-row { display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap; }
-	.ca-call { font-size: 0.95rem; color: var(--cp-muted); }
-	.ca-call strong { font-weight: 850; color: var(--cp-ink); transition: color 0.25s ease; }
-	.ca-call:hover strong { color: var(--cp-acc); }
+	/* Next to a solid amber button, a grey sentence reads as a footnote
+	   rather than the second half of a real choice. Same height, same
+	   shape, outlined instead of filled. */
+	.ca-call {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.95rem 1.6rem;
+		border-radius: 9999px;
+		font-size: 0.92rem;
+		font-weight: 800;
+		color: var(--cp-ink);
+		border: 1.5px solid color-mix(in srgb, var(--cp-acc) 55%, transparent);
+		background: color-mix(in srgb, var(--cp-acc) 8%, transparent);
+		transition: background 0.28s ease, border-color 0.28s ease,
+			transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.28s ease;
+	}
+	.ca-call-or {
+		font-weight: 500;
+		font-size: 0.82rem;
+		color: var(--cp-faint);
+	}
+	.ca-call :global(svg) { color: var(--cp-acc); transition: transform 0.28s ease; }
+	.ca-call:hover {
+		transform: translateY(-2px);
+		border-color: var(--cp-acc);
+		background: color-mix(in srgb, var(--cp-acc) 16%, transparent);
+		box-shadow: 0 16px 32px -18px color-mix(in srgb, var(--cp-acc) 70%, transparent);
+	}
+	.ca-call:hover :global(svg) { transform: translateX(3px); }
+	@media (max-width: 480px) {
+		.ca-cta-row { flex-direction: column; gap: 0.7rem; }
+		.ca-cta-row .ca-cta,
+		.ca-cta-row .ca-call { width: 100%; justify-content: center; }
+	}
 
 	.ca-glare {
 		position: absolute;
@@ -571,7 +736,7 @@ const classPhotos = [
 		align-items: center;
 	}
 	@media (min-width: 960px) {
-		.ca-open { grid-template-columns: 1.05fr 0.95fr; }
+		.ca-open { grid-template-columns: 0.85fr 1.15fr; align-items: center; }
 	}
 	.ca-stats {
 		display: flex;
@@ -604,140 +769,182 @@ const classPhotos = [
 	}
 
 	/* the whiteboard */
-	.ca-board {
-		position: relative;
-		background: #fdfdfb;
-		border-radius: 0.9rem;
-		border: 10px solid #e7e2d8;
-		box-shadow: 0 34px 80px -30px rgba(0, 0, 0, 0.55);
-		padding: 1.3rem 1.3rem 2.4rem;
-		color: #44403c;
-		transform: rotate(0.8deg);
-	}
-	@media (max-width: 959px) { .ca-board { transform: none; margin-top: 1rem; } }
-	.ca-board-date {
-		position: absolute;
-		top: 0.9rem;
-		right: 1.1rem;
-		font-family: var(--cp-marker);
-		font-size: 0.9rem;
-		color: #78716c;
-	}
-	.ca-board-title {
-		font-family: var(--cp-marker);
-		font-size: clamp(1.2rem, 2.4vw, 1.6rem);
-		font-weight: 700;
-		color: #1c1917;
-		margin: 0 0 0.9rem;
-		position: relative;
-		display: inline-block;
-	}
-	.ca-board-swish {
-		position: absolute;
-		left: 0;
-		right: -6px;
-		bottom: -4px;
-		height: 5px;
-		border-radius: 999px;
-		background: color-mix(in srgb, var(--cp-acc) 55%, transparent);
-	}
-	.ca-board-video {
+	/* the board is the shared WhiteboardVideo now, so it only needs room */
+	.ca-boardwrap { display: flex; flex-direction: column; gap: 0.7rem; min-width: 0; }
+	.ca-boardnote {
 		display: flex;
-		flex-direction: column;
 		align-items: center;
-		justify-content: center;
 		gap: 0.4rem;
-		aspect-ratio: 16 / 9;
-		border-radius: 0.5rem;
-		border: 1.5px dashed #d6d0c4;
-		background: #f6f4ee;
-		color: #a8a29e;
-		text-align: center;
-		padding: 0.8rem;
-	}
-	.ca-board-vname {
-		font-size: 0.72rem;
-		font-weight: 800;
-		letter-spacing: 0.07em;
-		text-transform: uppercase;
-	}
-	.ca-board-vsub { font-family: var(--cp-marker); font-size: 0.85rem; }
-	.ca-sticky {
-		position: absolute;
-		font-family: var(--cp-marker);
-		font-size: 0.92rem;
-		font-weight: 700;
-		color: #44403c;
-		padding: 0.75rem 0.85rem 0.95rem;
-		box-shadow: 0 10px 22px -8px rgba(0, 0, 0, 0.35);
-	}
-	.ca-sticky--y { top: -0.9rem; left: 1.4rem; background: #fef08a; transform: rotate(-4deg); }
-	.ca-sticky--p { bottom: 1rem; right: -0.7rem; background: #fbcfe8; transform: rotate(3deg); }
-	@media (max-width: 560px) {
-		.ca-sticky--p { right: 0.4rem; }
-		/* the est. 2019 sticky was sitting on the board title — smaller, higher,
-		   and the board gets top clearance so the title stays readable */
-		.ca-sticky--y { top: -1.3rem; left: 0.8rem; font-size: 0.8rem; padding: 0.55rem 0.65rem 0.7rem; }
-		.ca-board { padding-top: 2rem; }
-	}
-	.ca-marker-tray {
-		position: absolute;
-		left: 1.2rem;
-		bottom: 0.55rem;
-		display: flex;
-		gap: 0.45rem;
-		align-items: center;
-	}
-	.ca-marker { width: 44px; height: 8px; border-radius: 999px; }
-	.ca-marker--r { background: #ef4444; }
-	.ca-marker--b { background: #3b82f6; }
-	.ca-marker--g { background: #22c55e; }
-	.ca-eraser { width: 30px; height: 14px; border-radius: 3px; background: #d6d3d1; }
-
-	/* ── B · the syllabus ── */
-	.ca-courses {
-		display: grid;
-		gap: 1.1rem;
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-	}
-	@media (max-width: 980px) {
-		.ca-courses { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-	}
-	@media (max-width: 560px) {
-		.ca-courses { grid-template-columns: 1fr; }
-	}
-	.ca-course {
-		position: relative;
-		padding: 1.3rem;
-		border-radius: 0.9rem;
-		border: 1px solid var(--cp-line);
-		background: var(--cp-card);
-		transition: border-color 0.25s ease, transform 0.25s ease;
-	}
-	.ca-course:hover { border-color: color-mix(in srgb, var(--cp-acc) 50%, transparent); }
-	.ca-course-code {
-		position: absolute;
-		top: 1rem;
-		right: 1.1rem;
-		font-family: ui-monospace, monospace;
-		font-size: 0.68rem;
-		font-weight: 800;
-		letter-spacing: 0.1em;
+		margin: 0;
+		font-size: 0.78rem;
+		line-height: 1.5;
 		color: var(--cp-faint);
 	}
-	.ca-course-ic {
+
+	/* ── B · the class register ──
+	   Six boxes in a grid said nothing about a school. This is a ring-bound
+	   register: ruled paper, a red margin, one line per department, and each
+	   line ticks itself off in turn as the sheet comes into view. */
+	.ca-reg {
+		position: relative;
+		display: grid;
+		grid-template-columns: 34px minmax(0, 1fr);
+		max-width: 62rem;
+		margin-inline: auto;
+		filter: drop-shadow(0 34px 60px rgba(0, 0, 0, 0.5));
+	}
+	.ca-reg-rings {
+		display: grid;
+		align-content: space-evenly;
+		justify-items: center;
+		padding-block: 1.4rem;
+		border-radius: 0.9rem 0 0 0.9rem;
+		background: linear-gradient(180deg, #3c2b16, #241809);
+		border: 1px solid rgba(255, 255, 255, 0.07);
+		border-right: 0;
+	}
+	.ca-reg-rings i {
+		width: 15px;
+		height: 15px;
+		border-radius: 9999px;
+		border: 2.5px solid #b9b3a8;
+		border-bottom-color: #6b665e;
+		background: transparent;
+	}
+	.ca-reg-sheet {
+		position: relative;
+		overflow: hidden;
+		padding: clamp(1.1rem, 2.4vw, 1.6rem) clamp(1rem, 2.6vw, 2rem) 2.6rem;
+		border-radius: 0 0.9rem 0.9rem 0;
+		color: #2b2119;
+		background:
+			repeating-linear-gradient(180deg, transparent 0 43px, rgba(59, 130, 246, 0.16) 43px 44px),
+			linear-gradient(180deg, #f7f2e6, #efe6d3);
+	}
+	.ca-reg-margin {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: clamp(2.1rem, 4vw, 3.2rem);
+		width: 1px;
+		background: rgba(220, 38, 38, 0.35);
+	}
+	.ca-reg-head {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 0.5rem;
+		padding-bottom: 0.5rem;
+		margin-bottom: 0.7rem;
+		border-bottom: 2px solid rgba(63, 42, 20, 0.28);
+	}
+	.ca-reg-title {
+		font-family: var(--cp-marker);
+		font-size: clamp(1.15rem, 2.4vw, 1.5rem);
+		font-weight: 700;
+		color: #3f2a14;
+	}
+	.ca-reg-meta {
+		font-family: ui-monospace, monospace;
+		font-size: 0.66rem;
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: rgba(63, 42, 20, 0.55);
+	}
+	.ca-reg-rows { list-style: none; margin: 0; padding: 0; display: grid; }
+	.ca-reg-row {
+		display: grid;
+		grid-template-columns: 26px 62px 30px minmax(0, 1fr) 26px;
+		align-items: center;
+		gap: 0.55rem;
+		padding: 0.62rem 0;
+		border-bottom: 1px dashed rgba(63, 42, 20, 0.18);
+		opacity: 0;
+		transform: translateX(-10px);
+		transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+		transition-delay: calc(var(--i, 0) * 0.11s);
+	}
+	.ca-reg.is-marked .ca-reg-row { opacity: 1; transform: none; }
+	.ca-reg-row:last-child { border-bottom: 0; }
+	.ca-reg-tick {
 		display: grid;
 		place-items: center;
-		width: 44px;
-		height: 44px;
-		border-radius: 0.7rem;
-		color: var(--cp-acc);
-		background: color-mix(in srgb, var(--cp-acc) 12%, transparent);
-		border: 1px solid color-mix(in srgb, var(--cp-acc) 28%, transparent);
-		margin-bottom: 0.9rem;
+		width: 22px;
+		height: 22px;
+		border-radius: 0.35rem;
+		border: 1.6px solid rgba(63, 42, 20, 0.4);
+		color: #16a34a;
 	}
-	.ca-course-t { margin: 0 0 0.35rem; font-size: 1.08rem; font-weight: 800; }
-	.ca-course-d { margin: 0; font-size: 0.9rem; line-height: 1.6; color: var(--cp-muted); }
+	.ca-reg-tick svg { opacity: 0; transform: scale(0.4) rotate(-18deg); transition: opacity 0.32s ease, transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1); transition-delay: calc(var(--i, 0) * 0.11s + 0.28s); }
+	.ca-reg.is-marked .ca-reg-tick svg { opacity: 1; transform: none; }
+	.ca-reg.is-marked .ca-reg-tick { border-color: #16a34a; }
+	.ca-reg-code {
+		font-family: ui-monospace, monospace;
+		font-size: 0.66rem;
+		font-weight: 800;
+		letter-spacing: 0.08em;
+		color: rgba(63, 42, 20, 0.6);
+	}
+	.ca-reg-ic {
+		display: grid;
+		place-items: center;
+		width: 28px;
+		height: 28px;
+		border-radius: 0.45rem;
+		color: #92400e;
+		background: rgba(245, 158, 11, 0.16);
+		border: 1px solid rgba(146, 64, 14, 0.22);
+	}
+	.ca-reg-body { display: flex; flex-direction: column; min-width: 0; }
+	.ca-reg-body strong { font-size: 0.98rem; font-weight: 800; line-height: 1.25; }
+	.ca-reg-body em {
+		font-style: normal;
+		font-size: 0.84rem;
+		line-height: 1.5;
+		color: rgba(43, 33, 25, 0.66);
+	}
+	/* the teacher's tick in the margin, drawn in red pen */
+	.ca-reg-mark {
+		justify-self: end;
+		font-family: var(--cp-marker);
+		font-size: 1.15rem;
+		font-weight: 700;
+		color: #dc2626;
+		opacity: 0;
+		transform: rotate(-14deg) scale(0.5);
+		transition: opacity 0.3s ease, transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+		transition-delay: calc(var(--i, 0) * 0.11s + 0.4s);
+	}
+	.ca-reg.is-marked .ca-reg-mark { opacity: 1; transform: rotate(-14deg); }
+	.ca-reg-sign {
+		position: absolute;
+		right: clamp(1rem, 2.6vw, 2rem);
+		bottom: 0.75rem;
+		font-family: var(--cp-marker);
+		font-size: 0.92rem;
+		color: rgba(43, 33, 25, 0.45);
+	}
+	@media (max-width: 720px) {
+		.ca-reg { grid-template-columns: 26px minmax(0, 1fr); }
+		.ca-reg-rings i { width: 12px; height: 12px; }
+		.ca-reg-row {
+			grid-template-columns: 22px 26px minmax(0, 1fr);
+			row-gap: 0.15rem;
+			padding: 0.55rem 0;
+		}
+		.ca-reg-code { display: none; }
+		.ca-reg-mark { display: none; }
+		.ca-reg-body strong { font-size: 0.92rem; }
+		.ca-reg-body em { font-size: 0.78rem; }
+		.ca-reg-sheet { padding-bottom: 2.2rem; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.ca-reg-row,
+		.ca-reg-tick svg,
+		.ca-reg-mark { transition: none; opacity: 1; transform: none; }
+	}
 
 	/* ── C · the charter ── */
 	.ca-charter {
@@ -748,14 +955,58 @@ const classPhotos = [
 	@media (min-width: 760px) {
 		.ca-charter { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 	}
+	/* The posters used to simply appear. They swing down from the pin now,
+	   the way paper does when you push a tack through the top of it, and
+	   settle with a little weight. */
 	.ca-poster {
 		position: relative;
 		padding: clamp(1.4rem, 3vw, 2rem);
 		border-radius: 0.6rem;
-		background: var(--cp-card);
+		background:
+			radial-gradient(120% 90% at 50% 0%, color-mix(in srgb, var(--cp-acc) 9%, transparent), transparent 62%),
+			var(--cp-card);
 		border: 1px solid var(--cp-line);
 		box-shadow: 0 24px 55px -28px rgba(0, 0, 0, 0.55);
+		transform-origin: 50% -6px;
 		transform: rotate(var(--r, 0deg));
+		transition: box-shadow 0.4s ease, border-color 0.4s ease;
+	}
+	.ca-poster:hover {
+		border-color: color-mix(in srgb, var(--cp-acc) 42%, transparent);
+		box-shadow: 0 30px 62px -26px color-mix(in srgb, var(--cp-acc) 45%, transparent);
+	}
+	/* the swing itself, staggered so the second one follows the first */
+	.ca-poster.cp-rev {
+		opacity: 0;
+		transform: rotate(calc(var(--r, 0deg) - 9deg)) translateY(-26px);
+	}
+	.ca-poster.cp-rev.is-on {
+		opacity: 1;
+		transform: rotate(var(--r, 0deg));
+		animation: ca-pin 1.35s cubic-bezier(0.28, 1.4, 0.4, 1) both;
+		animation-delay: calc(var(--i, 0) * 0.18s);
+	}
+	@keyframes ca-pin {
+		0% { opacity: 0; transform: rotate(calc(var(--r, 0deg) - 9deg)) translateY(-26px); }
+		45% { opacity: 1; transform: rotate(calc(var(--r, 0deg) + 2.5deg)) translateY(0); }
+		70% { transform: rotate(calc(var(--r, 0deg) - 1.4deg)); }
+		86% { transform: rotate(calc(var(--r, 0deg) + 0.6deg)); }
+		100% { opacity: 1; transform: rotate(var(--r, 0deg)); }
+	}
+	/* the tack pushes in just before the paper drops */
+	.ca-poster .ca-pin { transform-origin: 50% 50%; }
+	.ca-poster.cp-rev.is-on .ca-pin {
+		animation: ca-tack 0.5s cubic-bezier(0.34, 1.7, 0.5, 1) both;
+		animation-delay: calc(var(--i, 0) * 0.18s);
+	}
+	@keyframes ca-tack {
+		from { transform: scale(2.1) translateY(-10px); opacity: 0; }
+		to { transform: none; opacity: 1; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.ca-poster.cp-rev,
+		.ca-poster.cp-rev.is-on,
+		.ca-poster.cp-rev.is-on .ca-pin { animation: none; opacity: 1; transform: rotate(var(--r, 0deg)); }
 	}
 	.ca-pin {
 		position: absolute;
@@ -817,7 +1068,51 @@ const classPhotos = [
 	}
 	.ca-values-row li :global(svg) { color: var(--cp-acc); }
 
-	/* ── D · school history ── */
+	/* On a phone the pills wrapped into a ragged block with a word stranded
+	   on the last row. They become a ruled list instead: two columns, each
+	   value on its own line with a tick, like rules written on the board. */
+	@media (max-width: 640px) {
+		.ca-values {
+			gap: 0.6rem;
+			justify-items: stretch;
+			padding: 0.95rem 1rem 1.05rem;
+			border-radius: 0.9rem;
+			border: 1px solid color-mix(in srgb, var(--cp-acc) 26%, transparent);
+			background:
+				repeating-linear-gradient(180deg, transparent 0 33px, color-mix(in srgb, var(--cp-acc) 10%, transparent) 33px 34px),
+				color-mix(in srgb, var(--cp-acc) 6%, transparent);
+		}
+		.ca-values-label { text-align: center; font-size: 0.64rem; }
+		.ca-values-row {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 0.35rem 0.8rem;
+			justify-content: stretch;
+		}
+		.ca-values-row li {
+			/* the value wraps to two lines, so the tick sits on the first
+			   line rather than floating in the middle of the block */
+			align-items: flex-start;
+			padding: 0.2rem 0;
+			border: 0;
+			background: none;
+			border-radius: 0;
+			font-size: 0.82rem;
+			line-height: 1.45;
+			font-weight: 600;
+			gap: 0.42rem;
+			min-width: 0;
+		}
+		.ca-values-row li :global(svg) { flex: none; margin-top: 0.12rem; }
+	}
+	@media (max-width: 380px) {
+		.ca-values-row { grid-template-columns: 1fr; }
+	}
+
+	/* ── D · school history ──
+	   The spine used to hug the left edge and every year hung off it, which
+	   left the whole right half of a wide screen empty. It runs down the
+	   middle now and the years alternate across it. */
 	.ca-history {
 		position: relative;
 		display: grid;
@@ -846,6 +1141,55 @@ const classPhotos = [
 		border-radius: 50%;
 		background: var(--cp-acc);
 		box-shadow: 0 0 0 4px color-mix(in srgb, var(--cp-acc) 22%, transparent);
+	}
+
+	@media (min-width: 900px) {
+		.ca-history {
+			grid-template-columns: 1fr 2px 1fr;
+			column-gap: clamp(2rem, 4vw, 3.5rem);
+			row-gap: clamp(0.6rem, 1.6vw, 1.1rem);
+			padding-left: 0;
+			align-items: start;
+		}
+		.ca-spine { left: 50%; margin-left: -1px; }
+		/* each year is a card that leans on its own side of the wall */
+		.ca-year {
+			padding: 1.1rem 1.3rem;
+			border-radius: 1rem;
+			border: 1px solid var(--cp-line);
+			background:
+				radial-gradient(120% 100% at 0% 0%, color-mix(in srgb, var(--cp-acc) 7%, transparent), transparent 60%),
+				var(--cp-card);
+			transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.4s ease,
+				box-shadow 0.4s ease;
+		}
+		.ca-year:hover {
+			transform: translateY(-4px);
+			border-color: color-mix(in srgb, var(--cp-acc) 45%, transparent);
+			box-shadow: 0 24px 46px -26px color-mix(in srgb, var(--cp-acc) 55%, transparent);
+		}
+		.ca-year--l { grid-column: 1; text-align: right; justify-items: end; }
+		.ca-year--r { grid-column: 3; }
+		.ca-year-d { max-width: none; }
+		.ca-year-node { top: 1.5rem; }
+		.ca-year--l .ca-year-node {
+			left: auto;
+			right: calc(-1 * clamp(2rem, 4vw, 3.5rem) / 2 - 6px);
+		}
+		.ca-year--r .ca-year-node {
+			left: calc(-1 * clamp(2rem, 4vw, 3.5rem) / 2 - 6px);
+		}
+		/* a hairline from the card to the wall, so it reads as attached */
+		.ca-year::after {
+			content: '';
+			position: absolute;
+			top: 1.95rem;
+			width: calc(clamp(2rem, 4vw, 3.5rem) / 2 - 6px);
+			height: 1px;
+			background: color-mix(in srgb, var(--cp-acc) 40%, transparent);
+		}
+		.ca-year--l::after { right: calc(-1 * (clamp(2rem, 4vw, 3.5rem) / 2 - 6px)); }
+		.ca-year--r::after { left: calc(-1 * (clamp(2rem, 4vw, 3.5rem) / 2 - 6px)); }
 	}
 	.ca-year-n {
 		font-family: var(--cp-marker);
