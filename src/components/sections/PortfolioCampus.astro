@@ -7,7 +7,7 @@
 // carries `cbody` (campus engine: .cp-rev + [data-count] + #cp-show
 // projector) and `cpf` (motion engine: tilt / glare / magnetic).
 import { Icon } from 'astro-icon/components';
-import { projects, featuredProjects, sectorLabels, sectorOrder, type ProjectSector } from '../../data/projects';
+import { projects, featuredProjects, sectorLabels, sectorOrder, projectLink, projectStories, type ProjectSector } from '../../data/projects';
 
 const sectors = sectorOrder;
 const sectorShown: Record<ProjectSector, string> = {
@@ -27,7 +27,15 @@ const slides = [
 	...projects.filter((p) => p.img && !p.caseStudy),
 ].filter((p) => p.img).slice(0, 8);
 
-const dest = (p: (typeof projects)[number]) => (p.caseStudy ? `/work/${p.slug}` : p.url);
+// Where each card goes: a case study, an older long-form story, the live
+// site, or the write-up sheet on this page for work with no page of its own.
+const linkFor = (p: (typeof projects)[number]) => projectLink(p.name);
+const isSheet = (p: (typeof projects)[number]) => {
+	const l = linkFor(p);
+	return !!l && l.href.startsWith('/portfolio#work-');
+};
+// the works whose whole story is told right here on the page
+const sheetProjects = projects.filter(isSheet);
 ---
 
 <div class="cpf cbody view-body view-body-campus">
@@ -160,26 +168,31 @@ const dest = (p: (typeof projects)[number]) => (p.caseStudy ? `/work/${p.slug}` 
 				<div class="cf-shelf">
 					{
 						projects.map((p, i) => {
-							const href = dest(p);
+							const link = linkFor(p);
 							const hasCase = !!p.caseStudy;
-							const Tag = href ? 'a' : 'div';
+							const sheet = isSheet(p);
+							const out = !!link?.external;
+							const Tag = sheet ? 'button' : link ? 'a' : 'div';
 							return (
-								<figure class:list={['cf-trophy', 'cp-rev', `s-${p.sector}`]} style={`--c:${p.color}; --i:${i % 3}`}>
+								<figure class:list={['cf-trophy', 'cp-rev', `s-${p.sector}`]} id={`work-${p.slug}`} style={`--c:${p.color}; --i:${i % 3}`}>
 									<Tag
 										class="cf-trophy-link"
-										href={href ?? undefined}
-										data-leaving={href && !hasCase ? p.host : undefined}
-										data-leaving-name={href && !hasCase ? p.name : undefined}
-										rel={href && !hasCase ? 'noopener noreferrer' : undefined}
-										aria-label={p.name}
+										type={sheet ? 'button' : undefined}
+										data-work={sheet ? p.slug : undefined}
+										href={sheet ? undefined : link?.href}
+										data-leaving={out ? p.host : undefined}
+										data-leaving-name={out ? p.name : undefined}
+										rel={out ? 'noopener noreferrer' : undefined}
+										aria-label={link ? `${p.name}: ${link.label.toLowerCase()}` : p.name}
 									>
 										<span class="cf-trophy-frame" data-fa-tilt="5">
 											<span class="cf-glare" aria-hidden="true" />
 											<img src={p.img} alt={p.name} loading="lazy" />
 											{hasCase && <span class="cf-trophy-star">⭐ gold star</span>}
-											{href && !hasCase && (
+											{link && !hasCase && (
 												<span class="cf-trophy-view" aria-hidden="true">
-													Visit live <Icon width={13} name="mdi:arrow-top-right" />
+													{out ? 'Visit live' : 'Read the write-up'}
+													<Icon width={13} name={out ? 'mdi:arrow-top-right' : 'mdi:arrow-right'} />
 												</span>
 											)}
 										</span>
@@ -229,6 +242,47 @@ const dest = (p: (typeof projects)[number]) => (p.caseStudy ? `/work/${p.slug}` 
 			</div>
 		</div>
 	</section>
+
+	<!-- ── E · the write-up sheet ──────────────────────────── -->
+	<!-- Work with no page of its own still gets its story told: the card
+	     opens this marked-up exercise sheet, and /portfolio#work-<slug>
+	     opens it straight from a link on another page. -->
+	<div class="cf-sheet" id="cf-sheet" hidden>
+		<div class="cf-sheet-veil" data-sheet-close></div>
+		<div class="cf-sheet-paper" role="dialog" aria-modal="true" tabindex="-1">
+			<button class="cf-sheet-x" type="button" data-sheet-close aria-label="Close the write-up">
+				<Icon width={17} name="mdi:close" />
+			</button>
+			{
+				sheetProjects.map((p) => (
+					<article class="cf-sheet-panel" data-work-panel={p.slug} style={`--c:${p.color}`} hidden>
+						<span class="cf-sheet-tape" aria-hidden="true" />
+						<figure class="cf-sheet-shot">
+							<img src={p.img} alt={p.name} loading="lazy" />
+						</figure>
+						<div class="cf-sheet-copy">
+							<span class="cf-sheet-kick">{sectorLabels[p.sector]} · {p.year}</span>
+							<h3 class="cf-sheet-name" id={`cf-sheet-title-${p.slug}`}>{p.name}</h3>
+							<p class="cf-sheet-tag">{p.tagline}</p>
+							{(projectStories[p.slug] ?? [p.blurb]).map((para) => <p class="cf-sheet-p">{para}</p>)}
+							<span class="cf-sheet-kick cf-sheet-kick--sub">What we handled</span>
+							<span class="cf-sheet-tags">{p.tags.map((t) => <i>{t}</i>)}</span>
+							<div class="cf-sheet-row">
+								<a class="cf-cta fa-cta" href="/contact">
+									Ask us about this build
+									<Icon width={16} name="mdi:arrow-right" />
+								</a>
+								<a class="cf-link" href="#cf-cabinet" data-sheet-close>
+									Back to the cabinet
+									<Icon width={15} name="mdi:arrow-left" />
+								</a>
+							</div>
+						</div>
+					</article>
+				))
+			}
+		</div>
+	</div>
 </div>
 
 <style>
@@ -525,6 +579,32 @@ const dest = (p: (typeof projects)[number]) => (p.caseStudy ? `/work/${p.slug}` 
 		color: var(--cp-ink);
 		box-shadow: 0 0 14px -3px color-mix(in srgb, var(--c) 65%, transparent);
 	}
+	/* the quiet loading line: it fills across the live number, then the
+	   projector clicks over to the next slide. */
+	.cf-click { position: relative; overflow: hidden; }
+	.cf-click::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		height: 2.5px;
+		border-radius: 2px;
+		background: var(--c);
+		transform: scaleX(0);
+		transform-origin: left center;
+	}
+	.cf-click.is-on.is-dwell::after {
+		animation: cf-dwell var(--cf-dwell, 2600ms) linear both;
+	}
+	#cp-show.is-held .cf-click.is-on.is-dwell::after { animation-play-state: paused; }
+	@keyframes cf-dwell {
+		from { transform: scaleX(0); }
+		to { transform: scaleX(1); }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.cf-click.is-on.is-dwell::after { animation: none; transform: scaleX(1); }
+	}
 
 	/* ── B · gold-star projects ── */
 	.cf-fair {
@@ -670,7 +750,22 @@ const dest = (p: (typeof projects)[number]) => (p.caseStudy ? `/work/${p.slug}` 
 	#cpf-media:checked ~ .cf-shelf .s-media,
 	#cpf-commerce:checked ~ .cf-shelf .s-commerce,
 	#cpf-product:checked ~ .cf-shelf .s-product { display: block; }
-	.cf-trophy-link { display: block; color: inherit; }
+	.cf-trophy-link {
+		display: block;
+		color: inherit;
+		width: 100%;
+		text-align: left;
+		font: inherit;
+		padding: 0;
+		border: 0;
+		background: none;
+		cursor: pointer;
+	}
+	.cf-trophy-link:focus-visible {
+		outline: 2px solid var(--cp-acc);
+		outline-offset: 5px;
+		border-radius: 0.9rem;
+	}
 	.cf-trophy-frame {
 		position: relative;
 		display: block;
@@ -771,6 +866,143 @@ const dest = (p: (typeof projects)[number]) => (p.caseStudy ? `/work/${p.slug}` 
 		justify-content: center;
 		gap: 1.4rem;
 		flex-wrap: wrap;
+	}
+
+	/* ── E · the write-up sheet ── */
+	.cf-sheet {
+		position: fixed;
+		inset: 0;
+		z-index: 120;
+		display: grid;
+		place-items: center;
+		padding: clamp(0.75rem, 3vw, 2rem);
+	}
+	.cf-sheet[hidden] { display: none; }
+	.cf-sheet-veil {
+		position: absolute;
+		inset: 0;
+		background: rgba(10, 6, 1, 0.72);
+		backdrop-filter: blur(6px);
+		opacity: 0;
+		transition: opacity 0.3s ease;
+	}
+	.cf-sheet.is-on .cf-sheet-veil { opacity: 1; }
+	.cf-sheet-paper {
+		position: relative;
+		width: min(60rem, 100%);
+		max-height: min(86vh, 52rem);
+		overflow: auto;
+		overscroll-behavior: contain;
+		border-radius: 1rem;
+		padding: clamp(1.4rem, 3vw, 2.2rem);
+		color: #2b1c08;
+		background:
+			repeating-linear-gradient(180deg, transparent 0 29px, rgba(59, 130, 246, 0.1) 29px 30px),
+			linear-gradient(180deg, #fdf8ec, #f6ecd6);
+		box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.7);
+		transform: translateY(16px) scale(0.985);
+		opacity: 0;
+		transition: opacity 0.32s ease, transform 0.36s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.cf-sheet.is-on .cf-sheet-paper { opacity: 1; transform: none; }
+	.cf-sheet-paper::before {
+		content: '';
+		position: absolute;
+		inset: 0 auto 0 clamp(1rem, 2.2vw, 1.8rem);
+		width: 1.5px;
+		background: rgba(225, 29, 72, 0.28);
+		pointer-events: none;
+	}
+	.cf-sheet-x {
+		position: absolute;
+		top: 0.7rem;
+		right: 0.7rem;
+		z-index: 3;
+		display: grid;
+		place-items: center;
+		width: 2.1rem;
+		height: 2.1rem;
+		border-radius: 9999px;
+		border: 1px solid rgba(43, 28, 8, 0.16);
+		background: rgba(255, 255, 255, 0.75);
+		color: #2b1c08;
+		cursor: pointer;
+		transition: background 0.2s ease, transform 0.2s ease;
+	}
+	.cf-sheet-x:hover { background: #fff; transform: rotate(90deg); }
+	.cf-sheet-panel {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+		gap: clamp(1.2rem, 3vw, 2rem);
+		align-items: start;
+		padding-left: clamp(0.9rem, 1.6vw, 1.4rem);
+	}
+	.cf-sheet-panel[hidden] { display: none; }
+	.cf-sheet-tape {
+		position: absolute;
+		top: -0.55rem;
+		left: 50%;
+		width: 8.5rem;
+		height: 1.5rem;
+		transform: translateX(-50%) rotate(-1.4deg);
+		background: color-mix(in srgb, var(--c, #f59e0b) 26%, rgba(255, 255, 255, 0.82));
+		box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+	}
+	.cf-sheet-shot {
+		margin: 0;
+		border-radius: 0.7rem;
+		overflow: hidden;
+		border: 1px solid rgba(43, 28, 8, 0.14);
+		background: #fff;
+		box-shadow: 0 18px 34px -22px rgba(0, 0, 0, 0.6);
+		transform: rotate(-0.8deg);
+	}
+	.cf-sheet-shot img { display: block; width: 100%; height: auto; }
+	.cf-sheet-copy { display: grid; gap: 0.55rem; }
+	.cf-sheet-kick {
+		font-family: var(--cp-marker);
+		font-size: 0.85rem;
+		font-weight: 700;
+		color: color-mix(in srgb, var(--c, #b45309) 72%, #2b1c08);
+	}
+	.cf-sheet-kick--sub { margin-top: 0.35rem; }
+	.cf-sheet-name { margin: 0; font-size: clamp(1.5rem, 3.4vw, 2rem); font-weight: 800; line-height: 1.1; }
+	.cf-sheet-tag {
+		margin: 0;
+		font-family: var(--cp-marker);
+		font-size: 1.02rem;
+		color: rgba(43, 28, 8, 0.8);
+	}
+	.cf-sheet-p { margin: 0; font-size: 0.95rem; line-height: 1.72; color: rgba(43, 28, 8, 0.78); }
+	.cf-sheet-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+	.cf-sheet-tags i {
+		font-style: normal;
+		font-size: 0.74rem;
+		font-weight: 700;
+		letter-spacing: 0.02em;
+		text-transform: uppercase;
+		padding: 0.24rem 0.6rem;
+		border-radius: 9999px;
+		border: 1px solid color-mix(in srgb, var(--c, #b45309) 34%, transparent);
+		background: color-mix(in srgb, var(--c, #b45309) 10%, transparent);
+		color: color-mix(in srgb, var(--c, #b45309) 70%, #2b1c08);
+	}
+	.cf-sheet-row {
+		display: flex;
+		align-items: center;
+		gap: 1.1rem;
+		flex-wrap: wrap;
+		margin-top: 0.7rem;
+	}
+	.cf-sheet-row .cf-link { color: color-mix(in srgb, var(--c, #b45309) 70%, #2b1c08); }
+	@media (max-width: 720px) {
+		.cf-sheet-panel { grid-template-columns: 1fr; }
+		.cf-sheet-shot { transform: none; }
+		.cf-sheet-paper { max-height: 88vh; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.cf-sheet-veil,
+		.cf-sheet-paper { transition: none; }
 	}
 
 	/* ── reveals ── */

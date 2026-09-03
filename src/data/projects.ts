@@ -547,3 +547,68 @@ export const projects: Project[] = [
 
 export const featuredProjects = projects.filter((p) => p.caseStudy);
 export const getProject = (slug: string) => projects.find((p) => p.slug === slug);
+
+// ── Where a named project should send a reader ──────────────────────────
+// Some works have a full case study at /work/<slug>. A few older ones keep
+// their long-form story in the portfolio collection. The rest have no page
+// of their own, so they open the portfolio cabinet on their own card, where
+// the write-up below is shown in full.
+const legacyWriteups: Record<string, string> = {
+	betslipswitch: 'betslipswitch',
+	brixmarket: 'brixmarketplace',
+	'hemam-synergy': 'hemamsynergy',
+};
+
+/** The longer description shown when a project has no page of its own. */
+export const projectStories: Record<string, string[]> = {
+	brixmarket: [
+		'Brixmarket is an online marketplace for Nigerian real estate, built so buyers, sellers and agents can meet in one trustworthy place. Commercial buildings, homes, land and whole estates sit in a single searchable catalogue, listed for sale, lease or rent.',
+		'We handled the brand, the interface and the build across web and mobile, then stayed on for marketing and search. The work was mostly about trust: clear listings, honest search, and tooling that keeps a deal moving once two strangers decide to talk.',
+	],
+	'my-eya-estate': [
+		'My Eya Estate is a property business that needed to look as dependable online as it is in person. We built a calm, photography-led site where every listing is easy to scan and an enquiry is never more than a tap away.',
+		'Our part covered the website itself and the ongoing maintenance behind it, so listings stay current and the pages keep loading fast for someone browsing on a phone.',
+	],
+	'beauty-hive': [
+		'Beauty Hive is a beauty storefront built to sell rather than simply to exist. Products are merchandised the way a shopper actually browses, and the route from a first look to a finished checkout is kept deliberately short.',
+		'We shaped the brand and the store together, so the personality on the homepage carries all the way through to the basket without the experience going flat halfway.',
+	],
+	'purple-panda': [
+		'Purple Panda is a marketing-led product that needed an identity with a pulse and a site that could grow with it. We gave it a distinctive brand, then built pages tuned for search and for the campaigns running into them.',
+		'Branding, website and SEO were treated as one job rather than three, which is why the site still reads as one voice from the first headline to the last footer link.',
+	],
+	appman: [
+		'AppMan is a school-management platform that puts the daily running of a school in one place. Attendance is taken with QR smart-IDs, tests are sat on a computer, and parents and students get a portal of their own instead of a paper trail.',
+		'We built it for web and mobile together, because the people using it are rarely at the same desk: an administrator on a laptop, a teacher on a phone at the classroom door, a parent checking in from anywhere.',
+	],
+	buygas: [
+		'BuyGas connects cooking-gas merchants to the households that buy from them. Ordering is simple and affordable, and every delivery is tracked from the tap that starts it to the doorstep it arrives at.',
+		'We built it as a platform rather than a single shop, so merchants can come on board and start selling without any of them needing an app of their own.',
+	],
+	saros: [
+		'Saros is an education platform designed around the people who actually use it, students and the staff behind them. The interface stays clear and calm under pressure, which matters more here than any flourish.',
+		'We built the platform and continue to maintain it, keeping it dependable through term-time peaks when everybody arrives at once.',
+	],
+};
+
+export interface ProjectLink {
+	href: string;
+	label: string;
+	external: boolean;
+	host?: string;
+	name: string;
+	slug: string;
+}
+
+/** Resolve a project name to the best place to read about it. */
+export const projectLink = (name: string): ProjectLink | null => {
+	const key = name.trim().toLowerCase();
+	const p = projects.find((x) => x.name.toLowerCase() === key);
+	if (!p) return null;
+	const base = { name: p.name, slug: p.slug };
+	if (p.caseStudy) return { ...base, href: `/work/${p.slug}`, label: 'Read the write-up', external: false };
+	const legacy = legacyWriteups[p.slug];
+	if (legacy) return { ...base, href: `/portfolio/${legacy}`, label: 'Read the write-up', external: false };
+	if (p.url) return { ...base, href: p.url, label: 'Visit the live site', external: true, host: p.host };
+	return { ...base, href: `/portfolio#work-${p.slug}`, label: 'Read the write-up', external: false };
+};

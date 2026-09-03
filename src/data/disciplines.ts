@@ -76,7 +76,7 @@ export const disciplines: Discipline[] = [
 		ways: [
 			{ icon: 'mdi:auto-fix', title: 'From scratch or a refresh', desc: 'A brand-new identity, or a careful evolution of the one you already have.' },
 			{ icon: 'mdi:hand-heart', title: 'Design-only or design + build', desc: 'Hand the files to your own developers, or we design and build it together.' },
-			{ icon: 'mdi:account-check-outline', title: 'Carried along, every step', desc: 'You review and steer at each stage — nothing ships until you love it.' },
+			{ icon: 'mdi:account-check-outline', title: 'Carried along, every step', desc: 'You review and steer at each stage, so nothing ships until you love it.' },
 		],
 		projects: [
 			{ name: 'Beauty Hive', sector: 'Beauty brand & store', img: '/images/portfolio/beauty-hive.webp' },
@@ -85,7 +85,7 @@ export const disciplines: Discipline[] = [
 		],
 		media: { kind: 'image', label: 'Design showcase' },
 		review: {
-			quote: '“They turned a vague idea into a brand we are genuinely proud of — and the interface just makes sense.”',
+			quote: '“They turned a vague idea into a brand we are genuinely proud of, and the interface just makes sense.”',
 			name: 'Cheta', role: 'Client, e-commerce', img: '/testimonial/cheta.jpeg',
 		},
 		outcome: 'A product that looks like it belongs at the top of its market.',
@@ -117,7 +117,7 @@ export const disciplines: Discipline[] = [
 			{ title: 'Mobile apps', desc: 'Native-quality iOS and Android from one focused team.', items: ['Flutter', 'Native iOS', 'Native Android'] },
 			{ title: 'Proof of concept & MVP', desc: 'Validate the idea fast with a working POC or a lean first version.', items: ['Rapid prototype', 'POC', 'MVP build'] },
 			{ title: 'E-commerce & integrations', desc: 'Storefronts, payments and the tools you already use, wired together.', items: ['Shopify / WooCommerce', 'Payments', 'Third-party APIs'] },
-			{ title: 'APIs & backends', desc: 'The engine room — secure APIs, databases and services your product runs on.', items: ['REST / GraphQL', 'Databases', 'Auth & security'] },
+			{ title: 'APIs & backends', desc: 'The engine room: secure APIs, databases and services your product runs on.', items: ['REST / GraphQL', 'Databases', 'Auth & security'] },
 		],
 		approach: [
 			{ n: '01', title: 'Talk it through', desc: 'We sit with you, explore your idea and look at samples and options together.' },
@@ -136,7 +136,7 @@ export const disciplines: Discipline[] = [
 		],
 		media: { kind: 'video', label: 'Product walkthrough' },
 		review: {
-			quote: '“Rock-solid. It launched on time and hasn’t skipped a beat since — even on our busiest days.”',
+			quote: '“Rock solid. It launched on time and has not skipped a beat since, even on our busiest days.”',
 			name: 'Russell', role: 'Client, real estate', img: '/testimonial/russell.jpeg',
 		},
 		outcome: 'Software that holds up the day a thousand users show up at once.',
@@ -185,7 +185,7 @@ export const disciplines: Discipline[] = [
 		],
 		media: { kind: 'image', label: 'Campaign results' },
 		review: {
-			quote: '“Conversions, not clicks — exactly as promised. Our numbers climbed within weeks.”',
+			quote: '“Conversions, not clicks, exactly as promised. Our numbers climbed within weeks.”',
 			name: 'Favour', role: 'Client, marketing', img: '/testimonial/favour.jpeg',
 		},
 		outcome: 'More of the right people finding you, and buying.',

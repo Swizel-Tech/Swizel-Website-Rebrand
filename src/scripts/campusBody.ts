@@ -32,6 +32,19 @@ export function initCampusBody() {
 		let cur = 0;
 		let front = 0;
 		let timer = 0;
+		// how long a slide holds before the projector clicks over; the
+		// number button fills a hairline across itself in the same window.
+		const DWELL = 2600;
+		show.style.setProperty('--cf-dwell', `${DWELL}ms`);
+
+		// restart the little loading line under the live number
+		const dwell = () => {
+			clicks.forEach((t) => t.classList.remove('is-dwell'));
+			const on = clicks[cur];
+			if (!on || reduce) return;
+			void on.offsetWidth;
+			on.classList.add('is-dwell');
+		};
 
 		const goTo = (n: number) => {
 			cur = (n + items.length) % items.length;
@@ -54,15 +67,19 @@ export function initCampusBody() {
 				tape.classList.add('cf-pop');
 				clicks.forEach((t, ti) => t.classList.toggle('is-on', ti === cur));
 				show.classList.remove('cf-click-over');
+				if (timer) dwell();
 			}, 160);
 		};
 		const start = () => {
 			if (timer || reduce || items.length < 2) return;
-			timer = window.setInterval(() => goTo(cur + 1), 3400);
+			show.classList.remove('is-held');
+			dwell();
+			timer = window.setInterval(() => goTo(cur + 1), DWELL);
 		};
 		const stop = () => {
 			window.clearInterval(timer);
 			timer = 0;
+			show.classList.add('is-held');
 		};
 		clicks.forEach((t) =>
 			t.addEventListener('click', () => {
@@ -73,6 +90,9 @@ export function initCampusBody() {
 		);
 		show.addEventListener('pointerenter', stop);
 		show.addEventListener('pointerleave', start);
+		// always open on slide one, however the page was reached
+		clicks.forEach((t, ti) => t.classList.toggle('is-on', ti === 0));
+		count.textContent = `Slide 1 / ${items.length}`;
 		const io = new IntersectionObserver(
 			(entries) =>
 				entries.forEach((e) => (e.isIntersecting ? start() : stop())),

@@ -7,6 +7,7 @@
 import { Icon } from 'astro-icon/components';
 import ServiceVisual from './ServiceVisual.astro';
 import type { Discipline } from '../../data/disciplines';
+import { projectLink } from '../../data/projects';
 
 interface Props {
 	discipline: Discipline;
@@ -150,22 +151,42 @@ const incCols = d.included.length % 4 === 0 ? 4 : 3;
 			</div>
 			<div class="cd-proof">
 				{
-					d.projects.map((p, i) => (
-						<figure class="cd-proj cp-rev" style={`--i:${i}`} data-fa-tilt="6">
-							<span class="cd-proj-frame">
-								{p.img ? (
-									<img src={p.img} alt={p.name} loading="lazy" />
-								) : (
-									<span class="cd-proj-ph"><Icon width={22} name="mdi:image-outline" /></span>
-								)}
-								<span class="cd-proj-tick"><Icon width={13} name="mdi:check-bold" /> graded</span>
-							</span>
-							<figcaption>
-								<strong>{p.name}</strong>
-								<em>{p.sector}</em>
-							</figcaption>
-						</figure>
-					))
+					d.projects.map((p, i) => {
+						const link = projectLink(p.name);
+						const Tag = link ? 'a' : 'figure';
+						return (
+							<Tag
+								class:list={['cd-proj', 'cp-rev', { 'is-live': link?.external }]}
+								style={`--i:${i}`}
+								data-fa-tilt="6"
+								href={link?.href}
+								target={link?.external ? '_blank' : undefined}
+								rel={link?.external ? 'noopener noreferrer' : undefined}
+								data-leaving={link?.external ? link.host : undefined}
+								data-leaving-name={link?.external ? link.name : undefined}
+								aria-label={link ? `${p.name}: ${link.label.toLowerCase()}` : p.name}
+							>
+								<span class="cd-proj-frame">
+									{p.img ? (
+										<img src={p.img} alt={p.name} loading="lazy" />
+									) : (
+										<span class="cd-proj-ph"><Icon width={22} name="mdi:image-outline" /></span>
+									)}
+									<span class="cd-proj-tick"><Icon width={13} name="mdi:check-bold" /> graded</span>
+									{link && (
+										<span class="cd-proj-go">
+											{link.label}
+											<Icon width={13} name={link.external ? 'mdi:arrow-top-right' : 'mdi:arrow-right'} />
+										</span>
+									)}
+								</span>
+								<span class="cd-proj-cap">
+									<strong>{p.name}</strong>
+									<em>{p.sector}</em>
+								</span>
+							</Tag>
+						);
+					})
 				}
 			</div>
 			<figure class="cd-grade cp-rev" data-cursor="quote">
@@ -173,7 +194,7 @@ const incCols = d.included.length % 4 === 0 ? 4 : 3;
 				<blockquote>{d.review.quote.replace(/^“|”$/g, '')}</blockquote>
 				<figcaption>
 					<img src={d.review.img} alt={d.review.name} loading="lazy" width="38" height="38" />
-					<span>— {d.review.name}, <em>{d.review.role}</em></span>
+					<span>{d.review.name}, <em>{d.review.role}</em></span>
 				</figcaption>
 			</figure>
 		</div>
@@ -225,7 +246,7 @@ const incCols = d.included.length % 4 === 0 ? 4 : 3;
 				<h2 class="cd-h cd-h--cta">Bring your project to <em>this department.</em></h2>
 				<p class="cd-p cd-p--center">
 					Tell us what you're building. A project manager reads every
-					message — reply within one business day.
+					message. We reply within one business day.
 				</p>
 				<div class="cd-row cd-row--center">
 					<a href="/contact" class="cd-cta fa-cta">
@@ -643,9 +664,43 @@ const incCols = d.included.length % 4 === 0 ? 4 : 3;
 		border-radius: 9999px;
 		background: color-mix(in srgb, var(--c) 78%, #000);
 	}
-	.cd-proj figcaption { display: grid; gap: 0.05rem; }
-	.cd-proj figcaption strong { font-size: 0.95rem; font-weight: 800; }
-	.cd-proj figcaption em { font-style: normal; font-size: 0.78rem; color: var(--cp-faint); }
+	.cd-proj-cap { display: grid; gap: 0.05rem; }
+	.cd-proj-cap strong { font-size: 0.95rem; font-weight: 800; }
+	.cd-proj-cap em { font-style: normal; font-size: 0.78rem; color: var(--cp-faint); }
+
+	/* each piece of homework opens its write-up */
+	a.cd-proj { text-decoration: none; color: inherit; border-radius: 0.9rem; }
+	a.cd-proj:focus-visible {
+		outline: 2px solid color-mix(in srgb, var(--c) 75%, #fff);
+		outline-offset: 4px;
+	}
+	a.cd-proj .cd-proj-cap strong { transition: color 0.25s ease; }
+	a.cd-proj:hover .cd-proj-cap strong { color: color-mix(in srgb, var(--c) 82%, #fff); }
+	.cd-proj-go {
+		position: absolute;
+		right: 0.7rem;
+		bottom: 0.7rem;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.28rem;
+		font-family: var(--cp-marker);
+		font-size: 0.76rem;
+		font-weight: 700;
+		letter-spacing: 0.01em;
+		color: #10131c;
+		padding: 0.24rem 0.6rem;
+		border-radius: 9999px;
+		background: #fdf6ea;
+		box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28);
+		opacity: 0;
+		transform: translateY(6px);
+		transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	a.cd-proj:hover .cd-proj-go,
+	a.cd-proj:focus-visible .cd-proj-go { opacity: 1; transform: translateY(0); }
+	@media (hover: none) {
+		.cd-proj-go { opacity: 1; transform: none; }
+	}
 
 	.cd-grade {
 		position: relative;

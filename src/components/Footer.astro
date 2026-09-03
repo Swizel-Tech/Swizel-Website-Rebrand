@@ -36,7 +36,7 @@ const offices = [
 ];
 
 const socials = [
-	{ name: 'X (Twitter)', short: '@swizelhq', handle: '@swizelhq', icon: 'twitter', href: 'https://twitter.com/swizelhq', tag: 'Daily build updates', color: '#e9eaf2', peek: 'Ship week at Swizel. Another product just went live. Follow along for launches and behind-the-build threads.' },
+	{ name: 'X', short: '@swizelhq', handle: '@swizelhq', icon: 'twitter', isX: true, href: 'https://twitter.com/swizelhq', tag: 'Daily build updates', color: '#0f1419', peek: 'Ship week at Swizel. Another product just went live. Follow along for launches and behind-the-build threads.' },
 	{ name: 'Instagram', short: '@swizelhq', handle: '@swizelhq', icon: 'instagram', href: 'https://instagram.com/swizelhq', tag: 'Behind the scenes', color: '#e1486c', peek: 'The studio, unfiltered. Whiteboards, late builds, launch days and the team behind it all.' },
 	{ name: 'LinkedIn', short: 'Swizel Tech', handle: 'Swizel Technologies Limited', icon: 'linkedin', href: 'https://www.linkedin.com/company/swizel-technologies-limited/', tag: 'Company & careers', color: '#0a8bd4', peek: 'Company news, open roles and stories from the products we ship across 10+ countries.' },
 	{ name: 'Facebook', short: 'Swizel Tech', handle: 'Swizel Technologies Limited', icon: 'facebook', href: 'https://www.facebook.com/SWIZELTECHNOLOGIESLIMITED/', tag: 'Community & news', color: '#3b82f6', peek: 'Our community home for announcements, events and milestones from the Swizel family.' },
@@ -197,7 +197,13 @@ const phones = [
 						>
 							<span class="ft-pin-tack" aria-hidden="true">📌</span>
 							<span class="ft-pin-ic">
-								<Icon size={18} name={sc.icon} />
+								{sc.isX ? (
+									<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
+										<path d="M13.86 10.9 21.2 2.4h-1.74l-6.37 7.38L7.99 2.4H2.4l7.7 11.2-7.7 8.95h1.74l6.73-7.82 5.38 7.82h5.59l-7.98-11.65Zm-2.38 2.77-.78-1.11L4.77 3.71h2.67l5.01 7.16.78 1.12 6.51 9.3h-2.67l-5.59-7.99Z" />
+									</svg>
+								) : (
+									<Icon size={18} name={sc.icon} />
+								)}
 							</span>
 							<strong class="ft-pin-handle">{sc.short}</strong>
 							<em class="ft-pin-tag">{sc.tag}</em>

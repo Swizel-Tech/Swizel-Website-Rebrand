@@ -217,6 +217,27 @@ export function initAboutCampus() {
 		});
 	}
 
+	// Services: the term timetable chalks itself up column by column
+	const tt = document.querySelector<HTMLElement>('[data-cv-tt]');
+	if (tt && tt.dataset.caBound !== '1') {
+		tt.dataset.caBound = '1';
+		if ('IntersectionObserver' in window) {
+			const io = new IntersectionObserver(
+				(entries) => {
+					entries.forEach((e) => {
+						if (!e.isIntersecting) return;
+						tt.classList.add('is-on');
+						io.disconnect();
+					});
+				},
+				{ threshold: 0.25 }
+			);
+			io.observe(tt);
+		} else {
+			tt.classList.add('is-on');
+		}
+	}
+
 	const reg = document.querySelector<HTMLElement>('[data-ca-reg]');
 	if (reg && reg.dataset.caBound !== '1') {
 		reg.dataset.caBound = '1';
