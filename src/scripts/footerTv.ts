@@ -19,10 +19,32 @@ export function initFooterTv() {
 
 		let frame: HTMLIFrameElement | null = null;
 
+		// cc_load_policy=0 is only a hint and the captions module loads late,
+		// so the postMessage below actually unloads it. Every video already
+		// carries its own burnt-in subtitles; YouTube's would be a second set.
 		const src = (muted: boolean) =>
 			`https://www.youtube-nocookie.com/embed/videoseries?list=${list}` +
 			`&autoplay=1&mute=${muted ? 1 : 0}&loop=1&playsinline=1` +
-			`&modestbranding=1&rel=0&enablejsapi=1`;
+			`&modestbranding=1&rel=0&enablejsapi=1&cc_load_policy=0&cc_lang_pref=none&iv_load_policy=3`;
+
+		const killCaptions = () => {
+			const win = frame?.contentWindow;
+			if (!win) return;
+			['captions', 'cc'].forEach((mod) => {
+				try {
+					win.postMessage(
+						JSON.stringify({ event: 'command', func: 'unloadModule', args: [mod] }),
+						'*'
+					);
+					win.postMessage(
+						JSON.stringify({ event: 'command', func: 'setOption', args: [mod, 'track', {}] }),
+						'*'
+					);
+				} catch (err) {
+					/* the frame is not ready yet; a later pass gets it */
+				}
+			});
+		};
 
 		const load = (muted: boolean) => {
 			if (frame) {
@@ -41,6 +63,14 @@ export function initFooterTv() {
 				mount.appendChild(frame);
 			}
 			tv.setAttribute('data-playing', '');
+			// the module loads late and reloads between playlist items, so
+			// keep knocking it down for a while after each start
+			[400, 1200, 2400, 4200, 7000, 11000].forEach((ms) =>
+				window.setTimeout(killCaptions, ms)
+			);
+			frame.addEventListener('load', () => {
+				[300, 900, 2000].forEach((ms) => window.setTimeout(killCaptions, ms));
+			});
 			if (muted) sound?.removeAttribute('hidden');
 			else sound?.setAttribute('hidden', '');
 		};

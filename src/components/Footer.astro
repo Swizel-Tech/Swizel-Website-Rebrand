@@ -58,6 +58,8 @@ const phones = [
 
 <footer class="site-footer">
 	<div class="ft-decor" aria-hidden="true">
+		<span class="ft-weave"></span>
+		<span class="ft-horizon"></span>
 		<span class="ft-orb ft-orb-1"></span>
 		<span class="ft-orb ft-orb-2"></span>
 		{Array.from({ length: 6 }).map((_, i) => <span class="ft-spark" style={`--i:${i}`} />)}
@@ -121,22 +123,6 @@ const phones = [
 				</button>
 			</div>
 
-			<div class="ft-newsletter">
-				<span class="ft-h">Stay in the loop</span>
-				<form id="footer-newsletter" class="ft-news-form">
-					<input
-						type="email"
-						name="email"
-						required
-						placeholder="you@company.com"
-						aria-label="Email address"
-					/>
-					<button type="submit" aria-label="Subscribe">
-						<Icon width={18} name="mdi:send" />
-					</button>
-				</form>
-				<span class="ft-news-msg" id="footer-news-msg"></span>
-			</div>
 		</div>
 
 		<div class="ft-col ft-offices">
@@ -268,6 +254,36 @@ const phones = [
 				}
 			</div>
 		</div>
+
+		<!-- the signal band: its own row, running from Talk to us all the
+		     way across under Follow the build -->
+		<div class="ft-signal">
+			<span class="ft-signal-edge" aria-hidden="true"></span>
+			<div class="ft-signal-copy">
+				<span class="ft-signal-h">
+					<Icon width={15} name="mdi:paper-airplane" />
+					Stay in the loop
+				</span>
+				<p>One short note when something ships. No noise, no selling.</p>
+			</div>
+			<form id="footer-newsletter" class="ft-signal-form">
+				<span class="ft-signal-field">
+					<Icon width={16} name="mdi:email-outline" />
+					<input
+						type="email"
+						name="email"
+						required
+						placeholder="you@company.com"
+						aria-label="Email address"
+					/>
+				</span>
+				<button type="submit" id="footer-news-btn">
+					<span>Join</span>
+					<Icon width={16} name="mdi:send" />
+				</button>
+			</form>
+			<span class="ft-news-msg" id="footer-news-msg" role="status"></span>
+		</div>
 	</div>
 
 	<nav class="ft-nav" aria-label="Footer">
@@ -332,12 +348,83 @@ const phones = [
 		--ft-border: rgba(255, 255, 255, 0.1);
 	}
 	.ft-decor { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+
+	/* ── the ground ──
+	   A fine weave rather than a flat slab, plus a lit horizon along the top
+	   edge so the page closes on something rather than just stopping. Both
+	   are per world: the weave changes pattern, the horizon changes colour
+	   with the accent. */
+	.ft-weave {
+		position: absolute;
+		inset: 0;
+		opacity: 0.5;
+		background-image:
+			repeating-linear-gradient(90deg, transparent 0 63px, color-mix(in srgb, var(--view-accent, #18debe) 12%, transparent) 63px 64px),
+			repeating-linear-gradient(180deg, transparent 0 63px, color-mix(in srgb, var(--view-accent, #18debe) 8%, transparent) 63px 64px);
+		-webkit-mask-image: radial-gradient(120% 80% at 50% 0%, #000 10%, transparent 72%);
+		mask-image: radial-gradient(120% 80% at 50% 0%, #000 10%, transparent 72%);
+	}
+	:global(html:not(.dark)) .ft-weave { opacity: 0.35; }
+
+	/* the horizon: a hairline of accent light where the page ends */
+	.ft-horizon {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 200px;
+		background:
+			linear-gradient(180deg, color-mix(in srgb, var(--view-accent, #18debe) 16%, transparent), transparent 70%);
+	}
+	.ft-horizon::after {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 8%;
+		right: 8%;
+		height: 1px;
+		background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--view-accent, #18debe) 85%, transparent), transparent);
+	}
+
+	/* Boardroom: a calm, wide grid, almost architectural. */
+	:global(html[data-view='boardroom']) .ft-weave {
+		background-image:
+			repeating-linear-gradient(90deg, transparent 0 95px, color-mix(in srgb, var(--view-accent) 11%, transparent) 95px 96px),
+			repeating-linear-gradient(180deg, transparent 0 95px, color-mix(in srgb, var(--view-accent) 7%, transparent) 95px 96px);
+	}
+	/* Builder: terminal rules, tight and horizontal. */
+	:global(html[data-view='builder']) .ft-weave {
+		opacity: 0.42;
+		background-image:
+			repeating-linear-gradient(180deg, transparent 0 5px, color-mix(in srgb, var(--view-accent) 13%, transparent) 5px 6px);
+	}
+	/* Founder: a diagonal climb. */
+	:global(html[data-view='founder']) .ft-weave {
+		background-image:
+			repeating-linear-gradient(58deg, transparent 0 70px, color-mix(in srgb, var(--view-accent) 12%, transparent) 70px 71px);
+	}
+	/* Campus: ruled exercise paper with the margin down one side. */
+	:global(html[data-view='campus']) .ft-weave {
+		opacity: 0.4;
+		background-image:
+			repeating-linear-gradient(180deg, transparent 0 33px, color-mix(in srgb, var(--view-accent) 15%, transparent) 33px 34px),
+			linear-gradient(90deg, transparent 11%, rgba(239, 68, 68, 0.28) 11%, rgba(239, 68, 68, 0.28) calc(11% + 1px), transparent calc(11% + 1px));
+	}
+	/* Studio: a fine halftone. */
+	:global(html[data-view='studio']) .ft-weave {
+		opacity: 0.45;
+		background-image: radial-gradient(color-mix(in srgb, var(--view-accent) 30%, transparent) 1px, transparent 1.4px);
+		background-size: 14px 14px;
+	}
+
 	.ft-orb { position: absolute; border-radius: 9999px; filter: blur(80px); opacity: 0.5; }
 	/* light mode: the glow orbs smear into a milky wash — keep them faint */
 	:global(html:not(.dark)) .ft-orb { opacity: 0.12; }
 	:global(html:not(.dark)) .ft-cta-kicker { color: color-mix(in srgb, var(--view-accent, #28a6ec) 60%, #0b2e40); }
-	.ft-orb-1 { width: 38vw; height: 38vw; top: -12%; right: -6%; background: radial-gradient(circle, color-mix(in srgb, var(--view-accent, #18debe) 50%, transparent), transparent 70%); }
-	.ft-orb-2 { width: 30vw; height: 30vw; bottom: -16%; left: -8%; background: radial-gradient(circle, rgba(40, 166, 236, 0.4), transparent 70%); }
+	.ft-orb-1 { width: 34vw; height: 34vw; top: -14%; right: -8%; opacity: 0.34; background: radial-gradient(circle, color-mix(in srgb, var(--view-accent, #18debe) 42%, transparent), transparent 70%); }
+	.ft-orb-2 { width: 28vw; height: 28vw; bottom: -18%; left: -10%; opacity: 0.3; background: radial-gradient(circle, color-mix(in srgb, var(--view-accent, #18debe) 26%, transparent), transparent 70%); }
+	:global(html:not(.dark)) .ft-orb-1,
+	:global(html:not(.dark)) .ft-orb-2 { opacity: 0.1; }
 	.ft-spark { position: absolute; width: 4px; height: 4px; border-radius: 9999px; background: var(--view-accent, #86e2ef); bottom: 10%; left: calc(12% + var(--i) * 15%); opacity: 0.5; animation: ft-rise 8s linear infinite; animation-delay: calc(var(--i) * -1.4s); }
 	@keyframes ft-rise { 0% { transform: translateY(20px); opacity: 0; } 30% { opacity: 0.8; } 100% { transform: translateY(-120px); opacity: 0; } }
 
@@ -351,8 +438,18 @@ const phones = [
 
 	/* Main grid */
 	.ft-main { position: relative; z-index: 1; display: grid; gap: 2.5rem; max-width: 1200px; margin: 0 auto; padding: 2.5rem 0; border-top: 1px solid var(--ft-border); }
-	@media (min-width: 720px) { .ft-main { grid-template-columns: 1.3fr 1fr; } }
-	@media (min-width: 1040px) { .ft-main { grid-template-columns: 1.4fr 1fr 1fr 1.1fr; } }
+	@media (min-width: 720px) {
+		.ft-main { grid-template-columns: 1.3fr 1fr; align-items: start; }
+		.ft-signal { grid-column: 1 / -1; }
+	}
+	@media (min-width: 1040px) {
+		.ft-main { grid-template-columns: 1.4fr 1fr 1fr 1.1fr; column-gap: 2.2rem; row-gap: 2.2rem; }
+		/* the tall columns hold both rows so the band can sit under the two
+		   short ones without a hole under the brand */
+		.ft-brand { grid-row: 1 / span 2; }
+		.ft-offices { grid-row: 1 / span 2; }
+		.ft-signal { grid-column: 3 / -1; grid-row: 2; }
+	}
 
 	.ft-logo { display: inline-block; color: var(--ft-ink); }
 	.ft-logo :global(svg) { height: auto; max-width: 100%; display: block; }
@@ -560,6 +657,217 @@ const phones = [
 		.ft-pin { transition: none; }
 	}
 
+	/* ── the signal band ──
+	   Its own row rather than a field tucked under the pitch, and the input
+	   runs the full width of the two columns above it. Takes the world's
+	   accent, so it changes with the view like everything else. */
+	.ft-signal {
+		position: relative;
+		display: grid;
+		gap: 0.9rem;
+		padding: 1.15rem 1.25rem 1.25rem;
+		border-radius: 1rem;
+		overflow: hidden;
+		border: 1px solid color-mix(in srgb, var(--view-accent, #18debe) 24%, var(--ft-border));
+		background:
+			radial-gradient(120% 140% at 0% 0%, color-mix(in srgb, var(--view-accent, #18debe) 13%, transparent), transparent 62%),
+			var(--ft-card);
+	}
+	/* a fine lit edge along the top, the tell that this is the live bit */
+	.ft-signal-edge {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 1px;
+		background: linear-gradient(90deg, transparent, var(--view-accent, #18debe), transparent);
+		opacity: 0.85;
+	}
+	.ft-signal-copy { display: flex; flex-direction: column; gap: 0.2rem; }
+	.ft-signal-h {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.42rem;
+		font-size: 0.74rem;
+		font-weight: 800;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--view-accent, #18debe);
+	}
+	.ft-signal-copy p {
+		margin: 0;
+		font-size: 0.82rem;
+		line-height: 1.5;
+		color: var(--ft-muted);
+	}
+	.ft-signal-form { display: flex; gap: 0.55rem; width: 100%; }
+	.ft-signal-field {
+		flex: 1 1 auto;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		min-width: 0;
+		padding: 0 0.9rem;
+		border-radius: 9999px;
+		border: 1px solid var(--ft-border);
+		background: var(--ft-bg-solid, rgba(255, 255, 255, 0.04));
+		color: var(--ft-faint);
+		transition: border-color 0.25s ease, box-shadow 0.25s ease;
+	}
+	.ft-signal-field:focus-within {
+		border-color: var(--view-accent, #18debe);
+		box-shadow: 0 0 0 3px color-mix(in srgb, var(--view-accent, #18debe) 16%, transparent);
+	}
+	.ft-signal-field input {
+		flex: 1 1 auto;
+		min-width: 0;
+		padding: 0.72rem 0;
+		border: 0;
+		background: none;
+		outline: none;
+		font-size: 0.9rem;
+		color: var(--ft-ink);
+	}
+	.ft-signal-form button {
+		flex: none;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		padding: 0 1.15rem;
+		border: 0;
+		border-radius: 9999px;
+		font-size: 0.85rem;
+		font-weight: 800;
+		color: #06121a;
+		background: var(--view-accent, #18debe);
+		cursor: pointer;
+		transition: transform 0.2s ease, filter 0.2s ease;
+	}
+	.ft-signal-form button:hover { transform: translateY(-1px); filter: brightness(1.08); }
+	.ft-signal-form button:disabled { opacity: 0.65; cursor: default; transform: none; }
+	.ft-news-msg {
+		display: block;
+		font-size: 0.78rem;
+		line-height: 1.4;
+		color: var(--view-accent, #86e2ef);
+	}
+	.ft-news-msg:empty { display: none; }
+	.ft-news-msg[data-bad] { color: #f87171; }
+	@media (max-width: 520px) {
+		.ft-signal-form { flex-wrap: wrap; }
+		.ft-signal-form button { width: 100%; justify-content: center; padding: 0.72rem 1rem; }
+	}
+
+	/* ── Campus ──
+	   He liked the hand the nav is set in, so the rest of the footer joins
+	   it. Inputs stay in the system face: handwriting in a form field is
+	   charming for one word and unreadable for an address. */
+	:global(html[data-view='campus']) .site-footer {
+		--ft-hand: 'Bradley Hand', 'Segoe Print', 'Comic Sans MS', cursive;
+	}
+	:global(html[data-view='campus']) .ft-pitch,
+	:global(html[data-view='campus']) .ft-h,
+	:global(html[data-view='campus']) .ft-office-country,
+	:global(html[data-view='campus']) .ft-office address,
+	:global(html[data-view='campus']) .ft-contact,
+	:global(html[data-view='campus']) .ft-signal-h,
+	:global(html[data-view='campus']) .ft-signal-copy p,
+	:global(html[data-view='campus']) .ft-signal-form button,
+	:global(html[data-view='campus']) .ft-news-msg,
+	:global(html[data-view='campus']) .ft-tv-badge,
+	:global(html[data-view='campus']) .ft-tv-link,
+	:global(html[data-view='campus']) .ft-tv-poster-t,
+	:global(html[data-view='campus']) .ft-tv-poster-s,
+	:global(html[data-view='campus']) .ft-tv-sound,
+	:global(html[data-view='campus']) .ft-cta-kicker,
+	:global(html[data-view='campus']) .ft-cta-sub,
+	:global(html[data-view='campus']) .ft-bottom,
+	:global(html[data-view='campus']) .ft-film-txt {
+		font-family: var(--ft-hand);
+	}
+	/* the hand runs small, so give the quiet labels a little more size and
+	   drop the wide tracking that only suits caps */
+	:global(html[data-view='campus']) .ft-h {
+		font-size: 0.9rem;
+		letter-spacing: 0.02em;
+		text-transform: none;
+	}
+	:global(html[data-view='campus']) .ft-signal-h {
+		font-size: 1rem;
+		letter-spacing: 0.01em;
+		text-transform: none;
+	}
+	:global(html[data-view='campus']) .ft-tv-badge {
+		font-size: 0.86rem;
+		letter-spacing: 0.01em;
+		text-transform: none;
+	}
+	:global(html[data-view='campus']) .ft-pitch,
+	:global(html[data-view='campus']) .ft-office address,
+	:global(html[data-view='campus']) .ft-contact { font-size: 1.02rem; }
+
+	/* half the height: the label and the field share one line, and the
+	   promise rides along beside the label instead of on its own row */
+	:global(html[data-view='campus']) .ft-signal {
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+		align-items: center;
+		gap: 0.75rem 1.1rem;
+		padding: 0.75rem 0.9rem;
+	}
+	:global(html[data-view='campus']) .ft-signal-copy p { font-size: 0.9rem; line-height: 1.35; }
+	:global(html[data-view='campus']) .ft-signal-field input { padding-block: 0.5rem; }
+	:global(html[data-view='campus']) .ft-signal-form button { padding-block: 0.5rem; }
+	:global(html[data-view='campus']) .ft-news-msg { grid-column: 1 / -1; }
+	@media (max-width: 640px) {
+		:global(html[data-view='campus']) .ft-signal {
+			grid-template-columns: minmax(0, 1fr);
+			gap: 0.55rem;
+		}
+		:global(html[data-view='campus']) .ft-signal-copy p { display: none; }
+		/* field and button stay on one line, so the band is one row deep */
+		:global(html[data-view='campus']) .ft-signal-form { flex-wrap: nowrap; }
+		:global(html[data-view='campus']) .ft-signal-form button {
+			width: auto;
+			padding: 0 0.95rem;
+		}
+	}
+
+	/* ── Campus on a phone ──
+	   The footer was the longest thing on the page. Everything tightens:
+	   the TV shrinks, the offices pair up, the board loses its padding. */
+	@media (max-width: 719px) {
+		:global(html[data-view='campus']) .ft-main { gap: 1.5rem; padding: 1.6rem 0; }
+		:global(html[data-view='campus']) .ft-cta { padding: 2.4rem 0 1.4rem; }
+		:global(html[data-view='campus']) .ft-pitch { margin: 0.8rem 0 1.1rem; font-size: 0.95rem; }
+		:global(html[data-view='campus']) .ft-tv { margin-bottom: 1.1rem; max-width: 100%; }
+		:global(html[data-view='campus']) .ft-h { margin-bottom: 0.6rem; }
+
+		/* four addresses stacked is most of the scroll: pair them up and
+		   keep them to one line each */
+		:global(html[data-view='campus']) .ft-offices ul {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 0.55rem 0.9rem;
+		}
+		:global(html[data-view='campus']) .ft-office { padding: 0; border: 0; }
+		:global(html[data-view='campus']) .ft-office address {
+			font-size: 0.86rem;
+			line-height: 1.35;
+			display: -webkit-box;
+			overflow: hidden;
+		}
+		:global(html[data-view='campus']) .ft-office-top { gap: 0.35rem; }
+
+		:global(html[data-view='campus']) .ft-pinboard { padding: 0.6rem; gap: 0.5rem; border-width: 5px; }
+		:global(html[data-view='campus']) .ft-pin { padding: 0.95rem 0.55rem 0.5rem; }
+		:global(html[data-view='campus']) .ft-pin-ic { width: 24px; height: 24px; margin-bottom: 0.2rem; }
+		:global(html[data-view='campus']) .ft-pin-handle { font-size: 0.76rem; }
+		:global(html[data-view='campus']) .ft-pin-tag { font-size: 0.64rem; }
+
+		:global(html[data-view='campus']) .ft-nav { padding: 0.4rem 0.5rem; margin-bottom: 0.7rem; }
+		:global(html[data-view='campus']) .ft-bottom { padding-block: 0.8rem; }
+	}
+
 	/* Newsletter */
 	.ft-news-form { display: flex; gap: 0.5rem; max-width: 22rem; }
 	.ft-news-form input { flex: 1; min-width: 0; background: var(--ft-card); border: 1px solid var(--ft-border); border-radius: 9999px; padding: 0.65rem 1rem; color: var(--ft-ink); font-size: 0.9rem; outline: none; transition: border-color 0.25s ease; }
@@ -603,43 +911,117 @@ const phones = [
 
 	/* Horizontal pill nav */
 	/* Footer nav — a tidy wrap of glossy, transparent, curved pill buttons. */
+	/* ── the footer nav ──
+	   One line, quiet, and dressed differently in every world. The pills
+	   were two rows of chunky buttons that added most of the footer's
+	   height for the least of its value. */
 	.ft-nav {
 		position: relative;
 		z-index: 1;
 		display: flex;
-		flex-wrap: wrap;
-		justify-content: center;
+		flex-wrap: nowrap;
+		justify-content: flex-start;
 		align-items: center;
-		gap: 0.45rem;
-		max-width: 27rem;
-		margin: 0 auto 1.5rem;
+		gap: 0.15rem;
+		max-width: 1200px;
+		margin: 0 auto 1.1rem;
+		padding: 0.65rem 0.5rem;
+		overflow-x: auto;
+		scrollbar-width: none;
 	}
+	.ft-nav::-webkit-scrollbar { display: none; }
+	@media (min-width: 720px) { .ft-nav { justify-content: center; } }
 	.ft-nav-item {
+		flex: none;
 		display: inline-flex;
 		align-items: center;
-		padding: 0.5rem 1.05rem;
-		border-radius: 9999px;
-		font-size: 0.85rem;
+		padding: 0.32rem 0.7rem;
+		border-radius: 0.45rem;
+		font-size: 0.78rem;
 		font-weight: 600;
+		white-space: nowrap;
 		color: var(--ft-muted);
-		background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
-		border: 1px solid var(--ft-border);
-		box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 4px 12px -8px rgba(0, 0, 0, 0.5);
-		transition: color 0.25s ease, border-color 0.25s ease, transform 0.25s ease, background 0.25s ease;
-	}
-	:global(html:not(.dark)) .ft-nav-item {
-		background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.45));
-		box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 4px 12px -8px rgba(20, 28, 60, 0.25);
+		border: 1px solid transparent;
+		transition: color 0.22s ease, background 0.22s ease, border-color 0.22s ease,
+			letter-spacing 0.22s ease, transform 0.22s ease;
 	}
 	.ft-nav-item:hover {
 		color: var(--ft-ink);
-		transform: translateY(-2px);
-		border-color: color-mix(in srgb, var(--view-accent, #18debe) 55%, var(--ft-border));
+		background: color-mix(in srgb, var(--view-accent, #18debe) 12%, transparent);
 	}
 	.ft-nav-item.active {
-		color: #06121a;
-		background: linear-gradient(180deg, color-mix(in srgb, var(--view-accent, #18debe) 92%, white), var(--view-accent, #18debe));
-		border-color: transparent;
+		color: var(--view-accent, #18debe);
+		background: color-mix(in srgb, var(--view-accent, #18debe) 14%, transparent);
+	}
+
+	/* Boardroom: a thin rule under the word, nothing else. */
+	:global(html[data-view='boardroom']) .ft-nav-item {
+		border-radius: 0;
+		border-bottom: 1px solid transparent;
+	}
+	:global(html[data-view='boardroom']) .ft-nav-item:hover,
+	:global(html[data-view='boardroom']) .ft-nav-item.active {
+		background: none;
+		border-bottom-color: var(--view-accent, #28a6ec);
+	}
+
+	/* Builder: monospace, and the hover writes the brackets in. */
+	:global(html[data-view='builder']) .ft-nav-item {
+		font-family: ui-monospace, 'SFMono-Regular', monospace;
+		font-size: 0.74rem;
+		letter-spacing: 0.02em;
+	}
+	:global(html[data-view='builder']) .ft-nav-item::before { content: '['; opacity: 0; margin-right: 0.1rem; }
+	:global(html[data-view='builder']) .ft-nav-item::after { content: ']'; opacity: 0; margin-left: 0.1rem; }
+	:global(html[data-view='builder']) .ft-nav-item:hover::before,
+	:global(html[data-view='builder']) .ft-nav-item:hover::after,
+	:global(html[data-view='builder']) .ft-nav-item.active::before,
+	:global(html[data-view='builder']) .ft-nav-item.active::after {
+		opacity: 1;
+		color: var(--view-accent, #18debe);
+	}
+
+	/* Founder: a small launch dot that fires on hover. */
+	:global(html[data-view='founder']) .ft-nav-item { border-radius: 9999px; }
+	:global(html[data-view='founder']) .ft-nav-item::before {
+		content: '';
+		width: 4px;
+		height: 4px;
+		margin-right: 0.42rem;
+		border-radius: 9999px;
+		background: currentColor;
+		opacity: 0.25;
+		transition: opacity 0.22s ease, transform 0.22s ease;
+	}
+	:global(html[data-view='founder']) .ft-nav-item:hover::before,
+	:global(html[data-view='founder']) .ft-nav-item.active::before {
+		opacity: 1;
+		transform: scale(1.6);
+	}
+
+	/* Campus: chalk tabs, underlined by hand. */
+	:global(html[data-view='campus']) .ft-nav-item {
+		font-family: 'Bradley Hand', 'Segoe Print', 'Comic Sans MS', cursive;
+		font-size: 0.92rem;
+		border-radius: 0.3rem 0.3rem 0 0;
+	}
+	:global(html[data-view='campus']) .ft-nav-item:hover,
+	:global(html[data-view='campus']) .ft-nav-item.active {
+		box-shadow: inset 0 -2px 0 var(--view-accent, #f59e0b);
+	}
+
+	/* Studio: set in caps and let the letters open up. */
+	:global(html[data-view='studio']) .ft-nav-item {
+		text-transform: uppercase;
+		font-size: 0.68rem;
+		letter-spacing: 0.14em;
+		font-weight: 700;
+	}
+	:global(html[data-view='studio']) .ft-nav-item:hover,
+	:global(html[data-view='studio']) .ft-nav-item.active {
+		letter-spacing: 0.22em;
+		background: none;
+		color: var(--view-accent, #ec4899);
 	}
 
 	/* Bottom */

@@ -2101,10 +2101,38 @@ const voices = [
 			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
 	}
-	@media (max-width: 540px) {
+	/* Stacked, four tall boxes were a screen and a half of scrolling for
+	   four short lines. They stay in a line and you swipe them, and the
+	   card itself goes fine: a small icon, a hairline, no slab. */
+	@media (max-width: 640px) {
 		.cp-achvs {
-			grid-template-columns: 1fr;
+			display: flex;
+			grid-template-columns: none;
+			gap: 0.7rem;
+			overflow-x: auto;
+			scroll-snap-type: x mandatory;
+			padding: 0.2rem 0.15rem 0.9rem;
+			margin-inline: -0.15rem;
+			scrollbar-width: none;
 		}
+		.cp-achvs::-webkit-scrollbar { display: none; }
+		.cp-achv {
+			flex: 0 0 13.5rem;
+			scroll-snap-align: start;
+			padding: 0.9rem 0.85rem 0.95rem;
+			border-radius: 0.85rem;
+		}
+		.cp-achv-ic {
+			width: 34px;
+			height: 34px;
+			margin-bottom: 0.55rem;
+			border-radius: 0.6rem;
+		}
+		.cp-achv-ic :global(svg) { width: 17px; height: 17px; }
+		.cp-achv-lock { top: 0.7rem; right: 0.7rem; }
+		.cp-achv-lock :global(svg) { width: 15px; height: 15px; }
+		.cp-achv-t { font-size: 0.92rem; margin-bottom: 0.2rem; }
+		.cp-achv-d { font-size: 0.78rem; line-height: 1.45; }
 	}
 	.cp-achv {
 		position: relative;

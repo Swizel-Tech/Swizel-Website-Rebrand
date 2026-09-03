@@ -74,10 +74,42 @@ const {
 		<button id="back-to-top" type="button" aria-label="Back to top">
 			<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
 		</button>
-		<button id="swizel-chat-fab" type="button" aria-label="Open live chat" title="Chat with us">
-			<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-			<span class="chat-fab-dot" aria-hidden="true"></span>
-		</button>
+		<div id="swizel-chat" data-chat>
+			<!-- pick a room first: Tawk for a reply here, WhatsApp to carry it
+			     to your phone. -->
+			<div class="chat-pick" data-chat-pick hidden>
+				<button type="button" class="chat-pick-opt" data-chat-tawk>
+					<span class="chat-pick-ic chat-pick-ic--tawk" aria-hidden="true">
+						<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+					</span>
+					<span class="chat-pick-txt">
+						<strong>Live chat</strong>
+						<em>Right here, on the page</em>
+					</span>
+				</button>
+				<a
+					class="chat-pick-opt"
+					data-chat-wa
+					href="https://wa.me/2348100204570"
+					target="_blank"
+					rel="noopener noreferrer"
+				>
+					<span class="chat-pick-ic chat-pick-ic--wa" aria-hidden="true">
+						<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M17.5 14.4c-.3-.2-1.8-.9-2-1s-.5-.2-.7.1-.8 1-1 1.2-.4.2-.7 0a8.2 8.2 0 0 1-2.4-1.5 9 9 0 0 1-1.7-2.1c-.2-.3 0-.5.1-.6l.5-.6a2 2 0 0 0 .3-.5.6.6 0 0 0 0-.5c0-.2-.7-1.7-1-2.3s-.5-.5-.7-.5h-.6a1.2 1.2 0 0 0-.8.4A3.4 3.4 0 0 0 5.7 9c0 1.5 1.1 3 1.2 3.2a12 12 0 0 0 4.6 4.1 15 15 0 0 0 1.6.6 3.7 3.7 0 0 0 1.7.1 2.8 2.8 0 0 0 1.9-1.3 2.3 2.3 0 0 0 .2-1.3zM12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2m0 1.8a8.2 8.2 0 0 1 6.6 13 8.2 8.2 0 0 1-10.9 1.3l-.4-.2-3 .8.8-3-.2-.4A8.2 8.2 0 0 1 12 3.8"/></svg>
+					</span>
+					<span class="chat-pick-txt">
+						<strong>WhatsApp</strong>
+						<em>Carry it to your phone</em>
+					</span>
+				</a>
+			</div>
+			<button id="swizel-chat-fab" type="button" aria-label="Chat with us" title="Chat with us" aria-expanded="false">
+				<svg class="chat-ic chat-ic--default" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+				<!-- Campus: a hand up at the back of the class -->
+				<svg class="chat-ic chat-ic--campus" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V4.6a1.3 1.3 0 0 1 2.6 0V10"/><path d="M11.6 10V3.4a1.3 1.3 0 0 1 2.6 0V10"/><path d="M14.2 10.4V5.6a1.3 1.3 0 0 1 2.6 0V13"/><path d="M9 11 7.2 12.8a2 2 0 0 0-.3 2.4l1.7 3A3.4 3.4 0 0 0 11.5 20h2.3a3 3 0 0 0 3-3v-4"/></svg>
+				<span class="chat-fab-dot" aria-hidden="true"></span>
+			</button>
+		</div>
 		<div id="leave-modal" class="leave-modal" role="dialog" aria-modal="true" aria-labelledby="leave-title" hidden>
 			<div class="leave-backdrop" data-leave-close></div>
 			<div class="leave-card">
@@ -441,13 +473,47 @@ const {
 			if (w.__swizelClock) clearInterval(w.__swizelClock);
 			w.__swizelClock = window.setInterval(tick, 1000);
 		}
+		// The footer sign-up used to say thank you and throw the address
+		// away. It goes to contact@swizel.co now, on the same transport the
+		// contact form uses.
 		const nf = document.getElementById('footer-newsletter') as HTMLFormElement | null;
 		if (nf) {
-			nf.onsubmit = (e) => {
+			nf.onsubmit = async (e) => {
 				e.preventDefault();
 				const msg = document.getElementById('footer-news-msg');
-				if (msg) msg.textContent = 'Thanks! You are on the list.';
-				nf.reset();
+				const btn = document.getElementById('footer-news-btn') as HTMLButtonElement | null;
+				const input = nf.querySelector<HTMLInputElement>('input[name="email"]');
+				const address = (input?.value || '').trim();
+				if (!address) return;
+
+				msg?.removeAttribute('data-bad');
+				if (msg) msg.textContent = 'Signing you up…';
+				if (btn) btn.disabled = true;
+
+				try {
+					const { default: emailjs } = await import('@emailjs/browser');
+					emailjs.init('6seJt_G90tNz7cnD5');
+					await emailjs.send('service_xtbicfb', 'template_gp3qzsk', {
+						from_name: 'Footer sign-up',
+						name: 'Footer sign-up',
+						email: address,
+						reply_to: address,
+						phoneNumber: 'N/A',
+						to_email: 'contact@swizel.co',
+						subject: 'Newsletter sign-up',
+						message: `New newsletter sign-up from the footer.\n\nEmail: ${address}\nPage: ${window.location.href}`,
+					});
+					if (msg) msg.textContent = 'You are on the list. Talk soon.';
+					nf.reset();
+				} catch (err) {
+					console.log(err);
+					if (msg) {
+						msg.textContent = 'That did not send. Try contact@swizel.co directly.';
+						msg.setAttribute('data-bad', '');
+					}
+				} finally {
+					if (btn) btn.disabled = false;
+				}
 			};
 		}
 		const yr = document.getElementById('footer-year');
@@ -694,8 +760,34 @@ const {
 				api.maximize();
 			}
 		};
+		// The launcher now asks which room first: Tawk answers on the page,
+		// WhatsApp carries the thread to their phone.
+		const chatWrap = document.getElementById('swizel-chat');
 		const chatFab = document.getElementById('swizel-chat-fab');
-		if (chatFab) chatFab.onclick = openTawk;
+		const chatPick = chatWrap?.querySelector<HTMLElement>('[data-chat-pick]') ?? null;
+		if (chatWrap && chatFab && chatPick && !(chatWrap as any).__pickBound) {
+			(chatWrap as any).__pickBound = true;
+			const setOpen = (open: boolean) => {
+				if (open) chatPick.removeAttribute('hidden');
+				else chatPick.setAttribute('hidden', '');
+				chatWrap.classList.toggle('is-open', open);
+				chatFab.setAttribute('aria-expanded', open ? 'true' : 'false');
+			};
+			chatFab.addEventListener('click', () =>
+				setOpen(chatPick.hasAttribute('hidden'))
+			);
+			chatPick.querySelector('[data-chat-tawk]')?.addEventListener('click', () => {
+				setOpen(false);
+				openTawk();
+			});
+			chatPick.querySelector('[data-chat-wa]')?.addEventListener('click', () => setOpen(false));
+			document.addEventListener('click', (e) => {
+				if (!chatWrap.contains(e.target as Node)) setOpen(false);
+			});
+			document.addEventListener('keydown', (e) => {
+				if (e.key === 'Escape') setOpen(false);
+			});
+		}
 
 		// Anything tagged [data-open-chat] (e.g. the contact page's "Live chat" row)
 		// opens the same Tawk widget. Bound once on the persistent document so it
