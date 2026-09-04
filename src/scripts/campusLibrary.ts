@@ -41,6 +41,12 @@ export function initCampusLibrary() {
 		let paused = reduce;
 		let timer = 0;
 		let onScreen = false;
+		// The first turn happens early and on its own, so nobody has to guess
+		// that the book turns at all. After that demonstration it rests for a
+		// beat, then settles into its ordinary dwell.
+		let greeted = 0; // 0 = not yet shown, 1 = showing, 2 = resting, 3 = normal
+		const HELLO = 1500; // how long before the book shows what it does
+		const REST = 4200; // the pause afterwards, so the demo reads as deliberate
 
 		root.style.setProperty('--bk-turn', `${TURN}ms`);
 		root.style.setProperty('--bk-dwell', `${DWELL}ms`);
@@ -66,6 +72,22 @@ export function initCampusLibrary() {
 			window.clearTimeout(timer);
 			if (paused || !onScreen || sheet?.hasAttribute('hidden') === false) {
 				ringStop();
+				return;
+			}
+			// the greeting flap, then the rest, then the usual rhythm
+			if (greeted === 0) {
+				greeted = 1;
+				ringStop();
+				timer = window.setTimeout(() => turn(1), HELLO);
+				return;
+			}
+			if (greeted === 1) {
+				greeted = 2;
+				ringStop();
+				timer = window.setTimeout(() => {
+					greeted = 3;
+					schedule();
+				}, REST);
 				return;
 			}
 			timer = window.setTimeout(() => turn(1), DWELL);
@@ -158,14 +180,17 @@ export function initCampusLibrary() {
 
 		next?.addEventListener('click', () => {
 			turn(1);
+			greeted = 3;
 			schedule();
 		});
 		prev?.addEventListener('click', () => {
+			greeted = 3;
 			turn(-1);
 			schedule();
 		});
 		dots.forEach((d) =>
 			d.addEventListener('click', () => {
+				greeted = 3;
 				turn(1, Number(d.dataset.bkGo));
 				schedule();
 			})
@@ -183,6 +208,7 @@ export function initCampusLibrary() {
 
 		// a book does not turn its own pages while you are reading it
 		book.addEventListener('pointerenter', () => {
+			greeted = 3;
 			window.clearTimeout(timer);
 			ringStop();
 		});

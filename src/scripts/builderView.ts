@@ -1,4 +1,4 @@
-import { startTour, type TourStep } from './tour';
+import { openTourChooser, siteLegs, type TourStep } from './tour';
 
 const esc = (s: string) =>
 	s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c] || c));
@@ -181,5 +181,5 @@ export function initBuilderView() {
 	];
 	document
 		.querySelectorAll('[data-tour-start="builder"]')
-		.forEach((b) => b.addEventListener('click', () => startTour(steps)));
+		.forEach((b) => b.addEventListener('click', () => openTourChooser(steps, siteLegs(steps))));
 }

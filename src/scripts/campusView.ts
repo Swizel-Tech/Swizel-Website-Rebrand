@@ -1,4 +1,4 @@
-import { startTour, type TourStep } from './tour';
+import { openTourChooser, siteLegs, type TourStep } from './tour';
 
 export function initCampusView() {
 	const w = document.getElementById('campus-widget');
@@ -177,5 +177,5 @@ export function initCampusView() {
 	];
 	document
 		.querySelectorAll('[data-tour-start="campus"]')
-		.forEach((b) => b.addEventListener('click', () => startTour(steps)));
+		.forEach((b) => b.addEventListener('click', () => openTourChooser(steps, siteLegs(steps))));
 }

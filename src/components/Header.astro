@@ -180,8 +180,12 @@ const isActive = (href: string) => {
 		<aside id="mobile-menu">
 			<div class="m-nav-head">
 				<Link class="m-nav-logo w-fit block" aria-label="Swizel" href="/">
-					<Logo width={114} />
+					<Logo width={100} />
 				</Link>
+				<button class="m-nav-tt theme-toggle" type="button" role="switch" aria-checked="false" aria-label="Toggle dark mode" data-theme-toggle>
+					<svg class="tt-ico tt-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2" /><path d="M12 1.5v2.5M12 20v2.5M3.5 3.5l1.8 1.8M18.7 18.7l1.8 1.8M1.5 12h2.5M20 12h2.5M3.5 20.5l1.8-1.8M18.7 5.3l1.8-1.8" /></svg>
+					<svg class="tt-ico tt-moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" /></svg>
+				</button>
 				<button id="toggler-hide" class="m-nav-x" aria-label="Close menu" type="button">
 					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18" /></svg>
 				</button>
@@ -235,13 +239,6 @@ const isActive = (href: string) => {
 			</nav>
 
 			<div class="m-nav-foot">
-				<div class="m-nav-pref">
-					<span>Appearance</span>
-					<button class="theme-toggle" type="button" role="switch" aria-checked="false" aria-label="Toggle dark mode" data-theme-toggle>
-						<svg class="tt-ico tt-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2" /><path d="M12 1.5v2.5M12 20v2.5M3.5 3.5l1.8 1.8M18.7 18.7l1.8 1.8M1.5 12h2.5M20 12h2.5M3.5 20.5l1.8-1.8M18.7 5.3l1.8-1.8" /></svg>
-						<svg class="tt-ico tt-moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" /></svg>
-					</button>
-				</div>
 				<CustomButton elementType="a" class="m-nav-cta" variant="primary" href="/contact" notRounded>
 					Start a project
 				</CustomButton>
@@ -249,6 +246,7 @@ const isActive = (href: string) => {
 					<a href="https://wa.me/2348100204570" aria-label="WhatsApp" target="_blank" rel="noopener"><Icon width={18} name="mdi:whatsapp" /></a>
 					<a href="https://www.linkedin.com/company/swizel-technologies" aria-label="LinkedIn" target="_blank" rel="noopener"><Icon width={18} name="mdi:linkedin" /></a>
 					<a href="https://www.instagram.com/swizelhq" aria-label="Instagram" target="_blank" rel="noopener"><Icon width={18} name="mdi:instagram" /></a>
+					<a href="http://www.youtube.com/@SwizelTechnologiesLtd" aria-label="YouTube" target="_blank" rel="noopener"><Icon width={19} name="mdi:youtube" /></a>
 					<a href="https://www.tiktok.com/@swizelhq" aria-label="TikTok" target="_blank" rel="noopener"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.21v12.67a2.59 2.59 0 1 1-2.59-2.59c.27 0 .53.04.78.12v-3.3a5.88 5.88 0 0 0-.78-.05 5.85 5.85 0 1 0 5.85 5.85V8.66a7.5 7.5 0 0 0 4.37 1.4V6.85a4.28 4.28 0 0 1-3.36-1.03z" /></svg></a>
 				</div>
 			</div>
@@ -281,7 +279,7 @@ const isActive = (href: string) => {
 		top: 0;
 		right: 0;
 		height: 100%;
-		width: min(86vw, 360px);
+		width: min(78vw, 318px);
 		display: flex;
 		flex-direction: column;
 		background: var(--m-bg);
@@ -313,16 +311,33 @@ const isActive = (href: string) => {
 	.m-nav-head {
 		display: flex;
 		align-items: center;
-		justify-content: space-between;
-		padding: 1.1rem 1.25rem;
+		gap: 0.5rem;
+		padding: 0.85rem 1rem;
 		border-bottom: 1px solid var(--m-border);
 	}
+	.m-nav-logo { margin-right: auto; }
+	/* appearance is a switch, not a section: it sits quietly beside the close */
+	.m-nav-tt {
+		display: grid;
+		place-items: center;
+		width: 34px;
+		height: 34px;
+		flex: none;
+		border-radius: 9999px;
+		color: var(--m-muted);
+		background: transparent;
+		border: 1px solid var(--m-border);
+		transition: color 0.2s ease, background 0.2s ease;
+	}
+	.m-nav-tt:hover { color: var(--m-ink); background: var(--m-hover); }
+	.m-nav-tt .tt-ico { width: 16px; height: 16px; }
 	.m-nav-logo { color: var(--m-ink); }
 	.m-nav-x {
 		display: grid;
 		place-items: center;
-		width: 40px;
-		height: 40px;
+		width: 34px;
+		height: 34px;
+		flex: none;
 		border-radius: 9999px;
 		color: var(--m-ink);
 		background: var(--m-surface);
@@ -335,22 +350,22 @@ const isActive = (href: string) => {
 		flex: 1;
 		overflow-y: auto;
 		-webkit-overflow-scrolling: touch;
-		padding: 1rem 0.9rem 0.5rem;
+		padding: 0.7rem 0.65rem 0.4rem;
 		display: flex;
 		flex-direction: column;
-		gap: 0.12rem;
+		gap: 0;
 	}
 	.m-nav-link {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		gap: 0.75rem;
-		padding: 0.9rem 1rem;
-		border-radius: 0.85rem;
+		padding: 0.6rem 0.8rem;
+		border-radius: 0.6rem;
 		color: var(--m-ink);
-		font-size: 1.15rem;
-		font-weight: 600;
-		letter-spacing: -0.01em;
+		font-size: 0.98rem;
+		font-weight: 650;
+		letter-spacing: 0.005em;
 		text-transform: capitalize;
 		list-style: none;
 		cursor: pointer;
@@ -438,30 +453,33 @@ const isActive = (href: string) => {
 	.m-sub-all:hover { background: var(--m-hover); color: var(--m-ink); }
 
 	.m-nav-foot {
-		padding: 1rem 1.25rem 1.4rem;
+		padding: 0.8rem 1rem 1.1rem;
 		border-top: 1px solid var(--m-border);
 		display: flex;
 		flex-direction: column;
-		gap: 0.9rem;
+		gap: 0.7rem;
 	}
-	.m-nav-pref {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		padding: 0.5rem 0.5rem 0.5rem 0.95rem;
-		border-radius: 0.85rem;
-		background: var(--m-surface);
-		font-size: 0.92rem;
-		font-weight: 600;
-		color: var(--m-muted);
+	/* the call to action takes the colour of the world you are in */
+	.m-nav-cta {
+		display: block;
+		text-align: center;
+		background: var(--view-accent, #18debe) !important;
+		color: #08131a !important;
+		font-weight: 800;
+		border-radius: 0.7rem;
 	}
-	.m-nav-cta { display: block; text-align: center; }
-	.m-nav-social { display: flex; gap: 0.55rem; }
+	:global(html[data-view='campus']) .m-nav-cta {
+		background: linear-gradient(95deg, #fcd34d, #b45309) !important;
+		color: #2b1500 !important;
+		font-family: 'Bradley Hand', 'Segoe Print', 'Comic Sans MS', cursive;
+		font-size: 1.05rem;
+	}
+	.m-nav-social { display: flex; gap: 0.4rem; justify-content: space-between; }
 	.m-nav-social a {
 		display: grid;
 		place-items: center;
-		width: 40px;
-		height: 40px;
+		width: 34px;
+		height: 34px;
 		border-radius: 9999px;
 		color: var(--m-ink);
 		background: var(--m-surface);
@@ -469,6 +487,103 @@ const isActive = (href: string) => {
 		transition: color 0.2s ease, background 0.2s ease, transform 0.2s ease;
 	}
 	.m-nav-social a:hover { color: var(--m-accent); background: color-mix(in srgb, var(--m-accent) 14%, transparent); transform: translateY(-2px); }
+
+	/* ── the drawer wears the world it is in ──
+	   Same treatments the footer nav uses, so the two ends of the page speak
+	   with one voice: a rule in Boardroom, brackets in Builder, a launch dot
+	   in Founder, spaced caps in Studio, and chalk on paper in Campus. */
+	:global(html[data-view='boardroom']) .m-nav-link,
+	:global(html:not([data-view])) .m-nav-link { letter-spacing: 0.005em; }
+	:global(html[data-view='boardroom']) .m-nav-link.active,
+	:global(html:not([data-view])) .m-nav-link.active {
+		background: none;
+		box-shadow: inset 2px 0 0 var(--view-accent, #28a6ec);
+		border-radius: 0;
+	}
+
+	:global(html[data-view='builder']) .m-nav-link {
+		font-family: ui-monospace, 'SFMono-Regular', monospace;
+		font-size: 0.9rem;
+		letter-spacing: 0.01em;
+	}
+	:global(html[data-view='builder']) .m-nav-link > span::before { content: '/ '; opacity: 0.45; }
+
+	:global(html[data-view='founder']) .m-nav-link > span::before {
+		content: '';
+		display: inline-block;
+		width: 4px;
+		height: 4px;
+		margin-right: 0.5rem;
+		vertical-align: middle;
+		border-radius: 9999px;
+		background: currentColor;
+		opacity: 0.28;
+		transition: opacity 0.22s ease, transform 0.22s ease;
+	}
+	:global(html[data-view='founder']) .m-nav-link.active > span::before,
+	:global(html[data-view='founder']) .m-nav-link:hover > span::before { opacity: 1; transform: scale(1.7); }
+
+	:global(html[data-view='studio']) .m-nav-link {
+		font-size: 0.88rem;
+		font-weight: 600;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+	}
+
+	/* Campus: the drawer is a half page torn from a jotter, dog-eared at the
+	   bottom corner, ruled, and written on by hand. */
+	:global(html[data-view='campus']) #mobile-menu {
+		--m-bg: linear-gradient(180deg, #fdf8ec 0%, #f6ecd6 55%, #efe3c8 100%);
+		--m-ink: #2b1c08;
+		--m-muted: rgba(43, 28, 8, 0.6);
+		--m-border: rgba(43, 28, 8, 0.14);
+		--m-hover: rgba(180, 83, 9, 0.1);
+		--m-surface: rgba(43, 28, 8, 0.05);
+		--m-accent: #b45309;
+		border-left: 0;
+		box-shadow: -26px 0 60px -28px rgba(0, 0, 0, 0.65);
+	}
+	:global(html.dark[data-view='campus']) #mobile-menu {
+		--m-bg: linear-gradient(180deg, #fdf8ec 0%, #f4e9d0 60%, #eadfc2 100%);
+	}
+	/* the ruled paper, and the red margin down the left */
+	:global(html[data-view='campus']) .m-nav-links {
+		background:
+			linear-gradient(90deg, transparent 0 20px, rgba(225, 29, 72, 0.22) 20px 21.5px, transparent 21.5px),
+			repeating-linear-gradient(180deg, transparent 0 33px, rgba(59, 130, 246, 0.13) 33px 34px);
+		padding-left: 1.9rem;
+	}
+	:global(html[data-view='campus']) .m-nav-link {
+		font-family: 'Bradley Hand', 'Segoe Print', 'Comic Sans MS', cursive;
+		font-size: 1.12rem;
+		font-weight: 700;
+		border-radius: 0.3rem;
+	}
+	/* the active page is underlined by hand, under the word only */
+	:global(html[data-view='campus']) .m-nav-link.active { background: none; color: #b45309; box-shadow: none; }
+	:global(html[data-view='campus']) .m-nav-link.active > span {
+		box-shadow: inset 0 -2px 0 var(--view-accent, #b45309);
+	}
+	:global(html[data-view='campus']) .m-sub-item,
+	:global(html[data-view='campus']) .m-sub-all {
+		font-family: 'Bradley Hand', 'Segoe Print', 'Comic Sans MS', cursive;
+		font-size: 1rem;
+	}
+	/* the dog ear: the page folded back on itself at the bottom corner */
+	:global(html[data-view='campus']) #mobile-menu::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		width: 62px;
+		height: 62px;
+		pointer-events: none;
+		background: linear-gradient(45deg, #e6d9ba 0 47%, rgba(43, 28, 8, 0.16) 49%, transparent 51%);
+		filter: drop-shadow(2px -2px 4px rgba(0, 0, 0, 0.16));
+	}
+	:global(html[data-view='campus']) .m-nav-x,
+	:global(html[data-view='campus']) .m-nav-tt { background: rgba(255, 255, 255, 0.6); }
+	:global(html[data-view='campus']) .m-nav-expand { background: transparent; border-color: transparent; }
 
 	.header-sticky {
 		box-shadow: 0 2px 3px 4px rgba(0, 0, 0, 0.19);

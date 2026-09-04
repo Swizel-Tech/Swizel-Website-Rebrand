@@ -124,15 +124,25 @@ export function initContactCampus() {
 		})
 	);
 
-	root
-		.querySelector<HTMLElement>('[data-ck-stamp-close]')
-		?.addEventListener('click', () => {
-			if (stamp) stamp.hidden = true;
-		});
+	const closeDone = () => {
+		if (!stamp || stamp.hidden) return;
+		stamp.hidden = true;
+		root.classList.remove('is-noting');
+		document.documentElement.classList.remove('ck-locked');
+	};
+	root.querySelectorAll<HTMLElement>('[data-ck-stamp-close]').forEach((b) =>
+		b.addEventListener('click', closeDone)
+	);
+	document.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape') closeDone();
+	});
+	// a stale lock would freeze the page
+	document.documentElement.classList.remove('ck-locked');
+	root.classList.remove('is-noting');
 
 	// ── handing it in ──
 	const NAMEISH = /^[A-Za-zÀ-ÿ'’.\-\s]{2,}$/;
-	const required = ['name', 'email', 'message'];
+	const required = ['name', 'email', 'phoneNumber', 'message'];
 
 	form.addEventListener('submit', async (e) => {
 		e.preventDefault();
@@ -148,8 +158,7 @@ export function initContactCampus() {
 			['email', /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(val('email')), 'That email address will not reach you.'],
 			[
 				'phoneNumber',
-				!phone ||
-					(/^[+]?[\d][\d\s()\-]{7,19}$/.test(phone) && (phone.match(/\d/g) || []).length >= 8),
+				/^[+]?[\d][\d\s()\-]{7,19}$/.test(phone) && (phone.match(/\d/g) || []).length >= 8,
 				'That does not look like a phone number.',
 			],
 			[
@@ -206,7 +215,12 @@ export function initContactCampus() {
 			form.reset();
 			root.querySelectorAll('.ck-pick.is-on').forEach((p) => p.classList.remove('is-on'));
 			score();
-			if (stamp) stamp.hidden = false;
+			if (stamp) {
+				stamp.hidden = false;
+				root.classList.add('is-noting');
+				document.documentElement.classList.add('ck-locked');
+				stamp.querySelector<HTMLElement>('.ck-done-card')?.focus({ preventScroll: true });
+			}
 		} catch (err) {
 			console.log(err);
 			toast(

@@ -1,4 +1,4 @@
-import { startTour, type TourStep } from './tour';
+import { openTourChooser, siteLegs, type TourStep } from './tour';
 
 export function initStudioView() {
 	const g = document.getElementById('studio-gallery');
@@ -114,5 +114,5 @@ export function initStudioView() {
 	];
 	document
 		.querySelectorAll('[data-tour-start="studio"]')
-		.forEach((b) => b.addEventListener('click', () => startTour(steps)));
+		.forEach((b) => b.addEventListener('click', () => openTourChooser(steps, siteLegs(steps))));
 }

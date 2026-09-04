@@ -1,4 +1,4 @@
-import { startTour, type TourStep } from './tour';
+import { openTourChooser, siteLegs, type TourStep } from './tour';
 
 export function initFounderView() {
 	const w = document.getElementById('founder-widget');
@@ -124,5 +124,5 @@ export function initFounderView() {
 	];
 	document
 		.querySelectorAll('[data-tour-start="founder"]')
-		.forEach((b) => b.addEventListener('click', () => startTour(steps)));
+		.forEach((b) => b.addEventListener('click', () => openTourChooser(steps, siteLegs(steps))));
 }

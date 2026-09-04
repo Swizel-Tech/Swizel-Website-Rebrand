@@ -35,69 +35,54 @@ const stats = [
 	{ to: 1, sfx: ' day', l: 'to hear back' },
 ];
 
+// where to send someone the moment the sheet is handed in, and why they
+// should bother going there
+const afters = [
+	{ id: 'work', ic: '🏆', t: 'See what we have shipped', d: 'Sixty-five builds, the full write-ups, and the numbers behind them.', href: '/portfolio' },
+	{ id: 'blog', ic: '📰', t: 'Read the journal', d: 'How we think about building for this market, in plain language.', href: '/blog' },
+	{ id: 'mag', ic: '📖', t: 'Take The Brevarium', d: 'Our magazine, free: featured projects, the team, and the thinking. Yours to keep.', href: '/brevarium/the-brevarium-latest.pdf', dl: true },
+	{ id: 'views', ic: '🎛️', t: 'Try another world', d: 'The same Swizel in five skins. Pick the one that talks like you do.', href: '/?views=1' },
+];
+
 const ckFaq = faq.slice(0, 5);
 ---
 
 <div class="ck cbody view-body view-body-campus">
-	<!-- ── A · the front desk ──────────────────────────────── -->
-	<section class="ck-sec" data-cursor="pen">
-		<div class="ck-wrap ck-desk">
-			<div class="ck-desk-copy cp-rev">
+	<!-- ── A · the sheet, first thing you see ──────────────────
+	     No long hero: the form is the point of this page, so it starts
+	     within the first screen on desktop and on a phone. The pass still
+	     dangles, but from the corner of the sheet rather than beside it. -->
+	<section class="ck-sec ck-sec--top" id="ck-form" data-cursor="pen">
+		<div class="ck-wrap">
+			<div class="ck-open">
 				<span class="ck-badge">
 					<span class="ck-dot" aria-hidden="true"></span>
 					The front office · someone is in
 				</span>
-				<h1 class="ck-h ck-h--xl">Come and tell us what <em>you want to build.</em></h1>
-				<p class="ck-p">
-					No brief is too rough and no idea is too early. Half the things
-					in our trophy cabinet started as a paragraph somebody typed at
-					midnight, unsure whether it was any good. Type yours.
+				<h1 class="ck-h ck-h--xl">Tell us what <em>you want to build.</em></h1>
+				<p class="ck-p ck-p--lead">
+					No brief is too rough, no idea too early. Four boxes, two minutes,
+					and a real person replies within a business day.
 				</p>
-				<ul class="ck-stats">
-					{
-						stats.map((s) => (
-							<li>
-								<strong data-count={s.to} data-suffix={s.sfx}>0{s.sfx}</strong>
-								<span>{s.l}</span>
-							</li>
-						))
-					}
-				</ul>
-				<a class="ck-jump" href="#ck-form">
-					Start the sheet
-					<Icon width={16} name="mdi:arrow-down" />
-				</a>
 			</div>
 
-			<!-- the visitor's pass, hanging on its lanyard -->
-			<div class="ck-pass cp-rev" data-fa-tilt="6">
-				<span class="ck-pass-string" aria-hidden="true"></span>
-				<span class="ck-pass-hole" aria-hidden="true"></span>
+			<!-- the visitor's pass, hanging beside the heading -->
+			<div class="ck-pass" data-fa-tilt="6">
+				<span class="ck-pass-clip" aria-hidden="true"></span>
 				<span class="ck-pass-k">Visitor pass</span>
 				<strong class="ck-pass-name">You</strong>
-				<span class="ck-pass-role">Guest of the school</span>
-				<span class="ck-pass-row">
-					<span>Abuja time</span>
-					<b data-ck-clock>--:--</b>
-				</span>
-				<span class="ck-pass-row">
-					<span>Reply by</span>
-					<b>1 business day</b>
-				</span>
+				<span class="ck-pass-row"><span>Abuja</span><b data-ck-clock>--:--</b></span>
+				<span class="ck-pass-row"><span>Reply by</span><b>1 working day</b></span>
 				<span class="ck-pass-stamp" aria-hidden="true">WELCOME</span>
 			</div>
-		</div>
-	</section>
 
-	<!-- ── B · the enrolment sheet ─────────────────────────── -->
-	<section class="ck-sec" id="ck-form" data-cursor="pen">
-		<div class="ck-wrap">
-			<div class="ck-head cp-rev">
-				<span class="ck-kick">📝 The enrolment sheet</span>
-				<h2 class="ck-h">Four boxes. <em>That is the whole hurdle.</em></h2>
-			</div>
+			<div class="ck-book">
+				<!-- the label taped to the corner, so nobody wonders what this is -->
+				<span class="ck-formtag">
+					<Icon width={15} name="mdi:pencil-outline" />
+					Start here · the enquiry form
+				</span>
 
-			<div class="ck-book cp-rev">
 				<span class="ck-rings" aria-hidden="true">
 					{Array.from({ length: 9 }).map(() => <i />)}
 				</span>
@@ -141,8 +126,8 @@ const ckFaq = faq.slice(0, 5);
 							<input type="email" name="email" autocomplete="email" placeholder="you@company.com" required />
 						</label>
 						<label class="ck-field">
-							<span class="ck-label">A number, if you like calls</span>
-							<input type="tel" name="phoneNumber" autocomplete="tel" placeholder="+234 800 000 0000" />
+							<span class="ck-label">Your phone number <em>*</em></span>
+							<input type="tel" name="phoneNumber" autocomplete="tel" placeholder="+234 800 000 0000" required />
 						</label>
 						<label class="ck-field">
 							<span class="ck-label">Tell us the thing <em>*</em></span>
@@ -161,43 +146,12 @@ const ckFaq = faq.slice(0, 5);
 							Goes to contact@swizel.co. Read by a person, answered by a person.
 						</p>
 					</form>
-
-					<!-- the stamp that lands when the sheet is handed in -->
-					<div class="ck-stamp" id="ck-stamp" hidden>
-						<div class="ck-stamp-card">
-							<span class="ck-stamp-mark" aria-hidden="true"><Icon width={26} name="mdi:check-bold" /></span>
-							<strong>Received</strong>
-							<em>It is on our desk. We will get back to you, usually within a business day.</em>
-							<button type="button" class="ck-stamp-x" data-ck-stamp-close>Send another</button>
-						</div>
-					</div>
 				</div>
 			</div>
 		</div>
 	</section>
 
-	<!-- ── C · what happens next ───────────────────────────── -->
-	<section class="ck-sec" data-cursor="book">
-		<div class="ck-wrap">
-			<div class="ck-head cp-rev">
-				<span class="ck-kick">🔔 After the bell</span>
-				<h2 class="ck-h">What happens <em>once you hit send.</em></h2>
-			</div>
-			<ol class="ck-next">
-				{
-					next.map((n, i) => (
-						<li class="ck-next-step cp-rev" style={`--i:${i}`}>
-							<span class="ck-next-n">{n.n}</span>
-							<strong>{n.t}</strong>
-							<p>{n.d}</p>
-						</li>
-					))
-				}
-			</ol>
-		</div>
-	</section>
-
-	<!-- ── D · the corridor + the chat desk ────────────────── -->
+	<!-- ── B · not a form person ───────────────────────────── -->
 	<section class="ck-sec" data-cursor="phone">
 		<div class="ck-wrap">
 			<div class="ck-head cp-rev">
@@ -207,6 +161,7 @@ const ckFaq = faq.slice(0, 5);
 
 			<div class="ck-chatrow">
 				<button type="button" class="ck-chat ck-chat--live cp-rev" data-open-chat data-fa-tilt="5">
+					<span class="ck-chat-pin" aria-hidden="true"></span>
 					<span class="ck-chat-ic" aria-hidden="true">
 						<Icon width={26} name="mdi:message-text-outline" />
 						<span class="ck-chat-live"></span>
@@ -226,6 +181,7 @@ const ckFaq = faq.slice(0, 5);
 					rel="noopener noreferrer"
 					data-fa-tilt="5"
 				>
+					<span class="ck-chat-pin" aria-hidden="true"></span>
 					<span class="ck-chat-ic" aria-hidden="true"><Icon width={26} name="mdi:whatsapp" /></span>
 					<span class="ck-chat-txt">
 						<span class="ck-chat-k">WhatsApp · in your pocket</span>
@@ -262,7 +218,38 @@ const ckFaq = faq.slice(0, 5);
 		</div>
 	</section>
 
-	<!-- ── E · questions ──────────────────────────────────── -->
+	<!-- ── C · what happens next + the desk widgets ────────── -->
+	<section class="ck-sec" data-cursor="book">
+		<div class="ck-wrap">
+			<div class="ck-head cp-rev">
+				<span class="ck-kick">🔔 After the bell</span>
+				<h2 class="ck-h">What happens <em>once you hit send.</em></h2>
+			</div>
+			<ol class="ck-next">
+				{
+					next.map((n, i) => (
+						<li class="ck-next-step cp-rev" style={`--i:${i}`}>
+							<span class="ck-next-n">{n.n}</span>
+							<strong>{n.t}</strong>
+							<p>{n.d}</p>
+						</li>
+					))
+				}
+			</ol>
+			<ul class="ck-stats cp-rev">
+				{
+					stats.map((s) => (
+						<li>
+							<strong data-count={s.to} data-suffix={s.sfx}>0{s.sfx}</strong>
+							<span>{s.l}</span>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+	</section>
+
+	<!-- ── D · questions ──────────────────────────────────── -->
 	<section class="ck-sec ck-sec--last" data-cursor="book">
 		<div class="ck-wrap ck-wrap--narrow">
 			<div class="ck-head cp-rev">
@@ -284,6 +271,37 @@ const ckFaq = faq.slice(0, 5);
 			</div>
 		</div>
 	</section>
+
+	<!-- ── the note that comes back when the sheet is handed in ── -->
+	<div class="ck-done" id="ck-stamp" hidden>
+		<div class="ck-done-veil" data-ck-stamp-close></div>
+		<div class="ck-done-card" role="dialog" aria-modal="true" tabindex="-1">
+			<button class="ck-done-x" type="button" data-ck-stamp-close aria-label="Close">
+				<Icon width={17} name="mdi:close" />
+			</button>
+			<span class="ck-done-mark" aria-hidden="true"><Icon width={30} name="mdi:check-bold" /></span>
+			<strong class="ck-done-h">Received. It is on our desk.</strong>
+			<p class="ck-done-p">
+				A person reads every one of these, and you will hear back within a
+				business day. While you wait, here is what is worth your time.
+			</p>
+			<div class="ck-done-links">
+				{
+					afters.map((a) => (
+						<a class="ck-done-link" href={a.href} download={a.dl ? true : undefined} data-ck-after={a.id}>
+							<span class="ck-done-ic" aria-hidden="true">{a.ic}</span>
+							<span>
+								<strong>{a.t}</strong>
+								<em>{a.d}</em>
+							</span>
+							<Icon width={15} name="mdi:arrow-right" />
+						</a>
+					))
+				}
+			</div>
+			<button type="button" class="ck-done-again" data-ck-stamp-close>Send another message</button>
+		</div>
+	</div>
 </div>
 
 <style>
@@ -354,152 +372,6 @@ const ckFaq = faq.slice(0, 5);
 	}
 	.ck-p { font-size: clamp(0.98rem, 1.4vw, 1.08rem); line-height: 1.72; color: var(--cp-muted); }
 
-	/* ── A · the desk ── */
-	.ck-desk {
-		display: grid;
-		gap: clamp(1.6rem, 4vw, 3rem);
-		align-items: center;
-	}
-	@media (min-width: 900px) { .ck-desk { grid-template-columns: 1.25fr 0.75fr; } }
-	.ck-badge {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.5rem;
-		font-family: ui-monospace, monospace;
-		font-size: 0.72rem;
-		font-weight: 800;
-		letter-spacing: 0.13em;
-		text-transform: uppercase;
-		color: var(--cp-acc);
-		border: 1px solid color-mix(in srgb, var(--cp-acc) 38%, transparent);
-		background: color-mix(in srgb, var(--cp-acc) 8%, transparent);
-		padding: 0.35rem 0.8rem;
-		border-radius: 9999px;
-		margin-bottom: 1rem;
-	}
-	.ck-dot {
-		width: 7px;
-		height: 7px;
-		border-radius: 9999px;
-		background: #22c55e;
-		box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6);
-		animation: ck-pulse 2.4s ease-out infinite;
-	}
-	@keyframes ck-pulse {
-		to { box-shadow: 0 0 0 9px rgba(34, 197, 94, 0); }
-	}
-	.ck-desk-copy .ck-p { margin: 0.9rem 0 0; max-width: 40rem; }
-	.ck-stats {
-		list-style: none;
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.4rem 2.2rem;
-		margin: 1.4rem 0 1.3rem;
-		padding: 0;
-	}
-	.ck-stats li { display: grid; }
-	.ck-stats strong {
-		font-size: clamp(1.4rem, 2.6vw, 1.9rem);
-		font-weight: 850;
-		line-height: 1;
-		background: linear-gradient(95deg, var(--cp-acc), var(--cp-acc2));
-		-webkit-background-clip: text;
-		background-clip: text;
-		-webkit-text-fill-color: transparent;
-	}
-	.ck-stats span { font-family: var(--cp-marker); font-size: 0.85rem; color: var(--cp-faint); }
-	.ck-jump {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.5rem;
-		font-weight: 800;
-		font-size: 0.93rem;
-		color: var(--cp-acc);
-		border-bottom: 2px solid color-mix(in srgb, var(--cp-acc) 45%, transparent);
-		padding-bottom: 0.15rem;
-		transition: gap 0.25s ease, border-color 0.25s ease;
-	}
-	.ck-jump:hover { gap: 0.8rem; border-color: var(--cp-acc); }
-	.ck-jump :global(svg) { animation: ck-nudge 2.2s ease-in-out infinite; }
-	@keyframes ck-nudge {
-		0%, 100% { transform: translateY(0); }
-		50% { transform: translateY(3px); }
-	}
-
-	/* the visitor's pass */
-	.ck-pass {
-		position: relative;
-		display: grid;
-		gap: 0.3rem;
-		max-width: 19rem;
-		margin: 2.4rem auto 0;
-		padding: 2.1rem 1.3rem 1.3rem;
-		border-radius: 0.9rem;
-		color: #2b1c08;
-		background: linear-gradient(180deg, var(--paper), var(--paper2));
-		box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.75);
-		transform: rotate(-1.6deg);
-		animation: ck-swing 7s ease-in-out infinite;
-		transform-origin: top center;
-	}
-	@keyframes ck-swing {
-		0%, 100% { transform: rotate(-1.6deg); }
-		50% { transform: rotate(1.4deg); }
-	}
-	.ck-pass-string {
-		position: absolute;
-		left: 50%;
-		top: -2.4rem;
-		width: 2px;
-		height: 2.4rem;
-		transform: translateX(-50%);
-		background: color-mix(in srgb, var(--cp-acc) 70%, #000);
-	}
-	.ck-pass-hole {
-		position: absolute;
-		left: 50%;
-		top: 0.7rem;
-		width: 42px;
-		height: 9px;
-		transform: translateX(-50%);
-		border-radius: 9999px;
-		background: rgba(43, 28, 8, 0.22);
-		box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
-	}
-	.ck-pass-k {
-		font-family: ui-monospace, monospace;
-		font-size: 0.62rem;
-		font-weight: 800;
-		letter-spacing: 0.18em;
-		text-transform: uppercase;
-		color: rgba(43, 28, 8, 0.5);
-	}
-	.ck-pass-name { font-family: var(--cp-marker); font-size: 1.9rem; font-weight: 700; line-height: 1.1; }
-	.ck-pass-role { font-size: 0.82rem; color: rgba(43, 28, 8, 0.62); margin-bottom: 0.5rem; }
-	.ck-pass-row {
-		display: flex;
-		justify-content: space-between;
-		gap: 1rem;
-		font-size: 0.8rem;
-		padding: 0.4rem 0;
-		border-top: 1px dashed rgba(43, 28, 8, 0.18);
-		color: rgba(43, 28, 8, 0.6);
-	}
-	.ck-pass-row b { font-family: var(--cp-marker); font-size: 0.95rem; color: #2b1c08; }
-	.ck-pass-stamp {
-		position: absolute;
-		right: 0.6rem;
-		bottom: 0.5rem;
-		font-family: ui-monospace, monospace;
-		font-size: 0.72rem;
-		font-weight: 800;
-		letter-spacing: 0.2em;
-		color: rgba(225, 29, 72, 0.55);
-		border: 2px solid rgba(225, 29, 72, 0.4);
-		border-radius: 0.3rem;
-		padding: 0.15rem 0.4rem;
-		transform: rotate(-9deg);
-	}
 </style>
 
 <style>
@@ -700,58 +572,6 @@ const ckFaq = faq.slice(0, 5);
 		color: rgba(43, 28, 8, 0.58);
 	}
 
-	.ck-stamp {
-		position: absolute;
-		inset: 0;
-		z-index: 3;
-		display: grid;
-		place-items: center;
-		padding: 1.2rem;
-		background: rgba(253, 244, 227, 0.86);
-		backdrop-filter: blur(4px);
-	}
-	.ck-stamp[hidden] { display: none; }
-	.ck-stamp-card {
-		display: grid;
-		justify-items: center;
-		gap: 0.4rem;
-		text-align: center;
-		max-width: 24rem;
-		padding: 1.6rem 1.4rem;
-		border-radius: 1rem;
-		border: 2px dashed rgba(180, 83, 9, 0.45);
-		background: #fffaf0;
-		box-shadow: 0 26px 60px -26px rgba(43, 28, 8, 0.5);
-		animation: ck-stamp-in 0.45s cubic-bezier(0.2, 1.5, 0.4, 1) both;
-	}
-	@keyframes ck-stamp-in {
-		from { opacity: 0; transform: scale(1.16) rotate(-3deg); }
-		to { opacity: 1; transform: none; }
-	}
-	.ck-stamp-mark {
-		display: grid;
-		place-items: center;
-		width: 3rem;
-		height: 3rem;
-		border-radius: 9999px;
-		color: #2b1500;
-		background: linear-gradient(95deg, #fcd34d, #f59e0b);
-	}
-	.ck-stamp-card strong { font-family: var(--cp-marker); font-size: 1.6rem; color: #2b1c08; }
-	.ck-stamp-card em { font-style: normal; font-size: 0.9rem; line-height: 1.55; color: rgba(43, 28, 8, 0.7); }
-	.ck-stamp-x {
-		margin-top: 0.5rem;
-		padding: 0.4rem 0.9rem;
-		border-radius: 9999px;
-		border: 1px solid rgba(43, 28, 8, 0.25);
-		background: none;
-		cursor: pointer;
-		font: inherit;
-		font-size: 0.82rem;
-		font-weight: 700;
-		color: rgba(43, 28, 8, 0.7);
-	}
-	.ck-stamp-x:hover { background: rgba(43, 28, 8, 0.06); }
 </style>
 
 <style>
@@ -954,3 +774,323 @@ const ckFaq = faq.slice(0, 5);
 	}
 </style>
 
+
+<style>
+	/* ── A · the sheet comes first ── */
+	.ck-sec--top { padding-top: clamp(0.6rem, 1.8vw, 1.2rem); padding-bottom: clamp(1.6rem, 3vw, 2.4rem); }
+	.ck-sec--top .ck-wrap { position: relative; }
+	.ck-open { text-align: center; max-width: 44rem; margin: 0 auto clamp(0.8rem, 2vw, 1.2rem); }
+	.ck-open .ck-h--xl { font-size: clamp(1.8rem, 3.6vw, 2.7rem); }
+	.ck-open .ck-p--lead { font-size: clamp(0.92rem, 1.2vw, 1rem); }
+	.ck-badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-family: ui-monospace, monospace;
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.13em;
+		text-transform: uppercase;
+		color: var(--cp-acc);
+		border: 1px solid color-mix(in srgb, var(--cp-acc) 38%, transparent);
+		background: color-mix(in srgb, var(--cp-acc) 8%, transparent);
+		padding: 0.32rem 0.75rem;
+		border-radius: 9999px;
+		margin-bottom: 0.7rem;
+	}
+	.ck-dot {
+		width: 7px;
+		height: 7px;
+		border-radius: 9999px;
+		background: #22c55e;
+		box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6);
+		animation: ck-pulse 2.4s ease-out infinite;
+	}
+	@keyframes ck-pulse { to { box-shadow: 0 0 0 9px rgba(34, 197, 94, 0); } }
+	.ck-p--lead { margin: 0.6rem auto 0; max-width: 40rem; }
+
+	/* the label taped across the top of the sheet */
+	/* the label taped to the corner of the sheet */
+	.ck-formtag {
+		position: absolute;
+		top: -1.45rem;
+		left: clamp(0.8rem, 4vw, 2.4rem);
+		z-index: 7;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		padding: 0.42rem 0.9rem;
+		border-radius: 0.35rem;
+		transform: rotate(-1.6deg);
+		font-family: ui-monospace, monospace;
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: #2b1500;
+		white-space: nowrap;
+		background: linear-gradient(95deg, #fcd34d, #f59e0b);
+		box-shadow: 0 10px 22px -10px rgba(245, 158, 11, 0.9);
+	}
+	@media (max-width: 560px) { .ck-formtag { font-size: 0.6rem; padding: 0.35rem 0.7rem; } }
+
+	/* the pass, clipped to the corner of the sheet */
+	.ck-pass {
+		position: absolute;
+		top: -0.4rem;
+		right: 0;
+		z-index: 6;
+		display: grid;
+		gap: 0.14rem;
+		width: 11.5rem;
+		padding: 1.35rem 0.9rem 0.8rem;
+		border-radius: 0.6rem;
+		color: #2b1c08;
+		background: linear-gradient(180deg, #fffdf7, #f2e7cd);
+		box-shadow: 0 18px 34px -18px rgba(0, 0, 0, 0.7);
+		transform-origin: top center;
+		animation: ck-swing 7s ease-in-out infinite;
+	}
+	@keyframes ck-swing {
+		0%, 100% { transform: rotate(2.2deg); }
+		50% { transform: rotate(-1.6deg); }
+	}
+	.ck-pass-clip {
+		position: absolute;
+		top: -10px;
+		left: 50%;
+		width: 30px;
+		height: 20px;
+		transform: translateX(-50%);
+		border-radius: 5px 5px 9px 9px;
+		background: linear-gradient(180deg, #eceef2, #a9aeb8);
+		box-shadow: 0 3px 6px rgba(0, 0, 0, 0.32);
+	}
+	.ck-pass-k {
+		font-family: ui-monospace, monospace;
+		font-size: 0.54rem;
+		font-weight: 800;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: rgba(43, 28, 8, 0.5);
+	}
+	.ck-pass-name { font-family: var(--cp-marker); font-size: 1.35rem; font-weight: 700; line-height: 1.05; margin-bottom: 0.2rem; }
+	.ck-pass-row {
+		display: flex;
+		justify-content: space-between;
+		gap: 0.6rem;
+		font-size: 0.68rem;
+		padding: 0.22rem 0;
+		border-top: 1px dashed rgba(43, 28, 8, 0.18);
+		color: rgba(43, 28, 8, 0.58);
+	}
+	.ck-pass-row b { font-family: var(--cp-marker); font-size: 0.82rem; color: #2b1c08; }
+	.ck-pass-stamp {
+		position: absolute;
+		right: 0.4rem;
+		bottom: 0.3rem;
+		font-family: ui-monospace, monospace;
+		font-size: 0.52rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		color: rgba(225, 29, 72, 0.5);
+		border: 1.5px solid rgba(225, 29, 72, 0.35);
+		border-radius: 0.25rem;
+		padding: 0.08rem 0.28rem;
+		transform: rotate(-9deg);
+	}
+	@media (max-width: 1180px) { .ck-pass { width: 10rem; } }
+	@media (max-width: 1024px) { .ck-pass { display: none; } }
+
+	/* the sheet needs room for the pass and the tape to sit outside it */
+	.ck-book { overflow: visible; margin-top: 1.5rem; }
+	.ck-page--right { border-radius: 0 0 0.9rem 0.9rem; }
+	@media (min-width: 900px) { .ck-page--right { border-radius: 0 0.9rem 0.9rem 0; } }
+
+	/* bolder questions: this is the part people read */
+	.ck-label { font-size: 1.06rem; font-weight: 800; color: #2b1c08; }
+	.ck-field input,
+	.ck-field textarea { font-size: 1rem; }
+
+	/* the desk stats live down here now */
+	.ck-stats {
+		list-style: none;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0.4rem 2.6rem;
+		margin: clamp(1.4rem, 3vw, 2rem) 0 0;
+		padding: 0;
+		text-align: center;
+	}
+	.ck-stats li { display: grid; }
+	.ck-stats strong {
+		font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+		font-weight: 850;
+		line-height: 1;
+		background: linear-gradient(95deg, var(--cp-acc), var(--cp-acc2));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	.ck-stats span { font-family: var(--cp-marker); font-size: 0.85rem; color: var(--cp-faint); }
+
+	/* the corridor cards, on paper */
+	.ck-chat {
+		position: relative;
+		color: #2b1c08;
+		border: 0;
+		border-radius: 0.5rem;
+		background: linear-gradient(180deg, #fdf8ec, #f3e8d0);
+		box-shadow: 0 24px 46px -26px rgba(0, 0, 0, 0.7);
+		transform: rotate(var(--r, -0.6deg));
+	}
+	.ck-chat--wa { --r: 0.7deg; }
+	.ck-chat:hover { transform: rotate(0deg) translateY(-4px); }
+	.ck-chat-pin {
+		position: absolute;
+		top: -8px;
+		left: 50%;
+		width: 15px;
+		height: 15px;
+		transform: translateX(-50%);
+		border-radius: 9999px;
+		background: radial-gradient(circle at 32% 30%, #fff, var(--ch) 62%);
+		box-shadow: 0 3px 7px rgba(0, 0, 0, 0.42);
+	}
+	.ck-chat-k { color: color-mix(in srgb, var(--ch) 62%, #2b1c08); }
+	.ck-chat-txt em { color: rgba(43, 28, 8, 0.68); }
+	.ck-chat-live { border-color: #fdf8ec; }
+
+	/* ── the note that comes back ── */
+	:global(html.ck-locked) { overflow: hidden; }
+	/* the section owns its own stacking context, so it has to be lifted above
+	   the header and the chat launcher while the note is up */
+	.ck.is-noting { position: relative; z-index: 950; }
+	.ck-done {
+		position: fixed;
+		inset: 0;
+		z-index: 1000;
+		display: grid;
+		place-items: center;
+		padding: clamp(0.8rem, 3vw, 2rem);
+	}
+	.ck-done[hidden] { display: none; }
+	.ck-done-veil { position: absolute; inset: 0; background: rgba(10, 6, 1, 0.72); backdrop-filter: blur(6px); }
+	.ck-done-card {
+		position: relative;
+		width: min(34rem, 100%);
+		max-height: min(88vh, 46rem);
+		overflow: auto;
+		display: grid;
+		justify-items: center;
+		gap: 0.45rem;
+		text-align: center;
+		padding: clamp(1.5rem, 3.5vw, 2.2rem);
+		border-radius: 1rem;
+		color: #2b1c08;
+		background:
+			repeating-linear-gradient(180deg, transparent 0 28px, rgba(59, 130, 246, 0.09) 28px 29px),
+			linear-gradient(180deg, #fdf8ec, #f4ead3);
+		box-shadow: 0 40px 90px -34px rgba(0, 0, 0, 0.8);
+		animation: ck-done-in 0.45s cubic-bezier(0.2, 1.5, 0.4, 1) both;
+	}
+	@keyframes ck-done-in {
+		from { opacity: 0; transform: translateY(14px) scale(0.96) rotate(-1.5deg); }
+		to { opacity: 1; transform: none; }
+	}
+	.ck-done-x {
+		position: absolute;
+		top: 0.6rem;
+		right: 0.6rem;
+		display: grid;
+		place-items: center;
+		width: 2rem;
+		height: 2rem;
+		border-radius: 9999px;
+		border: 1px solid rgba(43, 28, 8, 0.18);
+		background: rgba(255, 255, 255, 0.7);
+		color: #2b1c08;
+		cursor: pointer;
+		transition: transform 0.2s ease, background 0.2s ease;
+	}
+	.ck-done-x:hover { background: #fff; transform: rotate(90deg); }
+	.ck-done-mark {
+		display: grid;
+		place-items: center;
+		width: 3.4rem;
+		height: 3.4rem;
+		border-radius: 9999px;
+		color: #2b1500;
+		background: linear-gradient(95deg, #fcd34d, #f59e0b);
+		box-shadow: 0 14px 30px -12px rgba(245, 158, 11, 0.9);
+	}
+	.ck-done-h { font-family: var(--cp-marker); font-size: 1.7rem; font-weight: 700; line-height: 1.15; }
+	.ck-done-p { margin: 0 0 0.5rem; font-size: 0.9rem; line-height: 1.6; color: rgba(43, 28, 8, 0.7); }
+	.ck-done-links { display: grid; gap: 0.5rem; width: 100%; }
+	.ck-done-link {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		text-align: left;
+		padding: 0.7rem 0.85rem;
+		border-radius: 0.6rem;
+		border: 1px dashed rgba(180, 83, 9, 0.4);
+		background: rgba(245, 158, 11, 0.08);
+		color: #2b1c08;
+		transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+	}
+	.ck-done-link:hover {
+		background: rgba(245, 158, 11, 0.16);
+		border-color: #b45309;
+		transform: translateX(3px);
+	}
+	.ck-done-ic { font-size: 1.3rem; line-height: 1; flex: none; }
+	.ck-done-link strong { display: block; font-size: 0.95rem; font-weight: 800; }
+	.ck-done-link em { font-style: normal; font-size: 0.8rem; line-height: 1.5; color: rgba(43, 28, 8, 0.66); }
+	.ck-done-link :global(svg) { margin-left: auto; flex: none; color: #b45309; }
+	.ck-done-again {
+		margin-top: 0.4rem;
+		padding: 0.45rem 1rem;
+		border-radius: 9999px;
+		border: 1px solid rgba(43, 28, 8, 0.22);
+		background: none;
+		cursor: pointer;
+		font: inherit;
+		font-size: 0.83rem;
+		font-weight: 700;
+		color: rgba(43, 28, 8, 0.72);
+	}
+	.ck-done-again:hover { background: rgba(43, 28, 8, 0.06); }
+	@media (prefers-reduced-motion: reduce) {
+		.ck-pass, .ck-done-card { animation: none; }
+	}
+</style>
+
+<style>
+	/* ── on a phone the form itself has to come first ──
+	   The picks are a useful warm-up on a wide screen, but on a phone they
+	   would push the name box a whole screen down, so the sheet flips: the
+	   questions first, the ticks under them as a compact row. */
+	@media (max-width: 899px) {
+		.ck-book { margin-top: 2rem; }
+		.ck-page--right { order: -1; border-radius: 0.9rem 0.9rem 0 0; padding-top: 1.6rem; }
+		.ck-page--left { border-bottom: 0; border-top: 1px dashed rgba(43, 28, 8, 0.18); }
+		.ck-picks { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+		.ck-pick {
+			width: auto;
+			padding: 0.4rem 0.75rem;
+			border: 1px solid rgba(43, 28, 8, 0.25);
+			border-radius: 9999px;
+			font-size: 0.92rem;
+		}
+		.ck-pick .ck-pick-box { display: none; }
+		.ck-pick.is-on { border-color: #b45309; background: rgba(245, 158, 11, 0.2); }
+		.ck-open .ck-h--xl { font-size: clamp(1.55rem, 7vw, 2rem); }
+		.ck-open .ck-p--lead { font-size: 0.9rem; line-height: 1.6; }
+		.ck-sec--top { padding-top: 0.4rem; }
+	}
+	@media (max-width: 560px) {
+		.ck-formtag { left: 50%; transform: translateX(-50%) rotate(-1.6deg); }
+	}
+</style>

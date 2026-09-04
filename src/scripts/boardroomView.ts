@@ -1,4 +1,4 @@
-import { startTour, type TourStep } from './tour';
+import { openTourChooser, siteLegs, type TourStep } from './tour';
 
 // Boardroom guided tour — walks the whole landing page, hero to footer.
 export function initBoardroomView() {
@@ -68,5 +68,5 @@ export function initBoardroomView() {
 	];
 	document
 		.querySelectorAll('[data-tour-start="boardroom"]')
-		.forEach((b) => b.addEventListener('click', () => startTour(steps)));
+		.forEach((b) => b.addEventListener('click', () => openTourChooser(steps, siteLegs(steps))));
 }
