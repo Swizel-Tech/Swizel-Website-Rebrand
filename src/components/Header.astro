@@ -283,6 +283,9 @@ const isActive = (href: string) => {
 		display: flex;
 		flex-direction: column;
 		background: var(--m-bg);
+		/* everything inside inherits the drawer's ink, not the header's white —
+		   otherwise the carets and chevrons vanish on the campus paper */
+		color: var(--m-ink);
 		border-left: 1px solid var(--m-border);
 		box-shadow: -24px 0 60px -24px rgba(0, 0, 0, 0.5);
 		transform: translateX(102%);

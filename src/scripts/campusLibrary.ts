@@ -7,7 +7,7 @@
 // destination before the rotation starts, which is why the reveal lines
 // up as the leaf lifts and why there is no jump when it lands.
 const TURN = 880; // ms, matched to the keyframes below
-const DWELL = 7000; // ms a spread is left open before it turns itself
+const DWELL = 5000; // ms a spread is left open before it turns itself
 
 export function initCampusLibrary() {
 	// The lifted brief locks the page scroll while it is open. If you leave
@@ -41,12 +41,13 @@ export function initCampusLibrary() {
 		let paused = reduce;
 		let timer = 0;
 		let onScreen = false;
-		// The first turn happens early and on its own, so nobody has to guess
-		// that the book turns at all. After that demonstration it rests for a
+		// The book introduces itself the moment it comes into view: it turns a
+		// couple of pages straight away so the idea is unmistakable, rests a
 		// beat, then settles into its ordinary dwell.
-		let greeted = 0; // 0 = not yet shown, 1 = showing, 2 = resting, 3 = normal
-		const HELLO = 1500; // how long before the book shows what it does
-		const REST = 4200; // the pause afterwards, so the demo reads as deliberate
+		let greeted = 0; // 0 = not shown, 1 = one page in, 2 = resting, 3 = normal
+		const HELLO = 350; // barely a pause before the first page goes over
+		const HELLO2 = 700; // and the second follows close behind
+		const REST = 2200; // then it stops, so the demo reads as deliberate
 
 		root.style.setProperty('--bk-turn', `${TURN}ms`);
 		root.style.setProperty('--bk-dwell', `${DWELL}ms`);
@@ -74,20 +75,18 @@ export function initCampusLibrary() {
 				ringStop();
 				return;
 			}
-			// the greeting flap, then the rest, then the usual rhythm
-			if (greeted === 0) {
-				greeted = 1;
+			// two pages by way of hello, then the rest, then the usual rhythm
+			if (greeted < 2) {
+				const wait = greeted === 0 ? HELLO : HELLO2;
+				greeted += 1;
 				ringStop();
-				timer = window.setTimeout(() => turn(1), HELLO);
+				timer = window.setTimeout(() => turn(1), wait);
 				return;
 			}
-			if (greeted === 1) {
-				greeted = 2;
+			if (greeted === 2) {
+				greeted = 3;
 				ringStop();
-				timer = window.setTimeout(() => {
-					greeted = 3;
-					schedule();
-				}, REST);
+				timer = window.setTimeout(schedule, REST);
 				return;
 			}
 			timer = window.setTimeout(() => turn(1), DWELL);

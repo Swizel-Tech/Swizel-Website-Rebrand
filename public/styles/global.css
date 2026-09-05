@@ -564,8 +564,8 @@ body:has(.hero-view) .hero-view {
 }
 .site-header a { color: var(--nav-ink); }
 .site-header nav a { position: relative; transition: color 0.25s ease; }
-.site-header nav a:hover { color: #18debe; }
-.site-header nav a.active { color: #18debe; }
+.site-header nav a:hover,
+.site-header nav a.active { color: var(--nav-active); }
 .site-header nav a::after {
   content: '';
   position: absolute;
@@ -863,11 +863,40 @@ html[data-view="studio"] .hero-studio .btn--accent {
 /* =========================================================
    Refinements: nav active deep-blue, per-view cursors, back-to-top
    ========================================================= */
-:root { --nav-active: #28293e; }      /* our deep blue */
+/* The nav highlight is the world's own colour, not one house blue.
+   Deep enough to read on the white bar, bright enough on the dark one. */
+:root { --nav-active: #14589b; }
 html.dark { --nav-active: #86e2ef; }
-.site-header nav a:hover { color: var(--nav-active); }
-.site-header nav a.active { color: var(--nav-active); }
-.site-header nav a::after { background: var(--nav-active); }
+html[data-view='boardroom'] { --nav-active: #14589b; }
+html[data-view='builder'] { --nav-active: #0b8e7c; }
+html[data-view='founder'] { --nav-active: #6d3fd6; }
+html[data-view='studio'] { --nav-active: #be1862; }
+html[data-view='campus'] { --nav-active: #b45309; }
+html.dark[data-view='boardroom'] { --nav-active: #86e2ef; }
+html.dark[data-view='builder'] { --nav-active: #2ee6c6; }
+html.dark[data-view='founder'] { --nav-active: #a78bfa; }
+html.dark[data-view='studio'] { --nav-active: #f472b6; }
+html.dark[data-view='campus'] { --nav-active: #fbbf24; }
+/* Hover and active are the SAME colour: the world's own. Nothing goes blue
+   in a yellow world. Both wear the view's gradient, clipped to the text. */
+.site-header nav a:hover,
+.site-header nav a.active {
+  background-image: var(--nav-active-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+.site-header nav a:hover::after,
+.site-header nav a.active::after { background: var(--nav-active-grad); }
+
+/* The daylight bar needs its own set: without these, every world fell back
+   to the root teal-to-blue, which is the blue that kept showing up. */
+html[data-view='boardroom'] { --nav-active-grad: linear-gradient(95deg, #14589b, #0b8e7c); }
+html[data-view='builder'] { --nav-active-grad: linear-gradient(95deg, #0b8e7c, #14589b); }
+html[data-view='founder'] { --nav-active-grad: linear-gradient(95deg, #6d3fd6, #b32a86); }
+html[data-view='studio'] { --nav-active-grad: linear-gradient(95deg, #be1862, #7c3aed); }
+html[data-view='campus'] { --nav-active-grad: linear-gradient(95deg, #b45309, #d9534f); }
 
 /* Per-view cursor (ring in the view accent), only over the hero stage */
 
@@ -1030,7 +1059,9 @@ html[data-view="founder"] #swizel-cursor .cur-founder,
 html[data-view="campus"] #swizel-cursor .cur-campus,
 html[data-view="studio"] #swizel-cursor .cur-studio { display: block; }
 
-/* Active nav item: darker brand gradient (more visible than solid navy) */
+/* Hover and active read identically: the world's gradient, clipped to the
+   text. Whatever colour the click gives you, the hover gave you first. */
+.site-header nav a:hover,
 .site-header nav a.active {
   background-image: var(--nav-active-grad);
   -webkit-background-clip: text;
@@ -1038,6 +1069,7 @@ html[data-view="studio"] #swizel-cursor .cur-studio { display: block; }
   -webkit-text-fill-color: transparent;
   color: transparent;
 }
+.site-header nav a:hover::after,
 .site-header nav a.active::after {
   background: var(--nav-active-grad);
 }
