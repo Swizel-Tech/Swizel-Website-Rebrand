@@ -1,0 +1,627 @@
+---
+// C3 · The archives — Campus world, home page.
+//
+// Was a 3×N grid of equal boxes with three empty dashed placeholders at the
+// bottom, which read as a filing list rather than a room. Now it is two
+// bands: the reel plays at the top next to its canister label, and the
+// prints hang under it as a contact sheet — a real masonry, so every
+// photograph keeps its own shape instead of being cropped into a tile.
+//
+// The film is a facade: nothing is fetched from YouTube until the play
+// button is pressed. `initCampusArchives` swaps in the iframe.
+import { Icon } from 'astro-icon/components';
+
+const REEL = 'yyCMSZBVG2I';
+
+const prints = [
+	{
+		img: '/images/campus/demo-day.jpg',
+		ar: '16 / 10',
+		alt: 'Swizel mentors and students reviewing a build together on demo day',
+		cap: 'Demo day, the whole room on one build',
+		tag: 'demo day',
+		rot: '-1.1deg',
+	},
+	{
+		img: '/images/campus/pairing.jpg',
+		ar: '4 / 5',
+		alt: 'A Swizel mentor reviewing an intern’s work at the desk in Abuja',
+		cap: 'A review, line by line',
+		tag: 'the review',
+		rot: '1.4deg',
+	},
+	{
+		img: '/images/campus/class-in-session.jpg',
+		ar: '16 / 11',
+		alt: 'A class in session around the studio table at the Swizel campus in Abuja',
+		cap: 'Class in session',
+		tag: 'class',
+		rot: '0.9deg',
+	},
+	{
+		img: '/images/campus/studio-floor.jpg',
+		ar: '4 / 5',
+		alt: 'The Swizel studio floor in Abuja, the team heads-down on live builds',
+		cap: 'The floor, heads down',
+		tag: 'the floor',
+		rot: '-1.5deg',
+	},
+	{
+		img: '/images/campus/the-lab.jpg',
+		ar: '16 / 10',
+		alt: 'Two Swizel builders pairing on a live product in the lab',
+		cap: 'Pairing in the lab',
+		tag: 'the lab',
+		rot: '-0.8deg',
+	},
+	{
+		img: '/images/campus/learning.jpg',
+		ar: '5 / 6',
+		alt: 'An intern working through a tutorial while the team builds around him',
+		cap: 'Learn it, then teach it',
+		tag: 'learning',
+		rot: '1.2deg',
+	},
+];
+---
+
+<div class="arch" data-arch>
+	<!-- ── band one · the reel ─────────────────────────────────────── -->
+	<div class="arch__film cp-rev">
+		<button
+			class="arch__screen"
+			type="button"
+			data-arch-play={REEL}
+			aria-label="Play the campus reel"
+		>
+			<img
+				class="arch__poster"
+				src={`https://i.ytimg.com/vi/${REEL}/maxresdefault.jpg`}
+				alt=""
+				loading="lazy"
+				decoding="async"
+				data-arch-poster={REEL}
+			/>
+			<span class="arch__grain" aria-hidden="true"></span>
+			<span class="arch__scrim" aria-hidden="true"></span>
+
+			<span class="arch__perf arch__perf--t" aria-hidden="true">
+				{Array.from({ length: 26 }).map(() => <i />)}
+			</span>
+			<span class="arch__perf arch__perf--b" aria-hidden="true">
+				{Array.from({ length: 26 }).map(() => <i />)}
+			</span>
+
+			<span class="arch__go" aria-hidden="true">
+				<span class="arch__gopulse"></span>
+				<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
+					<path d="M9 7.2l9 4.8-9 4.8z" fill="currentColor"></path>
+				</svg>
+			</span>
+
+			<span class="arch__slate" aria-hidden="true">
+				<b>REEL 01</b>
+				<i></i>
+				<span>Swizel Campus · Abuja</span>
+			</span>
+
+			<span class="arch__hint">Play the reel</span>
+		</button>
+
+		<!-- the canister label beside the screen -->
+		<div class="arch__label">
+			<span class="arch__k">
+				<Icon width={13} name="mdi:filmstrip" />
+				The archives
+			</span>
+			<p class="arch__title">What learning here <em>actually looks like.</em></p>
+			<p class="arch__blurb">
+				No prospectus voice, no stock footage. Twenty seconds shot on our
+				own floor in Abuja, on an ordinary working day.
+			</p>
+			<ul class="arch__facts">
+				<li><b>Abuja</b><span>shot here</span></li>
+				<li><b>2026</b><span>this cohort</span></li>
+				<li><b>Live work</b><span>every frame</span></li>
+			</ul>
+			<a class="arch__cta" href="/programs#internship">
+				Apply for a place
+				<Icon width={15} name="mdi:arrow-right" />
+			</a>
+		</div>
+	</div>
+
+	<!-- ── band two · the contact sheet ────────────────────────────── -->
+	<div class="arch__sheetwrap cp-rev">
+		<span class="arch__sheetk">
+			<Icon width={13} name="mdi:pin-outline" />
+			Contact sheet · pinned by the door
+		</span>
+		<div class="arch__sheet">
+			{
+				prints.map((p) => (
+					<figure class="arch__print" style={`--r:${p.rot}; --ar:${p.ar}`} tabindex="0">
+						<span class="arch__tape" aria-hidden="true" />
+						<span class="arch__frame">
+							<img src={p.img} alt={p.alt} loading="lazy" decoding="async" />
+							<span class="arch__gloss" aria-hidden="true" />
+							<span class="arch__stamp">{p.tag}</span>
+						</span>
+						<figcaption class="arch__cap">{p.cap}</figcaption>
+					</figure>
+				))
+			}
+		</div>
+	</div>
+</div>
+
+<style>
+	.arch {
+		display: flex;
+		flex-direction: column;
+		gap: clamp(1.6rem, 3.4vw, 2.6rem);
+	}
+
+	/* ══ band one · the reel ═════════════════════════════════════════ */
+	.arch__film {
+		display: grid;
+		grid-template-columns: minmax(0, 1.78fr) minmax(0, 1fr);
+		gap: clamp(1rem, 2.2vw, 1.6rem);
+		align-items: stretch;
+	}
+
+	.arch__screen {
+		position: relative;
+		display: block;
+		width: 100%;
+		aspect-ratio: 16 / 9;
+		overflow: hidden;
+		padding: 0;
+		border: 0;
+		border-radius: clamp(0.9rem, 1.6vw, 1.35rem);
+		background: #0b0803;
+		cursor: pointer;
+		isolation: isolate;
+		box-shadow:
+			0 0 0 1px color-mix(in srgb, var(--cp-ink) 12%, transparent),
+			0 34px 70px -34px rgba(0, 0, 0, 0.9);
+		transition: box-shadow 0.35s ease, transform 0.35s ease;
+	}
+	.arch__screen:hover {
+		transform: translateY(-3px);
+		box-shadow:
+			0 0 0 1px color-mix(in srgb, var(--cp-acc) 45%, transparent),
+			0 44px 90px -38px rgba(0, 0, 0, 0.95);
+	}
+	.arch__screen:focus-visible {
+		outline: 2px solid var(--cp-acc);
+		outline-offset: 3px;
+	}
+
+	/* The live player is created in JS, so it never carries Astro's scope
+	   attribute and scoped rules would miss it entirely — it has to be
+	   styled globally, from inside the scoped parent. */
+	.arch__film :global(.arch__screen--live) {
+		display: block;
+		width: 100%;
+		aspect-ratio: 16 / 9;
+		height: auto;
+		border: 0;
+		border-radius: clamp(0.9rem, 1.6vw, 1.35rem);
+		background: #0b0803;
+		box-shadow:
+			0 0 0 1px color-mix(in srgb, var(--cp-ink) 12%, transparent),
+			0 34px 70px -34px rgba(0, 0, 0, 0.9);
+	}
+
+	.arch__poster {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1), filter 0.4s ease;
+		filter: saturate(0.94) contrast(1.04);
+	}
+	.arch__screen:hover .arch__poster {
+		transform: scale(1.045);
+		filter: saturate(1.05) contrast(1.02);
+	}
+
+	/* a little projector dust so a still frame does not read as a dead image */
+	.arch__grain {
+		position: absolute;
+		inset: -50%;
+		background-image: radial-gradient(
+			rgba(255, 255, 255, 0.5) 0.5px,
+			transparent 0.5px
+		);
+		background-size: 3px 3px;
+		opacity: 0.05;
+		animation: arch-grain 0.9s steps(3) infinite;
+		pointer-events: none;
+	}
+	@keyframes arch-grain {
+		0% { transform: translate3d(0, 0, 0); }
+		33% { transform: translate3d(-2px, 1px, 0); }
+		66% { transform: translate3d(1px, -2px, 0); }
+		100% { transform: translate3d(0, 0, 0); }
+	}
+
+	.arch__scrim {
+		position: absolute;
+		inset: 0;
+		background:
+			radial-gradient(70% 70% at 50% 46%, transparent, rgba(6, 4, 1, 0.34) 100%),
+			linear-gradient(to top, rgba(6, 4, 1, 0.55), transparent 42%);
+		pointer-events: none;
+	}
+
+	/* sprocket holes down the top and bottom edge */
+	.arch__perf {
+		position: absolute;
+		left: 0;
+		right: 0;
+		display: flex;
+		justify-content: space-between;
+		gap: 2px;
+		padding: 0 0.5rem;
+		pointer-events: none;
+		opacity: 0.5;
+	}
+	.arch__perf--t { top: 6px; }
+	.arch__perf--b { bottom: 6px; }
+	.arch__perf i {
+		flex: 1 1 0;
+		max-width: 13px;
+		height: 8px;
+		border-radius: 2px;
+		background: rgba(255, 247, 231, 0.5);
+	}
+	@media (max-width: 640px) {
+		.arch__perf i { height: 6px; }
+	}
+
+	.arch__go {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		display: grid;
+		place-items: center;
+		width: clamp(58px, 6vw, 74px);
+		height: clamp(58px, 6vw, 74px);
+		border-radius: 9999px;
+		color: #2b1c08;
+		background: linear-gradient(160deg, #fde68a, var(--cp-acc, #f59e0b));
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.6),
+			0 16px 34px -14px rgba(0, 0, 0, 0.85);
+		transition: transform 0.32s cubic-bezier(0.2, 0.8, 0.25, 1);
+	}
+	.arch__go svg { margin-left: 3px; }
+	.arch__screen:hover .arch__go { transform: translate(-50%, -50%) scale(1.09); }
+	.arch__gopulse {
+		position: absolute;
+		inset: -6px;
+		border-radius: 9999px;
+		border: 2px solid color-mix(in srgb, var(--cp-acc) 70%, transparent);
+		animation: arch-pulse 2.6s ease-out infinite;
+	}
+	@keyframes arch-pulse {
+		0% { transform: scale(0.9); opacity: 0.75; }
+		75%, 100% { transform: scale(1.5); opacity: 0; }
+	}
+
+	.arch__slate {
+		position: absolute;
+		top: clamp(0.85rem, 1.8vw, 1.2rem);
+		left: clamp(0.85rem, 1.8vw, 1.2rem);
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.3rem 0.6rem;
+		border-radius: 0.35rem;
+		background: rgba(8, 6, 2, 0.62);
+		backdrop-filter: blur(6px);
+		font-family: ui-monospace, monospace;
+		font-size: 0.62rem;
+		font-weight: 800;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: #fff6e2;
+	}
+	.arch__slate b { color: var(--cp-acc); }
+	.arch__slate i {
+		width: 1px;
+		height: 11px;
+		background: rgba(255, 246, 226, 0.35);
+	}
+	@media (max-width: 560px) {
+		.arch__slate span { display: none; }
+		.arch__slate i { display: none; }
+	}
+
+	.arch__hint {
+		position: absolute;
+		left: clamp(0.9rem, 1.9vw, 1.35rem);
+		bottom: clamp(0.9rem, 1.9vw, 1.35rem);
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		font-family: var(--cp-marker);
+		font-size: clamp(0.92rem, 1.4vw, 1.08rem);
+		color: #fff6e2;
+		text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+		white-space: nowrap;
+	}
+	.arch__hint::before {
+		content: '';
+		width: 7px;
+		height: 7px;
+		border-radius: 9999px;
+		background: var(--cp-acc, #f59e0b);
+		box-shadow: 0 0 10px 2px color-mix(in srgb, var(--cp-acc) 60%, transparent);
+	}
+
+	/* the canister label */
+	.arch__label {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		justify-content: center;
+		gap: 0.6rem;
+		padding: clamp(1rem, 2vw, 1.5rem);
+		border-radius: clamp(0.9rem, 1.6vw, 1.35rem);
+		border: 1px solid var(--cp-line);
+		background:
+			radial-gradient(320px 180px at 84% 6%, color-mix(in srgb, var(--cp-acc) 13%, transparent), transparent 70%),
+			var(--cp-card);
+	}
+	.arch__k {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		font-family: ui-monospace, monospace;
+		font-size: 0.66rem;
+		font-weight: 800;
+		letter-spacing: 0.15em;
+		text-transform: uppercase;
+		color: var(--cp-acc);
+	}
+	.arch__title {
+		margin: 0;
+		font-size: clamp(1.15rem, 1.9vw, 1.5rem);
+		font-weight: 800;
+		line-height: 1.22;
+		color: var(--cp-ink);
+	}
+	.arch__title em {
+		font-style: normal;
+		font-family: var(--cp-marker);
+		font-weight: 400;
+		color: var(--cp-acc);
+	}
+	.arch__blurb {
+		margin: 0;
+		font-size: 0.88rem;
+		line-height: 1.55;
+		color: var(--cp-muted);
+	}
+	.arch__facts {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.35rem clamp(0.85rem, 2.4vw, 1.3rem);
+		margin: 0.15rem 0 0;
+		padding: 0.7rem 0 0;
+		list-style: none;
+		width: 100%;
+		border-top: 1px solid var(--cp-line);
+	}
+	.arch__facts li { display: flex; flex-direction: column; gap: 0.05rem; }
+	.arch__facts b {
+		font-family: 'Bebas Neue', sans-serif;
+		font-size: 1.05rem;
+		line-height: 1.1;
+		letter-spacing: 0.02em;
+		color: var(--cp-ink);
+	}
+	.arch__facts span {
+		font-size: 0.66rem;
+		letter-spacing: 0.07em;
+		text-transform: uppercase;
+		color: var(--cp-faint);
+	}
+	.arch__cta {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		margin-top: 0.2rem;
+		font-size: 0.82rem;
+		font-weight: 800;
+		color: var(--cp-acc);
+	}
+	.arch__cta :global(svg) { transition: transform 0.22s ease; }
+	.arch__cta:hover :global(svg) { transform: translateX(4px); }
+
+	/* ══ band two · the contact sheet ════════════════════════════════ */
+	.arch__sheetwrap { position: relative; }
+	.arch__sheetk {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		margin-bottom: 0.9rem;
+		font-family: var(--cp-marker);
+		font-size: 1rem;
+		color: var(--cp-muted);
+		transform: rotate(-0.8deg);
+	}
+	.arch__sheetk :global(svg) { color: var(--cp-acc2, #fb7185); }
+
+	/* A real masonry: every print keeps its own shape, so the portraits
+	   stay portrait and nothing is cropped into a uniform tile. Columns
+	   also mean no empty cells to fill with dashed placeholders. */
+	.arch__sheet {
+		columns: 3;
+		column-gap: clamp(0.75rem, 1.6vw, 1.15rem);
+	}
+	@media (max-width: 900px) {
+		.arch__sheet { columns: 2; }
+	}
+
+	.arch__print {
+		position: relative;
+		break-inside: avoid;
+		margin: 0 0 clamp(0.75rem, 1.6vw, 1.15rem);
+		padding: 0.4rem 0.4rem 0;
+		border-radius: 4px;
+		background: linear-gradient(180deg, #fffdf8, #f2e7d4);
+		box-shadow:
+			0 1px 0 rgba(255, 255, 255, 0.7) inset,
+			0 20px 40px -24px rgba(0, 0, 0, 0.85);
+		transform: rotate(var(--r));
+		transition:
+			transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+			box-shadow 0.4s ease;
+		outline: none;
+		cursor: pointer;
+	}
+	.arch__print:hover,
+	.arch__print:focus-visible {
+		transform: rotate(0deg) translateY(-6px) scale(1.02);
+		box-shadow:
+			0 1px 0 rgba(255, 255, 255, 0.85) inset,
+			0 36px 64px -28px rgba(0, 0, 0, 0.92);
+		z-index: 3;
+	}
+	.arch__print:focus-visible { box-shadow: 0 0 0 2px var(--cp-acc); }
+
+	/* The tape stays IN FLOW, lifted by negative margins that cancel out.
+	   Absolutely positioning it inside the multi-column sheet made Chrome
+	   paint a ghost copy of it in the wrong column fragment — a real,
+	   reproducible paint bug, not a stray element. */
+	.arch__tape {
+		display: block;
+		position: relative;
+		z-index: 2;
+		width: 38%;
+		height: 20px;
+		margin: -13px auto -7px;
+		border-radius: 1px;
+		background: color-mix(in srgb, var(--cp-acc) 32%, #fff8e6);
+		opacity: 0.72;
+		box-shadow: 0 3px 8px -5px rgba(0, 0, 0, 0.7);
+		transform: rotate(calc(var(--r) * -2));
+		clip-path: polygon(4% 0, 96% 6%, 100% 94%, 2% 100%);
+		pointer-events: none;
+	}
+
+	.arch__frame {
+		position: relative;
+		display: block;
+		overflow: hidden;
+		border-radius: 2px;
+		background: #17110a;
+	}
+	.arch__frame img {
+		display: block;
+		width: 100%;
+		aspect-ratio: var(--ar, 4 / 3);
+		height: auto;
+		object-fit: cover;
+		transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.arch__print:hover .arch__frame img { transform: scale(1.05); }
+
+	.arch__gloss {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(
+			112deg,
+			transparent 34%,
+			rgba(255, 255, 255, 0.32) 48%,
+			transparent 60%
+		);
+		transform: translateX(-125%);
+		pointer-events: none;
+	}
+	.arch__print:hover .arch__gloss,
+	.arch__print:focus-visible .arch__gloss {
+		animation: arch-gloss 0.9s ease-out;
+	}
+	@keyframes arch-gloss {
+		to { transform: translateX(125%); }
+	}
+
+	.arch__stamp {
+		position: absolute;
+		right: 0.4rem;
+		bottom: 0.35rem;
+		font-family: ui-monospace, monospace;
+		font-size: 0.56rem;
+		font-weight: 800;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: #ffe9b0;
+		text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95);
+	}
+
+	.arch__cap {
+		display: block;
+		padding: 0.4rem 0.2rem 0.5rem;
+		font-family: var(--cp-marker);
+		font-size: 0.86rem;
+		line-height: 1.2;
+		text-align: center;
+		color: #4a3312;
+	}
+
+	/* ══ phones ══════════════════════════════════════════════════════ */
+	@media (max-width: 860px) {
+		.arch__film {
+			grid-template-columns: 1fr;
+			gap: 0.9rem;
+		}
+		.arch__label { padding: 1rem 1.05rem 1.15rem; }
+	}
+	@media (max-width: 560px) {
+		.arch__sheetk { font-size: 1.05rem; }
+		.arch__facts { gap: 0.3rem 0.9rem; }
+		.arch__facts b { font-size: 0.98rem; }
+		.arch__facts span { font-size: 0.6rem; }
+		.arch__blurb { font-size: 0.85rem; }
+		.arch__cap { font-size: 0.9rem; }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.arch__grain,
+		.arch__gopulse,
+		.arch__gloss { animation: none !important; }
+		.arch__print,
+		.arch__screen,
+		.arch__poster { transition: none !important; }
+	}
+
+	/* ══ daylight ════════════════════════════════════════════════════ */
+	:global(html:not(.dark)) .arch__print {
+		box-shadow:
+			0 1px 0 rgba(255, 255, 255, 0.9) inset,
+			0 18px 34px -22px rgba(70, 45, 10, 0.65);
+	}
+	:global(html:not(.dark)) .arch__print:hover,
+	:global(html:not(.dark)) .arch__print:focus-visible {
+		box-shadow:
+			0 1px 0 rgba(255, 255, 255, 0.95) inset,
+			0 32px 56px -26px rgba(70, 45, 10, 0.7);
+	}
+	:global(html:not(.dark)) .arch__screen {
+		box-shadow:
+			0 0 0 1px rgba(43, 28, 8, 0.12),
+			0 30px 60px -34px rgba(70, 45, 10, 0.75);
+	}
+	:global(html:not(.dark)) .arch__screen:hover {
+		box-shadow:
+			0 0 0 1px color-mix(in srgb, var(--cp-acc) 50%, transparent),
+			0 40px 78px -36px rgba(70, 45, 10, 0.8);
+	}
+</style>

@@ -594,9 +594,12 @@ body:has(.hero-view) .hero-view {
   border-color: var(--nav-cta-border) !important;
 }
 .nav-cta:hover {
-  color: #0b0d18 !important;
+  color: var(--nav-cta-ink, #0b0d18) !important;
   border-color: transparent !important;
-  background: linear-gradient(95deg, #8dfeea, #18debe, #28a6ec) !important;
+  background: var(
+    --nav-cta-grad,
+    linear-gradient(95deg, #8dfeea, #18debe, #28a6ec)
+  ) !important;
 }
 
 /* Refined, smaller, subtler theme toggle (overrides earlier sizing) */
@@ -897,6 +900,15 @@ html[data-view='builder'] { --nav-active-grad: linear-gradient(95deg, #0b8e7c, #
 html[data-view='founder'] { --nav-active-grad: linear-gradient(95deg, #6d3fd6, #b32a86); }
 html[data-view='studio'] { --nav-active-grad: linear-gradient(95deg, #be1862, #7c3aed); }
 html[data-view='campus'] { --nav-active-grad: linear-gradient(95deg, #b45309, #d9534f); }
+
+/* Same law as the links above, applied to the CTA, which was the one thing
+   left in the bar still wearing the house teal in every world. Only campus
+   is redefined here; the other four keep the teal they were signed off with.
+   Matches the amber the mobile .m-nav-cta already uses. */
+html[data-view='campus'] {
+  --nav-cta-grad: linear-gradient(95deg, #fde68a, #fbbf24, #f59e0b);
+  --nav-cta-ink: #2b1500;
+}
 
 /* Per-view cursor (ring in the view accent), only over the hero stage */
 

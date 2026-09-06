@@ -5,6 +5,7 @@ import Section from '../HTML/Section.astro';
 import RotatingHeadline from '../RotatingHeadline.astro';
 import MentorsBand from '../MentorsBand.astro';
 import WhiteboardVideo from '../WhiteboardVideo.astro';
+import CampusWall from '../CampusWall.astro';
 
 // No counters here: two of these are ranges, not numbers.
 const stats = [
@@ -91,6 +92,11 @@ const stats = [
 				control lives on the board.
 			</p>
 		</div>
+
+		<!-- Its own row across both columns. The board column has to end on
+		     the note again, level with the mentors band, so the prints
+		     cannot live inside it. -->
+		<CampusWall />
 
 	</div>
 </Section>
@@ -182,6 +188,9 @@ const stats = [
 		.campus--copy .campus--eyebrow,
 		.campus--copy .campus--sub,
 		.campus--copy .campus--cta { margin-bottom: 0; }
+		/* the prints get their own row, matching the column rhythm above so
+		   the arrow sits under the copy and the fan under the board */
+		.campus--layout > :global(.cwall) { grid-column: 1 / -1; }
 		/* End-aligned, not centred: when the board is the taller column this
 		   is an exact fit, and when the copy runs longer (narrow desktops,
 		   where the three buttons wrap) the board stays pinned to the floor
@@ -224,6 +233,7 @@ const stats = [
 		clip-path: polygon(3% 0, 97% 4%, 100% 96%, 2% 100%);
 		pointer-events: none;
 	}
+
 	.campus--boardnote {
 		display: flex;
 		align-items: flex-start;
@@ -275,6 +285,8 @@ const stats = [
 		.campus--alt :global(svg),
 		.campus--tour :global(svg) { display: none; }
 		.campus--boardwrap { order: 5; width: 100%; }
+		/* same slot as the board: DOM order keeps it directly underneath */
+		.campus--layout > :global(.cwall) { order: 5; width: 100%; }
 		.campus--stats { width: 100%; }
 		.campus--stats { order: 6; }
 		.campus--layout :global(.mband) { order: 7; width: 100%; }

@@ -157,7 +157,7 @@ export const projects: Project[] = [
 			quote: { text: 'They didn’t just build a website. They built our presence and our audience from scratch.', who: 'AnchorStep Physiotherapy' },
 			services: ['Brand & design', 'Web development', 'Marketing & growth', 'Maintenance'],
 			gallery: [
-				{ kind: 'image', src: '/images/portfolio/shot-anchorstep.jpg', label: 'Homepage & booking', caption: 'Book-an-appointment, front and centre.' },
+				{ kind: 'image', src: '/images/portfolio/shot-anchorstep.jpg', label: 'About & approach', caption: 'The practice, its promise and a booking button in reach.' },
 				{ kind: 'image', src: '/images/portfolio/shot-anchorstep-services.jpg', label: 'Services & treatments', caption: 'Every treatment, in the words a patient would use.' },
 				{ kind: 'image', src: '/images/portfolio/shot-anchorstep-care.jpg', label: 'Why AnchorStep', caption: 'The trust case, made in one screen.' },
 			],
