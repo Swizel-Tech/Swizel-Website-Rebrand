@@ -9,6 +9,7 @@
 // engine (tilt / glare / team modal / magnetic / journey draw) binds too.
 import { Icon } from 'astro-icon/components';
 import WhiteboardVideo from '../WhiteboardVideo.astro';
+import CampusArchives from '../CampusArchives.astro';
 import { teamDetails, MISSION, VISION, CORE_VALUES } from '../../consts';
 
 const stats = [
@@ -74,31 +75,6 @@ const reportCard = [
 	{ name: 'Cheta', img: '/testimonial/cheta.jpeg', grade: 'A+', body: 'Thorough, polite and always on time. They make hard things feel easy.' },
 ];
 
-// real photographs from the Abuja studio — placeholders only where footage is
-// still to come
-const classPhotos = [
-	{
-		wide: true,
-		img: '/images/campus/demo-day.jpg',
-		alt: 'The Swizel team reviewing a build together on demo day',
-		name: 'demo-day.jpg',
-		sub: 'Review day, the whole class on one build',
-	},
-	{
-		img: '/images/campus/class-in-session.jpg',
-		alt: 'A full class in session around the studio table in Abuja',
-		name: 'class-in-session.jpg',
-		sub: 'A full house, mid term',
-	},
-	{
-		img: '/images/campus/the-lab.jpg',
-		alt: 'Two Swizel builders pairing on a live product in the lab',
-		name: 'the-lab.jpg',
-		sub: 'Pairing in the lab',
-	},
-	{ video: true, name: 'launch-night.mp4 · video' },
-	{ video: false, name: 'field-trip.jpg' },
-];
 ---
 
 <div class="cabout cbody view-body view-body-campus">
@@ -311,29 +287,73 @@ const classPhotos = [
 				<span class="ca-kick">📸 Class photos & field trips</span>
 				<h2 class="ca-h">Life on <em>campus.</em></h2>
 			</div>
-			<div class="ca-media cp-rev">
-				{
-					classPhotos.map((f) => (
-						<div class:list={['ca-frame', { 'ca-frame--wide': f.wide, 'ca-frame--photo': f.img }]}>
-							{f.img ? (
-								<>
-									<img src={f.img} alt={f.alt} loading="lazy" />
-									<span class="ca-tape" aria-hidden="true" />
-									<span class="ca-frame-cap">
-										{f.sub ?? f.name}
-									</span>
-								</>
-							) : (
-								<>
-									<Icon width={f.wide ? 34 : 24} name={f.video ? 'mdi:play-circle-outline' : 'mdi:image-outline'} />
-									<span class="ca-frame-name">{f.name}</span>
-									{f.sub && <span class="ca-frame-sub">{f.sub}</span>}
-								</>
-							)}
-						</div>
-					))
-				}
-			</div>
+			<!-- the same reel + contact sheet the home page uses; the copy and
+			     the captions are the About page's own -->
+			<CampusArchives
+				slate="Open day · Abuja"
+				kicker="From the album"
+				titleLead="A term here, in"
+				titleEm="twenty seconds."
+				blurb="Demo days, classes and late nights in the lab. Nothing staged, nothing borrowed — this is the room you would be sitting in."
+				facts={[
+					{ n: 'Est. 2019', label: 'the school' },
+					{ n: '25+', label: 'mentors & makers' },
+					{ n: 'Abuja', label: 'one campus' },
+				]}
+				ctaHref="/programs"
+				ctaLabel="Apply for a place"
+				sheetKicker="Class photos · pinned by the door"
+				prints={[
+					{
+						img: '/images/campus/demo-day.jpg',
+						ar: '16 / 10',
+						alt: 'The Swizel team reviewing a build together on demo day',
+						cap: 'Review day, the whole class on one build',
+						tag: 'review day',
+						rot: '-1.2deg',
+					},
+					{
+						img: '/images/campus/learning.jpg',
+						ar: '5 / 6',
+						alt: 'An intern working through a tutorial while the team builds around him',
+						cap: 'Teaching yourself, out loud',
+						tag: 'self-taught',
+						rot: '1.3deg',
+					},
+					{
+						img: '/images/campus/class-in-session.jpg',
+						ar: '16 / 11',
+						alt: 'A full class in session around the studio table in Abuja',
+						cap: 'A full house, mid term',
+						tag: 'mid term',
+						rot: '0.8deg',
+					},
+					{
+						img: '/images/campus/pairing.jpg',
+						ar: '4 / 5',
+						alt: 'A Swizel mentor reviewing an intern’s work at the desk in Abuja',
+						cap: 'A mentor, an arm away',
+						tag: 'mentoring',
+						rot: '-1.5deg',
+					},
+					{
+						img: '/images/campus/the-lab.jpg',
+						ar: '16 / 10',
+						alt: 'Two Swizel builders pairing on a live product in the lab',
+						cap: 'Pairing in the lab',
+						tag: 'the lab',
+						rot: '-0.7deg',
+					},
+					{
+						img: '/images/campus/studio-floor.jpg',
+						ar: '4 / 5',
+						alt: 'The Swizel studio floor in Abuja, the team heads-down on live builds',
+						cap: 'Late, and still shipping',
+						tag: 'after hours',
+						rot: '1.1deg',
+					},
+				]}
+			/>
 		</div>
 	</section>
 
@@ -1283,94 +1303,6 @@ const classPhotos = [
 		transition: gap 0.25s ease, opacity 0.25s ease;
 	}
 	.ca-card:hover .ca-card-open { gap: 0.55rem; opacity: 1; }
-
-	/* ── F · class photos ── */
-	.ca-media {
-		display: grid;
-		gap: 1rem;
-		grid-template-columns: repeat(4, minmax(0, 1fr));
-	}
-	.ca-frame {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		gap: 0.45rem;
-		aspect-ratio: 4 / 3;
-		border-radius: 0.7rem;
-		border: 1.5px dashed color-mix(in srgb, var(--cp-ink) 22%, transparent);
-		background: var(--cp-card);
-		color: var(--cp-muted);
-		padding: 0.8rem;
-	}
-	.ca-frame--wide { grid-column: span 2; grid-row: span 2; aspect-ratio: auto; }
-	/* real photographs: pinned-up prints with masking tape + a marker caption */
-	.ca-frame--photo {
-		position: relative;
-		overflow: hidden;
-		padding: 0;
-		border-style: solid;
-		border-color: color-mix(in srgb, var(--cp-ink) 12%, transparent);
-		background: #0d0a05;
-		transform: rotate(-0.5deg);
-		transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
-		box-shadow: 0 12px 30px -18px rgba(0, 0, 0, 0.65);
-	}
-	.ca-frame--photo:nth-of-type(even) { transform: rotate(0.6deg); }
-	.ca-frame--photo:hover { transform: rotate(0deg) translateY(-4px); box-shadow: 0 22px 44px -20px rgba(0, 0, 0, 0.7); }
-	.ca-frame--photo img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		object-position: center 38%;
-		display: block;
-		transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-	}
-	.ca-frame--photo:hover img { transform: scale(1.04); }
-	.ca-frame--photo::after {
-		content: '';
-		position: absolute;
-		inset: 0;
-		background: linear-gradient(to top, rgba(6, 4, 1, 0.72), rgba(6, 4, 1, 0.05) 55%);
-		pointer-events: none;
-	}
-	.ca-tape {
-		position: absolute;
-		top: 0.45rem;
-		left: 50%;
-		width: 4.4rem;
-		height: 1.05rem;
-		transform: translateX(-50%) rotate(-3deg);
-		background: color-mix(in srgb, var(--cp-acc) 32%, #fff8e6);
-		opacity: 0.75;
-		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
-		z-index: 2;
-	}
-	.ca-frame-cap {
-		position: absolute;
-		left: 0.75rem;
-		right: 0.75rem;
-		bottom: 0.6rem;
-		z-index: 2;
-		font-family: var(--cp-marker);
-		font-size: 0.95rem;
-		line-height: 1.25;
-		color: #fff6e2;
-		text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
-	}
-	.ca-frame--wide.ca-frame--photo .ca-frame-cap { font-size: 1.1rem; }
-	.ca-frame-name {
-		font-size: 0.7rem;
-		font-weight: 800;
-		letter-spacing: 0.07em;
-		text-transform: uppercase;
-		text-align: center;
-	}
-	.ca-frame-sub { font-family: var(--cp-marker); font-size: 0.85rem; color: var(--cp-faint); text-align: center; }
-	@media (max-width: 760px) {
-		.ca-media { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-		.ca-frame--wide { grid-column: span 2; grid-row: auto; aspect-ratio: 16 / 9; }
-	}
 
 	/* ── G · the textbook ── */
 	.ca-book {

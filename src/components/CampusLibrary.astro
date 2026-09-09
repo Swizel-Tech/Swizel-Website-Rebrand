@@ -288,22 +288,22 @@ const marginalia = [
 			radial-gradient(75% 48% at 50% 6%, rgba(255, 176, 74, 0.2), transparent 70%),
 			radial-gradient(120% 82% at 50% 46%, rgba(96, 56, 18, 0.42), transparent 68%),
 			linear-gradient(180deg, #1d1207, #120c05 52%, #080502);
-		-webkit-mask-image: radial-gradient(122% 94% at 50% 45%, #000 58%, transparent);
-		mask-image: radial-gradient(122% 94% at 50% 45%, #000 58%, transparent);
+		-webkit-mask-image: radial-gradient(135% 110% at 50% 44%, #000 22%, rgba(0, 0, 0, 0.55) 62%, transparent 96%);
+		mask-image: radial-gradient(135% 110% at 50% 44%, #000 22%, rgba(0, 0, 0, 0.55) 62%, transparent 96%);
 	}
 	/* in daylight the desk has to be a shade of wood, not another sheet of
 	   paper — at #f7ead3 the parchment sat on parchment and the book
 	   stopped looking like an object */
 	:global(html:not(.dark)) .bk .bk__desk {
 		background:
-			repeating-linear-gradient(91deg, transparent 0 46px, rgba(88, 58, 26, 0.07) 46px 47px),
-			repeating-linear-gradient(1deg, transparent 0 46px, rgba(88, 58, 26, 0.07) 46px 47px),
-			radial-gradient(90% 60% at 50% 12%, rgba(196, 130, 46, 0.4), transparent 66%),
-			linear-gradient(180deg, #e2c79c, #d6b483 58%, #c9a370);
+			repeating-linear-gradient(91deg, transparent 0 46px, rgba(120, 84, 40, 0.045) 46px 47px),
+			repeating-linear-gradient(1deg, transparent 0 46px, rgba(120, 84, 40, 0.045) 46px 47px),
+			radial-gradient(88% 58% at 50% 10%, rgba(214, 160, 84, 0.16), transparent 70%),
+			linear-gradient(180deg, #f6ecd9, #f1e4cd 56%, #ecdcc0);
 	}
 	:global(html:not(.dark)) .bk .bk__drop {
-		background: #5a3a12;
-		opacity: 0.42;
+		background: #7a5a2c;
+		opacity: 0.18;
 	}
 	/* the pool of light the book lies in */
 	.bk__lamp {
@@ -357,15 +357,17 @@ const marginalia = [
 	   card's height comes from its text, not from the screen width, so a
 	   wide phone needs a squarer page than a narrow one or the cards float
 	   in a lake of empty paper. */
+	/* It stays a spread on a phone — he asked for horizontal everywhere.
+	   Four cards still fit; they get smaller and BOLDER rather than fewer,
+	   so the page count does not double. */
 	@media (max-width: 860px) {
-		.bk__book { aspect-ratio: 1 / 1.5; transform: none; }
+		.bk__book { aspect-ratio: 2 / 1.5; transform: none; }
 	}
 	@media (max-width: 560px) {
-		.bk__book { aspect-ratio: 1 / 1.72; }
+		.bk__book { aspect-ratio: 2 / 1.9; }
 	}
 	@media (max-width: 400px) {
-		/* measured at 390px: a card wants ~141px, so a page needs ~330px */
-		.bk__book { aspect-ratio: 1 / 1.95; }
+		.bk__book { aspect-ratio: 2 / 2.1; }
 	}
 
 	/* the block of pages either side, so it reads as bound not printed */
@@ -380,7 +382,6 @@ const marginalia = [
 	}
 	.bk__edge--l { left: -11px; }
 	.bk__edge--r { right: -11px; }
-	@media (max-width: 860px) { .bk__edge { display: none; } }
 
 	.bk__spine {
 		position: absolute;
@@ -400,7 +401,6 @@ const marginalia = [
 			rgba(0, 0, 0, 0) 100%
 		);
 	}
-	@media (max-width: 860px) { .bk__spine { display: none; } }
 
 	.bk__ribbon {
 		position: absolute;
@@ -415,7 +415,6 @@ const marginalia = [
 		box-shadow: 2px 0 8px -2px rgba(0, 0, 0, 0.5);
 		opacity: 0.85;
 	}
-	@media (max-width: 860px) { .bk__ribbon { display: none; } }
 
 	/* ── spreads ── */
 	.bk__spread {
@@ -434,11 +433,6 @@ const marginalia = [
 	.bk__spread.is-half-r { opacity: 1; visibility: visible; }
 	.bk__spread.is-half-l { clip-path: inset(0 50% 0 0); }
 	.bk__spread.is-half-r { clip-path: inset(0 0 0 50%); }
-	@media (max-width: 860px) {
-		.bk__spread { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
-		.bk__spread.is-half-l { clip-path: inset(0 0 50% 0); }
-		.bk__spread.is-half-r { clip-path: inset(50% 0 0 0); }
-	}
 
 	.bk__page {
 		position: relative;
@@ -454,10 +448,6 @@ const marginalia = [
 	.bk__page--r {
 		border-radius: 0.2rem 1rem 1rem 0.2rem;
 		box-shadow: inset 22px 0 32px -26px rgba(60, 38, 14, 0.85);
-	}
-	@media (max-width: 860px) {
-		.bk__page--l { border-radius: 1rem 1rem 0.2rem 0.2rem; box-shadow: inset 0 -18px 26px -22px rgba(60, 38, 14, 0.8); }
-		.bk__page--r { border-radius: 0.2rem 0.2rem 1rem 1rem; box-shadow: inset 0 18px 26px -22px rgba(60, 38, 14, 0.8); }
 	}
 	/* paper tooth */
 	.bk__grain {
@@ -645,24 +635,28 @@ const marginalia = [
 	.bk__leaf[hidden] { display: none; }
 	.bk__leaf .bk__grain { display: none; }
 	.bk__leaf.is-back { left: 0; transform-origin: right center; }
-	.bk__leaf.is-turning { animation: bk-turn var(--bk-turn, 880ms) cubic-bezier(0.42, 0.03, 0.22, 1) forwards; }
+	.bk__leaf.is-turning { animation: bk-turn var(--bk-turn, 1040ms) linear forwards; }
 	.bk__leaf.is-turning.is-back { animation-name: bk-turn-back; }
 
 	/* the squeeze is the bow: a sheet that curves away from you covers less
 	   width than a flat one, and the free edge dips as it goes over */
 	@keyframes bk-turn {
-		0% { transform: rotateY(0deg) translateZ(0) rotateZ(0deg) rotateX(0deg) scaleX(1); }
-		32% { transform: rotateY(-56deg) translateZ(15px) rotateZ(0.9deg) rotateX(1.6deg) scaleX(0.972); }
-		50% { transform: rotateY(-90deg) translateZ(20px) rotateZ(1.2deg) rotateX(2deg) scaleX(0.962); }
-		68% { transform: rotateY(-124deg) translateZ(15px) rotateZ(0.9deg) rotateX(1.6deg) scaleX(0.972); }
-		100% { transform: rotateY(-180deg) translateZ(0) rotateZ(0deg) rotateX(0deg) scaleX(1); }
+		0%   { transform: rotateY(0deg)    translateZ(0)    rotateZ(0deg)    rotateX(0deg)   scaleX(1); }
+		14%  { transform: rotateY(-22deg)  translateZ(8px)  rotateZ(0.5deg)  rotateX(0.9deg) scaleX(0.986); }
+		30%  { transform: rotateY(-52deg)  translateZ(15px) rotateZ(0.9deg)  rotateX(1.6deg) scaleX(0.974); }
+		50%  { transform: rotateY(-90deg)  translateZ(20px) rotateZ(1.2deg)  rotateX(2deg)   scaleX(0.962); }
+		70%  { transform: rotateY(-128deg) translateZ(15px) rotateZ(0.9deg)  rotateX(1.6deg) scaleX(0.974); }
+		86%  { transform: rotateY(-158deg) translateZ(8px)  rotateZ(0.5deg)  rotateX(0.9deg) scaleX(0.986); }
+		100% { transform: rotateY(-180deg) translateZ(0)    rotateZ(0deg)    rotateX(0deg)   scaleX(1); }
 	}
 	@keyframes bk-turn-back {
-		0% { transform: rotateY(0deg) translateZ(0) rotateZ(0deg) rotateX(0deg) scaleX(1); }
-		32% { transform: rotateY(56deg) translateZ(15px) rotateZ(-0.9deg) rotateX(1.6deg) scaleX(0.972); }
-		50% { transform: rotateY(90deg) translateZ(20px) rotateZ(-1.2deg) rotateX(2deg) scaleX(0.962); }
-		68% { transform: rotateY(124deg) translateZ(15px) rotateZ(-0.9deg) rotateX(1.6deg) scaleX(0.972); }
-		100% { transform: rotateY(180deg) translateZ(0) rotateZ(0deg) rotateX(0deg) scaleX(1); }
+		0%   { transform: rotateY(0deg)   translateZ(0)    rotateZ(0deg)     rotateX(0deg)   scaleX(1); }
+		14%  { transform: rotateY(22deg)  translateZ(8px)  rotateZ(-0.5deg)  rotateX(0.9deg) scaleX(0.986); }
+		30%  { transform: rotateY(52deg)  translateZ(15px) rotateZ(-0.9deg)  rotateX(1.6deg) scaleX(0.974); }
+		50%  { transform: rotateY(90deg)  translateZ(20px) rotateZ(-1.2deg)  rotateX(2deg)   scaleX(0.962); }
+		70%  { transform: rotateY(128deg) translateZ(15px) rotateZ(-0.9deg)  rotateX(1.6deg) scaleX(0.974); }
+		86%  { transform: rotateY(158deg) translateZ(8px)  rotateZ(-0.5deg)  rotateX(0.9deg) scaleX(0.986); }
+		100% { transform: rotateY(180deg) translateZ(0)    rotateZ(0deg)     rotateX(0deg)   scaleX(1); }
 	}
 
 	.bk__face {
@@ -758,27 +752,6 @@ const marginalia = [
 		100% { opacity: 0; }
 	}
 
-	/* stacked, the sheet turns over its long edge instead of the spine */
-	@media (max-width: 860px) {
-		.bk__cast { display: none; }
-		.bk__leaf { top: 50%; left: 0; width: 100%; height: 50%; transform-origin: center top; }
-		.bk__leaf.is-back { top: 0; transform-origin: center bottom; }
-		.bk__face { border-radius: 0.2rem 0.2rem 1rem 1rem; }
-		.bk__face--back { transform: rotateX(180deg); border-radius: 1rem 1rem 0.2rem 0.2rem; }
-		.bk__face::before { display: none; }
-		.bk__leaf.is-turning { animation-name: bk-turn-m; }
-		.bk__leaf.is-turning.is-back { animation-name: bk-turn-m-back; }
-	}
-	@keyframes bk-turn-m {
-		0% { transform: rotateX(0deg) translateZ(0) scaleY(1); }
-		50% { transform: rotateX(90deg) translateZ(24px) scaleY(0.96); }
-		100% { transform: rotateX(180deg) translateZ(0) scaleY(1); }
-	}
-	@keyframes bk-turn-m-back {
-		0% { transform: rotateX(0deg) translateZ(0) scaleY(1); }
-		50% { transform: rotateX(-90deg) translateZ(24px) scaleY(0.96); }
-		100% { transform: rotateX(-180deg) translateZ(0) scaleY(1); }
-	}
 
 	/* ── controls ── */
 	.bk__controls {
@@ -925,29 +898,37 @@ const marginalia = [
 	   chips and the room line and keeps the title, the one-liner and the
 	   way in. Everything else is a tap away in the lifted card. */
 	@media (max-width: 860px) {
-		.bk__page { padding: 0.85rem 0.9rem; }
+		.bk__page { padding: 0.6rem 0.55rem; }
 		/* Cards hug their own content and sit centred on the paper. Left on
 		   1fr they stretched to fill the page, so a tall phone turned two
 		   modest cards into two slabs with the text stranded at the top. */
 		.bk__cards {
-			gap: 0.6rem;
-			padding-bottom: 0.9rem;
+			gap: 0.45rem;
+			padding-bottom: 0.6rem;
 			grid-auto-rows: min-content;
 			align-content: center;
 		}
-		.bk__card { padding: 0.6rem 0.75rem; }
+		.bk__card { padding: 0.5rem 0.55rem; }
 		.bk__card-top { margin-bottom: 0.3rem; }
-		.bk__card-ic { width: 27px; height: 27px; border-radius: 0.4rem; }
-		.bk__card-ic svg { width: 15px; height: 15px; }
-		.bk__card-code { font-size: 0.55rem; padding: 0.1rem 0.32rem; }
-		.bk__card-t { font-size: 0.9rem; line-height: 1.2; }
+		.bk__card-ic { width: 22px; height: 22px; border-radius: 0.35rem; }
+		.bk__card-ic svg { width: 13px; height: 13px; }
+		.bk__card-code { font-size: 0.48rem; padding: 0.08rem 0.26rem; }
+		.bk__card-t { font-size: 0.76rem; line-height: 1.18; font-weight: 800; letter-spacing: -0.01em; }
 		/* no line-clamp here: -webkit-box-orient gets stripped out of
 		   scoped styles by the build and the text disappears entirely */
-		.bk__card-d { font-size: 0.74rem; line-height: 1.4; margin-top: 0.15rem; }
+		/* smaller AND heavier: at this size weight carries legibility further
+		   than size does, and the ink goes fully opaque to match */
+		.bk__card-d {
+			font-size: 0.64rem;
+			line-height: 1.32;
+			margin-top: 0.15rem;
+			font-weight: 600;
+			opacity: 1;
+		}
 		.bk__card-chips,
 		.bk__card-room { display: none; }
 		.bk__card-foot { justify-content: flex-end; padding-top: 0.35rem; }
-		.bk__card-go { font-size: 0.6rem; }
+		.bk__card-go { font-size: 0.56rem; font-weight: 800; }
 		.bk__more-p { font-size: 0.82rem; line-height: 1.6; }
 		.bk__stamp { bottom: 1.2rem; padding: 0.4rem 0.7rem; }
 		.bk__scribble { display: none; }

@@ -144,12 +144,48 @@
 
 <style>
 	.toast-notification {
-		border: 1px solid;
+		/* Above the sticky header (z-index 20) and the leave modal (1000).
+		   With z-index:auto it painted UNDERNEATH the nav bar. */
+		z-index: 2000;
+		/* and clear of the header rather than behind it: the bar runs
+		   81–92px depending on scroll state */
+		top: 6.5rem !important;
+		border: 1px solid color-mix(in srgb, var(--view-accent, #18debe) 45%, transparent);
 		backdrop-filter: blur(10px);
-		transition: all 500ms ease-in-out;
+		box-shadow: 0 24px 50px -20px rgba(0, 0, 0, 0.6);
+		transition: transform 420ms cubic-bezier(0.2, 0.9, 0.25, 1), opacity 300ms ease;
 	}
 
+	/* slides on its own transform now — animating `right` moved the box
+	   across the whole viewport and made it easy to catch mid-flight */
 	.toast-notification[data-mode='hidden'] {
-		right: -100%;
+		transform: translateX(calc(100% + 2rem));
+		opacity: 0;
+		pointer-events: none;
+	}
+	@media (max-width: 640px) {
+		.toast-notification {
+			top: 5.25rem !important;
+			left: 0.75rem;
+			right: 0.75rem !important;
+			max-width: none;
+		}
+		.toast-notification[data-mode='hidden'] {
+			transform: translateY(-140%);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.toast-notification { transition: opacity 200ms ease; }
+	}
+
+	/* The shown state. `toast.ts` also sets these three inline, because a
+	   notification that silently fails to appear is the worst kind of bug
+	   and inline styles cannot lose the cascade. This rule is the belt to
+	   that pair of braces. Kept last so no media query can out-order it. */
+	.toast-notification[data-mode='visible'] {
+		transform: none !important;
+		opacity: 1 !important;
+		pointer-events: auto !important;
 	}
 </style>

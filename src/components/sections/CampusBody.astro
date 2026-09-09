@@ -4,16 +4,8 @@
 // societies on a corkboard, a chalkboard that teaches you something, and
 // an arcade START button at the end. School spirit, real outcomes.
 import { Icon } from 'astro-icon/components';
-import CampusJourney from '../CampusJourney.astro';
 import CampusLibrary from '../CampusLibrary.astro';
 import CampusArchives from '../CampusArchives.astro';
-
-const stats = [
-	{ n: '3–6 mo', label: 'IT internship' },
-	{ n: '12 mo', label: 'NYSC year' },
-	{ n: '100%', label: 'live projects' },
-	{ n: '65+', label: 'products shipped' },
-];
 
 
 const roadmap = [
@@ -176,28 +168,23 @@ const voices = [
 ---
 
 <div class="cbody view-body view-body-campus">
-	<!-- ── A · orientation day ─────────────────────────────── -->
-	<section class="cp-sec cp-sec--open">
-		<div class="cp-wrap cp-open">
-			<div class="cp-copy cp-rev">
+	<!-- ── A · welcome: the room comes first ──────────────── -->
+	<!-- The page used to open with four explaining sections before a single
+	     photograph. This is the old orientation headline over the archives,
+	     so the first thing past the worlds rail is faces and a playable reel.
+	     The stat row that used to live here was dropped: the hero shows the
+	     same four numbers two screens above. -->
+	<section class="cp-sec" data-cursor="play">
+		<div class="cp-wrap">
+			<div class="cp-head cp-rev">
 				<span class="cp-badge">🎓 Orientation · Next intake</span>
 				<h2 class="cp-h cp-h--xl">Welcome to class. <em>Leave with a career.</em></h2>
-				<p class="cp-p">
+				<p class="cp-p cp-p--center">
 					Two ways in: your industrial training, or your service year.
 					Both put you on a live client product beside the people who
 					build it for a living. Both are applied for.
 				</p>
-				<ul class="cp-stats">
-					{
-						stats.map((s) => (
-							<li>
-								<strong>{s.n}</strong>
-								<span>{s.label}</span>
-							</li>
-						))
-					}
-				</ul>
-				<div class="cp-row">
+				<div class="cp-row cp-row--center">
 					<a href="/programs" class="cp-cta">
 						Start your application
 						<Icon width={17} name="mdi:school-outline" />
@@ -208,11 +195,7 @@ const voices = [
 					</a>
 				</div>
 			</div>
-
-			<!-- the journey board: the game the hero used to hold, with room -->
-			<div class="cp-game cp-rev" data-cursor="pen">
-				<CampusJourney />
-			</div>
+			<CampusArchives />
 		</div>
 	</section>
 
@@ -231,34 +214,6 @@ const voices = [
 			<div class="cp-rev">
 				<CampusLibrary />
 			</div>
-		</div>
-	</section>
-
-	<!-- ── C · roadmap to the job market ───────────────────── -->
-	<section class="cp-sec" id="cp-quest" data-cursor="book">
-		<div class="cp-wrap">
-			<div class="cp-head cp-rev">
-				<span class="cp-badge">The roadmap</span>
-				<h2 class="cp-h">First ticket <em>→ job market.</em></h2>
-				<p class="cp-p cp-p--center">
-					One placement, four checkpoints. XP is earned by shipping, never
-					by watching videos.
-				</p>
-			</div>
-
-			<ol class="cp-questline" id="cp-questline">
-				<span class="cp-quest-bar" aria-hidden="true"></span>
-				{
-					roadmap.map((q, i) => (
-						<li class="cp-stage cp-rev" style={`--i:${i}`}>
-							<span class="cp-stage-node" aria-hidden="true">{i + 1}</span>
-							<span class="cp-stage-lvl">{q.lvl} <em>{q.xp}</em></span>
-							<h3 class="cp-stage-t">{q.title}</h3>
-							<p class="cp-stage-d">{q.desc}</p>
-						</li>
-					))
-				}
-			</ol>
 		</div>
 	</section>
 
@@ -291,18 +246,31 @@ const voices = [
 		</div>
 	</section>
 
-	<!-- ── C3 · the archives ───────────────────────────────── -->
-	<section class="cp-sec" data-cursor="play">
+	<!-- ── C · roadmap to the job market ───────────────────── -->
+	<section class="cp-sec" id="cp-quest" data-cursor="book">
 		<div class="cp-wrap">
 			<div class="cp-head cp-rev">
-				<span class="cp-badge">The archives</span>
-				<h2 class="cp-h">Inside <em>the room.</em></h2>
+				<span class="cp-badge">The roadmap</span>
+				<h2 class="cp-h">First ticket <em>→ job market.</em></h2>
 				<p class="cp-p cp-p--center">
-					Demo days, classes, late nights in the lab. This is what the
-					placement actually looks like from the inside.
+					One placement, four checkpoints. XP is earned by shipping, never
+					by watching videos.
 				</p>
 			</div>
-			<CampusArchives />
+
+			<ol class="cp-questline" id="cp-questline">
+				<span class="cp-quest-bar" aria-hidden="true"></span>
+				{
+					roadmap.map((q, i) => (
+						<li class="cp-stage cp-rev" style={`--i:${i}`}>
+							<span class="cp-stage-node" aria-hidden="true">{i + 1}</span>
+							<span class="cp-stage-lvl">{q.lvl} <em>{q.xp}</em></span>
+							<h3 class="cp-stage-t">{q.title}</h3>
+							<p class="cp-stage-d">{q.desc}</p>
+						</li>
+					))
+				}
+			</ol>
 		</div>
 	</section>
 
@@ -816,6 +784,7 @@ const voices = [
 	.cp-link:hover {
 		gap: 0.75rem;
 	}
+	.cp-row--center { justify-content: center; }
 	.cp-row {
 		display: flex;
 		align-items: center;
@@ -845,66 +814,6 @@ const voices = [
 			inset 0 1px 0 rgba(255, 255, 255, 0.5),
 			0 4px 0 color-mix(in srgb, var(--cp-acc) 60%, #5b3305),
 			0 14px 30px -14px color-mix(in srgb, var(--cp-acc) 70%, transparent);
-	}
-
-	/* ── A · open + the whiteboard ── */
-	/* The opening reads left to right: the address on one side, the board
-	   you will be marked on beside it. Centring it made the whole section
-	   float with nothing to anchor the eye. */
-	.cp-open {
-		display: grid;
-		grid-template-columns: 1fr;
-		gap: clamp(1.75rem, 4vw, 3rem);
-		align-items: center;
-	}
-	@media (min-width: 1024px) {
-		.cp-open { grid-template-columns: 0.84fr 1.16fr; gap: clamp(2rem, 4vw, 3.5rem); }
-	}
-	.cp-open > * { min-width: 0; }
-	/* four figures will not fit across the narrower left column without
-	   clipping "3-6 mo", so they pair up instead */
-	.cp-open .cp-stats { max-width: none; }
-	@media (min-width: 1024px) {
-		.cp-open .cp-stats {
-			grid-template-columns: repeat(2, minmax(0, 1fr));
-			gap: 1.1rem 1.5rem;
-			max-width: 26rem;
-		}
-	}
-	.cp-game { position: relative; }
-	.cp-stats {
-		display: grid;
-		grid-template-columns: repeat(4, minmax(0, 1fr));
-		gap: 1rem 1.25rem;
-		list-style: none;
-		margin: 0 0 1.5rem;
-		padding: 0;
-		max-width: 30rem;
-	}
-	@media (max-width: 520px) {
-		.cp-stats {
-			grid-template-columns: repeat(2, minmax(0, 1fr));
-		}
-	}
-	.cp-stats strong {
-		display: block;
-		font-size: clamp(1.5rem, 2.6vw, 2rem);
-		font-weight: 850;
-		letter-spacing: -0.02em;
-		white-space: nowrap;
-		background: linear-gradient(135deg, #fcd34d, var(--cp-acc));
-		-webkit-background-clip: text;
-		background-clip: text;
-		-webkit-text-fill-color: transparent;
-	}
-	:global(html:not(.dark)) .cbody .cp-stats strong {
-		background: linear-gradient(135deg, #b45309, #d97706);
-		-webkit-background-clip: text;
-		background-clip: text;
-	}
-	.cp-stats span {
-		font-size: 0.78rem;
-		color: var(--cp-faint);
 	}
 
 	/* ── B · the prospectus room ──

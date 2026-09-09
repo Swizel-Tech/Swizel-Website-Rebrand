@@ -1242,19 +1242,19 @@ html:not(.dark) .bd-grad {
 }
 html:not(.dark) .leave-card { background: linear-gradient(180deg, #ffffff, #f3f6fb); border-color: rgba(20, 22, 40, 0.12); color: #14162a; box-shadow: 0 40px 90px -30px rgba(20, 28, 60, 0.4); }
 .leave-modal.is-open .leave-card { transform: none; opacity: 1; }
-.leave-ic { display: inline-grid; place-items: center; width: 52px; height: 52px; border-radius: 9999px; margin-bottom: 1rem; color: #06121a; background: linear-gradient(135deg, #8dfeea, #18debe 55%, #28a6ec); box-shadow: 0 14px 30px -12px rgba(24, 222, 190, 0.55); }
+.leave-ic { display: inline-grid; place-items: center; width: 52px; height: 52px; border-radius: 9999px; margin-bottom: 1rem; color: var(--nav-cta-ink, #06121a); background: var(--nav-cta-grad, linear-gradient(135deg, #8dfeea, #18debe 55%, #28a6ec)); box-shadow: 0 14px 30px -12px color-mix(in srgb, var(--view-accent, #18debe) 55%, transparent); }
 .leave-title { font-size: 1.35rem; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 0.5rem; }
 .leave-desc { font-size: 0.95rem; line-height: 1.6; color: rgba(244, 246, 251, 0.7); margin: 0 0 1.5rem; }
 html:not(.dark) .leave-desc { color: rgba(20, 22, 40, 0.66); }
-.leave-host { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: #18debe; }
-html:not(.dark) .leave-host { color: #0c8f7a; }
+.leave-host { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--nav-active, #18debe); }
+html:not(.dark) .leave-host { color: var(--nav-active, #0c8f7a); }
 .leave-actions { display: flex; flex-wrap: wrap; gap: 0.7rem; justify-content: center; }
 .leave-stay, .leave-go { display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem; padding: 0.8rem 1.4rem; border-radius: 9999px; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease; }
 .leave-stay { color: inherit; background: transparent; border: 1px solid rgba(255, 255, 255, 0.2); }
 html:not(.dark) .leave-stay { border-color: rgba(20, 22, 40, 0.2); }
 .leave-stay:hover { background: rgba(255, 255, 255, 0.07); }
 html:not(.dark) .leave-stay:hover { background: rgba(20, 22, 40, 0.05); }
-.leave-go { color: #06121a; background: linear-gradient(135deg, #8dfeea, #18debe 55%, #28a6ec); border: none; box-shadow: 0 14px 30px -12px rgba(24, 222, 190, 0.5); }
+.leave-go { color: var(--nav-cta-ink, #06121a); background: var(--nav-cta-grad, linear-gradient(135deg, #8dfeea, #18debe 55%, #28a6ec)); border: none; box-shadow: 0 14px 30px -12px color-mix(in srgb, var(--view-accent, #18debe) 50%, transparent); }
 .leave-go:hover { transform: translateY(-2px); }
 @media (prefers-reduced-motion: reduce) { .leave-card, .leave-backdrop { transition: none; } }
 

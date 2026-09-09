@@ -6,7 +6,7 @@
 // than a blank stand-in. The spread underneath is swapped to the
 // destination before the rotation starts, which is why the reveal lines
 // up as the leaf lifts and why there is no jump when it lands.
-const TURN = 880; // ms, matched to the keyframes below
+const TURN = 1040; // ms, matched to the keyframes in CampusLibrary.astro
 const DWELL = 5000; // ms a spread is left open before it turns itself
 
 export function initCampusLibrary() {

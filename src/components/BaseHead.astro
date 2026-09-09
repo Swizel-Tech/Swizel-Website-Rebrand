@@ -70,11 +70,11 @@ const organizationSchema = {
 <script is:inline>
 	(function () {
 		try {
+			// Light is the house default: a first-time visitor gets daylight
+			// whatever their OS is set to. Dark is opt-in, and once chosen it
+			// is remembered.
 			var stored = localStorage.getItem('theme');
-			var prefersDark =
-				window.matchMedia &&
-				window.matchMedia('(prefers-color-scheme: dark)').matches;
-			if (stored === 'dark' || (!stored && prefersDark)) {
+			if (stored === 'dark') {
 				document.documentElement.classList.add('dark');
 			}
 			var view = localStorage.getItem('swizel-view');

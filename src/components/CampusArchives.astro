@@ -1,5 +1,7 @@
 ---
-// C3 · The archives — Campus world, home page.
+// The archives — Campus world. Used on the home page (C3) and on the
+// About page's "Life on campus" section; every string and the print set
+// come in as props so the two can differ without forking the design.
 //
 // Was a 3×N grid of equal boxes with three empty dashed placeholders at the
 // bottom, which read as a filing list rather than a room. Now it is two
@@ -11,9 +13,30 @@
 // button is pressed. `initCampusArchives` swaps in the iframe.
 import { Icon } from 'astro-icon/components';
 
-const REEL = 'yyCMSZBVG2I';
+interface Print {
+	img: string;
+	ar: string;
+	alt: string;
+	cap: string;
+	tag: string;
+	rot: string;
+}
 
-const prints = [
+interface Props {
+	reel?: string;
+	slate?: string;
+	kicker?: string;
+	titleLead?: string;
+	titleEm?: string;
+	blurb?: string;
+	facts?: { n: string; label: string }[];
+	ctaHref?: string;
+	ctaLabel?: string;
+	sheetKicker?: string;
+	prints?: Print[];
+}
+
+const DEFAULT_PRINTS: Print[] = [
 	{
 		img: '/images/campus/demo-day.jpg',
 		ar: '16 / 10',
@@ -63,6 +86,27 @@ const prints = [
 		rot: '1.2deg',
 	},
 ];
+
+const {
+	reel = 'yyCMSZBVG2I',
+	slate = 'Swizel Campus · Abuja',
+	kicker = 'The archives',
+	titleLead = 'What learning here',
+	titleEm = 'actually looks like.',
+	blurb =
+		'No prospectus voice, no stock footage. Twenty seconds shot on our own floor in Abuja, on an ordinary working day.',
+	facts = [
+		{ n: 'Abuja', label: 'shot here' },
+		{ n: '2026', label: 'this cohort' },
+		{ n: 'Live work', label: 'every frame' },
+	],
+	ctaHref = '/programs#internship',
+	ctaLabel = 'Apply for a place',
+	sheetKicker = 'Contact sheet · pinned by the door',
+	prints = DEFAULT_PRINTS,
+} = Astro.props;
+
+const REEL = reel;
 ---
 
 <div class="arch" data-arch>
@@ -102,7 +146,7 @@ const prints = [
 			<span class="arch__slate" aria-hidden="true">
 				<b>REEL 01</b>
 				<i></i>
-				<span>Swizel Campus · Abuja</span>
+				<span>{slate}</span>
 			</span>
 
 			<span class="arch__hint">Play the reel</span>
@@ -112,20 +156,17 @@ const prints = [
 		<div class="arch__label">
 			<span class="arch__k">
 				<Icon width={13} name="mdi:filmstrip" />
-				The archives
+				{kicker}
 			</span>
-			<p class="arch__title">What learning here <em>actually looks like.</em></p>
-			<p class="arch__blurb">
-				No prospectus voice, no stock footage. Twenty seconds shot on our
-				own floor in Abuja, on an ordinary working day.
-			</p>
+			<p class="arch__title">{titleLead} <em>{titleEm}</em></p>
+			<p class="arch__blurb">{blurb}</p>
 			<ul class="arch__facts">
-				<li><b>Abuja</b><span>shot here</span></li>
-				<li><b>2026</b><span>this cohort</span></li>
-				<li><b>Live work</b><span>every frame</span></li>
+				{facts.map((f) => (
+					<li><b>{f.n}</b><span>{f.label}</span></li>
+				))}
 			</ul>
-			<a class="arch__cta" href="/programs#internship">
-				Apply for a place
+			<a class="arch__cta" href={ctaHref}>
+				{ctaLabel}
 				<Icon width={15} name="mdi:arrow-right" />
 			</a>
 		</div>
@@ -135,7 +176,7 @@ const prints = [
 	<div class="arch__sheetwrap cp-rev">
 		<span class="arch__sheetk">
 			<Icon width={13} name="mdi:pin-outline" />
-			Contact sheet · pinned by the door
+			{sheetKicker}
 		</span>
 		<div class="arch__sheet">
 			{

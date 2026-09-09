@@ -3,6 +3,8 @@
 // navigation re-binds it, instead of only a hard refresh.
 import toaster from './toast';
 
+type Rule = { name: string; test: (v: string) => boolean; msg: string };
+
 export function initProgramsPage() {
 	const page = document.querySelector<HTMLElement>('.pg');
 	if (!page || page.dataset.pgBound) return;
@@ -14,6 +16,7 @@ export function initProgramsPage() {
 
 		const form = document.querySelector<HTMLFormElement>('#pg-form');
 		const submit = document.querySelector<HTMLButtonElement>('#pg-submit');
+		if (form) bindLiveChecks(form, RULES);
 
 		// clicking a track card's link pre-selects that track in the form
 		document.querySelectorAll<HTMLElement>('[data-pick-track]').forEach((el) => {
@@ -118,27 +121,13 @@ export function initProgramsPage() {
 			// a phone number cannot arrive in the name box and a name cannot arrive
 			// in the phone box. The first thing that is wrong is named out loud and
 			// scrolled to, rather than the whole form going red at once.
-			const NAMEISH = /^[A-Za-zÀ-ÿ'’.\-\s]{2,}$/;
-			const rules: { name: string; test: (v: string) => boolean; msg: string }[] = [
-				{ name: 'fullName', test: (v) => NAMEISH.test(v) && v.trim().split(/\s+/).length >= 2, msg: 'Please give your full name in letters, first and last.' },
-				{ name: 'email', test: (v) => /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(v), msg: 'That email address does not look right.' },
-				{ name: 'phone', test: (v) => /^[+]?[\d][\d\s()\-]{7,19}$/.test(v) && (v.match(/\d/g) || []).length >= 8, msg: 'Please give a phone number we can actually reach, digits only.' },
-				{ name: 'track', test: (v) => !!v, msg: 'Choose the track you are applying for.' },
-				{ name: 'institution', test: (v) => NAMEISH.test(v) && v.trim().length >= 3, msg: 'Your institution name should be words, not numbers.' },
-				{ name: 'course', test: (v) => NAMEISH.test(v) && v.trim().length >= 3, msg: 'Your course of study should be words, not numbers.' },
-				{ name: 'level', test: (v) => !!v, msg: 'Choose your level.' },
-				{ name: 'discipline', test: (v) => !!v, msg: 'Choose the discipline you want.' },
-				{ name: 'address', test: (v) => v.trim().length >= 8 && /[A-Za-z]/.test(v), msg: 'Please give an address we could find, not just a number.' },
-				{ name: 'startDate', test: (v) => v.trim().length >= 3, msg: 'Tell us when you can start.' },
-				{ name: 'portfolio', test: (v) => !v || /^(https?:\/\/)?[\w.-]+\.[a-z]{2,}(\/\S*)?$/i.test(v), msg: 'That link does not look like a web address.' },
-				{ name: 'built', test: (v) => v.trim().split(/\s+/).length >= 12, msg: 'Tell us a little more about what you built, a dozen words at least.' },
-				{ name: 'goal', test: (v) => v.trim().split(/\s+/).length >= 12, msg: 'Tell us a little more about what you want out of this.' },
-			];
+			const rules = RULES;
 
 			form.querySelectorAll<HTMLElement>('.pg-field').forEach((f) => {
 				f.classList.remove('is-bad');
 				f.querySelector('.pg-err')?.remove();
 			});
+
 
 			let firstBad: HTMLElement | null = null;
 			let firstMsg = '';
@@ -210,4 +199,89 @@ export function initProgramsPage() {
 				});
 		});
 
+}
+
+const NAMEISH = /^[A-Za-zÀ-ÿ'’.\-\s]{2,}$/;
+const RULES: Rule[] = [
+		{ name: 'fullName', test: (v) => NAMEISH.test(v) && v.trim().split(/\s+/).length >= 2, msg: 'Please give your full name in letters, first and last.' },
+		{ name: 'email', test: (v) => /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(v), msg: 'That email address does not look right.' },
+		{ name: 'phone', test: (v) => /^[+]?[\d][\d\s()\-]{7,19}$/.test(v) && (v.match(/\d/g) || []).length >= 8, msg: 'Please give a phone number we can actually reach, digits only.' },
+		{ name: 'track', test: (v) => !!v, msg: 'Choose the track you are applying for.' },
+		{ name: 'institution', test: (v) => NAMEISH.test(v) && v.trim().length >= 3, msg: 'Your institution name should be words, not numbers.' },
+		{ name: 'course', test: (v) => NAMEISH.test(v) && v.trim().length >= 3, msg: 'Your course of study should be words, not numbers.' },
+		{ name: 'level', test: (v) => !!v, msg: 'Choose your level.' },
+		{ name: 'discipline', test: (v) => !!v, msg: 'Choose the discipline you want.' },
+		{ name: 'address', test: (v) => v.trim().length >= 8 && /[A-Za-z]/.test(v), msg: 'Please give an address we could find, not just a number.' },
+		{ name: 'startDate', test: (v) => v.trim().length >= 3, msg: 'Tell us when you can start.' },
+		{ name: 'portfolio', test: (v) => !v || /^(https?:\/\/)?[\w.-]+\.[a-z]{2,}(\/\S*)?$/i.test(v), msg: 'That link does not look like a web address.' },
+		{ name: 'built', test: (v) => v.trim().split(/\s+/).length >= 12, msg: 'Tell us a little more about what you built, a dozen words at least.' },
+		{ name: 'goal', test: (v) => v.trim().split(/\s+/).length >= 12, msg: 'Tell us a little more about what you want out of this.' },
+			];
+
+// ── typing guards ────────────────────────────────────────────────────
+// The rules above only ran on submit, so you could type a phone number into
+// the name box and get told off only at the very end. These fields now
+// refuse the wrong characters as you type, and every field says what is
+// wrong when you leave it rather than saving it all up for the button.
+// Only the name box refuses characters as you type. Institution and course
+// are ALSO letters-only by the rules above, but silently eating a digit
+// there mangles real answers — "Uni of 9ja" became "Uni of ja" — so those
+// two say what is wrong on blur instead of rewriting what you typed.
+const LETTERS_ONLY = ['fullName'];
+// letters, accents, spaces and the punctuation real names carry
+const STRIP_NON_LETTERS = /[^A-Za-zÀ-ÿ'’.\-\s]/g;
+
+
+function markField(el: Element, msg: string | null) {
+	const field = el.closest<HTMLElement>('.pg-field');
+	if (!field) return;
+	field.querySelector('.pg-err')?.remove();
+	field.classList.toggle('is-bad', !!msg);
+	if (!msg) return;
+	const note = document.createElement('span');
+	note.className = 'pg-err';
+	note.textContent = msg;
+	field.appendChild(note);
+}
+
+function bindLiveChecks(form: HTMLFormElement, rules: Rule[]) {
+	if (form.dataset.liveBound) return;
+	form.dataset.liveBound = '1';
+
+	LETTERS_ONLY.forEach((name) => {
+		const el = form.querySelector<HTMLInputElement>(`input[name="${name}"]`);
+		if (!el) return;
+		el.setAttribute('inputmode', 'text');
+		el.setAttribute('autocapitalize', 'words');
+		el.addEventListener('input', () => {
+			const before = el.value;
+			const after = before.replace(STRIP_NON_LETTERS, '');
+			if (after === before) return;
+			// keep the caret where the typist left it, minus what was dropped
+			const pos = el.selectionStart ?? after.length;
+			const dropped = before.slice(0, pos).length - after.slice(0, pos).replace(STRIP_NON_LETTERS, '').length;
+			el.value = after;
+			const next = Math.max(0, pos - dropped);
+			try { el.setSelectionRange(next, next); } catch {}
+		});
+	});
+
+	rules.forEach((r) => {
+		const el = form.querySelector<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>(
+			`[name="${r.name}"]`
+		);
+		if (!el) return;
+		const check = () => {
+			const v = el.value.trim();
+			const required = el.hasAttribute('required');
+			if (!v) return markField(el, required ? null : null);
+			markField(el, r.test(v) ? null : r.msg);
+		};
+		el.addEventListener('blur', check);
+		// once a field has been told off, let it clear itself as you fix it
+		el.addEventListener('input', () => {
+			if (el.closest('.pg-field')?.classList.contains('is-bad')) check();
+		});
+		if (el.tagName === 'SELECT') el.addEventListener('change', check);
+	});
 }

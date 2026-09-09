@@ -63,14 +63,14 @@ const shots = [
 		<svg class="cwall__arrow" viewBox="0 0 156 76" fill="none">
 			<path
 				class="cwall__arrowline"
-				d="M6 16C44 4 100 12 128 48"
+				d="M6 14C40 50 95 58 128 48"
 				stroke="currentColor"
 				stroke-width="3.2"
 				stroke-linecap="round"
 			></path>
 			<path
 				class="cwall__arrowhead"
-				d="M126 32L128 48L113 42"
+				d="M112 44L128 48L117 60"
 				stroke="currentColor"
 				stroke-width="3.2"
 				stroke-linecap="round"
@@ -227,17 +227,29 @@ const shots = [
 			0 18px 34px -20px rgba(0, 0, 0, 0.85),
 			0 4px 10px -6px rgba(0, 0, 0, 0.5);
 		transform: rotate(var(--r)) translateY(var(--lift));
-		transform-origin: 50% 100%;
+		/* it swings from the tape at its top edge, not from its middle */
+		transform-origin: 50% -6px;
+		animation: cwall-breeze 8.5s ease-in-out infinite;
+		animation-delay: calc(var(--i) * -2.6s);
 		transition:
 			transform 0.34s cubic-bezier(0.2, 0.8, 0.25, 1),
 			box-shadow 0.34s ease;
 		cursor: pointer;
 		outline: none;
 	}
+	/* Tiny on purpose: it should read as air moving through the room, never
+	   as something animating for its own sake. */
+	@keyframes cwall-breeze {
+		0%, 100% { transform: rotate(var(--r)) translateY(var(--lift)); }
+		35% { transform: rotate(calc(var(--r) + 0.9deg)) translateY(var(--lift)); }
+		70% { transform: rotate(calc(var(--r) - 0.55deg)) translateY(var(--lift)); }
+	}
 	.cwall__shot:hover,
 	.cwall__shot:focus-visible {
 		--lift: -10px;
 		z-index: 9;
+		animation-play-state: paused;
+		transform-origin: 50% 100%;
 		transform: rotate(0deg) translateY(var(--lift)) scale(1.16);
 		box-shadow:
 			0 1px 0 rgba(255, 255, 255, 0.8) inset,
@@ -381,6 +393,8 @@ const shots = [
 		/* touch has no hover: keep the tilt, drop the grow */
 		.cwall__shot:hover {
 			transform: rotate(var(--r)) translateY(0);
+			transform-origin: 50% -6px;
+			animation-play-state: running;
 			scale: 1;
 		}
 		.cwall__cap {
@@ -394,6 +408,7 @@ const shots = [
 		.cwall__sheen {
 			transition: none !important;
 			animation: none !important;
+			transform: rotate(var(--r)) !important;
 		}
 		.cwall__arrowline,
 		.cwall__arrowhead {
@@ -425,14 +440,18 @@ const shots = [
 			0 30px 52px -26px rgba(70, 45, 10, 0.75),
 			0 6px 14px -7px rgba(70, 45, 10, 0.5);
 	}
+	/* On the cream stage the old white-on-white tape vanished. Warm, slightly
+	   dirty masking tape with a visible edge instead — still translucent, so
+	   the print reads through it. */
 	:global(html:not(.dark)) .cwall__tape {
 		background: linear-gradient(
 			180deg,
-			rgba(255, 255, 255, 0.62),
-			rgba(214, 209, 199, 0.55)
+			rgba(226, 190, 122, 0.72),
+			rgba(198, 154, 84, 0.66)
 		);
 		box-shadow:
-			0 1px 0 rgba(255, 255, 255, 0.7) inset,
-			0 4px 8px -6px rgba(70, 45, 10, 0.55);
+			0 1px 0 rgba(255, 250, 236, 0.75) inset,
+			0 0 0 1px rgba(146, 104, 44, 0.16),
+			0 5px 10px -6px rgba(70, 45, 10, 0.6);
 	}
 </style>

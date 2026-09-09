@@ -28,10 +28,13 @@ const stats = [
 
 	<div class="campus--layout">
 		<div class="campus--copy">
-			<span class="campus--eyebrow">
-				<Icon width={15} name="mdi:school-outline" />
-				Few seats open
-			</span>
+			<!-- Campus-only. RotatingHeadline is the signature shared by all
+			     four hero worlds, so the greeting is added beside it rather
+			     than inside it. -->
+			<h2 class="campus--welcome font-bebas">
+				<span class="campus--welcome-k">Welcome to</span>
+				<em>Swizel.</em>
+			</h2>
 
 			<RotatingHeadline class="campus--head" />
 
@@ -56,7 +59,7 @@ const stats = [
 				</a>
 				<button class="campus--tour" type="button" data-tour-start="campus">
 					<Icon width={15} name="mdi:compass-outline" />
-					Take a Tour
+					<span>Take a Tour</span>
 				</button>
 			</div>
 
@@ -185,7 +188,6 @@ const stats = [
 		.campus--copy > :global(.mband) { width: 100%; }
 		.campus--copy > :global(.mband) { margin-top: 0; margin-bottom: 0; }
 		/* the gaps come from space-between now, not from stacked margins */
-		.campus--copy .campus--eyebrow,
 		.campus--copy .campus--sub,
 		.campus--copy .campus--cta { margin-bottom: 0; }
 		/* the prints get their own row, matching the column rhythm above so
@@ -198,7 +200,24 @@ const stats = [
 		.campus--boardwrap { align-self: end; }
 	}
 
-	.campus--eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.74rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #fcd34d; border: 1.5px solid rgba(252, 211, 77, 0.45); padding: 0.3rem 0.8rem; border-radius: 0.4rem; box-shadow: 2.5px 2.5px 0 rgba(252, 211, 77, 0.3); margin-bottom: 0.7rem; }
+	.campus--welcome {
+		margin: 0 0 0.35rem;
+		font-weight: 800;
+		text-transform: uppercase;
+		letter-spacing: 1px;
+		line-height: 0.92;
+		font-size: clamp(1.55rem, 2.4vw, 2.1rem);
+		color: rgba(253, 243, 227, 0.72);
+	}
+	.campus--welcome em {
+		font-style: normal;
+		background: linear-gradient(135deg, #fde68a, #f59e0b);
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+		color: transparent;
+	}
+
 	:global(.campus--head) { font-size: clamp(2.3rem, 5vw, 4.2rem) !important; margin-bottom: 0.8rem !important; }
 	.campus--sub { max-width: 34rem; color: rgba(253, 243, 227, 0.7); font-size: 0.95rem; line-height: 1.58; margin-bottom: 0.9rem; }
 	.campus--cta { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.1rem; }
@@ -250,6 +269,12 @@ const stats = [
 	   Tighten the chrome so the row survives on one line. */
 	@media (min-width: 1024px) and (max-width: 1279px) {
 		.campus--cta { gap: 0.45rem; }
+		/* the copy column is narrow here and the four numbers were dropping
+		   "65+ / live products" onto a second row on its own */
+		.campus--stats { flex-wrap: nowrap; gap: 0.7rem; }
+		.campus--stat { min-width: 0; }
+		.campus--statnum { font-size: 1.25rem; }
+		.campus--statlabel { font-size: 0.62rem; letter-spacing: 0.05em; white-space: normal; max-width: none; }
 		.campus--alt,
 		.campus--tour { font-size: 0.78rem; padding: 0.7rem 0.8rem; gap: 0.3rem; }
 		.campus--cta :global(.btn--accent) {
@@ -261,40 +286,125 @@ const stats = [
 
 	/* On a phone the board should not be a scroll away: the copy hands
 	   straight over to it, and the numbers close the section underneath. */
+	/* ══ The phone hero ══════════════════════════════════════════════
+	   Centred, one thing at a time, generous air. The old version squeezed
+	   three buttons onto one row at 0.68rem with their icons hidden, which
+	   is where it stopped feeling like a designed page and started feeling
+	   like a list of controls. */
 	@media (max-width: 1023px) {
-		.campus--layout { min-height: auto; display: flex; flex-direction: column; align-items: flex-start; gap: 1.6rem; }
-		.campus--copy { display: contents; }
-		.campus--eyebrow { order: 1; margin-bottom: 0; }
-		/* the headline is rendered by RotatingHeadline, so a scoped
-		   selector never reaches it and it kept sorting to the top */
-		.campus--layout :global(.campus--head) { order: 2; margin-bottom: 0 !important; }
-		.campus--sub { order: 3; margin-bottom: 0; }
-		/* three on one row on a phone too: the labels carry it, the icons
-		   are what will not fit */
-		.campus--cta { order: 4; margin-bottom: 0; width: 100%; flex-wrap: nowrap; gap: 0.4rem; }
-		.campus--cta > * { flex: 1 1 0; min-width: 0; justify-content: center; text-align: center; }
-		.campus--cta :global(.btn--accent) {
-			padding: 0.7rem 0.5rem !important;
-			font-size: 0.68rem !important;
-			letter-spacing: 0.01em;
-			white-space: nowrap;
+		.campus--layout {
+			min-height: auto;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			text-align: center;
+			gap: 1.5rem;
 		}
-		.campus--cta :global(.btn--accent svg) { display: none; }
-		.campus--alt,
-		.campus--tour { padding: 0.7rem 0.5rem; font-size: 0.68rem; gap: 0; }
-		.campus--alt :global(svg),
-		.campus--tour :global(svg) { display: none; }
+		.campus--copy { display: contents; }
+
+		.campus--welcome {
+			order: 1;
+			margin: 0;
+			line-height: 0.88;
+			color: var(--cw-ink, #fdf3e3);
+			font-size: clamp(3.1rem, 15vw, 4.6rem);
+		}
+		/* "Welcome to" becomes the small line over a very large SWIZEL */
+		.campus--welcome-k {
+			display: block;
+			font-size: 0.3em;
+			letter-spacing: 0.26em;
+			line-height: 1;
+			margin-bottom: 0.28em;
+			opacity: 0.6;
+		}
+		/* the shared signature drops to a tagline under the greeting */
+		.campus--layout :global(.campus--head) {
+			order: 2;
+			margin: 0 !important;
+			font-size: clamp(1.05rem, 4.6vw, 1.4rem) !important;
+			letter-spacing: 0.06em;
+			opacity: 0.75;
+		}
+		.campus--layout :global(.rhead__l1),
+		.campus--layout :global(.rhead__l2) { justify-content: center; }
+
+		.campus--sub {
+			order: 3;
+			margin: 0 auto;
+			max-width: 30rem;
+			font-size: 1rem;
+			line-height: 1.6;
+		}
+
+		/* one clear primary, one clear alternative, and the tour as a link */
+		.campus--cta {
+			order: 4;
+			display: grid;
+			gap: 0.6rem;
+			width: 100%;
+			max-width: 22rem;
+			margin: 0.1rem auto 0;
+		}
+		.campus--cta :global(.btn--accent) {
+			width: 100%;
+			padding: 0.95rem 1rem !important;
+			font-size: 0.86rem !important;
+		}
+		.campus--alt {
+			justify-content: center;
+			width: 100%;
+			padding: 0.9rem 1rem;
+			font-size: 0.86rem;
+		}
+		/* the tour is a third-order action: a link, not a third button */
+		.campus--tour {
+			justify-content: center;
+			border: 0;
+			padding: 0.15rem 0 0;
+			font-size: 0.82rem;
+			text-decoration: underline;
+			text-underline-offset: 4px;
+			text-decoration-thickness: 1px;
+			opacity: 0.75;
+		}
+		.campus--tour:hover { background: none; }
+
 		.campus--boardwrap { order: 5; width: 100%; }
 		/* same slot as the board: DOM order keeps it directly underneath */
 		.campus--layout > :global(.cwall) { order: 5; width: 100%; }
-		.campus--stats { width: 100%; }
-		.campus--stats { order: 6; }
-		.campus--layout :global(.mband) { order: 7; width: 100%; }
+
+		/* one straight horizontal line, four across */
+		.campus--stats {
+			order: 6;
+			width: 100%;
+			display: flex;
+			flex-wrap: nowrap;
+			justify-content: space-between;
+			align-items: flex-start;
+			gap: 0.35rem;
+			padding-top: 1rem;
+		}
+		.campus--stat {
+			flex: 1 1 0;
+			min-width: 0;
+			text-align: center;
+		}
+		.campus--statnum { font-size: clamp(0.95rem, 4.4vw, 1.35rem); }
+		.campus--statlabel {
+			max-width: none;
+			white-space: normal;
+			font-size: clamp(0.53rem, 2.4vw, 0.66rem);
+			letter-spacing: 0.05em;
+			line-height: 1.25;
+		}
+
+		/* the band has its own left-aligned composition around the photo;
+		   the hero's centring must not reach inside it */
+		.campus--layout :global(.mband) { order: 7; width: 100%; text-align: left; }
 	}
 	@media (max-width: 768px) {
-		.campus--layout { gap: 1.75rem; padding-top: 0.5rem; }
-		.campus--head { font-size: clamp(2.2rem, 9.5vw, 3.2rem); }
-		.campus--sub { font-size: 0.98rem; margin-bottom: 1.4rem; }
+		.campus--layout { gap: 1.4rem; padding-top: 1.4rem; }
 	}
 	@media (prefers-reduced-motion: reduce) { .campus--dot { animation: none !important; } }
 
@@ -309,11 +419,7 @@ const stats = [
 		color: #241703;
 	}
 	:global(html:not(.dark)) .campus--glow { opacity: 0.5; }
-	:global(html:not(.dark)) .campus--eyebrow {
-		color: #b45309;
-		border-color: rgba(180, 83, 9, 0.45);
-		box-shadow: 2.5px 2.5px 0 rgba(180, 83, 9, 0.25);
-	}
+	:global(html:not(.dark)) .campus--welcome { color: rgba(36, 23, 3, 0.75); --cw-ink: #241703; }
 	:global(html:not(.dark)) .campus--sub { color: rgba(36, 23, 3, 0.68); }
 	:global(html:not(.dark)) .campus--tour {
 		color: #241703;
