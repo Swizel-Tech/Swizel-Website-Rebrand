@@ -302,32 +302,91 @@ const stats = [
 		}
 		.campus--copy { display: contents; }
 
+		/* THE HIERARCHY WAS UPSIDE DOWN. A giant "SWIZEL." sat on top and
+		   the actual brand line — YOU IMAGINE / WE BUILD — was shrunk to a
+		   faded 1rem tagline you could not read, let alone enjoy. The
+		   greeting is a small label now; the signature is the hero. */
 		.campus--welcome {
 			order: 1;
 			margin: 0;
-			line-height: 0.88;
-			color: var(--cw-ink, #fdf3e3);
-			font-size: clamp(3.1rem, 15vw, 4.6rem);
-		}
-		/* "Welcome to" becomes the small line over a very large SWIZEL */
-		.campus--welcome-k {
-			display: block;
-			font-size: 0.3em;
-			letter-spacing: 0.26em;
+			display: inline-flex;
+			align-items: center;
+			gap: 0.5rem;
+			font-size: 0.66rem;
+			font-weight: 800;
+			letter-spacing: 0.34em;
 			line-height: 1;
-			margin-bottom: 0.28em;
-			opacity: 0.6;
+			text-transform: uppercase;
+			color: var(--cw-kick, rgba(253, 243, 227, 0.72));
 		}
-		/* the shared signature drops to a tagline under the greeting */
+		/* a hairline either side, like a title card */
+		.campus--welcome::before,
+		.campus--welcome::after {
+			content: '';
+			width: clamp(14px, 6vw, 34px);
+			height: 1px;
+			background: currentColor;
+			opacity: 0.45;
+		}
+		.campus--welcome-k { display: inline; font-size: 1em; letter-spacing: inherit; margin: 0; opacity: 1; }
+		.campus--welcome em {
+			font-style: normal;
+			-webkit-text-fill-color: currentColor;
+			background: none;
+			color: inherit;
+		}
+
+		/* the signature, at last legible */
 		.campus--layout :global(.campus--head) {
 			order: 2;
 			margin: 0 !important;
-			font-size: clamp(1.05rem, 4.6vw, 1.4rem) !important;
-			letter-spacing: 0.06em;
-			opacity: 0.75;
+			font-size: clamp(2.9rem, 13.6vw, 4.2rem) !important;
+			line-height: 0.86 !important;
+			letter-spacing: 0.005em;
+			opacity: 1;
 		}
 		.campus--layout :global(.rhead__l1),
 		.campus--layout :global(.rhead__l2) { justify-content: center; }
+		/* the rotating word gets room to breathe under "YOU IMAGINE." */
+		.campus--layout :global(.rhead__l2) { margin-top: 0.06em; }
+
+		/* A marker stroke under the word that changes — the same red the
+		   whiteboard uses. Deliberately static: the headline's own rotation
+		   timing lives in a shared component, and an underline that drifts
+		   out of sync with it looks broken rather than designed. */
+		.campus--layout :global(.rhead__rot) { position: relative; }
+		.campus--layout :global(.rhead__rot)::after {
+			content: '';
+			position: absolute;
+			left: 1%;
+			right: 1%;
+			bottom: -0.04em;
+			height: 0.07em;
+			border-radius: 999px;
+			background: linear-gradient(90deg, transparent, #f43f5e 14%, #f59e0b 86%, transparent);
+			opacity: 0.9;
+		}
+
+		/* one gentle rise on arrival, staggered — the hero used to just
+		   appear */
+		.campus--welcome { animation: campus-rise 0.7s cubic-bezier(0.2, 0.9, 0.25, 1) both; }
+		.campus--layout :global(.campus--head) { animation: campus-rise 0.7s cubic-bezier(0.2, 0.9, 0.25, 1) 0.08s both; }
+		.campus--sub { animation: campus-rise 0.7s cubic-bezier(0.2, 0.9, 0.25, 1) 0.16s both; }
+		.campus--cta { animation: campus-rise 0.7s cubic-bezier(0.2, 0.9, 0.25, 1) 0.24s both; }
+		@keyframes campus-rise {
+			from { opacity: 0; transform: translateY(14px); }
+			to { opacity: 1; transform: none; }
+		}
+
+		/* the amber pool sits behind the headline on a phone, not off to
+		   the right where the board is on desktop */
+		.campus--glow {
+			top: 2%;
+			width: 130vw;
+			max-width: none;
+			height: 340px;
+			opacity: 0.85;
+		}
 
 		.campus--sub {
 			order: 3;
@@ -337,38 +396,47 @@ const stats = [
 			line-height: 1.6;
 		}
 
-		/* one clear primary, one clear alternative, and the tour as a link */
+		/* One row, three equal segments — stacking them cost three button
+		   heights and pushed the board off the first screen. The earlier
+		   one-line attempt failed because it squeezed full-size buttons to
+		   0.68rem and hid their icons; this is designed as a strip: equal
+		   widths, one filled primary, generous height, no icons at all. */
 		.campus--cta {
 			order: 4;
 			display: grid;
-			gap: 0.6rem;
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+			gap: 0.4rem;
 			width: 100%;
-			max-width: 22rem;
-			margin: 0.1rem auto 0;
+			max-width: 24rem;
+			margin: 0.25rem auto 0;
+			flex-wrap: nowrap;
+		}
+		.campus--cta > * {
+			width: 100%;
+			min-width: 0;
+			justify-content: center;
+			text-align: center;
+			white-space: nowrap;
+			border-radius: 0.85rem;
 		}
 		.campus--cta :global(.btn--accent) {
-			width: 100%;
-			padding: 0.95rem 1rem !important;
-			font-size: 0.86rem !important;
+			padding: 0.9rem 0.35rem !important;
+			font-size: 0.7rem !important;
+			letter-spacing: 0.02em;
+			border-radius: 0.85rem !important;
 		}
-		.campus--alt {
-			justify-content: center;
-			width: 100%;
-			padding: 0.9rem 1rem;
-			font-size: 0.86rem;
-		}
-		/* the tour is a third-order action: a link, not a third button */
+		.campus--alt,
 		.campus--tour {
-			justify-content: center;
-			border: 0;
-			padding: 0.15rem 0 0;
-			font-size: 0.82rem;
-			text-decoration: underline;
-			text-underline-offset: 4px;
-			text-decoration-thickness: 1px;
-			opacity: 0.75;
+			display: inline-flex;
+			align-items: center;
+			padding: 0.9rem 0.35rem;
+			font-size: 0.7rem;
+			letter-spacing: 0.02em;
+			gap: 0;
 		}
-		.campus--tour:hover { background: none; }
+		.campus--tour { border-style: solid; opacity: 1; }
+		/* the labels carry the row; the icons are what will not fit */
+		.campus--cta :global(svg) { display: none; }
 
 		.campus--boardwrap { order: 5; width: 100%; }
 		/* same slot as the board: DOM order keeps it directly underneath */
@@ -406,7 +474,13 @@ const stats = [
 	@media (max-width: 768px) {
 		.campus--layout { gap: 1.4rem; padding-top: 1.4rem; }
 	}
-	@media (prefers-reduced-motion: reduce) { .campus--dot { animation: none !important; } }
+	@media (prefers-reduced-motion: reduce) {
+		.campus--dot { animation: none !important; }
+		.campus--welcome,
+		.campus--sub,
+		.campus--cta,
+		.campus--layout :global(.campus--head) { animation: none !important; }
+	}
 
 	/* ══ Light mode: sunny paper stage, ink type, frosted widget. ══ */
 	:global(html:not(.dark)) .campus--stage,
@@ -419,7 +493,7 @@ const stats = [
 		color: #241703;
 	}
 	:global(html:not(.dark)) .campus--glow { opacity: 0.5; }
-	:global(html:not(.dark)) .campus--welcome { color: rgba(36, 23, 3, 0.75); --cw-ink: #241703; }
+	:global(html:not(.dark)) .campus--welcome { color: rgba(36, 23, 3, 0.75); --cw-ink: #241703; --cw-kick: rgba(120, 60, 8, 0.75); }
 	:global(html:not(.dark)) .campus--sub { color: rgba(36, 23, 3, 0.68); }
 	:global(html:not(.dark)) .campus--tour {
 		color: #241703;

@@ -893,6 +893,25 @@ const marginalia = [
 	}
 	.bkd__go:hover { gap: 0.75rem; }
 
+	@media (max-width: 860px) {
+		.bk__leaf { display: none !important; }
+		.bk__cast { display: none; }
+		/* no half-spreads: the page being left simply fades under the one
+		   arriving, both already stacked in the same place */
+		.bk__spread {
+			transition: opacity var(--bk-turn, 420ms) ease;
+		}
+		.bk__spread.is-half-l,
+		.bk__spread.is-half-r {
+			clip-path: none;
+			opacity: 0;
+		}
+		.bk.is-turning .bk__spread.is-half-r,
+		.bk.is-turning-back .bk__spread.is-half-l {
+			opacity: 1;
+		}
+	}
+
 	/* ── the pocket edition ──
 	   Stacked, each page is half the height it had, so the card sheds the
 	   chips and the room line and keeps the title, the one-liner and the
@@ -913,22 +932,14 @@ const marginalia = [
 		.bk__card-ic { width: 22px; height: 22px; border-radius: 0.35rem; }
 		.bk__card-ic svg { width: 13px; height: 13px; }
 		.bk__card-code { font-size: 0.48rem; padding: 0.08rem 0.26rem; }
-		.bk__card-t { font-size: 0.76rem; line-height: 1.18; font-weight: 800; letter-spacing: -0.01em; }
+		.bk__card-t { font-size: 0.8rem; line-height: 1.2; letter-spacing: -0.01em; }
 		/* no line-clamp here: -webkit-box-orient gets stripped out of
 		   scoped styles by the build and the text disappears entirely */
-		/* smaller AND heavier: at this size weight carries legibility further
-		   than size does, and the ink goes fully opaque to match */
-		.bk__card-d {
-			font-size: 0.64rem;
-			line-height: 1.32;
-			margin-top: 0.15rem;
-			font-weight: 600;
-			opacity: 1;
-		}
+		.bk__card-d { font-size: 0.68rem; line-height: 1.35; margin-top: 0.15rem; }
 		.bk__card-chips,
 		.bk__card-room { display: none; }
 		.bk__card-foot { justify-content: flex-end; padding-top: 0.35rem; }
-		.bk__card-go { font-size: 0.56rem; font-weight: 800; }
+		.bk__card-go { font-size: 0.58rem; }
 		.bk__more-p { font-size: 0.82rem; line-height: 1.6; }
 		.bk__stamp { bottom: 1.2rem; padding: 0.4rem 0.7rem; }
 		.bk__scribble { display: none; }

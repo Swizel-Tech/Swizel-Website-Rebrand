@@ -1,8 +1,13 @@
 import { openTourChooser, siteLegs, type TourStep } from './tour';
 
 export function initFounderView() {
+	// Same law as campus: the tour is bound at the bottom of this function,
+	// so a missing console must never take the tour down with it.
 	const w = document.getElementById('founder-widget');
-	if (!w) return;
+	if (!w) {
+		bindFounderTour();
+		return;
+	}
 	const ring = document.getElementById('fw-ring') as SVGCircleElement | null;
 	const pct = document.getElementById('fw-pct');
 	const btn = w.querySelector<HTMLButtonElement>('[data-fw-launch]');
@@ -64,7 +69,38 @@ export function initFounderView() {
 		if ((e as CustomEvent).detail === 'founder') setTimeout(launch, 350);
 	});
 
-	// the tour walks the whole founder world, hero to footer
+	bindFounderStages(w);
+	bindFounderTour();
+}
+
+/** Every week on the console is a control: press one and the ring, the
+ *  percentage and the deliverables sheet all move to that week. */
+function bindFounderStages(w: HTMLElement) {
+	const ring = document.getElementById('fw-ring') as SVGCircleElement | null;
+	const pct = document.getElementById('fw-pct');
+	const stages = Array.from(w.querySelectorAll<HTMLElement>('.fw--stage'));
+	const sheets = Array.from(w.querySelectorAll<HTMLElement>('[data-sheet]'));
+	const CIRC = 326.7;
+
+	stages.forEach((stage, i) => {
+		stage.addEventListener('click', () => {
+			const v = Number(stage.dataset.pct || '0');
+			stages.forEach((s2, k) => {
+				s2.classList.toggle('is-open', k === i);
+				s2.classList.toggle('is-done', k <= i);
+				s2.setAttribute('aria-pressed', k === i ? 'true' : 'false');
+			});
+			sheets.forEach((sh, k) => {
+				sh.hidden = k !== i;
+			});
+			if (ring) ring.style.strokeDashoffset = String(CIRC * (1 - v / 100));
+			if (pct) pct.textContent = v + '%';
+		});
+	});
+}
+
+/** The tour walks the whole founder world, hero to footer. */
+function bindFounderTour() {
 	const steps: TourStep[] = [
 		{
 			sel: '.hero-founder .rhead',
@@ -72,9 +108,9 @@ export function initFounderView() {
 			body: 'You imagine it. We build, design, scale and launch it.',
 		},
 		{
-			sel: '#founder-widget [data-tour="ring"]',
-			title: 'Idea to MVP',
-			body: 'Watch a build go from zero to launched. Most MVPs ship in about six weeks.',
+			sel: '.hero-founder [data-tour="reel"]',
+			title: 'A minute with the founder',
+			body: 'Portrait, unscripted, and it starts on its own. Tap the frame for sound.',
 		},
 		{
 			sel: '#view-banner .vw-head',
@@ -85,6 +121,16 @@ export function initFounderView() {
 			sel: '.fbody .fd-open',
 			title: 'Day 0',
 			body: 'Momentum is the moat. You bring the idea — we bring the senior team.',
+		},
+		{
+			sel: '#founder-widget [data-tour="ring"]',
+			title: 'The launch console',
+			body: 'Run a whole launch, or press any week to see exactly what lands on your side of the table.',
+		},
+		{
+			sel: '#fd-deck',
+			title: 'What we actually do',
+			body: 'Seven slides, seven disciplines, a real product behind each. Kill the lights for the full-screen version.',
 		},
 		{
 			sel: '#fd-track',
@@ -107,7 +153,7 @@ export function initFounderView() {
 			body: 'Real founders, real messages. Watch the thread play out.',
 		},
 		{
-			sel: '.fd-qbody',
+			sel: '#fd-founder',
 			title: 'From our founder',
 			body: 'A word from Engr. Tochukwu Nnamdi-Nwaeze — founder to founder.',
 		},

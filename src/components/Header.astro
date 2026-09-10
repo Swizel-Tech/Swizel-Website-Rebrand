@@ -376,6 +376,16 @@ const isActive = (href: string) => {
 	}
 	/* the desktop nav underline (.site-header nav a::after) must not leak into the drawer */
 	.m-nav-links a::after, .m-nav-link::after { content: none !important; display: none !important; }
+	/* nor may the desktop bar's gradient-clipped text: it left -webkit-text-fill-color
+	   transparent, so a hovered drawer row painted its wash over an invisible word */
+	.m-nav-links a,
+	.m-nav-links a:hover,
+	.m-nav-link,
+	.m-nav-link:hover {
+		-webkit-text-fill-color: currentColor;
+		-webkit-background-clip: border-box;
+		background-clip: border-box;
+	}
 	.m-nav-link::-webkit-details-marker { display: none; }
 	.m-nav-link:hover { background: var(--m-hover); }
 	/* clearly visible active state — a filled accent pill with dark, legible text.
@@ -533,6 +543,45 @@ const isActive = (href: string) => {
 		text-transform: uppercase;
 	}
 
+	/* Founder: the drawer is a launch console — deep violet, a faint plotting
+	   grid, and the active row lit from its left edge like a live channel. */
+	:global(html[data-view='founder']) #mobile-menu {
+		--m-bg: linear-gradient(195deg, #1b1338 0%, #140f2b 58%, #0d0a1e 100%);
+		--m-ink: #f2edff;
+		--m-muted: rgba(242, 237, 255, 0.6);
+		--m-border: rgba(167, 139, 250, 0.16);
+		--m-hover: rgba(139, 92, 246, 0.14);
+		--m-surface: rgba(255, 255, 255, 0.05);
+		--m-accent: #a78bfa;
+		border-left: 1px solid rgba(167, 139, 250, 0.24);
+	}
+	:global(html[data-view='founder']:not(.dark)) #mobile-menu {
+		--m-bg: linear-gradient(195deg, #ffffff 0%, #f7f3fe 55%, #f0eafb 100%);
+		--m-ink: #1d1430;
+		--m-muted: rgba(29, 20, 48, 0.6);
+		--m-border: rgba(109, 40, 217, 0.14);
+		--m-hover: rgba(109, 40, 217, 0.07);
+		--m-surface: rgba(109, 40, 217, 0.05);
+		--m-accent: #6d28d9;
+	}
+	:global(html[data-view='founder']) .m-nav-links {
+		background-image:
+			linear-gradient(var(--m-border) 1px, transparent 1px),
+			linear-gradient(90deg, var(--m-border) 1px, transparent 1px);
+		background-size: 46px 46px;
+	}
+	:global(html[data-view='founder']) .m-nav-link.active {
+		background: linear-gradient(90deg, var(--m-hover), transparent 70%);
+		color: var(--m-accent);
+		-webkit-text-fill-color: var(--m-accent);
+		box-shadow: inset 3px 0 0 var(--m-accent);
+		border-radius: 0 0.6rem 0.6rem 0;
+	}
+	/* the top rail of the console */
+	:global(html[data-view='founder']) .m-nav-head {
+		box-shadow: inset 0 -1px 0 var(--m-border), 0 1px 0 color-mix(in srgb, var(--m-accent) 30%, transparent);
+	}
+
 	/* Campus: the drawer is a half page torn from a jotter, dog-eared at the
 	   bottom corner, ruled, and written on by hand. */
 	:global(html[data-view='campus']) #mobile-menu {
@@ -563,7 +612,7 @@ const isActive = (href: string) => {
 		border-radius: 0.3rem;
 	}
 	/* the active page is underlined by hand, under the word only */
-	:global(html[data-view='campus']) .m-nav-link.active { background: none; color: #b45309; box-shadow: none; }
+	:global(html[data-view='campus']) .m-nav-link.active { background: none; color: #b45309; -webkit-text-fill-color: #b45309; box-shadow: none; }
 	:global(html[data-view='campus']) .m-nav-link.active > span {
 		box-shadow: inset 0 -2px 0 var(--view-accent, #b45309);
 	}

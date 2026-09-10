@@ -1,8 +1,14 @@
 import { openTourChooser, siteLegs, type TourStep } from './tour';
 
 export function initCampusView() {
+	// The tour is bound at the end of this function, so it must not be held
+	// hostage by the ladder widget: that came out of the hero when the
+	// polaroid wall went in, and every campus tour died with it.
 	const w = document.getElementById('campus-widget');
-	if (!w) return;
+	if (!w) {
+		bindCampusTour();
+		return;
+	}
 	const fill = document.getElementById('cw-fill');
 	const avatar = document.getElementById('cw-avatar');
 	const xp = document.getElementById('cw-xp');
@@ -112,12 +118,21 @@ export function initCampusView() {
 		}
 	});
 
-	// the tour walks the whole campus world, hero to footer
+	bindCampusTour();
+}
+
+/** The tour walks the whole campus world, hero to footer. */
+function bindCampusTour() {
 	const steps: TourStep[] = [
 		{
 			sel: '.hero-campus .rhead',
 			title: 'Our promise',
 			body: 'You imagine it. We build, design, scale and launch it.',
+		},
+		{
+			sel: '.cwall__rail',
+			title: 'On the wall this term',
+			body: 'Photographs from the Abuja floor. Flick the row sideways — there are more than fit.',
 		},
 		{
 			sel: '.hero-campus [data-tour="class"]',
@@ -135,24 +150,19 @@ export function initCampusView() {
 			body: 'A free, hands-on bootcamp run by the team that ships real products.',
 		},
 		{
-			sel: '#campus-widget [data-tour="track"]',
-			title: 'Level up to hired',
-			body: 'Watch the journey from newbie to hired, zero to job ready.',
+			sel: '.bk',
+			title: 'The library',
+			body: 'A real book you can turn. Every spread is a way in — courses, tracks and the free textbook.',
 		},
 		{
-			sel: '.cp-tracks',
-			title: 'Choose your track',
-			body: 'Web, mobile, design or marketing — pick your character.',
+			sel: '#cp-quest',
+			title: 'The main road',
+			body: 'Learn → Build → Intern → Hired. Every step is earned by shipping something real.',
 		},
 		{
 			sel: '#cp-questline',
 			title: 'The main quest',
 			body: 'Learn → Build → Intern → Hired. XP is earned by shipping.',
-		},
-		{
-			sel: '.cp-ships',
-			title: 'Real side quests',
-			body: 'You build projects modeled on products we actually shipped for clients.',
 		},
 		{
 			sel: '#cp-achvs',

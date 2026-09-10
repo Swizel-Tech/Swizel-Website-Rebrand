@@ -525,6 +525,24 @@ const levels = ['100 level', '200 level', '300 level', '400 level', '500 level',
 	}
 	.pg-lead { max-width: 44rem; font-size: 1.02rem; line-height: 1.7; color: var(--pg-muted); margin: 0 0 1.6rem; }
 	.pg-herocta { display: flex; flex-wrap: wrap; gap: 0.7rem; }
+	/* on a phone the pair becomes one clean stack: wrapped, they came out
+	   two different widths and read as a ragged afterthought */
+	@media (max-width: 640px) {
+		.pg-herocta {
+			display: grid;
+			grid-template-columns: 1fr;
+			gap: 0.55rem;
+			width: 100%;
+			max-width: 22rem;
+		}
+		.pg-herocta > * { width: 100%; justify-content: center; }
+	}
+	/* the house focus ring is teal; in the school it is amber like everything else */
+	.pg-btn:focus-visible {
+		outline: 2px solid #b45309;
+		outline-offset: 2px;
+		box-shadow: none;
+	}
 	.pg-btn {
 		display: inline-flex;
 		align-items: center;

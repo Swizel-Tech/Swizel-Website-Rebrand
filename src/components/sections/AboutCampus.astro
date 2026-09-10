@@ -13,10 +13,10 @@ import CampusArchives from '../CampusArchives.astro';
 import { teamDetails, MISSION, VISION, CORE_VALUES } from '../../consts';
 
 const stats = [
-	{ to: 65, suffix: '+', label: 'products shipped' },
-	{ to: 25, suffix: '+', label: 'mentors & makers' },
-	{ to: 7, suffix: '+', label: 'years of teaching' },
-	{ to: 10, suffix: '+', label: 'countries reached' },
+	{ to: 65, suffix: '+', label: 'products shipped', short: 'products' },
+	{ to: 25, suffix: '+', label: 'mentors & makers', short: 'mentors' },
+	{ to: 7, suffix: '+', label: 'years of teaching', short: 'years' },
+	{ to: 10, suffix: '+', label: 'countries reached', short: 'countries' },
 ];
 
 // six disciplines as the course catalogue — same content as every view
@@ -94,7 +94,8 @@ const reportCard = [
 						stats.map((s) => (
 							<li>
 								<strong data-count={s.to} data-suffix={s.suffix}>0{s.suffix}</strong>
-								<span>{s.label}</span>
+								<span class="ca-lab--full">{s.label}</span>
+								<span class="ca-lab--short">{s.short}</span>
 							</li>
 						))
 					}
@@ -783,9 +784,58 @@ const reportCard = [
 		-webkit-text-fill-color: transparent;
 	}
 	.ca-stats span { font-size: 0.76rem; color: var(--cp-faint); line-height: 1.35; }
+	.ca-lab--short { display: none; }
 	@media (max-width: 560px) {
-		.ca-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 1rem; }
-		.ca-stats li { padding-inline: 0; border-left: 0; }
+		/* one straight line, four across — a 2×2 grid doubled the height of
+		   a row of four short numbers and made the page feel twice as long */
+		.ca-stats {
+			display: flex;
+			flex-wrap: nowrap;
+			grid-template-columns: none;
+			gap: 0.3rem;
+		}
+		.ca-stats li {
+			flex: 1 1 0;
+			min-width: 0;
+			padding-inline: 0;
+			border-left: 0;
+			text-align: center;
+		}
+		.ca-stats strong { font-size: clamp(0.95rem, 4.4vw, 1.35rem); white-space: nowrap; }
+		/* one clean word under each number — the long caption wrapped to two
+		   ragged lines and turned a tidy row into a paragraph */
+		.ca-lab--full { display: none; }
+		.ca-lab--short { display: block; }
+		.ca-stats span {
+			font-size: clamp(0.6rem, 2.9vw, 0.76rem);
+			line-height: 1.2;
+			letter-spacing: 0.02em;
+			white-space: nowrap;
+		}
+	}
+
+	/* the two ways forward sit shoulder to shoulder on a phone, not stacked:
+	   a full-width button above another full-width button read as one long
+	   ladder and pushed the film off the first screen */
+	@media (max-width: 640px) {
+		.ca-row {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 0.5rem;
+			flex-wrap: nowrap;
+			align-items: stretch;
+		}
+		.ca-row > * {
+			width: 100%;
+			min-width: 0;
+			justify-content: center;
+			text-align: center;
+			padding-inline: 0.4rem !important;
+			font-size: 0.78rem !important;
+			gap: 0.3rem;
+			white-space: nowrap;
+		}
+		.ca-row :global(svg) { flex: none; }
 	}
 
 	/* the whiteboard */

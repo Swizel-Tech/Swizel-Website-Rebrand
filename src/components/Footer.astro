@@ -322,7 +322,15 @@ const phones = [
 			</span>
 			<span class="ft-film-txt">Watch the intro</span>
 		</button>
-		<span class="ft-bottom-globe">You Imagine, We Build <span class="ft-globe">🌍</span></span>
+		<span class="ft-bottom-globe">
+			You Imagine, We Build
+			<svg class="ft-orbit" viewBox="0 0 24 24" aria-hidden="true">
+				<ellipse class="ft-orbit-ring" cx="12" cy="12" rx="10" ry="4.6" />
+				<ellipse class="ft-orbit-ring ft-orbit-ring--b" cx="12" cy="12" rx="10" ry="4.6" />
+				<circle class="ft-orbit-core" cx="12" cy="12" r="3" />
+				<circle class="ft-orbit-moon" cx="22" cy="12" r="1.7" />
+			</svg>
+		</span>
 	</div>
 </footer>
 
@@ -787,6 +795,9 @@ const phones = [
 	:global(html[data-view='campus']) .ft-cta-kicker,
 	:global(html[data-view='campus']) .ft-cta-sub,
 	:global(html[data-view='campus']) .ft-bottom,
+	:global(html[data-view='campus']) .ft-bottom-globe,
+	:global(html[data-view='campus']) .ft-clock,
+	:global(html[data-view='campus']) .ft-nav-item,
 	:global(html[data-view='campus']) .ft-film-txt {
 		font-family: var(--ft-hand);
 	}
@@ -888,7 +899,7 @@ const phones = [
 	.ft-office-top { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem; }
 	.ft-flag { font-size: 1rem; }
 	.ft-office-country { font-weight: 600; font-size: 0.92rem; color: var(--ft-ink); }
-	.ft-clock { margin-left: auto; display: inline-flex; align-items: center; gap: 0.35rem; font-family: ui-monospace, monospace; font-size: 0.82rem; color: var(--view-accent, #86e2ef); }
+	.ft-clock { margin-left: auto; display: inline-flex; align-items: center; gap: 0.35rem; font-family: inherit; font-variant-numeric: tabular-nums; font-size: 0.82rem; color: var(--view-accent, #86e2ef); }
 	.ft-clock-dot { width: 6px; height: 6px; border-radius: 9999px; background: #28c840; box-shadow: 0 0 0 0 rgba(40, 200, 64, 0.5); animation: ft-pulse 2s infinite; }
 	@keyframes ft-pulse { 0% { box-shadow: 0 0 0 0 rgba(40, 200, 64, 0.5); } 70% { box-shadow: 0 0 0 6px rgba(40, 200, 64, 0); } 100% { box-shadow: 0 0 0 0 rgba(40, 200, 64, 0); } }
 	.ft-office address { font-style: normal; font-size: 0.82rem; color: var(--ft-faint); line-height: 1.4; }
@@ -1088,17 +1099,49 @@ const phones = [
 		.ft-bottom .ft-film-txt { display: none; }
 		.ft-bottom .ft-film-ic { width: 1.7rem; height: 1.7rem; }
 		.ft-bottom-globe { justify-self: end; white-space: nowrap; text-align: right; }
-		.ft-bottom .ft-globe { display: none; }
+		.ft-bottom .ft-orbit { display: none; }
 	}
-	.ft-globe { display: inline-block; animation: ft-spin 6s linear infinite; }
+	/* An orbit in the world's own accent, in place of the spinning emoji:
+	   the same idea (we work everywhere) drawn in the site's own hand, and
+	   it recolours itself in every world instead of staying a blue marble. */
+	.ft-orbit {
+		display: inline-block;
+		width: 1.05em;
+		height: 1.05em;
+		margin-left: 0.15rem;
+		vertical-align: -0.18em;
+		overflow: visible;
+		color: var(--view-accent, #18debe);
+	}
+	.ft-orbit-ring {
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 1.4;
+		opacity: 0.45;
+		transform-origin: 12px 12px;
+		transform: rotate(-24deg);
+	}
+	.ft-orbit-ring--b { transform: rotate(46deg); opacity: 0.28; }
+	.ft-orbit-core {
+		fill: currentColor;
+		opacity: 0.9;
+	}
+	.ft-orbit-moon {
+		fill: currentColor;
+		transform-origin: 12px 12px;
+		transform-box: fill-box;
+		animation: ft-orbit 7s linear infinite;
+	}
+	@keyframes ft-orbit {
+		to { rotate: 360deg; }
+	}
 	/* full legal name on desktop, compact on mobile */
 	.ft-co-full { display: none; }
 	.ft-co-short { display: inline; }
 	@media (min-width: 720px) { .ft-co-full { display: inline; } .ft-co-short { display: none; } }
-	@keyframes ft-spin { to { transform: rotate(360deg); } }
 
 	@media (prefers-reduced-motion: reduce) {
-		.ft-spark, .ft-globe, .ft-clock-dot { animation: none !important; }
+		.ft-spark, .ft-orbit-moon, .ft-clock-dot { animation: none !important; }
 	}
 
 	/* Hover preview card — floats above the handle */

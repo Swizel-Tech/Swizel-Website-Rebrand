@@ -77,6 +77,12 @@ const organizationSchema = {
 			if (stored === 'dark') {
 				document.documentElement.classList.add('dark');
 			}
+			// Raise the curtain before the first paint. It is released by
+			// initBootCurtain once fonts and images have settled, or by a
+			// hard 1.6s fallback — so a JS failure can never leave the site
+			// behind a blank screen.
+			document.documentElement.classList.add('swz-booting');
+
 			var view = localStorage.getItem('swizel-view');
 			// the Legacy world was retired — send old visitors to the default view
 			if (view === 'legacy') {

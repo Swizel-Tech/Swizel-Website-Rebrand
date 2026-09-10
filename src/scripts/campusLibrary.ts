@@ -6,7 +6,12 @@
 // than a blank stand-in. The spread underneath is swapped to the
 // destination before the rotation starts, which is why the reveal lines
 // up as the leaf lifts and why there is no jump when it lands.
-const TURN = 1040; // ms, matched to the keyframes in CampusLibrary.astro
+const TURN = 1040; // ms, matched to the 3D keyframes in CampusLibrary.astro
+// Phones do not run the 3D turn at all — they cross-fade — so they must not
+// sit through the desktop turn's duration waiting for nothing to happen.
+const TURN_MOBILE = 420;
+const turnMs = () =>
+	window.matchMedia('(max-width: 860px)').matches ? TURN_MOBILE : TURN;
 const DWELL = 5000; // ms a spread is left open before it turns itself
 
 export function initCampusLibrary() {
@@ -49,7 +54,7 @@ export function initCampusLibrary() {
 		const HELLO2 = 700; // and the second follows close behind
 		const REST = 2200; // then it stops, so the demo reads as deliberate
 
-		root.style.setProperty('--bk-turn', `${TURN}ms`);
+		root.style.setProperty('--bk-turn', `${turnMs()}ms`);
 		root.style.setProperty('--bk-dwell', `${DWELL}ms`);
 
 		// the ring around the pause button drains over the dwell
@@ -174,7 +179,7 @@ export function initCampusLibrary() {
 				back.replaceChildren();
 				turning = false;
 				schedule();
-			}, TURN + 150);
+			}, turnMs() + 120);
 		};
 
 		next?.addEventListener('click', () => {

@@ -187,6 +187,8 @@ const {
 	import { initStudioBody } from '../scripts/studioBody';
 	import { initBoardroomBody } from '../scripts/boardroomBody';
 	import { initFounderView } from '../scripts/founderView';
+	import { initFounderReel } from '../scripts/founderReel';
+	import { initPitchDeck } from '../scripts/pitchDeck';
 	import { initCampusView } from '../scripts/campusView';
 	import { initStudioView } from '../scripts/studioView';
 	import { initBoardroomView } from '../scripts/boardroomView';
@@ -639,6 +641,8 @@ const {
 			initStudioBody,
 			initBoardroomBody,
 			initFounderView,
+			initFounderReel,
+			initPitchDeck,
 			initCampusView,
 			initStudioView,
 			initBoardroomView,
@@ -933,11 +937,58 @@ const {
 	// expose so the view picker can navigate home when a world is chosen off-home
 	(window as any).swup = swup;
 
+	// ── first-load curtain ────────────────────────────────────────────────
+	// BaseHead raises it before paint. Release it only once the page has
+	// actually settled — fonts resolved and above-the-fold images decoded —
+	// so the first screen is never caught mid-assembly. Capped hard so it
+	// stays fast, and released no matter what if anything here throws.
+	const releaseCurtain = () => {
+		const root = document.documentElement;
+		if (!root.classList.contains('swz-booting')) return;
+		root.classList.remove('swz-booting');
+		root.classList.add('swz-booted');
+		window.setTimeout(() => root.classList.remove('swz-booted'), 700);
+	};
+	const initBootCurtain = () => {
+		// the ceiling: whatever happens, the page is never held longer
+		const hardStop = window.setTimeout(releaseCurtain, 1600);
+		const done = () => {
+			window.clearTimeout(hardStop);
+			// one more frame so the first paint lands behind the curtain
+			requestAnimationFrame(() => requestAnimationFrame(releaseCurtain));
+		};
+		const settled: Promise<unknown>[] = [];
+		if ((document as any).fonts?.ready) settled.push((document as any).fonts.ready);
+		const shots = Array.from(document.images)
+			.filter((img) => {
+				const r = img.getBoundingClientRect();
+				return r.top < window.innerHeight * 1.2 && r.width > 0;
+			})
+			.slice(0, 8)
+			.filter((img) => !img.complete)
+			.map(
+				(img) =>
+					new Promise<void>((res) => {
+						img.addEventListener('load', () => res(), { once: true });
+						img.addEventListener('error', () => res(), { once: true });
+					})
+			);
+		settled.push(...shots);
+		Promise.all(settled).then(done, done);
+	};
+
 	if (document.readyState === 'complete') {
 		init();
+		initBootCurtain();
 	} else {
-		document.addEventListener('DOMContentLoaded', () => init());
+		document.addEventListener('DOMContentLoaded', () => {
+			init();
+			initBootCurtain();
+		});
 	}
+	// belt and braces: if DOMContentLoaded already fired and something above
+	// threw, `load` still frees the page
+	window.addEventListener('load', () => window.setTimeout(releaseCurtain, 400));
 
 	// run after every additional navigation by swup
 	swup.on('contentReplaced', init);
@@ -1252,6 +1303,45 @@ html[data-view='campus'] .chat-pick-txt em {
   font-family: 'Bradley Hand', 'Segoe Print', 'Comic Sans MS', cursive;
 }
 html[data-view='campus'] .chat-pick-txt em { font-size: 0.78rem; }
+/* Every other world gets the same courtesy campus got: the launcher and the
+   room picker wear the accent of the page they are floating over, instead of
+   the house teal everywhere. */
+html[data-view='founder'] #swizel-chat-fab {
+  color: #fff;
+  background: linear-gradient(135deg, #a78bfa, #8b5cf6 55%, #ec4899);
+  box-shadow: 0 16px 34px -12px rgba(139, 92, 246, 0.6), 0 4px 10px -4px rgba(0, 0, 0, 0.4);
+}
+html[data-view='founder'] #swizel-chat-fab:hover {
+  box-shadow: 0 22px 44px -14px rgba(139, 92, 246, 0.7);
+}
+html[data-view='founder'] .chat-pick-ic--tawk {
+  background: linear-gradient(135deg, #c4b5fd, #8b5cf6);
+  color: #fff;
+}
+html[data-view='founder'] .chat-pick { border-color: rgba(139, 92, 246, 0.3); }
+
+html[data-view='studio'] #swizel-chat-fab {
+  color: #fff;
+  background: linear-gradient(135deg, #f472b6, #be1862 58%, #7c3aed);
+  box-shadow: 0 16px 34px -12px rgba(190, 24, 98, 0.55), 0 4px 10px -4px rgba(0, 0, 0, 0.4);
+}
+html[data-view='studio'] .chat-pick-ic--tawk {
+  background: linear-gradient(135deg, #f9a8d4, #be1862);
+  color: #fff;
+}
+html[data-view='studio'] .chat-pick { border-color: rgba(190, 24, 98, 0.3); }
+
+html[data-view='boardroom'] #swizel-chat-fab {
+  color: #fff;
+  background: linear-gradient(135deg, #7dd3fc, #28a6ec 55%, #14589b);
+  box-shadow: 0 16px 34px -12px rgba(40, 166, 236, 0.55), 0 4px 10px -4px rgba(0, 0, 0, 0.4);
+}
+html[data-view='boardroom'] .chat-pick-ic--tawk {
+  background: linear-gradient(135deg, #7dd3fc, #14589b);
+  color: #fff;
+}
+html[data-view='boardroom'] .chat-pick { border-color: rgba(40, 166, 236, 0.28); }
+
 /* open state: a small press, no spin — the campus glyph is a raised hand
    and a rotated hand reads as a mistake */
 #swizel-chat.is-open #swizel-chat-fab { transform: scale(0.94); }

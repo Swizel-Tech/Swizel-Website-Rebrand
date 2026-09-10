@@ -15,10 +15,10 @@ const sectorShown: Record<ProjectSector, string> = {
 };
 
 const stats = [
-	{ to: 65, suffix: '+', label: 'projects shipped' },
-	{ to: 15, suffix: '+', label: 'sectors visited' },
-	{ to: 7, suffix: '+', label: 'years of homework' },
-	{ to: 10, suffix: '+', label: 'countries reached' },
+	{ to: 65, suffix: '+', label: 'projects shipped', short: 'projects' },
+	{ to: 15, suffix: '+', label: 'sectors visited', short: 'sectors' },
+	{ to: 7, suffix: '+', label: 'years', short: 'years' },
+	{ to: 10, suffix: '+', label: 'countries reached', short: 'countries' },
 ];
 
 // the projector clicks through these real works (featured first)
@@ -55,7 +55,8 @@ const sheetProjects = projects.filter(isSheet);
 						stats.map((s) => (
 							<li>
 								<strong data-count={s.to} data-suffix={s.suffix}>0{s.suffix}</strong>
-								<span>{s.label}</span>
+								<span class="cf-lab--full">{s.label}</span>
+								<span class="cf-lab--short">{s.short}</span>
 							</li>
 						))
 					}
@@ -449,9 +450,33 @@ const sheetProjects = projects.filter(isSheet);
 		-webkit-text-fill-color: transparent;
 	}
 	.cf-stats span { font-size: 0.76rem; color: var(--cp-faint); line-height: 1.35; }
+	.cf-lab--short { display: none; }
 	@media (max-width: 560px) {
-		.cf-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 1rem; }
-		.cf-stats li { padding-inline: 0; border-left: 0; }
+		/* one straight line, four across — a 2×2 grid doubled the height of
+		   a row of four short numbers and made the page feel twice as long */
+		.cf-stats {
+			display: flex;
+			flex-wrap: nowrap;
+			grid-template-columns: none;
+			gap: 0.3rem;
+		}
+		.cf-stats li {
+			flex: 1 1 0;
+			min-width: 0;
+			padding-inline: 0;
+			border-left: 0;
+			text-align: center;
+		}
+		.cf-stats strong { font-size: clamp(0.95rem, 4.4vw, 1.35rem); white-space: nowrap; }
+		/* one word per number, so four figures stay one clean line */
+		.cf-lab--full { display: none; }
+		.cf-lab--short { display: block; }
+		.cf-stats span {
+			font-size: clamp(0.6rem, 2.9vw, 0.76rem);
+			line-height: 1.2;
+			letter-spacing: 0.02em;
+			white-space: nowrap;
+		}
 	}
 
 	/* the pull-down screen */

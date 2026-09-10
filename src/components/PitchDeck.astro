@@ -1,0 +1,1070 @@
+---
+// The pitch deck — what Swizel actually does, presented rather than listed.
+//
+// A founder does not read a services grid; they sit through a deck. So this
+// is a deck: numbered slides, a clicker, a progress bar, arrow keys, swipe,
+// and a play button that runs it hands-free.
+//
+// Every slide is built like a real deck slide: a gradient headline, three
+// pill buttons for what's inside, a device rig carrying a live product, three
+// annotation cards floating off it, a strip of house numbers along the
+// bottom, and the product's own card with a way in.
+//
+// And there is a light switch. Press it and the room goes out: the whole
+// site dims behind a blackout, the deck lifts into the middle of the screen
+// at theatre size, and nothing else is competing for attention.
+import { Icon } from 'astro-icon/components';
+
+interface Slide {
+	n: string;
+	kicker: string;
+	kickerIcon: string;
+	title: string;
+	em: string;
+	line: string;
+	gives: { label: string; icon: string }[];
+	notes: { title: string; body: string; icon: string; tint: string }[];
+	accent: string;
+	accent2: string;
+	work: {
+		name: string;
+		sector: string;
+		img: string;
+		host: string;
+		url: string;
+		note: string;
+	};
+}
+
+// the house numbers, the same in every world — they sit under every slide
+const figures = [
+	{ v: '7+', l: 'Years shipping', icon: 'mdi:calendar-check-outline' },
+	{ v: '25+', l: 'Specialists', icon: 'mdi:account-group-outline' },
+	{ v: '10+', l: 'Countries', icon: 'mdi:earth' },
+	{ v: '65+', l: 'Products live', icon: 'mdi:chart-box-outline' },
+];
+
+const slides: Slide[] = [
+	{
+		n: '01',
+		kicker: 'Engineering',
+		kickerIcon: 'mdi:code-tags',
+		title: 'Websites and apps,',
+		em: 'built to last.',
+		line: 'Web, iOS and Android, e-commerce, portals and the APIs behind them — written by senior engineers, tested, and handed over documented.',
+		gives: [
+			{ label: 'Web & mobile apps', icon: 'mdi:cellphone-link' },
+			{ label: 'E-commerce & portals', icon: 'mdi:cart-outline' },
+			{ label: 'APIs and integrations', icon: 'mdi:cloud-outline' },
+		],
+		notes: [
+			{ title: 'Fast & reliable', body: 'Optimised for performance and scale.', icon: 'mdi:lightning-bolt', tint: '#8b5cf6' },
+			{ title: 'Secure', body: 'Built to current security practice.', icon: 'mdi:shield-check-outline', tint: '#34d399' },
+			{ title: 'Scalable', body: 'Ready for your next big idea.', icon: 'mdi:cloud-upload-outline', tint: '#60a5fa' },
+		],
+		accent: '#8b5cf6',
+		accent2: '#60a5fa',
+		work: {
+			name: 'Brixmarket',
+			sector: 'Real-estate marketplace',
+			img: '/images/portfolio/brix%20marketplace.jpg',
+			host: 'brixmarket.com',
+			url: 'https://brixmarket.com/',
+			note: 'A full marketplace — listings, agents, search and payments.',
+		},
+	},
+	{
+		n: '02',
+		kicker: 'Product design',
+		kickerIcon: 'mdi:palette-outline',
+		title: 'Design people',
+		em: 'actually feel.',
+		line: 'Brand identity, interface and motion. The part that decides whether a first-time user stays or leaves, treated as seriously as the code.',
+		gives: [
+			{ label: 'Brand identity', icon: 'mdi:shape-outline' },
+			{ label: 'UI/UX & prototypes', icon: 'mdi:gesture-tap-button' },
+			{ label: 'Design systems', icon: 'mdi:view-grid-outline' },
+		],
+		notes: [
+			{ title: 'Clickable first', body: 'You feel it before we build it.', icon: 'mdi:cursor-default-click-outline', tint: '#22d3ee' },
+			{ title: 'One system', body: 'Every screen from the same parts.', icon: 'mdi:puzzle-outline', tint: '#a78bfa' },
+			{ title: 'Handover ready', body: 'Dev-ready files, not pretty pictures.', icon: 'mdi:file-check-outline', tint: '#f472b6' },
+		],
+		accent: '#22d3ee',
+		accent2: '#a78bfa',
+		work: {
+			name: 'Beauty Hive',
+			sector: 'Beauty & commerce',
+			img: '/images/portfolio/beauty-hive.webp',
+			host: 'beautyhive.ng',
+			url: '/portfolio',
+			note: 'Identity, storefront and the whole visual language.',
+		},
+	},
+	{
+		n: '03',
+		kicker: 'AI & automation',
+		kickerIcon: 'mdi:robot-outline',
+		title: 'Put the busywork',
+		em: 'on autopilot.',
+		line: 'Assistants, smart search, document extraction and workflow automation — bolted onto the product you already have, no rebuild required.',
+		gives: [
+			{ label: 'AI features & chatbots', icon: 'mdi:robot-happy-outline' },
+			{ label: 'Workflow automation', icon: 'mdi:sync' },
+			{ label: 'Data pipelines', icon: 'mdi:database-arrow-right-outline' },
+		],
+		notes: [
+			{ title: 'Bolt-on', body: 'Added to what you run today.', icon: 'mdi:puzzle-plus-outline', tint: '#f472b6' },
+			{ title: 'Measured', body: 'We count the hours it gives back.', icon: 'mdi:timer-outline', tint: '#fbbf24' },
+			{ title: 'Human in the loop', body: 'It assists your team, not replaces it.', icon: 'mdi:hand-heart-outline', tint: '#a78bfa' },
+		],
+		accent: '#f472b6',
+		accent2: '#a78bfa',
+		work: {
+			name: 'JobbLander',
+			sector: 'Careers · AI-enhanced',
+			img: '/images/portfolio/shot-jobblander.jpg',
+			host: 'jobblander.com',
+			url: 'https://jobblander.com/',
+			note: 'Job application as a service: AI-enhanced, human-perfected.',
+		},
+	},
+	{
+		n: '04',
+		kicker: 'Strategy',
+		kickerIcon: 'mdi:compass-outline',
+		title: 'The plan before',
+		em: 'the pixels.',
+		line: 'Discovery, research and a roadmap you can hold a team to — scoped so the first release is the smallest thing that can actually win.',
+		gives: [
+			{ label: 'Discovery sprints', icon: 'mdi:map-search-outline' },
+			{ label: 'Product roadmaps', icon: 'mdi:map-marker-path' },
+			{ label: 'MVP scoping', icon: 'mdi:target' },
+		],
+		notes: [
+			{ title: 'In writing', body: 'Scope agreed before code starts.', icon: 'mdi:file-document-edit-outline', tint: '#a78bfa' },
+			{ title: 'Your people', body: 'Workshops with your team in the room.', icon: 'mdi:account-multiple-outline', tint: '#34d399' },
+			{ title: 'Portable', body: 'Take the roadmap to any team.', icon: 'mdi:briefcase-arrow-left-right-outline', tint: '#60a5fa' },
+		],
+		accent: '#a78bfa',
+		accent2: '#34d399',
+		work: {
+			name: 'Hemam Synergy',
+			sector: 'Energy & advisory',
+			img: '/images/portfolio/shot-hemamsynergy.jpg',
+			host: 'hemamsynergy.com',
+			url: 'https://hemamsynergy.com/',
+			note: 'The positioning and site behind an ~€850,000 funding win.',
+		},
+	},
+	{
+		n: '05',
+		kicker: 'Growth',
+		kickerIcon: 'mdi:bullhorn-outline',
+		title: 'Marketing that',
+		em: 'moves numbers.',
+		line: 'SEO, paid, social, content and email — run for you or with you, and read against the only metric that matters: what converts.',
+		gives: [
+			{ label: 'SEO & paid ads', icon: 'mdi:magnify' },
+			{ label: 'Social & content', icon: 'mdi:instagram' },
+			{ label: 'Email & funnels', icon: 'mdi:email-fast-outline' },
+		],
+		notes: [
+			{ title: 'Channel fit', body: 'Only where your buyers actually are.', icon: 'mdi:target-account', tint: '#fb7185' },
+			{ title: 'Read weekly', body: 'Numbers you see, not a monthly PDF.', icon: 'mdi:chart-line', tint: '#fbbf24' },
+			{ title: 'Yours to keep', body: 'We hand over the playbook.', icon: 'mdi:book-open-page-variant-outline', tint: '#22d3ee' },
+		],
+		accent: '#fb7185',
+		accent2: '#fbbf24',
+		work: {
+			name: 'AnchorStep Physiotherapy',
+			sector: 'Healthcare',
+			img: '/images/portfolio/shot-anchorstep.jpg',
+			host: 'anchorsteppt.com',
+			url: 'https://anchorsteppt.com/',
+			note: 'From zero to a booking brand, across every platform.',
+		},
+	},
+	{
+		n: '06',
+		kicker: 'Teams as a service',
+		kickerIcon: 'mdi:account-group-outline',
+		title: 'A senior squad,',
+		em: 'on your side.',
+		line: 'Designers, engineers and a PM embedded with your team for as long as you need them — your roadmap, our bench, no hiring cycle.',
+		gives: [
+			{ label: 'Embedded squads', icon: 'mdi:account-supervisor-outline' },
+			{ label: 'Fractional CTO & PM', icon: 'mdi:badge-account-outline' },
+			{ label: 'Staff augmentation', icon: 'mdi:account-plus-outline' },
+		],
+		notes: [
+			{ title: 'Start in days', body: 'A bench that is already hired.', icon: 'mdi:rocket-launch-outline', tint: '#34d399' },
+			{ title: 'Your process', body: 'We join your board and your standups.', icon: 'mdi:view-column-outline', tint: '#60a5fa' },
+			{ title: 'Scale either way', body: 'Add or stand down by the month.', icon: 'mdi:arrow-expand-vertical', tint: '#a78bfa' },
+		],
+		accent: '#34d399',
+		accent2: '#60a5fa',
+		work: {
+			name: 'Skaldon WatchTower ERP',
+			sector: 'Infrastructure',
+			img: '/images/portfolio/shot-skaldonerp.jpg',
+			host: 'skaldongrouperp.netlify.app',
+			url: 'https://skaldongrouperp.netlify.app/',
+			note: 'An internal ERP, built and run alongside their own people.',
+		},
+	},
+	{
+		n: '07',
+		kicker: 'IT & maintenance',
+		kickerIcon: 'mdi:shield-check-outline',
+		title: 'It keeps running',
+		em: 'while you sleep.',
+		line: 'Hosting, monitoring, security, backups and same-day support — for what we built, or for the product you already have and need stabilised.',
+		gives: [
+			{ label: 'Hosting & DevOps', icon: 'mdi:server-network-outline' },
+			{ label: '24/7 monitoring', icon: 'mdi:radar' },
+			{ label: 'Security & backups', icon: 'mdi:lock-outline' },
+		],
+		notes: [
+			{ title: 'We see it first', body: 'Alerts before your users notice.', icon: 'mdi:bell-alert-outline', tint: '#60a5fa' },
+			{ title: 'Patched', body: 'Hardened and recoverable, always.', icon: 'mdi:shield-sync-outline', tint: '#34d399' },
+			{ title: 'Same-day', body: 'A real person answers, fast.', icon: 'mdi:headset', tint: '#f472b6' },
+		],
+		accent: '#60a5fa',
+		accent2: '#22d3ee',
+		work: {
+			name: 'The Presidential Diary',
+			sector: 'Media · daily publishing',
+			img: '/images/portfolio/shot-presidentialdiary.jpg',
+			host: 'thepresidentialdiary.com.ng',
+			url: 'https://thepresidentialdiary.com.ng/',
+			note: 'Publishing daily, under load, without a bad morning.',
+		},
+	},
+];
+---
+
+<section class="pdeck-sec" id="fd-deck" data-cursor="repo">
+	<div class="pdeck-wrap">
+		<div class="pdeck-head fd-rev">
+			<span class="pdeck-stamp">The deck</span>
+			<h2 class="pdeck-h">What we <em>actually do.</em></h2>
+			<p class="pdeck-p">
+				Seven slides, seven disciplines, and a real product behind each
+				one. Kill the lights and take it full screen.
+			</p>
+		</div>
+
+		<div class="pdeck fd-rev" id="pdeck" data-pdeck style={`--pd-acc:${slides[0].accent}`}>
+			<!-- the clicker rail -->
+			<div class="pdeck__rail">
+				<span class="pdeck__count">
+					<b data-pd-now>01</b><i>/</i><span>{String(slides.length).padStart(2, '0')}</span>
+				</span>
+
+				<div class="pdeck__dots" role="tablist" aria-label="Slides">
+					{
+						slides.map((s, i) => (
+							<button
+								class="pdeck__dot"
+								type="button"
+								role="tab"
+								data-pd-dot={i}
+								aria-selected={i === 0 ? 'true' : 'false'}
+								aria-label={`${s.kicker} — slide ${i + 1}`}
+								style={`--d:${s.accent}`}
+							/>
+						))
+					}
+				</div>
+
+				<div class="pdeck__tools">
+					<button class="pdeck__tool" type="button" data-pd-play aria-label="Play the deck">
+						<Icon class="pdeck__i-play" width={15} name="mdi:play" />
+						<Icon class="pdeck__i-stop" width={15} name="mdi:pause" />
+						<span class="pdeck__tool-t">Play</span>
+					</button>
+					<button class="pdeck__tool pdeck__tool--lights" type="button" data-pd-lights aria-pressed="false">
+						<Icon class="pdeck__i-off" width={15} name="mdi:lightbulb-outline" />
+						<Icon class="pdeck__i-on" width={15} name="mdi:lightbulb-on-outline" />
+						<span class="pdeck__tool-t" data-pd-lights-t>Kill the lights</span>
+					</button>
+				</div>
+			</div>
+
+			<span class="pdeck__prog" aria-hidden="true"><span data-pd-prog></span></span>
+
+			<!-- the stage -->
+			<div class="pdeck__stage" data-pd-stage tabindex="0" role="region" aria-label="Pitch deck">
+				{
+					slides.map((s, i) => (
+						<article
+							class="pdeck__slide"
+							data-pd-slide={i}
+							style={`--pd-a:${s.accent}; --pd-b:${s.accent2}`}
+							aria-hidden={i === 0 ? 'false' : 'true'}
+						>
+							<span class="pdeck__wash" aria-hidden="true" />
+
+							<!-- left: the argument -->
+							<div class="pdeck__copy">
+								<span class="pdeck__kick">
+									<Icon width={14} name={s.kickerIcon} />
+									{s.kicker}
+									<i class="pdeck__kick-rule" aria-hidden="true" />
+								</span>
+								<h3 class="pdeck__t">
+									{s.title} <em>{s.em}</em>
+								</h3>
+								<p class="pdeck__line">{s.line}</p>
+								<ul class="pdeck__gives">
+									{s.gives.map((g) => (
+										<li>
+											<span class="pdeck__give-ic">
+												<Icon width={15} name={g.icon} />
+											</span>
+											{g.label}
+											<Icon class="pdeck__give-go" width={13} name="mdi:arrow-right" />
+										</li>
+									))}
+								</ul>
+
+								<!-- the house numbers, along the bottom of the argument -->
+								<ul class="pdeck__figs">
+									{figures.map((f) => (
+										<li>
+											<span class="pdeck__fig-ic"><Icon width={15} name={f.icon} /></span>
+											<b>{f.v}</b>
+											<em>{f.l}</em>
+										</li>
+									))}
+								</ul>
+							</div>
+
+							<!-- right: the proof, on real hardware -->
+							<div class="pdeck__show">
+								<span class="pdeck__glow" aria-hidden="true" />
+
+								<div class="pdeck__rig">
+									<!-- laptop -->
+									<span class="pdeck__lap">
+										<span class="pdeck__lap-screen">
+											<img
+												src={s.work.img}
+												alt={`${s.work.name} — built by Swizel`}
+												loading={i === 0 ? 'eager' : 'lazy'}
+												decoding="async"
+												width="1280"
+												height="800"
+											/>
+											<span class="pdeck__glare" aria-hidden="true" />
+										</span>
+										<span class="pdeck__lap-base" aria-hidden="true" />
+									</span>
+
+									<!-- phone, overlapping the laptop's corner -->
+									<span class="pdeck__phone" aria-hidden="true">
+										<span class="pdeck__phone-screen">
+											<img src={s.work.img} alt="" loading="lazy" decoding="async" />
+										</span>
+									</span>
+
+									<!-- the annotations that float off the hardware -->
+									{s.notes.map((nt, k) => (
+										<span class={`pdeck__note pdeck__note--${k + 1}`} style={`--t:${nt.tint}; --k:${k}`}>
+											<span class="pdeck__note-ic"><Icon width={15} name={nt.icon} /></span>
+											<span class="pdeck__note-txt">
+												<b>{nt.title}</b>
+												<em>{nt.body}</em>
+											</span>
+										</span>
+									))}
+								</div>
+
+								<!-- the product's own card -->
+								<a
+									class="pdeck__work"
+									href={s.work.url}
+									target={s.work.url.startsWith('http') ? '_blank' : undefined}
+									rel={s.work.url.startsWith('http') ? 'noopener' : undefined}
+								>
+									<span class="pdeck__work-mark" aria-hidden="true">
+										<Icon width={19} name={s.kickerIcon} />
+									</span>
+									<span class="pdeck__work-txt">
+										<strong>{s.work.name}</strong>
+										<span class="pdeck__sector">{s.work.sector}</span>
+										<span class="pdeck__note-line">{s.work.note}</span>
+									</span>
+									<span class="pdeck__work-go" aria-hidden="true">
+										<Icon width={17} name="mdi:arrow-right" />
+									</span>
+								</a>
+							</div>
+						</article>
+					))
+				}
+
+				<button class="pdeck__nav pdeck__nav--prev" type="button" data-pd-prev aria-label="Previous slide">
+					<Icon width={20} name="mdi:chevron-left" />
+				</button>
+				<button class="pdeck__nav pdeck__nav--next" type="button" data-pd-next aria-label="Next slide">
+					<Icon width={20} name="mdi:chevron-right" />
+				</button>
+			</div>
+
+			<!-- only visible with the lights out -->
+			<button class="pdeck__exit" type="button" data-pd-exit>
+				<Icon width={15} name="mdi:close" />
+				Lights on
+				<kbd>Esc</kbd>
+			</button>
+			<span class="pdeck__hint">← → to move · Esc to leave</span>
+		</div>
+	</div>
+</section>
+
+<!-- the blackout, portalled to the end of the body by the script -->
+<div class="pdeck-blackout" data-pd-blackout hidden></div>
+
+<style>
+	/* The founder body's shared type lives in that component's scoped sheet,
+	   so it cannot reach in here — the deck carries its own head, tuned to
+	   match. The --fd-* tokens do inherit, so the colours stay in step. */
+	.pdeck-sec {
+		position: relative;
+		padding-block: clamp(2rem, 5vw, 3.5rem);
+	}
+	.pdeck-wrap { max-width: 78rem; margin: 0 auto; }
+	.pdeck-head {
+		text-align: center;
+		max-width: 46rem;
+		margin: 0 auto clamp(1.5rem, 3vw, 2.25rem);
+	}
+	.pdeck-stamp {
+		display: inline-block;
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--fd-acc, #8b5cf6);
+		border: 1.5px dashed color-mix(in srgb, var(--fd-acc, #8b5cf6) 55%, transparent);
+		padding: 0.35rem 0.8rem;
+		border-radius: 0.5rem;
+		transform: rotate(-2deg);
+		margin-bottom: 1rem;
+	}
+	.pdeck-h {
+		font-size: clamp(1.9rem, 4.2vw, 3rem);
+		font-weight: 850;
+		letter-spacing: -0.025em;
+		line-height: 1.06;
+		margin: 0 0 1rem;
+		color: var(--fd-ink, #f1edfb);
+	}
+	.pdeck-h em {
+		font-style: italic;
+		background: linear-gradient(95deg, var(--fd-acc, #8b5cf6), var(--fd-acc2, #ec4899));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+		padding-right: 0.06em;
+	}
+	.pdeck-p {
+		font-size: 1.02rem;
+		line-height: 1.65;
+		color: var(--fd-muted, rgba(241, 237, 251, 0.62));
+		max-width: 34rem;
+		margin: 0 auto;
+		text-align: center;
+	}
+
+	/* ══ the deck shell ══ */
+	.pdeck {
+		--pd-ink: #f4f1ff;
+		position: relative;
+		border-radius: 1.5rem;
+		border: 1px solid rgba(255, 255, 255, 0.09);
+		background: linear-gradient(168deg, #0f0b22, #07050f 62%, #0b0818);
+		box-shadow: 0 46px 110px -46px rgba(0, 0, 0, 0.95);
+		overflow: hidden;
+	}
+
+	/* ── the clicker rail ─────────────────────────────────────── */
+	.pdeck__rail {
+		position: relative;
+		z-index: 6;
+		display: flex;
+		align-items: center;
+		gap: 0.9rem;
+		padding: 0.7rem 0.9rem;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+		background: rgba(255, 255, 255, 0.02);
+	}
+	.pdeck__count {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 0.15rem;
+		font-family: ui-monospace, monospace;
+		font-size: 0.74rem;
+		color: rgba(244, 241, 255, 0.45);
+		flex: none;
+	}
+	.pdeck__count b { font-size: 0.95rem; color: var(--pd-acc, #8b5cf6); font-weight: 800; }
+	.pdeck__count i { font-style: normal; opacity: 0.5; }
+
+	.pdeck__dots { display: flex; align-items: center; gap: 0.34rem; flex: 1; min-width: 0; flex-wrap: wrap; }
+	.pdeck__dot {
+		width: 22px;
+		height: 5px;
+		flex: none;
+		border: 0;
+		padding: 0;
+		border-radius: 9999px;
+		background: rgba(255, 255, 255, 0.16);
+		cursor: pointer;
+		transition: background 0.3s ease, width 0.3s ease;
+	}
+	.pdeck__dot:hover { background: rgba(255, 255, 255, 0.32); }
+	.pdeck__dot[aria-selected='true'] { width: 40px; background: var(--d, #8b5cf6); }
+
+	.pdeck__tools { display: flex; align-items: center; gap: 0.4rem; flex: none; }
+	.pdeck__tool {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		padding: 0.4rem 0.75rem;
+		border-radius: 9999px;
+		font-size: 0.72rem;
+		font-weight: 750;
+		font-family: inherit;
+		color: var(--pd-ink);
+		background: rgba(255, 255, 255, 0.07);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		cursor: pointer;
+		white-space: nowrap;
+		transition: background 0.22s ease, border-color 0.22s ease, transform 0.18s ease;
+	}
+	.pdeck__tool:hover { background: rgba(255, 255, 255, 0.14); transform: translateY(-1px); }
+	.pdeck__tool--lights {
+		color: #14101f;
+		background: linear-gradient(95deg, #fde68a, #fbbf24);
+		border-color: transparent;
+	}
+	.pdeck__tool--lights:hover { filter: brightness(1.05); background: linear-gradient(95deg, #fde68a, #fbbf24); }
+	.pdeck__i-stop, .pdeck__i-on { display: none; }
+	.pdeck.is-playing .pdeck__i-stop { display: block; }
+	.pdeck.is-playing .pdeck__i-play { display: none; }
+
+	.pdeck__prog {
+		position: relative;
+		z-index: 6;
+		display: block;
+		height: 2px;
+		background: rgba(255, 255, 255, 0.07);
+	}
+	.pdeck__prog > span {
+		display: block;
+		height: 100%;
+		width: 0%;
+		background: linear-gradient(90deg, var(--pd-acc, #8b5cf6), #ec4899);
+		transition: width 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	/* ── the stage ────────────────────────────────────────────── */
+	.pdeck__stage { position: relative; display: grid; outline: none; }
+	.pdeck__slide {
+		position: relative;
+		grid-area: 1 / 1;
+		display: grid;
+		gap: clamp(1.4rem, 3vw, 2.6rem);
+		align-items: center;
+		padding: clamp(1.4rem, 3.2vw, 2.8rem) clamp(1.2rem, 3.2vw, 2.8rem) clamp(1.8rem, 3.2vw, 2.8rem);
+		opacity: 0;
+		visibility: hidden;
+		transform: translateX(28px);
+		transition: opacity 0.42s ease, transform 0.52s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.42s;
+		pointer-events: none;
+	}
+	.pdeck__slide.is-on { opacity: 1; visibility: visible; transform: none; pointer-events: auto; }
+	.pdeck__slide.is-out { transform: translateX(-28px); }
+	@media (min-width: 940px) {
+		.pdeck__slide { grid-template-columns: 0.92fr 1.08fr; }
+	}
+	/* each slide brings its own light into the shell */
+	.pdeck__wash {
+		position: absolute;
+		inset: 0;
+		z-index: 0;
+		pointer-events: none;
+		background:
+			radial-gradient(680px 420px at 88% 6%, color-mix(in srgb, var(--pd-a) 26%, transparent), transparent 64%),
+			radial-gradient(520px 340px at 4% 96%, color-mix(in srgb, var(--pd-b) 18%, transparent), transparent 62%);
+	}
+	.pdeck__copy, .pdeck__show { position: relative; z-index: 1; min-width: 0; }
+
+	/* ── the argument ─────────────────────────────────────────── */
+	.pdeck__kick {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		padding: 0.34rem 0.8rem;
+		margin-bottom: 1rem;
+		border-radius: 9999px;
+		font-size: 0.66rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: color-mix(in srgb, var(--pd-a) 72%, #fff);
+		background: color-mix(in srgb, var(--pd-a) 16%, transparent);
+		border: 1px solid color-mix(in srgb, var(--pd-a) 38%, transparent);
+	}
+	.pdeck__kick-rule {
+		width: clamp(28px, 6vw, 74px);
+		height: 1px;
+		margin-left: 0.35rem;
+		background: linear-gradient(90deg, currentColor, transparent);
+		opacity: 0.6;
+	}
+	.pdeck__t {
+		margin: 0 0 0.85rem;
+		font-size: clamp(1.7rem, 3.5vw, 3rem);
+		font-weight: 850;
+		line-height: 1.04;
+		letter-spacing: -0.03em;
+		color: #fff;
+	}
+	.pdeck__t em {
+		display: block;
+		font-style: normal;
+		background: linear-gradient(95deg, var(--pd-a), var(--pd-b));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	.pdeck__line {
+		margin: 0 0 1.25rem;
+		font-size: clamp(0.9rem, 1.3vw, 1.02rem);
+		line-height: 1.65;
+		color: rgba(244, 241, 255, 0.66);
+		max-width: 32rem;
+	}
+	.pdeck__gives {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		list-style: none;
+		margin: 0 0 1.4rem;
+		padding: 0;
+	}
+	.pdeck__gives li {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.42rem 0.85rem 0.42rem 0.42rem;
+		border-radius: 0.8rem;
+		font-size: 0.78rem;
+		font-weight: 700;
+		color: var(--pd-ink);
+		background: rgba(255, 255, 255, 0.045);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		transition: border-color 0.25s ease, background 0.25s ease, transform 0.2s ease;
+	}
+	.pdeck__gives li:hover {
+		transform: translateY(-2px);
+		border-color: color-mix(in srgb, var(--pd-a) 50%, transparent);
+		background: color-mix(in srgb, var(--pd-a) 10%, rgba(255, 255, 255, 0.045));
+	}
+	.pdeck__give-ic {
+		display: grid;
+		place-items: center;
+		width: 26px;
+		height: 26px;
+		flex: none;
+		border-radius: 0.55rem;
+		color: #fff;
+		background: linear-gradient(135deg, color-mix(in srgb, var(--pd-a) 85%, transparent), color-mix(in srgb, var(--pd-b) 70%, transparent));
+	}
+	.pdeck__give-go { color: rgba(244, 241, 255, 0.35); flex: none; }
+
+	/* the house numbers */
+	.pdeck__figs {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 0.2rem;
+		list-style: none;
+		margin: 0;
+		padding: 0.85rem 0.4rem;
+		border-radius: 1rem;
+		border: 1px solid rgba(255, 255, 255, 0.09);
+		background: rgba(255, 255, 255, 0.028);
+	}
+	.pdeck__figs li {
+		display: grid;
+		justify-items: start;
+		gap: 0.1rem;
+		padding-inline: 0.55rem;
+		border-left: 1px solid rgba(255, 255, 255, 0.07);
+		min-width: 0;
+	}
+	.pdeck__figs li:first-child { border-left: 0; }
+	.pdeck__fig-ic { color: color-mix(in srgb, var(--pd-a) 78%, #fff); display: block; }
+	.pdeck__figs b {
+		font-size: clamp(1.05rem, 1.9vw, 1.45rem);
+		font-weight: 850;
+		letter-spacing: -0.02em;
+		color: #fff;
+		line-height: 1.1;
+	}
+	.pdeck__figs em {
+		font-style: normal;
+		font-size: 0.63rem;
+		font-weight: 650;
+		letter-spacing: 0.04em;
+		line-height: 1.25;
+		color: rgba(244, 241, 255, 0.5);
+	}
+
+	/* ── the proof, on hardware ───────────────────────────────── */
+	.pdeck__show { display: grid; gap: clamp(0.9rem, 2vw, 1.4rem); }
+	.pdeck__glow {
+		position: absolute;
+		inset: -12% -6% 30%;
+		z-index: 0;
+		border-radius: 50%;
+		background: radial-gradient(ellipse at 50% 45%, color-mix(in srgb, var(--pd-a) 40%, transparent), transparent 68%);
+		filter: blur(56px);
+		pointer-events: none;
+	}
+	.pdeck__rig {
+		position: relative;
+		z-index: 1;
+		/* the annotations live in this gutter, so it has to be real */
+		padding: clamp(0.9rem, 2.4vw, 2.2rem) clamp(0.4rem, 6vw, 4.4rem) clamp(1.6rem, 3vw, 2.4rem);
+	}
+
+	/* the laptop */
+	.pdeck__lap { display: block; }
+	.pdeck__lap-screen {
+		position: relative;
+		display: block;
+		overflow: hidden;
+		border-radius: 0.75rem 0.75rem 0.2rem 0.2rem;
+		padding: 8px 8px 0;
+		background: linear-gradient(160deg, #2b2742, #14111f);
+		box-shadow:
+			0 0 0 1px rgba(255, 255, 255, 0.09),
+			0 40px 80px -34px rgba(0, 0, 0, 0.95);
+	}
+	.pdeck__lap-screen img {
+		display: block;
+		width: 100%;
+		aspect-ratio: 16 / 10;
+		height: auto;
+		object-fit: cover;
+		object-position: 50% 0;
+		border-radius: 0.4rem 0.4rem 0 0;
+	}
+	.pdeck__lap-base {
+		display: block;
+		width: 116%;
+		height: 12px;
+		margin: 0 -8%;
+		border-radius: 0 0 0.7rem 0.7rem;
+		background: linear-gradient(180deg, #3a3557, #1b1730);
+		box-shadow: 0 20px 34px -20px rgba(0, 0, 0, 0.9);
+	}
+	.pdeck__lap-base::after {
+		content: '';
+		display: block;
+		width: 16%;
+		height: 3px;
+		margin: 2px auto 0;
+		border-radius: 9999px;
+		background: rgba(255, 255, 255, 0.16);
+	}
+	.pdeck__glare {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.14) 50%, transparent 60%);
+		transform: translateX(-110%);
+		pointer-events: none;
+	}
+	.pdeck__slide.is-on .pdeck__glare { animation: pd-glare 2.2s ease-out 0.5s; }
+	@keyframes pd-glare { to { transform: translateX(110%); } }
+
+	/* the phone, leaning on the laptop */
+	.pdeck__phone {
+		position: absolute;
+		right: clamp(0.2rem, 1.5vw, 1rem);
+		bottom: clamp(0.6rem, 2vw, 1.2rem);
+		z-index: 3;
+		width: clamp(62px, 9vw, 108px);
+		padding: 4px;
+		border-radius: 0.85rem;
+		background: linear-gradient(150deg, #3b3559, #16122a);
+		box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12), 0 26px 46px -22px rgba(0, 0, 0, 0.95);
+		transform: rotate(3deg);
+	}
+	.pdeck__phone-screen {
+		display: block;
+		aspect-ratio: 9 / 18;
+		overflow: hidden;
+		border-radius: 0.65rem;
+		background: #07060f;
+	}
+	.pdeck__phone-screen img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: 18% 0;
+	}
+
+	/* the annotations */
+	.pdeck__note {
+		position: absolute;
+		z-index: 4;
+		display: none;
+		align-items: flex-start;
+		gap: 0.5rem;
+		max-width: 11rem;
+		padding: 0.55rem 0.75rem;
+		border-radius: 0.85rem;
+		background: color-mix(in srgb, var(--t) 12%, rgba(12, 9, 26, 0.86));
+		border: 1px solid color-mix(in srgb, var(--t) 34%, transparent);
+		-webkit-backdrop-filter: blur(12px);
+		backdrop-filter: blur(12px);
+		box-shadow: 0 22px 44px -24px rgba(0, 0, 0, 0.9);
+		animation: pd-float 6s ease-in-out infinite;
+		animation-delay: calc(var(--k) * -1.9s);
+	}
+	.pdeck__note-ic {
+		display: grid;
+		place-items: center;
+		width: 26px;
+		height: 26px;
+		flex: none;
+		border-radius: 0.55rem;
+		color: #fff;
+		background: color-mix(in srgb, var(--t) 78%, transparent);
+	}
+	.pdeck__note-txt { display: grid; gap: 0.05rem; min-width: 0; }
+	.pdeck__note-txt b { font-size: 0.76rem; font-weight: 800; color: #fff; }
+	.pdeck__note-txt em {
+		font-style: normal;
+		font-size: 0.68rem;
+		line-height: 1.35;
+		color: rgba(244, 241, 255, 0.6);
+	}
+	.pdeck__note--1 { top: 0; right: 0; }
+	.pdeck__note--2 { bottom: 20%; left: 0; }
+	.pdeck__note--3 { top: 34%; right: -1%; max-width: 9.6rem; }
+	@keyframes pd-float {
+		0%, 100% { transform: translateY(0); }
+		50% { transform: translateY(-8px); }
+	}
+	@media (min-width: 1100px) {
+		.pdeck__note { display: flex; }
+	}
+
+	/* the product's own card */
+	.pdeck__work {
+		position: relative;
+		z-index: 1;
+		display: flex;
+		align-items: center;
+		gap: 0.85rem;
+		padding: 0.85rem 0.95rem;
+		border-radius: 1rem;
+		border: 1px solid color-mix(in srgb, var(--pd-a) 26%, rgba(255, 255, 255, 0.1));
+		background: color-mix(in srgb, var(--pd-a) 8%, rgba(255, 255, 255, 0.03));
+		transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.25, 1), border-color 0.3s ease, background 0.3s ease;
+	}
+	.pdeck__work:hover {
+		transform: translateY(-3px);
+		border-color: color-mix(in srgb, var(--pd-a) 60%, transparent);
+		background: color-mix(in srgb, var(--pd-a) 14%, rgba(255, 255, 255, 0.03));
+	}
+	.pdeck__work-mark {
+		display: grid;
+		place-items: center;
+		width: 40px;
+		height: 40px;
+		flex: none;
+		border-radius: 0.75rem;
+		color: #fff;
+		background: linear-gradient(135deg, var(--pd-a), var(--pd-b));
+		box-shadow: 0 14px 26px -14px color-mix(in srgb, var(--pd-a) 80%, transparent);
+	}
+	.pdeck__work-txt { display: grid; gap: 0.05rem; flex: 1; min-width: 0; }
+	.pdeck__work-txt strong { font-size: 0.98rem; font-weight: 800; color: #fff; }
+	.pdeck__sector {
+		font-size: 0.63rem;
+		font-weight: 800;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: color-mix(in srgb, var(--pd-a) 75%, #fff);
+	}
+	.pdeck__note-line {
+		font-size: 0.76rem;
+		line-height: 1.4;
+		color: rgba(244, 241, 255, 0.55);
+	}
+	.pdeck__work-go {
+		display: grid;
+		place-items: center;
+		width: 36px;
+		height: 36px;
+		flex: none;
+		border-radius: 9999px;
+		color: #fff;
+		border: 1px solid color-mix(in srgb, var(--pd-a) 55%, transparent);
+		transition: background 0.25s ease, transform 0.25s ease;
+	}
+	.pdeck__work:hover .pdeck__work-go {
+		background: linear-gradient(135deg, var(--pd-a), var(--pd-b));
+		transform: translateX(3px);
+	}
+
+	/* ── the clicker arrows ───────────────────────────────────── */
+	.pdeck__nav {
+		position: absolute;
+		top: 50%;
+		z-index: 7;
+		display: grid;
+		place-items: center;
+		width: 38px;
+		height: 38px;
+		transform: translateY(-50%);
+		border-radius: 9999px;
+		color: #fff;
+		background: rgba(12, 9, 26, 0.6);
+		border: 1px solid rgba(255, 255, 255, 0.16);
+		-webkit-backdrop-filter: blur(8px);
+		backdrop-filter: blur(8px);
+		cursor: pointer;
+		opacity: 0;
+		transition: opacity 0.25s ease, background 0.2s ease, transform 0.2s ease;
+	}
+	.pdeck:hover .pdeck__nav,
+	.pdeck__nav:focus-visible { opacity: 1; }
+	.pdeck__nav:hover { background: var(--pd-acc, #8b5cf6); }
+	.pdeck__nav--prev { left: 0.55rem; }
+	.pdeck__nav--next { right: 0.55rem; }
+	@media (hover: none) { .pdeck__nav { opacity: 1; } }
+
+	.pdeck__exit, .pdeck__hint { display: none; }
+
+	/* ══════ lights out: the theatre ══════ */
+	:global(.pdeck-blackout) {
+		position: fixed;
+		inset: 0;
+		z-index: 90;
+		background: radial-gradient(120% 100% at 50% 42%, rgba(6, 4, 14, 0.94), rgba(0, 0, 0, 0.99));
+		-webkit-backdrop-filter: blur(10px) saturate(0.35) brightness(0.35);
+		backdrop-filter: blur(10px) saturate(0.35) brightness(0.35);
+		opacity: 0;
+		transition: opacity 0.45s ease;
+	}
+	:global(.pdeck-blackout.is-on) { opacity: 1; }
+	/* everything that floats above the page floats below the blackout too:
+	   a live-chat bubble glowing in a dark room ruins the whole effect */
+	:global(html.pd-lights-out .site-header),
+	:global(html.pd-lights-out #swizel-chat),
+	:global(html.pd-lights-out #back-to-top),
+	:global(html.pd-lights-out #view-banner) {
+		opacity: 0 !important;
+		pointer-events: none !important;
+		transition: opacity 0.35s ease;
+	}
+
+	.pdeck.is-theatre {
+		position: fixed;
+		z-index: 95;
+		top: 50%;
+		left: 50%;
+		width: min(96vw, 82rem);
+		max-height: 92vh;
+		overflow: auto;
+		transform: translate(-50%, -50%);
+		border-color: rgba(255, 255, 255, 0.14);
+		box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 80px 160px -50px rgba(0, 0, 0, 1);
+		animation: pd-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	@keyframes pd-rise {
+		from { opacity: 0; transform: translate(-50%, -46%) scale(0.96); }
+	}
+	:global(.pdeck-hole) { display: block; }
+
+	.pdeck.is-theatre .pdeck__slide { padding-block: clamp(1.6rem, 3vw, 3rem); }
+	.pdeck.is-theatre .pdeck__t { font-size: clamp(1.9rem, 3.2vw, 3.4rem); }
+	.pdeck.is-theatre .pdeck__nav { opacity: 1; }
+	.pdeck.is-theatre .pdeck__exit {
+		position: absolute;
+		z-index: 8;
+		top: 0.62rem;
+		right: 0.8rem;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		padding: 0.34rem 0.7rem;
+		border-radius: 9999px;
+		font-size: 0.7rem;
+		font-weight: 750;
+		font-family: inherit;
+		color: #fff;
+		background: rgba(255, 255, 255, 0.1);
+		border: 1px solid rgba(255, 255, 255, 0.16);
+		cursor: pointer;
+	}
+	.pdeck.is-theatre .pdeck__exit:hover { background: rgba(255, 255, 255, 0.2); }
+	.pdeck__exit kbd {
+		font-family: ui-monospace, monospace;
+		font-size: 0.6rem;
+		padding: 0.05rem 0.3rem;
+		border-radius: 0.25rem;
+		background: rgba(0, 0, 0, 0.35);
+		border: 1px solid rgba(255, 255, 255, 0.18);
+	}
+	.pdeck.is-theatre .pdeck__hint {
+		display: block;
+		padding: 0 0.9rem 0.7rem;
+		text-align: center;
+		font-size: 0.66rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: rgba(244, 241, 255, 0.35);
+	}
+	.pdeck.is-theatre .pdeck__tool--lights { display: none; }
+	.pdeck.is-theatre .pdeck__rail { padding-right: 9.6rem; }
+
+	@media (max-width: 940px) {
+		.pdeck__figs { grid-template-columns: repeat(4, minmax(0, 1fr)); padding-inline: 0.2rem; }
+		.pdeck__figs li { padding-inline: 0.35rem; }
+	}
+	@media (max-width: 720px) {
+		.pdeck__rail { flex-wrap: wrap; gap: 0.5rem 0.7rem; }
+		.pdeck__dots { order: 3; flex: 1 0 100%; width: 100%; }
+		.pdeck__tools { margin-left: auto; }
+		.pdeck__tool-t { display: none; }
+		.pdeck__tool { padding: 0.45rem 0.6rem; }
+		.pdeck__tool--lights .pdeck__tool-t { display: inline; }
+		.pdeck.is-theatre { width: 96vw; max-height: 94vh; }
+		.pdeck__figs b { font-size: 1rem; }
+		.pdeck__figs em { font-size: 0.56rem; }
+		.pdeck__gives li { font-size: 0.74rem; }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.pdeck__slide { transition: opacity 0.2s ease; transform: none !important; }
+		.pdeck.is-theatre { animation: none; }
+		.pdeck__note, .pdeck__glare { animation: none !important; }
+	}
+
+	/* ══ daylight: the deck stays a dark screen — a projector does not go
+	   white when the room is bright ══ */
+	:global(html:not(.dark)) .pdeck {
+		border-color: rgba(109, 40, 217, 0.2);
+		box-shadow: 0 46px 110px -52px rgba(23, 19, 49, 0.55);
+	}
+</style>

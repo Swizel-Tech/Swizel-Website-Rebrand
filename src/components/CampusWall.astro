@@ -390,6 +390,26 @@ const shots = [
 			scroll-snap-align: start;
 			padding: 0.4rem 0.4rem 0;
 		}
+		/* A phone gives no other clue that this row slides, so the whole
+		   strip sways together — same timing on every print, not the
+		   staggered breeze, or they drift independently and it reads as
+		   decoration rather than "there is more over here". */
+		.cwall__shot {
+			animation-name: cwall-nudge;
+			animation-duration: 5.5s;
+			animation-delay: 1.2s;
+			transform-origin: 50% 0;
+		}
+		@keyframes cwall-nudge {
+			0%, 62%, 100% { transform: rotate(var(--r)) translateX(0); }
+			14% { transform: rotate(var(--r)) translateX(-9px); }
+			34% { transform: rotate(var(--r)) translateX(4px); }
+			48% { transform: rotate(var(--r)) translateX(-3px); }
+		}
+		/* once the reader takes over, the hint stops */
+		.cwall__rail:hover .cwall__shot,
+		.cwall__rail:active .cwall__shot { animation-play-state: paused; }
+
 		/* touch has no hover: keep the tilt, drop the grow */
 		.cwall__shot:hover {
 			transform: rotate(var(--r)) translateY(0);

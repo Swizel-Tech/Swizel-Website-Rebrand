@@ -85,6 +85,16 @@ html.is-leaving .transition-main { opacity: 0; }
 }
 
 /* cover (out phase + the swap gap) */
+/* First load gets the curtain too, not just swup navigations. It is raised
+   before paint by the inline probe in BaseHead and released once the page has
+   actually settled — see initBootCurtain. Without it the first screen showed
+   its seams: fonts swapping, images popping in, half-drawn widgets. */
+html.swz-booting .page-curtain { transform: translateY(0); transition: none; }
+html.swz-booting .page-curtain__mark { opacity: 1; transform: translateY(0) scale(1); }
+html.swz-booting .page-curtain__mark svg { animation: curtain-breathe 1s ease-in-out 0.15s infinite alternate; }
+/* releasing simply drops the class, and this transition plays it out */
+html.swz-booted .page-curtain { transform: translateY(-101%); transition: transform 0.5s cubic-bezier(0.76, 0, 0.24, 1); }
+
 html.is-changing .page-curtain { transform: translateY(0); }
 html.is-changing .page-curtain__mark { opacity: 1; transform: translateY(0) scale(1); }
 html.is-changing .page-curtain__mark svg { animation: curtain-breathe 1s ease-in-out 0.15s infinite alternate; }
@@ -563,10 +573,10 @@ body:has(.hero-view) .hero-view {
   padding-top: var(--nav-h, 92px);
 }
 .site-header a { color: var(--nav-ink); }
-.site-header nav a { position: relative; transition: color 0.25s ease; }
-.site-header nav a:hover,
-.site-header nav a.active { color: var(--nav-active); }
-.site-header nav a::after {
+.site-header nav:not(.m-nav-links) a { position: relative; transition: color 0.25s ease; }
+.site-header nav:not(.m-nav-links) a:hover,
+.site-header nav:not(.m-nav-links) a.active { color: var(--nav-active); }
+.site-header nav:not(.m-nav-links) a::after {
   content: '';
   position: absolute;
   left: 0;
@@ -577,8 +587,8 @@ body:has(.hero-view) .hero-view {
   background: linear-gradient(90deg, #18debe, #28a6ec);
   transition: width 0.3s ease;
 }
-.site-header nav a:hover::after,
-.site-header nav a.active::after { width: 100%; }
+.site-header nav:not(.m-nav-links) a:hover::after,
+.site-header nav:not(.m-nav-links) a.active::after { width: 100%; }
 /* once scrolled, the bar is always its solid self (explicit, so the
    blended top state can never leak into the sticky state) */
 .site-header.header-sticky {
@@ -875,6 +885,13 @@ html[data-view='builder'] { --nav-active: #0b8e7c; }
 html[data-view='founder'] { --nav-active: #6d3fd6; }
 html[data-view='studio'] { --nav-active: #be1862; }
 html[data-view='campus'] { --nav-active: #b45309; }
+/* The campus page is cream, so a pure-white bar sat off it like a sticker.
+   A breath of warmth in the daylight bar only — the other four worlds keep
+   the white they were signed off with. */
+html[data-view='campus']:not(.dark) {
+  --nav-bg: #fbf5ea;
+  --nav-border: rgba(120, 84, 40, 0.18);
+}
 html.dark[data-view='boardroom'] { --nav-active: #86e2ef; }
 html.dark[data-view='builder'] { --nav-active: #2ee6c6; }
 html.dark[data-view='founder'] { --nav-active: #a78bfa; }
@@ -882,16 +899,16 @@ html.dark[data-view='studio'] { --nav-active: #f472b6; }
 html.dark[data-view='campus'] { --nav-active: #fbbf24; }
 /* Hover and active are the SAME colour: the world's own. Nothing goes blue
    in a yellow world. Both wear the view's gradient, clipped to the text. */
-.site-header nav a:hover,
-.site-header nav a.active {
+.site-header nav:not(.m-nav-links) a:hover,
+.site-header nav:not(.m-nav-links) a.active {
   background-image: var(--nav-active-grad);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
 }
-.site-header nav a:hover::after,
-.site-header nav a.active::after { background: var(--nav-active-grad); }
+.site-header nav:not(.m-nav-links) a:hover::after,
+.site-header nav:not(.m-nav-links) a.active::after { background: var(--nav-active-grad); }
 
 /* The daylight bar needs its own set: without these, every world fell back
    to the root teal-to-blue, which is the blue that kept showing up. */
@@ -908,6 +925,43 @@ html[data-view='campus'] { --nav-active-grad: linear-gradient(95deg, #b45309, #d
 html[data-view='campus'] {
   --nav-cta-grad: linear-gradient(95deg, #fde68a, #fbbf24, #f59e0b);
   --nav-cta-ink: #2b1500;
+}
+/* ...and the other four, so the Contact button is never the one element in
+   the bar still wearing another world's colour. */
+html[data-view='founder'] {
+  --nav-cta-grad: linear-gradient(95deg, #a78bfa, #8b5cf6 55%, #ec4899);
+  --nav-cta-ink: #ffffff;
+}
+html[data-view='studio'] {
+  --nav-cta-grad: linear-gradient(95deg, #f472b6, #be1862 60%, #7c3aed);
+  --nav-cta-ink: #ffffff;
+}
+html[data-view='boardroom'] {
+  --nav-cta-grad: linear-gradient(95deg, #28a6ec, #14589b 60%, #0b8e7c);
+  --nav-cta-ink: #ffffff;
+}
+html[data-view='builder'] {
+  --nav-cta-grad: linear-gradient(95deg, #8dfeea, #18debe 58%, #28a6ec);
+  --nav-cta-ink: #04241f;
+}
+
+/* The daylight bar takes a wash of the world it is in, so a white bar never
+   floats free of the page under it. Campus already had its paper tint. */
+html[data-view='founder']:not(.dark) {
+  --nav-bg: #fbf9ff;
+  --nav-border: rgba(109, 40, 217, 0.16);
+}
+html[data-view='studio']:not(.dark) {
+  --nav-bg: #fff8fb;
+  --nav-border: rgba(190, 24, 98, 0.14);
+}
+html[data-view='builder']:not(.dark) {
+  --nav-bg: #f6fefc;
+  --nav-border: rgba(11, 142, 124, 0.14);
+}
+html[data-view='boardroom']:not(.dark) {
+  --nav-bg: #f7fbff;
+  --nav-border: rgba(20, 88, 155, 0.14);
 }
 
 /* Per-view cursor (ring in the view accent), only over the hero stage */
@@ -1073,16 +1127,16 @@ html[data-view="studio"] #swizel-cursor .cur-studio { display: block; }
 
 /* Hover and active read identically: the world's gradient, clipped to the
    text. Whatever colour the click gives you, the hover gave you first. */
-.site-header nav a:hover,
-.site-header nav a.active {
+.site-header nav:not(.m-nav-links) a:hover,
+.site-header nav:not(.m-nav-links) a.active {
   background-image: var(--nav-active-grad);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
 }
-.site-header nav a:hover::after,
-.site-header nav a.active::after {
+.site-header nav:not(.m-nav-links) a:hover::after,
+.site-header nav:not(.m-nav-links) a.active::after {
   background: var(--nav-active-grad);
 }
 /* the dropdown caret lives inside the (gradient-clipped) active link, where

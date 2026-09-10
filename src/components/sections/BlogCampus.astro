@@ -235,18 +235,27 @@ const filterCss = cats
 	<!-- ── E · the free textbook (Brevarium promo) ─────────── -->
 	<section class="cb-sec cb-sec--last" data-cursor="book">
 		<div class="cb-wrap">
-			<a class="cb-mag cp-rev" href="/brevarium/the-brevarium-latest.pdf" download data-fa-tilt="5">
+			<!-- was one big <a>; the back issues cannot be nested inside a
+			     link, so the card is a container now and each edition is
+			     its own link -->
+			<div class="cb-mag cp-rev" data-fa-tilt="5">
 				<span class="cb-glare" aria-hidden="true"></span>
-				<span class="cb-mag-cover">
+				<a class="cb-mag-cover" href="/brevarium/the-brevarium-latest.pdf" download aria-label="Download the latest Brevarium">
 					<img src="/images/portfolio/mag-latest-cover.jpg" alt="The Brevarium magazine" loading="lazy" />
-				</span>
+				</a>
 				<span class="cb-mag-meta">
 					<span class="cb-kick">📖 The set text, free</span>
 					<strong>Prefer the magazine? Read The Brevarium.</strong>
 					<em>Our featured projects, the team and the thinking behind the work, cover to cover.</em>
-					<span class="cb-link"><Icon width={15} name="mdi:download" /> Download the latest edition</span>
+					<a class="cb-link" href="/brevarium/the-brevarium-latest.pdf" download>
+						<Icon width={15} name="mdi:download" /> Download the latest edition
+					</a>
+					<span class="cb-back">
+						<b>Back issues</b>
+						<a href="/The Brevarium by Swizel.pdf" download>2025 edition</a>
+					</span>
 				</span>
-			</a>
+			</div>
 		</div>
 	</section>
 </div>
@@ -875,6 +884,33 @@ const filterCss = cats
 		color: var(--cp-ink);
 		transition: border-color 0.3s ease;
 	}
+	.cb-back {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 0.3rem 0.7rem;
+		margin-top: 0.85rem;
+		padding-top: 0.7rem;
+		border-top: 1px solid var(--cp-line);
+		font-size: 0.76rem;
+	}
+	.cb-back b {
+		font-family: ui-monospace, monospace;
+		font-size: 0.62rem;
+		font-weight: 800;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--cp-faint);
+	}
+	.cb-back a {
+		color: var(--cp-muted);
+		text-decoration: underline;
+		text-underline-offset: 3px;
+		text-decoration-color: color-mix(in srgb, var(--cp-acc) 45%, transparent);
+		transition: color 0.2s ease;
+	}
+	.cb-back a:hover { color: var(--cp-acc); }
+
 	.cb-mag:hover { border-color: color-mix(in srgb, var(--cp-acc) 50%, transparent); }
 	@media (min-width: 760px) {
 		.cb-mag { grid-template-columns: 0.55fr 1.45fr; }

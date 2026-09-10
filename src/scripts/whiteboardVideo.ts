@@ -39,7 +39,7 @@ declare global {
 }
 
 /** Load the IFrame API once for the whole document. */
-function loadApi(): Promise<Window['YT']> {
+export function loadApi(): Promise<Window['YT']> {
 	if (window.__swzYTApi) return window.__swzYTApi;
 	window.__swzYTApi = new Promise((resolve) => {
 		if (window.YT && window.YT.Player) {

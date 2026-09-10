@@ -1,0 +1,556 @@
+---
+// The founder's reel — one film, three phones.
+//
+// On a wide screen the film is a rig: the live player stands upright in the
+// middle with two more handsets fanned out behind it, angled and dimmed, so
+// the right-hand half of the hero is furniture instead of empty space. On a
+// phone the fan collapses and only the live handset is left.
+//
+// The source is a YouTube short, so the frame is 9:16 and the chrome is
+// ours: it starts muted the moment it is on screen (the only autoplay a
+// browser allows), loops, and hands sound over on one obvious press.
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+	videoId: string;
+	kicker?: string;
+	still?: string;
+	class?: string;
+}
+
+const {
+	videoId,
+	kicker = 'Founder’s cut',
+	still = '/images/founder/reel-still.jpg',
+	class: klass = '',
+} = Astro.props;
+
+// the three things a founder is actually shopping for, floated beside the rig
+const chips = [
+	{ icon: 'mdi:rocket-launch-outline', label: 'Real projects', tint: '#8b5cf6' },
+	{ icon: 'mdi:account-group-outline', label: 'Expert team', tint: '#22d3ee' },
+	{ icon: 'mdi:shield-check-outline', label: 'Long-term support', tint: '#ec4899' },
+];
+---
+
+<div class:list={['freel', klass]} data-freel data-video-id={videoId}>
+	<span class="freel__halo" aria-hidden="true"></span>
+
+	<div class="freel__rig">
+		<!-- the two handsets behind, same film, other moments -->
+		<span class="freel__ghost freel__ghost--l" aria-hidden="true">
+			<span class="freel__ghost-screen">
+				<img src={still} alt="" width="720" height="1280" loading="lazy" decoding="async" />
+			</span>
+		</span>
+		<span class="freel__ghost freel__ghost--r" aria-hidden="true">
+			<span class="freel__ghost-screen">
+				<img src={still} alt="" width="720" height="1280" loading="lazy" decoding="async" />
+			</span>
+		</span>
+
+		<div class="freel__frame">
+			<div class="freel__screen" data-freel-screen>
+				<img
+					class="freel__poster"
+					src={still}
+					data-freel-poster
+					alt=""
+					width="720"
+					height="1280"
+					decoding="async"
+				/>
+				<div class="freel__mount" data-freel-mount></div>
+
+				<!-- YouTube never sees the pointer, so it never draws its own chrome -->
+				<button
+					class="freel__shield"
+					type="button"
+					data-freel-shield
+					aria-label="Play or pause the reel"
+				></button>
+
+				<span class="freel__vignette" aria-hidden="true"></span>
+
+				<div class="freel__top">
+					<span class="freel__live">
+						<span class="freel__livedot" aria-hidden="true"></span>
+						{kicker}
+					</span>
+					<span class="freel__ratio">9:16</span>
+				</div>
+
+				<!-- SOUND. Big, lit, and impossible to miss until it is pressed. -->
+				<button class="freel__sound" type="button" data-freel-mute aria-label="Unmute">
+					<span class="freel__sound-ic">
+						<Icon class="freel__i-off" width={19} name="mdi:volume-off" />
+						<Icon class="freel__i-on" width={19} name="mdi:volume-high" />
+					</span>
+					<span class="freel__sound-t">Tap for sound</span>
+				</button>
+
+				<div class="freel__bar">
+					<button class="freel__btn" type="button" data-freel-toggle aria-label="Pause">
+						<Icon class="freel__i-pause" width={17} name="mdi:pause" />
+						<Icon class="freel__i-play" width={17} name="mdi:play" />
+					</button>
+					<div class="freel__track" data-freel-track>
+						<span class="freel__fill" data-freel-fill></span>
+					</div>
+					<span class="freel__len">9:16</span>
+				</div>
+			</div>
+
+			<span class="freel__notch" aria-hidden="true"></span>
+		</div>
+
+	</div>
+
+	<!-- what the rig is actually saying, on the floor beneath it -->
+	<div class="freel__foot">
+		<span class="freel__scrawl" aria-hidden="true">
+			<svg viewBox="0 0 70 54" class="freel__scrawl-arrow">
+				<path d="M58 4C56 22 46 36 26 43" />
+				<path d="M34 44L24 44.5L27 35" />
+			</svg>
+			<em>More than<br />just code.</em>
+		</span>
+
+		<ul class="freel__chips">
+			{
+				chips.map((c, i) => (
+					<li style={`--t:${c.tint}; --i:${i}`}>
+						<span class="freel__chip-ic"><Icon width={16} name={c.icon} /></span>
+						{c.label}
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</div>
+
+<style>
+	.freel {
+		position: relative;
+		width: 100%;
+		--fr-a: var(--view-accent, #8b5cf6);
+		--fr-b: #ec4899;
+		--fr-w: clamp(15rem, 20vw, 19rem); /* the live handset's width */
+	}
+
+	/* the light the screen throws on the room */
+	.freel__halo {
+		position: absolute;
+		inset: -10% -14% 2%;
+		z-index: 0;
+		border-radius: 50%;
+		background: radial-gradient(
+			ellipse at 50% 45%,
+			color-mix(in srgb, var(--fr-a) 42%, transparent),
+			transparent 68%
+		);
+		filter: blur(52px);
+		opacity: 0.7;
+		pointer-events: none;
+		animation: freel-breathe 7s ease-in-out infinite;
+	}
+	@keyframes freel-breathe {
+		0%, 100% { opacity: 0.5; transform: scale(1); }
+		50% { opacity: 0.8; transform: scale(1.05); }
+	}
+
+	/* ── the rig ───────────────────────────────────────────────── */
+	.freel__rig {
+		position: relative;
+		z-index: 1;
+		display: grid;
+		place-items: center;
+		padding-block: 0.5rem;
+	}
+
+	.freel__frame {
+		position: relative;
+		z-index: 3;
+		width: var(--fr-w);
+		padding: 7px;
+		border-radius: 2rem;
+		background:
+			linear-gradient(160deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.03) 42%, rgba(255, 255, 255, 0.12)),
+			linear-gradient(150deg, var(--fr-a), var(--fr-b));
+		box-shadow:
+			0 1px 0 rgba(255, 255, 255, 0.35) inset,
+			0 44px 90px -34px rgba(0, 0, 0, 0.85),
+			0 0 0 1px rgba(255, 255, 255, 0.08);
+	}
+
+	/* the two behind: same phone, angled back, dimmed */
+	.freel__ghost {
+		position: absolute;
+		z-index: 1;
+		top: 50%;
+		width: calc(var(--fr-w) * 0.82);
+		padding: 6px;
+		border-radius: 1.7rem;
+		background: linear-gradient(150deg, color-mix(in srgb, var(--fr-a) 55%, #241a44), #191233);
+		box-shadow: 0 34px 70px -34px rgba(0, 0, 0, 0.9);
+		pointer-events: none;
+		opacity: 0.82;
+		filter: saturate(0.92) brightness(0.86);
+		transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease;
+	}
+	.freel__ghost--l {
+		right: 58%;
+		transform: translateY(-50%) rotate(-12deg) translateX(-4%) scale(0.9);
+		transform-origin: bottom right;
+	}
+	.freel__ghost--r {
+		left: 58%;
+		transform: translateY(-50%) rotate(12deg) translateX(4%) scale(0.9);
+		transform-origin: bottom left;
+	}
+	/* the fan opens a little when you point at the rig */
+	.freel__rig:hover .freel__ghost--l {
+		transform: translateY(-50%) rotate(-16deg) translateX(-11%) scale(0.93);
+		opacity: 0.85;
+	}
+	.freel__rig:hover .freel__ghost--r {
+		transform: translateY(-50%) rotate(16deg) translateX(11%) scale(0.93);
+		opacity: 0.85;
+	}
+	.freel__ghost-screen {
+		display: block;
+		aspect-ratio: 9 / 16;
+		overflow: hidden;
+		border-radius: 1.35rem;
+		background: #07060f;
+	}
+	.freel__ghost-screen img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	.freel__ghost--l .freel__ghost-screen img { object-position: 50% 22%; transform: scale(1.06); }
+	.freel__ghost--r .freel__ghost-screen img { object-position: 50% 40%; transform: scale(1.22); }
+
+	.freel__screen {
+		position: relative;
+		aspect-ratio: 9 / 16;
+		width: 100%;
+		overflow: hidden;
+		border-radius: 1.6rem;
+		background: #07060f;
+		isolation: isolate;
+	}
+
+	.freel__poster,
+	.freel__mount :global(iframe) {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		border: 0;
+		object-fit: cover;
+	}
+	.freel__poster { transition: opacity 0.5s ease; }
+	.freel.is-live .freel__poster { opacity: 0; }
+	.freel__mount { position: absolute; inset: 0; }
+
+	.freel__shield {
+		position: absolute;
+		inset: 0;
+		z-index: 3;
+		background: transparent;
+		border: 0;
+		cursor: pointer;
+	}
+
+	.freel__vignette {
+		position: absolute;
+		inset: 0;
+		z-index: 2;
+		pointer-events: none;
+		background:
+			linear-gradient(180deg, rgba(7, 6, 15, 0.6) 0%, transparent 22%, transparent 62%, rgba(7, 6, 15, 0.78) 100%),
+			radial-gradient(120% 90% at 50% 40%, transparent 55%, rgba(7, 6, 15, 0.45) 100%);
+	}
+
+	/* ── rails ─────────────────────────────────────────────────── */
+	.freel__top {
+		position: absolute;
+		z-index: 4;
+		top: 0.7rem;
+		left: 0.7rem;
+		right: 0.7rem;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		pointer-events: none;
+	}
+	.freel__live {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		padding: 0.28rem 0.6rem;
+		border-radius: 9999px;
+		font-size: 0.6rem;
+		font-weight: 800;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: #fff;
+		background: rgba(12, 10, 24, 0.55);
+		border: 1px solid rgba(255, 255, 255, 0.16);
+		-webkit-backdrop-filter: blur(8px);
+		backdrop-filter: blur(8px);
+	}
+	.freel__livedot {
+		width: 6px;
+		height: 6px;
+		border-radius: 9999px;
+		background: #f43f5e;
+		box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.7);
+		animation: freel-pulse 1.9s ease-out infinite;
+	}
+	@keyframes freel-pulse {
+		to { box-shadow: 0 0 0 9px rgba(244, 63, 94, 0); }
+	}
+	.freel__ratio {
+		font-family: ui-monospace, monospace;
+		font-size: 0.58rem;
+		letter-spacing: 0.12em;
+		color: rgba(255, 255, 255, 0.5);
+	}
+
+	/* ── the sound button: the loudest thing on the frame ──────── */
+	.freel__sound {
+		position: absolute;
+		z-index: 6;
+		left: 50%;
+		bottom: 3.9rem;
+		transform: translateX(-50%);
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.42rem 0.9rem 0.42rem 0.42rem;
+		border-radius: 9999px;
+		font-size: 0.78rem;
+		font-weight: 800;
+		font-family: inherit;
+		white-space: nowrap;
+		color: #14101f;
+		background: #fff;
+		border: 0;
+		cursor: pointer;
+		box-shadow:
+			0 0 0 0 rgba(255, 255, 255, 0.5),
+			0 14px 30px -12px rgba(0, 0, 0, 0.85);
+		animation: freel-callout 2.4s ease-out infinite;
+		transition: background 0.25s ease, color 0.25s ease, padding 0.25s ease;
+	}
+	.freel__sound-ic {
+		display: grid;
+		place-items: center;
+		width: 28px;
+		height: 28px;
+		flex: none;
+		border-radius: 9999px;
+		color: #fff;
+		background: linear-gradient(135deg, var(--fr-a), var(--fr-b));
+	}
+	@keyframes freel-callout {
+		0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.55), 0 14px 30px -12px rgba(0, 0, 0, 0.85); }
+		70%, 100% { box-shadow: 0 0 0 16px rgba(255, 255, 255, 0), 0 14px 30px -12px rgba(0, 0, 0, 0.85); }
+	}
+	/* once it has sound it stops shouting and becomes a plain mute toggle */
+	.freel.has-sound .freel__sound {
+		animation: none;
+		padding: 0.42rem;
+		color: #fff;
+		background: rgba(12, 10, 24, 0.6);
+		border: 1px solid rgba(255, 255, 255, 0.18);
+		-webkit-backdrop-filter: blur(10px);
+		backdrop-filter: blur(10px);
+	}
+	.freel.has-sound .freel__sound-t { display: none; }
+	.freel__i-on { display: none; }
+	.freel.has-sound .freel__i-on { display: block; }
+	.freel.has-sound .freel__i-off { display: none; }
+
+	.freel__bar {
+		position: absolute;
+		z-index: 4;
+		left: 0.7rem;
+		right: 0.7rem;
+		bottom: 0.7rem;
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		padding: 0.4rem 0.6rem 0.4rem 0.4rem;
+		border-radius: 9999px;
+		background: rgba(12, 10, 24, 0.5);
+		border: 1px solid rgba(255, 255, 255, 0.14);
+		-webkit-backdrop-filter: blur(10px);
+		backdrop-filter: blur(10px);
+	}
+	.freel__btn {
+		display: grid;
+		place-items: center;
+		width: 30px;
+		height: 30px;
+		flex: none;
+		border-radius: 9999px;
+		color: #fff;
+		background: rgba(255, 255, 255, 0.1);
+		border: 0;
+		cursor: pointer;
+		transition: background 0.2s ease, transform 0.2s ease;
+	}
+	.freel__btn:hover { background: rgba(255, 255, 255, 0.2); transform: scale(1.06); }
+	.freel__i-play { display: none; }
+	.freel.is-paused .freel__i-play { display: block; }
+	.freel.is-paused .freel__i-pause { display: none; }
+	.freel__len {
+		font-family: ui-monospace, monospace;
+		font-size: 0.58rem;
+		color: rgba(255, 255, 255, 0.45);
+		flex: none;
+	}
+
+	.freel__track {
+		position: relative;
+		flex: 1;
+		height: 4px;
+		min-width: 0;
+		border-radius: 9999px;
+		background: rgba(255, 255, 255, 0.18);
+		cursor: pointer;
+	}
+	.freel__fill {
+		position: absolute;
+		inset: 0 auto 0 0;
+		width: 0%;
+		border-radius: 9999px;
+		background: linear-gradient(90deg, #fff, var(--fr-b));
+	}
+
+	.freel__notch {
+		position: absolute;
+		left: 50%;
+		bottom: -6px;
+		width: 34%;
+		height: 6px;
+		transform: translateX(-50%);
+		border-radius: 0 0 9999px 9999px;
+		background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28), transparent);
+	}
+
+	/* ── the floor under the rig: a note on the left, the promises on the
+	   right. This is the band that used to be dead space. ─────────── */
+	.freel__foot {
+		position: relative;
+		z-index: 4;
+		display: none;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1.4rem;
+		width: 100%;
+		/* the fanned handsets hang below the live one, so the floor starts
+		   clear of them rather than under their corners */
+		margin-top: clamp(1.6rem, 3.4vw, 3rem);
+		padding-inline: clamp(0.5rem, 2vw, 1.5rem);
+	}
+	.freel__chips {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: flex-end;
+		gap: 0.5rem;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	.freel__chips li {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.45rem 0.8rem 0.45rem 0.45rem;
+		border-radius: 0.8rem;
+		font-size: 0.76rem;
+		font-weight: 750;
+		white-space: nowrap;
+		color: var(--fr-ink, #ede9fb);
+		background: color-mix(in srgb, var(--t) 12%, rgba(20, 15, 40, 0.72));
+		border: 1px solid color-mix(in srgb, var(--t) 34%, transparent);
+		-webkit-backdrop-filter: blur(12px);
+		backdrop-filter: blur(12px);
+		box-shadow: 0 18px 36px -22px rgba(0, 0, 0, 0.8);
+		animation: freel-float 5.5s ease-in-out infinite;
+		animation-delay: calc(var(--i) * -1.6s);
+	}
+	.freel__chip-ic {
+		display: grid;
+		place-items: center;
+		width: 26px;
+		height: 26px;
+		flex: none;
+		border-radius: 0.55rem;
+		color: #fff;
+		background: color-mix(in srgb, var(--t) 72%, transparent);
+	}
+	@keyframes freel-float {
+		0%, 100% { transform: translateY(0); }
+		50% { transform: translateY(-6px); }
+	}
+
+	.freel__scrawl {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3rem;
+		flex: none;
+		color: var(--fr-ink, #ede9fb);
+		opacity: 0.9;
+	}
+	.freel__scrawl em {
+		font-family: 'Bradley Hand', 'Segoe Print', 'Comic Sans MS', cursive;
+		font-style: normal;
+		font-size: 1.02rem;
+		font-weight: 700;
+		line-height: 1.12;
+		transform: rotate(-4deg);
+	}
+	.freel__scrawl-arrow {
+		width: 48px;
+		height: auto;
+		flex: none;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 2.2;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+		opacity: 0.55;
+		transform: rotate(-16deg);
+	}
+
+	/* the fan and the furniture are a wide-screen luxury */
+	@media (min-width: 1024px) {
+		.freel__foot { display: flex; }
+	}
+	@media (max-width: 1023px) {
+		.freel { --fr-w: min(17.5rem, 34vh); }
+		.freel__ghost { display: none; }
+		.freel__halo { inset: -8% -10% 2%; }
+	}
+
+	:global(html:not(.dark)) .freel__chips li {
+		color: #2b1f52;
+		background: color-mix(in srgb, var(--t) 12%, rgba(255, 255, 255, 0.86));
+		border-color: color-mix(in srgb, var(--t) 30%, transparent);
+		box-shadow: 0 18px 36px -26px rgba(23, 19, 49, 0.5);
+	}
+	:global(html:not(.dark)) .freel__scrawl { color: #3a2a63; }
+
+	@media (prefers-reduced-motion: reduce) {
+		.freel__halo,
+		.freel__sound,
+		.freel__chips li,
+		.freel__livedot { animation: none !important; }
+	}
+</style>

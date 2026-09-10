@@ -5,6 +5,18 @@
 // step into another world. The rail pauses on hover.
 import { Icon } from 'astro-icon/components';
 import { views } from '../consts';
+import ViewMark from './ViewMark.astro';
+
+// What each world actually promises, in three words. The card used to wear
+// a "preview film placeholder" chip, which told a visitor nothing and read
+// as an unfinished page.
+const promise: Record<string, string> = {
+	builder: 'Code, live',
+	boardroom: 'ROI & proof',
+	founder: 'Zero → MVP',
+	campus: 'Learn, build, get hired',
+	studio: 'Bold & visual',
+};
 ---
 
 <section class="view-worlds" id="view-banner" aria-label="Choose your view">
@@ -37,10 +49,10 @@ import { views } from '../consts';
 						>
 							<span class="vw-card-media" aria-hidden="true">
 								<span class="vw-card-glow" />
-								<Icon class="vw-card-watermark" width={64} name={v.icon} />
+								<span class="vw-card-mark"><ViewMark id={v.id} /></span>
 								<span class="vw-card-film">
-									<Icon width={15} name="mdi:movie-open-outline" />
-									Preview film placeholder
+									<Icon width={13} name="mdi:star-four-points-outline" />
+									{promise[v.id] ?? v.audience}
 								</span>
 							</span>
 							<span class="vw-card-overlay">
@@ -63,7 +75,7 @@ import { views } from '../consts';
 				>
 					<span class="vw-card-media" aria-hidden="true">
 						<span class="vw-card-glow" />
-						<Icon class="vw-card-watermark" width={64} name="mdi:dice-multiple-outline" />
+						<span class="vw-card-mark"><ViewMark id="surprise" /></span>
 						<span class="vw-card-film">
 							<Icon width={15} name="mdi:auto-fix" />
 							Feeling lucky?
@@ -246,7 +258,7 @@ import { views } from '../consts';
 		width: 22%;
 		height: 100%;
 		border-radius: inherit;
-		background: linear-gradient(90deg, #13b6a0, #13a8bf, #1f8fd6);
+		background: linear-gradient(90deg, color-mix(in srgb, var(--view-accent, #18debe) 55%, #fff), var(--view-accent, #18debe));
 		transform: translateX(0);
 		transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), width 0.35s ease;
 	}
@@ -283,6 +295,59 @@ import { views } from '../consts';
 	.vw-card-media {
 		position: absolute;
 		inset: 0;
+	}
+	/* Each poster carries its world's own surface, so the rail stops being
+	   five identical dark rectangles with different glows. */
+	.vw-card[data-switch-view='campus'] .vw-card-media::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		opacity: 0.5;
+		background:
+			linear-gradient(90deg, transparent 0 16px, rgba(225, 29, 72, 0.35) 16px 17px, transparent 17px),
+			repeating-linear-gradient(180deg, transparent 0 21px, rgba(147, 197, 253, 0.2) 21px 22px);
+	}
+	.vw-card[data-switch-view='builder'] .vw-card-media::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		opacity: 0.5;
+		background:
+			repeating-linear-gradient(180deg, transparent 0 19px, rgba(24, 222, 190, 0.12) 19px 20px),
+			linear-gradient(90deg, rgba(24, 222, 190, 0.16) 0 26px, transparent 26px);
+	}
+	.vw-card[data-switch-view='founder'] .vw-card-media::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		opacity: 0.55;
+		background:
+			linear-gradient(rgba(196, 181, 253, 0.14) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(196, 181, 253, 0.14) 1px, transparent 1px);
+		background-size: 34px 34px;
+		-webkit-mask-image: radial-gradient(70% 70% at 70% 20%, #000, transparent 78%);
+		mask-image: radial-gradient(70% 70% at 70% 20%, #000, transparent 78%);
+	}
+	.vw-card[data-switch-view='boardroom'] .vw-card-media::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		opacity: 0.5;
+		background: repeating-linear-gradient(
+			115deg,
+			transparent 0 16px,
+			rgba(40, 166, 236, 0.12) 16px 17px
+		);
+	}
+	.vw-card[data-switch-view='studio'] .vw-card-media::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		opacity: 0.45;
+		background:
+			radial-gradient(30% 40% at 20% 80%, rgba(244, 114, 182, 0.4), transparent 70%),
+			radial-gradient(28% 36% at 78% 26%, rgba(124, 58, 237, 0.4), transparent 70%);
+		filter: blur(2px);
 	}
 	/* the wildcard poster: every world's accent at once, dashed like a mystery box */
 	.vw-card--surprise {
@@ -347,18 +412,18 @@ import { views } from '../consts';
 			transform: translateX(100%);
 		}
 	}
-	.vw-card :global(.vw-card-watermark) {
+	/* the world's own object, three-quarter view, hanging off the corner —
+	   the same mark the views pop-up uses, so the two agree */
+	.vw-card-mark {
 		position: absolute;
-		top: 0.9rem;
-		right: 0.9rem;
-		color: color-mix(in srgb, var(--va) 55%, transparent);
-		opacity: 0.85;
-		filter: drop-shadow(0 6px 16px color-mix(in srgb, var(--va) 50%, transparent));
+		top: -0.4rem;
+		right: -0.6rem;
+		width: 42%;
+		max-width: 8rem;
+		pointer-events: none;
 		transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 	}
-	.vw-card:hover :global(.vw-card-watermark) {
-		transform: rotate(-8deg) scale(1.08);
-	}
+	.vw-card:hover .vw-card-mark { transform: rotate(-6deg) scale(1.07); }
 	.vw-card-film {
 		position: absolute;
 		top: 0.95rem;
@@ -370,12 +435,15 @@ import { views } from '../consts';
 		font-weight: 600;
 		letter-spacing: 0.08em;
 		text-transform: uppercase;
-		color: rgba(255, 255, 255, 0.55);
-		border: 1px dashed rgba(255, 255, 255, 0.25);
+		color: #fff;
+		border: 1px solid color-mix(in srgb, var(--va) 60%, transparent);
+		background: color-mix(in srgb, var(--va) 26%, rgba(6, 8, 18, 0.5));
 		border-radius: 9999px;
-		padding: 0.3rem 0.6rem;
-		backdrop-filter: blur(4px);
+		padding: 0.3rem 0.62rem;
+		-webkit-backdrop-filter: blur(6px);
+		backdrop-filter: blur(6px);
 	}
+	.vw-card-film :global(svg) { color: color-mix(in srgb, var(--va) 70%, #fff); }
 
 	.vw-card-overlay {
 		position: absolute;

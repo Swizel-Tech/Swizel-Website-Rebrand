@@ -1,29 +1,27 @@
 ---
+// Founder hero — the film is the hero.
+//
+// The launch console used to sit here and it was a lot of instrument to
+// read before anyone knew who we were; it lives further down the page now,
+// where a founder is already listening. What stands here instead is a
+// minute of the founder talking, shot portrait, framed like a studio
+// monitor: the one thing on the page that argues for us without a word of
+// copy. Everything else — the welcome, the promise, the two ways in, the
+// numbers — is arranged around it and kept short.
 import { Icon } from 'astro-icon/components';
 import CustomButton from '../CustomButton.astro';
 import Section from '../HTML/Section.astro';
 import RotatingHeadline from '../RotatingHeadline.astro';
 import TeamChip from '../TeamChip.astro';
+import FounderReel from '../FounderReel.astro';
+
+const REEL_ID = 'zdy4TEld6x4';
 
 const stats = [
 	{ to: 6, suffix: ' wks', label: 'Idea to MVP' },
 	{ to: 65, suffix: '+', label: 'Products' },
 	{ to: 7, suffix: '+', label: 'Years' },
 	{ to: 10, suffix: '+', label: 'Countries' },
-];
-
-const stages = [
-	{ n: '01', name: 'Discover & define', when: 'Week 1', pct: 22 },
-	{ n: '02', name: 'Design & prototype', when: 'Week 2', pct: 48 },
-	{ n: '03', name: 'Build & test', when: 'Weeks 3 to 5', pct: 82 },
-	{ n: '04', name: 'Launch & scale', when: 'Week 6', pct: 100 },
-];
-
-const launched = [
-	{ name: 'BuyGas', sector: 'Gas delivery' },
-	{ name: 'Betslipswitch', sector: 'Sports' },
-	{ name: 'Hemam Synergy', sector: 'Real estate' },
-	{ name: 'Anchorstep Physiotherapy', sector: 'Healthcare' },
 ];
 ---
 
@@ -33,21 +31,28 @@ const launched = [
 >
 	<div class="founder--bg" aria-hidden="true">
 		<span class="founder--glow"></span>
+		<span class="founder--grid"></span>
 		{Array.from({ length: 7 }).map((_, i) => <span class="founder--rise" style={`--i:${i}`} />)}
 	</div>
 
 	<div class="founder--layout">
 		<div class="founder--copy">
+			<span class="founder--welcome">
+				<span class="founder--wrule" aria-hidden="true"></span>
+				Welcome to Swizel
+			</span>
+
 			<span class="founder--eyebrow">
 				<Icon width={15} name="mdi:rocket-launch-outline" />
 				Founder mode · Zero to MVP
 			</span>
 
-			<RotatingHeadline class="founder--head" />
+			<div class="founder--headwrap">
+				<RotatingHeadline class="founder--head" />
+			</div>
 
 			<p class="founder--sub">
-				From a blank page to a launched product in six weeks. We plan,
-				build and ship with you, then stay to scale what works.
+				From a blank page to a launched product in six weeks. We plan, build and ship with you, then stay to scale what works.
 			</p>
 
 			<div class="founder--cta">
@@ -57,7 +62,7 @@ const launched = [
 					href="/contact"
 					class="flex items-center justify-center gap-2"
 				>
-					Start Week 1
+					Start project
 					<Icon width={18} name="mdi:rocket-launch-outline" />
 				</CustomButton>
 				<button class="founder--tour" type="button" data-tour-start="founder">
@@ -84,69 +89,16 @@ const launched = [
 				}
 			</ul>
 
-			<TeamChip
-				kicker="// the people who launch with you"
-				label="Meet your build team"
-			/>
+			<div class="founder--team">
+				<TeamChip
+					kicker="// the people who launch with you"
+					label="Meet your build team"
+				/>
+			</div>
 		</div>
 
-		<!-- Launch pipeline widget -->
-		<div class="founder--widget" id="founder-widget" data-tour="pipeline">
-			<div class="fw--head">
-				<div>
-					<span class="fw--title">Idea → MVP</span>
-					<span class="fw--eta">in about 6 weeks</span>
-				</div>
-				<button class="fw--launch" type="button" data-fw-launch>
-					<Icon width={15} name="mdi:rocket-launch-outline" />
-					<span class="fw--launch-txt">Launch my MVP</span>
-				</button>
-			</div>
-
-			<div class="fw--body">
-				<div class="fw--ring" data-tour="ring">
-					<svg class="fw--ringsvg" viewBox="0 0 120 120" aria-hidden="true">
-						<circle class="fw--ringbg" cx="60" cy="60" r="52"></circle>
-						<circle class="fw--ringfg" id="fw-ring" cx="60" cy="60" r="52"></circle>
-					</svg>
-					<span class="fw--pct" id="fw-pct">0%</span>
-					<span class="fw--ringlabel">to launch</span>
-				</div>
-
-				<ol class="fw--stages">
-					{
-						stages.map((s) => (
-							<li class="fw--stage" data-pct={s.pct}>
-								<span class="fw--stagenum">{s.n}</span>
-								<span class="fw--stagebody">
-									<span class="fw--stagename">{s.name}</span>
-									<span class="fw--stageweek">{s.when}</span>
-								</span>
-								<span class="fw--check">
-									<Icon width={14} name="mdi:check" />
-								</span>
-							</li>
-						))
-					}
-				</ol>
-			</div>
-
-			<div class="fw--launched" data-tour="launched">
-				<span class="fw--launched-label">
-					<span class="fw--launched-dot"></span>
-					Recently launched, across sectors
-				</span>
-				<div class="fw--cards">
-					{
-						launched.map((p, i) => (
-							<span class="fw--card" style={`--i:${i}`}>
-								<span class="fw--card-name">{p.name}</span>
-								<span class="fw--card-sector">{p.sector}</span>
-							</span>
-						))
-					}
-				</div>
-			</div>
+		<div class="founder--film" data-tour="reel">
+			<FounderReel videoId={REEL_ID} kicker="Founder’s cut" />
 		</div>
 	</div>
 </Section>
@@ -177,6 +129,18 @@ const launched = [
 		background: radial-gradient(ellipse at center, rgba(139, 92, 246, 0.28), transparent 70%);
 		filter: blur(50px);
 	}
+	/* a faint plotting grid under everything — a founder's whiteboard, not a void */
+	.founder--grid {
+		position: absolute;
+		inset: 0;
+		opacity: 0.5;
+		background-image:
+			linear-gradient(rgba(196, 181, 253, 0.06) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(196, 181, 253, 0.06) 1px, transparent 1px);
+		background-size: 62px 62px;
+		-webkit-mask-image: radial-gradient(80% 65% at 50% 30%, #000 20%, transparent 78%);
+		mask-image: radial-gradient(80% 65% at 50% 30%, #000 20%, transparent 78%);
+	}
 	.founder--rise {
 		position: absolute;
 		bottom: -10%;
@@ -200,15 +164,36 @@ const launched = [
 		position: relative;
 		z-index: 1;
 		display: grid;
-		gap: 2.5rem;
-		align-items: start;
+		gap: 2.25rem;
+		align-items: center;
 		min-height: calc(100vh - 90px);
-		padding-top: 2rem;
+		padding-top: 1.5rem;
 	}
 	@media (min-width: 1024px) {
-		.founder--layout { grid-template-columns: 0.92fr 1.08fr; gap: 3rem; }
-		/* start the pipeline widget at the headline ("YOU"), not the eyebrow */
-		.founder--widget { margin-top: 3.9rem; }
+		/* the film is a tall object, so the copy takes the wider half and the
+		   monitor sits beside it at its own natural size */
+		.founder--layout { grid-template-columns: 1.02fr 0.98fr; gap: 2rem; }
+		.founder--film { justify-self: center; }
+	}
+
+	/* the welcome line: a hairline, then the words, in small caps */
+	.founder--welcome {
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		margin-bottom: 0.9rem;
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.3em;
+		text-transform: uppercase;
+		color: rgba(237, 233, 251, 0.6);
+	}
+	.founder--wrule {
+		width: clamp(20px, 5vw, 44px);
+		height: 1px;
+		flex: none;
+		background: linear-gradient(90deg, transparent, currentColor);
+		opacity: 0.7;
 	}
 
 	.founder--eyebrow {
@@ -224,7 +209,7 @@ const launched = [
 		padding: 0.35rem 0.85rem;
 		border-radius: 0.5rem;
 		transform: rotate(-2deg);
-		margin-bottom: 1.2rem;
+		margin-bottom: 1.1rem;
 	}
 	/* founder world CTA runs violet → pink, like the body */
 	:global(.hero-founder .btn--accent) {
@@ -233,15 +218,15 @@ const launched = [
 		-webkit-text-fill-color: #fff;
 		box-shadow: 0 14px 34px -12px rgba(139, 92, 246, 0.6) !important;
 	}
-	.founder--head { font-size: clamp(2.6rem, 6vw, 5.2rem); margin-bottom: 1.4rem; }
+	.founder--head { font-size: clamp(2.5rem, 5.4vw, 4.6rem); margin-bottom: 1.2rem; }
 	.founder--sub {
-		max-width: 30rem;
+		max-width: 34rem;
 		color: rgba(237, 233, 251, 0.66);
-		font-size: 1.08rem;
-		line-height: 1.65;
-		margin-bottom: 1.8rem;
+		font-size: 1.05rem;
+		line-height: 1.6;
+		margin-bottom: 1.6rem;
 	}
-	.founder--cta { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem; }
+	.founder--cta { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.8rem; }
 	.founder--tour {
 		display: inline-flex;
 		align-items: center;
@@ -260,8 +245,14 @@ const launched = [
 		background: rgba(139, 92, 246, 0.1);
 	}
 
-	.founder--stats { display: flex; justify-content: space-between; gap: clamp(0.8rem, 2vw, 1.6rem); flex-wrap: wrap; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.08); }
-	@media (max-width: 600px) { .founder--stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem 1rem; } .founder--stat { min-width: 0; } }
+	.founder--stats {
+		display: flex;
+		justify-content: space-between;
+		gap: clamp(0.8rem, 2vw, 1.6rem);
+		flex-wrap: wrap;
+		padding-top: 1.4rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.08);
+	}
 	.founder--statnum {
 		font-family: 'Bebas Neue', sans-serif;
 		font-size: clamp(1.6rem, 2.4vw, 2.2rem);
@@ -274,118 +265,55 @@ const launched = [
 	}
 	.founder--statlabel { display: block; font-size: 0.72rem; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(237, 233, 251, 0.5); margin-top: 0.3rem; }
 
-	/* ===== Launch pipeline widget ===== */
-	.founder--widget {
-		border-radius: 1.25rem;
-		padding: 1.25rem;
-		background: rgba(22, 18, 41, 0.66);
-		border: 1px solid rgba(167, 139, 250, 0.22);
-		backdrop-filter: blur(14px);
-		box-shadow: 0 40px 90px -40px rgba(0, 0, 0, 0.85);
-	}
-	.fw--head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; }
-	.fw--title { font-size: 1.15rem; font-weight: 800; color: #fff; }
-	.fw--eta { display: block; font-size: 0.8rem; color: rgba(237, 233, 251, 0.55); }
-	.fw--launch {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.45rem;
-		font-size: 0.8rem;
-		font-weight: 700;
-		color: #1a1030;
-		background: linear-gradient(95deg, #c4b5fd, #8b5cf6);
-		padding: 0.6rem 1.05rem;
-		border-radius: 9999px;
-		cursor: pointer;
-		transition: transform 0.2s ease, filter 0.2s ease;
-		white-space: nowrap;
-	}
-	.fw--launch:hover { transform: translateY(-1px); filter: brightness(1.05); }
+	.founder--film { position: relative; display: flex; justify-content: center; width: 100%; min-width: 0; }
 
-	.fw--body { display: flex; gap: 1rem; align-items: center; }
-	.fw--ring { position: relative; width: 174px; height: 174px; flex-shrink: 0; display: grid; place-items: center; }
-	.fw--ringsvg { width: 174px; height: 174px; transform: rotate(-90deg); }
-	.fw--ringbg { fill: none; stroke: rgba(255, 255, 255, 0.08); stroke-width: 9; }
-	.fw--ringfg {
-		fill: none;
-		stroke: url(#fwgrad);
-		stroke: #a78bfa;
-		stroke-width: 9;
-		stroke-linecap: round;
-		stroke-dasharray: 326.7;
-		stroke-dashoffset: 326.7;
-	}
-	.fw--pct { position: absolute; font-family: 'Bebas Neue', sans-serif; font-size: 2.6rem; color: #fff; line-height: 1; transform: translateY(-0.85rem); }
-	.fw--ringlabel { position: absolute; margin-top: 2.2rem; font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(237, 233, 251, 0.5); }
-
-	.fw--stages { display: grid; gap: 0.55rem; flex: 1; }
-	.fw--stage {
-		display: flex;
-		align-items: center;
-		gap: 0.7rem;
-		padding: 0.5rem 0.95rem;
-		border-radius: 0.7rem;
-		border: 1px solid rgba(255, 255, 255, 0.07);
-		background: rgba(255, 255, 255, 0.02);
-		transition: border-color 0.4s ease, background 0.4s ease;
-	}
-	.fw--stage.is-done { border-color: rgba(167, 139, 250, 0.5); background: rgba(139, 92, 246, 0.12); }
-	.fw--stagenum { font-family: ui-monospace, monospace; font-size: 0.72rem; color: rgba(237, 233, 251, 0.4); }
-	.fw--stage.is-done .fw--stagenum { color: #c4b5fd; }
-	.fw--stagebody { flex: 1; display: flex; flex-direction: column; }
-	.fw--stagename { font-size: 0.84rem; font-weight: 600; color: #eee9fb; }
-	.fw--stageweek { font-size: 0.7rem; color: rgba(237, 233, 251, 0.45); }
-	.fw--check {
-		display: grid;
-		place-items: center;
-		width: 22px;
-		height: 22px;
-		border-radius: 9999px;
-		background: rgba(255, 255, 255, 0.06);
-		color: transparent;
-		transform: scale(0.6);
-		transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease;
-	}
-	.fw--stage.is-done .fw--check { background: #8b5cf6; color: #fff; transform: scale(1); }
-
-	.fw--launched { margin-top: 1.25rem; padding-top: 1rem; border-top: 1px dashed rgba(255, 255, 255, 0.1); }
-	.fw--launched-label { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(237, 233, 251, 0.5); margin-bottom: 0.7rem; }
-	.fw--launched-dot { width: 7px; height: 7px; border-radius: 9999px; background: #28c840; }
-	.fw--cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.55rem; }
-	.fw--card {
-		display: flex;
-		flex-direction: column;
-		padding: 0.6rem 0.75rem;
-		border-radius: 0.7rem;
-		border: 1px solid rgba(167, 139, 250, 0.2);
-		background: rgba(139, 92, 246, 0.07);
-		opacity: 0;
-		transform: translateY(8px);
-	}
-	.founder--widget.is-launched .fw--card { animation: fwcard 0.45s ease forwards; animation-delay: calc(var(--i) * 0.12s); }
-	@keyframes fwcard { to { opacity: 1; transform: translateY(0); } }
-	.fw--card-name { font-size: 0.85rem; font-weight: 700; color: #fff; }
-	.fw--card-sector { font-size: 0.7rem; color: #c4b5fd; }
-
+	/* ── phones: the film comes second, right under the promise, and the
+	   numbers stay on one clean line ─────────────────────────────────── */
 	@media (max-width: 1023px) {
-		.founder--layout { min-height: auto; }
+		/* One column, and the film is lifted to third place — a founder should
+		   meet the person before the pitch. `display: contents` dissolves the
+		   copy column so the film can be ordered in among its lines. */
+		.founder--layout {
+			display: flex;
+			flex-direction: column;
+			align-items: stretch;
+			min-height: auto;
+		}
+		.founder--copy { display: contents; }
+		.founder--welcome { order: 1; }
+		.founder--eyebrow { order: 2; align-self: flex-start; }
+		.founder--headwrap { order: 3; }
+		.founder--film { order: 4; margin: 0 0 1.2rem; }
+		.founder--sub { order: 5; }
+		.founder--cta { order: 6; }
+		.founder--stats { order: 7; }
+		.founder--team { order: 8; margin-top: 1.4rem; }
 	}
 	@media (max-width: 768px) {
-		.founder--layout { gap: 1.75rem; padding-top: 0.5rem; }
-		.founder--head { font-size: clamp(2.2rem, 9.5vw, 3.2rem); }
-		.founder--sub { font-size: 1rem; margin-bottom: 1.4rem; }
-		.fw--body { flex-direction: column; }
-		.fw--ring { width: 128px; height: 128px; }
-		.fw--ringsvg { width: 128px; height: 128px; }
-		/* stacked layout: the stage list runs the full width of the widget */
-		.fw--stages { width: 100%; }
+		.founder--layout { gap: 0; padding-top: 0.5rem; }
+		.founder--head { font-size: clamp(2.1rem, 9vw, 3rem); margin-bottom: 0.7rem; }
+		.founder--sub { font-size: 0.97rem; line-height: 1.6; margin-bottom: 1.2rem; }
+		.founder--cta { gap: 0.6rem; margin-bottom: 1.4rem; }
+		.founder--cta > * { flex: 1 1 auto; }
+		.founder--tour { padding: 0.8rem 1rem; font-size: 0.78rem; }
+		.founder--stats {
+			flex-wrap: nowrap;
+			gap: 0.4rem;
+			padding-top: 1.1rem;
+		}
+		.founder--stat { flex: 1 1 0; min-width: 0; text-align: center; }
+		.founder--statnum { font-size: clamp(1.15rem, 5.4vw, 1.7rem); }
+		.founder--statlabel {
+			font-size: clamp(0.52rem, 2.5vw, 0.66rem);
+			letter-spacing: 0.03em;
+			margin-top: 0.2rem;
+		}
 	}
 	@media (prefers-reduced-motion: reduce) {
 		.founder--rise { animation: none !important; }
 	}
 
-	/* ══ Light mode: the founder stage goes bright — lavender paper,
-	   ink type; the pipeline widget frosts white. ══ */
+	/* ══ Light mode: the founder stage goes bright — lavender paper, ink type ══ */
 	:global(html:not(.dark)) .founder--stage,
 	:global(html:not(.dark)) .founder--bg {
 		background:
@@ -394,6 +322,12 @@ const launched = [
 		color: #171331;
 	}
 	:global(html:not(.dark)) .founder--glow { opacity: 0.5; }
+	:global(html:not(.dark)) .founder--grid {
+		background-image:
+			linear-gradient(rgba(109, 40, 217, 0.07) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(109, 40, 217, 0.07) 1px, transparent 1px);
+	}
+	:global(html:not(.dark)) .founder--welcome { color: rgba(23, 19, 49, 0.55); }
 	:global(html:not(.dark)) .founder--eyebrow {
 		color: #6d28d9;
 		border-color: rgba(109, 40, 217, 0.45);
@@ -411,31 +345,4 @@ const launched = [
 		background-clip: text;
 	}
 	:global(html:not(.dark)) .founder--statlabel { color: rgba(23, 19, 49, 0.55); }
-	:global(html:not(.dark)) .founder--widget {
-		background: rgba(255, 255, 255, 0.82);
-		border-color: rgba(109, 40, 217, 0.18);
-		box-shadow: 0 40px 90px -44px rgba(23, 19, 49, 0.35);
-	}
-	:global(html:not(.dark)) .fw--title { color: #171331; }
-	:global(html:not(.dark)) .fw--eta { color: rgba(23, 19, 49, 0.55); }
-	:global(html:not(.dark)) .fw--ringbg { stroke: rgba(23, 19, 49, 0.08); }
-	:global(html:not(.dark)) .fw--pct { color: #171331; }
-	:global(html:not(.dark)) .fw--ringlabel { color: rgba(23, 19, 49, 0.5); }
-	:global(html:not(.dark)) .fw--stage {
-		border-color: rgba(23, 19, 49, 0.1);
-		background: rgba(23, 19, 49, 0.03);
-	}
-	:global(html:not(.dark)) .fw--stage.is-done {
-		border-color: rgba(139, 92, 246, 0.5);
-		background: rgba(139, 92, 246, 0.1);
-	}
-	:global(html:not(.dark)) .fw--stagenum { color: rgba(23, 19, 49, 0.4); }
-	:global(html:not(.dark)) .fw--stage.is-done .fw--stagenum { color: #6d28d9; }
-	:global(html:not(.dark)) .fw--stagename { color: #171331; }
-	:global(html:not(.dark)) .fw--stageweek { color: rgba(23, 19, 49, 0.5); }
-	:global(html:not(.dark)) .fw--check { background: rgba(23, 19, 49, 0.08); }
-	:global(html:not(.dark)) .fw--launched { border-top-color: rgba(23, 19, 49, 0.12); }
-	:global(html:not(.dark)) .fw--launched-label { color: rgba(23, 19, 49, 0.5); }
-	:global(html:not(.dark)) .fw--card-name { color: #171331; }
-	:global(html:not(.dark)) .fw--card-sector { color: #6d28d9; }
 </style>
