@@ -8,6 +8,9 @@ interface QA {
 	q: string;
 	k: string[];
 	a: string;
+	/** where on the site this question is actually answered in full */
+	go?: string;
+	goT?: string;
 }
 
 export function initPitchDeck() {
@@ -43,6 +46,8 @@ export function initPitchDeck() {
 	const answerQ = deck.querySelector<HTMLElement>('[data-pd-answer-q]');
 	const answerA = deck.querySelector<HTMLElement>('[data-pd-answer-a]');
 	const answerX = deck.querySelector<HTMLButtonElement>('[data-pd-answer-close]');
+	const answerGo = deck.querySelector<HTMLAnchorElement>('[data-pd-answer-go]');
+	const answerGoT = deck.querySelector<HTMLElement>('[data-pd-answer-go-t]');
 	const qaForm = deck.querySelector<HTMLFormElement>('[data-pd-qa-form]');
 	const qaInput = deck.querySelector<HTMLInputElement>('[data-pd-qa-input]');
 
@@ -124,16 +129,25 @@ export function initPitchDeck() {
 	openBtn?.addEventListener('click', raise);
 	// it opens by itself a beat after it comes into view
 	if ('IntersectionObserver' in window && curtain) {
+		// "in the section" means the deck is filling the screen, not that a
+		// sliver of it has appeared. A tall deck on a phone never reaches a
+		// ratio of 0.35, so measure the slice of the VIEWPORT it covers.
 		const io = new IntersectionObserver(
 			(entries) => {
 				entries.forEach((en) => {
-					if (en.isIntersecting && !opened) {
-						curtainTimer = window.setTimeout(raise, 1600);
-						io.disconnect();
+					if (opened) return;
+					const seen = en.intersectionRect.height;
+					const enough = Math.min(en.boundingClientRect.height, window.innerHeight) * 0.62;
+					if (en.isIntersecting && seen >= enough) {
+						window.clearTimeout(curtainTimer);
+						curtainTimer = window.setTimeout(raise, 700);
+					} else {
+						// scrolled back out before it opened — put the wait away
+						window.clearTimeout(curtainTimer);
 					}
 				});
 			},
-			{ threshold: 0.35 }
+			{ threshold: [0, 0.1, 0.2, 0.35, 0.5, 0.7, 0.9, 1] }
 		);
 		io.observe(deck);
 	} else {
@@ -141,10 +155,19 @@ export function initPitchDeck() {
 	}
 
 	// ── questions from the floor ──────────────────────────────────
-	const showAnswer = (q: string, a: string) => {
+	const showAnswer = (q: string, a: string, go?: string, goT?: string) => {
 		if (!answer) return;
 		if (answerQ) answerQ.textContent = q;
 		if (answerA) answerA.textContent = a;
+		if (answerGo) {
+			if (go) {
+				answerGo.href = go;
+				if (answerGoT) answerGoT.textContent = goT || 'Take me there';
+				answerGo.hidden = false;
+			} else {
+				answerGo.hidden = true;
+			}
+		}
 		answer.hidden = false;
 		setPlaying(false);
 	};
@@ -155,10 +178,28 @@ export function initPitchDeck() {
 	deck.querySelectorAll<HTMLButtonElement>('[data-pd-ask]').forEach((b) => {
 		b.addEventListener('click', () => {
 			const item = qa[Number(b.dataset.pdAsk || '0')];
-			if (item) showAnswer(item.q, item.a);
+			if (item) showAnswer(item.q, item.a, item.go, item.goT);
 		});
 	});
 	answerX?.addEventListener('click', hideAnswer);
+	// an in-page jump has to leave the blacked-out theatre first, or it
+	// scrolls a page nobody can see
+	answerGo?.addEventListener('click', (e) => {
+		const href = answerGo.getAttribute('href') || '';
+		hideAnswer();
+		if (theatre) lightsOn();
+		if (href.startsWith('#')) {
+			e.preventDefault();
+			const target = document.querySelector(href);
+			if (target) {
+				// the theatre needs a beat to hand the page back before we move
+				window.setTimeout(
+					() => target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' }),
+					300
+				);
+			}
+		}
+	});
 
 	/** Score every canned answer against what was typed and take the best. */
 	const match = (text: string): QA | null => {
@@ -184,11 +225,11 @@ export function initPitchDeck() {
 		if (!text) return;
 		const hit = match(text);
 		if (hit) {
-			showAnswer(text, hit.a);
+			showAnswer(text, hit.a, hit.go, hit.goT);
 		} else {
 			showAnswer(
 				text,
-				'That one deserves a real answer rather than a canned one. Send it to us and a senior builder — not a sales desk — replies within one business day. Most first questions turn into a fifteen-minute call and a fixed quote.'
+				'That one deserves a real answer rather than a canned one. Send it to us and a senior builder, not a sales desk, replies within one business day. Most first questions turn into a fifteen-minute call and a fixed quote.'
 			);
 		}
 		if (qaInput) qaInput.blur();
@@ -297,6 +338,35 @@ export function initPitchDeck() {
 			{ threshold: 0.2 }
 		);
 		io.observe(deck);
+	}
+
+	// the questions row drifts on its own on a phone, so nobody misses that
+	// there are more of them off to the right
+	const chips = deck.querySelector<HTMLElement>('[data-pd-chips]');
+	if (chips && !reduce) {
+		let dir = 1;
+		let paused = false;
+		let seen = false;
+		chips.addEventListener('pointerenter', () => (paused = true));
+		chips.addEventListener('pointerleave', () => (paused = false));
+		chips.addEventListener('touchstart', () => (paused = true), { passive: true });
+		if ('IntersectionObserver' in window) {
+			const cio = new IntersectionObserver(
+				(entries) => entries.forEach((e) => (seen = e.isIntersecting)),
+				{ threshold: 0.4 }
+			);
+			cio.observe(chips);
+		} else {
+			seen = true;
+		}
+		window.setInterval(() => {
+			if (paused || !seen) return;
+			const max = chips.scrollWidth - chips.clientWidth;
+			if (max <= 4) return;
+			if (chips.scrollLeft >= max - 1) dir = -1;
+			else if (chips.scrollLeft <= 1) dir = 1;
+			chips.scrollBy({ left: dir * 0.7, behavior: 'auto' });
+		}, 32);
 	}
 
 	window.addEventListener('swizel:beforeleave', lightsOn);

@@ -85,15 +85,15 @@ const logos = [
 const chat = [
 	{ from: 'them', name: 'Chidimma', img: '/testimonial/chidima.jpeg', text: 'Warm, responsive and a true extension of our team 🙌 I stopped calling you "the agency" months ago.' },
 	{ from: 'us', text: 'Sprint 4 just shipped 🚀 Demo on Friday?' },
-	{ from: 'them', name: 'Chidimma', img: '/testimonial/chidima.jpeg', text: 'Friday works. Bring the analytics tab — my board asks about signups before they ask about anything else 📈' },
-	{ from: 'them', name: 'Favour', img: '/testimonial/favour.jpeg', text: 'Geniuses, honestly. Working with you was effortless — and I have worked with three other teams before this one 😅' },
+	{ from: 'them', name: 'Chidimma', img: '/testimonial/chidima.jpeg', text: 'Friday works. Bring the analytics tab. My board asks about signups before they ask about anything else 📈' },
+	{ from: 'them', name: 'Favour', img: '/testimonial/favour.jpeg', text: 'Geniuses, honestly. Working with you was effortless, and I have worked with three other teams before this one 😅' },
 	{ from: 'us', text: 'That means a lot 💜 The new onboarding flow is live for 10% of users, we will read it Monday.' },
 	{ from: 'them', name: 'Cheta', img: '/testimonial/cheta.jpeg', text: 'Thorough, polite and always on time ⏱️ You told me week six and it went live on week five.' },
-	{ from: 'us', text: 'Some builds finish early — we do not stretch a job to fill a calendar 🙂' },
+	{ from: 'us', text: 'Some builds finish early. We do not stretch a job to fill a calendar 🙂' },
 	{ from: 'them', name: 'Chiemelie', img: '/testimonial/chiemelie.jpeg', text: 'The bit I did not expect: you kept running the socials after launch. Bookings doubled and I did not post once 📲' },
-	{ from: 'us', text: 'That is the marketing team 📣 They shoot, write and schedule — you just keep showing up for the sessions.' },
-	{ from: 'them', name: 'Russell', img: '/testimonial/russell.jpeg', text: 'I have trusted you with my products for years — not stopping now 🤝' },
-	{ from: 'them', name: 'Favour', img: '/testimonial/favour.jpeg', text: 'Quick one — can we add paystack before the weekend? 😬' },
+	{ from: 'us', text: 'That is the marketing team 📣 They shoot, write and schedule. You just keep showing up for the sessions.' },
+	{ from: 'them', name: 'Russell', img: '/testimonial/russell.jpeg', text: 'I have trusted you with my products for years. Not stopping now 🤝' },
+	{ from: 'them', name: 'Favour', img: '/testimonial/favour.jpeg', text: 'Quick one, can we add paystack before the weekend? 😬' },
 	{ from: 'us', text: 'Already on the board. Sandbox tonight, live tomorrow ✅' },
 	{ from: 'them', name: 'Cheta', img: '/testimonial/cheta.jpeg', text: 'This is why I send you everyone who asks me who built my site 🫡' },
 ];
@@ -144,34 +144,8 @@ const chat = [
 		</div>
 	</section>
 
-	<!-- ── B · the six-week sprint ─────────────────────────── -->
-	<section class="fd-sec" data-cursor="clock">
-		<div class="fd-wrap">
-			<div class="fd-head fd-rev">
-				<span class="fd-stamp">The plan</span>
-				<h2 class="fd-h">Six weeks. <em>Visible every day.</em></h2>
-				<p class="fd-p fd-p--center">
-					No black box, no "we'll get back to you." A roadmap you can
-					hold us to, because you'll watch it happen.
-				</p>
-			</div>
-
-			<ol class="fd-track" id="fd-track">
-				<span class="fd-track-line" aria-hidden="true"></span>
-				{
-					sprint.map((s, i) => (
-						<li class="fd-stop fd-rev" style={`--i:${i}`}>
-							<span class="fd-stop-node" aria-hidden="true"></span>
-							<span class="fd-stop-wk">{s.wk}</span>
-							<h3 class="fd-stop-t">{s.title}</h3>
-							<p class="fd-stop-d">{s.desc}</p>
-						</li>
-					))
-				}
-			</ol>
-
-		</div>
-	</section>
+	<!-- ── C3 · after launch, we stay: the spotlight founder ─── -->
+	<SpotlightFounder />
 
 	<!-- ── C · the curve ───────────────────────────────────── -->
 	<section class="fd-sec" data-cursor="chart">
@@ -230,6 +204,35 @@ const chat = [
 		</div>
 	</section>
 
+	<!-- ── B · the six-week sprint ─────────────────────────── -->
+	<section class="fd-sec" data-cursor="clock">
+		<div class="fd-wrap">
+			<div class="fd-head fd-rev">
+				<span class="fd-stamp">The plan</span>
+				<h2 class="fd-h">Six weeks. <em>Visible every day.</em></h2>
+				<p class="fd-p fd-p--center">
+					No black box, no "we'll get back to you." A roadmap you can
+					hold us to, because you'll watch it happen.
+				</p>
+			</div>
+
+			<ol class="fd-track" id="fd-track">
+				<span class="fd-track-line" aria-hidden="true"></span>
+				{
+					sprint.map((s, i) => (
+						<li class="fd-stop fd-rev" style={`--i:${i}`}>
+							<span class="fd-stop-node" aria-hidden="true"></span>
+							<span class="fd-stop-wk">{s.wk}</span>
+							<h3 class="fd-stop-t">{s.title}</h3>
+							<p class="fd-stop-d">{s.desc}</p>
+						</li>
+					))
+				}
+			</ol>
+
+		</div>
+	</section>
+
 	<!-- ── C2 · more frames: the journey in pictures ───────── -->
 	<!-- HELD BACK. Tosky has not sent the contents for this section yet,
 	     and a page is better one section shorter than one section of
@@ -261,7 +264,7 @@ const chat = [
 					<figure class="fd-frame">
 						<img
 							src="/images/campus/demo-day.jpg"
-							alt="Demo day at Swizel — the team presenting a build"
+							alt="Demo day at Swizel, the team presenting a build"
 							width="1050"
 							height="700"
 							loading="lazy"
@@ -292,9 +295,6 @@ const chat = [
 	</section>
 	)}
 
-	<!-- ── C3 · after launch, we stay: the spotlight founder ─── -->
-	<SpotlightFounder />
-
 	<!-- ── D · the launch wall ─────────────────────────────── -->
 	<section class="fd-sec" id="fd-wall" data-cursor="repo">
 		<div class="fd-wrap">
@@ -315,7 +315,7 @@ const chat = [
 								rel={ext ? 'noopener noreferrer' : undefined}
 							>
 								<span class="fd-launch-tape" aria-hidden="true" />
-								<img src={l.img} alt={`${l.name} — ${l.sector}`} loading="lazy" />
+								<img src={l.img} alt={`${l.name}, ${l.sector}`} loading="lazy" />
 								<span class="fd-launch-veil" aria-hidden="true" />
 								<span class:list={['fd-launch-state', { 'is-live': l.live }]}>
 									{l.live ? 'Live' : 'Case study'}
@@ -358,7 +358,7 @@ const chat = [
 				</p>
 				<span class="fd-chat-hint">
 					<Icon width={14} name="mdi:gesture-swipe-vertical" />
-					It keeps scrolling — the thread does too
+					It keeps scrolling, and so does the thread
 				</span>
 			</div>
 
@@ -439,7 +439,6 @@ const chat = [
 		<div class="fd-wrap fd-qgrid">
 			<figure class="fdf-portrait fd-rev">
 				<span class="fdf-ring" aria-hidden="true"></span>
-				<span class="fdf-badge">Founding, 2019</span>
 				<span class="fdf-shot">
 					<img
 						src="/images/founder/tochukwu.jpg"
@@ -485,7 +484,7 @@ const chat = [
 							<path class="fdf-ink-b" d="M46 78C104 66 172 62 240 68" />
 							<path class="fdf-ink-c" d="M232 60c8 4 10 9 4 14" />
 						</svg>
-						<span class="fdf-sign-note">signed, Abuja</span>
+						<span class="fdf-sign-note">signed Management</span>
 					</span>
 
 					<a
@@ -498,18 +497,16 @@ const chat = [
 						<Icon width={19} name="mdi:linkedin" />
 					</a>
 
-					<!-- the space the smaller signature freed: a live count of
-					     what the man behind it has shipped -->
-					<div class="fdf-ticker" aria-hidden="true">
-						<span class="fdf-ticker-dot"></span>
-						<span class="fdf-ticker-rail">
-							<span class="fdf-ticker-track">
-								<i>65+ products shipped</i>
-								<i>10+ countries served</i>
-								<i>25+ specialists on the bench</i>
-								<i>7+ years, still building</i>
-								<i>65+ products shipped</i>
-							</span>
+					<!-- the space the smaller signature freed: two notes off the
+					     board, in the hand the rest of the site writes in -->
+					<div class="fdf-notes" aria-hidden="true">
+						<span class="fdf-note fdf-note--a">
+							<b>65+</b>
+							products shipped
+						</span>
+						<span class="fdf-note fdf-note--b">
+							<b>10+</b>
+							countries served
 						</span>
 					</div>
 				</div>
@@ -1291,6 +1288,7 @@ const chat = [
 	.fd-sec--founder {
 		position: relative;
 		isolation: isolate;
+		color: var(--fd-ink);
 		margin-block: clamp(1.5rem, 4vw, 3rem);
 		padding-block: clamp(3rem, 7vw, 5.5rem);
 		overflow: hidden;
@@ -1390,23 +1388,6 @@ const chat = [
 		position: absolute;
 		inset: 0;
 		background: linear-gradient(180deg, transparent 52%, rgba(9, 7, 20, 0.72) 100%);
-	}
-	.fdf-badge {
-		position: absolute;
-		z-index: 2;
-		top: 0.9rem;
-		right: 0.9rem;
-		padding: 0.3rem 0.7rem;
-		border-radius: 9999px;
-		font-size: 0.62rem;
-		font-weight: 800;
-		letter-spacing: 0.14em;
-		text-transform: uppercase;
-		color: #fff;
-		background: rgba(12, 9, 26, 0.6);
-		border: 1px solid rgba(255, 255, 255, 0.18);
-		-webkit-backdrop-filter: blur(8px);
-		backdrop-filter: blur(8px);
 	}
 	/* the brass plate, set into the bottom of the frame */
 	.fdf-plate {
@@ -1510,66 +1491,64 @@ const chat = [
 		background: linear-gradient(135deg, var(--fd-acc), var(--fd-acc2));
 	}
 
-	/* the ticker that fills the space the small signature left */
-	.fdf-ticker {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.5rem;
+	/* two notes off the board, filling the space the small signature left */
+	.fdf-notes {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.7rem;
 		flex: 1;
 		min-width: 0;
-		max-width: 18rem;
-		padding: 0.4rem 0.75rem;
-		border-radius: 9999px;
-		border: 1px solid color-mix(in srgb, var(--fd-acc) 22%, transparent);
-		background: color-mix(in srgb, var(--fd-acc) 8%, transparent);
 	}
-	.fdf-ticker-dot {
-		width: 7px;
-		height: 7px;
+	.fdf-note {
+		position: relative;
 		flex: none;
-		border-radius: 9999px;
-		background: #34d399;
-		box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.6);
-		animation: fdf-pip 2.2s ease-out infinite;
+		display: grid;
+		gap: 0.05rem;
+		width: 8.4rem;
+		padding: 0.6rem 0.7rem 0.75rem;
+		font-family: 'Bradley Hand', 'Segoe Print', 'Comic Sans MS', cursive;
+		font-size: 0.78rem;
+		line-height: 1.2;
+		color: #3a2a12;
+		background: linear-gradient(170deg, #fef3c7, #fde68a);
+		box-shadow:
+			0 1px 0 rgba(255, 255, 255, 0.6) inset,
+			0 16px 26px -18px rgba(0, 0, 0, 0.9),
+			0 3px 8px -6px rgba(0, 0, 0, 0.6);
+		transform: rotate(var(--nr, -2.4deg));
+		transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.25, 1);
 	}
-	@keyframes fdf-pip { to { box-shadow: 0 0 0 9px rgba(52, 211, 153, 0); } }
-	.fdf-ticker-rail {
-		flex: 1;
-		min-width: 0;
-		height: 1.15rem;
-		overflow: hidden;
+	.fdf-note--b {
+		--nr: 2.2deg;
+		background: linear-gradient(170deg, #e9d8fd, #d8bffa);
+		color: #2c1a52;
 	}
-	.fdf-ticker-track {
-		display: block;
-		animation: fdf-roll 12s steps(1, end) infinite;
+	.fdf-note:hover { transform: rotate(0deg) translateY(-3px); }
+	.fdf-note b {
+		font-size: 1.15rem;
+		font-weight: 800;
+		letter-spacing: -0.02em;
 	}
-	.fdf-ticker-track i {
-		display: block;
-		height: 1.15rem;
-		line-height: 1.15rem;
-		font-style: normal;
-		font-size: 0.74rem;
-		font-weight: 750;
-		white-space: nowrap;
-		color: var(--fd-muted);
-	}
-	@keyframes fdf-roll {
-		0%, 22% { transform: translateY(0); }
-		25%, 47% { transform: translateY(-1.15rem); }
-		50%, 72% { transform: translateY(-2.3rem); }
-		75%, 97% { transform: translateY(-3.45rem); }
-		100% { transform: translateY(-4.6rem); }
+	/* the corner someone has already picked at */
+	.fdf-note::after {
+		content: '';
+		position: absolute;
+		right: 0;
+		bottom: 0;
+		width: 15px;
+		height: 15px;
+		background: linear-gradient(135deg, rgba(0, 0, 0, 0.16), rgba(255, 255, 255, 0.5));
+		clip-path: polygon(100% 0, 100% 100%, 0 100%);
 	}
 
 	@media (max-width: 879px) {
 		.fdf-portrait { max-width: 21rem; margin-inline: auto; }
 		.fdf-signed { justify-content: center; padding-left: 0; text-align: center; }
-		.fdf-ticker { max-width: 100%; }
+		.fdf-notes { justify-content: center; }
 	}
 	@media (prefers-reduced-motion: reduce) {
 		.fdf-orb { animation: none !important; }
 		.fdf-ink path { stroke-dashoffset: 0 !important; animation: none !important; }
-		.fdf-ticker-track { animation: none !important; }
 	}
 
 	/* ══ daylight: the stage stays deep, but softened to a plum paper ══ */
@@ -1665,6 +1644,7 @@ const chat = [
 	}
 	.fd-qline {
 		display: block;
+		color: var(--fd-ink);
 		font-size: clamp(1.3rem, 2.8vw, 2rem);
 		font-weight: 800;
 		font-style: italic;

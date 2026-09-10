@@ -35,6 +35,7 @@ const chips = [
 	{ icon: 'mdi:rocket-launch-outline', label: 'Real projects', tint: '#8b5cf6' },
 	{ icon: 'mdi:account-group-outline', label: 'Expert team', tint: '#22d3ee' },
 	{ icon: 'mdi:shield-check-outline', label: 'Long-term support', tint: '#ec4899' },
+	{ icon: 'mdi:timer-sand', label: 'Six-week launches', tint: '#fbbf24' },
 ];
 ---
 
@@ -458,7 +459,7 @@ const chips = [
 		display: none;
 		align-items: center;
 		justify-content: space-between;
-		gap: 1.4rem;
+		gap: clamp(0.6rem, 1.6vw, 1.1rem);
 		width: 100%;
 		/* the fanned handsets hang below the live one, so the floor starts
 		   clear of them rather than under their corners */
@@ -468,17 +469,20 @@ const chips = [
 	.freel__chips {
 		display: flex;
 		flex-wrap: wrap;
+		flex: 1 1 auto;
+		min-width: 0;
 		justify-content: flex-end;
-		gap: 0.5rem;
+		gap: clamp(0.4rem, 0.9vw, 0.7rem);
 		list-style: none;
 		margin: 0;
 		padding: 0;
 	}
 	.freel__chips li {
 		display: inline-flex;
+		flex: none;
 		align-items: center;
 		gap: 0.5rem;
-		padding: 0.45rem 0.8rem 0.45rem 0.45rem;
+		padding: 0.5rem 0.9rem 0.5rem 0.5rem;
 		border-radius: 0.8rem;
 		font-size: 0.76rem;
 		font-weight: 750;
@@ -515,6 +519,7 @@ const chips = [
 		flex: none;
 		color: var(--fr-ink, #ede9fb);
 	}
+	.freel__scrawl em { white-space: nowrap; }
 	.freel__scrawl em {
 		font-family: 'Bradley Hand', 'Segoe Print', 'Comic Sans MS', cursive;
 		font-style: normal;
@@ -524,7 +529,7 @@ const chips = [
 		transform: rotate(-4deg);
 	}
 	.freel__scrawl-arrow {
-		width: 108px;
+		width: clamp(150px, 13vw, 200px);
 		height: auto;
 		flex: none;
 		margin: -0.15rem 0 0 0.9rem;
@@ -544,7 +549,7 @@ const chips = [
 		45% { transform: translateX(7px) rotate(-3deg); opacity: 1; }
 	}
 	/* and the line itself keeps re-drawing, so the hand looks live */
-	.freel__arrow-line { stroke-dasharray: 116; animation: freel-ink 2.6s ease-in-out infinite; }
+	.freel__arrow-line { stroke-dasharray: 120; animation: freel-ink 2.6s ease-in-out infinite; }
 	@keyframes freel-ink {
 		0% { stroke-dashoffset: 116; }
 		45%, 100% { stroke-dashoffset: 0; }
@@ -565,7 +570,7 @@ const chips = [
 			gap: 0.7rem;
 			margin-top: 1.1rem;
 		}
-		.freel__scrawl { align-items: center; }
+		.freel__scrawl { align-items: center; flex: none; }
 		.freel__scrawl em { font-size: 1.05rem; text-align: center; }
 		.freel__scrawl-arrow { width: 84px; margin: -0.1rem 0 0; transform: rotate(88deg); }
 		@keyframes freel-point {
