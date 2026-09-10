@@ -771,13 +771,45 @@ const phones = [
 		.ft-signal-form button { width: 100%; justify-content: center; padding: 0.72rem 1rem; }
 	}
 
-	/* ── Campus ──
-	   He liked the hand the nav is set in, so the rest of the footer joins
-	   it. Inputs stay in the system face: handwriting in a form field is
-	   charming for one word and unreadable for an address. */
-	:global(html[data-view='campus']) .site-footer {
+	/* ── The footer's voice ──
+	   Tosky liked the hand the campus footer is set in, so every world's
+	   footer now speaks in it, not just campus. Inputs stay in the system
+	   face: handwriting in a form field is charming for one word and
+	   unreadable for an address. */
+	.site-footer {
 		--ft-hand: 'Bradley Hand', 'Segoe Print', 'Comic Sans MS', cursive;
 	}
+	.ft-pitch,
+	.ft-h,
+	.ft-office-country,
+	.ft-office address,
+	.ft-contact,
+	.ft-signal-h,
+	.ft-signal-copy p,
+	.ft-signal-form button,
+	.ft-news-msg,
+	.ft-tv-badge,
+	.ft-tv-link,
+	.ft-tv-poster-t,
+	.ft-tv-poster-s,
+	.ft-tv-sound,
+	.ft-cta-kicker,
+	.ft-cta-sub,
+	.ft-bottom,
+	.ft-bottom-globe,
+	.ft-clock,
+	.ft-nav-item,
+	.ft-film-txt {
+		font-family: var(--ft-hand);
+	}
+	/* the hand runs small and tight, so the quiet labels get a little more
+	   size and lose the wide tracking that only suits caps */
+	.ft-h {
+		font-size: 0.9rem;
+		letter-spacing: 0.02em;
+		text-transform: none;
+	}
+
 	:global(html[data-view='campus']) .ft-pitch,
 	:global(html[data-view='campus']) .ft-h,
 	:global(html[data-view='campus']) .ft-office-country,

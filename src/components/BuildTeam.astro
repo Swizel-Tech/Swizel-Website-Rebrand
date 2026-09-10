@@ -1,0 +1,242 @@
+---
+// The people who launch with you.
+//
+// The campus hero puts its photographs on the wall — taped, tilted,
+// overlapping. This does the same thing for the founder world, but the
+// prints are cleaner: numbered contact-sheet frames with a strip of tape,
+// fanned so they overlap, and one of them is the room itself. Pick one up
+// (hover / focus) and it straightens, grows and names itself.
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+	class?: string;
+}
+const { class: klass = '' } = Astro.props;
+
+const crew = [
+	{ img: '/images/team/t1.jpg', name: 'Engineering', role: 'senior hands on the build', r: '-4.2deg' },
+	{ img: '/images/team/t2.jpg', name: 'Design & brand', role: 'how it looks and feels', r: '2.8deg' },
+	{ img: '/images/team/t3.jpg', name: 'Product & delivery', role: 'the one who owns your date', r: '-2.2deg' },
+	{ img: '/images/founder/studio.jpg', name: 'The Abuja floor', role: 'where it actually happens', r: '3.6deg', wide: true },
+];
+---
+
+<div class:list={['bteam', klass]}>
+	<span class="bteam__k">
+		<Icon width={13} name="mdi:account-group-outline" />
+		The people who launch with you
+	</span>
+
+	<div class="bteam__rail" role="list">
+		{
+			crew.map((c, i) => (
+				<figure
+					class:list={['bteam__card', { 'bteam__card--wide': c.wide }]}
+					role="listitem"
+					style={`--r:${c.r}; --i:${i}`}
+					tabindex="0"
+				>
+					<span class="bteam__tape" aria-hidden="true" />
+					<span class="bteam__pic">
+						<img src={c.img} alt={`${c.name} at Swizel`} loading="lazy" decoding="async" />
+						<span class="bteam__sheen" aria-hidden="true" />
+						<span class="bteam__no">{String(i + 1).padStart(2, '0')}</span>
+					</span>
+					<figcaption class="bteam__cap">
+						<b>{c.name}</b>
+						<em>{c.role}</em>
+					</figcaption>
+				</figure>
+			))
+		}
+	</div>
+
+	<a href="/about#team" class="bteam__go">
+		Meet the whole crew
+		<Icon width={14} name="mdi:arrow-right" />
+	</a>
+</div>
+
+<style>
+	.bteam {
+		--bt-w: clamp(74px, 8vw, 104px);
+		--bt-lap: clamp(16px, 2vw, 26px);
+		display: grid;
+		gap: 0.5rem;
+		justify-items: start;
+	}
+
+	.bteam__k {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		font-size: 0.64rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--bt-kick, rgba(237, 233, 251, 0.55));
+	}
+	.bteam__k :global(svg) { color: var(--view-accent, #8b5cf6); }
+
+	.bteam__rail {
+		display: flex;
+		align-items: flex-end;
+		padding-top: 0.55rem;
+	}
+	.bteam__rail > * + * { margin-left: calc(var(--bt-lap) * -1); }
+
+	.bteam__card {
+		position: relative;
+		z-index: calc(9 - var(--i));
+		flex: none;
+		width: var(--bt-w);
+		margin: 0;
+		padding: 4px 4px 0;
+		border-radius: 4px;
+		background: linear-gradient(180deg, #fffdf8, #efe9f7);
+		box-shadow:
+			0 1px 0 rgba(255, 255, 255, 0.75) inset,
+			0 18px 34px -20px rgba(0, 0, 0, 0.85),
+			0 4px 10px -6px rgba(0, 0, 0, 0.45);
+		transform: rotate(var(--r)) translateY(0);
+		transform-origin: 50% 100%;
+		transition:
+			transform 0.34s cubic-bezier(0.2, 0.8, 0.25, 1),
+			box-shadow 0.34s ease;
+		cursor: pointer;
+		outline: none;
+	}
+	.bteam__card--wide { width: calc(var(--bt-w) * 1.34); }
+	.bteam__card:hover,
+	.bteam__card:focus-visible {
+		z-index: 20;
+		transform: rotate(0deg) translateY(-9px) scale(1.16);
+		box-shadow:
+			0 1px 0 rgba(255, 255, 255, 0.85) inset,
+			0 34px 60px -26px rgba(0, 0, 0, 0.9),
+			0 0 0 2px color-mix(in srgb, var(--view-accent, #8b5cf6) 45%, transparent);
+	}
+
+	/* a scrap of tape, in the world's colour */
+	.bteam__tape {
+		position: absolute;
+		top: -7px;
+		left: 50%;
+		width: 54%;
+		height: 17px;
+		margin-left: -27%;
+		border-radius: 1px;
+		background: linear-gradient(
+			180deg,
+			color-mix(in srgb, var(--view-accent, #8b5cf6) 40%, rgba(255, 255, 255, 0.6)),
+			color-mix(in srgb, #ec4899 30%, rgba(255, 255, 255, 0.4))
+		);
+		box-shadow: 0 4px 9px -6px rgba(0, 0, 0, 0.7);
+		transform: rotate(calc(var(--r) * -1.7));
+		clip-path: polygon(4% 0, 96% 6%, 100% 94%, 2% 100%);
+		pointer-events: none;
+		opacity: 0.85;
+	}
+
+	.bteam__pic {
+		position: relative;
+		display: block;
+		overflow: hidden;
+		border-radius: 2px;
+		background: #17112c;
+	}
+	.bteam__pic img {
+		display: block;
+		width: 100%;
+		aspect-ratio: 4 / 5;
+		height: auto;
+		object-fit: cover;
+		object-position: 50% 26%;
+		filter: saturate(1.04) contrast(1.02);
+	}
+	.bteam__card--wide .bteam__pic img { aspect-ratio: 4 / 3.4; object-position: 50% 44%; }
+
+	.bteam__sheen {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(110deg, transparent 32%, rgba(255, 255, 255, 0.4) 48%, transparent 62%);
+		transform: translateX(-120%);
+		pointer-events: none;
+	}
+	.bteam__card:hover .bteam__sheen,
+	.bteam__card:focus-visible .bteam__sheen { animation: bt-sheen 0.85s ease-out; }
+	@keyframes bt-sheen { to { transform: translateX(120%); } }
+
+	.bteam__no {
+		position: absolute;
+		right: 3px;
+		bottom: 2px;
+		font-family: ui-monospace, monospace;
+		font-size: 0.48rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		color: #fff;
+		text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+		opacity: 0.85;
+	}
+
+	/* the caption only appears for the one you pick up */
+	.bteam__cap {
+		display: grid;
+		gap: 0.02rem;
+		padding: 0.22rem 0.15rem 0.3rem;
+		text-align: center;
+		color: #2b1f52;
+	}
+	.bteam__cap b {
+		display: block;
+		font-size: 0.5rem;
+		font-weight: 800;
+		letter-spacing: 0.04em;
+		line-height: 1.15;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.bteam__cap em {
+		display: none;
+		font-style: normal;
+		font-size: 0.44rem;
+		line-height: 1.2;
+		opacity: 0.6;
+	}
+	.bteam__card:hover .bteam__cap em,
+	.bteam__card:focus-visible .bteam__cap em { display: block; }
+
+	.bteam__go {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		margin-top: 0.35rem;
+		font-size: 0.78rem;
+		font-weight: 800;
+		color: var(--view-accent, #8b5cf6);
+		transition: gap 0.24s ease;
+	}
+	.bteam__go:hover { gap: 0.65rem; }
+
+	@media (max-width: 1023px) {
+		.bteam { justify-items: center; justify-self: center; }
+		.bteam__rail { justify-content: center; }
+	}
+	@media (max-width: 420px) {
+		.bteam { --bt-w: clamp(64px, 19vw, 84px); --bt-lap: 14px; }
+		.bteam__k { font-size: 0.58rem; letter-spacing: 0.12em; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.bteam__card, .bteam__sheen { transition: none !important; animation: none !important; }
+	}
+
+	:global(html:not(.dark)) .bteam__k { color: rgba(29, 20, 48, 0.6); }
+	:global(html:not(.dark)) .bteam__card {
+		box-shadow:
+			0 1px 0 rgba(255, 255, 255, 0.9) inset,
+			0 18px 30px -20px rgba(40, 24, 70, 0.6),
+			0 3px 8px -5px rgba(40, 24, 70, 0.4);
+	}
+</style>

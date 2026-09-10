@@ -1,18 +1,18 @@
 ---
-// The pitch deck — what Swizel actually does, presented rather than listed.
+// The Swizel services pitch deck — staged as a screening, not a page.
 //
-// A founder does not read a services grid; they sit through a deck. So this
-// is a deck: numbered slides, a clicker, a progress bar, arrow keys, swipe,
-// and a play button that runs it hands-free.
+// A founder does not read a services grid; they sit through a pitch. So the
+// section is an auditorium: two spotlights sweep the wall, a velvet curtain
+// is closed over the screen until you raise it, and behind it seven slides
+// run with a clicker, arrow keys, swipe and an autoplay.
 //
-// Every slide is built like a real deck slide: a gradient headline, three
-// pill buttons for what's inside, a device rig carrying a live product, three
-// annotation cards floating off it, a strip of house numbers along the
-// bottom, and the product's own card with a way in.
+// Each slide argues in four sticky notes — the things a founder actually
+// writes down — and proves itself with a real product on real hardware.
+// Under the stage there is a Q&A rail: pick a question or type one, and the
+// answer is projected over the slide.
 //
-// And there is a light switch. Press it and the room goes out: the whole
-// site dims behind a blackout, the deck lifts into the middle of the screen
-// at theatre size, and nothing else is competing for attention.
+// "Kill the lights" takes the whole thing full screen and blacks out the
+// site behind it.
 import { Icon } from 'astro-icon/components';
 
 interface Slide {
@@ -22,21 +22,14 @@ interface Slide {
 	title: string;
 	em: string;
 	line: string;
-	gives: { label: string; icon: string }[];
-	notes: { title: string; body: string; icon: string; tint: string }[];
+	/** four, always four — the notes a founder would actually write down */
+	notes: { t: string; d: string }[];
+	marks: { title: string; body: string; icon: string; tint: string }[];
 	accent: string;
 	accent2: string;
-	work: {
-		name: string;
-		sector: string;
-		img: string;
-		host: string;
-		url: string;
-		note: string;
-	};
+	work: { name: string; sector: string; img: string; host: string; url: string; note: string };
 }
 
-// the house numbers, the same in every world — they sit under every slide
 const figures = [
 	{ v: '7+', l: 'Years shipping', icon: 'mdi:calendar-check-outline' },
 	{ v: '25+', l: 'Specialists', icon: 'mdi:account-group-outline' },
@@ -52,12 +45,13 @@ const slides: Slide[] = [
 		title: 'Websites and apps,',
 		em: 'built to last.',
 		line: 'Web, iOS and Android, e-commerce, portals and the APIs behind them — written by senior engineers, tested, and handed over documented.',
-		gives: [
-			{ label: 'Web & mobile apps', icon: 'mdi:cellphone-link' },
-			{ label: 'E-commerce & portals', icon: 'mdi:cart-outline' },
-			{ label: 'APIs and integrations', icon: 'mdi:cloud-outline' },
-		],
 		notes: [
+			{ t: 'Web & mobile apps', d: 'One team, both platforms.' },
+			{ t: 'E-commerce & portals', d: 'Carts, payments, dashboards.' },
+			{ t: 'APIs & integrations', d: 'It talks to what you already run.' },
+			{ t: 'You own the code', d: 'Repo handed over, documented.' },
+		],
+		marks: [
 			{ title: 'Fast & reliable', body: 'Optimised for performance and scale.', icon: 'mdi:lightning-bolt', tint: '#8b5cf6' },
 			{ title: 'Secure', body: 'Built to current security practice.', icon: 'mdi:shield-check-outline', tint: '#34d399' },
 			{ title: 'Scalable', body: 'Ready for your next big idea.', icon: 'mdi:cloud-upload-outline', tint: '#60a5fa' },
@@ -65,12 +59,9 @@ const slides: Slide[] = [
 		accent: '#8b5cf6',
 		accent2: '#60a5fa',
 		work: {
-			name: 'Brixmarket',
-			sector: 'Real-estate marketplace',
-			img: '/images/portfolio/brix%20marketplace.jpg',
-			host: 'brixmarket.com',
-			url: 'https://brixmarket.com/',
-			note: 'A full marketplace — listings, agents, search and payments.',
+			name: 'Brixmarket', sector: 'Real-estate marketplace',
+			img: '/images/portfolio/brix%20marketplace.jpg', host: 'brixmarket.com',
+			url: 'https://brixmarket.com/', note: 'A full marketplace — listings, agents, search and payments.',
 		},
 	},
 	{
@@ -80,12 +71,13 @@ const slides: Slide[] = [
 		title: 'Design people',
 		em: 'actually feel.',
 		line: 'Brand identity, interface and motion. The part that decides whether a first-time user stays or leaves, treated as seriously as the code.',
-		gives: [
-			{ label: 'Brand identity', icon: 'mdi:shape-outline' },
-			{ label: 'UI/UX & prototypes', icon: 'mdi:gesture-tap-button' },
-			{ label: 'Design systems', icon: 'mdi:view-grid-outline' },
-		],
 		notes: [
+			{ t: 'Brand identity', d: 'Logo, palette, voice, the lot.' },
+			{ t: 'UI/UX', d: 'Flows that need no explaining.' },
+			{ t: 'Clickable prototype', d: 'Pitch it before we build it.' },
+			{ t: 'Design system', d: 'Every screen from the same parts.' },
+		],
+		marks: [
 			{ title: 'Clickable first', body: 'You feel it before we build it.', icon: 'mdi:cursor-default-click-outline', tint: '#22d3ee' },
 			{ title: 'One system', body: 'Every screen from the same parts.', icon: 'mdi:puzzle-outline', tint: '#a78bfa' },
 			{ title: 'Handover ready', body: 'Dev-ready files, not pretty pictures.', icon: 'mdi:file-check-outline', tint: '#f472b6' },
@@ -93,12 +85,9 @@ const slides: Slide[] = [
 		accent: '#22d3ee',
 		accent2: '#a78bfa',
 		work: {
-			name: 'Beauty Hive',
-			sector: 'Beauty & commerce',
-			img: '/images/portfolio/beauty-hive.webp',
-			host: 'beautyhive.ng',
-			url: '/portfolio',
-			note: 'Identity, storefront and the whole visual language.',
+			name: 'Beauty Hive', sector: 'Beauty & commerce',
+			img: '/images/portfolio/beauty-hive.webp', host: 'beautyhive.ng',
+			url: '/portfolio', note: 'Identity, storefront and the whole visual language.',
 		},
 	},
 	{
@@ -108,12 +97,13 @@ const slides: Slide[] = [
 		title: 'Put the busywork',
 		em: 'on autopilot.',
 		line: 'Assistants, smart search, document extraction and workflow automation — bolted onto the product you already have, no rebuild required.',
-		gives: [
-			{ label: 'AI features & chatbots', icon: 'mdi:robot-happy-outline' },
-			{ label: 'Workflow automation', icon: 'mdi:sync' },
-			{ label: 'Data pipelines', icon: 'mdi:database-arrow-right-outline' },
-		],
 		notes: [
+			{ t: 'AI features', d: 'Search, summaries, assistants.' },
+			{ t: 'Chatbots', d: 'Answering at 2am, in your voice.' },
+			{ t: 'Workflow automation', d: 'The manual steps disappear.' },
+			{ t: 'Data pipelines', d: 'Numbers ready to act on.' },
+		],
+		marks: [
 			{ title: 'Bolt-on', body: 'Added to what you run today.', icon: 'mdi:puzzle-plus-outline', tint: '#f472b6' },
 			{ title: 'Measured', body: 'We count the hours it gives back.', icon: 'mdi:timer-outline', tint: '#fbbf24' },
 			{ title: 'Human in the loop', body: 'It assists your team, not replaces it.', icon: 'mdi:hand-heart-outline', tint: '#a78bfa' },
@@ -121,12 +111,9 @@ const slides: Slide[] = [
 		accent: '#f472b6',
 		accent2: '#a78bfa',
 		work: {
-			name: 'JobbLander',
-			sector: 'Careers · AI-enhanced',
-			img: '/images/portfolio/shot-jobblander.jpg',
-			host: 'jobblander.com',
-			url: 'https://jobblander.com/',
-			note: 'Job application as a service: AI-enhanced, human-perfected.',
+			name: 'JobbLander', sector: 'Careers · AI-enhanced',
+			img: '/images/portfolio/shot-jobblander.jpg', host: 'jobblander.com',
+			url: 'https://jobblander.com/', note: 'Job application as a service: AI-enhanced, human-perfected.',
 		},
 	},
 	{
@@ -136,12 +123,13 @@ const slides: Slide[] = [
 		title: 'The plan before',
 		em: 'the pixels.',
 		line: 'Discovery, research and a roadmap you can hold a team to — scoped so the first release is the smallest thing that can actually win.',
-		gives: [
-			{ label: 'Discovery sprints', icon: 'mdi:map-search-outline' },
-			{ label: 'Product roadmaps', icon: 'mdi:map-marker-path' },
-			{ label: 'MVP scoping', icon: 'mdi:target' },
-		],
 		notes: [
+			{ t: 'Discovery sprint', d: 'A week to kill the guesswork.' },
+			{ t: 'Product roadmap', d: 'What ships, and in what order.' },
+			{ t: 'MVP scoping', d: 'The smallest thing that can win.' },
+			{ t: 'Market & rival map', d: 'Where the gap actually is.' },
+		],
+		marks: [
 			{ title: 'In writing', body: 'Scope agreed before code starts.', icon: 'mdi:file-document-edit-outline', tint: '#a78bfa' },
 			{ title: 'Your people', body: 'Workshops with your team in the room.', icon: 'mdi:account-multiple-outline', tint: '#34d399' },
 			{ title: 'Portable', body: 'Take the roadmap to any team.', icon: 'mdi:briefcase-arrow-left-right-outline', tint: '#60a5fa' },
@@ -149,12 +137,9 @@ const slides: Slide[] = [
 		accent: '#a78bfa',
 		accent2: '#34d399',
 		work: {
-			name: 'Hemam Synergy',
-			sector: 'Energy & advisory',
-			img: '/images/portfolio/shot-hemamsynergy.jpg',
-			host: 'hemamsynergy.com',
-			url: 'https://hemamsynergy.com/',
-			note: 'The positioning and site behind an ~€850,000 funding win.',
+			name: 'Hemam Synergy', sector: 'Energy & advisory',
+			img: '/images/portfolio/shot-hemamsynergy.jpg', host: 'hemamsynergy.com',
+			url: 'https://hemamsynergy.com/', note: 'The positioning and site behind an ~€850,000 funding win.',
 		},
 	},
 	{
@@ -164,12 +149,13 @@ const slides: Slide[] = [
 		title: 'Marketing that',
 		em: 'moves numbers.',
 		line: 'SEO, paid, social, content and email — run for you or with you, and read against the only metric that matters: what converts.',
-		gives: [
-			{ label: 'SEO & paid ads', icon: 'mdi:magnify' },
-			{ label: 'Social & content', icon: 'mdi:instagram' },
-			{ label: 'Email & funnels', icon: 'mdi:email-fast-outline' },
-		],
 		notes: [
+			{ t: 'SEO & paid', d: 'Found by people ready to buy.' },
+			{ t: 'Social, run for you', d: 'Posted, replied to, grown.' },
+			{ t: 'Content & email', d: 'The follow-up that closes.' },
+			{ t: 'Read weekly', d: 'Numbers you see, not a monthly PDF.' },
+		],
+		marks: [
 			{ title: 'Channel fit', body: 'Only where your buyers actually are.', icon: 'mdi:target-account', tint: '#fb7185' },
 			{ title: 'Read weekly', body: 'Numbers you see, not a monthly PDF.', icon: 'mdi:chart-line', tint: '#fbbf24' },
 			{ title: 'Yours to keep', body: 'We hand over the playbook.', icon: 'mdi:book-open-page-variant-outline', tint: '#22d3ee' },
@@ -177,12 +163,9 @@ const slides: Slide[] = [
 		accent: '#fb7185',
 		accent2: '#fbbf24',
 		work: {
-			name: 'AnchorStep Physiotherapy',
-			sector: 'Healthcare',
-			img: '/images/portfolio/shot-anchorstep.jpg',
-			host: 'anchorsteppt.com',
-			url: 'https://anchorsteppt.com/',
-			note: 'From zero to a booking brand, across every platform.',
+			name: 'AnchorStep Physiotherapy', sector: 'Healthcare',
+			img: '/images/portfolio/shot-anchorstep.jpg', host: 'anchorsteppt.com',
+			url: 'https://anchorsteppt.com/', note: 'Site, booking system and the social account — all ours to run.',
 		},
 	},
 	{
@@ -192,12 +175,13 @@ const slides: Slide[] = [
 		title: 'A senior squad,',
 		em: 'on your side.',
 		line: 'Designers, engineers and a PM embedded with your team for as long as you need them — your roadmap, our bench, no hiring cycle.',
-		gives: [
-			{ label: 'Embedded squads', icon: 'mdi:account-supervisor-outline' },
-			{ label: 'Fractional CTO & PM', icon: 'mdi:badge-account-outline' },
-			{ label: 'Staff augmentation', icon: 'mdi:account-plus-outline' },
-		],
 		notes: [
+			{ t: 'Embedded squad', d: 'In your standups by Monday.' },
+			{ t: 'Fractional CTO', d: 'Senior judgement, part-time cost.' },
+			{ t: 'Staff augmentation', d: 'Add hands without adding HR.' },
+			{ t: 'Scale either way', d: 'Up or down, by the month.' },
+		],
+		marks: [
 			{ title: 'Start in days', body: 'A bench that is already hired.', icon: 'mdi:rocket-launch-outline', tint: '#34d399' },
 			{ title: 'Your process', body: 'We join your board and your standups.', icon: 'mdi:view-column-outline', tint: '#60a5fa' },
 			{ title: 'Scale either way', body: 'Add or stand down by the month.', icon: 'mdi:arrow-expand-vertical', tint: '#a78bfa' },
@@ -205,12 +189,9 @@ const slides: Slide[] = [
 		accent: '#34d399',
 		accent2: '#60a5fa',
 		work: {
-			name: 'Skaldon WatchTower ERP',
-			sector: 'Infrastructure',
-			img: '/images/portfolio/shot-skaldonerp.jpg',
-			host: 'skaldongrouperp.netlify.app',
-			url: 'https://skaldongrouperp.netlify.app/',
-			note: 'An internal ERP, built and run alongside their own people.',
+			name: 'Skaldon WatchTower ERP', sector: 'Infrastructure',
+			img: '/images/portfolio/shot-skaldonerp.jpg', host: 'skaldongrouperp.netlify.app',
+			url: 'https://skaldongrouperp.netlify.app/', note: 'An internal ERP, built and run alongside their own people.',
 		},
 	},
 	{
@@ -220,12 +201,13 @@ const slides: Slide[] = [
 		title: 'It keeps running',
 		em: 'while you sleep.',
 		line: 'Hosting, monitoring, security, backups and same-day support — for what we built, or for the product you already have and need stabilised.',
-		gives: [
-			{ label: 'Hosting & DevOps', icon: 'mdi:server-network-outline' },
-			{ label: '24/7 monitoring', icon: 'mdi:radar' },
-			{ label: 'Security & backups', icon: 'mdi:lock-outline' },
-		],
 		notes: [
+			{ t: 'Hosting & DevOps', d: 'Infrastructure that behaves.' },
+			{ t: '24/7 monitoring', d: 'We see it before your users do.' },
+			{ t: 'Security & backups', d: 'Hardened, patched, recoverable.' },
+			{ t: 'Same-day support', d: 'A real person, fast.' },
+		],
+		marks: [
 			{ title: 'We see it first', body: 'Alerts before your users notice.', icon: 'mdi:bell-alert-outline', tint: '#60a5fa' },
 			{ title: 'Patched', body: 'Hardened and recoverable, always.', icon: 'mdi:shield-sync-outline', tint: '#34d399' },
 			{ title: 'Same-day', body: 'A real person answers, fast.', icon: 'mdi:headset', tint: '#f472b6' },
@@ -233,29 +215,73 @@ const slides: Slide[] = [
 		accent: '#60a5fa',
 		accent2: '#22d3ee',
 		work: {
-			name: 'The Presidential Diary',
-			sector: 'Media · daily publishing',
-			img: '/images/portfolio/shot-presidentialdiary.jpg',
-			host: 'thepresidentialdiary.com.ng',
-			url: 'https://thepresidentialdiary.com.ng/',
-			note: 'Publishing daily, under load, without a bad morning.',
+			name: 'The Presidential Diary', sector: 'Media · daily publishing',
+			img: '/images/portfolio/shot-presidentialdiary.jpg', host: 'thepresidentialdiary.com.ng',
+			url: 'https://thepresidentialdiary.com.ng/', note: 'Publishing daily, under load, without a bad morning.',
 		},
+	},
+];
+
+// The questions founders actually ask, with the answers we actually give.
+// The free-text box matches on these keywords before falling back to "ask us".
+const qa = [
+	{
+		q: 'How much does it cost?',
+		k: ['cost', 'price', 'budget', 'much', 'pay', 'fee', 'quote', 'expensive', 'naira', 'dollar'],
+		a: 'It is scoped, not guessed. We run a short discovery, agree exactly what is being built, then quote a fixed price for that scope — so the number you get is the number you pay. Smaller builds start modestly; a full marketplace is a different conversation. Tell us the idea and you get a real figure within a business day.',
+	},
+	{
+		q: 'How long until I launch?',
+		k: ['long', 'time', 'week', 'fast', 'quick', 'deadline', 'when', 'launch', 'timeline'],
+		a: 'Six weeks is our usual ceiling for a first release, not a floor. A booking site or a landing product often goes live in two to three; a marketplace or an ERP takes longer. We tell you which one you are on day one, in writing, and you watch the build every week.',
+	},
+	{
+		q: 'Who owns the code?',
+		k: ['own', 'code', 'repo', 'ip', 'rights', 'source', 'licence', 'license'],
+		a: 'You do. Every repository, domain, account and design file is yours, handed over documented at launch. We do not hold your product hostage, and you are free to take it to any other team whenever you like.',
+	},
+	{
+		q: 'Can you take over an existing product?',
+		k: ['existing', 'take over', 'takeover', 'inherit', 'already', 'built', 'rescue', 'legacy', 'fix', 'another'],
+		a: 'Often, yes. We start with a paid audit of what you have — the code, the infrastructure and the risks — then give you an honest call: stabilise it, extend it, or rebuild the parts that are costing you. Plenty of our long-running clients came to us this way.',
+	},
+	{
+		q: 'Do you work outside Nigeria?',
+		k: ['nigeria', 'outside', 'abroad', 'country', 'international', 'remote', 'global', 'timezone', 'us', 'uk'],
+		a: 'Yes. We are based in Abuja and our work runs in 10+ countries. We work in your hours for the meetings that matter, and everything else happens on a board you can see any time you like.',
+	},
+	{
+		q: 'What happens after launch?',
+		k: ['after', 'launch', 'support', 'maintain', 'maintenance', 'grow', 'marketing', 'scale', 'stay'],
+		a: 'We stay. Hosting, monitoring, backups and same-day fixes as standard — and if you want it, our marketing team keeps growing the thing we just built. Ask about AnchorStep: we built the site and the booking system, then ran the social account too.',
 	},
 ];
 ---
 
 <section class="pdeck-sec" id="fd-deck" data-cursor="repo">
+	<span class="pdeck-ground" aria-hidden="true"></span>
+
 	<div class="pdeck-wrap">
 		<div class="pdeck-head fd-rev">
-			<span class="pdeck-stamp">The deck</span>
+			<span class="pdeck-stamp">
+				<span class="pdeck-stamp-dot" aria-hidden="true"></span>
+				Now showing
+			</span>
 			<h2 class="pdeck-h">What we <em>actually do.</em></h2>
 			<p class="pdeck-p">
-				Seven slides, seven disciplines, and a real product behind each
-				one. Kill the lights and take it full screen.
+				Seven slides, seven disciplines, a real product behind each one —
+				and a Q&amp;A at the end of the row. Raise the curtain.
 			</p>
 		</div>
 
 		<div class="pdeck fd-rev" id="pdeck" data-pdeck style={`--pd-acc:${slides[0].accent}`}>
+			<!-- the house: two beams that sweep the wall behind everything -->
+			<span class="pdeck__house" aria-hidden="true">
+				<span class="pdeck__beam pdeck__beam--l"></span>
+				<span class="pdeck__beam pdeck__beam--r"></span>
+				<span class="pdeck__dust"></span>
+			</span>
+
 			<!-- the clicker rail -->
 			<div class="pdeck__rail">
 				<span class="pdeck__count">
@@ -273,7 +299,9 @@ const slides: Slide[] = [
 								aria-selected={i === 0 ? 'true' : 'false'}
 								aria-label={`${s.kicker} — slide ${i + 1}`}
 								style={`--d:${s.accent}`}
-							/>
+							>
+								<span class="pdeck__dot-tip">{s.kicker}</span>
+							</button>
 						))
 					}
 				</div>
@@ -306,7 +334,6 @@ const slides: Slide[] = [
 						>
 							<span class="pdeck__wash" aria-hidden="true" />
 
-							<!-- left: the argument -->
 							<div class="pdeck__copy">
 								<span class="pdeck__kick">
 									<Icon width={14} name={s.kickerIcon} />
@@ -317,19 +344,17 @@ const slides: Slide[] = [
 									{s.title} <em>{s.em}</em>
 								</h3>
 								<p class="pdeck__line">{s.line}</p>
-								<ul class="pdeck__gives">
-									{s.gives.map((g) => (
-										<li>
-											<span class="pdeck__give-ic">
-												<Icon width={15} name={g.icon} />
-											</span>
-											{g.label}
-											<Icon class="pdeck__give-go" width={13} name="mdi:arrow-right" />
+
+								<!-- four notes, the way a founder writes them down -->
+								<ul class="pdeck__stickies">
+									{s.notes.map((nt, k) => (
+										<li style={`--k:${k}`}>
+											<b>{nt.t}</b>
+											<em>{nt.d}</em>
 										</li>
 									))}
 								</ul>
 
-								<!-- the house numbers, along the bottom of the argument -->
 								<ul class="pdeck__figs">
 									{figures.map((f) => (
 										<li>
@@ -341,12 +366,10 @@ const slides: Slide[] = [
 								</ul>
 							</div>
 
-							<!-- right: the proof, on real hardware -->
 							<div class="pdeck__show">
 								<span class="pdeck__glow" aria-hidden="true" />
 
 								<div class="pdeck__rig">
-									<!-- laptop -->
 									<span class="pdeck__lap">
 										<span class="pdeck__lap-screen">
 											<img
@@ -362,18 +385,16 @@ const slides: Slide[] = [
 										<span class="pdeck__lap-base" aria-hidden="true" />
 									</span>
 
-									<!-- phone, overlapping the laptop's corner -->
 									<span class="pdeck__phone" aria-hidden="true">
 										<span class="pdeck__phone-screen">
 											<img src={s.work.img} alt="" loading="lazy" decoding="async" />
 										</span>
 									</span>
 
-									<!-- the annotations that float off the hardware -->
-									{s.notes.map((nt, k) => (
-										<span class={`pdeck__note pdeck__note--${k + 1}`} style={`--t:${nt.tint}; --k:${k}`}>
-											<span class="pdeck__note-ic"><Icon width={15} name={nt.icon} /></span>
-											<span class="pdeck__note-txt">
+									{s.marks.map((nt, k) => (
+										<span class={`pdeck__mark pdeck__mark--${k + 1}`} style={`--t:${nt.tint}; --k:${k}`}>
+											<span class="pdeck__mark-ic"><Icon width={15} name={nt.icon} /></span>
+											<span class="pdeck__mark-txt">
 												<b>{nt.title}</b>
 												<em>{nt.body}</em>
 											</span>
@@ -381,7 +402,6 @@ const slides: Slide[] = [
 									))}
 								</div>
 
-								<!-- the product's own card -->
 								<a
 									class="pdeck__work"
 									href={s.work.url}
@@ -405,6 +425,28 @@ const slides: Slide[] = [
 					))
 				}
 
+				<!-- the projected answer, over whichever slide is up -->
+				<div class="pdeck__answer" data-pd-answer hidden>
+					<span class="pdeck__answer-beam" aria-hidden="true"></span>
+					<div class="pdeck__answer-card">
+						<span class="pdeck__answer-k">
+							<Icon width={14} name="mdi:comment-question-outline" />
+							You asked
+						</span>
+						<h4 data-pd-answer-q>…</h4>
+						<p data-pd-answer-a>…</p>
+						<div class="pdeck__answer-row">
+							<a href="/contact" class="pdeck__answer-cta">
+								Ask us properly
+								<Icon width={15} name="mdi:arrow-right" />
+							</a>
+							<button type="button" class="pdeck__answer-x" data-pd-answer-close>
+								Back to the deck
+							</button>
+						</div>
+					</div>
+				</div>
+
 				<button class="pdeck__nav pdeck__nav--prev" type="button" data-pd-prev aria-label="Previous slide">
 					<Icon width={20} name="mdi:chevron-left" />
 				</button>
@@ -413,10 +455,64 @@ const slides: Slide[] = [
 				</button>
 			</div>
 
-			<!-- only visible with the lights out -->
+			<!-- ── the Q&A rail ─────────────────────────────────────── -->
+			<div class="pdeck__qa">
+				<span class="pdeck__qa-k">
+					<Icon width={15} name="mdi:hand-back-left-outline" />
+					Questions from the floor
+				</span>
+				<div class="pdeck__qa-chips">
+					{
+						qa.map((item, i) => (
+							<button class="pdeck__qa-chip" type="button" data-pd-ask={i}>
+								{item.q}
+							</button>
+						))
+					}
+				</div>
+				<form class="pdeck__qa-form" data-pd-qa-form>
+					<Icon class="pdeck__qa-ic" width={16} name="mdi:magnify" />
+					<input
+						type="text"
+						data-pd-qa-input
+						placeholder="…or type your own question"
+						aria-label="Ask the deck a question"
+						autocomplete="off"
+					/>
+					<button type="submit" aria-label="Ask">
+						<Icon width={16} name="mdi:send" />
+					</button>
+				</form>
+			</div>
+
+			<!-- ── the curtain, closed until you raise it ───────────── -->
+			<div class="pdeck__curtain" data-pd-curtain>
+				<span class="pdeck__velvet pdeck__velvet--l" aria-hidden="true"></span>
+				<span class="pdeck__velvet pdeck__velvet--r" aria-hidden="true"></span>
+				<span class="pdeck__pelmet" aria-hidden="true"></span>
+				<div class="pdeck__marquee">
+					<span class="pdeck__marquee-k">
+						<span class="pdeck__marquee-dot" aria-hidden="true"></span>
+						Swizel presents
+					</span>
+					<h3 class="pdeck__marquee-h">The&nbsp;services <em>pitch&nbsp;deck</em></h3>
+					<p class="pdeck__marquee-p">
+						Seven disciplines. Seven live products. About ninety seconds.
+					</p>
+					<button class="pdeck__marquee-go" type="button" data-pd-open>
+						<Icon width={17} name="mdi:movie-open-play-outline" />
+						Raise the curtain
+					</button>
+					<span class="pdeck__marquee-s">or it opens by itself in a moment</span>
+				</div>
+			</div>
+
+			<!-- the answers, handed to the clicker script -->
+			<script type="application/json" data-pd-qa set:html={JSON.stringify(qa)}></script>
+
 			<button class="pdeck__exit" type="button" data-pd-exit>
 				<Icon width={15} name="mdi:close" />
-				Lights on
+				Close
 				<kbd>Esc</kbd>
 			</button>
 			<span class="pdeck__hint">← → to move · Esc to leave</span>
@@ -424,70 +520,326 @@ const slides: Slide[] = [
 	</div>
 </section>
 
-<!-- the blackout, portalled to the end of the body by the script -->
 <div class="pdeck-blackout" data-pd-blackout hidden></div>
 
 <style>
-	/* The founder body's shared type lives in that component's scoped sheet,
-	   so it cannot reach in here — the deck carries its own head, tuned to
-	   match. The --fd-* tokens do inherit, so the colours stay in step. */
+	/* ══ the auditorium ══ */
 	.pdeck-sec {
 		position: relative;
-		padding-block: clamp(2rem, 5vw, 3.5rem);
+		isolation: isolate;
+		padding-block: clamp(3rem, 7vw, 5.5rem);
 	}
-	.pdeck-wrap { max-width: 78rem; margin: 0 auto; }
+	/* this section's own ground: a lit room, not the page's lavender */
+	.pdeck-ground {
+		position: absolute;
+		inset: 0 calc(50% - 50vw);
+		z-index: -1;
+		pointer-events: none;
+		background:
+			radial-gradient(60% 50% at 50% 0%, rgba(139, 92, 246, 0.22), transparent 70%),
+			radial-gradient(80% 60% at 50% 100%, rgba(236, 72, 153, 0.12), transparent 66%),
+			linear-gradient(180deg, #241b46 0%, #16113000 100%),
+			linear-gradient(180deg, #1b1438, #120e28 60%, #171040);
+	}
+	.pdeck-wrap { max-width: 84rem; margin: 0 auto; padding-inline: clamp(0.75rem, 2vw, 1.5rem); }
 	.pdeck-head {
 		text-align: center;
-		max-width: 46rem;
-		margin: 0 auto clamp(1.5rem, 3vw, 2.25rem);
+		max-width: 48rem;
+		margin: 0 auto clamp(1.5rem, 3vw, 2.4rem);
 	}
 	.pdeck-stamp {
-		display: inline-block;
-		font-size: 0.72rem;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		font-size: 0.7rem;
 		font-weight: 800;
-		letter-spacing: 0.14em;
+		letter-spacing: 0.2em;
 		text-transform: uppercase;
-		color: var(--fd-acc, #8b5cf6);
-		border: 1.5px dashed color-mix(in srgb, var(--fd-acc, #8b5cf6) 55%, transparent);
-		padding: 0.35rem 0.8rem;
-		border-radius: 0.5rem;
-		transform: rotate(-2deg);
+		color: #fde68a;
+		border: 1px solid rgba(253, 230, 138, 0.4);
+		background: rgba(253, 230, 138, 0.08);
+		padding: 0.36rem 0.9rem;
+		border-radius: 9999px;
 		margin-bottom: 1rem;
 	}
+	.pdeck-stamp-dot {
+		width: 7px;
+		height: 7px;
+		border-radius: 9999px;
+		background: #f43f5e;
+		box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.7);
+		animation: pd-onair 2s ease-out infinite;
+	}
+	@keyframes pd-onair { to { box-shadow: 0 0 0 10px rgba(244, 63, 94, 0); } }
 	.pdeck-h {
-		font-size: clamp(1.9rem, 4.2vw, 3rem);
+		font-size: clamp(2.1rem, 5vw, 3.6rem);
 		font-weight: 850;
-		letter-spacing: -0.025em;
-		line-height: 1.06;
-		margin: 0 0 1rem;
-		color: var(--fd-ink, #f1edfb);
+		letter-spacing: -0.03em;
+		line-height: 1.04;
+		margin: 0 0 0.9rem;
+		color: #fff;
 	}
 	.pdeck-h em {
 		font-style: italic;
-		background: linear-gradient(95deg, var(--fd-acc, #8b5cf6), var(--fd-acc2, #ec4899));
+		background: linear-gradient(95deg, #c4b5fd, #f472b6);
 		-webkit-background-clip: text;
 		background-clip: text;
 		-webkit-text-fill-color: transparent;
 		padding-right: 0.06em;
 	}
 	.pdeck-p {
-		font-size: 1.02rem;
+		font-size: clamp(0.95rem, 1.4vw, 1.06rem);
 		line-height: 1.65;
-		color: var(--fd-muted, rgba(241, 237, 251, 0.62));
-		max-width: 34rem;
+		color: rgba(244, 241, 255, 0.66);
+		max-width: 36rem;
 		margin: 0 auto;
-		text-align: center;
 	}
 
-	/* ══ the deck shell ══ */
+	/* ══ the screen ══ */
 	.pdeck {
 		--pd-ink: #f4f1ff;
 		position: relative;
-		border-radius: 1.5rem;
-		border: 1px solid rgba(255, 255, 255, 0.09);
-		background: linear-gradient(168deg, #0f0b22, #07050f 62%, #0b0818);
-		box-shadow: 0 46px 110px -46px rgba(0, 0, 0, 0.95);
+		border-radius: 1.6rem;
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		/* lighter than before: a lit screen in a dim room, not a black hole */
+		background: linear-gradient(168deg, #241d47, #191338 58%, #1e1740);
+		box-shadow:
+			0 0 0 1px rgba(255, 255, 255, 0.05),
+			0 60px 130px -50px rgba(0, 0, 0, 0.95),
+			0 0 120px -30px rgba(139, 92, 246, 0.35);
 		overflow: hidden;
+	}
+
+	/* the beams */
+	.pdeck__house { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+	.pdeck__beam {
+		position: absolute;
+		top: -46%;
+		width: 44%;
+		height: 150%;
+		background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.02) 55%, transparent 78%);
+		filter: blur(14px);
+		mix-blend-mode: screen;
+		transform-origin: 50% 0;
+	}
+	.pdeck__beam--l {
+		left: -8%;
+		clip-path: polygon(42% 0, 58% 0, 100% 100%, 0% 100%);
+		animation: pd-sweep-l 13s ease-in-out infinite alternate;
+	}
+	.pdeck__beam--r {
+		right: -8%;
+		clip-path: polygon(42% 0, 58% 0, 100% 100%, 0% 100%);
+		animation: pd-sweep-r 16s ease-in-out infinite alternate;
+	}
+	@keyframes pd-sweep-l {
+		from { transform: rotate(-11deg); opacity: 0.55; }
+		to { transform: rotate(7deg); opacity: 0.85; }
+	}
+	@keyframes pd-sweep-r {
+		from { transform: rotate(10deg); opacity: 0.8; }
+		to { transform: rotate(-6deg); opacity: 0.5; }
+	}
+	/* the motes the beams catch */
+	.pdeck__dust {
+		position: absolute;
+		inset: 0;
+		opacity: 0.35;
+		background-image:
+			radial-gradient(1.4px 1.4px at 18% 32%, #fff, transparent),
+			radial-gradient(1.2px 1.2px at 74% 22%, #fff, transparent),
+			radial-gradient(1.6px 1.6px at 46% 68%, #fff, transparent),
+			radial-gradient(1.1px 1.1px at 88% 74%, #fff, transparent),
+			radial-gradient(1.3px 1.3px at 30% 84%, #fff, transparent);
+		animation: pd-drift 22s linear infinite;
+	}
+	@keyframes pd-drift {
+		to { transform: translate3d(-18px, -26px, 0); }
+	}
+
+	/* ── the curtain ─────────────────────────────────────────── */
+	/* Above everything, always: closed it hides the whole screen, and once
+	   drawn back it hangs in FRONT of the slide's edges, the way real
+	   curtains do. It simply stops taking clicks. */
+	.pdeck__curtain {
+		position: absolute;
+		inset: 0;
+		z-index: 30;
+		display: grid;
+		place-items: center;
+		overflow: hidden;
+	}
+	/* Once it is up, the curtain does not vanish — it stays hung, drawn back
+	   to the edges on its hooks, so the deck reads as a stage all the way
+	   through. It just stops taking clicks. */
+	.pdeck.is-open .pdeck__curtain { pointer-events: none; }
+
+	.pdeck__velvet {
+		position: absolute;
+		top: -1.4rem;
+		bottom: 0;
+		z-index: 1;
+		width: 52%;
+		background:
+			repeating-linear-gradient(
+				90deg,
+				rgba(0, 0, 0, 0.42) 0 10px,
+				rgba(255, 255, 255, 0.06) 20px,
+				rgba(0, 0, 0, 0.42) 34px
+			),
+			linear-gradient(180deg, #5c1230, #3d0a20 55%, #2a0716);
+		box-shadow: inset 0 40px 60px -30px rgba(0, 0, 0, 0.8);
+		transform-origin: 50% 0;
+		transition: transform 1.15s cubic-bezier(0.62, 0, 0.3, 1);
+		will-change: transform;
+	}
+	.pdeck__velvet--l { left: 0; border-right: 1px solid rgba(0, 0, 0, 0.5); }
+	.pdeck__velvet--r { right: 0; border-left: 1px solid rgba(0, 0, 0, 0.5); }
+
+	/* Drawn back and hooked: each panel slides most of the way off, keeps a
+	   hand's width at the edge, and hangs at an angle from its hook at the
+	   top — wider at the pelmet, gathered at the floor. */
+	/* Exactly --pd-band of cloth is left showing at each edge, whatever the
+	   deck's width — so the gutter inside can be set once and always clear. */
+	.pdeck { --pd-band: 34px; }
+	.pdeck.is-open .pdeck__velvet--l {
+		transform: translateX(calc(-100% + var(--pd-band))) rotate(2.2deg) skewY(1deg);
+		animation: pd-swing-l 7.5s ease-in-out 1.1s infinite;
+	}
+	.pdeck.is-open .pdeck__velvet--r {
+		transform: translateX(calc(100% - var(--pd-band))) rotate(-2.2deg) skewY(-1deg);
+		animation: pd-swing-r 8.4s ease-in-out 1.2s infinite;
+	}
+	/* the gentle sway of heavy cloth on a hook */
+	@keyframes pd-swing-l {
+		0%, 100% { transform: translateX(calc(-100% + var(--pd-band))) rotate(2.2deg) skewY(1deg); }
+		50% { transform: translateX(calc(-100% + var(--pd-band) + 3px)) rotate(3.1deg) skewY(1.7deg); }
+	}
+	@keyframes pd-swing-r {
+		0%, 100% { transform: translateX(calc(100% - var(--pd-band))) rotate(-2.2deg) skewY(-1deg); }
+		50% { transform: translateX(calc(100% - var(--pd-band) - 3px)) rotate(-3.1deg) skewY(-1.7deg); }
+	}
+	/* the tie-back rope, and the shadow the gathered cloth throws inward */
+	.pdeck__velvet::before {
+		content: '';
+		position: absolute;
+		top: 47%;
+		width: 5.5%;
+		height: 13px;
+		border-radius: 9999px;
+		background: linear-gradient(180deg, #f5d489, #b07f2c 60%, #8a5f18);
+		box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35) inset, 0 5px 12px -5px rgba(0, 0, 0, 0.85);
+		opacity: 0;
+		transition: opacity 0.5s ease 0.9s;
+	}
+	.pdeck__velvet--l::before { right: 0.6%; transform: rotate(-8deg); }
+	.pdeck__velvet--r::before { left: 0.6%; transform: rotate(8deg); }
+	.pdeck.is-open .pdeck__velvet::before { opacity: 0.9; }
+	.pdeck__velvet::after {
+		content: '';
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		width: 4%;
+		pointer-events: none;
+		opacity: 0;
+		transition: opacity 0.5s ease 0.9s;
+	}
+	.pdeck__velvet--l::after {
+		right: 0;
+		background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.55));
+	}
+	.pdeck__velvet--r::after {
+		left: 0;
+		background: linear-gradient(270deg, transparent, rgba(0, 0, 0, 0.55));
+	}
+	.pdeck.is-open .pdeck__velvet::after { opacity: 1; }
+	/* the pelmet across the top, so the curtain reads as hung */
+	.pdeck__pelmet {
+		position: absolute;
+		z-index: 3;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 2.2rem;
+		background:
+			repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.4) 0 12px, rgba(255, 255, 255, 0.07) 22px, rgba(0, 0, 0, 0.4) 36px),
+			linear-gradient(180deg, #6d1639, #480d26);
+		box-shadow: 0 10px 22px -10px rgba(0, 0, 0, 0.8);
+		transition: transform 0.7s cubic-bezier(0.65, 0, 0.35, 1), height 0.7s ease;
+	}
+	/* it does not fly away — it shortens to a valance the panels hang from */
+	.pdeck.is-open .pdeck__pelmet { height: 0.95rem; }
+
+	.pdeck__marquee {
+		position: relative;
+		z-index: 2;
+		display: grid;
+		justify-items: center;
+		gap: 0.55rem;
+		padding: clamp(1.4rem, 4vw, 2.6rem);
+		text-align: center;
+		transition: opacity 0.4s ease, transform 0.5s ease;
+	}
+	.pdeck.is-open .pdeck__marquee { opacity: 0; transform: scale(0.94); pointer-events: none; }
+	.pdeck__marquee-k {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		font-size: 0.66rem;
+		font-weight: 800;
+		letter-spacing: 0.26em;
+		text-transform: uppercase;
+		color: #fcd34d;
+	}
+	.pdeck__marquee-dot {
+		width: 6px;
+		height: 6px;
+		border-radius: 9999px;
+		background: #fcd34d;
+		box-shadow: 0 0 12px 2px rgba(252, 211, 77, 0.8);
+		animation: pd-onair 2.2s ease-out infinite;
+	}
+	.pdeck__marquee-h {
+		margin: 0;
+		font-family: 'Bebas Neue', sans-serif;
+		font-size: clamp(2.1rem, 6.4vw, 4.6rem);
+		line-height: 0.94;
+		letter-spacing: 0.02em;
+		text-transform: uppercase;
+		color: #fff7ed;
+		text-shadow: 0 6px 34px rgba(252, 211, 77, 0.35);
+	}
+	.pdeck__marquee-h em {
+		font-style: normal;
+		color: #fcd34d;
+	}
+	.pdeck__marquee-p {
+		margin: 0.1rem 0 0.5rem;
+		font-size: clamp(0.82rem, 1.5vw, 0.98rem);
+		color: rgba(255, 247, 237, 0.7);
+	}
+	.pdeck__marquee-go {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.75rem 1.4rem;
+		border-radius: 9999px;
+		font-family: inherit;
+		font-size: 0.9rem;
+		font-weight: 800;
+		color: #2a0716;
+		background: linear-gradient(95deg, #fde68a, #fbbf24);
+		border: 0;
+		cursor: pointer;
+		box-shadow: 0 18px 40px -16px rgba(252, 211, 77, 0.7);
+		transition: transform 0.2s ease, filter 0.2s ease;
+	}
+	.pdeck__marquee-go:hover { transform: translateY(-2px); filter: brightness(1.06); }
+	.pdeck__marquee-s {
+		font-size: 0.68rem;
+		letter-spacing: 0.08em;
+		color: rgba(255, 247, 237, 0.42);
 	}
 
 	/* ── the clicker rail ─────────────────────────────────────── */
@@ -497,9 +849,9 @@ const slides: Slide[] = [
 		display: flex;
 		align-items: center;
 		gap: 0.9rem;
-		padding: 0.7rem 0.9rem;
-		border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-		background: rgba(255, 255, 255, 0.02);
+		padding: 1.6rem 3.2rem 0.7rem;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+		background: rgba(255, 255, 255, 0.035);
 	}
 	.pdeck__count {
 		display: inline-flex;
@@ -515,7 +867,8 @@ const slides: Slide[] = [
 
 	.pdeck__dots { display: flex; align-items: center; gap: 0.34rem; flex: 1; min-width: 0; flex-wrap: wrap; }
 	.pdeck__dot {
-		width: 22px;
+		position: relative;
+		width: 24px;
 		height: 5px;
 		flex: none;
 		border: 0;
@@ -525,29 +878,47 @@ const slides: Slide[] = [
 		cursor: pointer;
 		transition: background 0.3s ease, width 0.3s ease;
 	}
-	.pdeck__dot:hover { background: rgba(255, 255, 255, 0.32); }
-	.pdeck__dot[aria-selected='true'] { width: 40px; background: var(--d, #8b5cf6); }
+	.pdeck__dot:hover { background: rgba(255, 255, 255, 0.34); }
+	.pdeck__dot[aria-selected='true'] { width: 42px; background: var(--d, #8b5cf6); }
+	.pdeck__dot-tip {
+		position: absolute;
+		bottom: 150%;
+		left: 50%;
+		transform: translateX(-50%) translateY(4px);
+		padding: 0.2rem 0.5rem;
+		border-radius: 0.4rem;
+		font-size: 0.62rem;
+		font-weight: 750;
+		white-space: nowrap;
+		color: #fff;
+		background: rgba(12, 9, 26, 0.92);
+		border: 1px solid rgba(255, 255, 255, 0.14);
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 0.2s ease, transform 0.2s ease;
+	}
+	.pdeck__dot:hover .pdeck__dot-tip { opacity: 1; transform: translateX(-50%) translateY(0); }
 
 	.pdeck__tools { display: flex; align-items: center; gap: 0.4rem; flex: none; }
 	.pdeck__tool {
 		display: inline-flex;
 		align-items: center;
 		gap: 0.35rem;
-		padding: 0.4rem 0.75rem;
+		padding: 0.42rem 0.8rem;
 		border-radius: 9999px;
 		font-size: 0.72rem;
 		font-weight: 750;
 		font-family: inherit;
 		color: var(--pd-ink);
-		background: rgba(255, 255, 255, 0.07);
-		border: 1px solid rgba(255, 255, 255, 0.1);
+		background: rgba(255, 255, 255, 0.08);
+		border: 1px solid rgba(255, 255, 255, 0.12);
 		cursor: pointer;
 		white-space: nowrap;
-		transition: background 0.22s ease, border-color 0.22s ease, transform 0.18s ease;
+		transition: background 0.22s ease, transform 0.18s ease;
 	}
-	.pdeck__tool:hover { background: rgba(255, 255, 255, 0.14); transform: translateY(-1px); }
+	.pdeck__tool:hover { background: rgba(255, 255, 255, 0.16); transform: translateY(-1px); }
 	.pdeck__tool--lights {
-		color: #14101f;
+		color: #2a0716;
 		background: linear-gradient(95deg, #fde68a, #fbbf24);
 		border-color: transparent;
 	}
@@ -555,31 +926,33 @@ const slides: Slide[] = [
 	.pdeck__i-stop, .pdeck__i-on { display: none; }
 	.pdeck.is-playing .pdeck__i-stop { display: block; }
 	.pdeck.is-playing .pdeck__i-play { display: none; }
+	.pdeck.is-theatre .pdeck__i-on { display: block; }
+	.pdeck.is-theatre .pdeck__i-off { display: none; }
 
 	.pdeck__prog {
 		position: relative;
 		z-index: 6;
 		display: block;
 		height: 2px;
-		background: rgba(255, 255, 255, 0.07);
+		background: rgba(255, 255, 255, 0.08);
 	}
 	.pdeck__prog > span {
 		display: block;
 		height: 100%;
 		width: 0%;
-		background: linear-gradient(90deg, var(--pd-acc, #8b5cf6), #ec4899);
+		background: linear-gradient(90deg, var(--pd-acc, #8b5cf6), #f472b6);
 		transition: width 0.45s cubic-bezier(0.4, 0, 0.2, 1);
 	}
 
 	/* ── the stage ────────────────────────────────────────────── */
-	.pdeck__stage { position: relative; display: grid; outline: none; }
+	.pdeck__stage { position: relative; z-index: 2; display: grid; outline: none; }
 	.pdeck__slide {
 		position: relative;
 		grid-area: 1 / 1;
 		display: grid;
-		gap: clamp(1.4rem, 3vw, 2.6rem);
+		gap: clamp(1.4rem, 3vw, 2.8rem);
 		align-items: center;
-		padding: clamp(1.4rem, 3.2vw, 2.8rem) clamp(1.2rem, 3.2vw, 2.8rem) clamp(1.8rem, 3.2vw, 2.8rem);
+		padding: clamp(1.5rem, 3.4vw, 3rem) clamp(3.2rem, 4vw, 3.6rem) clamp(1.6rem, 3.4vw, 2.6rem);
 		opacity: 0;
 		visibility: hidden;
 		transform: translateX(28px);
@@ -589,9 +962,8 @@ const slides: Slide[] = [
 	.pdeck__slide.is-on { opacity: 1; visibility: visible; transform: none; pointer-events: auto; }
 	.pdeck__slide.is-out { transform: translateX(-28px); }
 	@media (min-width: 940px) {
-		.pdeck__slide { grid-template-columns: 0.92fr 1.08fr; }
+		.pdeck__slide { grid-template-columns: 0.94fr 1.06fr; }
 	}
-	/* each slide brings its own light into the shell */
 	.pdeck__wash {
 		position: absolute;
 		inset: 0;
@@ -603,13 +975,12 @@ const slides: Slide[] = [
 	}
 	.pdeck__copy, .pdeck__show { position: relative; z-index: 1; min-width: 0; }
 
-	/* ── the argument ─────────────────────────────────────────── */
 	.pdeck__kick {
 		display: inline-flex;
 		align-items: center;
 		gap: 0.45rem;
 		padding: 0.34rem 0.8rem;
-		margin-bottom: 1rem;
+		margin-bottom: 0.9rem;
 		border-radius: 9999px;
 		font-size: 0.66rem;
 		font-weight: 800;
@@ -627,10 +998,10 @@ const slides: Slide[] = [
 		opacity: 0.6;
 	}
 	.pdeck__t {
-		margin: 0 0 0.85rem;
-		font-size: clamp(1.7rem, 3.5vw, 3rem);
+		margin: 0 0 0.7rem;
+		font-size: clamp(1.75rem, 3.6vw, 3.1rem);
 		font-weight: 850;
-		line-height: 1.04;
+		line-height: 1.03;
 		letter-spacing: -0.03em;
 		color: #fff;
 	}
@@ -643,87 +1014,87 @@ const slides: Slide[] = [
 		-webkit-text-fill-color: transparent;
 	}
 	.pdeck__line {
-		margin: 0 0 1.25rem;
-		font-size: clamp(0.9rem, 1.3vw, 1.02rem);
-		line-height: 1.65;
-		color: rgba(244, 241, 255, 0.66);
+		margin: 0 0 1.1rem;
+		font-size: clamp(0.88rem, 1.3vw, 1rem);
+		line-height: 1.62;
+		color: rgba(244, 241, 255, 0.64);
 		max-width: 32rem;
 	}
-	.pdeck__gives {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5rem;
+
+	/* the four notes, on the wall */
+	.pdeck__stickies {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.65rem;
 		list-style: none;
-		margin: 0 0 1.4rem;
+		margin: 0 0 1.2rem;
 		padding: 0;
 	}
-	.pdeck__gives li {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 0.42rem 0.85rem 0.42rem 0.42rem;
-		border-radius: 0.8rem;
-		font-size: 0.78rem;
-		font-weight: 700;
-		color: var(--pd-ink);
-		background: rgba(255, 255, 255, 0.045);
-		border: 1px solid rgba(255, 255, 255, 0.1);
-		transition: border-color 0.25s ease, background 0.25s ease, transform 0.2s ease;
-	}
-	.pdeck__gives li:hover {
-		transform: translateY(-2px);
-		border-color: color-mix(in srgb, var(--pd-a) 50%, transparent);
-		background: color-mix(in srgb, var(--pd-a) 10%, rgba(255, 255, 255, 0.045));
-	}
-	.pdeck__give-ic {
+	.pdeck__stickies li {
+		position: relative;
 		display: grid;
-		place-items: center;
-		width: 26px;
-		height: 26px;
-		flex: none;
-		border-radius: 0.55rem;
-		color: #fff;
-		background: linear-gradient(135deg, color-mix(in srgb, var(--pd-a) 85%, transparent), color-mix(in srgb, var(--pd-b) 70%, transparent));
+		gap: 0.12rem;
+		padding: 0.7rem 0.8rem 0.75rem;
+		border-radius: 0.2rem 0.2rem 0.5rem 0.2rem;
+		color: #241a10;
+		background: linear-gradient(165deg, #fef3c7, #fde68a 70%, #fcd34d);
+		box-shadow: 0 12px 24px -14px rgba(0, 0, 0, 0.8);
+		transform: rotate(var(--r, -1.4deg));
+		transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.28s ease;
 	}
-	.pdeck__give-go { color: rgba(244, 241, 255, 0.35); flex: none; }
+	.pdeck__stickies li:nth-child(1) { --r: -1.8deg; }
+	.pdeck__stickies li:nth-child(2) { --r: 1.6deg; background: linear-gradient(165deg, #ddf7ef, #b8f0e0 70%, #99e9d4); }
+	.pdeck__stickies li:nth-child(3) { --r: 1.2deg; background: linear-gradient(165deg, #e9e2ff, #d6cbff 70%, #c4b5fd); }
+	.pdeck__stickies li:nth-child(4) { --r: -1.1deg; background: linear-gradient(165deg, #ffe4ef, #fecdd8 70%, #fda4c0); }
+	.pdeck__stickies li:hover { transform: rotate(0deg) translateY(-4px) scale(1.03); box-shadow: 0 20px 34px -14px rgba(0, 0, 0, 0.85); }
+	/* the curled corner */
+	.pdeck__stickies li::after {
+		content: '';
+		position: absolute;
+		right: 0;
+		bottom: 0;
+		width: 14px;
+		height: 14px;
+		background: linear-gradient(315deg, rgba(0, 0, 0, 0.22), transparent 60%);
+		border-radius: 0 0 0.5rem 0;
+	}
+	.pdeck__stickies b {
+		font-family: 'Bradley Hand', 'Segoe Print', 'Comic Sans MS', cursive;
+		font-size: 0.94rem;
+		font-weight: 800;
+		line-height: 1.15;
+	}
+	.pdeck__stickies em {
+		font-family: 'Bradley Hand', 'Segoe Print', 'Comic Sans MS', cursive;
+		font-style: normal;
+		font-size: 0.8rem;
+		line-height: 1.25;
+		opacity: 0.72;
+	}
 
-	/* the house numbers */
 	.pdeck__figs {
 		display: grid;
 		grid-template-columns: repeat(4, minmax(0, 1fr));
 		gap: 0.2rem;
 		list-style: none;
 		margin: 0;
-		padding: 0.85rem 0.4rem;
+		padding: 0.8rem 0.4rem;
 		border-radius: 1rem;
-		border: 1px solid rgba(255, 255, 255, 0.09);
-		background: rgba(255, 255, 255, 0.028);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		background: rgba(255, 255, 255, 0.04);
 	}
 	.pdeck__figs li {
 		display: grid;
 		justify-items: start;
-		gap: 0.1rem;
+		gap: 0.08rem;
 		padding-inline: 0.55rem;
-		border-left: 1px solid rgba(255, 255, 255, 0.07);
+		border-left: 1px solid rgba(255, 255, 255, 0.08);
 		min-width: 0;
 	}
 	.pdeck__figs li:first-child { border-left: 0; }
 	.pdeck__fig-ic { color: color-mix(in srgb, var(--pd-a) 78%, #fff); display: block; }
-	.pdeck__figs b {
-		font-size: clamp(1.05rem, 1.9vw, 1.45rem);
-		font-weight: 850;
-		letter-spacing: -0.02em;
-		color: #fff;
-		line-height: 1.1;
-	}
-	.pdeck__figs em {
-		font-style: normal;
-		font-size: 0.63rem;
-		font-weight: 650;
-		letter-spacing: 0.04em;
-		line-height: 1.25;
-		color: rgba(244, 241, 255, 0.5);
-	}
+	.pdeck__figs b { font-size: clamp(1rem, 1.9vw, 1.4rem); font-weight: 850; letter-spacing: -0.02em; color: #fff; line-height: 1.1; }
+	.pdeck__figs em { font-style: normal; font-size: 0.6rem; font-weight: 650; letter-spacing: 0.04em; line-height: 1.25; color: rgba(244, 241, 255, 0.5); }
 
 	/* ── the proof, on hardware ───────────────────────────────── */
 	.pdeck__show { display: grid; gap: clamp(0.9rem, 2vw, 1.4rem); }
@@ -732,18 +1103,15 @@ const slides: Slide[] = [
 		inset: -12% -6% 30%;
 		z-index: 0;
 		border-radius: 50%;
-		background: radial-gradient(ellipse at 50% 45%, color-mix(in srgb, var(--pd-a) 40%, transparent), transparent 68%);
+		background: radial-gradient(ellipse at 50% 45%, color-mix(in srgb, var(--pd-a) 42%, transparent), transparent 68%);
 		filter: blur(56px);
 		pointer-events: none;
 	}
 	.pdeck__rig {
 		position: relative;
 		z-index: 1;
-		/* the annotations live in this gutter, so it has to be real */
 		padding: clamp(0.9rem, 2.4vw, 2.2rem) clamp(0.4rem, 6vw, 4.4rem) clamp(1.6rem, 3vw, 2.4rem);
 	}
-
-	/* the laptop */
 	.pdeck__lap { display: block; }
 	.pdeck__lap-screen {
 		position: relative;
@@ -751,10 +1119,8 @@ const slides: Slide[] = [
 		overflow: hidden;
 		border-radius: 0.75rem 0.75rem 0.2rem 0.2rem;
 		padding: 8px 8px 0;
-		background: linear-gradient(160deg, #2b2742, #14111f);
-		box-shadow:
-			0 0 0 1px rgba(255, 255, 255, 0.09),
-			0 40px 80px -34px rgba(0, 0, 0, 0.95);
+		background: linear-gradient(160deg, #3a3358, #1d1830);
+		box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12), 0 40px 80px -34px rgba(0, 0, 0, 0.95);
 	}
 	.pdeck__lap-screen img {
 		display: block;
@@ -771,7 +1137,7 @@ const slides: Slide[] = [
 		height: 12px;
 		margin: 0 -8%;
 		border-radius: 0 0 0.7rem 0.7rem;
-		background: linear-gradient(180deg, #3a3557, #1b1730);
+		background: linear-gradient(180deg, #4a4270, #241e3d);
 		box-shadow: 0 20px 34px -20px rgba(0, 0, 0, 0.9);
 	}
 	.pdeck__lap-base::after {
@@ -781,19 +1147,18 @@ const slides: Slide[] = [
 		height: 3px;
 		margin: 2px auto 0;
 		border-radius: 9999px;
-		background: rgba(255, 255, 255, 0.16);
+		background: rgba(255, 255, 255, 0.18);
 	}
 	.pdeck__glare {
 		position: absolute;
 		inset: 0;
-		background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.14) 50%, transparent 60%);
+		background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.16) 50%, transparent 60%);
 		transform: translateX(-110%);
 		pointer-events: none;
 	}
 	.pdeck__slide.is-on .pdeck__glare { animation: pd-glare 2.2s ease-out 0.5s; }
 	@keyframes pd-glare { to { transform: translateX(110%); } }
 
-	/* the phone, leaning on the laptop */
 	.pdeck__phone {
 		position: absolute;
 		right: clamp(0.2rem, 1.5vw, 1rem);
@@ -802,26 +1167,14 @@ const slides: Slide[] = [
 		width: clamp(62px, 9vw, 108px);
 		padding: 4px;
 		border-radius: 0.85rem;
-		background: linear-gradient(150deg, #3b3559, #16122a);
-		box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12), 0 26px 46px -22px rgba(0, 0, 0, 0.95);
+		background: linear-gradient(150deg, #4a4270, #1d1734);
+		box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.14), 0 26px 46px -22px rgba(0, 0, 0, 0.95);
 		transform: rotate(3deg);
 	}
-	.pdeck__phone-screen {
-		display: block;
-		aspect-ratio: 9 / 18;
-		overflow: hidden;
-		border-radius: 0.65rem;
-		background: #07060f;
-	}
-	.pdeck__phone-screen img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		object-position: 18% 0;
-	}
+	.pdeck__phone-screen { display: block; aspect-ratio: 9 / 18; overflow: hidden; border-radius: 0.65rem; background: #07060f; }
+	.pdeck__phone-screen img { width: 100%; height: 100%; object-fit: cover; object-position: 18% 0; }
 
-	/* the annotations */
-	.pdeck__note {
+	.pdeck__mark {
 		position: absolute;
 		z-index: 4;
 		display: none;
@@ -830,44 +1183,24 @@ const slides: Slide[] = [
 		max-width: 11rem;
 		padding: 0.55rem 0.75rem;
 		border-radius: 0.85rem;
-		background: color-mix(in srgb, var(--t) 12%, rgba(12, 9, 26, 0.86));
-		border: 1px solid color-mix(in srgb, var(--t) 34%, transparent);
+		background: color-mix(in srgb, var(--t) 14%, rgba(18, 13, 38, 0.9));
+		border: 1px solid color-mix(in srgb, var(--t) 38%, transparent);
 		-webkit-backdrop-filter: blur(12px);
 		backdrop-filter: blur(12px);
 		box-shadow: 0 22px 44px -24px rgba(0, 0, 0, 0.9);
 		animation: pd-float 6s ease-in-out infinite;
 		animation-delay: calc(var(--k) * -1.9s);
 	}
-	.pdeck__note-ic {
-		display: grid;
-		place-items: center;
-		width: 26px;
-		height: 26px;
-		flex: none;
-		border-radius: 0.55rem;
-		color: #fff;
-		background: color-mix(in srgb, var(--t) 78%, transparent);
-	}
-	.pdeck__note-txt { display: grid; gap: 0.05rem; min-width: 0; }
-	.pdeck__note-txt b { font-size: 0.76rem; font-weight: 800; color: #fff; }
-	.pdeck__note-txt em {
-		font-style: normal;
-		font-size: 0.68rem;
-		line-height: 1.35;
-		color: rgba(244, 241, 255, 0.6);
-	}
-	.pdeck__note--1 { top: 0; right: 0; }
-	.pdeck__note--2 { bottom: 20%; left: 0; }
-	.pdeck__note--3 { top: 34%; right: -1%; max-width: 9.6rem; }
-	@keyframes pd-float {
-		0%, 100% { transform: translateY(0); }
-		50% { transform: translateY(-8px); }
-	}
-	@media (min-width: 1100px) {
-		.pdeck__note { display: flex; }
-	}
+	.pdeck__mark-ic { display: grid; place-items: center; width: 26px; height: 26px; flex: none; border-radius: 0.55rem; color: #fff; background: color-mix(in srgb, var(--t) 78%, transparent); }
+	.pdeck__mark-txt { display: grid; gap: 0.05rem; min-width: 0; }
+	.pdeck__mark-txt b { font-size: 0.76rem; font-weight: 800; color: #fff; }
+	.pdeck__mark-txt em { font-style: normal; font-size: 0.68rem; line-height: 1.35; color: rgba(244, 241, 255, 0.62); }
+	.pdeck__mark--1 { top: 0; right: 0; }
+	.pdeck__mark--2 { bottom: 20%; left: 0; }
+	.pdeck__mark--3 { top: 34%; right: -1%; max-width: 9.6rem; }
+	@keyframes pd-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+	@media (min-width: 1100px) { .pdeck__mark { display: flex; } }
 
-	/* the product's own card */
 	.pdeck__work {
 		position: relative;
 		z-index: 1;
@@ -876,14 +1209,14 @@ const slides: Slide[] = [
 		gap: 0.85rem;
 		padding: 0.85rem 0.95rem;
 		border-radius: 1rem;
-		border: 1px solid color-mix(in srgb, var(--pd-a) 26%, rgba(255, 255, 255, 0.1));
-		background: color-mix(in srgb, var(--pd-a) 8%, rgba(255, 255, 255, 0.03));
+		border: 1px solid color-mix(in srgb, var(--pd-a) 28%, rgba(255, 255, 255, 0.12));
+		background: color-mix(in srgb, var(--pd-a) 10%, rgba(255, 255, 255, 0.045));
 		transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.25, 1), border-color 0.3s ease, background 0.3s ease;
 	}
 	.pdeck__work:hover {
 		transform: translateY(-3px);
 		border-color: color-mix(in srgb, var(--pd-a) 60%, transparent);
-		background: color-mix(in srgb, var(--pd-a) 14%, rgba(255, 255, 255, 0.03));
+		background: color-mix(in srgb, var(--pd-a) 16%, rgba(255, 255, 255, 0.045));
 	}
 	.pdeck__work-mark {
 		display: grid;
@@ -898,18 +1231,8 @@ const slides: Slide[] = [
 	}
 	.pdeck__work-txt { display: grid; gap: 0.05rem; flex: 1; min-width: 0; }
 	.pdeck__work-txt strong { font-size: 0.98rem; font-weight: 800; color: #fff; }
-	.pdeck__sector {
-		font-size: 0.63rem;
-		font-weight: 800;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
-		color: color-mix(in srgb, var(--pd-a) 75%, #fff);
-	}
-	.pdeck__note-line {
-		font-size: 0.76rem;
-		line-height: 1.4;
-		color: rgba(244, 241, 255, 0.55);
-	}
+	.pdeck__sector { font-size: 0.63rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: color-mix(in srgb, var(--pd-a) 75%, #fff); }
+	.pdeck__note-line { font-size: 0.76rem; line-height: 1.4; color: rgba(244, 241, 255, 0.58); }
 	.pdeck__work-go {
 		display: grid;
 		place-items: center;
@@ -921,10 +1244,183 @@ const slides: Slide[] = [
 		border: 1px solid color-mix(in srgb, var(--pd-a) 55%, transparent);
 		transition: background 0.25s ease, transform 0.25s ease;
 	}
-	.pdeck__work:hover .pdeck__work-go {
-		background: linear-gradient(135deg, var(--pd-a), var(--pd-b));
-		transform: translateX(3px);
+	.pdeck__work:hover .pdeck__work-go { background: linear-gradient(135deg, var(--pd-a), var(--pd-b)); transform: translateX(3px); }
+
+	/* ── the projected answer ─────────────────────────────────── */
+	.pdeck__answer {
+		position: absolute;
+		inset: 0;
+		z-index: 8;
+		display: grid;
+		place-items: center;
+		padding: clamp(1rem, 3vw, 2.4rem);
+		background: rgba(10, 7, 24, 0.86);
+		-webkit-backdrop-filter: blur(10px);
+		backdrop-filter: blur(10px);
+		animation: pd-ans-in 0.35s ease both;
 	}
+	.pdeck__answer[hidden] { display: none; }
+	@keyframes pd-ans-in { from { opacity: 0; } }
+	/* the beam that throws it onto the screen */
+	.pdeck__answer-beam {
+		position: absolute;
+		top: -10%;
+		left: 50%;
+		width: 60%;
+		height: 130%;
+		transform: translateX(-50%);
+		background: linear-gradient(180deg, rgba(252, 211, 77, 0.22), transparent 62%);
+		clip-path: polygon(44% 0, 56% 0, 100% 100%, 0 100%);
+		filter: blur(16px);
+		pointer-events: none;
+	}
+	.pdeck__answer-card {
+		position: relative;
+		max-width: 40rem;
+		display: grid;
+		gap: 0.55rem;
+		padding: clamp(1.1rem, 2.6vw, 1.8rem);
+		border-radius: 1.1rem;
+		border: 1px solid rgba(252, 211, 77, 0.32);
+		background: linear-gradient(165deg, rgba(38, 30, 68, 0.96), rgba(22, 17, 44, 0.98));
+		box-shadow: 0 40px 90px -40px rgba(0, 0, 0, 1);
+		animation: pd-ans-rise 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+	}
+	@keyframes pd-ans-rise { from { opacity: 0; transform: translateY(14px) scale(0.97); } }
+	.pdeck__answer-k {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		font-size: 0.64rem;
+		font-weight: 800;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: #fcd34d;
+	}
+	.pdeck__answer-card h4 {
+		margin: 0;
+		font-size: clamp(1.1rem, 2.2vw, 1.5rem);
+		font-weight: 850;
+		letter-spacing: -0.02em;
+		color: #fff;
+	}
+	.pdeck__answer-card p {
+		margin: 0;
+		font-size: clamp(0.86rem, 1.3vw, 0.98rem);
+		line-height: 1.68;
+		color: rgba(244, 241, 255, 0.76);
+	}
+	.pdeck__answer-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; margin-top: 0.35rem; }
+	.pdeck__answer-cta {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		padding: 0.55rem 1rem;
+		border-radius: 9999px;
+		font-size: 0.8rem;
+		font-weight: 800;
+		color: #2a0716;
+		background: linear-gradient(95deg, #fde68a, #fbbf24);
+	}
+	.pdeck__answer-x {
+		padding: 0.55rem 0.9rem;
+		border-radius: 9999px;
+		font-family: inherit;
+		font-size: 0.78rem;
+		font-weight: 700;
+		color: rgba(244, 241, 255, 0.7);
+		background: transparent;
+		border: 1px solid rgba(255, 255, 255, 0.18);
+		cursor: pointer;
+	}
+	.pdeck__answer-x:hover { color: #fff; background: rgba(255, 255, 255, 0.08); }
+
+	/* ── the Q&A rail ─────────────────────────────────────────── */
+	.pdeck__qa {
+		position: relative;
+		z-index: 6;
+		display: grid;
+		gap: 0.6rem;
+		padding: 0.9rem 3.2rem 1.1rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.08);
+		background: rgba(255, 255, 255, 0.03);
+	}
+	.pdeck__qa-k {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		font-size: 0.64rem;
+		font-weight: 800;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: rgba(244, 241, 255, 0.5);
+	}
+	.pdeck__qa-chips {
+		display: flex;
+		flex-wrap: nowrap;
+		gap: 0.4rem;
+		overflow-x: auto;
+		scrollbar-width: none;
+		margin-inline: -0.4rem;
+		padding-inline: 0.4rem;
+		-webkit-mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 1.6rem), transparent);
+		mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 1.6rem), transparent);
+	}
+	.pdeck__qa-chips::-webkit-scrollbar { display: none; }
+	.pdeck__qa-chip {
+		flex: none;
+		white-space: nowrap;
+		padding: 0.4rem 0.8rem;
+		border-radius: 9999px;
+		font-family: inherit;
+		font-size: 0.74rem;
+		font-weight: 700;
+		color: var(--pd-ink);
+		background: rgba(255, 255, 255, 0.06);
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		cursor: pointer;
+		transition: background 0.2s ease, border-color 0.2s ease, transform 0.18s ease;
+	}
+	.pdeck__qa-chip:hover {
+		transform: translateY(-2px);
+		border-color: rgba(252, 211, 77, 0.5);
+		background: rgba(252, 211, 77, 0.12);
+	}
+	.pdeck__qa-form {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.35rem 0.35rem 0.35rem 0.75rem;
+		border-radius: 9999px;
+		background: rgba(0, 0, 0, 0.28);
+		border: 1px solid rgba(255, 255, 255, 0.12);
+	}
+	.pdeck__qa-form :global(.pdeck__qa-ic) { color: rgba(244, 241, 255, 0.4); flex: none; }
+	.pdeck__qa-form input {
+		flex: 1;
+		min-width: 0;
+		background: transparent;
+		border: 0;
+		outline: none;
+		font-family: inherit;
+		font-size: 0.85rem;
+		color: #fff;
+	}
+	.pdeck__qa-form input::placeholder { color: rgba(244, 241, 255, 0.36); }
+	.pdeck__qa-form button {
+		display: grid;
+		place-items: center;
+		width: 34px;
+		height: 34px;
+		flex: none;
+		border: 0;
+		border-radius: 9999px;
+		color: #2a0716;
+		background: linear-gradient(95deg, #fde68a, #fbbf24);
+		cursor: pointer;
+		transition: transform 0.2s ease;
+	}
+	.pdeck__qa-form button:hover { transform: scale(1.06); }
 
 	/* ── the clicker arrows ───────────────────────────────────── */
 	.pdeck__nav {
@@ -933,29 +1429,28 @@ const slides: Slide[] = [
 		z-index: 7;
 		display: grid;
 		place-items: center;
-		width: 38px;
-		height: 38px;
+		width: 40px;
+		height: 40px;
 		transform: translateY(-50%);
 		border-radius: 9999px;
 		color: #fff;
-		background: rgba(12, 9, 26, 0.6);
-		border: 1px solid rgba(255, 255, 255, 0.16);
+		background: rgba(12, 9, 26, 0.66);
+		border: 1px solid rgba(255, 255, 255, 0.18);
 		-webkit-backdrop-filter: blur(8px);
 		backdrop-filter: blur(8px);
 		cursor: pointer;
 		opacity: 0;
 		transition: opacity 0.25s ease, background 0.2s ease, transform 0.2s ease;
 	}
-	.pdeck:hover .pdeck__nav,
-	.pdeck__nav:focus-visible { opacity: 1; }
+	.pdeck:hover .pdeck__nav, .pdeck__nav:focus-visible { opacity: 1; }
 	.pdeck__nav:hover { background: var(--pd-acc, #8b5cf6); }
-	.pdeck__nav--prev { left: 0.55rem; }
-	.pdeck__nav--next { right: 0.55rem; }
+	.pdeck__nav--prev { left: 3.5rem; }
+	.pdeck__nav--next { right: 3.5rem; }
 	@media (hover: none) { .pdeck__nav { opacity: 1; } }
 
 	.pdeck__exit, .pdeck__hint { display: none; }
 
-	/* ══════ lights out: the theatre ══════ */
+	/* ══════ full screen ══════ */
 	:global(.pdeck-blackout) {
 		position: fixed;
 		inset: 0;
@@ -967,8 +1462,6 @@ const slides: Slide[] = [
 		transition: opacity 0.45s ease;
 	}
 	:global(.pdeck-blackout.is-on) { opacity: 1; }
-	/* everything that floats above the page floats below the blackout too:
-	   a live-chat bubble glowing in a dark room ruins the whole effect */
 	:global(html.pd-lights-out .site-header),
 	:global(html.pd-lights-out #swizel-chat),
 	:global(html.pd-lights-out #back-to-top),
@@ -983,17 +1476,14 @@ const slides: Slide[] = [
 		z-index: 95;
 		top: 50%;
 		left: 50%;
-		width: min(96vw, 82rem);
-		max-height: 92vh;
+		width: min(97vw, 86rem);
+		max-height: 94vh;
 		overflow: auto;
 		transform: translate(-50%, -50%);
-		border-color: rgba(255, 255, 255, 0.14);
-		box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 80px 160px -50px rgba(0, 0, 0, 1);
+		box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 80px 160px -50px rgba(0, 0, 0, 1);
 		animation: pd-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 	}
-	@keyframes pd-rise {
-		from { opacity: 0; transform: translate(-50%, -46%) scale(0.96); }
-	}
+	@keyframes pd-rise { from { opacity: 0; transform: translate(-50%, -46%) scale(0.96); } }
 	:global(.pdeck-hole) { display: block; }
 
 	.pdeck.is-theatre .pdeck__slide { padding-block: clamp(1.6rem, 3vw, 3rem); }
@@ -1001,30 +1491,30 @@ const slides: Slide[] = [
 	.pdeck.is-theatre .pdeck__nav { opacity: 1; }
 	.pdeck.is-theatre .pdeck__exit {
 		position: absolute;
-		z-index: 8;
-		top: 0.62rem;
-		right: 0.8rem;
+		z-index: 21;
+		top: 0.65rem;
+		right: 0.85rem;
 		display: inline-flex;
 		align-items: center;
 		gap: 0.35rem;
-		padding: 0.34rem 0.7rem;
+		padding: 0.36rem 0.75rem;
 		border-radius: 9999px;
 		font-size: 0.7rem;
 		font-weight: 750;
 		font-family: inherit;
 		color: #fff;
-		background: rgba(255, 255, 255, 0.1);
-		border: 1px solid rgba(255, 255, 255, 0.16);
+		background: rgba(255, 255, 255, 0.12);
+		border: 1px solid rgba(255, 255, 255, 0.18);
 		cursor: pointer;
 	}
-	.pdeck.is-theatre .pdeck__exit:hover { background: rgba(255, 255, 255, 0.2); }
+	.pdeck.is-theatre .pdeck__exit:hover { background: rgba(255, 255, 255, 0.22); }
 	.pdeck__exit kbd {
 		font-family: ui-monospace, monospace;
 		font-size: 0.6rem;
 		padding: 0.05rem 0.3rem;
 		border-radius: 0.25rem;
 		background: rgba(0, 0, 0, 0.35);
-		border: 1px solid rgba(255, 255, 255, 0.18);
+		border: 1px solid rgba(255, 255, 255, 0.2);
 	}
 	.pdeck.is-theatre .pdeck__hint {
 		display: block;
@@ -1035,36 +1525,92 @@ const slides: Slide[] = [
 		text-transform: uppercase;
 		color: rgba(244, 241, 255, 0.35);
 	}
-	.pdeck.is-theatre .pdeck__tool--lights { display: none; }
-	.pdeck.is-theatre .pdeck__rail { padding-right: 9.6rem; }
+	.pdeck.is-theatre .pdeck__rail { padding-right: 8rem; }
 
-	@media (max-width: 940px) {
-		.pdeck__figs { grid-template-columns: repeat(4, minmax(0, 1fr)); padding-inline: 0.2rem; }
-		.pdeck__figs li { padding-inline: 0.35rem; }
+	/* ══════ phones: the deck presents, it does not make you scroll ══════ */
+	@media (max-width: 939px) {
+		.pdeck__slide {
+			padding: 1.1rem 1.3rem 1.3rem;
+			gap: 1rem;
+		}
+		/* the proof comes first on a phone — a founder scrolling past wants
+		   to see the product, then read why */
+		.pdeck__show { order: 1; }
+		.pdeck__copy { order: 2; }
+		.pdeck__rig { padding: 0.2rem 0.2rem 0.9rem; }
+		.pdeck__lap-screen img { aspect-ratio: 16 / 9; }
+		.pdeck__phone { width: 58px; right: 0.2rem; bottom: 0.3rem; }
+		.pdeck__t { font-size: clamp(1.45rem, 7vw, 2rem); margin-bottom: 0.5rem; }
+		.pdeck__line { font-size: 0.84rem; line-height: 1.5; margin-bottom: 0.85rem; }
+		.pdeck__kick { margin-bottom: 0.6rem; font-size: 0.6rem; padding: 0.28rem 0.6rem; }
+		.pdeck__kick-rule { display: none; }
+		.pdeck__stickies { gap: 0.45rem; margin-bottom: 0.9rem; }
+		.pdeck__stickies li { padding: 0.55rem 0.6rem 0.6rem; }
+		.pdeck__stickies b { font-size: 0.85rem; }
+		.pdeck__stickies em { font-size: 0.72rem; }
+		.pdeck__work { padding: 0.7rem 0.75rem; gap: 0.65rem; }
+		.pdeck__work-mark { width: 34px; height: 34px; }
+		.pdeck__work-txt strong { font-size: 0.9rem; }
+		.pdeck__note-line { display: none; }
+		.pdeck__work-go { width: 30px; height: 30px; }
+		/* the numbers stay on ONE line, always */
+		.pdeck__figs { grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 0.6rem 0.2rem; }
+		.pdeck__figs li { padding-inline: 0.3rem; justify-items: center; text-align: center; }
+		.pdeck__fig-ic { display: none; }
+		.pdeck__figs b { font-size: clamp(0.95rem, 4.6vw, 1.25rem); }
+		.pdeck__figs em { font-size: clamp(0.5rem, 2.3vw, 0.6rem); white-space: nowrap; }
 	}
 	@media (max-width: 720px) {
-		.pdeck__rail { flex-wrap: wrap; gap: 0.5rem 0.7rem; }
+		.pdeck__rail { flex-wrap: wrap; gap: 0.5rem 0.7rem; padding: 1.35rem 1.2rem 0.6rem; }
 		.pdeck__dots { order: 3; flex: 1 0 100%; width: 100%; }
+		.pdeck__dot-tip { display: none; }
 		.pdeck__tools { margin-left: auto; }
 		.pdeck__tool-t { display: none; }
-		.pdeck__tool { padding: 0.45rem 0.6rem; }
+		.pdeck__tool { padding: 0.42rem 0.6rem; }
 		.pdeck__tool--lights .pdeck__tool-t { display: inline; }
-		.pdeck.is-theatre { width: 96vw; max-height: 94vh; }
-		.pdeck__figs b { font-size: 1rem; }
-		.pdeck__figs em { font-size: 0.56rem; }
-		.pdeck__gives li { font-size: 0.74rem; }
+		.pdeck__qa { padding: 0.75rem 1.2rem 0.95rem; }
+		.pdeck__nav--prev { left: 1rem; }
+		.pdeck__nav--next { right: 1rem; }
+		.pdeck.is-open .pdeck__velvet--l,
+		.pdeck.is-open .pdeck__velvet--r { width: 46%; }
+		@keyframes pd-swing-l { 0%, 100% { transform: translateX(-96%) rotate(2deg); } 50% { transform: translateX(-95.5%) rotate(3deg); } }
+		@keyframes pd-swing-r { 0%, 100% { transform: translateX(96%) rotate(-2deg); } 50% { transform: translateX(95.5%) rotate(-3deg); } }
+		.pdeck__qa-chips {
+			flex-wrap: nowrap;
+			overflow-x: auto;
+			scrollbar-width: none;
+			margin-inline: -0.85rem;
+			padding-inline: 0.85rem;
+			-webkit-mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 2rem), transparent);
+			mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 2rem), transparent);
+		}
+		.pdeck__qa-chips::-webkit-scrollbar { display: none; }
+		.pdeck__qa-chip { flex: none; }
+		.pdeck.is-theatre {
+			top: 0;
+			left: 0;
+			width: 100vw;
+			height: 100dvh;
+			max-height: none;
+			border-radius: 0;
+			transform: none;
+		}
+		@keyframes pd-rise { from { opacity: 0; } }
 	}
 
 	@media (prefers-reduced-motion: reduce) {
 		.pdeck__slide { transition: opacity 0.2s ease; transform: none !important; }
 		.pdeck.is-theatre { animation: none; }
-		.pdeck__note, .pdeck__glare { animation: none !important; }
+		.pdeck__mark, .pdeck__glare, .pdeck__beam, .pdeck__dust,
+		.pdeck__velvet { animation: none !important; }
 	}
 
-	/* ══ daylight: the deck stays a dark screen — a projector does not go
-	   white when the room is bright ══ */
-	:global(html:not(.dark)) .pdeck {
-		border-color: rgba(109, 40, 217, 0.2);
-		box-shadow: 0 46px 110px -52px rgba(23, 19, 49, 0.55);
+	/* the deck keeps its own dark stage in daylight — a projector does not
+	   go white when the room is bright */
+	:global(html:not(.dark)) .pdeck-ground {
+		background:
+			radial-gradient(60% 50% at 50% 0%, rgba(139, 92, 246, 0.3), transparent 70%),
+			radial-gradient(80% 60% at 50% 100%, rgba(236, 72, 153, 0.16), transparent 66%),
+			linear-gradient(180deg, #2a2154, #1b1540 60%, #241a4e);
 	}
 </style>

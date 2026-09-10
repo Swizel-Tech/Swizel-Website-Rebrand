@@ -36,19 +36,13 @@ const stages = [
 	{
 		n: '04',
 		name: 'Launch & scale',
-		when: 'Week 6',
+		when: 'Week 6 or sooner',
 		pct: 100,
 		blurb: 'Live, measured, and in your users’ hands — then we stay to scale what works.',
 		gives: ['Production launch', 'Analytics from day one', '30 days of support'],
 	},
 ];
 
-const launched = [
-	{ name: 'Brixmarket', sector: 'Real estate' },
-	{ name: 'Betslipswitch', sector: 'Sports' },
-	{ name: 'BuyGas', sector: 'On-demand' },
-	{ name: 'Anchorstep', sector: 'Healthcare' },
-];
 ---
 
 <div class="founder--widget lcon" id="founder-widget" data-tour="pipeline">
@@ -57,7 +51,7 @@ const launched = [
 			<span class="fw--title">Idea → MVP</span>
 			<span class="fw--eta">
 				<span class="lcon__pip" aria-hidden="true"></span>
-				live console · about six weeks
+				six weeks at the outside — often less
 			</span>
 		</div>
 		<button class="fw--launch" type="button" data-fw-launch>
@@ -121,22 +115,11 @@ const launched = [
 		}
 	</div>
 
-	<div class="fw--launched" data-tour="launched">
-		<span class="fw--launched-label">
-			<span class="fw--launched-dot"></span>
-			Recently launched, across sectors
-		</span>
-		<div class="fw--cards">
-			{
-				launched.map((p, i) => (
-					<span class="fw--card" style={`--i:${i}`}>
-						<span class="fw--card-name">{p.name}</span>
-						<span class="fw--card-sector">{p.sector}</span>
-					</span>
-				))
-			}
-		</div>
-	</div>
+	<p class="lcon__foot">
+		<Icon width={14} name="mdi:clock-fast" />
+		A booking site can be live in two. A marketplace takes longer. We tell
+		you which one you are on day one.
+	</p>
 </div>
 
 <style>
@@ -289,32 +272,29 @@ const launched = [
 	.lcon__sheet { animation: lcon-fade 0.35s ease both; }
 	@keyframes lcon-fade { from { opacity: 0; transform: translateY(5px); } }
 
-	.fw--launched { position: relative; margin-top: 1.1rem; padding-top: 1rem; border-top: 1px dashed rgba(255, 255, 255, 0.1); }
-	.fw--launched-label { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(237, 233, 251, 0.5); margin-bottom: 0.7rem; }
-	.fw--launched-dot { width: 7px; height: 7px; border-radius: 9999px; background: #28c840; }
-	.fw--cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.55rem; }
-	.fw--card {
+	.lcon__foot {
+		position: relative;
 		display: flex;
-		flex-direction: column;
-		padding: 0.6rem 0.75rem;
-		border-radius: 0.7rem;
-		border: 1px solid rgba(167, 139, 250, 0.2);
-		background: rgba(139, 92, 246, 0.07);
-		opacity: 0;
-		transform: translateY(8px);
+		align-items: flex-start;
+		gap: 0.45rem;
+		margin: 1rem 0 0;
+		padding-top: 0.9rem;
+		border-top: 1px dashed rgba(255, 255, 255, 0.1);
+		font-size: 0.78rem;
+		line-height: 1.5;
+		color: rgba(237, 233, 251, 0.6);
 	}
-	.founder--widget.is-launched .fw--card { animation: fwcard 0.45s ease forwards; animation-delay: calc(var(--i) * 0.12s); }
+	.lcon__foot :global(svg) { color: #c4b5fd; flex: none; margin-top: 0.15rem; }
+	:global(html:not(.dark)) .lcon__foot { color: rgba(23, 19, 49, 0.62); border-top-color: rgba(23, 19, 49, 0.12); }
+	:global(html:not(.dark)) .lcon__foot :global(svg) { color: #6d28d9; }
 	@keyframes fwcard { to { opacity: 1; transform: translateY(0); } }
-	.fw--card-name { font-size: 0.85rem; font-weight: 700; color: #fff; }
-	.fw--card-sector { font-size: 0.7rem; color: #c4b5fd; }
 
 	@media (max-width: 768px) {
 		.fw--body { flex-direction: column; }
 		.fw--ring { width: 128px; height: 128px; }
 		.fw--ringsvg { width: 128px; height: 128px; }
 		.fw--stages { width: 100%; }
-		.fw--cards { grid-template-columns: 1fr 1fr; }
-	}
+		}
 	@media (prefers-reduced-motion: reduce) {
 		.founder--widget::before,
 		.lcon__pip { animation: none !important; }
@@ -351,8 +331,4 @@ const launched = [
 		border-color: rgba(109, 40, 217, 0.16);
 	}
 	:global(html:not(.dark)) .lcon__gives :global(svg) { color: #6d28d9; }
-	:global(html:not(.dark)) .fw--launched { border-top-color: rgba(23, 19, 49, 0.12); }
-	:global(html:not(.dark)) .fw--launched-label { color: rgba(23, 19, 49, 0.5); }
-	:global(html:not(.dark)) .fw--card-name { color: #171331; }
-	:global(html:not(.dark)) .fw--card-sector { color: #6d28d9; }
 </style>

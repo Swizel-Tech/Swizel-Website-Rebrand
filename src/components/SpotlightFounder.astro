@@ -1,0 +1,542 @@
+---
+// The Swizel spotlight — what "we stay after launch" actually looks like.
+//
+// Launch day is where most agencies stop. This section is the argument that
+// we don't: one real client, picked out and followed. Swizel built the site
+// and the booking system, then took the social account too, and the numbers
+// kept moving. Every frame carries our tag — this is a Swizel page about
+// Swizel's work, told through somebody we grew.
+import { Icon } from 'astro-icon/components';
+
+const delivered = [
+	{ icon: 'mdi:monitor-dashboard', t: 'The website', d: 'Designed, built, hosted and monitored by us.' },
+	{ icon: 'mdi:calendar-check-outline', t: 'Booking & records', d: 'Intake forms, home visits, client notes.' },
+	{ icon: 'mdi:palette-swatch-outline', t: 'Brand & content', d: 'Identity, price list, the whole visual kit.' },
+	{ icon: 'mdi:instagram', t: 'Social, run by us', d: 'Shot, written, posted and grown — still ours.' },
+];
+
+const shots = [
+	{ img: '/images/spotlight/work-2.jpg', cap: 'Home visit, Abuja', r: '-3.4deg' },
+	{ img: '/images/spotlight/work-1.jpg', cap: 'Post-op rehab', r: '2.6deg' },
+	{ img: '/images/spotlight/work-4.jpg', cap: 'In the clinic', r: '-1.8deg' },
+	{ img: '/images/spotlight/work-3.jpg', cap: 'Sessions at home', r: '3.2deg' },
+];
+
+const numbers = [
+	{ v: '3,150+', l: 'Followers grown' },
+	{ v: '< 1', l: 'Month to launch' },
+	{ v: '40+', l: 'Posts we made' },
+	{ v: '100%', l: 'Run by Swizel' },
+];
+---
+
+<section class="spot" id="fd-spotlight" data-cursor="quote">
+	<span class="spot__ground" aria-hidden="true">
+		<span class="spot__beam"></span>
+	</span>
+
+	<div class="spot__wrap">
+		<div class="spot__head fd-rev">
+			<span class="spot__stamp">
+				<Icon width={14} name="mdi:spotlight-beam" />
+				Swizel spotlight · No. 01
+			</span>
+			<h2 class="spot__h">
+				We built it. <em>Then we grew it.</em>
+			</h2>
+			<p class="spot__p">
+				Launch day is where most studios stop. Here is what happens when
+				we don't — one Abuja practice, picked out and followed.
+			</p>
+		</div>
+
+		<div class="spot__grid">
+			<!-- left: the argument, in Swizel's voice -->
+			<div class="spot__copy fd-rev">
+				<div class="spot__client">
+					<span class="spot__client-pic">
+						<img
+							src="/images/spotlight/portrait.jpg"
+							alt="The founder of AnchorStep Physiotherapy, a Swizel client"
+							width="800"
+							height="1000"
+							loading="lazy"
+							decoding="async"
+						/>
+					</span>
+					<span class="spot__client-txt">
+						<strong>AnchorStep Physiotherapy</strong>
+						<em>Home-visit physiotherapy · Abuja</em>
+						<span class="spot__client-tag">
+							<Icon width={12} name="mdi:check-decagram" />
+							Built &amp; managed by Swizel
+						</span>
+					</span>
+				</div>
+
+				<p class="spot__lead">
+					A one-person practice with no website and no way to be found.
+					<b>Swizel built the site and the booking system in under a month</b>,
+					then took the brand and the social accounts too — and we still
+					run them. The audience has been climbing ever since.
+				</p>
+
+				<ul class="spot__delivered">
+					{
+						delivered.map((d, i) => (
+							<li style={`--i:${i}`}>
+								<span class="spot__delivered-ic"><Icon width={16} name={d.icon} /></span>
+								<span class="spot__delivered-txt">
+									<b>{d.t}</b>
+									<em>{d.d}</em>
+								</span>
+							</li>
+						))
+					}
+				</ul>
+
+				<ul class="spot__numbers">
+					{
+						numbers.map((n) => (
+							<li>
+								<b>{n.v}</b>
+								<em>{n.l}</em>
+							</li>
+						))
+					}
+				</ul>
+
+				<p class="spot__punch">
+					If we can do that for a home-visit physiotherapy practice in
+					under a month — <em>imagine what we can do for yours.</em>
+				</p>
+
+				<div class="spot__row">
+					<a href="/contact" class="spot__cta">
+						Put my business in the next spotlight
+						<Icon width={17} name="mdi:arrow-right" />
+					</a>
+					<span class="spot__next">
+						<Icon width={14} name="mdi:star-four-points-outline" />
+						Another founder gets picked soon
+					</span>
+				</div>
+
+				<!-- the client's own channels: small, secondary, clearly theirs -->
+				<div class="spot__links">
+					<span class="spot__links-k">The work, live:</span>
+					<a href="https://anchorsteppt.com/" target="_blank" rel="noopener">
+						<Icon width={14} name="mdi:web" />
+						anchorsteppt.com
+					</a>
+					<a href="https://www.instagram.com/anchorsteppt" target="_blank" rel="noopener">
+						<Icon width={14} name="mdi:instagram" />
+						Instagram
+					</a>
+					<a href="https://m.facebook.com/anchorsteppt/" target="_blank" rel="noopener">
+						<Icon width={14} name="mdi:facebook" />
+						Facebook
+					</a>
+				</div>
+			</div>
+
+			<!-- right: the contact sheet, every frame tagged -->
+			<div class="spot__sheet fd-rev">
+				<span class="spot__sheet-k">
+					<Icon width={13} name="mdi:camera-outline" />
+					From the account we run
+				</span>
+				<div class="spot__shots">
+					{
+						shots.map((sh, i) => (
+							<figure class="spot__shot" style={`--r:${sh.r}; --i:${i}`}>
+								<img
+									src={sh.img}
+									alt={`AnchorStep Physiotherapy at work — content produced by Swizel`}
+									width="800"
+									height="1000"
+									loading="lazy"
+									decoding="async"
+								/>
+								<span class="spot__shot-veil" aria-hidden="true" />
+								<figcaption>{sh.cap}</figcaption>
+								<span class="spot__shot-tag" aria-hidden="true">SWIZEL</span>
+							</figure>
+						))
+					}
+				</div>
+				<p class="spot__sheet-note">
+					Shot, captioned and scheduled by the Swizel marketing team.
+				</p>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	/* ══ this section's own ground: a stage, warmer than the page ══ */
+	.spot {
+		position: relative;
+		isolation: isolate;
+		padding-block: clamp(3rem, 7vw, 5.5rem);
+	}
+	.spot__ground {
+		position: absolute;
+		inset: 0 calc(50% - 50vw);
+		z-index: -1;
+		overflow: hidden;
+		pointer-events: none;
+		background:
+			radial-gradient(70% 60% at 78% 6%, rgba(236, 72, 153, 0.24), transparent 66%),
+			radial-gradient(60% 50% at 8% 96%, rgba(139, 92, 246, 0.22), transparent 64%),
+			linear-gradient(168deg, #1d1440, #140f2f 58%, #1a1138);
+	}
+	.spot__beam {
+		position: absolute;
+		top: -40%;
+		left: 62%;
+		width: 46%;
+		height: 150%;
+		background: linear-gradient(180deg, rgba(255, 255, 255, 0.14), transparent 70%);
+		clip-path: polygon(44% 0, 56% 0, 100% 100%, 0 100%);
+		filter: blur(18px);
+		mix-blend-mode: screen;
+		transform-origin: 50% 0;
+		animation: spot-sweep 15s ease-in-out infinite alternate;
+	}
+	@keyframes spot-sweep {
+		from { transform: rotate(-8deg); opacity: 0.6; }
+		to { transform: rotate(6deg); opacity: 0.95; }
+	}
+
+	.spot__wrap { max-width: 78rem; margin: 0 auto; padding-inline: clamp(1rem, 3vw, 2rem); }
+	.spot__head { text-align: center; max-width: 46rem; margin: 0 auto clamp(1.6rem, 4vw, 2.6rem); }
+	.spot__stamp {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		font-size: 0.68rem;
+		font-weight: 800;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+		color: #fcd34d;
+		border: 1px solid rgba(252, 211, 77, 0.4);
+		background: rgba(252, 211, 77, 0.08);
+		padding: 0.34rem 0.85rem;
+		border-radius: 9999px;
+		margin-bottom: 1rem;
+	}
+	.spot__h {
+		margin: 0 0 0.85rem;
+		font-size: clamp(2rem, 4.8vw, 3.4rem);
+		font-weight: 850;
+		letter-spacing: -0.03em;
+		line-height: 1.04;
+		color: #fff;
+	}
+	.spot__h em {
+		font-style: italic;
+		background: linear-gradient(95deg, #c4b5fd, #f472b6);
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	.spot__p {
+		margin: 0;
+		font-size: clamp(0.92rem, 1.4vw, 1.04rem);
+		line-height: 1.65;
+		color: rgba(244, 241, 255, 0.66);
+	}
+
+	.spot__grid { display: grid; gap: clamp(1.6rem, 4vw, 3rem); align-items: start; }
+	@media (min-width: 960px) {
+		.spot__grid { grid-template-columns: 1.02fr 0.98fr; }
+	}
+
+	/* ── the client plate ── */
+	.spot__client {
+		display: flex;
+		align-items: center;
+		gap: 0.85rem;
+		padding: 0.7rem 1rem 0.7rem 0.7rem;
+		margin-bottom: 1.1rem;
+		border-radius: 1rem;
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		background: rgba(255, 255, 255, 0.05);
+		-webkit-backdrop-filter: blur(10px);
+		backdrop-filter: blur(10px);
+	}
+	.spot__client-pic {
+		display: block;
+		width: 58px;
+		height: 58px;
+		flex: none;
+		overflow: hidden;
+		border-radius: 0.8rem;
+		background: #1a1236;
+	}
+	.spot__client-pic img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%; }
+	.spot__client-txt { display: grid; gap: 0.08rem; min-width: 0; }
+	.spot__client-txt strong { font-size: 1rem; font-weight: 850; color: #fff; }
+	.spot__client-txt em { font-style: normal; font-size: 0.76rem; color: rgba(244, 241, 255, 0.55); }
+	.spot__client-tag {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.28rem;
+		margin-top: 0.2rem;
+		padding: 0.16rem 0.5rem;
+		width: fit-content;
+		border-radius: 9999px;
+		font-size: 0.6rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: #14101f;
+		background: linear-gradient(95deg, #c4b5fd, #f472b6);
+	}
+
+	.spot__lead {
+		margin: 0 0 1.1rem;
+		font-size: clamp(0.92rem, 1.4vw, 1.04rem);
+		line-height: 1.7;
+		color: rgba(244, 241, 255, 0.72);
+	}
+	.spot__lead b { color: #fff; font-weight: 800; }
+
+	.spot__delivered {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.6rem;
+		list-style: none;
+		margin: 0 0 1.1rem;
+		padding: 0;
+	}
+	.spot__delivered li {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.55rem;
+		padding: 0.65rem 0.75rem;
+		border-radius: 0.85rem;
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		background: rgba(255, 255, 255, 0.04);
+	}
+	.spot__delivered-ic {
+		display: grid;
+		place-items: center;
+		width: 30px;
+		height: 30px;
+		flex: none;
+		border-radius: 0.6rem;
+		color: #fff;
+		background: linear-gradient(135deg, #8b5cf6, #ec4899);
+	}
+	.spot__delivered-txt { display: grid; gap: 0.05rem; min-width: 0; }
+	.spot__delivered-txt b { font-size: 0.83rem; font-weight: 800; color: #fff; }
+	.spot__delivered-txt em { font-style: normal; font-size: 0.72rem; line-height: 1.35; color: rgba(244, 241, 255, 0.55); }
+
+	/* the numbers stay on ONE line, always */
+	.spot__numbers {
+		display: flex;
+		flex-wrap: nowrap;
+		gap: 0.3rem;
+		list-style: none;
+		margin: 0 0 1.1rem;
+		padding: 0.85rem 0.4rem;
+		border-radius: 1rem;
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		background: rgba(255, 255, 255, 0.04);
+	}
+	.spot__numbers li {
+		flex: 1 1 0;
+		min-width: 0;
+		display: grid;
+		gap: 0.05rem;
+		justify-items: center;
+		text-align: center;
+		padding-inline: 0.3rem;
+		border-left: 1px solid rgba(255, 255, 255, 0.08);
+	}
+	.spot__numbers li:first-child { border-left: 0; }
+	.spot__numbers b {
+		font-size: clamp(0.98rem, 3.4vw, 1.5rem);
+		font-weight: 850;
+		letter-spacing: -0.02em;
+		line-height: 1.1;
+		white-space: nowrap;
+		background: linear-gradient(135deg, #c4b5fd, #f472b6);
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	.spot__numbers em {
+		font-style: normal;
+		font-size: clamp(0.5rem, 2.1vw, 0.63rem);
+		font-weight: 700;
+		letter-spacing: 0.04em;
+		line-height: 1.2;
+		white-space: nowrap;
+		color: rgba(244, 241, 255, 0.5);
+	}
+
+	.spot__punch {
+		margin: 0 0 1rem;
+		font-size: clamp(1rem, 1.7vw, 1.22rem);
+		font-weight: 750;
+		line-height: 1.5;
+		color: #fff;
+	}
+	.spot__punch em {
+		font-style: italic;
+		background: linear-gradient(95deg, #c4b5fd, #f472b6);
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+
+	.spot__row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.7rem 1rem; margin-bottom: 1rem; }
+	.spot__cta {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.85rem 1.4rem;
+		border-radius: 9999px;
+		font-size: 0.9rem;
+		font-weight: 800;
+		color: #fff;
+		background: linear-gradient(95deg, #8b5cf6, #ec4899);
+		box-shadow: 0 18px 40px -18px rgba(139, 92, 246, 0.75);
+		transition: transform 0.22s ease, filter 0.22s ease;
+	}
+	.spot__cta:hover { transform: translateY(-2px); filter: brightness(1.06); }
+	.spot__next {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		font-size: 0.76rem;
+		font-weight: 700;
+		color: rgba(244, 241, 255, 0.5);
+	}
+	.spot__next :global(svg) { color: #fcd34d; }
+
+	.spot__links {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.4rem 0.85rem;
+		padding-top: 0.9rem;
+		border-top: 1px dashed rgba(255, 255, 255, 0.12);
+	}
+	.spot__links-k {
+		font-size: 0.64rem;
+		font-weight: 800;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: rgba(244, 241, 255, 0.4);
+	}
+	.spot__links a {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3rem;
+		font-size: 0.76rem;
+		font-weight: 700;
+		color: rgba(244, 241, 255, 0.62);
+		transition: color 0.2s ease;
+	}
+	.spot__links a:hover { color: #f472b6; }
+
+	/* ── the contact sheet ── */
+	.spot__sheet-k {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		margin-bottom: 0.75rem;
+		font-size: 0.64rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: rgba(244, 241, 255, 0.45);
+	}
+	.spot__shots {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: clamp(0.7rem, 1.6vw, 1.1rem);
+	}
+	.spot__shot {
+		position: relative;
+		margin: 0;
+		overflow: hidden;
+		border-radius: 0.9rem;
+		background: #150f31;
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		box-shadow: 0 26px 52px -26px rgba(0, 0, 0, 0.9);
+		transform: rotate(var(--r)) translateY(calc(var(--i) * 4px - 6px));
+		transition: transform 0.38s cubic-bezier(0.2, 0.8, 0.25, 1), box-shadow 0.38s ease;
+	}
+	.spot__shot:hover {
+		transform: rotate(0deg) translateY(-7px) scale(1.04);
+		box-shadow: 0 36px 66px -26px rgba(0, 0, 0, 0.95), 0 0 0 2px rgba(236, 72, 153, 0.4);
+		z-index: 3;
+	}
+	.spot__shot img {
+		display: block;
+		width: 100%;
+		aspect-ratio: 4 / 5;
+		height: auto;
+		object-fit: cover;
+		object-position: 50% 38%;
+	}
+	.spot__shot-veil {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(180deg, transparent 52%, rgba(10, 7, 24, 0.86));
+	}
+	.spot__shot figcaption {
+		position: absolute;
+		left: 0.65rem;
+		right: 0.65rem;
+		bottom: 0.55rem;
+		font-size: 0.72rem;
+		font-weight: 750;
+		color: #fff;
+	}
+	/* every frame is stamped: this is Swizel's work, not a stock gallery */
+	.spot__shot-tag {
+		position: absolute;
+		top: 0.5rem;
+		right: 0.5rem;
+		padding: 0.14rem 0.42rem;
+		border-radius: 0.3rem;
+		font-family: ui-monospace, monospace;
+		font-size: 0.5rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		color: #fff;
+		background: rgba(10, 7, 24, 0.6);
+		border: 1px solid rgba(255, 255, 255, 0.22);
+		-webkit-backdrop-filter: blur(6px);
+		backdrop-filter: blur(6px);
+	}
+	.spot__sheet-note {
+		margin: 0.85rem 0 0;
+		font-size: 0.72rem;
+		font-style: italic;
+		color: rgba(244, 241, 255, 0.42);
+	}
+
+	@media (max-width: 620px) {
+		.spot__delivered { grid-template-columns: 1fr; }
+		.spot__cta { width: 100%; justify-content: center; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.spot__beam { animation: none; }
+		.spot__shot { transition: none; }
+	}
+
+	/* the spotlight keeps its stage in daylight — it just warms up */
+	:global(html:not(.dark)) .spot__ground {
+		background:
+			radial-gradient(70% 60% at 78% 6%, rgba(236, 72, 153, 0.3), transparent 66%),
+			radial-gradient(60% 50% at 8% 96%, rgba(139, 92, 246, 0.28), transparent 64%),
+			linear-gradient(168deg, #291d55, #1b1440 58%, #241a4c);
+	}
+</style>

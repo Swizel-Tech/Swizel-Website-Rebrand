@@ -98,6 +98,33 @@ export function initFounderBody() {
 		const typing = phone.querySelector<HTMLElement>('#fd-typing');
 		let played = false;
 
+		const body = phone.querySelector<HTMLElement>('.fd-phone-body');
+		/* keep the newest message in view as the thread plays out — and once
+		   it has finished, let it drift on by itself so the section is never
+		   a dead wall of text on a phone */
+		const follow = (el: HTMLElement) => {
+			if (!body) return;
+			const target = el.offsetTop - body.clientHeight + el.offsetHeight + 28;
+			body.scrollTo({ top: Math.max(target, 0), behavior: reduce ? 'auto' : 'smooth' });
+		};
+
+		const idle = () => {
+			if (!body) return;
+			let dir = 1;
+			let paused = false;
+			body.addEventListener('pointerenter', () => (paused = true));
+			body.addEventListener('pointerleave', () => (paused = false));
+			body.addEventListener('touchstart', () => (paused = true), { passive: true });
+			window.setInterval(() => {
+				if (paused || reduce) return;
+				const max = body.scrollHeight - body.clientHeight;
+				if (max <= 4) return;
+				if (body.scrollTop >= max - 2) dir = -1;
+				else if (body.scrollTop <= 2) dir = 1;
+				body.scrollBy({ top: dir * 0.7, behavior: 'auto' });
+			}, 40);
+		};
+
 		const play = async () => {
 			if (played) return;
 			played = true;
@@ -116,8 +143,11 @@ export function initFounderBody() {
 					typing.classList.remove('is-on');
 				}
 				m.classList.add('is-in');
-				await sleep(incoming ? 480 : 700);
+				follow(m);
+				await sleep(incoming ? 620 : 820);
 			}
+			// the thread has played; now it drifts
+			window.setTimeout(idle, 1200);
 		};
 
 		const io = new IntersectionObserver(

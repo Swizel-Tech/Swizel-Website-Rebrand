@@ -947,9 +947,15 @@ html[data-view='builder'] {
 
 /* The daylight bar takes a wash of the world it is in, so a white bar never
    floats free of the page under it. Campus already had its paper tint. */
+/* the founder bar carries a real wash of the world's violet, not a hint */
 html[data-view='founder']:not(.dark) {
-  --nav-bg: #fbf9ff;
-  --nav-border: rgba(109, 40, 217, 0.16);
+  --nav-bg: #ece5fb;
+  --nav-border: rgba(109, 40, 217, 0.26);
+  --nav-ink: #241a45;
+}
+html[data-view='founder'].dark {
+  --nav-bg: rgba(28, 21, 56, 0.86);
+  --nav-border: rgba(167, 139, 250, 0.24);
 }
 html[data-view='studio']:not(.dark) {
   --nav-bg: #fff8fb;

@@ -12,7 +12,7 @@ import { Icon } from 'astro-icon/components';
 import CustomButton from '../CustomButton.astro';
 import Section from '../HTML/Section.astro';
 import RotatingHeadline from '../RotatingHeadline.astro';
-import TeamChip from '../TeamChip.astro';
+import BuildTeam from '../BuildTeam.astro';
 import FounderReel from '../FounderReel.astro';
 
 const REEL_ID = 'zdy4TEld6x4';
@@ -90,10 +90,7 @@ const stats = [
 			</ul>
 
 			<div class="founder--team">
-				<TeamChip
-					kicker="// the people who launch with you"
-					label="Meet your build team"
-				/>
+				<BuildTeam />
 			</div>
 		</div>
 
@@ -317,8 +314,8 @@ const stats = [
 	:global(html:not(.dark)) .founder--stage,
 	:global(html:not(.dark)) .founder--bg {
 		background:
-			radial-gradient(900px 520px at 80% -10%, rgba(139, 92, 246, 0.16), transparent 60%),
-			linear-gradient(180deg, #faf8ff 0%, #f4f0fc 55%, #efeaf9 100%);
+			radial-gradient(900px 520px at 80% -10%, rgba(139, 92, 246, 0.24), transparent 60%),
+			linear-gradient(180deg, #ece7f9 0%, #e2daf3 55%, #d9d0ee 100%);
 		color: #171331;
 	}
 	:global(html:not(.dark)) .founder--glow { opacity: 0.5; }
@@ -332,7 +329,7 @@ const stats = [
 		color: #6d28d9;
 		border-color: rgba(109, 40, 217, 0.45);
 	}
-	:global(html:not(.dark)) .founder--sub { color: rgba(23, 19, 49, 0.68); }
+	:global(html:not(.dark)) .founder--sub { color: rgba(23, 19, 49, 0.74); }
 	:global(html:not(.dark)) .founder--tour {
 		color: #171331;
 		border-color: rgba(109, 40, 217, 0.4);

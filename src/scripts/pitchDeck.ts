@@ -1,8 +1,15 @@
-// The pitch deck's clicker.
+// The pitch deck's projectionist.
 //
-// Slide state, autoplay, arrow keys, swipe — and the light switch, which
-// pulls the deck out of the page into the middle of the screen, drops a
-// blackout over everything else, and traps the keyboard until Esc.
+// Raises the curtain, runs the slides (clicker, arrow keys, swipe, autoplay),
+// answers questions from the floor, and takes the whole thing full screen
+// with the site blacked out behind it.
+
+interface QA {
+	q: string;
+	k: string[];
+	a: string;
+}
+
 export function initPitchDeck() {
 	const deck = document.querySelector<HTMLElement>('[data-pdeck]');
 	if (!deck || deck.dataset.pdBound === '1') return;
@@ -20,11 +27,27 @@ export function initPitchDeck() {
 	const lightsBtn = deck.querySelector<HTMLButtonElement>('[data-pd-lights]');
 	const lightsTxt = deck.querySelector<HTMLElement>('[data-pd-lights-t]');
 	const exitBtn = deck.querySelector<HTMLButtonElement>('[data-pd-exit]');
+	const openBtn = deck.querySelector<HTMLButtonElement>('[data-pd-open]');
+	const curtain = deck.querySelector<HTMLElement>('[data-pd-curtain]');
 	const blackout = document.querySelector<HTMLElement>('[data-pd-blackout]');
 
-	// the blackout must be a child of <body>: a transformed ancestor anywhere
-	// up the founder body would turn its `position: fixed` into something
-	// stuck inside a section
+	// ── the Q&A ──
+	const qaEl = deck.querySelector<HTMLElement>('[data-pd-qa]');
+	let qa: QA[] = [];
+	try {
+		qa = qaEl ? (JSON.parse(qaEl.textContent || '[]') as QA[]) : [];
+	} catch {
+		qa = [];
+	}
+	const answer = deck.querySelector<HTMLElement>('[data-pd-answer]');
+	const answerQ = deck.querySelector<HTMLElement>('[data-pd-answer-q]');
+	const answerA = deck.querySelector<HTMLElement>('[data-pd-answer-a]');
+	const answerX = deck.querySelector<HTMLButtonElement>('[data-pd-answer-close]');
+	const qaForm = deck.querySelector<HTMLFormElement>('[data-pd-qa-form]');
+	const qaInput = deck.querySelector<HTMLInputElement>('[data-pd-qa-input]');
+
+	// the blackout must be a child of <body>: a transformed ancestor would
+	// turn its `position: fixed` into something stuck inside a section
 	if (blackout && blackout.parentElement !== document.body) {
 		document.body.appendChild(blackout);
 	}
@@ -33,14 +56,15 @@ export function initPitchDeck() {
 	const total = slides.length;
 	let i = 0;
 	let timer = 0;
+	let curtainTimer = 0;
 	let playing = false;
 	let theatre = false;
+	let opened = false;
 
-	// where the deck sits in the page, so it can be put back
 	const home = document.createElement('div');
 	home.className = 'pdeck-hole';
-	let holeHeight = 0;
 
+	// ── slides ────────────────────────────────────────────────────
 	const show = (n: number, dir = 1) => {
 		const target = ((n % total) + total) % total;
 		slides.forEach((s, k) => {
@@ -59,6 +83,7 @@ export function initPitchDeck() {
 	};
 
 	const go = (d: number) => {
+		hideAnswer();
 		show(i + d, d);
 		if (playing) arm();
 	};
@@ -69,7 +94,7 @@ export function initPitchDeck() {
 			if (!playing) return;
 			show(i + 1, 1);
 			arm();
-		}, 6200);
+		}, 6800);
 	};
 
 	const setPlaying = (on: boolean) => {
@@ -82,14 +107,100 @@ export function initPitchDeck() {
 		if (on) arm();
 	};
 
-	// ── the light switch ──────────────────────────────────────────
+	// ── the curtain ───────────────────────────────────────────────
+	const raise = () => {
+		if (opened) return;
+		opened = true;
+		window.clearTimeout(curtainTimer);
+		deck.classList.add('is-open');
+		// the curtain takes about a second; the deck starts running behind it
+		// the panels stay hung at the edges, so the element is never removed —
+		// `.is-open` is what stops it taking clicks
+		window.setTimeout(() => {
+			if (!reduce) setPlaying(true);
+		}, reduce ? 0 : 1150);
+	};
+
+	openBtn?.addEventListener('click', raise);
+	// it opens by itself a beat after it comes into view
+	if ('IntersectionObserver' in window && curtain) {
+		const io = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((en) => {
+					if (en.isIntersecting && !opened) {
+						curtainTimer = window.setTimeout(raise, 1600);
+						io.disconnect();
+					}
+				});
+			},
+			{ threshold: 0.35 }
+		);
+		io.observe(deck);
+	} else {
+		raise();
+	}
+
+	// ── questions from the floor ──────────────────────────────────
+	const showAnswer = (q: string, a: string) => {
+		if (!answer) return;
+		if (answerQ) answerQ.textContent = q;
+		if (answerA) answerA.textContent = a;
+		answer.hidden = false;
+		setPlaying(false);
+	};
+	const hideAnswer = () => {
+		if (answer) answer.hidden = true;
+	};
+
+	deck.querySelectorAll<HTMLButtonElement>('[data-pd-ask]').forEach((b) => {
+		b.addEventListener('click', () => {
+			const item = qa[Number(b.dataset.pdAsk || '0')];
+			if (item) showAnswer(item.q, item.a);
+		});
+	});
+	answerX?.addEventListener('click', hideAnswer);
+
+	/** Score every canned answer against what was typed and take the best. */
+	const match = (text: string): QA | null => {
+		const t = text.toLowerCase();
+		let best: QA | null = null;
+		let bestScore = 0;
+		qa.forEach((item) => {
+			let score = 0;
+			item.k.forEach((k) => {
+				if (t.includes(k)) score += k.length > 4 ? 2 : 1;
+			});
+			if (score > bestScore) {
+				bestScore = score;
+				best = item;
+			}
+		});
+		return bestScore >= 2 ? best : null;
+	};
+
+	qaForm?.addEventListener('submit', (e) => {
+		e.preventDefault();
+		const text = (qaInput?.value || '').trim();
+		if (!text) return;
+		const hit = match(text);
+		if (hit) {
+			showAnswer(text, hit.a);
+		} else {
+			showAnswer(
+				text,
+				'That one deserves a real answer rather than a canned one. Send it to us and a senior builder — not a sales desk — replies within one business day. Most first questions turn into a fifteen-minute call and a fixed quote.'
+			);
+		}
+		if (qaInput) qaInput.blur();
+	});
+
+	// ── full screen ───────────────────────────────────────────────
 	const lightsOut = () => {
 		if (theatre) return;
 		theatre = true;
+		raise();
 
-		// hold the deck's place so the page behind does not collapse
-		holeHeight = deck.getBoundingClientRect().height;
-		home.style.height = holeHeight + 'px';
+		home.style.height = deck.getBoundingClientRect().height + 'px';
 		deck.parentNode?.insertBefore(home, deck);
 		document.body.appendChild(deck);
 
@@ -98,13 +209,11 @@ export function initPitchDeck() {
 		document.body.style.overflow = 'hidden';
 		if (blackout) {
 			blackout.hidden = false;
-			// a frame, so the transition actually runs
 			requestAnimationFrame(() => blackout.classList.add('is-on'));
 		}
 		lightsBtn?.setAttribute('aria-pressed', 'true');
 		if (lightsTxt) lightsTxt.textContent = 'Lights on';
 		stage?.focus();
-		if (!reduce) setPlaying(true);
 	};
 
 	const lightsOn = () => {
@@ -133,23 +242,30 @@ export function initPitchDeck() {
 	next?.addEventListener('click', () => go(1));
 	dots.forEach((d, k) =>
 		d.addEventListener('click', () => {
+			hideAnswer();
 			show(k, k > i ? 1 : -1);
 			if (playing) arm();
 		})
 	);
-	playBtn?.addEventListener('click', () => setPlaying(!playing));
+	playBtn?.addEventListener('click', () => {
+		raise();
+		setPlaying(!playing);
+	});
 	lightsBtn?.addEventListener('click', () => (theatre ? lightsOn() : lightsOut()));
 	exitBtn?.addEventListener('click', lightsOn);
 	blackout?.addEventListener('click', lightsOn);
 
-	// arrows work whenever the stage has focus, or always with the lights out
 	document.addEventListener('keydown', (e) => {
 		const within = theatre || deck.contains(document.activeElement);
 		if (!within) return;
+		const typing = document.activeElement === qaInput;
+		if (typing && e.key !== 'Escape') return;
 		if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
 		else if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
-		else if (e.key === 'Escape' && theatre) { e.preventDefault(); lightsOn(); }
-		else if (e.key === ' ' && theatre) { e.preventDefault(); setPlaying(!playing); }
+		else if (e.key === 'Escape') {
+			if (answer && !answer.hidden) { hideAnswer(); return; }
+			if (theatre) { e.preventDefault(); lightsOn(); }
+		} else if (e.key === ' ' && theatre) { e.preventDefault(); setPlaying(!playing); }
 	});
 
 	// swipe
@@ -157,10 +273,7 @@ export function initPitchDeck() {
 	let y0 = 0;
 	stage?.addEventListener(
 		'touchstart',
-		(e) => {
-			x0 = e.touches[0].clientX;
-			y0 = e.touches[0].clientY;
-		},
+		(e) => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; },
 		{ passive: true }
 	);
 	stage?.addEventListener(
@@ -186,9 +299,7 @@ export function initPitchDeck() {
 		io.observe(deck);
 	}
 
-	// leaving the page (Swup) must not strand the site in the dark
 	window.addEventListener('swizel:beforeleave', lightsOn);
-	document.addEventListener('swup:willReplaceContent' as never, lightsOn as never);
 
 	show(0, 1);
 }
