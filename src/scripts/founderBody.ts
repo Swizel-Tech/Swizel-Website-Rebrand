@@ -196,10 +196,102 @@ export function initFounderBody() {
 				if (btnT) btnT.textContent = loud ? 'Sound on' : 'Tap for sound';
 				if (loud) void vid.play().catch(() => {});
 			});
+
+			// ten seconds either way, wrapped so the ends never dead-end
+			spot.querySelectorAll<HTMLButtonElement>('[data-spot-skip]').forEach((s) => {
+				s.addEventListener('click', () => {
+					const by = Number(s.dataset.spotSkip || '0');
+					const len = vid.duration;
+					if (!Number.isFinite(len) || len <= 0) return;
+					let at = vid.currentTime + by;
+					if (at < 0) at += len;
+					if (at > len) at -= len;
+					vid.currentTime = at;
+				});
+			});
+
+			// hold it, or let it run
+			const play = spot.querySelector<HTMLButtonElement>('[data-spot-play]');
+			const paintPlay = () => {
+				const held = vid.paused;
+				reel?.classList.toggle('is-held', held);
+				play?.setAttribute('aria-label', held ? 'Play the film' : 'Pause the film');
+			};
+			play?.addEventListener('click', () => {
+				// a deliberate pause outranks the observer that started it
+				if (vid.paused) void vid.play().catch(() => {});
+				else vid.pause();
+			});
+			vid.addEventListener('play', paintPlay);
+			vid.addEventListener('pause', paintPlay);
+			paintPlay();
 		}
 
-		// the print wall drifts on its own where it is a rail (phones)
+		// the print wall: grab it, flick it, or use the arrows. The wrapper
+		// only wears its controls once there is actually somewhere to go.
 		const rail = spot.querySelector<HTMLElement>('[data-spot-rail]');
+		const railWrap = rail?.closest<HTMLElement>('.spot__railwrap');
+		if (rail && railWrap) {
+			const overflows = () => rail.scrollWidth > rail.clientWidth + 4;
+			const paintNav = () => railWrap.classList.toggle('can-scroll', overflows());
+			const stepBy = () => {
+				const shot = rail.querySelector<HTMLElement>('.spot__shot');
+				return shot ? shot.offsetWidth + 24 : rail.clientWidth * 0.7;
+			};
+			const nudge = (dir: 1 | -1) =>
+				rail.scrollBy({ left: dir * stepBy(), behavior: reduce ? 'auto' : 'smooth' });
+			spot
+				.querySelector<HTMLButtonElement>('[data-spot-rail-prev]')
+				?.addEventListener('click', () => nudge(-1));
+			spot
+				.querySelector<HTMLButtonElement>('[data-spot-rail-next]')
+				?.addEventListener('click', () => nudge(1));
+
+			// drag with a mouse, the way you would flick it on glass
+			let down = false;
+			let startX = 0;
+			let startLeft = 0;
+			let moved = 0;
+			rail.addEventListener('pointerdown', (e) => {
+				if (e.pointerType === 'touch' || !overflows()) return;
+				down = true;
+				moved = 0;
+				startX = e.clientX;
+				startLeft = rail.scrollLeft;
+				rail.classList.add('is-dragging');
+			});
+			rail.addEventListener('pointermove', (e) => {
+				if (!down) return;
+				const dx = e.clientX - startX;
+				moved = Math.abs(dx);
+				rail.scrollLeft = startLeft - dx;
+			});
+			const stop = () => {
+				if (!down) return;
+				down = false;
+				rail.classList.remove('is-dragging');
+			};
+			rail.addEventListener('pointerup', stop);
+			rail.addEventListener('pointercancel', stop);
+			rail.addEventListener('pointerleave', stop);
+			rail.addEventListener(
+				'click',
+				(e) => {
+					if (moved > 6) {
+						e.preventDefault();
+						e.stopPropagation();
+						moved = 0;
+					}
+				},
+				true
+			);
+
+			rail.addEventListener('scroll', paintNav, { passive: true });
+			window.addEventListener('resize', paintNav);
+			paintNav();
+			// the photographs load lazily, so the width settles a beat later
+			window.setTimeout(paintNav, 900);
+		}
 		if (rail && !reduce) {
 			let dir = 1;
 			let paused = false;
@@ -221,5 +313,42 @@ export function initFounderBody() {
 				rail.scrollBy({ left: dir * 0.75, behavior: 'auto' });
 			}, 32);
 		}
+	}
+
+	// ── the receipts wall drifts on its own wherever it is a rail ──
+	// Same manners as everything else that moves on this site: it parks
+	// the moment you touch it, and only takes the wheel back once you
+	// have let go. On desktop the wall is a grid, so this does nothing.
+	const wall = document.querySelector<HTMLElement>('.fd-wall');
+	if (wall && !reduce) {
+		let dir: 1 | -1 = 1;
+		let paused = false;
+		let seen = false;
+		let resumeAt = 0;
+		const park = (ms = 2600) => {
+			resumeAt = performance.now() + ms;
+		};
+		wall.addEventListener('pointerenter', () => (paused = true));
+		wall.addEventListener('pointerleave', () => {
+			paused = false;
+			park(600);
+		});
+		wall.addEventListener('touchstart', () => park(4000), { passive: true });
+		wall.addEventListener('wheel', () => park(), { passive: true });
+		wall.addEventListener('focusin', () => park(6000));
+		const wio = new IntersectionObserver(
+			(entries) => entries.forEach((e) => (seen = e.isIntersecting)),
+			{ threshold: 0.2 }
+		);
+		wio.observe(wall);
+		window.setInterval(() => {
+			if (paused || !seen || document.hidden) return;
+			if (performance.now() < resumeAt) return;
+			const max = wall.scrollWidth - wall.clientWidth;
+			if (max <= 24) return; // it is a grid at this width, or a hairline
+			if (wall.scrollLeft >= max - 1) dir = -1;
+			else if (wall.scrollLeft <= 1) dir = 1;
+			wall.scrollBy({ left: dir * 0.7, behavior: 'auto' });
+		}, 32);
 	}
 }

@@ -101,9 +101,36 @@ const links = [
 							<b></b>
 							Her words
 						</span>
-						<button class="spot__sound" type="button" data-spot-sound aria-pressed="false">
-							<Icon width={15} name="mdi:volume-off" />
-							<span data-spot-sound-t>Tap for sound</span>
+						<span class="spot__deck">
+							<button
+								class="spot__skip"
+								type="button"
+								data-spot-skip="-10"
+								aria-label="Back ten seconds"
+							>
+								<Icon width={15} name="mdi:rewind-10" />
+							</button>
+							<button class="spot__sound" type="button" data-spot-sound aria-pressed="false">
+								<Icon width={15} name="mdi:volume-off" />
+								<span data-spot-sound-t>Tap for sound</span>
+							</button>
+							<button
+								class="spot__skip"
+								type="button"
+								data-spot-skip="10"
+								aria-label="Forward ten seconds"
+							>
+								<Icon width={15} name="mdi:fast-forward-10" />
+							</button>
+						</span>
+						<button
+							class="spot__play"
+							type="button"
+							data-spot-play
+							aria-label="Pause the film"
+						>
+							<Icon class="spot__play-i spot__play-i--pause" width={17} name="mdi:pause" />
+							<Icon class="spot__play-i spot__play-i--play" width={17} name="mdi:play" />
 						</button>
 					</span>
 					<figcaption class="spot__cap">
@@ -205,7 +232,16 @@ const links = [
 				<Icon width={13} name="mdi:pin-outline" />
 				On the job, shot by us
 			</span>
-			<div class="spot__rail" role="list" data-spot-rail>
+			<div class="spot__railwrap">
+				<button
+					class="spot__nav spot__nav--prev"
+					type="button"
+					data-spot-rail-prev
+					aria-label="Previous photographs"
+				>
+					<Icon width={20} name="mdi:chevron-left" />
+				</button>
+				<div class="spot__rail" role="list" data-spot-rail>
 				{
 					shots.map((s, i) => (
 						<figure class="spot__shot" role="listitem" style={`--r:${s.r}; --i:${i}`} tabindex="0">
@@ -219,6 +255,15 @@ const links = [
 						</figure>
 					))
 				}
+				</div>
+				<button
+					class="spot__nav spot__nav--next"
+					type="button"
+					data-spot-rail-next
+					aria-label="More photographs"
+				>
+					<Icon width={20} name="mdi:chevron-right" />
+				</button>
 			</div>
 		</div>
 
@@ -374,10 +419,10 @@ const links = [
 		margin: 0;
 		flex: none;
 	}
-	.spot__dev--reel { width: clamp(186px, 20vw, 250px); z-index: 3; }
+	.spot__dev--reel { width: clamp(196px, 21vw, 268px); z-index: 3; }
 	.spot__dev--ig,
 	.spot__dev--tt {
-		width: clamp(120px, 13vw, 158px);
+		width: clamp(148px, 16.5vw, 202px);
 		margin-bottom: clamp(1.1rem, 2.2vw, 2.2rem);
 		z-index: 1;
 	}
@@ -446,10 +491,60 @@ const links = [
 		100% { box-shadow: 0 0 0 8px rgba(244, 63, 94, 0); }
 	}
 
-	.spot__sound {
+	/* the transport: skip back, sound, skip on — one row on the glass */
+	.spot__deck {
 		position: absolute;
 		left: 50%;
 		bottom: 0.9rem;
+		z-index: 3;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3rem;
+		transform: translateX(-50%);
+	}
+	.spot__skip {
+		display: grid;
+		place-items: center;
+		width: 1.85rem;
+		height: 1.85rem;
+		flex: none;
+		border: 0;
+		border-radius: 9999px;
+		background: rgba(255, 255, 255, 0.82);
+		color: #1d1430;
+		cursor: pointer;
+		box-shadow: 0 10px 24px -12px rgba(0, 0, 0, 0.9);
+		transition: background 0.2s ease, transform 0.2s ease;
+	}
+	.spot__skip:hover { background: #fff; transform: translateY(-2px); }
+	.spot__skip:active { transform: scale(0.92); }
+
+	/* pause lives top-right, out of the way of her face */
+	.spot__play {
+		position: absolute;
+		top: 0.7rem;
+		right: 0.7rem;
+		z-index: 3;
+		display: grid;
+		place-items: center;
+		width: 1.9rem;
+		height: 1.9rem;
+		border: 0;
+		border-radius: 9999px;
+		background: rgba(12, 8, 26, 0.62);
+		-webkit-backdrop-filter: blur(6px);
+		backdrop-filter: blur(6px);
+		color: #fff;
+		cursor: pointer;
+		transition: background 0.2s ease, transform 0.2s ease;
+	}
+	.spot__play:hover { background: rgba(12, 8, 26, 0.85); transform: scale(1.06); }
+	.spot__play-i--play { display: none; }
+	.spot__dev--reel.is-held .spot__play-i--pause { display: none; }
+	.spot__dev--reel.is-held .spot__play-i--play { display: block; }
+
+	.spot__sound {
+		position: relative;
 		display: inline-flex;
 		align-items: center;
 		gap: 0.4rem;
@@ -463,11 +558,10 @@ const links = [
 		font-weight: 800;
 		white-space: nowrap;
 		cursor: pointer;
-		transform: translateX(-50%);
 		box-shadow: 0 10px 24px -12px rgba(0, 0, 0, 0.9);
 		transition: background 0.2s ease, transform 0.2s ease;
 	}
-	.spot__sound:hover { transform: translateX(-50%) translateY(-2px); }
+	.spot__sound:hover { transform: translateY(-2px); }
 	.spot__dev--reel.is-loud .spot__sound { background: rgba(255, 255, 255, 0.8); }
 
 	.spot__cap {
@@ -647,11 +741,57 @@ const links = [
 	}
 	.spot__wall-k :global(svg) { color: var(--sp-acc); }
 
+	.spot__railwrap { position: relative; }
 	.spot__rail {
 		display: flex;
 		align-items: flex-end;
 		justify-content: center;
 		padding: 1.1rem 0 0.3rem;
+		overflow-x: auto;
+		overscroll-behavior-x: contain;
+		scrollbar-width: none;
+		-ms-overflow-style: none;
+		touch-action: pan-x pan-y;
+		cursor: grab;
+	}
+	.spot__rail::-webkit-scrollbar { display: none; }
+	.spot__rail.is-dragging { cursor: grabbing; scroll-behavior: auto; }
+	.spot__rail.is-dragging .spot__shot { pointer-events: none; }
+	/* once it overflows it stops pretending to be a centred row */
+	.spot__railwrap.can-scroll .spot__rail { justify-content: flex-start; }
+
+	.spot__nav {
+		position: absolute;
+		top: 46%;
+		z-index: 4;
+		display: none;
+		place-items: center;
+		width: 2.5rem;
+		height: 2.5rem;
+		margin-top: -1.25rem;
+		border-radius: 9999px;
+		border: 1px solid color-mix(in srgb, var(--sp-acc) 34%, transparent);
+		background: rgba(14, 9, 30, 0.82);
+		-webkit-backdrop-filter: blur(10px);
+		backdrop-filter: blur(10px);
+		color: #f4f0ff;
+		cursor: pointer;
+		box-shadow: 0 18px 34px -20px rgba(0, 0, 0, 0.9);
+		transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), background 0.22s ease, opacity 0.22s ease;
+	}
+	.spot__railwrap.can-scroll .spot__nav { display: grid; }
+	.spot__nav:hover { transform: scale(1.08); background: rgba(14, 9, 30, 0.95); }
+	.spot__nav:active { transform: scale(0.95); }
+	.spot__nav--prev { left: clamp(-0.4rem, 0.5vw, 0.6rem); }
+	.spot__nav--next { right: clamp(-0.4rem, 0.5vw, 0.6rem); }
+	:global(html:not(.dark)) .spot__nav {
+		background: rgba(255, 255, 255, 0.9);
+		color: #1d1430;
+		border-color: rgba(29, 20, 48, 0.14);
+	}
+	:global(html:not(.dark)) .spot__nav:hover { background: #fff; }
+	@media (max-width: 720px) {
+		.spot__nav { width: 2.1rem; height: 2.1rem; margin-top: -1.05rem; }
 	}
 	.spot__rail > * + * { margin-left: clamp(-26px, -2vw, -14px); }
 
@@ -863,9 +1003,15 @@ const links = [
 		   sit under it as a pair, rather than three phones fighting for
 		   the same 100vw */
 		.spot__devices { flex-wrap: wrap; gap: 0.7rem; }
-		.spot__dev--reel { order: 1; width: min(62vw, 250px); }
+		.spot__dev--reel { order: 1; width: min(66vw, 268px); }
+		/* the pair has to share one line, so each one takes exactly half of
+		   what is left after the gap — no width guess to get wrong */
 		.spot__dev--ig,
-		.spot__dev--tt { order: 2; width: min(36vw, 152px); margin-bottom: 0; }
+		.spot__dev--tt {
+			order: 2;
+			width: min(calc((100% - 0.7rem) / 2), 178px);
+			margin-bottom: 0;
+		}
 		.spot__sound { font-size: 0.64rem; padding: 0.34rem 0.7rem; }
 
 		/* the ledger keeps its titles, drops the second line */

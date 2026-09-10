@@ -582,14 +582,23 @@ const chips = [
 			justify-content: flex-start;
 			width: 100%;
 			overflow-x: auto;
+			overscroll-behavior-x: contain;
+			scroll-snap-type: x proximity;
 			scrollbar-width: none;
+			-ms-overflow-style: none;
+			/* the row owns the horizontal gesture, so a flick moves the
+			   chips instead of dragging the page sideways */
+			touch-action: pan-x;
+			-webkit-overflow-scrolling: touch;
 			margin-inline: calc(var(--fr-bleed, 1rem) * -1);
 			padding-inline: var(--fr-bleed, 1rem);
-			-webkit-mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 1.8rem), transparent);
-			mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 1.8rem), transparent);
+			-webkit-mask-image: linear-gradient(90deg, transparent, #000 1.2rem, #000 calc(100% - 1.8rem), transparent);
+			mask-image: linear-gradient(90deg, transparent, #000 1.2rem, #000 calc(100% - 1.8rem), transparent);
 		}
 		.freel__chips::-webkit-scrollbar { display: none; }
-		.freel__chips li { flex: none; }
+		.freel__chips li { flex: none; scroll-snap-align: start; }
+		/* a single hint on first sight that there is more to the right */
+		.freel__chips li:last-child { margin-right: 0.2rem; }
 	}
 	/* On a phone the fan does not disappear — it just peeks. Two slivers of
 	   the other frames lean in from the edges, tilted further back, so the
