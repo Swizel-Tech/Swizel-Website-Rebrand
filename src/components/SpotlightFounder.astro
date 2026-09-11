@@ -405,6 +405,9 @@ const links = [
 		.spot__stage {
 			grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr);
 		}
+		/* left-aligned, so the gap between the phones and the writing is
+		   real rather than whatever is left over */
+		.spot__devices { justify-content: flex-start; }
 	}
 
 	/* ── the handsets ─────────────────────────────────────────────── */
@@ -413,16 +416,25 @@ const links = [
 		align-items: flex-end;
 		justify-content: center;
 		gap: clamp(0.5rem, 1.2vw, 1rem);
+		/* a grid track with minmax(0,…) will not stop a flex row of fixed
+		   widths from spilling — this will */
+		min-width: 0;
+		max-width: 100%;
 	}
 	.spot__dev {
 		position: relative;
 		margin: 0;
 		flex: none;
 	}
-	.spot__dev--reel { width: clamp(196px, 21vw, 268px); z-index: 3; }
+	.spot__dev--reel {
+		width: clamp(186px, 20vw, 252px);
+		max-width: 38%;
+		z-index: 3;
+	}
 	.spot__dev--ig,
 	.spot__dev--tt {
-		width: clamp(148px, 16.5vw, 202px);
+		width: clamp(132px, 14vw, 178px);
+		max-width: 27%;
 		margin-bottom: clamp(1.1rem, 2.2vw, 2.2rem);
 		z-index: 1;
 	}
