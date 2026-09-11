@@ -5,6 +5,7 @@
 // Foundational content mirrors AboutBoardroom (same team, same years,
 // same client voices) — only the telling changes per view.
 import { Icon } from 'astro-icon/components';
+import WhiteboardVideo from '../WhiteboardVideo.astro';
 import { teamDetails, MISSION, MISSION_SUPPORT, VISION, CORE_VALUES } from '../../consts';
 
 // Same crew as the Boardroom About, founder-style presentation.
@@ -75,6 +76,11 @@ const journey = [
 		tag: '2020',
 		title: 'Products ship. Clients stay.',
 		desc: 'We stop thinking in projects and start thinking in products. Early builds turn into long-term partnerships.',
+	},
+	{
+		tag: '2021',
+		title: 'A room of our own.',
+		desc: 'We move into our first base at Games Village, Abuja. A conference table, an air conditioner and the first people who backed us before the numbers did.',
 	},
 	{
 		tag: '2022 – 2023',
@@ -200,22 +206,19 @@ const values = [
 			</div>
 
 			<div class="fa-visual fd-rev">
-				<figure class="fa-photo" data-fa-tilt="9">
-					<img
-						src="/images/hero-team.jpg"
-						alt="The Swizel team"
-						loading="lazy"
-						width="640"
-						height="480"
+				<div class="fa-board">
+					<WhiteboardVideo
+						videoId="p563SFG9Nwg"
+						title="who is swizel, really?"
+						kicker="Founder briefing"
+						stickyA="est. 2019 ✏️"
+						stickyB="we ship!"
+						ctaHref="/contact"
+						ctaLabel="Bring us your Day 0"
+						playLabel="Ten minutes with the crew"
+						countLabel="starting in"
 					/>
-					<span class="fa-photo-glare" aria-hidden="true"></span>
-					<figcaption class="fa-photo-tag">
-						The crew behind 65+ launches
-					</figcaption>
-				</figure>
-				<span class="fa-chip fa-chip--a">🚀 6 wks to MVP</span>
-				<span class="fa-chip fa-chip--b">🌍 10+ countries</span>
-				<span class="fa-chip fa-chip--c">⚡ Weekly demos</span>
+				</div>
 			</div>
 		</div>
 
@@ -340,14 +343,21 @@ const values = [
 			<div class="fa-svcs">
 				{
 					services.map((s, i) => (
-						<article class="fa-svc fd-rev" style={`--i:${i % 3}`} data-fa-tilt="10">
-							<span class="fa-val-glare" aria-hidden="true" />
-							<span class="fa-val-ic" style={`--i:${i}`}>
-								<Icon width={22} name={s.icon} />
+						<article class="fa-svc fd-rev" style={`--i:${i % 3}`}>
+							<span class="fa-svc-rule" aria-hidden="true" />
+							<span class="fa-svc-no">{String(i + 1).padStart(2, '0')}</span>
+							<span class="fa-svc-head">
+								<span class="fa-svc-ic">
+									<Icon width={20} name={s.icon} />
+								</span>
+								<h3 class="fa-svc-t">{s.title}</h3>
 							</span>
-							<h3 class="fa-val-t">{s.title}</h3>
-							<p class="fa-val-d">{s.desc}</p>
-							<span class="fa-svc-tag">{s.tag}</span>
+							<p class="fa-svc-d">{s.desc}</p>
+							<ul class="fa-svc-tags">
+								{s.tag
+									.split('·')
+									.map((x) => <li>{x.trim()}</li>)}
+							</ul>
 						</article>
 					))
 				}
@@ -374,25 +384,29 @@ const values = [
 				<span class="fa-journey-line" aria-hidden="true"></span>
 				{
 					journey.map((j, i) => (
-						<li class="fa-stop fd-rev" style={`--i:${i}`}>
+						<li class="fa-stop fd-rev" style={`--i:${i % 3}`}>
+							<span class="fa-stop-year" aria-hidden="true">{j.tag}</span>
 							<span class="fa-stop-node" aria-hidden="true" />
-							<span class="fa-stop-tag">{j.tag}</span>
-							<h3 class="fa-stop-t">{j.title}</h3>
-							<p class="fa-stop-d">{j.desc}</p>
+							<div class="fa-stop-card">
+								<h3 class="fa-stop-t">{j.title}</h3>
+								<p class="fa-stop-d">{j.desc}</p>
+							</div>
 						</li>
 					))
 				}
-				<li class="fa-stop fa-stop--next fd-rev" style="--i:5">
-					<span class="fa-stop-node" aria-hidden="true"></span>
-					<span class="fa-stop-tag">Next stop</span>
-					<h3 class="fa-stop-t">Your product.</h3>
-					<p class="fa-stop-d">
-						This chapter is yours to write. We bring the crew.
-					</p>
-					<a href="/contact" class="fa-link">
-						Start Week 1
-						<Icon width={15} name="mdi:arrow-right" />
-					</a>
+				<li class="fa-stop fa-stop--next fd-rev" style="--i:1">
+					<span class="fa-stop-year" aria-hidden="true">Next</span>
+					<span class="fa-stop-node" aria-hidden="true" />
+					<div class="fa-stop-card">
+						<h3 class="fa-stop-t">Your product.</h3>
+						<p class="fa-stop-d">
+							This chapter is yours to write. We bring the crew.
+						</p>
+						<a href="/contact" class="fa-link">
+							Start Week 1
+							<Icon width={15} name="mdi:arrow-right" />
+						</a>
+					</div>
 				</li>
 			</ol>
 		</div>
@@ -520,12 +534,18 @@ const values = [
 	<section class="fa-sec" data-cursor="play">
 		<div class="fa-wrap fa-inside">
 			<div class="fa-inside-main fd-rev" data-fa-tilt="6">
-				<div class="fa-media fa-media--tall">
-					<span class="fa-media-sheen" aria-hidden="true"></span>
-					<Icon width={36} name="mdi:play-circle-outline" />
-					<span class="fa-media-label">Video placeholder</span>
-					<span class="fa-media-sub">A day at the studio</span>
-				</div>
+				<figure class="fa-shot fa-shot--tall">
+					<img
+						src="/images/about/studio-floor.jpg"
+						alt="The Swizel floor in Abuja: designers on the sofas, engineers at the long table, a call on the stairs"
+						width="1000"
+						height="1312"
+						loading="lazy"
+						decoding="async"
+					/>
+					<span class="fa-shot-glare" aria-hidden="true" />
+					<figcaption class="fa-shot-cap">The floor, on a normal Tuesday</figcaption>
+				</figure>
 				<div class="fa-inside-copy">
 					<span class="fa-stamp">Inside Swizel</span>
 					<h2 class="fa-h">A studio, <em>not a factory.</em></h2>
@@ -541,12 +561,18 @@ const values = [
 				</div>
 			</div>
 			<div class="fa-inside-aside fd-rev" style="--i:1" data-fa-tilt="6">
-				<div class="fa-media">
-					<span class="fa-media-sheen" aria-hidden="true"></span>
-					<Icon width={26} name="mdi:image-outline" />
-					<span class="fa-media-label">Image placeholder</span>
-					<span class="fa-media-sub">Training, in session</span>
-				</div>
+				<figure class="fa-shot">
+					<img
+						src="/images/about/training-room.jpg"
+						alt="Trainees at the long table in the Swizel training room, working on real products"
+						width="1100"
+						height="1467"
+						loading="lazy"
+						decoding="async"
+					/>
+					<span class="fa-shot-glare" aria-hidden="true" />
+					<figcaption class="fa-shot-cap">Training, in session</figcaption>
+				</figure>
 				<div class="fa-inside-copy">
 					<h3 class="fa-h fa-h--sm">Education <em>at heart.</em></h3>
 					<p class="fa-p">
@@ -882,6 +908,10 @@ const values = [
 		margin-top: 0.2rem;
 	}
 	.fa-visual { position: relative; }
+	/* the board sits where the photograph did, and the chips ride its edge */
+	.fa-board { position: relative; z-index: 1; width: 100%; }
+	.fa-board :global(.wbv) { width: 100%; }
+
 	.fa-photo {
 		position: relative;
 		margin: 0;
@@ -999,50 +1029,125 @@ const values = [
 	}
 
 	/* ── C · journey ── */
+	/* ══ the journey: a spine with the year set alongside it ══════════
+	   Each stop is a card that leans off a single rule, with the year
+	   standing outside the card so the run of them reads as a timeline
+	   rather than a bulleted list. */
 	.fa-journey {
+		--yr: clamp(6.2rem, 12vw, 9.4rem);
+		--spine: calc(var(--yr) + clamp(0.4rem, 1vw, 0.8rem));
 		position: relative;
 		list-style: none;
-		margin: 0 auto;
-		padding: 0 0 0 1.6rem;
-		max-width: 44rem;
-		border-left: 2px dashed color-mix(in srgb, var(--fa-acc) 40%, transparent);
+		margin: clamp(1rem, 2.4vw, 1.8rem) auto 0;
+		padding: 0;
+		max-width: 54rem;
+		display: grid;
+		gap: clamp(0.7rem, 1.6vw, 1.1rem);
 	}
-	.fa-stop { position: relative; padding: 0 0 2rem 1rem; }
-	.fa-stop:last-child { padding-bottom: 0; }
+	.fa-stop {
+		position: relative;
+		display: grid;
+		grid-template-columns: var(--yr) 1fr;
+		align-items: start;
+		gap: clamp(0.8rem, 2vw, 1.6rem);
+		padding: 0;
+	}
+	/* the year, outside the card, in the site's own hand */
+	.fa-stop-year {
+		display: block;
+		padding-top: 0.9rem;
+		text-align: right;
+		font-family: 'Bradley Hand', 'Segoe Print', 'Comic Sans MS', cursive;
+		font-size: clamp(0.95rem, 1.9vw, 1.25rem);
+		font-weight: 700;
+		line-height: 1.15;
+		color: color-mix(in srgb, var(--fa-acc) 85%, #fff);
+		/* "2022 – 2023" and "Day 0 · 2019" are wider than a bare year, so
+		   the column lets them wrap rather than spill out of the grid */
+		overflow-wrap: break-word;
+		hyphens: none;
+	}
+	/* the spine runs between the year and the cards */
+	.fa-journey-line,
+	.fa-journey::before {
+		content: '';
+		position: absolute;
+		left: var(--spine);
+		top: 0.6rem;
+		bottom: 0.6rem;
+		width: 2px;
+		border-radius: 2px;
+		background: linear-gradient(
+			180deg,
+			color-mix(in srgb, var(--fa-acc) 60%, transparent),
+			color-mix(in srgb, var(--fa-acc) 18%, transparent)
+		);
+	}
+	.fa-journey-line { display: none; }
 	.fa-stop-node {
 		position: absolute;
-		left: -2.22rem;
-		top: 0.2rem;
-		width: 1rem;
-		height: 1rem;
+		left: calc(var(--spine) - 0.46rem);
+		top: 1.15rem;
+		width: 0.92rem;
+		height: 0.92rem;
 		border-radius: 9999px;
 		background: linear-gradient(95deg, var(--fa-acc), var(--fa-acc2));
-		box-shadow: 0 0 0 4px color-mix(in srgb, var(--fa-acc) 22%, transparent);
+		box-shadow: 0 0 0 4px color-mix(in srgb, var(--fa-acc) 18%, transparent);
 	}
 	.fa-stop--next .fa-stop-node {
 		background: transparent;
 		border: 2px dashed var(--fa-acc);
 		box-shadow: none;
 	}
-	.fa-stop-tag {
-		font-size: 0.72rem;
-		font-weight: 800;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
-		color: var(--fa-acc);
+	.fa-stop-card {
+		position: relative;
+		padding: clamp(0.85rem, 1.8vw, 1.15rem) clamp(1rem, 2vw, 1.3rem);
+		border: 1px solid var(--fa-line);
+		border-radius: 1rem;
+		background:
+			linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 60%),
+			var(--fa-card);
+		transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.35s ease,
+			box-shadow 0.42s ease;
 	}
-	:global(html:not(.dark)) .fabout .fa-stop-tag { color: #5d34c4; }
-	.fa-stop-t {
-		font-size: 1.18rem;
+	.fa-stop:hover .fa-stop-card {
+		transform: translateX(4px);
+		border-color: color-mix(in srgb, var(--fa-acc) 45%, transparent);
+		box-shadow: 0 22px 46px -30px color-mix(in srgb, var(--fa-acc) 85%, transparent);
+	}
+	.fa-stop--next .fa-stop-card {
+		border-style: dashed;
+		background: color-mix(in srgb, var(--fa-acc) 8%, transparent);
+	}
+	/* the year is already alongside; inside the card it is a quiet label */
+	.fa-stop-tag {
+		font-size: 0.66rem;
 		font-weight: 800;
-		margin: 0.3rem 0 0.35rem;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--fa-muted);
+	}
+	:global(html:not(.dark)) .fabout .fa-stop-tag { color: rgba(29, 20, 48, 0.55); }
+	.fa-stop-t {
+		font-size: clamp(1.02rem, 2vw, 1.18rem);
+		font-weight: 800;
+		letter-spacing: -0.01em;
+		margin: 0.2rem 0 0.3rem;
 	}
 	.fa-stop-d {
-		font-size: 0.95rem;
-		line-height: 1.6;
+		font-size: 0.92rem;
+		line-height: 1.58;
 		color: var(--fa-muted);
-		max-width: 36rem;
-		margin: 0 0 0.5rem;
+		margin: 0;
+	}
+	.fa-stop-card .fa-link { margin-top: 0.7rem; }
+
+	@media (max-width: 620px) {
+		.fa-stop { grid-template-columns: 1fr; gap: 0.3rem; }
+		.fa-stop-year { text-align: left; padding: 0 0 0 1.6rem; }
+		.fa-journey::before { left: 0.32rem; }
+		.fa-stop-node { left: 0; top: 0.35rem; }
+		.fa-stop-card { margin-left: 1.6rem; }
 	}
 
 	/* ── D · values ── */
@@ -1611,6 +1716,22 @@ const values = [
 		letter-spacing: 0.16em;
 		color: color-mix(in srgb, var(--fa-acc) 80%, #fff);
 	}
+	/* On paper a colour mixed toward white all but disappears, so every
+	   numeral and eyebrow on this page runs deep instead. */
+	:global(html:not(.dark)) .fabout .fa-val-no,
+	:global(html:not(.dark)) .fabout .fa-svc-no { color: #3f1f9e; }
+	:global(html:not(.dark)) .fabout .fa-stop-year { color: #4a27ad; }
+	:global(html:not(.dark)) .fabout .fa-svc-tags li {
+		color: #4a27ad;
+		border-color: rgba(74, 39, 173, 0.3);
+		background: rgba(74, 39, 173, 0.07);
+	}
+	:global(html:not(.dark)) .fabout .fa-val-card::after { color: rgba(63, 31, 158, 0.15); }
+	:global(html:not(.dark)) .fabout .fa-stop-card,
+	:global(html:not(.dark)) .fabout .fa-svc {
+		background: #fff;
+		box-shadow: 0 18px 42px -34px rgba(29, 20, 48, 0.6);
+	}
 
 	.fa-mvv {
 		display: grid;
@@ -1634,8 +1755,11 @@ const values = [
 	}
 	.fa-mvv-card:hover,
 	.fa-svc:hover {
+		transform: translateY(-5px);
 		border-color: color-mix(in srgb, var(--fa-acc) 50%, transparent);
+		box-shadow: 0 26px 52px -30px color-mix(in srgb, var(--fa-acc) 85%, transparent);
 	}
+	.fa-svc { transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.35s ease, box-shadow 0.45s ease; }
 	.fa-mvv-chips {
 		display: flex;
 		flex-wrap: wrap;
@@ -1652,10 +1776,132 @@ const values = [
 		background: color-mix(in srgb, var(--fa-acc) 12%, transparent);
 		color: var(--fa-ink);
 	}
+	/* ══ real photographs, framed the way the site frames everything ══ */
+	.fa-shot {
+		position: relative;
+		margin: 0;
+		overflow: hidden;
+		border-radius: 1rem;
+		border: 1px solid var(--fa-line);
+		background: #100a22;
+		box-shadow: 0 30px 66px -34px rgba(0, 0, 0, 0.8);
+	}
+	.fa-shot img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		aspect-ratio: 4 / 3;
+		transform: scale(1.02);
+		transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.fa-shot--tall img { aspect-ratio: 4 / 3; }
+	.fa-shot:hover img { transform: scale(1.06); }
+	.fa-shot-glare {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		background: linear-gradient(
+			180deg,
+			transparent 40%,
+			color-mix(in srgb, var(--fa-acc) 16%, transparent) 78%,
+			rgba(8, 5, 18, 0.82)
+		);
+	}
+	.fa-shot-cap {
+		position: absolute;
+		left: 0.9rem;
+		right: 0.9rem;
+		bottom: 0.75rem;
+		font-family: 'Bradley Hand', 'Segoe Print', 'Comic Sans MS', cursive;
+		font-size: 0.92rem;
+		font-weight: 700;
+		color: #f4f0ff;
+		text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+	}
+	@media (max-width: 879px) {
+		.fa-shot--tall img { aspect-ratio: 16 / 10; }
+	}
+
+	/* ══ the six disciplines, as an index rather than six flat boxes ══
+	   Each one is a numbered entry with a rule that fills on approach, so
+	   the set reads as one practice broken into parts. */
 	.fa-svcs {
 		display: grid;
 		grid-template-columns: repeat(3, minmax(0, 1fr));
-		gap: 1rem;
+		gap: clamp(0.6rem, 1.4vw, 1rem);
+	}
+	.fa-svc-rule {
+		position: absolute;
+		inset: 0 auto auto 0;
+		width: 100%;
+		height: 2px;
+		transform: scaleX(var(--fill, 0.14));
+		transform-origin: left center;
+		background: linear-gradient(90deg, color-mix(in srgb, var(--fa-acc) 92%, #fff), transparent);
+		transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.fa-svc:hover .fa-svc-rule { --fill: 1; }
+	.fa-svc-no {
+		display: block;
+		font-size: 0.72rem;
+		font-weight: 900;
+		letter-spacing: 0.18em;
+		color: color-mix(in srgb, var(--fa-acc) 82%, #fff);
+	}
+	.fa-svc-head {
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		margin-top: 0.85rem;
+	}
+	.fa-svc-ic {
+		display: grid;
+		place-items: center;
+		flex: none;
+		width: 2.3rem;
+		height: 2.3rem;
+		border-radius: 0.7rem;
+		color: var(--fa-acc);
+		background: color-mix(in srgb, var(--fa-acc) 15%, transparent);
+		box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--fa-acc) 30%, transparent);
+		transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.35s ease;
+	}
+	.fa-svc:hover .fa-svc-ic {
+		transform: translateY(-2px) rotate(-6deg);
+		background: color-mix(in srgb, var(--fa-acc) 26%, transparent);
+	}
+	.fa-svc-t {
+		font-size: 1.04rem;
+		font-weight: 800;
+		letter-spacing: -0.01em;
+		color: var(--fa-ink);
+		margin: 0;
+	}
+	.fa-svc-d {
+		margin: 0.65rem 0 0;
+		font-size: 0.88rem;
+		line-height: 1.55;
+		color: var(--fa-muted);
+	}
+	.fa-svc-tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.3rem;
+		list-style: none;
+		margin: 0.9rem 0 0;
+		padding: 0;
+	}
+	.fa-svc-tags li {
+		padding: 0.2rem 0.5rem;
+		border-radius: 9999px;
+		border: 1px solid color-mix(in srgb, var(--fa-acc) 26%, transparent);
+		background: color-mix(in srgb, var(--fa-acc) 9%, transparent);
+		font-size: 0.62rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: color-mix(in srgb, var(--fa-acc) 88%, #fff);
 	}
 	.fa-svc-tag {
 		display: inline-block;
@@ -1670,23 +1916,8 @@ const values = [
 	:global(html:not(.dark)) .fabout .fa-svc-tag { color: #5d34c4; }
 	.fa-svcs-cta { text-align: center; margin-top: 1.4rem; }
 
-	/* ── journey: the line draws itself, nodes pulse ── */
-	.fa-journey { border-left-color: transparent; }
-	.fa-journey-line {
-		position: absolute;
-		left: -2px;
-		top: 0;
-		width: 3px;
-		height: 100%;
-		border-radius: 2px;
-		background: linear-gradient(180deg, var(--fa-acc), var(--fa-acc2));
-		transform: scaleY(0);
-		transform-origin: top;
-		transition: transform 2.4s cubic-bezier(0.22, 1, 0.36, 1);
-		box-shadow: 0 0 14px color-mix(in srgb, var(--fa-acc) 55%, transparent);
-	}
-	.fa-journey { position: relative; }
-	.fa-journey.is-drawing .fa-journey-line { transform: scaleY(1); }
+	/* ── journey: the nodes pulse on the spine ── */
+
 	.fa-stop-node::after {
 		content: '';
 		position: absolute;
@@ -1718,8 +1949,8 @@ const values = [
 	/* ── inside Swizel: media placeholders w/ sweeping sheen ── */
 	.fa-inside {
 		display: grid;
-		grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-		gap: 1.2rem;
+		grid-template-columns: minmax(0, 1.22fr) minmax(0, 0.78fr);
+		gap: clamp(0.9rem, 2vw, 1.4rem);
 		align-items: stretch;
 	}
 	.fa-inside-main,
@@ -1736,7 +1967,36 @@ const values = [
 		will-change: transform;
 		transition: border-color 0.3s ease;
 	}
-	.fa-inside-main { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; }
+	/* the photograph leads and runs the full height of the card; the copy
+	   sits beside it rather than sharing a 50/50 split with a thumbnail */
+	.fa-inside-main {
+		grid-template-columns: minmax(0, 0.92fr) minmax(0, 1fr);
+		align-items: stretch;
+		padding: 0;
+		overflow: hidden;
+	}
+	.fa-inside-main .fa-shot {
+		height: 100%;
+		border: 0;
+		border-radius: 0;
+		box-shadow: none;
+	}
+	.fa-inside-main .fa-shot img { height: 100%; aspect-ratio: auto; object-position: 50% 42%; }
+	.fa-inside-main .fa-inside-copy {
+		align-self: center;
+		padding: clamp(1.2rem, 2.4vw, 1.9rem) clamp(1.2rem, 2.4vw, 1.9rem)
+			clamp(1.2rem, 2.4vw, 1.9rem) 0;
+	}
+	/* the aside keeps its own padding and a portrait of its own */
+	.fa-inside-aside .fa-shot img { aspect-ratio: 3 / 4; }
+	@media (max-width: 879px) {
+		.fa-inside-main { padding: 0; }
+		.fa-inside-main .fa-shot { border-radius: 1.3rem 1.3rem 0 0; }
+		.fa-inside-main .fa-shot img { aspect-ratio: 4 / 3; height: auto; }
+		.fa-inside-main .fa-inside-copy {
+			padding: 0 clamp(1.1rem, 4vw, 1.4rem) clamp(1.2rem, 4vw, 1.5rem);
+		}
+	}
 	.fa-inside-main:hover, .fa-inside-aside:hover { border-color: color-mix(in srgb, var(--fa-acc) 45%, transparent); }
 	.fa-media {
 		position: relative;
@@ -1972,9 +2232,6 @@ const values = [
 	}
 	@media (max-width: 560px) {
 		.fa-values { grid-template-columns: minmax(0, 1fr); }
-		.fa-journey { padding-left: 1.2rem; }
-		.fa-stop { padding-left: 0.8rem; }
-		.fa-stop-node { left: -1.82rem; }
 		.fa-team { gap: 0.8rem; }
 		.fa-mate-photo { width: 76px; height: 76px; }
 		.fa-svcs { grid-template-columns: minmax(0, 1fr); }

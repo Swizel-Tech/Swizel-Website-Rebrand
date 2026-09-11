@@ -14,6 +14,8 @@ interface Props {
 	stickyB?: string;
 	ctaHref?: string;
 	ctaLabel?: string;
+	playLabel?: string;
+	countLabel?: string;
 	class?: string;
 	tilt?: boolean;
 }
@@ -26,6 +28,8 @@ const {
 	stickyB = 'demo friday!',
 	ctaHref = '/programs',
 	ctaLabel = 'Join the bootcamp',
+	playLabel = 'Watch a real class',
+	countLabel = 'class starts in',
 	class: klass = '',
 	tilt = true,
 } = Astro.props;
@@ -91,12 +95,12 @@ const rates = [0.5, 0.75, 1, 1.25, 1.5, 2];
 					</span>
 				</span>
 				<span class="wbv__count" data-wbv-count hidden>
-					class starts in <b data-wbv-countn>4</b>
+					{countLabel} <b data-wbv-countn>4</b>
 				</span>
 			</span>
 
 			<span class="wbv__label">
-				<b>Watch a real class</b>
+				<b>{playLabel}</b>
 				<i>{kicker}</i>
 			</span>
 		</button>
