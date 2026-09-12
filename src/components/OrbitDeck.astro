@@ -1,0 +1,367 @@
+---
+// The wheel.
+//
+// Six disciplines in six boxes is a spreadsheet with rounded corners. This
+// is the same six arranged the way a founder actually thinks about them:
+// one practice at the centre of the room, the rest orbiting it, and the
+// wheel turning on its own until somebody grabs it. Inspired by the
+// startup-journey rings founders already have pinned to their walls.
+import { Icon } from 'astro-icon/components';
+
+export interface OrbitItem {
+	icon: string;
+	title: string;
+	tagline?: string;
+	desc: string;
+	items?: string[];
+	href?: string;
+	hrefLabel?: string;
+	color?: string;
+}
+
+interface Props {
+	items: OrbitItem[];
+	label?: string;
+	/** seconds on each spoke; 0 turns the wheel off */
+	every?: number;
+	class?: string;
+}
+
+const { items, label, every = 6, class: klass = '' } = Astro.props;
+const n = items.length;
+---
+
+<div class:list={['orb', klass]} data-orbit data-every={String(every)}>
+	<div class="orb__stage">
+		<!-- the ring the spokes sit on, and the arc that counts down -->
+		<svg class="orb__ring" viewBox="0 0 200 200" aria-hidden="true">
+			<circle class="orb__ring-t" cx="100" cy="100" r="92" />
+			<circle class="orb__ring-f" cx="100" cy="100" r="92" data-orb-ring />
+		</svg>
+
+		<!-- the hub: whichever discipline is facing you -->
+		<div class="orb__hub">
+			{
+				items.map((it, i) => (
+					<article
+						class="orb__panel"
+						data-orb-panel={i}
+						style={`--c:${it.color || 'var(--ob-acc)'}`}
+						aria-hidden={i === 0 ? 'false' : 'true'}
+					>
+						<span class="orb__panel-n">{String(i + 1).padStart(2, '0')}</span>
+						<h3 class="orb__panel-t">{it.title}</h3>
+						{it.tagline && <p class="orb__panel-tag">{it.tagline}</p>}
+						<p class="orb__panel-d">{it.desc}</p>
+						{it.items && it.items.length > 0 && (
+							<ul class="orb__panel-list">
+								{it.items.slice(0, 4).map((x) => (
+									<li>{x}</li>
+								))}
+							</ul>
+						)}
+						{it.href && (
+							<a class="orb__panel-go" href={it.href}>
+								{it.hrefLabel || `Explore ${it.title}`}
+								<Icon width={15} name="mdi:arrow-right" />
+							</a>
+						)}
+					</article>
+				))
+			}
+		</div>
+
+		<!-- the spokes -->
+		{
+			items.map((it, i) => (
+				<button
+					class="orb__spoke"
+					type="button"
+					data-orb-spoke={i}
+					style={`--a:${(360 / n) * i}deg; --c:${it.color || 'var(--ob-acc)'}`}
+					aria-label={it.title}
+					aria-pressed={i === 0 ? 'true' : 'false'}
+				>
+					<span class="orb__spoke-in">
+						<Icon width={20} name={it.icon} />
+						<em>{it.title}</em>
+					</span>
+				</button>
+			))
+		}
+	</div>
+
+	<div class="orb__bar">
+		<button class="orb__arm" type="button" data-orb-prev aria-label="Previous">
+			<Icon width={17} name="mdi:chevron-left" />
+		</button>
+		<span class="orb__label">{label || 'Turn the wheel'}</span>
+		<button class="orb__arm" type="button" data-orb-next aria-label="Next">
+			<Icon width={17} name="mdi:chevron-right" />
+		</button>
+	</div>
+</div>
+
+<style>
+	.orb {
+		--ob-acc: var(--view-accent, #8b5cf6);
+		--ob-ink: #1b1332;
+		--ob-muted: rgba(27, 19, 50, 0.72);
+		--ob-faint: rgba(27, 19, 50, 0.52);
+		--ob-line: rgba(27, 19, 50, 0.14);
+		--ob-paper: rgba(255, 255, 255, 0.88);
+		--ob-r: 44cqi; /* on the ring itself, whatever the wheel measures */
+		display: grid;
+		justify-items: center;
+		gap: 1rem;
+		width: 100%;
+		color: var(--ob-ink);
+	}
+
+	.orb__stage {
+		container-type: inline-size;
+		position: relative;
+		width: min(620px, 100%);
+		aspect-ratio: 1;
+	}
+
+	/* ── the ring and its countdown ─────────────────────────────────── */
+	.orb__ring {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		transform: rotate(-90deg);
+		pointer-events: none;
+	}
+	.orb__ring circle {
+		fill: none;
+		stroke-width: 0.9;
+		stroke-linecap: round;
+	}
+	.orb__ring-t {
+		stroke: var(--ob-line);
+		stroke-dasharray: 2 4;
+	}
+	.orb__ring-f {
+		stroke: var(--ob-acc);
+		stroke-width: 1.6;
+		stroke-dasharray: 578;
+		stroke-dashoffset: 578;
+		transition: stroke-dashoffset 0.14s linear;
+		filter: drop-shadow(0 0 4px color-mix(in srgb, var(--ob-acc) 60%, transparent));
+	}
+	.orb.is-held .orb__ring-f { opacity: 0.3; }
+
+	/* ── the hub ────────────────────────────────────────────────────── */
+	.orb__hub {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: 54%;
+		height: 54%;
+		transform: translate(-50%, -50%);
+		border-radius: 50%;
+		background:
+			radial-gradient(circle at 50% 30%, color-mix(in srgb, var(--ob-acc) 16%, transparent), transparent 70%),
+			var(--ob-paper);
+		border: 1px solid var(--ob-line);
+		-webkit-backdrop-filter: blur(8px);
+		backdrop-filter: blur(8px);
+		display: grid;
+		place-items: center;
+		overflow: hidden;
+	}
+	.orb__panel {
+		grid-area: 1 / 1;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.3rem;
+		width: 78%;
+		text-align: center;
+		opacity: 0;
+		transform: scale(0.94) translateY(8px);
+		transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+		pointer-events: none;
+	}
+	.orb__panel.is-on {
+		opacity: 1;
+		transform: none;
+		pointer-events: auto;
+	}
+	.orb__panel-n {
+		font-family: ui-monospace, monospace;
+		font-size: 0.62rem;
+		font-weight: 800;
+		letter-spacing: 0.18em;
+		color: var(--c);
+	}
+	.orb__panel-t {
+		margin: 0;
+		font-size: clamp(1.15rem, 2.6vw, 1.65rem);
+		font-weight: 800;
+		letter-spacing: -0.02em;
+		line-height: 1.08;
+	}
+	.orb__panel-tag {
+		margin: 0;
+		font-size: clamp(0.7rem, 1.3vw, 0.82rem);
+		font-weight: 800;
+		color: var(--c);
+	}
+	.orb__panel-d {
+		margin: 0.15rem 0 0;
+		font-size: clamp(0.72rem, 1.35vw, 0.9rem);
+		line-height: 1.5;
+		color: var(--ob-muted);
+	}
+	.orb__panel-list {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0.25rem;
+		list-style: none;
+		margin: 0.35rem 0 0;
+		padding: 0;
+	}
+	.orb__panel-list li {
+		padding: 0.14rem 0.48rem;
+		border-radius: 9999px;
+		font-size: 0.58rem;
+		font-weight: 800;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--c);
+		background: color-mix(in srgb, var(--c) 14%, transparent);
+		border: 1px solid color-mix(in srgb, var(--c) 26%, transparent);
+	}
+	.orb__panel-go {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3rem;
+		margin-top: 0.45rem;
+		font-size: 0.78rem;
+		font-weight: 800;
+		color: var(--c);
+		transition: gap 0.22s ease;
+	}
+	.orb__panel-go:hover { gap: 0.65rem; }
+
+	/* ── the spokes ─────────────────────────────────────────────────── */
+	/* Each spoke is a full-stage layer; the pill inside it is pushed out
+	   along its own angle and then turned back upright, so every label
+	   reads level however far round the wheel it sits. */
+	.orb__spoke {
+		position: absolute;
+		inset: 0;
+		padding: 0;
+		border: 0;
+		background: none;
+		cursor: pointer;
+		pointer-events: none;
+	}
+	.orb__spoke-in {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		pointer-events: auto;
+		display: grid;
+		place-items: center;
+		gap: 0.15rem;
+		width: max-content;
+		padding: 0.55rem 0.7rem;
+		border-radius: 0.9rem;
+		transform: translate(-50%, -50%) rotate(var(--a)) translateY(calc(var(--ob-r) * -1))
+			rotate(calc(var(--a) * -1));
+		color: var(--ob-faint);
+		background: var(--ob-paper);
+		border: 1px solid var(--ob-line);
+		-webkit-backdrop-filter: blur(6px);
+		backdrop-filter: blur(6px);
+		transition: color 0.3s ease, background 0.3s ease, border-color 0.3s ease,
+			transform 0.42s cubic-bezier(0.34, 1.4, 0.64, 1), box-shadow 0.3s ease;
+	}
+	.orb__spoke-in em {
+		font-style: normal;
+		font-size: 0.66rem;
+		font-weight: 800;
+		letter-spacing: 0.06em;
+		white-space: nowrap;
+	}
+	.orb__spoke:hover .orb__spoke-in {
+		color: var(--ob-ink);
+		transform: translate(-50%, -50%) rotate(var(--a)) translateY(calc(var(--ob-r) * -1))
+			rotate(calc(var(--a) * -1)) scale(1.06);
+	}
+	.orb__spoke[aria-pressed='true'] .orb__spoke-in {
+		color: #fff;
+		background: linear-gradient(150deg, var(--c), color-mix(in srgb, var(--c) 55%, #ec4899));
+		border-color: transparent;
+		transform: translate(-50%, -50%) rotate(var(--a)) translateY(calc(var(--ob-r) * -1))
+			rotate(calc(var(--a) * -1)) scale(1.12);
+		box-shadow: 0 16px 34px -16px color-mix(in srgb, var(--c) 90%, transparent);
+	}
+
+	/* ── the controls ───────────────────────────────────────────────── */
+	.orb__bar { display: flex; align-items: center; gap: 0.8rem; }
+	.orb__arm {
+		display: grid;
+		place-items: center;
+		width: 36px;
+		height: 36px;
+		border-radius: 9999px;
+		color: var(--ob-ink);
+		background: color-mix(in srgb, var(--ob-acc) 10%, transparent);
+		border: 1px solid var(--ob-line);
+		cursor: pointer;
+		transition: background 0.22s ease, color 0.22s ease, transform 0.22s ease;
+	}
+	.orb__arm:hover {
+		color: #fff;
+		background: linear-gradient(96deg, var(--ob-acc), #ec4899);
+		border-color: transparent;
+		transform: translateY(-2px);
+	}
+	.orb__label {
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--ob-faint);
+	}
+
+	/* ── narrower: the wheel shrinks, the labels go, the hub keeps all
+	     the words it had ───────────────────────────────────────────── */
+	@media (max-width: 860px) {
+		.orb__stage { width: min(430px, 100%); }
+		.orb__spoke-in em { display: none; }
+		.orb__spoke-in { padding: 0.5rem; border-radius: 9999px; }
+		.orb__hub { width: 62%; height: 62%; }
+	}
+	@media (max-width: 520px) {
+		.orb { --ob-r: 42cqi; }
+		.orb__stage { width: min(340px, 100%); }
+		.orb__panel-list { display: none; }
+		.orb__hub { width: 66%; height: 66%; }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.orb__panel, .orb__spoke-in { transition: opacity 0.2s ease; }
+	}
+
+	/* ══ lights out ═══════════════════════════════════════════════════ */
+	:global(html.dark) .orb {
+		--ob-ink: #f1edfb;
+		--ob-muted: rgba(241, 237, 251, 0.7);
+		--ob-faint: rgba(241, 237, 251, 0.5);
+		--ob-line: rgba(255, 255, 255, 0.12);
+		--ob-paper: rgba(255, 255, 255, 0.06);
+	}
+	:global(html:not(.dark)) .orb__spoke-in {
+		box-shadow: 0 14px 28px -18px rgba(40, 24, 70, 0.55);
+	}
+	:global(html:not(.dark)) .orb__hub {
+		box-shadow: 0 30px 70px -40px rgba(40, 24, 70, 0.55);
+	}
+</style>

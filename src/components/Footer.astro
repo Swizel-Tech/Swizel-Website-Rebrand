@@ -135,7 +135,7 @@ const phones = [
 								<span class="ft-flag">{o.flag}</span>
 								<span class="ft-office-country">{o.country}</span>
 								<span class="ft-clock" data-tz={o.tz}>
-									<span class="ft-clock-dot" />
+									<Icon class="ft-clock-ic" width={11} name="mdi:clock-outline" />
 									<span class="ft-clock-time">--:--</span>
 								</span>
 							</div>
@@ -932,7 +932,8 @@ const phones = [
 	.ft-flag { font-size: 1rem; }
 	.ft-office-country { font-weight: 600; font-size: 0.92rem; color: var(--ft-ink); }
 	.ft-clock { margin-left: auto; display: inline-flex; align-items: center; gap: 0.35rem; font-family: inherit; font-variant-numeric: tabular-nums; font-size: 0.82rem; color: var(--view-accent, #86e2ef); }
-	.ft-clock-dot { width: 6px; height: 6px; border-radius: 9999px; background: #28c840; box-shadow: 0 0 0 0 rgba(40, 200, 64, 0.5); animation: ft-pulse 2s infinite; }
+	.site-footer :global(.ft-clock-ic) { flex: none; color: var(--view-accent, #8b5cf6); opacity: 0.85; animation: ft-tick 3s ease-in-out infinite; }
+	@keyframes ft-tick { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(16deg); } }
 	@keyframes ft-pulse { 0% { box-shadow: 0 0 0 0 rgba(40, 200, 64, 0.5); } 70% { box-shadow: 0 0 0 6px rgba(40, 200, 64, 0); } 100% { box-shadow: 0 0 0 0 rgba(40, 200, 64, 0); } }
 	.ft-office address { font-style: normal; font-size: 0.82rem; color: var(--ft-faint); line-height: 1.4; }
 
@@ -1173,7 +1174,7 @@ const phones = [
 	@media (min-width: 720px) { .ft-co-full { display: inline; } .ft-co-short { display: none; } }
 
 	@media (prefers-reduced-motion: reduce) {
-		.ft-spark, .ft-orbit-moon, .ft-clock-dot { animation: none !important; }
+		.ft-spark, .ft-orbit-moon, .site-footer :global(.ft-clock-ic) { animation: none !important; }
 	}
 
 	/* Hover preview card — floats above the handle */

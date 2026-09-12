@@ -555,7 +555,7 @@ const qa = [
 				<span class="pdeck__pelmet" aria-hidden="true"></span>
 				<div class="pdeck__marquee">
 					<span class="pdeck__marquee-k">
-						<span class="pdeck__marquee-dot" aria-hidden="true"></span>
+						<Icon class="pdeck__marquee-ic" width={13} name="mdi:movie-open-outline" />
 						Swizel presents
 					</span>
 					<h3 class="pdeck__marquee-h">The&nbsp;services <em>pitch&nbsp;deck</em></h3>
@@ -573,10 +573,11 @@ const qa = [
 			<!-- the answers, handed to the clicker script -->
 			<script type="application/json" data-pd-qa set:html={JSON.stringify(qa)}></script>
 
-			<button class="pdeck__exit" type="button" data-pd-exit>
-				<Icon width={15} name="mdi:close" />
-				Close
-				<kbd>Esc</kbd>
+			<button class="pdeck__exit" type="button" data-pd-exit aria-label="Leave the presentation">
+				<span class="pdeck__exit-x" aria-hidden="true">
+					<Icon width={17} name="mdi:close" />
+				</span>
+				<span class="pdeck__exit-t">Close<kbd>Esc</kbd></span>
 			</button>
 			<span class="pdeck__hint">← → to move · Esc to leave</span>
 		</div>
@@ -857,13 +858,10 @@ const qa = [
 		text-transform: uppercase;
 		color: #fcd34d;
 	}
-	.pdeck__marquee-dot {
-		width: 6px;
-		height: 6px;
-		border-radius: 9999px;
-		background: #fcd34d;
-		box-shadow: 0 0 12px 2px rgba(252, 211, 77, 0.8);
-		animation: pd-onair 2.2s ease-out infinite;
+	.pdeck__marquee-k :global(.pdeck__marquee-ic) {
+		flex: none;
+		filter: drop-shadow(0 0 10px rgba(252, 211, 77, 0.7));
+		animation: pd-reel 3.2s ease-in-out infinite;
 	}
 	.pdeck__marquee-h {
 		margin: 0;
@@ -1561,25 +1559,63 @@ const qa = [
 	.pdeck.is-theatre .pdeck__slide { padding-block: clamp(1.6rem, 3vw, 3rem); }
 	.pdeck.is-theatre .pdeck__t { font-size: clamp(1.9rem, 3.2vw, 3.4rem); }
 	.pdeck.is-theatre .pdeck__nav { opacity: 1; }
+	/* A round X that sits well clear of the corner. The old chip carried
+	   the word and the Esc key inline, so on a wide screen it ran off the
+	   edge of the frame and got clipped; the words now live inside it and
+	   only unfold when you reach for the button. */
 	.pdeck.is-theatre .pdeck__exit {
 		position: absolute;
 		z-index: 21;
-		top: 0.65rem;
-		right: 0.85rem;
+		top: 0.9rem;
+		right: 1.2rem;
+		display: inline-flex;
+		align-items: center;
+		gap: 0;
+		padding: 0;
+		max-width: calc(100% - 2.4rem);
+		overflow: hidden;
+		border-radius: 9999px;
+		font-family: inherit;
+		color: #fff;
+		background: rgba(14, 10, 30, 0.62);
+		border: 1px solid rgba(255, 255, 255, 0.22);
+		-webkit-backdrop-filter: blur(10px);
+		backdrop-filter: blur(10px);
+		box-shadow: 0 14px 30px -16px rgba(0, 0, 0, 0.9);
+		cursor: pointer;
+		transition: background 0.22s ease, border-color 0.22s ease, transform 0.22s ease;
+	}
+	.pdeck__exit-x {
+		display: grid;
+		place-items: center;
+		width: 38px;
+		height: 38px;
+		flex: none;
+	}
+	.pdeck__exit-t {
 		display: inline-flex;
 		align-items: center;
 		gap: 0.35rem;
-		padding: 0.36rem 0.75rem;
-		border-radius: 9999px;
-		font-size: 0.7rem;
+		max-width: 0;
+		overflow: hidden;
+		white-space: nowrap;
+		font-size: 0.72rem;
 		font-weight: 750;
-		font-family: inherit;
-		color: #fff;
-		background: rgba(255, 255, 255, 0.12);
-		border: 1px solid rgba(255, 255, 255, 0.18);
-		cursor: pointer;
+		opacity: 0;
+		transition: max-width 0.3s ease, opacity 0.22s ease, padding 0.3s ease;
 	}
-	.pdeck.is-theatre .pdeck__exit:hover { background: rgba(255, 255, 255, 0.22); }
+	.pdeck.is-theatre .pdeck__exit:hover,
+	.pdeck.is-theatre .pdeck__exit:focus-visible {
+		background: rgba(244, 63, 94, 0.88);
+		border-color: transparent;
+		transform: translateY(-1px);
+	}
+	.pdeck.is-theatre .pdeck__exit:hover .pdeck__exit-t,
+	.pdeck.is-theatre .pdeck__exit:focus-visible .pdeck__exit-t {
+		max-width: 7rem;
+		opacity: 1;
+		padding-right: 0.9rem;
+	}
 	.pdeck__exit kbd {
 		font-family: ui-monospace, monospace;
 		font-size: 0.6rem;
@@ -1597,7 +1633,7 @@ const qa = [
 		text-transform: uppercase;
 		color: rgba(244, 241, 255, 0.35);
 	}
-	.pdeck.is-theatre .pdeck__rail { padding-right: 8rem; }
+	.pdeck.is-theatre .pdeck__rail { padding-right: 4.2rem; }
 
 	/* ══════ phones: the deck presents, it does not make you scroll ══════ */
 	@media (max-width: 939px) {
@@ -1605,10 +1641,11 @@ const qa = [
 			padding: 1.1rem 1.3rem 1.3rem;
 			gap: 1rem;
 		}
-		/* the proof comes first on a phone — a founder scrolling past wants
-		   to see the product, then read why */
-		.pdeck__show { order: 1; }
-		.pdeck__copy { order: 2; }
+		/* The discipline leads, the product backs it up. A founder reading
+		   a slide wants to know what this IS before they are shown a
+		   screenshot of it. */
+		.pdeck__copy { order: 1; }
+		.pdeck__show { order: 2; }
 		.pdeck__rig { padding: 0.2rem 0.2rem 0.9rem; }
 		.pdeck__lap-screen img { aspect-ratio: 16 / 9; }
 		.pdeck__phone { width: 58px; right: 0.2rem; bottom: 0.3rem; }
@@ -1652,17 +1689,9 @@ const qa = [
 		   is told to stop short of it — the old label + Esc chip is what
 		   made this corner feel like a scrum */
 		.pdeck.is-theatre .pdeck__rail { padding-right: 3.4rem; }
-		.pdeck.is-theatre .pdeck__exit {
-			top: 0.55rem;
-			right: 0.7rem;
-			padding: 0;
-			width: 34px;
-			height: 34px;
-			justify-content: center;
-			font-size: 0;
-			border-radius: 9999px;
-		}
-		.pdeck.is-theatre .pdeck__exit kbd { display: none; }
+		.pdeck.is-theatre .pdeck__exit { top: 0.5rem; right: 0.6rem; }
+		.pdeck__exit-x { width: 34px; height: 34px; }
+		.pdeck__exit-t { display: none; }
 		.pdeck.is-theatre .pdeck__hint { display: none; }
 		.pdeck__qa { padding: 0.75rem 1.2rem 0.95rem; }
 		.pdeck__nav--prev { left: 1rem; }

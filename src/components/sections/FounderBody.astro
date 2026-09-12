@@ -318,10 +318,10 @@ const chat = [
 								<img src={l.img} alt={`${l.name}, ${l.sector}`} loading="lazy" />
 								<span class="fd-launch-veil" aria-hidden="true" />
 								<span class:list={['fd-launch-state', { 'is-live': l.live }]}>
+									<Icon width={11} name={l.live ? 'mdi:broadcast' : 'mdi:book-open-variant'} />
 									{l.live ? 'Live' : 'Case study'}
 								</span>
 								<span class="fd-launch-meta">
-									<span class="fd-live" aria-hidden="true" />
 									<span class="fd-launch-name">
 										<strong>{l.name}</strong>
 										<em>{l.sector}</em>
@@ -797,26 +797,25 @@ const chat = [
 	/* allow columns to shrink below the film frame's intrinsic width
 	   (aspect-ratio + min-height would otherwise force ~480px) */
 	.fd-open > * { min-width: 0; }
+	/* Four numbers, one line, always. They never wrap to a 2x2 block. */
 	.fd-stats {
-		display: grid;
-		grid-template-columns: repeat(2, auto);
-		justify-content: start;
-		gap: 1rem 2.25rem;
+		display: flex;
+		flex-wrap: nowrap;
+		align-items: flex-start;
+		justify-content: flex-start;
+		gap: clamp(0.7rem, 4vw, 2.25rem);
 		list-style: none;
 		margin: 0 0 1.5rem;
 		padding: 0;
 	}
-	@media (min-width: 640px) {
-		.fd-stats {
-			grid-template-columns: repeat(4, auto);
-		}
-	}
 	.fd-stats li {
+		flex: 0 1 auto;
+		min-width: 0;
 		white-space: nowrap;
 	}
 	.fd-stats strong {
 		display: block;
-		font-size: clamp(1.5rem, 2.6vw, 2rem);
+		font-size: clamp(1.15rem, 5.2vw, 2rem);
 		font-weight: 850;
 		letter-spacing: -0.02em;
 		background: linear-gradient(135deg, #c4b5fd, var(--fd-acc));
@@ -830,8 +829,12 @@ const chat = [
 		background-clip: text;
 	}
 	.fd-stats span {
-		font-size: 0.78rem;
+		display: block;
+		font-size: clamp(0.58rem, 2.4vw, 0.78rem);
 		color: var(--fd-faint);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
 	/* film placeholder, slightly tilted for energy */
@@ -1787,10 +1790,18 @@ const chat = [
 		-webkit-backdrop-filter: blur(6px);
 		backdrop-filter: blur(6px);
 	}
+	.fd-launch-state { gap: 0.3rem; }
+	.fd-launch-state :global(svg) { opacity: 0.9; }
 	.fd-launch-state.is-live {
-		color: #062b1c;
-		background: linear-gradient(95deg, #6ee7b7, #34d399);
+		color: #fff;
+		background: linear-gradient(95deg, var(--fd-acc), #ec4899);
 		border-color: transparent;
+	}
+	/* the mark breathes instead of a dot blinking beside it */
+	.fd-launch-state.is-live :global(svg) { animation: fd-air 2.4s ease-in-out infinite; }
+	@keyframes fd-air {
+		0%, 100% { opacity: 0.6; transform: scale(0.94); }
+		50% { opacity: 1; transform: scale(1.06); }
 	}
 
 	/* a scrap of tape holding each print to the wall */
@@ -1872,20 +1883,6 @@ const chat = [
 		align-items: center;
 		gap: 0.6rem;
 		color: #fff;
-	}
-	.fd-live {
-		width: 8px;
-		height: 8px;
-		flex-shrink: 0;
-		border-radius: 9999px;
-		background: #34d399;
-		box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.5);
-		animation: fd-live 2.2s ease-out infinite;
-	}
-	@keyframes fd-live {
-		0% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.5); }
-		70% { box-shadow: 0 0 0 7px transparent; }
-		100% { box-shadow: 0 0 0 0 transparent; }
 	}
 	.fd-launch-name {
 		display: flex;
@@ -2204,7 +2201,6 @@ const chat = [
 			transform: none;
 			transition: none;
 		}
-		.fd-live,
 		.fd-typing span,
 		.fd-belt-track,
 		.fd-qmark {

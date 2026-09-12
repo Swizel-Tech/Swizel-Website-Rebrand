@@ -64,6 +64,17 @@ const links = [
 			<!-- ── three handsets: her cut, and the two accounts we run ── -->
 			<div class="spot__devices fd-rev" style="--i:1">
 				<figure class="spot__dev spot__dev--tt">
+					<span class="spot__point" aria-hidden="true">
+						<span class="spot__point-t">
+							<svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.21v12.67a2.59 2.59 0 1 1-2.59-2.59c.27 0 .53.04.78.12v-3.3a5.88 5.88 0 0 0-.78-.05 5.85 5.85 0 1 0 5.85 5.85V8.66a7.5 7.5 0 0 0 4.37 1.4V6.85a4.28 4.28 0 0 1-3.36-1.03z" /></svg>
+							TikTok, ours
+						</span>
+						<em>23.6K likes</em>
+						<svg class="spot__point-a" viewBox="0 0 44 46">
+							<path class="spot__point-line" d="M22 3C13 12 31 22 22 37" />
+							<path class="spot__point-head" d="M15 30L22 38L29 30" />
+						</svg>
+					</span>
 					<span class="spot__screen">
 						<img
 							src="/images/spotlight/tiktok.jpg"
@@ -73,15 +84,7 @@ const links = [
 							loading="lazy"
 							decoding="async"
 						/>
-						<span class="spot__chip spot__chip--tt" aria-hidden="true">
-							<svg viewBox="0 0 24 24" fill="currentColor" width="11" height="11"><path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.21v12.67a2.59 2.59 0 1 1-2.59-2.59c.27 0 .53.04.78.12v-3.3a5.88 5.88 0 0 0-.78-.05 5.85 5.85 0 1 0 5.85 5.85V8.66a7.5 7.5 0 0 0 4.37 1.4V6.85a4.28 4.28 0 0 1-3.36-1.03z" /></svg>
-							Ours too
-						</span>
 					</span>
-					<figcaption class="spot__cap">
-						<b>TikTok</b>
-						<em>23.6K likes</em>
-					</figcaption>
 				</figure>
 
 				<figure class="spot__dev spot__dev--reel" data-spot-reel>
@@ -95,11 +98,11 @@ const links = [
 							playsinline
 							autoplay
 							preload="none"
-							aria-label="The founder of AnchorStep Physiotherapy on what changed after Swizel launched her"
+							aria-label="The founder of AnchorStep Physiotherapy at work, filmed by Swizel"
 						></video>
 						<span class="spot__chip" aria-hidden="true">
-							<b></b>
-							Her words
+							<Icon class="spot__chip-ic" width={12} name="mdi:hammer-wrench" />
+							Her at work
 						</span>
 						<span class="spot__deck">
 							<button
@@ -134,12 +137,23 @@ const links = [
 						</button>
 					</span>
 					<figcaption class="spot__cap">
-						<b>The founder’s cut</b>
+						<b>Her at work</b>
 						<em>Filmed and edited by Swizel</em>
 					</figcaption>
 				</figure>
 
 				<figure class="spot__dev spot__dev--ig">
+					<span class="spot__point" aria-hidden="true">
+						<span class="spot__point-t">
+							<Icon width={13} name="mdi:instagram" />
+							Instagram, ours
+						</span>
+						<em>3,150+ followers</em>
+						<svg class="spot__point-a" viewBox="0 0 44 46">
+							<path class="spot__point-line" d="M22 3C31 12 13 22 22 37" />
+							<path class="spot__point-head" d="M15 30L22 38L29 30" />
+						</svg>
+					</span>
 					<span class="spot__screen">
 						<img
 							src="/images/spotlight/instagram.jpg"
@@ -149,15 +163,7 @@ const links = [
 							loading="lazy"
 							decoding="async"
 						/>
-						<span class="spot__chip spot__chip--ig" aria-hidden="true">
-							<Icon width={11} name="mdi:instagram" />
-							We run this
-						</span>
 					</span>
-					<figcaption class="spot__cap">
-						<b>Instagram</b>
-						<em>3,150+ followers</em>
-					</figcaption>
 				</figure>
 			</div>
 
@@ -427,16 +433,71 @@ const links = [
 		flex: none;
 	}
 	.spot__dev--reel {
-		width: clamp(186px, 20vw, 252px);
-		max-width: 38%;
+		width: clamp(210px, 23vw, 290px);
+		max-width: 40%;
 		z-index: 3;
 	}
+	/* The two accounts are shorter than the film, which leaves a band of
+	   dead air above them. That band is where their labels live now, so the
+	   screenshots underneath are never written over. */
 	.spot__dev--ig,
 	.spot__dev--tt {
-		width: clamp(132px, 14vw, 178px);
-		max-width: 27%;
-		margin-bottom: clamp(1.1rem, 2.2vw, 2.2rem);
+		width: clamp(150px, 16.5vw, 208px);
+		max-width: 29%;
 		z-index: 1;
+	}
+
+	.spot__point {
+		display: grid;
+		justify-items: center;
+		gap: 0.02rem;
+		padding-bottom: 0.35rem;
+		text-align: center;
+		font-family: var(--sp-hand);
+		color: var(--sp-muted);
+	}
+	.spot__point-t {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3rem;
+		font-size: clamp(0.78rem, 1.1vw, 0.94rem);
+		font-weight: 700;
+		color: var(--sp-ink);
+		white-space: nowrap;
+	}
+	.spot__point-t :global(svg) { color: var(--sp-acc); flex: none; }
+	.spot__point em {
+		font-style: normal;
+		font-size: clamp(0.7rem, 0.95vw, 0.82rem);
+		color: var(--sp-acc);
+		white-space: nowrap;
+	}
+	.spot__point-a {
+		width: clamp(26px, 2.6vw, 34px);
+		height: auto;
+		margin-top: 0.1rem;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 2.4;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+		color: var(--sp-acc);
+		opacity: 0.8;
+		overflow: visible;
+		filter: drop-shadow(0 1px 2px color-mix(in srgb, var(--sp-acc) 30%, transparent));
+	}
+	/* In daylight the accent is already dark ink on a pale ground, so the
+	   stroke only needs weight, not a second colour. */
+	:global(html:not(.dark)) .spot__point-a {
+		opacity: 1;
+		stroke-width: 2.8;
+	}
+	/* the stroke keeps re-drawing, so the hand looks live */
+	.spot__point-line { stroke-dasharray: 52; animation: sp-ink 3.2s ease-in-out infinite; }
+	.spot__point-head { stroke-dasharray: 30; animation: sp-ink 3.2s ease-in-out 0.25s infinite; }
+	@keyframes sp-ink {
+		0% { stroke-dashoffset: 52; }
+		40%, 100% { stroke-dashoffset: 0; }
 	}
 
 	.spot__screen {
@@ -490,17 +551,13 @@ const links = [
 		text-transform: uppercase;
 		color: #fff;
 	}
-	.spot__chip b {
-		display: block;
-		width: 6px;
-		height: 6px;
-		border-radius: 9999px;
-		background: #f43f5e;
-		animation: sp-pip 2s ease-out infinite;
+	.spot__chip :global(.spot__chip-ic) {
+		flex: none;
+		animation: sp-reel 3s ease-in-out infinite;
 	}
-	@keyframes sp-pip {
-		0% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.7); }
-		100% { box-shadow: 0 0 0 8px rgba(244, 63, 94, 0); }
+	@keyframes sp-reel {
+		0%, 100% { opacity: 0.75; transform: translateY(0) rotate(0deg); }
+		50% { opacity: 1; transform: translateY(-1px) rotate(-5deg); }
 	}
 
 	/* the transport: skip back, sound, skip on — one row on the glass */
@@ -1014,17 +1071,23 @@ const links = [
 		/* the film takes the first line on its own; the two accounts we run
 		   sit under it as a pair, rather than three phones fighting for
 		   the same 100vw */
-		.spot__devices { flex-wrap: wrap; gap: 0.7rem; }
-		.spot__dev--reel { order: 1; width: min(66vw, 268px); }
+		.spot__devices { flex-wrap: wrap; gap: 0.8rem 0.7rem; align-items: flex-start; }
+		.spot__dev--reel { order: 1; width: min(70vw, 290px); }
 		/* the pair has to share one line, so each one takes exactly half of
 		   what is left after the gap — no width guess to get wrong */
 		.spot__dev--ig,
 		.spot__dev--tt {
 			order: 2;
-			width: min(calc((100% - 0.7rem) / 2), 178px);
+			width: min(calc((100% - 0.7rem) / 2), 200px);
 			margin-bottom: 0;
 		}
 		.spot__sound { font-size: 0.64rem; padding: 0.34rem 0.7rem; }
+		/* the two labels are the same height whatever the wording, so the
+		   phones under them line up instead of stepping */
+		.spot__point { min-height: 4.6rem; align-content: end; }
+		.spot__point-t { font-size: 0.8rem; }
+		.spot__point em { font-size: 0.72rem; }
+		.spot__point-a { width: 24px; }
 
 		/* the ledger keeps its titles, drops the second line */
 		.spot__row { gap: 0.6rem; padding: 0.6rem 0; }
@@ -1064,7 +1127,7 @@ const links = [
 		.spot__beam,
 		.spot__shot,
 		.spot__sheen,
-		.spot__chip b { animation: none !important; }
+		.spot__point-line, .spot__point-head { animation: none !important; stroke-dashoffset: 0 !important; }
 		.fd-rev { opacity: 1; transform: none; transition: none; }
 	}
 

@@ -50,7 +50,7 @@ const stages = [
 		<div class="lcon__id">
 			<span class="fw--title">Idea → MVP</span>
 			<span class="fw--eta">
-				<span class="lcon__pip" aria-hidden="true"></span>
+				<Icon class="lcon__eta-ic" width={13} name="mdi:timer-outline" />
 				six weeks at the outside, often less
 			</span>
 		</div>
@@ -154,16 +154,15 @@ const stages = [
 	.lcon__id { min-width: 0; }
 	.fw--title { font-size: 1.15rem; font-weight: 800; color: #fff; }
 	.fw--eta { display: flex; align-items: center; gap: 0.4rem; font-size: 0.78rem; color: rgba(237, 233, 251, 0.55); }
-	.lcon__pip {
-		width: 6px;
-		height: 6px;
+	.lcon :global(.lcon__eta-ic) {
 		flex: none;
-		border-radius: 9999px;
-		background: #34d399;
-		box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.6);
-		animation: lcon-pip 2.2s ease-out infinite;
+		color: var(--view-accent, #8b5cf6);
+		animation: lcon-tick 2.6s ease-in-out infinite;
 	}
-	@keyframes lcon-pip { to { box-shadow: 0 0 0 8px rgba(52, 211, 153, 0); } }
+	@keyframes lcon-tick {
+		0%, 100% { opacity: 0.65; transform: rotate(0deg); }
+		50% { opacity: 1; transform: rotate(14deg); }
+	}
 
 	.fw--launch {
 		display: inline-flex;
@@ -297,7 +296,7 @@ const stages = [
 		}
 	@media (prefers-reduced-motion: reduce) {
 		.founder--widget::before,
-		.lcon__pip { animation: none !important; }
+		.lcon :global(.lcon__eta-ic) { animation: none !important; }
 	}
 
 	/* ══ daylight ══ */

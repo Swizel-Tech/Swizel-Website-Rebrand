@@ -5,6 +5,10 @@
 // Foundational content mirrors AboutBoardroom (same team, same years,
 // same client voices) — only the telling changes per view.
 import { Icon } from 'astro-icon/components';
+import CardShuffle from '../CardShuffle.astro';
+import FounderReel from '../FounderReel.astro';
+import OrbitDeck from '../OrbitDeck.astro';
+import BranchTree from '../BranchTree.astro';
 import WhiteboardVideo from '../WhiteboardVideo.astro';
 import { teamDetails, MISSION, MISSION_SUPPORT, VISION, CORE_VALUES } from '../../consts';
 
@@ -207,16 +211,11 @@ const values = [
 
 			<div class="fa-visual fd-rev">
 				<div class="fa-board">
-					<WhiteboardVideo
+					<FounderReel
 						videoId="p563SFG9Nwg"
-						title="who is swizel, really?"
+						variant="cinema"
 						kicker="Founder briefing"
-						stickyA="est. 2019 ✏️"
-						stickyB="we ship!"
-						ctaHref="/contact"
-						ctaLabel="Bring us your Day 0"
-						playLabel="Ten minutes with the crew"
-						countLabel="starting in"
+						note="ten minutes with the crew, no script"
 					/>
 				</div>
 			</div>
@@ -309,21 +308,12 @@ const values = [
 			<!-- the four promises, one per card -->
 			<div class="fa-vals">
 				<span class="fa-vals-label fd-rev">Core values · in the order the work happens</span>
-				<div class="fa-vals-grid">
-					{
-						CORE_VALUES.map((v, i) => (
-							<article class="fa-val-card fd-rev" style={`--i:${i}`} data-fa-tilt="8" data-n={String(i + 1).padStart(2, '0')}>
-								<span class="fa-val-glare" aria-hidden="true" />
-								<span class="fa-val-no">{String(i + 1).padStart(2, '0')}</span>
-								<span class="fa-val-ic" style={`--i:${i}`}>
-									<Icon width={22} name={v.icon} />
-								</span>
-								<h3 class="fa-val-t">{v.name}</h3>
-								<p class="fa-val-d">{v.desc}</p>
-							</article>
-						))
-					}
-				</div>
+				<OrbitDeck
+					class="fa-wheel"
+					label="In the order the work happens"
+					every={6}
+					items={CORE_VALUES.map((v) => ({ icon: v.icon, title: v.name, desc: v.desc }))}
+				/>
 			</div>
 		</div>
 	</section>
@@ -340,28 +330,18 @@ const values = [
 				</p>
 			</div>
 
-			<div class="fa-svcs">
-				{
-					services.map((s, i) => (
-						<article class="fa-svc fd-rev" style={`--i:${i % 3}`}>
-							<span class="fa-svc-rule" aria-hidden="true" />
-							<span class="fa-svc-no">{String(i + 1).padStart(2, '0')}</span>
-							<span class="fa-svc-head">
-								<span class="fa-svc-ic">
-									<Icon width={20} name={s.icon} />
-								</span>
-								<h3 class="fa-svc-t">{s.title}</h3>
-							</span>
-							<p class="fa-svc-d">{s.desc}</p>
-							<ul class="fa-svc-tags">
-								{s.tag
-									.split('·')
-									.map((x) => <li>{x.trim()}</li>)}
-							</ul>
-						</article>
-					))
-				}
-			</div>
+			<CardShuffle
+				class="fa-deck fa-deck--svcs fd-rev"
+				label="Deal through the six"
+				variant="row"
+				every={5}
+				items={services.map((x) => ({
+					icon: x.icon,
+					title: x.title,
+					desc: x.desc,
+					tags: x.tag.split('·').map((t) => t.trim()),
+				}))}
+			/>
 
 			<div class="fa-svcs-cta fd-rev">
 				<a href="/services" class="fa-link">
@@ -380,7 +360,7 @@ const values = [
 				<h2 class="fa-h">Founder to founder, <em>the short version.</em></h2>
 			</div>
 
-			<ol class="fa-journey">
+			<ol class="fa-journey" data-drift>
 				<span class="fa-journey-line" aria-hidden="true"></span>
 				{
 					journey.map((j, i) => (
@@ -420,20 +400,20 @@ const values = [
 				<h2 class="fa-h">What founders <em>feel on day one.</em></h2>
 			</div>
 
-			<div class="fa-values">
-				{
-					values.map((v, i) => (
-						<article class="fa-val fd-rev" style={`--i:${i}`} data-fa-tilt="12">
-							<span class="fa-val-glare" aria-hidden="true" />
-							<span class="fa-val-ic">
-								<Icon width={22} name={v.icon} />
-							</span>
-							<h3 class="fa-val-t">{v.title}</h3>
-							<p class="fa-val-d">{v.desc}</p>
-						</article>
-					))
-				}
-			</div>
+			<BranchTree
+				class="fa-tree fd-rev"
+				root="You hand us an idea"
+				rootIcon="mdi:lightbulb-on-outline"
+				rootNote="what happens next, four ways"
+				mode="open"
+				every={4}
+				items={values.map((v, i) => ({
+					icon: v.icon,
+					label: v.title,
+					desc: v.desc,
+					color: ['#8b5cf6', '#22d3ee', '#ec4899', '#fbbf24'][i % 4],
+				}))}
+			/>
 		</div>
 	</section>
 
@@ -1033,6 +1013,18 @@ const values = [
 	   Each stop is a card that leans off a single rule, with the year
 	   standing outside the card so the run of them reads as a timeline
 	   rather than a bulleted list. */
+	/* ── the dealt decks ───────────────────────────────────────────── */
+	.fa-deck { margin: clamp(1.2rem, 2.6vw, 2rem) auto 0; }
+	/* the six disciplines get the width of the page */
+	.fa-deck--svcs { max-width: 68rem; }
+	.fa-wheel { margin: 0.6rem auto 0; }
+	.fa-tree { margin: clamp(1.4rem, 3vw, 2.4rem) auto 0; max-width: 66rem; }
+	.fa-deck--vals { margin-top: 0.9rem; }
+
+	/* ── the journey, laid on its side ─────────────────────────────
+	   A vertical stack of seven dated cards is most of a screen each. On
+	   its side it is one band you drag along, the spine running through
+	   the years the way a timeline actually reads. */
 	.fa-journey {
 		--yr: clamp(6.2rem, 12vw, 9.4rem);
 		--spine: calc(var(--yr) + clamp(0.4rem, 1vw, 0.8rem));
@@ -1142,12 +1134,62 @@ const values = [
 	}
 	.fa-stop-card .fa-link { margin-top: 0.7rem; }
 
+	/* ── the journey, laid on its side ─────────────────────────────
+	   Seven dated cards stacked vertically is most of a screen each and a
+	   very long scroll for a story that is really one line. On its side it
+	   is a single band you drag along, with the spine running through the
+	   years the way a timeline is actually read. */
+	.fa-journey {
+		display: flex;
+		align-items: stretch;
+		gap: clamp(0.8rem, 1.8vw, 1.3rem);
+		max-width: none;
+		overflow-x: auto;
+		overscroll-behavior-x: contain;
+		scroll-snap-type: x proximity;
+		scrollbar-width: none;
+		padding-block: 2.6rem 1.2rem;
+		margin-inline: calc(50% - 50vw);
+		padding-inline: max(1.2rem, calc(50vw - 27rem));
+		-webkit-mask-image: linear-gradient(90deg, transparent 0, #000 2.2rem, #000 calc(100% - 2.6rem), transparent 100%);
+		mask-image: linear-gradient(90deg, transparent 0, #000 2.2rem, #000 calc(100% - 2.6rem), transparent 100%);
+	}
+	.fa-journey::-webkit-scrollbar { display: none; }
+	/* the spine is a rail the whole row hangs from now */
+	.fa-journey::before {
+		left: 0;
+		right: 0;
+		top: 2.1rem;
+		bottom: auto;
+		width: auto;
+		height: 2px;
+		background: linear-gradient(
+			90deg,
+			transparent,
+			color-mix(in srgb, var(--fa-acc) 60%, transparent) 6%,
+			color-mix(in srgb, var(--fa-acc) 20%, transparent) 94%,
+			transparent
+		);
+	}
+	.fa-stop {
+		flex: none;
+		width: min(78vw, 19.5rem);
+		display: flex;
+		flex-direction: column;
+		gap: 0.4rem;
+		scroll-snap-align: start;
+	}
+	.fa-stop-year {
+		order: -1;
+		text-align: left;
+		padding: 0;
+		white-space: nowrap;
+	}
+	.fa-stop-node { left: 0; top: -1.55rem; }
+	.fa-stop-card { margin-left: 0; height: 100%; }
+
 	@media (max-width: 620px) {
-		.fa-stop { grid-template-columns: 1fr; gap: 0.3rem; }
-		.fa-stop-year { text-align: left; padding: 0 0 0 1.6rem; }
-		.fa-journey::before { left: 0.32rem; }
-		.fa-stop-node { left: 0; top: 0.35rem; }
-		.fa-stop-card { margin-left: 1.6rem; }
+		.fa-stop { width: min(80vw, 17rem); }
 	}
 
 	/* ── D · values ── */
@@ -2215,7 +2257,15 @@ const values = [
 	/* ── Responsive ── */
 	@media (max-width: 900px) {
 		.fa-open { grid-template-columns: minmax(0, 1fr); }
-		.fa-visual { max-width: 28rem; margin: 0.5rem auto 0; }
+		/* The briefing was postage-stamp sized next to a full-width column
+		   of copy. On a phone it goes edge to edge, the way the home hero
+		   film does, and stops competing with the margin. */
+		.fa-visual {
+			max-width: none;
+			margin: 0.9rem calc(50% - 50vw) 0;
+			width: 100vw;
+			padding-inline: 0.75rem;
+		}
 		/* the huge conic aura reads as a stray ring over content on
 		   small screens — desktop only */
 		.fa-aura { display: none; }

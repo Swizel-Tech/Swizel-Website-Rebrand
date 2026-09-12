@@ -164,6 +164,41 @@ export function initFounderBody() {
 		io.observe(phone);
 	}
 
+	// ── every rail marked [data-drift] creeps on its own ──
+	// A phone gives no clue that a row slides sideways, so each one drifts
+	// back and forth until the reader takes it over. Queried off the
+	// document, not the body, so the hero's rails are covered too.
+	document.querySelectorAll<HTMLElement>('[data-drift]').forEach((rail) => {
+		if (reduce || rail.dataset.driftBound === '1') return;
+		rail.dataset.driftBound = '1';
+		let dir: 1 | -1 = 1;
+		let seen = false;
+		let resumeAt = 0;
+		const park = (ms = 2600) => (resumeAt = performance.now() + ms);
+		rail.addEventListener('pointerenter', () => park(14000));
+		rail.addEventListener('pointerleave', () => park(600));
+		rail.addEventListener('touchstart', () => park(4000), { passive: true });
+		rail.addEventListener('wheel', () => park(), { passive: true });
+		rail.addEventListener('focusin', () => park(6000));
+		if ('IntersectionObserver' in window) {
+			const io = new IntersectionObserver(
+				(entries) => entries.forEach((e) => (seen = e.isIntersecting)),
+				{ threshold: 0.25 }
+			);
+			io.observe(rail);
+		} else {
+			seen = true;
+		}
+		window.setInterval(() => {
+			if (!seen || document.hidden || performance.now() < resumeAt) return;
+			const max = rail.scrollWidth - rail.clientWidth;
+			if (max <= 12) return; // it fits on this screen; nothing to show
+			if (rail.scrollLeft >= max - 1) dir = -1;
+			else if (rail.scrollLeft <= 1) dir = 1;
+			rail.scrollBy({ left: dir * 0.7, behavior: 'auto' });
+		}, 32);
+	});
+
 	// ── the spotlight: her cut, and the wall that drifts ──
 	const spot = document.querySelector<HTMLElement>('#fd-spotlight');
 	if (spot) {

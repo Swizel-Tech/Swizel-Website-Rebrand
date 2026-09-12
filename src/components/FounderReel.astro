@@ -15,6 +15,12 @@ interface Props {
 	videoId: string;
 	kicker?: string;
 	still?: string;
+	/**
+	 * rig    — the three-handset hero (9:16)
+	 * cinema — one wide frame for a landscape film, same founder chrome
+	 */
+	variant?: 'rig' | 'cinema';
+	note?: string;
 	class?: string;
 }
 
@@ -22,6 +28,8 @@ const {
 	videoId,
 	kicker = 'Founder’s cut',
 	still = '/images/founder/reel-still.jpg',
+	variant = 'rig',
+	note,
 	class: klass = '',
 } = Astro.props;
 
@@ -39,7 +47,7 @@ const chips = [
 ];
 ---
 
-<div class:list={['freel', klass]} data-freel data-video-id={videoId}>
+<div class:list={['freel', `freel--${variant}`, klass]} data-freel data-video-id={videoId}>
 	<span class="freel__halo" aria-hidden="true"></span>
 
 	<div class="freel__rig">
@@ -80,7 +88,7 @@ const chips = [
 
 				<div class="freel__top">
 					<span class="freel__live">
-						<span class="freel__livedot" aria-hidden="true"></span>
+						<Icon class="freel__livemark" width={12} name="mdi:filmstrip" />
 						{kicker}
 					</span>
 					<span class="freel__ratio">9:16</span>
@@ -112,6 +120,8 @@ const chips = [
 
 	</div>
 
+	{note && <p class="freel__note">{note}</p>}
+
 	<!-- what the rig is actually saying, on the floor beneath it -->
 	<div class="freel__foot">
 		<span class="freel__scrawl" aria-hidden="true">
@@ -124,7 +134,7 @@ const chips = [
 			</svg>
 		</span>
 
-		<ul class="freel__chips">
+		<ul class="freel__chips" data-drift>
 			{
 				chips.map((c, i) => (
 					<li style={`--t:${c.tint}; --i:${i}`}>
@@ -240,6 +250,26 @@ const chips = [
 	.freel__ghost--l .freel__ghost-screen img { object-position: 50% 22%; transform: scale(1.06); }
 	.freel__ghost--r .freel__ghost-screen img { object-position: 50% 40%; transform: scale(1.22); }
 
+	/* ══ cinema: the same chrome around a landscape film ═══════════════
+	   The About briefing was wearing the campus whiteboard, which belongs
+	   to another world. This is the founder frame: one wide screen in the
+	   world's gradient bezel, our own controls, nothing borrowed. */
+	.freel--cinema { --fr-w: min(54rem, 100%); width: 100%; }
+	.freel--cinema .freel__ghost,
+	.freel--cinema .freel__foot { display: none !important; }
+	.freel--cinema .freel__frame { width: 100%; max-width: var(--fr-w); }
+	.freel--cinema .freel__screen { aspect-ratio: 16 / 9; border-radius: 1.1rem; }
+	.freel--cinema .freel__halo { inset: -12% -8% 0; }
+	.freel__note {
+		margin: 0.75rem 0 0;
+		font-family: 'Bradley Hand', 'Segoe Print', 'Comic Sans MS', cursive;
+		font-size: 0.95rem;
+		text-align: center;
+		color: var(--fr-ink, #ede9fb);
+		opacity: 0.72;
+		transform: rotate(-1deg);
+	}
+
 	.freel__screen {
 		position: relative;
 		aspect-ratio: 9 / 16;
@@ -310,16 +340,13 @@ const chips = [
 		-webkit-backdrop-filter: blur(8px);
 		backdrop-filter: blur(8px);
 	}
-	.freel__livedot {
-		width: 6px;
-		height: 6px;
-		border-radius: 9999px;
-		background: #f43f5e;
-		box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.7);
-		animation: freel-pulse 1.9s ease-out infinite;
+	.freel :global(.freel__livemark) {
+		flex: none;
+		animation: freel-reel 3s ease-in-out infinite;
 	}
-	@keyframes freel-pulse {
-		to { box-shadow: 0 0 0 9px rgba(244, 63, 94, 0); }
+	@keyframes freel-reel {
+		0%, 100% { opacity: 0.72; transform: translateY(0) rotate(0deg); }
+		50% { opacity: 1; transform: translateY(-1px) rotate(-6deg); }
 	}
 	.freel__ratio {
 		font-family: ui-monospace, monospace;

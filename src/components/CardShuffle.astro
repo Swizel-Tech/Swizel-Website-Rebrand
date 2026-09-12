@@ -1,0 +1,465 @@
+---
+// A deck you shuffle, not a list you scroll.
+//
+// Six services stacked as a column of cards is a long, boring read and it
+// eats half a page. This is the same content dealt as a hand: one card face
+// up, the rest fanned behind it, and every deal sends the front card away
+// with a flick while the next one rises into its place. It costs one card's
+// worth of height on any screen, and it invites a tap instead of a scroll.
+import { Icon } from 'astro-icon/components';
+
+export interface ShuffleItem {
+	icon?: string;
+	title: string;
+	desc: string;
+	tags?: string[];
+	href?: string;
+	hrefLabel?: string;
+}
+
+interface Props {
+	items: ShuffleItem[];
+	label?: string;
+	/** seconds between automatic deals; 0 turns autoplay off */
+	every?: number;
+	/**
+	 * fan   — one card face up, the rest stacked behind it
+	 * row   — three abreast on a wide screen, shuffling along
+	 * strip — panels that open and close, like a card index
+	 */
+	variant?: 'fan' | 'row' | 'strip';
+	class?: string;
+}
+
+const { items, label, every = 6, variant = 'fan', class: klass = '' } = Astro.props;
+const n = items.length;
+---
+
+<div class:list={['shuf', `shuf--${variant}`, klass]} data-shuffle data-every={String(every)}>
+	<div class="shuf__stage" data-shuf-stage>
+		{
+			items.map((it, i) => (
+				<article class="shuf__card" data-shuf-card={i} style={`--c:${i}`}>
+					<span class="shuf__edge" aria-hidden="true" />
+					<span class="shuf__no">{String(i + 1).padStart(2, '0')}</span>
+					{it.icon && (
+						<span class="shuf__ic">
+							<Icon width={22} name={it.icon} />
+						</span>
+					)}
+					<h3 class="shuf__t">{it.title}</h3>
+					<p class="shuf__d">{it.desc}</p>
+					{it.tags && it.tags.length > 0 && (
+						<ul class="shuf__tags">
+							{it.tags.map((t) => (
+								<li>{t}</li>
+							))}
+						</ul>
+					)}
+					{it.href && (
+						<a class="shuf__go" href={it.href}>
+							{it.hrefLabel || 'See more'}
+							<Icon width={14} name="mdi:arrow-right" />
+						</a>
+					)}
+				</article>
+			))
+		}
+	</div>
+
+	<div class="shuf__bar">
+		<button class="shuf__arm" type="button" data-shuf-prev aria-label="Previous card">
+			<Icon width={17} name="mdi:chevron-left" />
+		</button>
+
+		<div class="shuf__pips" role="tablist" aria-label={label || 'Cards'}>
+			{
+				items.map((it, i) => (
+					<button
+						class="shuf__pip"
+						type="button"
+						role="tab"
+						data-shuf-pip={i}
+						aria-selected={i === 0 ? 'true' : 'false'}
+						aria-label={it.title}
+					/>
+				))
+			}
+		</div>
+
+		<span class="shuf__count">
+			<b data-shuf-now>01</b>
+			<i>/</i>
+			<span>{String(n).padStart(2, '0')}</span>
+		</span>
+
+		<button class="shuf__arm shuf__arm--next" type="button" data-shuf-next aria-label="Next card">
+			<svg class="shuf__ring" viewBox="0 0 40 40" aria-hidden="true">
+				<circle class="shuf__ring-t" cx="20" cy="20" r="18" />
+				<circle class="shuf__ring-f" cx="20" cy="20" r="18" data-shuf-ring />
+			</svg>
+			<Icon width={17} name="mdi:chevron-right" />
+		</button>
+	</div>
+
+	<span class="shuf__hint" aria-hidden="true">
+		<Icon width={13} name="mdi:gesture-swipe-horizontal" />
+		{label || 'Deal through them'}
+	</span>
+</div>
+
+<style>
+	.shuf {
+		--sh-acc: var(--view-accent, #8b5cf6);
+		--sh-ink: #1b1332;
+		--sh-muted: rgba(27, 19, 50, 0.72);
+		--sh-faint: rgba(27, 19, 50, 0.52);
+		--sh-line: rgba(27, 19, 50, 0.14);
+		--sh-card: #ffffff;
+		--sh-card-ink: #1b1332;
+		display: grid;
+		justify-items: center;
+		gap: 0.9rem;
+		width: 100%;
+	}
+
+	/* ── the stage ─────────────────────────────────────────────────── */
+	.shuf__stage {
+		position: relative;
+		width: min(620px, 100%);
+		/* the stack peeks over the top of the front card, so the stage is
+		   taller than one card by the height of the fan */
+		min-height: 15.5rem;
+		padding-top: 2.6rem;
+		perspective: 1100px;
+		touch-action: pan-y;
+		cursor: grab;
+	}
+	.shuf__stage.is-dragging { cursor: grabbing; }
+
+	.shuf__card {
+		position: absolute;
+		inset: 2.6rem 0 0;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.55rem;
+		padding: clamp(1.3rem, 3vw, 1.9rem);
+		border-radius: 1.15rem;
+		background: linear-gradient(168deg, var(--sh-card), color-mix(in srgb, var(--sh-acc) 7%, var(--sh-card)));
+		color: var(--sh-card-ink);
+		border: 1px solid color-mix(in srgb, var(--sh-acc) 16%, transparent);
+		box-shadow:
+			0 1px 0 rgba(255, 255, 255, 0.9) inset,
+			0 30px 60px -28px rgba(14, 8, 34, 0.75);
+		transform-origin: 50% 120%;
+		transition:
+			transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+			opacity 0.4s ease,
+			filter 0.45s ease;
+		will-change: transform;
+	}
+
+	/* the hand: front card square on, three peeking behind it, the rest
+	   parked out of sight so a six-card deck costs no more than a four */
+	.shuf__card[data-o='0'] { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); opacity: 1; z-index: 5; }
+	.shuf__card[data-o='1'] { transform: translate3d(4.5%, -14px, -60px) rotate(3.2deg) scale(0.95); opacity: 1; z-index: 4; filter: brightness(0.93); }
+	.shuf__card[data-o='2'] { transform: translate3d(-4.5%, -26px, -120px) rotate(-3deg) scale(0.905); opacity: 1; z-index: 3; filter: brightness(0.86); }
+	.shuf__card[data-o='3'] { transform: translate3d(2.5%, -36px, -180px) rotate(1.8deg) scale(0.865); opacity: 0.9; z-index: 2; filter: brightness(0.8); }
+	.shuf__card[data-o='4'] { transform: translate3d(0, -44px, -220px) rotate(-1deg) scale(0.84); opacity: 0; z-index: 1; }
+	.shuf__card[data-o='gone'] {
+		transform: translate3d(-58%, 18px, 40px) rotate(-13deg) scale(0.96);
+		opacity: 0;
+		z-index: 6;
+		pointer-events: none;
+	}
+	.shuf__card[data-o='back'] {
+		transform: translate3d(58%, 18px, 40px) rotate(13deg) scale(0.96);
+		opacity: 0;
+		z-index: 6;
+		pointer-events: none;
+	}
+	.shuf__card:not([data-o='0']) { pointer-events: none; }
+
+	/* the coloured edge that says which discipline you are holding */
+	.shuf__edge {
+		position: absolute;
+		top: 0;
+		left: 1.15rem;
+		right: 1.15rem;
+		height: 3px;
+		border-radius: 0 0 3px 3px;
+		background: linear-gradient(90deg, var(--sh-acc), #ec4899);
+	}
+
+	.shuf__no {
+		position: absolute;
+		top: clamp(1.1rem, 2.6vw, 1.6rem);
+		right: clamp(1.2rem, 3vw, 1.8rem);
+		font-family: ui-monospace, monospace;
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		color: color-mix(in srgb, var(--sh-card-ink) 34%, transparent);
+	}
+	.shuf__ic {
+		display: grid;
+		place-items: center;
+		width: 44px;
+		height: 44px;
+		border-radius: 0.85rem;
+		color: #fff;
+		background: linear-gradient(135deg, var(--sh-acc), #ec4899);
+		box-shadow: 0 14px 26px -14px color-mix(in srgb, var(--sh-acc) 90%, transparent);
+	}
+	.shuf__t {
+		margin: 0.25rem 0 0;
+		font-size: clamp(1.25rem, 2.4vw, 1.6rem);
+		font-weight: 800;
+		letter-spacing: -0.02em;
+		line-height: 1.12;
+	}
+	.shuf__d {
+		margin: 0;
+		font-size: clamp(0.92rem, 1.25vw, 1rem);
+		line-height: 1.6;
+		color: color-mix(in srgb, var(--sh-card-ink) 74%, transparent);
+	}
+	.shuf__tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.35rem;
+		list-style: none;
+		margin: auto 0 0;
+		padding: 0;
+	}
+	.shuf__tags li {
+		padding: 0.24rem 0.6rem;
+		border-radius: 9999px;
+		font-size: 0.62rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: color-mix(in srgb, var(--sh-acc) 82%, #2b1a52);
+		background: color-mix(in srgb, var(--sh-acc) 11%, transparent);
+		border: 1px solid color-mix(in srgb, var(--sh-acc) 22%, transparent);
+	}
+	.shuf__go {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		margin-top: 0.2rem;
+		font-size: 0.82rem;
+		font-weight: 800;
+		color: var(--sh-acc);
+		transition: gap 0.22s ease;
+	}
+	.shuf__go:hover { gap: 0.7rem; }
+
+	/* ── the controls ──────────────────────────────────────────────── */
+	.shuf__bar {
+		display: flex;
+		align-items: center;
+		gap: 0.7rem;
+	}
+	.shuf__arm {
+		position: relative;
+		display: grid;
+		place-items: center;
+		width: 38px;
+		height: 38px;
+		flex: none;
+		border-radius: 9999px;
+		color: var(--sh-ink);
+		background: color-mix(in srgb, var(--sh-acc) 10%, transparent);
+		border: 1px solid var(--sh-line);
+		cursor: pointer;
+		transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+	}
+	.shuf__arm:hover {
+		color: #fff;
+		background: linear-gradient(96deg, var(--sh-acc), #ec4899);
+		border-color: transparent;
+		transform: translateY(-2px);
+	}
+	/* the countdown to the next deal, drawn round the next button */
+	.shuf__ring {
+		position: absolute;
+		inset: -3px;
+		width: calc(100% + 6px);
+		height: calc(100% + 6px);
+		transform: rotate(-90deg);
+		pointer-events: none;
+		overflow: visible;
+	}
+	.shuf__ring circle {
+		fill: none;
+		stroke-width: 2;
+		stroke-linecap: round;
+	}
+	.shuf__ring-t { stroke: color-mix(in srgb, var(--sh-ink) 12%, transparent); }
+	.shuf__ring-f {
+		stroke: var(--sh-acc);
+		stroke-dasharray: 113;
+		stroke-dashoffset: 113;
+		transition: stroke-dashoffset 0.12s linear;
+	}
+	.shuf.is-held .shuf__ring-f { opacity: 0.25; }
+
+	.shuf__pips { display: inline-flex; align-items: center; gap: 0.3rem; }
+	.shuf__pip {
+		width: 7px;
+		height: 7px;
+		padding: 0;
+		border: 0;
+		border-radius: 9999px;
+		background: color-mix(in srgb, var(--sh-ink) 26%, transparent);
+		cursor: pointer;
+		transition: width 0.28s ease, background 0.28s ease;
+	}
+	.shuf__pip[aria-selected='true'] {
+		width: 22px;
+		background: linear-gradient(90deg, var(--sh-acc), #ec4899);
+	}
+	.shuf__count {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 0.12rem;
+		font-family: ui-monospace, monospace;
+		font-size: 0.72rem;
+		font-weight: 700;
+		color: var(--sh-faint);
+	}
+	.shuf__count b { color: var(--sh-ink); font-weight: 800; }
+
+	.shuf__hint {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		font-size: 0.72rem;
+		color: var(--sh-faint);
+	}
+	.shuf__hint :global(svg) { color: var(--sh-acc); }
+
+	/* a deck that carries tag rows needs a deeper card */
+	.shuf:has(.shuf__tags) .shuf__stage { min-height: 18.5rem; }
+
+
+	/* ══ row: three abreast, shuffling along ════════════════════════
+	   The fan is right for four promises. Six disciplines deserve the
+	   width of the page, so on a desktop three of them stand side by side
+	   and the row walks on: the leftmost slides out, everyone steps
+	   across, a new one arrives from the right. */
+	@media (min-width: 900px) {
+		.shuf--row .shuf__stage {
+			width: 100%;
+			min-height: 17.5rem;
+			padding-top: 0;
+			perspective: none;
+		}
+		.shuf--row .shuf__card {
+			inset: 0 auto 0 0;
+			width: calc((100% - 2 * 1.1rem) / 3);
+			transform-origin: 50% 50%;
+			filter: none !important;
+		}
+		.shuf--row .shuf__card[data-o='0'] { transform: translate3d(0, 0, 0); opacity: 1; z-index: 5; }
+		.shuf--row .shuf__card[data-o='1'] { transform: translate3d(calc(100% + 1.1rem), 0, 0); opacity: 1; z-index: 4; }
+		.shuf--row .shuf__card[data-o='2'] { transform: translate3d(calc(200% + 2.2rem), 0, 0); opacity: 1; z-index: 3; }
+		.shuf--row .shuf__card[data-o='3'] { transform: translate3d(calc(300% + 3.3rem), 0, 0) scale(0.94); opacity: 0; z-index: 2; }
+		.shuf--row .shuf__card[data-o='4'] { transform: translate3d(calc(300% + 3.3rem), 0, 0) scale(0.94); opacity: 0; z-index: 1; }
+		.shuf--row .shuf__card[data-o='gone'] { transform: translate3d(calc(-100% - 1.1rem), 0, 0) scale(0.94); opacity: 0; }
+		.shuf--row .shuf__card[data-o='back'] { transform: translate3d(calc(-100% - 1.1rem), 0, 0) scale(0.94); opacity: 0; }
+		/* all three are live, not just the front one */
+		.shuf--row .shuf__card:not([data-o='0']) { pointer-events: auto; }
+		.shuf--row .shuf__card[data-o='3'],
+		.shuf--row .shuf__card[data-o='4'],
+		.shuf--row .shuf__card[data-o='gone'],
+		.shuf--row .shuf__card[data-o='back'] { pointer-events: none; }
+		.shuf--row:has(.shuf__tags) .shuf__stage { min-height: 17.5rem; }
+	}
+
+	/* ══ strip: a card index you open ═══════════════════════════════
+	   Nothing like the other two on purpose. The four values stay on the
+	   page together as closed spines, and the one you pick swings open. */
+	@media (min-width: 780px) {
+		.shuf--strip .shuf__stage {
+			display: flex;
+			gap: 0.6rem;
+			width: 100%;
+			min-height: 0;
+			height: clamp(13.5rem, 21vw, 16rem);
+			padding-top: 0;
+			perspective: none;
+			cursor: default;
+		}
+		.shuf--strip .shuf__card {
+			position: relative;
+			inset: auto;
+			flex: 0 1 5.2rem;
+			min-width: 0;
+			overflow: hidden;
+			transform: none !important;
+			opacity: 1 !important;
+			filter: none !important;
+			z-index: 1 !important;
+			pointer-events: auto !important;
+			cursor: pointer;
+			transition: flex-grow 0.5s cubic-bezier(0.22, 1, 0.36, 1), flex-basis 0.5s cubic-bezier(0.22, 1, 0.36, 1), background 0.4s ease;
+		}
+		.shuf--strip .shuf__card.is-on { flex: 1 1 auto; }
+		/* a closed spine shows only its number, its mark and its name,
+		   turned on its side the way a book on a shelf does */
+		.shuf--strip .shuf__card:not(.is-on) .shuf__d,
+		.shuf--strip .shuf__card:not(.is-on) .shuf__tags,
+		.shuf--strip .shuf__card:not(.is-on) .shuf__go { display: none; }
+		.shuf--strip .shuf__card:not(.is-on) .shuf__t {
+			writing-mode: vertical-rl;
+			margin: 0.6rem 0 0;
+			font-size: 0.82rem;
+			line-height: 1.1;
+			letter-spacing: 0;
+			white-space: nowrap;
+			min-height: 0;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+		.shuf--strip .shuf__card:not(.is-on) .shuf__no { position: static; }
+		.shuf--strip .shuf__card:not(.is-on) {
+			align-items: center;
+			padding-inline: 0.6rem;
+			background: color-mix(in srgb, var(--sh-acc) 8%, var(--sh-card));
+		}
+		.shuf--strip .shuf__hint { display: none; }
+	}
+
+	@media (max-width: 620px) {
+		.shuf__stage { min-height: 17rem; }
+		.shuf:has(.shuf__tags) .shuf__stage { min-height: 20rem; }
+		.shuf__count { display: none; }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.shuf__card { transition: opacity 0.2s ease; }
+	}
+
+	/* ══ daylight: the cards are paper either way, the stage is not ══ */
+	:global(html:not(.dark)) .shuf {
+		--sh-card: #ffffff;
+		--sh-card-ink: #1b1332;
+	}
+	:global(html.dark) .shuf {
+		--sh-card: #171029;
+		--sh-card-ink: #f2edff;
+		--sh-ink: #f1edfb;
+		--sh-muted: rgba(241, 237, 251, 0.7);
+		--sh-faint: rgba(241, 237, 251, 0.5);
+		--sh-line: rgba(255, 255, 255, 0.12);
+	}
+	:global(html.dark) .shuf__card {
+		box-shadow:
+			0 1px 0 rgba(255, 255, 255, 0.07) inset,
+			0 30px 60px -28px rgba(0, 0, 0, 0.9);
+	}
+	:global(html.dark) .shuf__tags li { color: #d6c6ff; }
+</style>
