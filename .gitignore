@@ -23,3 +23,6 @@ src/data/.idea
 
 # local agent settings
 .claude/settings.local.json
+
+# full-resolution originals of the images optimised for the web
+_image-originals/

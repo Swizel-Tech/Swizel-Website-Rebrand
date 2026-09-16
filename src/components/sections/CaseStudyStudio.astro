@@ -6,6 +6,7 @@
 // .sd-rev reveals) and `scs` (motion engine: tilt / glare / magnetic /
 // .fa-journey draw).
 import { Icon } from 'astro-icon/components';
+import CaseFilm from '../CaseFilm.astro';
 import type { Project } from '../../data/projects';
 
 interface Props {
@@ -16,7 +17,7 @@ const { project: p, others } = Astro.props;
 const cs = p.caseStudy!;
 
 // only real media makes the gallery; an empty slot is simply not shown
-const shots = cs.gallery.filter((g) => g.src);
+const shots = cs.gallery.filter((g) => g.src || g.youtubeId);
 const galVideo = shots.find((g) => g.kind === 'video');
 const galImages = shots.filter((g) => g.kind !== 'video');
 const heroBadges = cs.results.slice(0, 2);
@@ -207,11 +208,20 @@ const roman = ['I', 'II', 'III', 'IV', 'V', 'VI'];
 				<div class="sc-media sd-rev">
 					{
 						galVideo && (
+							galVideo.youtubeId ? (
+								<CaseFilm
+									youtubeId={galVideo.youtubeId}
+									label={galVideo.label}
+									caption={galVideo.caption}
+									rev="sd-rev"
+								/>
+							) : (
 							<div class="sc-mframe sc-mframe--wide">
 								<Icon width={34} name="mdi:play-circle-outline" />
 								<span class="sc-mname">{galVideo.label}</span>
 								{galVideo.caption && <span class="sc-msub">{galVideo.caption}</span>}
 							</div>
+							)
 						)
 					}
 					{
@@ -530,7 +540,7 @@ const roman = ['I', 'II', 'III', 'IV', 'V', 'VI'];
 		color: var(--sa-ink);
 	}
 	.sc-label i b {
-		font-size: 0.62rem;
+		font-size: 0.7rem;
 		font-weight: 800;
 		letter-spacing: 0.14em;
 		text-transform: uppercase;

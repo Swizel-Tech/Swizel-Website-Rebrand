@@ -17,7 +17,7 @@ const { data, as: AS = 'div' as any, to = '/blog' } = Astro.props as Props;
 			class="sm:max-h-[300px] max-h-[250px] rounded-md w-full object-cover aspect-square"
 			src={data.heroImage}
 			alt={data.title}
-		/>
+		/ loading="lazy" decoding="async">
 	</Link>
 	<div class="space-y-3">
 		<p class="text-[darker-altA3]">{data.pubDate.toDateString()}</p>

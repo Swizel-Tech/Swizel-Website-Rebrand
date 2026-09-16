@@ -5,6 +5,7 @@
 // results, the gallery, the client's words, press, next stories and a CTA.
 // Root carries `fbody` (founder engine) and `fcs` (motion bindings).
 import { Icon } from 'astro-icon/components';
+import CaseFilm from '../CaseFilm.astro';
 import type { Project } from '../../data/projects';
 
 interface Props {
@@ -15,7 +16,7 @@ const { project: p, others } = Astro.props;
 const cs = p.caseStudy!;
 
 // only real media makes the gallery; an empty slot is simply not shown
-const shots = cs.gallery.filter((g) => g.src);
+const shots = cs.gallery.filter((g) => g.src || g.youtubeId);
 const galVideo = shots.find((g) => g.kind === 'video');
 const galImages = shots.filter((g) => g.kind !== 'video');
 // two headline results float over the hero shot
@@ -214,12 +215,21 @@ const heroBadges = cs.results.slice(0, 2);
 				<div class="fc-gallery">
 					{
 						galVideo && (
+							galVideo.youtubeId ? (
+								<CaseFilm
+									youtubeId={galVideo.youtubeId}
+									label={galVideo.label}
+									caption={galVideo.caption}
+									rev="fd-rev"
+								/>
+							) : (
 							<div class="fc-gal-video fd-rev">
 								<span class="fa-media-sheen fc-media-sheen" aria-hidden="true" />
 								<Icon width={36} name="mdi:play-circle-outline" />
 								<span class="fc-media-label">{galVideo.label}</span>
 								{galVideo.caption && <span class="fc-media-sub">{galVideo.caption}</span>}
 							</div>
+							)
 						)
 					}
 					<div class="fc-gal-grid">
@@ -390,7 +400,7 @@ const heroBadges = cs.results.slice(0, 2);
 		padding: 0.35rem 0.8rem; border-radius: 0.5rem; transform: rotate(-2deg);
 		margin-bottom: 1rem;
 	}
-	.fc-stamp--sm { font-size: 0.64rem; padding: 0.28rem 0.65rem; margin-bottom: 0.7rem; }
+	.fc-stamp--sm { font-size: 0.7rem; padding: 0.28rem 0.65rem; margin-bottom: 0.7rem; }
 	.fc-h { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 850; letter-spacing: -0.025em; line-height: 1.06; margin: 0 0 1rem; }
 	.fc-h--xl { font-size: clamp(2.2rem, 4.6vw, 3.5rem); }
 	.fc-h em {
@@ -462,7 +472,7 @@ const heroBadges = cs.results.slice(0, 2);
 		background: color-mix(in srgb, var(--c) 9%, transparent);
 		color: var(--fa-ink);
 	}
-	.fc-chips b { font-weight: 800; color: var(--c); margin-right: 0.3rem; text-transform: uppercase; font-size: 0.66rem; letter-spacing: 0.06em; }
+	.fc-chips b { font-weight: 800; color: var(--c); margin-right: 0.3rem; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.06em; }
 	.fc-visual { position: relative; }
 	.fc-shot {
 		position: relative; display: block; border-radius: 1rem; overflow: hidden;
@@ -473,7 +483,7 @@ const heroBadges = cs.results.slice(0, 2);
 	}
 	.fc-bar { display: flex; align-items: center; gap: 4px; padding: 8px 10px; background: rgba(255, 255, 255, 0.05); }
 	.fc-bar i { width: 8px; height: 8px; border-radius: 50%; background: color-mix(in srgb, var(--c) 70%, #fff); opacity: 0.65; }
-	.fc-url { margin-left: 0.5rem; font-size: 0.68rem; font-weight: 700; color: var(--fa-muted); }
+	.fc-url { margin-left: 0.5rem; font-size: 0.7rem; font-weight: 700; color: var(--fa-muted); }
 	.fc-img { display: block; height: 340px; overflow: hidden; }
 	.fc-img img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; transition: transform 0.5s ease; }
 	.fc-shot:hover .fc-img img { transform: scale(1.04); }
@@ -496,7 +506,7 @@ const heroBadges = cs.results.slice(0, 2);
 		background: linear-gradient(95deg, var(--c), var(--fa-acc2));
 		-webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
 	}
-	.fc-float em { font-style: normal; font-size: 0.68rem; font-weight: 700; color: var(--fa-muted); }
+	.fc-float em { font-style: normal; font-size: 0.7rem; font-weight: 700; color: var(--fa-muted); }
 	.fc-float--0 { top: -1.2rem; right: -0.9rem; animation-delay: -1.4s; }
 	.fc-float--1 { bottom: -1.2rem; left: -0.9rem; animation-delay: -3.2s; }
 	@keyframes fc-bob { 0%, 100% { margin-top: 0; } 50% { margin-top: -8px; } }
@@ -552,7 +562,7 @@ const heroBadges = cs.results.slice(0, 2);
 	.fc-appstep-n {
 		position: absolute; left: -2.4rem; top: 0;
 		display: grid; place-items: center; width: 1.9rem; height: 1.9rem;
-		border-radius: 50%; font-size: 0.66rem; font-weight: 800; color: #fff;
+		border-radius: 50%; font-size: 0.7rem; font-weight: 800; color: #fff;
 		background: linear-gradient(135deg, var(--c), var(--fa-acc2));
 		box-shadow: 0 0 0 5px color-mix(in srgb, var(--c) 18%, transparent);
 	}

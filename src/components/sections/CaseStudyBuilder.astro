@@ -3,6 +3,7 @@
 // the Boardroom/Founder case studies (story, challenge, approach, highlights,
 // results, gallery, quote, press, next), tinted by the project's colour.
 import { Icon } from 'astro-icon/components';
+import CaseFilm from '../CaseFilm.astro';
 import type { Project } from '../../data/projects';
 
 interface Props {
@@ -13,7 +14,7 @@ const { project: p, others } = Astro.props;
 const cs = p.caseStudy!;
 
 // only real media makes the gallery; an empty slot is simply not shown
-const shots = cs.gallery.filter((g) => g.src);
+const shots = cs.gallery.filter((g) => g.src || g.youtubeId);
 const galVideo = shots.find((g) => g.kind === 'video');
 const galImages = shots.filter((g) => g.kind !== 'video');
 const heroBadges = cs.results.slice(0, 2);
@@ -225,12 +226,21 @@ const heroBadges = cs.results.slice(0, 2);
 				<div class="cb-gallery">
 					{
 						galVideo && (
+							galVideo.youtubeId ? (
+								<CaseFilm
+									youtubeId={galVideo.youtubeId}
+									label={galVideo.label}
+									caption={galVideo.caption}
+									rev="bb-rev"
+								/>
+							) : (
 							<div class="cb-gal-video bb-rev">
 								<span class="cb-sheen" aria-hidden="true" />
 								<Icon width={34} name="mdi:play-circle-outline" />
 								<span class="cb-media-label">{galVideo.label}</span>
 								{galVideo.caption && <span class="cb-media-sub">{galVideo.caption}</span>}
 							</div>
+							)
 						)
 					}
 					<div class="cb-gal-grid">
@@ -481,8 +491,8 @@ const heroBadges = cs.results.slice(0, 2);
 	}
 	.cb-bar { display: flex; align-items: center; gap: 4px; padding: 8px 10px; background: rgba(255, 255, 255, 0.05); }
 	.cb-bar i { width: 8px; height: 8px; border-radius: 50%; background: color-mix(in srgb, var(--c) 70%, #fff); opacity: 0.6; }
-	.cb-url { margin-left: 0.5rem; font-family: var(--bu-mono); font-size: 0.68rem; color: rgba(232, 240, 244, 0.5); }
-	.cb-shot-live { margin-left: auto; display: inline-flex; align-items: center; gap: 0.3rem; font-family: var(--bu-mono); font-size: 0.62rem; color: #2ee889; }
+	.cb-url { margin-left: 0.5rem; font-family: var(--bu-mono); font-size: 0.7rem; color: rgba(232, 240, 244, 0.5); }
+	.cb-shot-live { margin-left: auto; display: inline-flex; align-items: center; gap: 0.3rem; font-family: var(--bu-mono); font-size: 0.7rem; color: #2ee889; }
 	.cb-shot-live i { width: 6px; height: 6px; border-radius: 50%; background: #2ee889; animation: cb-live 2s ease-in-out infinite; }
 	@keyframes cb-live { 0%, 100% { box-shadow: 0 0 0 0 rgba(46, 232, 137, 0.5); } 50% { box-shadow: 0 0 0 4px rgba(46, 232, 137, 0); } }
 	.cb-img { display: block; height: 330px; overflow: hidden; }
@@ -506,7 +516,7 @@ const heroBadges = cs.results.slice(0, 2);
 		background: linear-gradient(95deg, color-mix(in srgb, var(--c) 55%, #fff), var(--c));
 		-webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
 	}
-	.cb-float em { font-style: normal; font-family: var(--bu-mono); font-size: 0.62rem; color: var(--bu-muted); }
+	.cb-float em { font-style: normal; font-family: var(--bu-mono); font-size: 0.7rem; color: var(--bu-muted); }
 	.cb-float--0 { top: -1.1rem; right: -0.8rem; animation-delay: -1.4s; }
 	.cb-float--1 { bottom: -1.1rem; left: -0.8rem; animation-delay: -3.2s; }
 	@keyframes cb-bob { 0%, 100% { margin-top: 0; } 50% { margin-top: -8px; } }
@@ -587,7 +597,7 @@ const heroBadges = cs.results.slice(0, 2);
 	}
 	.cb-hl:hover { border-color: color-mix(in srgb, var(--c) 50%, transparent); }
 	.cb-hl-tag {
-		display: inline-block; font-family: var(--bu-mono); font-size: 0.64rem; font-weight: 700;
+		display: inline-block; font-family: var(--bu-mono); font-size: 0.7rem; font-weight: 700;
 		color: #04211a; background: linear-gradient(95deg, color-mix(in srgb, var(--c) 55%, #fff), var(--c));
 		padding: 0.14rem 0.5rem; border-radius: 999px; margin-bottom: 0.5rem;
 	}
@@ -644,7 +654,7 @@ const heroBadges = cs.results.slice(0, 2);
 	.cb-gal-item:hover { border-color: color-mix(in srgb, var(--c) 50%, transparent); transform: translateY(-4px); }
 	.cb-gal-item img { display: block; width: 100%; height: 175px; object-fit: cover; object-position: top; transition: transform 0.5s ease; }
 	.cb-gal-item:hover img { transform: scale(1.06); }
-	.cb-gal-item figcaption { padding: 0.5rem 0.75rem; font-family: var(--bu-mono); font-size: 0.68rem; color: var(--bu-muted); }
+	.cb-gal-item figcaption { padding: 0.5rem 0.75rem; font-family: var(--bu-mono); font-size: 0.7rem; color: var(--bu-muted); }
 	.cb-gal-item--ph {
 		display: grid; place-content: center; justify-items: center; gap: 0.25rem;
 		min-height: 175px; border-style: dashed;
@@ -667,7 +677,7 @@ const heroBadges = cs.results.slice(0, 2);
 	.cb-pr-who em { display: block; font-style: normal; font-size: 0.74rem; color: var(--bu-muted); }
 	.cb-pr-badge {
 		display: inline-flex; align-items: center; gap: 0.3rem;
-		font-size: 0.68rem; font-weight: 800; color: #2ee889;
+		font-size: 0.7rem; font-weight: 800; color: #2ee889;
 		border: 1px solid rgba(46, 232, 137, 0.4); background: rgba(46, 232, 137, 0.1);
 		border-radius: 999px; padding: 0.22rem 0.6rem;
 	}

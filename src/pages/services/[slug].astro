@@ -19,12 +19,32 @@ export function getStaticPaths() {
 const { discipline, others } = Astro.props;
 const pageTitle = `${discipline.title} | Swizel Services`;
 const pageDescription = discipline.heroDesc;
+
+// One discipline, described to search engines the way it is described on the
+// page: what it is, who provides it, where it is provided from and who it is
+// for. This is what lets a service page answer a query like "app development
+// company in Abuja" rather than only ranking for the company name.
+const serviceSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'Service',
+	name: discipline.title,
+	description: discipline.overview || discipline.heroDesc,
+	serviceType: discipline.title,
+	provider: { '@id': 'https://swizel.co/#organization' },
+	areaServed: [
+		{ '@type': 'Country', name: 'Nigeria' },
+		{ '@type': 'Place', name: 'Worldwide' },
+	],
+	url: `https://swizel.co/services/${discipline.slug}/`,
+	audience: { '@type': 'BusinessAudience', name: 'Founders and businesses' },
+};
 ---
 
 <MainLayout
 	title={pageTitle}
 	description={pageDescription}
 	image="/images/og/og-services.jpg"
+	schema={serviceSchema}
 >
 	<!-- Boardroom world (also the default). Hidden in other views. -->
 	<ServiceDetail discipline={discipline} others={others} />

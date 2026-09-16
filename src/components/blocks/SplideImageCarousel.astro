@@ -42,7 +42,7 @@ import Link from "../Link.astro";
                 src={`/teammates/${name}.jpg`}
                 alt={name}
                 class="slide-img"
-              />
+              / loading="lazy" decoding="async">
               <div class="mt-5">
                 <Heading className="!text-white" type="h4">
                   {name}
@@ -80,7 +80,7 @@ import Link from "../Link.astro";
           class="w-full"
           alt="Princewill"
           id="dialog--image"
-        />
+        / loading="lazy" decoding="async">
         <div class="space-y-2">
           <Heading id="teammate--name" type="h4">
             {/**  */}

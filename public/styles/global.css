@@ -1,5 +1,6 @@
 /* global css */
-@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Epilogue:wght@400;500;600;700;800;900&display=swap");
+/* Fonts are linked from BaseHead, not imported here: an @import makes the
+   browser wait for this file before it even discovers them. */
 
 /* ── Page transition (swup): a branded "curtain" wipe. ─────────────────────
    On navigation a full-screen curtain sweeps UP to cover the viewport; swup
@@ -48,7 +49,7 @@ html.is-leaving .transition-main { opacity: 0; }
 }
 /* the permanent signature rides the curtain too */
 .page-curtain__tag {
-  font-size: 0.66rem;
+  font-size: 0.7rem;
   font-weight: 800;
   letter-spacing: 0.34em;
   text-transform: uppercase;
@@ -824,7 +825,7 @@ html:not(.dark) .tour-pop__close:hover {
 .ide2--out .ide2--rocket { filter: saturate(1.2); }
 .ide2--out .ide2--name { color: #e8f0f4; font-weight: 600; }
 .ide2--out .ide2--pill {
-  font-size: 0.66rem;
+  font-size: 0.7rem;
   padding: 0.12rem 0.55rem;
   border-radius: 9999px;
   background: rgba(24, 222, 190, 0.14);
@@ -996,20 +997,32 @@ html[data-view='boardroom']:not(.dark) {
 #back-to-top.is-visible { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
 #back-to-top:hover { border-color: var(--view-accent, #18debe); color: var(--view-accent, #18debe); transform: translateY(-3px); }
 
+/* The badge on the chat button. It used to be a red pip, which reads as an
+   error or an unread problem; this is a spark in whichever world you are in,
+   which reads as an invitation. It still breathes, so the button is never a
+   dead ornament. */
 .chat-fab-dot {
   position: absolute;
-  top: 2px;
-  right: 2px;
-  width: 13px;
-  height: 13px;
+  top: -1px;
+  right: -1px;
+  display: grid;
+  place-items: center;
+  width: 17px;
+  height: 17px;
   border-radius: 9999px;
-  background: #ff4d5e;
-  border: 2px solid #f3fdfb;
-  box-shadow: 0 0 0 0 rgba(255, 77, 94, 0.55);
-  animation: chatfab-pulse 2.4s ease-out infinite;
+  color: #fff;
+  background: var(--view-accent, #8b5cf6);
+  border: 2px solid var(--chat-fab-ring, #f3fdfb);
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--view-accent, #8b5cf6) 55%, transparent);
+  animation: chatfab-pulse 2.8s ease-out infinite;
 }
+.chat-fab-dot svg { display: block; }
 @keyframes chatfab-in { from { opacity: 0; transform: translateY(16px) scale(0.8); } to { opacity: 1; transform: none; } }
-@keyframes chatfab-pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 77, 94, 0.5); } 70%, 100% { box-shadow: 0 0 0 9px rgba(255, 77, 94, 0); } }
+@keyframes chatfab-pulse {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--view-accent, #8b5cf6) 50%, transparent); }
+  70%, 100% { box-shadow: 0 0 0 10px transparent; }
+}
+html.dark .chat-fab-dot { --chat-fab-ring: #10111c; }
 @media (max-width: 640px) {
   #back-to-top { left: 14px; bottom: 14px; width: 42px; height: 42px; }
 }
@@ -1568,7 +1581,7 @@ html.tour-open { overflow: hidden; }
 }
 .tour-pop__leg {
   display: block;
-  font-size: 0.64rem;
+  font-size: 0.7rem;
   font-weight: 800;
   letter-spacing: 0.13em;
   text-transform: uppercase;
@@ -1643,7 +1656,7 @@ html[data-view='campus'] .tour-hole { border-color: #f59e0b; border-style: dashe
 }
 .tour-doors-k {
   display: block;
-  font-size: 0.68rem;
+  font-size: 0.7rem;
   font-weight: 800;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -1722,3 +1735,216 @@ html[data-view='campus'] .tour-doors-home {
   border-style: dashed;
 }
 html[data-view='campus'] .tour-doors-home:hover { color: #b45309; border-color: #b45309; }
+
+/* =========================================================================
+   RESILIENCE, FIT AND WEIGHT
+   Three jobs, in one place so they are easy to find and easy to undo:
+     1. nothing stays invisible because a script was slow,
+     2. the chrome fits every width from a small phone to a wide desktop,
+     3. a modest laptop is never asked to paint what it cannot afford.
+   ========================================================================= */
+
+/* ── 1 · the page always arrives ─────────────────────────────────────────
+   Every world reveals its sections with an observer. If the scripts are
+   slow, throw, or never run at all, those sections used to sit at opacity 0
+   and the visitor saw a half-built page. BaseHead sets .swz-show-all after
+   three silent seconds; <noscript> covers the case where JS is off. */
+html.swz-show-all .fd-rev,
+html.swz-show-all .cp-rev,
+html.swz-show-all .sd-rev,
+html.swz-show-all .bb-rev,
+html.swz-show-all .row-rev,
+html.swz-show-all .bd-reveal,
+html.swz-show-all [class$='-rev'],
+html.swz-show-all [class*='-rev '],
+html.swz-show-all [data-reveal] {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+  clip-path: none !important;
+  filter: none !important;
+}
+/* the stacked decks and wheels keep their first card up rather than none */
+html.swz-show-all .shuf__card[data-o='0'],
+html.swz-show-all .orb__panel:first-of-type,
+html.swz-show-all .tree__panel:first-of-type {
+  opacity: 1 !important;
+}
+
+@media (scripting: none) {
+  .fd-rev,
+  .cp-rev,
+  .sd-rev,
+  .bb-rev,
+  .row-rev,
+  .bd-reveal,
+  [class$='-rev'],
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ── 2 · fit ──────────────────────────────────────────────────────────────
+   A decorative layer that reaches past the viewport used to leave a sliver
+   of horizontal scroll on narrow screens, which reads as a broken page. */
+html,
+body {
+  overflow-x: clip;
+}
+img,
+svg,
+video,
+canvas,
+iframe {
+  max-width: 100%;
+}
+
+/* ── the header, at the widths between the two layouts ───────────────────
+   The bar swaps to the drawer at 1280px. Just above that line the desktop
+   row had to carry six links, the Views button, the theme switch and the
+   CTA, and on a 1280–1400px laptop it was pressed against both edges. */
+@media (min-width: 1280px) and (max-width: 1439px) {
+  .site-header {
+    padding-inline: 3%;
+  }
+  .site-header nav:not(.m-nav-links) {
+    gap: 1.35rem !important;
+    margin-left: 1.25rem !important;
+    padding-left: 0 !important;
+    font-size: 0.98rem;
+  }
+  .site-header .view-switch span {
+    display: none;
+  }
+  .site-header .nav-cta,
+  .site-header .contact-btn {
+    padding-inline: 1.1rem;
+    font-size: 0.82rem;
+  }
+}
+/* tablets and small laptops running the drawer: the row is logo + three
+   controls, and it must never wrap or crowd the logo */
+@media (max-width: 1279px) {
+  .site-header .container {
+    gap: 0.75rem;
+  }
+  .site-header .site-logo svg {
+    width: clamp(92px, 26vw, 120px);
+    height: auto;
+  }
+}
+@media (max-width: 400px) {
+  .site-header {
+    padding-inline: 4%;
+    padding-block: 0.9rem;
+  }
+  .site-header .site-logo svg {
+    width: 88px;
+  }
+  /* the three round controls shrink together rather than one of them
+     falling off the end */
+  .site-header .view-switch--icon,
+  .site-header .theme-toggle,
+  .site-header #toggler-show,
+  .site-header .m-nav-burger {
+    width: 36px !important;
+    height: 36px !important;
+  }
+  .site-header .xl\:hidden.flex-1 {
+    gap: 0.5rem !important;
+  }
+}
+
+/* ── the in-between width nothing was written for ─────────────────────────
+   Most components jump straight from a phone rule at 620–720px to a desktop
+   rule at 1024px, which leaves portrait tablets (768–1023px) reading a
+   phone layout stretched across a wide screen. These pull the text columns
+   back to a comfortable measure and stop full-bleed rails running away. */
+@media (min-width: 721px) and (max-width: 1023px) {
+  .fd-wrap,
+  .fa-wrap,
+  .fs-wrap,
+  .cp-wrap,
+  .sd-wrap,
+  .bb-wrap {
+    width: min(46rem, 100% - 3rem) !important;
+    margin-inline: auto !important;
+  }
+  .fd-p,
+  .fa-p,
+  .fs-p {
+    max-width: 38rem;
+  }
+  /* two up rather than one very wide column */
+  .fa-values,
+  .fs-stack,
+  .fa-svcs {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+/* ── 3 · weight ───────────────────────────────────────────────────────────
+   Sections below the fold are not laid out or painted until they are near
+   the viewport. On a laptop with integrated graphics this is the single
+   biggest saving on a page this long, and it costs nothing visually
+   because the reserved height keeps the scrollbar honest. */
+@supports (content-visibility: auto) {
+  .fd-sec,
+  .fa-sec,
+  .fs-sec,
+  .cp-sec,
+  .sd-sec,
+  .bb-sec,
+  .bd-sec {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 640px;
+  }
+  /* anything that pins, overflows or goes full screen must stay live */
+  .pdeck-sec,
+  .fd-sec--founder,
+  #fd-deck,
+  #fd-spotlight,
+  .fa-sec:first-of-type,
+  .fs-sec:first-of-type,
+  .cp-sec:first-of-type,
+  .sd-sec:first-of-type,
+  .bb-sec:first-of-type,
+  .bd-sec:first-of-type {
+    content-visibility: visible;
+    contain-intrinsic-size: none;
+  }
+}
+
+/* perf-lite already stands down the moving decoration. These are the rest of
+   the per-frame costs: a blurred layer, a long shadow under a moving thing,
+   and the compositor hints we leave lying around. */
+html.perf-lite [class*='blur'],
+html.perf-lite [class*='glow'],
+html.perf-lite [class*='halo'],
+html.perf-lite [class*='aura'],
+html.perf-lite [class*='orb'] {
+  filter: none !important;
+}
+html.perf-lite * {
+  will-change: auto !important;
+}
+html.perf-lite [class*='parallax'],
+html.perf-lite [class*='marquee'],
+html.perf-lite [class*='belt-track'],
+html.perf-lite [class*='ticker'] {
+  animation-duration: 60s !important;
+}
+/* the wheels, decks and rails stop turning themselves; they still respond
+   to a click, an arrow key or a flick */
+html.perf-lite .orb__ring-f,
+html.perf-lite .shuf__ring-f {
+  display: none !important;
+}
+
+/* A visitor who asks for less motion gets the same deal, plus stillness. */
+@media (prefers-reduced-motion: reduce) {
+  .page-curtain {
+    transition: none !important;
+  }
+}

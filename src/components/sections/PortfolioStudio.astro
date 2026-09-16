@@ -80,8 +80,8 @@ const spotWorks = [
 					))}
 					<figure class="sp-spot-stage" data-fa-tilt="3">
 						<span class="sa-glare" aria-hidden="true"></span>
-						<img class="sp-spot-img is-on" id="sp-spot-a" src={spotWorks[0].img} alt={spotWorks[0].name} />
-						<img class="sp-spot-img" id="sp-spot-b" src={spotWorks[1]?.img} alt="" aria-hidden="true" />
+						<img class="sp-spot-img is-on" id="sp-spot-a" src={spotWorks[0].img} alt={spotWorks[0].name} / loading="lazy" decoding="async">
+						<img class="sp-spot-img" id="sp-spot-b" src={spotWorks[1]?.img} alt="" aria-hidden="true" / loading="lazy" decoding="async">
 						<span class="sp-spot-room" id="sp-spot-room">Room 01</span>
 					</figure>
 					<figcaption class="sp-plaque sp-spot-plaque" id="sp-spot-plaque">
@@ -517,7 +517,7 @@ const spotWorks = [
 		position: absolute;
 		left: 0.9rem;
 		bottom: 0.8rem;
-		font-size: 0.66rem;
+		font-size: 0.7rem;
 		font-weight: 800;
 		letter-spacing: 0.16em;
 		text-transform: uppercase;
@@ -637,7 +637,7 @@ const spotWorks = [
 		position: absolute;
 		left: 1rem;
 		bottom: 0.9rem;
-		font-size: 0.68rem;
+		font-size: 0.7rem;
 		font-weight: 800;
 		letter-spacing: 0.16em;
 		text-transform: uppercase;
@@ -793,7 +793,7 @@ const spotWorks = [
 		position: absolute;
 		left: 0.7rem;
 		bottom: 0.7rem;
-		font-size: 0.62rem;
+		font-size: 0.7rem;
 		font-weight: 800;
 		letter-spacing: 0.1em;
 		text-transform: uppercase;
@@ -809,7 +809,7 @@ const spotWorks = [
 		display: inline-flex;
 		align-items: center;
 		gap: 0.3rem;
-		font-size: 0.66rem;
+		font-size: 0.7rem;
 		font-weight: 800;
 		letter-spacing: 0.06em;
 		text-transform: uppercase;

@@ -8,6 +8,7 @@
 // (campus engine: .cp-rev + [data-count]) and `ccs` (motion engine: tilt /
 // glare / magnetic / .fa-journey draw).
 import { Icon } from 'astro-icon/components';
+import CaseFilm from '../CaseFilm.astro';
 import type { Project } from '../../data/projects';
 
 interface Props {
@@ -18,7 +19,7 @@ const { project: p, others } = Astro.props;
 const cs = p.caseStudy!;
 
 // only real media makes the scrapbook; an empty slot is simply not shown
-const shots = cs.gallery.filter((g) => g.src);
+const shots = cs.gallery.filter((g) => g.src || g.youtubeId);
 const galVideo = shots.find((g) => g.kind === 'video');
 const galImages = shots.filter((g) => g.kind !== 'video');
 // three across when the count divides by three, two otherwise
@@ -197,10 +198,20 @@ const heroBadges = cs.results.slice(0, 2);
 					</div>
 					<div class="cc-media cp-rev" style={`--n:${Math.min(galImages.length + (galVideo ? 1 : 0), 3)}`}>
 						{galVideo && (
+							galVideo.youtubeId ? (
+								<CaseFilm
+									youtubeId={galVideo.youtubeId}
+									label={galVideo.label}
+									caption={galVideo.caption}
+									rev="cp-rev"
+									class="cc-mfilm"
+								/>
+							) : (
 							<figure class="cc-mframe cc-mframe--wide">
 								<video src={galVideo.src} muted loop playsinline autoplay />
 								<figcaption>{galVideo.label}</figcaption>
 							</figure>
+							)
 						)}
 						{galImages.map((g) => (
 							<figure class="cc-mframe">
@@ -519,7 +530,7 @@ const heroBadges = cs.results.slice(0, 2);
 	}
 	.cc-label i b {
 		font-family: ui-monospace, monospace;
-		font-size: 0.6rem;
+		font-size: 0.7rem;
 		font-weight: 800;
 		letter-spacing: 0.14em;
 		text-transform: uppercase;
@@ -874,7 +885,7 @@ const heroBadges = cs.results.slice(0, 2);
 	.cc-note-k {
 		display: block;
 		font-family: ui-monospace, monospace;
-		font-size: 0.66rem;
+		font-size: 0.7rem;
 		font-weight: 800;
 		letter-spacing: 0.16em;
 		text-transform: uppercase;

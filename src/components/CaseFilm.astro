@@ -1,0 +1,50 @@
+---
+// A client's film, inside our own player.
+//
+// The gallery used to offer either a hosted <video> with YouTube-free
+// chrome, or, in four of the five worlds, a play icon that did nothing.
+// This is the real thing in every world: the founder player in its wide
+// tablet frame, set to stop dead on its last frame so the visitor is
+// never handed a grid of somebody else's videos at the end of a case
+// study we made.
+import FounderReel from './FounderReel.astro';
+
+interface Props {
+	youtubeId: string;
+	label: string;
+	caption?: string;
+	/** the reveal class the surrounding world uses */
+	rev?: string;
+	class?: string;
+}
+
+const { youtubeId, label, caption, rev = '', class: klass = '' } = Astro.props;
+---
+
+<figure class:list={['cfilm', rev, klass]} data-cursor="play">
+	<FounderReel
+		videoId={youtubeId}
+		variant="cinema"
+		kicker={label}
+		loop={false}
+		endLabel="Play it again"
+	/>
+	{caption && <figcaption class="cfilm__cap">{caption}</figcaption>}
+</figure>
+
+<style>
+	.cfilm {
+		margin: 0;
+		display: grid;
+		gap: 0.7rem;
+		justify-items: center;
+		width: 100%;
+	}
+	.cfilm__cap {
+		font-size: 0.86rem;
+		line-height: 1.45;
+		text-align: center;
+		color: var(--cfilm-ink, rgba(29, 20, 48, 0.62));
+	}
+	:global(html.dark) .cfilm__cap { --cfilm-ink: rgba(241, 237, 251, 0.62); }
+</style>

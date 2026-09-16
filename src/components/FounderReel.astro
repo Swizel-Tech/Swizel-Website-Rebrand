@@ -21,6 +21,13 @@ interface Props {
 	 */
 	variant?: 'rig' | 'cinema';
 	note?: string;
+	/**
+	 * false stops the film dead at the end and shows our own end card.
+	 * Nothing from YouTube is ever allowed to follow it.
+	 */
+	loop?: boolean;
+	/** what the end card offers to do next */
+	endLabel?: string;
 	class?: string;
 }
 
@@ -30,6 +37,8 @@ const {
 	still = '/images/founder/reel-still.jpg',
 	variant = 'rig',
 	note,
+	loop = true,
+	endLabel = 'Watch it again',
 	class: klass = '',
 } = Astro.props;
 
@@ -47,7 +56,12 @@ const chips = [
 ];
 ---
 
-<div class:list={['freel', `freel--${variant}`, klass]} data-freel data-video-id={videoId}>
+<div
+	class:list={['freel', `freel--${variant}`, klass]}
+	data-freel
+	data-video-id={videoId}
+	data-loop={loop ? '1' : '0'}
+>
 	<span class="freel__halo" aria-hidden="true"></span>
 
 	<div class="freel__rig">
@@ -73,7 +87,7 @@ const chips = [
 					width="720"
 					height="1280"
 					decoding="async"
-				/>
+				/ loading="lazy">
 				<div class="freel__mount" data-freel-mount></div>
 
 				<!-- YouTube never sees the pointer, so it never draws its own chrome -->
@@ -91,7 +105,7 @@ const chips = [
 						<Icon class="freel__livemark" width={12} name="mdi:filmstrip" />
 						{kicker}
 					</span>
-					<span class="freel__ratio">9:16</span>
+					<span class="freel__ratio">{variant === 'cinema' ? 'Full film' : '9:16'}</span>
 				</div>
 
 				<!-- SOUND. Big, lit, and impossible to miss until it is pressed. -->
@@ -104,15 +118,47 @@ const chips = [
 				</button>
 
 				<div class="freel__bar">
+					<!-- ten seconds either way. A briefing is ten minutes long;
+					     nobody should have to drag a four-pixel scrubber to
+					     hear a sentence again. -->
+					<button class="freel__btn freel__btn--skip" type="button" data-freel-back aria-label="Back ten seconds">
+						<Icon width={16} name="mdi:rewind-10" />
+					</button>
 					<button class="freel__btn" type="button" data-freel-toggle aria-label="Pause">
 						<Icon class="freel__i-pause" width={17} name="mdi:pause" />
 						<Icon class="freel__i-play" width={17} name="mdi:play" />
 					</button>
+					<button class="freel__btn freel__btn--skip" type="button" data-freel-fwd aria-label="Forward ten seconds">
+						<Icon width={16} name="mdi:fast-forward-10" />
+					</button>
 					<div class="freel__track" data-freel-track>
+						<span class="freel__buf" data-freel-buf></span>
 						<span class="freel__fill" data-freel-fill></span>
 					</div>
-					<span class="freel__len">9:16</span>
+					<!-- the real clock, not the aspect ratio pretending to be one -->
+					<span class="freel__len" data-freel-time>0:00</span>
+					<!-- once sound is on the big pill leaves the picture and the
+					     mute toggle lives down here with the other controls -->
+					<button class="freel__btn freel__btn--vol" type="button" data-freel-mute2 aria-label="Mute">
+						<Icon class="freel__i-on" width={16} name="mdi:volume-high" />
+						<Icon class="freel__i-off" width={16} name="mdi:volume-off" />
+					</button>
 				</div>
+
+				<!-- the end card. Only for films that are not on a loop: the
+				     player stops on our own frame so YouTube never gets the
+				     chance to offer anything else. -->
+				{!loop && (
+					<div class="freel__end" data-freel-end>
+						<span class="freel__end-ic">
+							<Icon width={26} name="mdi:replay" />
+						</span>
+						<p class="freel__end-t">That is the film.</p>
+						<button class="freel__end-go" type="button" data-freel-replay>
+							{endLabel}
+						</button>
+					</div>
+				)}
 			</div>
 
 			<span class="freel__notch" aria-hidden="true"></span>
@@ -254,12 +300,67 @@ const chips = [
 	   The About briefing was wearing the campus whiteboard, which belongs
 	   to another world. This is the founder frame: one wide screen in the
 	   world's gradient bezel, our own controls, nothing borrowed. */
-	.freel--cinema { --fr-w: min(54rem, 100%); width: 100%; }
+	/* A proper tablet, not a thumbnail. The About briefing is ten minutes of
+	   the crew talking; it is the point of that half of the hero, so it gets
+	   the size of a large iPad propped on a desk: a thick aluminium bezel, a
+	   camera dot, and it breaks out past its column on a wide screen rather
+	   than politely fitting inside it. */
+	.freel--cinema { --fr-w: min(64rem, 100%); width: 100%; }
 	.freel--cinema .freel__ghost,
 	.freel--cinema .freel__foot { display: none !important; }
-	.freel--cinema .freel__frame { width: 100%; max-width: var(--fr-w); }
-	.freel--cinema .freel__screen { aspect-ratio: 16 / 9; border-radius: 1.1rem; }
-	.freel--cinema .freel__halo { inset: -12% -8% 0; }
+	.freel--cinema .freel__frame {
+		width: 100%;
+		max-width: var(--fr-w);
+		margin-inline: auto;
+		padding: clamp(10px, 1.1vw, 18px);
+		border-radius: clamp(1.4rem, 2vw, 2.1rem);
+		background:
+			linear-gradient(158deg, #4a4358 0%, #211d2c 26%, #17141f 62%, #322c3f 100%);
+		box-shadow:
+			0 0 0 1px rgba(255, 255, 255, 0.14) inset,
+			0 2px 0 rgba(255, 255, 255, 0.1) inset,
+			0 44px 90px -40px rgba(12, 6, 32, 0.85),
+			0 16px 36px -24px rgba(12, 6, 32, 0.7);
+	}
+	.freel--cinema .freel__screen {
+		aspect-ratio: 16 / 10;
+		border-radius: clamp(0.7rem, 1vw, 1.05rem);
+		box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6) inset;
+	}
+	/* the camera, so it reads as a device rather than a floating rectangle */
+	.freel--cinema .freel__notch {
+		display: block;
+		position: absolute;
+		top: clamp(4px, 0.5vw, 8px);
+		left: 50%;
+		width: 6px;
+		height: 6px;
+		margin-left: -3px;
+		border-radius: 9999px;
+		background: radial-gradient(circle at 34% 30%, #6d6486, #1a1723 70%);
+		box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+	}
+	.freel--cinema .freel__halo { inset: -16% -10% -4%; }
+	/* on a wide screen it leans out of its column, the way a tablet on a desk
+	   overhangs the papers next to it */
+	@media (min-width: 1200px) {
+		.freel--cinema { width: calc(100% + clamp(1rem, 5vw, 5.5rem)); }
+	}
+	/* the chrome grows with the frame so a 1000px screen is not wearing
+	   phone-sized buttons */
+	.freel--cinema .freel__bar {
+		left: 1.1rem;
+		right: 1.1rem;
+		bottom: 1.1rem;
+		gap: 0.7rem;
+		padding: 0.5rem 0.8rem 0.5rem 0.5rem;
+	}
+	.freel--cinema .freel__btn { width: 38px; height: 38px; }
+	.freel--cinema .freel__btn--skip,
+	.freel--cinema .freel__btn--vol { width: 34px; height: 34px; }
+	.freel--cinema .freel__len { font-size: 0.8rem; }
+	.freel--cinema .freel__sound { bottom: 5rem; font-size: 0.86rem; }
+	.freel--cinema .freel__track { height: 5px; }
 	.freel__note {
 		margin: 0.75rem 0 0;
 		font-family: 'Bradley Hand', 'Segoe Print', 'Comic Sans MS', cursive;
@@ -330,7 +431,7 @@ const chips = [
 		gap: 0.4rem;
 		padding: 0.28rem 0.6rem;
 		border-radius: 9999px;
-		font-size: 0.6rem;
+		font-size: 0.7rem;
 		font-weight: 800;
 		letter-spacing: 0.14em;
 		text-transform: uppercase;
@@ -350,7 +451,7 @@ const chips = [
 	}
 	.freel__ratio {
 		font-family: ui-monospace, monospace;
-		font-size: 0.58rem;
+		font-size: 0.7rem;
 		letter-spacing: 0.12em;
 		color: rgba(255, 255, 255, 0.5);
 	}
@@ -395,20 +496,28 @@ const chips = [
 		0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.55), 0 14px 30px -12px rgba(0, 0, 0, 0.85); }
 		70%, 100% { box-shadow: 0 0 0 16px rgba(255, 255, 255, 0), 0 14px 30px -12px rgba(0, 0, 0, 0.85); }
 	}
-	/* once it has sound it stops shouting and becomes a plain mute toggle */
+	/* Once the sound is on, the pill has said its only sentence. It used to
+	   shrink into a second mute button parked in the middle of the picture,
+	   which left a control floating over the film forever. Now it leaves,
+	   and muting lives in the bar with everything else. */
 	.freel.has-sound .freel__sound {
+		opacity: 0;
+		transform: translateX(-50%) translateY(6px) scale(0.92);
+		pointer-events: none;
 		animation: none;
-		padding: 0.42rem;
-		color: #fff;
-		background: rgba(12, 10, 24, 0.6);
-		border: 1px solid rgba(255, 255, 255, 0.18);
-		-webkit-backdrop-filter: blur(10px);
-		backdrop-filter: blur(10px);
+		visibility: hidden;
+		transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+			visibility 0s linear 0.35s;
 	}
-	.freel.has-sound .freel__sound-t { display: none; }
 	.freel__i-on { display: none; }
 	.freel.has-sound .freel__i-on { display: block; }
 	.freel.has-sound .freel__i-off { display: none; }
+	/* the in-bar volume button is the mirror image: absent until there is
+	   sound to turn off */
+	.freel__btn--vol { display: none; }
+	.freel.has-sound .freel__btn--vol { display: grid; }
+	.freel.has-sound .freel__btn--vol .freel__i-off { display: none; }
+	.freel.has-sound .freel__btn--vol .freel__i-on { display: block; }
 
 	.freel__bar {
 		position: absolute;
@@ -440,15 +549,106 @@ const chips = [
 		transition: background 0.2s ease, transform 0.2s ease;
 	}
 	.freel__btn:hover { background: rgba(255, 255, 255, 0.2); transform: scale(1.06); }
+	.freel__btn:active { transform: scale(0.94); }
 	.freel__i-play { display: none; }
 	.freel.is-paused .freel__i-play { display: block; }
 	.freel.is-paused .freel__i-pause { display: none; }
+
+	/* the two skips sit quieter than play, so the eye still finds play first */
+	.freel__btn--skip {
+		width: 28px;
+		height: 28px;
+		background: transparent;
+		color: rgba(255, 255, 255, 0.7);
+	}
+	.freel__btn--skip:hover { background: rgba(255, 255, 255, 0.14); color: #fff; }
+	/* a short pulse of the world's colour confirms the jump landed */
+	.freel__btn--skip.is-hit {
+		animation: freel-hit 0.45s ease-out;
+	}
+	@keyframes freel-hit {
+		0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--fr-a, #8b5cf6) 70%, transparent); }
+		100% { box-shadow: 0 0 0 12px transparent; }
+	}
+	.freel__btn--vol { width: 28px; height: 28px; background: transparent; color: rgba(255, 255, 255, 0.72); }
+	.freel__btn--vol:hover { background: rgba(255, 255, 255, 0.14); color: #fff; }
+
 	.freel__len {
 		font-family: ui-monospace, monospace;
-		font-size: 0.58rem;
-		color: rgba(255, 255, 255, 0.45);
+		font-size: 0.7rem;
+		font-variant-numeric: tabular-nums;
+		letter-spacing: -0.02em;
+		color: rgba(255, 255, 255, 0.62);
+		white-space: nowrap;
 		flex: none;
 	}
+	.freel__buf {
+		position: absolute;
+		inset: 0 auto 0 0;
+		width: 0;
+		border-radius: 9999px;
+		background: rgba(255, 255, 255, 0.16);
+		transition: width 0.4s linear;
+	}
+
+	/* ── the end card ───────────────────────────────────────────────
+	   For a film that must not be followed by anything: we stop the
+	   player ourselves on the last frame and put our own card over it,
+	   so no suggestion grid is ever drawn. */
+	.freel__end {
+		position: absolute;
+		z-index: 8;
+		inset: 0;
+		display: grid;
+		place-content: center;
+		justify-items: center;
+		gap: 0.55rem;
+		padding: 1.2rem;
+		text-align: center;
+		background: radial-gradient(120% 100% at 50% 40%, rgba(24, 18, 46, 0.86), rgba(9, 7, 20, 0.96));
+		-webkit-backdrop-filter: blur(6px);
+		backdrop-filter: blur(6px);
+		opacity: 0;
+		visibility: hidden;
+		transition: opacity 0.4s ease, visibility 0s linear 0.4s;
+	}
+	.freel.is-ended .freel__end {
+		opacity: 1;
+		visibility: visible;
+		transition: opacity 0.4s ease, visibility 0s;
+	}
+	.freel.is-ended .freel__bar,
+	.freel.is-ended .freel__sound,
+	.freel.is-ended .freel__top { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+	.freel__end-ic {
+		display: grid;
+		place-items: center;
+		width: 54px;
+		height: 54px;
+		border-radius: 9999px;
+		color: #fff;
+		background: linear-gradient(140deg, var(--fr-a), var(--fr-b));
+		box-shadow: 0 18px 38px -18px rgba(0, 0, 0, 0.9);
+	}
+	.freel__end-t {
+		margin: 0;
+		font-size: 1rem;
+		font-weight: 800;
+		color: #fff;
+	}
+	.freel__end-go {
+		padding: 0.5rem 1.1rem;
+		border-radius: 9999px;
+		font: inherit;
+		font-size: 0.82rem;
+		font-weight: 800;
+		color: #14101f;
+		background: #fff;
+		border: 0;
+		cursor: pointer;
+		transition: transform 0.2s ease, box-shadow 0.2s ease;
+	}
+	.freel__end-go:hover { transform: translateY(-2px); box-shadow: 0 14px 28px -14px rgba(0, 0, 0, 0.8); }
 
 	.freel__track {
 		position: relative;
@@ -581,7 +781,17 @@ const chips = [
 		0% { stroke-dashoffset: 116; }
 		45%, 100% { stroke-dashoffset: 0; }
 	}
-	.freel__arrow-head { stroke-width: 3; }
+	/* The head waits for the stroke to reach it. It used to sit there fully
+	   drawn while the line redrew itself every 2.6s, which read as a stray
+	   chevron floating in the middle of the hero. */
+	.freel__arrow-head {
+		stroke-width: 3;
+		animation: freel-ink-head 2.6s ease-in-out infinite;
+	}
+	@keyframes freel-ink-head {
+		0%, 28% { opacity: 0; }
+		45%, 100% { opacity: 1; }
+	}
 
 	/* the fan and the furniture are a wide-screen luxury */
 	@media (min-width: 1024px) {

@@ -83,8 +83,8 @@ const sheetProjects = projects.filter(isSheet);
 				}
 				<span class="cf-roller" aria-hidden="true"><i></i></span>
 				<figure class="cf-screen" data-fa-tilt="3">
-					<img class="cf-slide is-on" id="cp-show-a" src={slides[0].img} alt={slides[0].name} />
-					<img class="cf-slide" id="cp-show-b" src={slides[1]?.img} alt="" aria-hidden="true" />
+					<img class="cf-slide is-on" id="cp-show-a" src={slides[0].img} alt={slides[0].name} / loading="lazy" decoding="async">
+					<img class="cf-slide" id="cp-show-b" src={slides[1]?.img} alt="" aria-hidden="true" / loading="lazy" decoding="async">
 					<span class="cf-flash" aria-hidden="true"></span>
 					<span class="cf-count" id="cp-show-count">Slide 1 / {slides.length}</span>
 				</figure>
@@ -472,7 +472,7 @@ const sheetProjects = projects.filter(isSheet);
 		.cf-lab--full { display: none; }
 		.cf-lab--short { display: block; }
 		.cf-stats span {
-			font-size: clamp(0.6rem, 2.9vw, 0.76rem);
+			font-size: clamp(0.7rem, 2.9vw, 0.76rem);
 			line-height: 1.2;
 			letter-spacing: 0.02em;
 			white-space: nowrap;
@@ -831,7 +831,7 @@ const sheetProjects = projects.filter(isSheet);
 		display: inline-flex;
 		align-items: center;
 		gap: 0.3rem;
-		font-size: 0.66rem;
+		font-size: 0.7rem;
 		font-weight: 800;
 		letter-spacing: 0.06em;
 		text-transform: uppercase;

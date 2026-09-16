@@ -5,6 +5,12 @@ export type ProjectSector = 'agri' | 'health' | 'property' | 'media' | 'commerce
 export interface MediaSlot {
 	kind: 'image' | 'video';
 	src?: string; // when present, a real asset; otherwise a placeholder slot
+	/**
+	 * A YouTube id instead of a hosted file. It plays inside our own player,
+	 * which stops dead on its last frame, so nothing of YouTube's is ever
+	 * offered after a client's film.
+	 */
+	youtubeId?: string;
 	label: string;
 	caption?: string;
 }
@@ -473,6 +479,7 @@ export const projects: Project[] = [
 				{ stat: 'Buy · Lease · Rent', label: 'three ways to transact, one flow' },
 			],
 			gallery: [
+				{ kind: 'video', youtubeId: 'UAdl-wRVoQ0', label: 'The film', caption: 'Brixmarket, in motion.' },
 				{ kind: 'image', src: '/images/portfolio/brix%20marketplace.jpg', label: 'The marketplace', caption: 'Search first: type, location and price, before anything else.' },
 				{ kind: 'image', src: '/projects/brixmarket--grid-1.jpg', label: 'Listings', caption: 'Every property photographed and priced, on web and on the phone.' },
 				{ kind: 'image', src: '/projects/brixmarket--grid-2-2.jpg', label: 'The app', caption: 'The same catalogue in the pocket of the person actually house-hunting.' },

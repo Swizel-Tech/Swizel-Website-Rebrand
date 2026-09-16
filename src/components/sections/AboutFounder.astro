@@ -490,7 +490,7 @@ const values = [
 			</button>
 			<div class="fa-modal-body">
 				<div class="fa-modal-side">
-					<div class="fa-modal-photo"><img id="fa-modal-photo" alt="" /></div>
+					<div class="fa-modal-photo"><img id="fa-modal-photo" alt="" / loading="lazy" decoding="async"></div>
 					<h3 class="fa-modal-name" id="fa-modal-name"></h3>
 					<p class="fa-modal-role" id="fa-modal-role"></p>
 					<a class="fa-modal-linkedin" id="fa-modal-linkedin" href="#" target="_blank" rel="noopener noreferrer" hidden>
@@ -847,9 +847,15 @@ const values = [
 	/* ── A · opening ── */
 	.fa-open {
 		display: grid;
-		grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-		gap: clamp(2rem, 4vw, 3.5rem);
+		/* The briefing is ten minutes of the crew talking and it is the whole
+		   point of this half of the hero, so the tablet gets the larger share
+		   of the row rather than the copy. */
+		grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
+		gap: clamp(1.6rem, 3.2vw, 3rem);
 		align-items: center;
+	}
+	@media (min-width: 1500px) {
+		.fa-open { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); }
 	}
 	/* stats: ONE line, divided, numbers pop on hover */
 	.fa-stats {
@@ -1113,7 +1119,7 @@ const values = [
 	}
 	/* the year is already alongside; inside the card it is a quiet label */
 	.fa-stop-tag {
-		font-size: 0.66rem;
+		font-size: 0.7rem;
 		font-weight: 800;
 		letter-spacing: 0.16em;
 		text-transform: uppercase;
@@ -1433,7 +1439,7 @@ const values = [
 	}
 	.fa-modal-exp strong { display: block; font-size: 0.92rem; font-weight: 800; }
 	.fa-modal-exp em { display: block; font-style: normal; font-size: 0.82rem; color: rgba(241, 237, 251, 0.6); margin-top: 0.1rem; }
-	.fa-stamp--sm { font-size: 0.62rem; padding: 0.25rem 0.6rem; transform: none; }
+	.fa-stamp--sm { font-size: 0.7rem; padding: 0.25rem 0.6rem; transform: none; }
 	.fa-h--sm { font-size: clamp(1.3rem, 2.6vw, 1.7rem); }
 
 	/* ── kinetic marquee under the hero ── */
@@ -1514,7 +1520,7 @@ const values = [
 		border-radius: 9999px;
 		border: 1px solid color-mix(in srgb, var(--fa-acc) 45%, transparent);
 		background: color-mix(in srgb, var(--fa-acc) 14%, transparent);
-		font-size: 0.66rem;
+		font-size: 0.7rem;
 		font-weight: 800;
 		letter-spacing: 0.2em;
 		text-transform: uppercase;
@@ -1939,7 +1945,7 @@ const values = [
 		border-radius: 9999px;
 		border: 1px solid color-mix(in srgb, var(--fa-acc) 26%, transparent);
 		background: color-mix(in srgb, var(--fa-acc) 9%, transparent);
-		font-size: 0.62rem;
+		font-size: 0.7rem;
 		font-weight: 800;
 		letter-spacing: 0.1em;
 		text-transform: uppercase;
@@ -2289,8 +2295,8 @@ const values = [
 		/* stats stay on ONE line on mobile too — tighter type */
 		.fa-stats li { padding: 0.1rem 0.55rem; }
 		.fa-stats strong { font-size: 1.15rem; }
-		.fa-stats span { font-size: 0.62rem; }
-		.fa-chip { font-size: 0.68rem; padding: 0.35rem 0.65rem; }
+		.fa-stats span { font-size: 0.7rem; }
+		.fa-chip { font-size: 0.7rem; padding: 0.35rem 0.65rem; }
 		/* phones: explicit, non-conflicting corners for every chip (the
 		   desktop rules set the opposite offsets, so reset them here) */
 		.fa-chip--a { top: -0.9rem; bottom: auto; left: 0.3rem; right: auto; }

@@ -27,7 +27,7 @@ const crew = [
 		The people who launch with you
 	</span>
 
-	<div class="bteam__rail" role="list">
+	<div class="bteam__rail" role="list" data-bteam>
 		{
 			crew.map((c, i) => (
 				<figure
@@ -35,6 +35,8 @@ const crew = [
 					role="listitem"
 					style={`--r:${c.r}; --i:${i}`}
 					tabindex="0"
+					data-bteam-card={i}
+					aria-label={`${c.name} — ${c.role}`}
 				>
 					<span class="bteam__tape" aria-hidden="true" />
 					<span class="bteam__pic">
@@ -42,14 +44,26 @@ const crew = [
 						<span class="bteam__sheen" aria-hidden="true" />
 						<span class="bteam__no">{String(i + 1).padStart(2, '0')}</span>
 					</span>
-					<figcaption class="bteam__cap">
-						<b>{c.name}</b>
-						<em>{c.role}</em>
-					</figcaption>
 				</figure>
 			))
 		}
 	</div>
+
+	<!-- One caption for the whole fan, under it, where nothing can cover it.
+	     The prints overlap by design, so a name printed on each one was always
+	     going to be cut in half by the print in front. This names whichever
+	     one is lifted, walks the crew on its own, and hands over the moment
+	     you point at a print. -->
+	<p class="bteam__now" data-bteam-now aria-live="polite">
+		{
+			crew.map((c, i) => (
+				<span class:list={['bteam__now-i', { 'is-on': i === 0 }]} data-bteam-now-i={i}>
+					<b>{c.name}</b>
+					<em>{c.role}</em>
+				</span>
+			))
+		}
+	</p>
 
 	<a href="/about#team" class="bteam__go">
 		Meet the whole crew
@@ -70,7 +84,7 @@ const crew = [
 		display: inline-flex;
 		align-items: center;
 		gap: 0.4rem;
-		font-size: 0.64rem;
+		font-size: 0.7rem;
 		font-weight: 800;
 		letter-spacing: 0.16em;
 		text-transform: uppercase;
@@ -81,7 +95,10 @@ const crew = [
 	.bteam__rail {
 		display: flex;
 		align-items: flex-end;
-		padding-top: 0.55rem;
+		/* headroom for the lifted print: it grows 16% out of its own bottom
+		   edge, and without this it climbed over the line above it */
+		padding-top: 1.9rem;
+		margin-top: -0.6rem;
 	}
 	.bteam__rail > * + * { margin-left: calc(var(--bt-lap) * -1); }
 
@@ -172,7 +189,7 @@ const crew = [
 		right: 3px;
 		bottom: 2px;
 		font-family: ui-monospace, monospace;
-		font-size: 0.48rem;
+		font-size: 0.7rem;
 		font-weight: 800;
 		letter-spacing: 0.1em;
 		color: #fff;
@@ -180,33 +197,48 @@ const crew = [
 		opacity: 0.85;
 	}
 
-	/* the caption only appears for the one you pick up */
-	.bteam__cap {
+	/* the single caption under the fan: one line, never clipped, and it
+	   crossfades from one name to the next so the strip is never still */
+	.bteam__now {
+		position: relative;
 		display: grid;
-		gap: 0.02rem;
-		padding: 0.22rem 0.15rem 0.3rem;
-		text-align: center;
-		color: #2b1f52;
+		min-height: 2.35rem;
+		margin: 0.5rem 0 0;
+		padding: 0;
 	}
-	.bteam__cap b {
-		display: block;
-		font-size: 0.5rem;
+	.bteam__now-i {
+		grid-area: 1 / 1;
+		display: grid;
+		gap: 0.05rem;
+		opacity: 0;
+		transform: translateY(4px);
+		transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+		pointer-events: none;
+	}
+	.bteam__now-i.is-on { opacity: 1; transform: none; }
+	.bteam__now-i b {
+		font-size: 0.82rem;
 		font-weight: 800;
-		letter-spacing: 0.04em;
+		letter-spacing: 0.01em;
 		line-height: 1.15;
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
+		color: var(--bt-name, #f3efff);
 	}
-	.bteam__cap em {
-		display: none;
+	.bteam__now-i em {
 		font-style: normal;
-		font-size: 0.44rem;
-		line-height: 1.2;
-		opacity: 0.6;
+		font-size: 0.74rem;
+		line-height: 1.25;
+		color: var(--bt-role, rgba(237, 233, 251, 0.6));
 	}
-	.bteam__card:hover .bteam__cap em,
-	.bteam__card:focus-visible .bteam__cap em { display: block; }
+	/* the lifted print reads as lifted, whether you hovered it or it came
+	   round on its own */
+	.bteam__card.is-up {
+		z-index: 20;
+		transform: rotate(0deg) translateY(-9px) scale(1.16);
+		box-shadow:
+			0 1px 0 rgba(255, 255, 255, 0.85) inset,
+			0 34px 60px -26px rgba(0, 0, 0, 0.9),
+			0 0 0 2px color-mix(in srgb, var(--view-accent, #8b5cf6) 45%, transparent);
+	}
 
 	.bteam__go {
 		display: inline-flex;
@@ -226,13 +258,19 @@ const crew = [
 	}
 	@media (max-width: 420px) {
 		.bteam { --bt-w: clamp(64px, 19vw, 84px); --bt-lap: 14px; }
-		.bteam__k { font-size: 0.58rem; letter-spacing: 0.12em; }
+		.bteam__k { font-size: 0.7rem; letter-spacing: 0.12em; }
 	}
 	@media (prefers-reduced-motion: reduce) {
 		.bteam__card, .bteam__sheen { transition: none !important; animation: none !important; }
 	}
 
 	:global(html:not(.dark)) .bteam__k { color: rgba(29, 20, 48, 0.6); }
+	/* daylight: the caption sits on the page, not on a print, so it needs the
+	   page's ink rather than the dark palette's */
+	:global(html:not(.dark)) .bteam {
+		--bt-name: #1d1430;
+		--bt-role: rgba(29, 20, 48, 0.62);
+	}
 	:global(html:not(.dark)) .bteam__card {
 		box-shadow:
 			0 1px 0 rgba(255, 255, 255, 0.9) inset,

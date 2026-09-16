@@ -4,6 +4,7 @@
 // a gallery with room for pics + video, the results, a quote, and a clear
 // "this is just the tip" hand-off. Reuses initBoardroomBody reveals/counters.
 import { Icon } from 'astro-icon/components';
+import CaseFilm from '../CaseFilm.astro';
 import type { Project } from '../../data/projects';
 
 interface Props {
@@ -15,7 +16,7 @@ const cs = p.caseStudy!;
 const next = others[0];
 // gallery: one big video on the left, the images as a grid on the right
 // only real media makes the gallery; an empty slot is simply not shown
-const shots = cs.gallery.filter((g) => g.src);
+const shots = cs.gallery.filter((g) => g.src || g.youtubeId);
 const galVideo = shots.find((g) => g.kind === 'video');
 const galImages = shots.filter((g) => g.kind !== 'video');
 const galGrid = galImages;
@@ -122,6 +123,14 @@ const cur = sectorCursor[p.sector] ?? 'repo';
 	{shots.length > 0 && (
 	<div class="cs-gallery-split">
 		{galVideo && (
+			galVideo.youtubeId ? (
+				<CaseFilm
+					youtubeId={galVideo.youtubeId}
+					label={galVideo.label}
+					caption={galVideo.caption}
+					rev="bd-reveal"
+				/>
+			) : (
 			<figure class="cs-gvideo bd-reveal" data-cursor="play">
 				<span class="cs-gvideo-frame">
 					<span class="cs-gslot-sheen" aria-hidden="true"></span>
@@ -135,6 +144,7 @@ const cur = sectorCursor[p.sector] ?? 'repo';
 				</span>
 				<figcaption><strong>{galVideo.label}</strong>{galVideo.caption && <em> · {galVideo.caption}</em>}</figcaption>
 			</figure>
+			)
 		)}
 		<div class:list={['cs-gimgs', { 'cs-gimgs--solo': !galVideo }]}>
 			{galGrid.map((g) => (
@@ -335,7 +345,7 @@ const cur = sectorCursor[p.sector] ?? 'repo';
 	@media (max-width: 640px) { .cs-meta { grid-template-columns: 1fr 1fr; } }
 	.cs-meta li { display: flex; flex-direction: column; gap: 0.25rem; padding: 1rem 1.1rem; background: color-mix(in srgb, var(--bd-ink) 4%, #0b0d16); }
 	:global(html:not(.dark)) .cs-meta li { background: rgba(255, 255, 255, 0.7); }
-	.cs-meta span { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bd-muted); }
+	.cs-meta span { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bd-muted); }
 	.cs-meta strong { font-size: 0.92rem; font-weight: 600; line-height: 1.3; }
 
 	/* ── Intro ── */
@@ -400,7 +410,7 @@ const cur = sectorCursor[p.sector] ?? 'repo';
 	.cs-gslot { flex-direction: column; gap: 0.4rem; border-style: dashed; border-color: color-mix(in srgb, var(--c) 38%, transparent); background: radial-gradient(360px 180px at 50% 0%, color-mix(in srgb, var(--c) 16%, transparent), transparent 65%), linear-gradient(180deg, rgba(18, 22, 42, 0.6), rgba(5, 6, 13, 0.8)); color: var(--bd-muted); }
 	:global(html:not(.dark)) .cs-gslot { background: radial-gradient(360px 180px at 50% 0%, color-mix(in srgb, var(--c) 14%, transparent), transparent 65%), linear-gradient(180deg, rgba(255, 255, 255, 0.74), rgba(255, 255, 255, 0.5)); }
 	.cs-gslot-ic { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 9999px; color: #fff; background: linear-gradient(180deg, color-mix(in srgb, var(--c) 90%, #fff), var(--c)); box-shadow: 0 14px 30px -12px color-mix(in srgb, var(--c) 70%, transparent); }
-	.cs-gslot-label { font-size: 0.66rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+	.cs-gslot-label { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
 	.cs-gslot-sheen { position: absolute; inset: 0; background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,0.06) 50%, transparent 64%); transform: translateX(-100%); animation: cs-sheen 6s ease-in-out infinite; }
 	@keyframes cs-sheen { 0%,55%{ transform: translateX(-100%); } 85%,100%{ transform: translateX(100%); } }
 	.cs-gitem figcaption, .cs-gvideo figcaption { margin-top: 0.6rem; font-size: 0.84rem; color: var(--bd-muted); }

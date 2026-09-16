@@ -37,12 +37,37 @@ const catColor: Record<string, string> = {
 const c = catColor[category] ?? '#28a6ec';
 
 const shareUrl = new URL(`/blog/${post.slug}`, Astro.site ?? 'https://swizel.co').href;
+// Google reads this to build the article rich result: headline, dates,
+// author, image and publisher, all pointing at the same organisation record
+// BaseHead already emits.
+const articleSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'BlogPosting',
+	headline: title,
+	description,
+	image: heroImage ? new URL(heroImage, Astro.site ?? 'https://swizel.co').href : undefined,
+	datePublished: new Date(pubDate).toISOString(),
+	dateModified: new Date(updatedDate ?? pubDate).toISOString(),
+	author: { '@type': 'Person', name: author || 'Swizel Team' },
+	publisher: { '@id': 'https://swizel.co/#organization' },
+	mainEntityOfPage: { '@type': 'WebPage', '@id': shareUrl },
+	articleSection: category,
+	wordCount: post.body?.trim().split(/\s+/).length || undefined,
+	inLanguage: 'en',
+};
+
 const tw = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(shareUrl)}`;
 const li = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
 const wa = `https://wa.me/?text=${encodeURIComponent(title + ' ' + shareUrl)}`;
 ---
 
-<MainLayout title={`${title} | Swizel Technologies Limited`} description={description} image={heroImage}>
+<MainLayout
+	title={`${title} | Swizel Technologies Limited`}
+	description={description}
+	image={heroImage}
+	type="article"
+	schema={articleSchema}
+>
 	<!-- Reading progress -->
 	<div class="br-progress" aria-hidden="true"><span></span></div>
 
@@ -326,7 +351,7 @@ const wa = `https://wa.me/?text=${encodeURIComponent(title + ' ' + shareUrl)}`;
 	.br-rcard-media { position: relative; display: block; aspect-ratio: 16/9; overflow: hidden; }
 	.br-rcard-media img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
 	.br-rcard:hover .br-rcard-media img { transform: scale(1.06); }
-	.br-rcard-cat { position: absolute; top: 0.6rem; left: 0.6rem; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.25rem 0.55rem; border-radius: 9999px; color: #fff; background: color-mix(in srgb, var(--c) 85%, transparent); }
+	.br-rcard-cat { position: absolute; top: 0.6rem; left: 0.6rem; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.25rem 0.55rem; border-radius: 9999px; color: #fff; background: color-mix(in srgb, var(--c) 85%, transparent); }
 	.br-rcard-body { padding: 0.9rem 1rem 1.1rem; display: flex; flex-direction: column; gap: 0.4rem; }
 	.br-rcard-body strong { font-size: 1rem; font-weight: 700; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 	.br-rcard-meta { font-size: 0.78rem; color: var(--bd-muted); }

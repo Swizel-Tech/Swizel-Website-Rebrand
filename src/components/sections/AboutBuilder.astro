@@ -287,7 +287,7 @@ const quotes = [
 			</button>
 			<div class="ba-modal-body">
 				<div class="ba-modal-side">
-					<div class="ba-modal-photo"><img id="fa-modal-photo" alt="" /></div>
+					<div class="ba-modal-photo"><img id="fa-modal-photo" alt="" / loading="lazy" decoding="async"></div>
 					<h3 class="ba-modal-name" id="fa-modal-name"></h3>
 					<p class="ba-modal-role" id="fa-modal-role"></p>
 					<a class="ba-modal-linkedin" id="fa-modal-linkedin" href="#" target="_blank" rel="noopener noreferrer" hidden>
@@ -594,7 +594,7 @@ const quotes = [
 	.ba-pkg p { font-size: 0.88rem; line-height: 1.6; color: var(--bu-muted); margin: 0 0 0.8rem; flex: 1; }
 	.ba-pkg-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; }
 	.ba-pkg-tags i {
-		font-style: normal; font-family: var(--bu-mono); font-size: 0.68rem;
+		font-style: normal; font-family: var(--bu-mono); font-size: 0.7rem;
 		padding: 0.22rem 0.55rem; border-radius: 999px;
 		border: 1px solid color-mix(in srgb, var(--bu-acc) 35%, transparent);
 		color: var(--bu-acc);
@@ -665,7 +665,7 @@ const quotes = [
 	.ba-mate em { display: block; font-style: normal; font-size: 0.76rem; color: var(--bu-muted); margin-top: 0.12rem; }
 	.ba-mate-view {
 		display: inline-flex; align-items: center; gap: 0.3rem; margin-top: 0.55rem;
-		font-family: var(--bu-mono); font-size: 0.68rem; color: var(--bu-acc);
+		font-family: var(--bu-mono); font-size: 0.7rem; color: var(--bu-acc);
 		opacity: 0.55; transition: opacity 0.25s ease, gap 0.25s ease;
 	}
 	.ba-mate:hover .ba-mate-view { opacity: 1; gap: 0.5rem; }
@@ -789,7 +789,7 @@ const quotes = [
 	.ba-pr-who em { display: block; font-style: normal; font-size: 0.72rem; color: var(--bu-muted); }
 	.ba-pr-badge {
 		display: inline-flex; align-items: center; gap: 0.3rem;
-		font-size: 0.68rem; font-weight: 800; letter-spacing: 0.04em;
+		font-size: 0.7rem; font-weight: 800; letter-spacing: 0.04em;
 		color: #2ee889; border: 1px solid rgba(46, 232, 137, 0.4);
 		background: rgba(46, 232, 137, 0.1); border-radius: 999px; padding: 0.22rem 0.6rem;
 	}
@@ -851,7 +851,7 @@ const quotes = [
 		.ba-pkgs { grid-template-columns: minmax(0, 1fr); }
 		.ba-stats li { padding: 0.1rem 0.5rem; }
 		.ba-stats strong { font-size: 1.05rem; }
-		.ba-stats span { font-size: 0.58rem; }
+		.ba-stats span { font-size: 0.7rem; }
 		/* phones: the magazine stacks — cover on top (full width, shorter crop),
 		   copy + editions beneath */
 		.ba-brev { grid-template-columns: minmax(0, 1fr); }

@@ -37,13 +37,73 @@ const deployedHost = process.env.VERCEL_PROJECT_PRODUCTION_URL;
 const shareBase = deployedHost ? `https://${deployedHost}` : Astro.site;
 const socialImageURL = new URL(image, shareBase);
 
+// Breadcrumbs, derived from the path so every page gets a trail without
+// each one having to declare it.
+const segments = Astro.url.pathname.split('/').filter(Boolean);
+const titleCase = (s: string) =>
+	s.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+const breadcrumbSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'BreadcrumbList',
+	itemListElement: [
+		{ '@type': 'ListItem', position: 1, name: 'Home', item: 'https://swizel.co/' },
+		...segments.map((seg, i) => ({
+			'@type': 'ListItem',
+			position: i + 2,
+			name: titleCase(seg),
+			item: `https://swizel.co/${segments.slice(0, i + 1).join('/')}/`,
+		})),
+	],
+};
+
+const websiteSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'WebSite',
+	name: SITE_TITLE,
+	url: 'https://swizel.co',
+	inLanguage: 'en',
+	publisher: { '@id': 'https://swizel.co/#organization' },
+};
+
 // Organization structured data for rich results in Google.
 const organizationSchema = {
 	'@context': 'https://schema.org',
 	'@type': 'Organization',
+	'@id': 'https://swizel.co/#organization',
 	name: 'Swizel Technologies Limited',
+	legalName: 'Swizel Technologies Limited',
+	alternateName: 'Swizel',
 	url: 'https://swizel.co',
-	logo: 'https://swizel.co/swizel.svg',
+	logo: {
+		'@type': 'ImageObject',
+		url: 'https://swizel.co/swizel.svg',
+		caption: 'Swizel Technologies Limited',
+	},
+	image: 'https://swizel.co/images/og-default.jpg',
+	foundingDate: '2019',
+	areaServed: 'Worldwide',
+	address: {
+		'@type': 'PostalAddress',
+		addressLocality: 'Abuja',
+		addressRegion: 'FCT',
+		addressCountry: 'NG',
+	},
+	contactPoint: {
+		'@type': 'ContactPoint',
+		telephone: '+234-810-020-4570',
+		contactType: 'sales',
+		email: 'swizelhq@swizel.co',
+		areaServed: 'Worldwide',
+		availableLanguage: ['en'],
+	},
+	knowsAbout: [
+		'Web development',
+		'Mobile app development',
+		'Product design',
+		'Digital marketing',
+		'Software maintenance',
+		'AI automation',
+	],
 	description:
 		'Swizel Technologies Limited helps ambitious businesses anywhere turn bold ideas into products people love. We design, build, market and maintain software, from launch to legacy.',
 	email: 'swizelhq@swizel.co',
@@ -64,7 +124,9 @@ const organizationSchema = {
 <link rel="manifest" href="/manifest.webmanifest" />
 <meta name="generator" content={Astro.generator} />
 <meta name="theme-color" content="#28293E" />
-<meta name="robots" content="index, follow" />
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+<meta name="author" content="Swizel Technologies Limited" />
+<link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
 
 <!-- Apply saved theme + view before paint to avoid a flash -->
 <script is:inline>
@@ -78,10 +140,25 @@ const organizationSchema = {
 				document.documentElement.classList.add('dark');
 			}
 			// Raise the curtain before the first paint. It is released by
-			// initBootCurtain once fonts and images have settled, or by a
-			// hard 1.6s fallback — so a JS failure can never leave the site
-			// behind a blank screen.
+			// initBootCurtain once fonts and images have settled.
 			document.documentElement.classList.add('swz-booting');
+
+			// The ceiling lives here, inline, rather than in the page bundle.
+			// The bundle only runs once the whole document has parsed, so on a
+			// thin connection its timer was not even armed until the visitor
+			// had been staring at the curtain for fifteen seconds. Armed here,
+			// the clock starts the moment the head is read, and the curtain
+			// lifts on time whatever the network is doing behind it.
+			var swzRoot = document.documentElement;
+			window.__swzRelease = function () {
+				if (!swzRoot.classList.contains('swz-booting')) return;
+				swzRoot.classList.remove('swz-booting');
+				swzRoot.classList.add('swz-booted');
+				window.setTimeout(function () {
+					swzRoot.classList.remove('swz-booted');
+				}, 700);
+			};
+			window.setTimeout(window.__swzRelease, 2600);
 
 			var view = localStorage.getItem('swizel-view');
 			// the Legacy world was retired — send old visitors to the default view
@@ -113,9 +190,16 @@ const organizationSchema = {
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
 
-<!-- Performance: connect early to font origins -->
+<!-- Fonts. These used to be an @import at the top of global.css, which
+     chains the request: the browser had to download and parse global.css
+     before it even learned the fonts existed, so the first screen could sit
+     unstyled for a beat on a slow machine. A link here starts both at once. -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+	rel="stylesheet"
+	href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Epilogue:wght@400;500;600;700;800;900&display=swap"
+/>
 
 <!-- Primary Meta Tags -->
 <title>{title}</title>
@@ -123,6 +207,7 @@ const organizationSchema = {
 <meta name="description" content={description} />
 
 <!-- Open Graph / Facebook -->
+<meta property="og:locale" content="en_NG" />
 <meta property="og:type" content={type} />
 <meta property="og:url" content={canonicalURL} />
 <meta property="og:site_name" content={SITE_TITLE} />
@@ -136,6 +221,9 @@ const organizationSchema = {
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:site" content="@swizelhq" />
+<meta property="twitter:creator" content="@swizelhq" />
+<meta property="twitter:image:alt" content={title} />
 <meta property="twitter:url" content={canonicalURL} />
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
@@ -158,17 +246,43 @@ const organizationSchema = {
 	})();
 </script>
 
+<!-- Scroll reveals start at opacity 0 and are turned on by an observer once
+     the page's scripts run. On a slow machine, or if a script throws, that
+     left whole sections blank. This is the backstop: if the page has not
+     reported itself ready within three seconds, everything is shown as-is. -->
+<script is:inline>
+	(function () {
+		try {
+			var r = document.documentElement;
+			window.setTimeout(function () {
+				if (!r.classList.contains('swz-ready')) r.classList.add('swz-show-all');
+			}, 3000);
+		} catch (e) {}
+	})();
+</script>
+
 <!-- Structured data -->
 <script
 	type="application/ld+json"
 	set:html={JSON.stringify(organizationSchema)}
 />
+<script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
 
 <!-- Global CSS -->
 <link rel="stylesheet" href="/styles/global.css" />
 
-<!-- swiper js -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
+<!-- swiper js — every carousel is below the fold, so this loads without
+     blocking the first paint and swaps in when it arrives -->
+<link
+	rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css"
+	media="print"
+	onload="this.media='all'"
+/>
+<noscript
+	><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" /></noscript
+>
 
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-9CH1K4P5C8"></script>
