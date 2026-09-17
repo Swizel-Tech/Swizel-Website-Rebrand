@@ -49,11 +49,31 @@ function setupReel(root: HTMLElement) {
 	const replayBtn = root.querySelector<HTMLButtonElement>('[data-freel-replay]');
 	if (!mount) return;
 
-	// maxresdefault does not exist for every upload
-	poster?.addEventListener('error', () => {
-		const fb = poster.dataset.fallback;
-		if (fb && poster.src !== fb) poster.src = fb;
-	});
+	// The cover walks down its fallback list until one loads. It also has to
+	// check the current image on the way in: the poster is lazy and may have
+	// already failed before this module ran, in which case no error event is
+	// ever coming and the frame would sit empty.
+	if (poster) {
+		const chain = (poster.dataset.fallback || '').split('|').filter(Boolean);
+		let step = 0;
+		const nextSource = () => {
+			while (step < chain.length) {
+				const url = chain[step++]!;
+				if (url && poster.getAttribute('src') !== url) {
+					poster.src = url;
+					return true;
+				}
+			}
+			return false;
+		};
+		poster.addEventListener('error', () => {
+			if (!nextSource()) root.classList.add('is-coverless');
+		});
+		// already decided, and decided badly
+		if (poster.complete && poster.naturalWidth === 0) {
+			if (!nextSource()) root.classList.add('is-coverless');
+		}
+	}
 
 	let player: Reel | null = null;
 	let raf = 0;
@@ -135,7 +155,10 @@ function setupReel(root: HTMLElement) {
 						player = e.target;
 						player.mute();
 						player.playVideo();
-						root.classList.add('is-live');
+						// `is-live` (which lifts the cover) is set on the first
+						// PLAYING state, not here: at this point the player exists
+						// but no frame has arrived, and dropping the cover now
+						// shows a black rectangle for as long as it buffers.
 						setPaused(false);
 						setSound(false);
 						cancelAnimationFrame(raf);
@@ -145,6 +168,7 @@ function setupReel(root: HTMLElement) {
 						// 1 playing, 2 paused, 0 ended
 						if (e.data === 1) {
 							setPaused(false);
+							root.classList.add('is-live');
 							root.classList.remove('is-ended');
 						}
 						if (e.data === 2) setPaused(true);
@@ -165,6 +189,12 @@ function setupReel(root: HTMLElement) {
 			}) as unknown as Reel;
 		});
 	};
+
+	// whatever happens, the cover comes off within a few seconds: a film that
+	// is blocked or refuses to start must not leave a dead still behind
+	window.setTimeout(() => {
+		if (booted) root.classList.add('is-live');
+	}, 6000);
 
 	// nothing from YouTube until the frame is nearly on screen
 	if ('IntersectionObserver' in window) {

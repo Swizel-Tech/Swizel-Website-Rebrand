@@ -95,7 +95,13 @@ const stats = [
 		</div>
 
 		<div class="founder--film" data-tour="reel">
-			<FounderReel videoId={REEL_ID} kicker="Founder’s cut" />
+			<!-- the phone rig keeps its own vertical still: a 16:9 YouTube
+			     thumbnail cropped into a 9:16 handset loses the subject -->
+			<FounderReel
+				videoId={REEL_ID}
+				kicker="Founder’s cut"
+				still="/images/founder/reel-still.jpg"
+			/>
 		</div>
 	</div>
 </Section>

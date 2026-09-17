@@ -19,6 +19,31 @@ const fmtDate = (d: Date) => new Date(d).toLocaleDateString('en-US', { month: 's
 const catColor: Record<string, string> = { EdTech: '#2bb3c0', Fintech: '#6366f1', Marketing: '#ec4899', Technology: '#8b5cf6', Insights: '#a78bfa' };
 const col = (c: string) => catColor[c] ?? '#8b5cf6';
 
+// The grid is three across. Four posts leaves two holes in the second row,
+// and a wall with holes in it reads as a site that ran out of things to say.
+// The campus blog finishes its row with pinned notes that are actually
+// useful; these are the founder world's version of the same idea.
+const fillers = [
+	{
+		icon: 'mdi:lightbulb-on-outline',
+		kick: 'Open brief',
+		title: 'What should we write next?',
+		desc: 'Something you keep searching for and never finding a straight answer to? Tell us and we will take it on.',
+		cta: 'Send us the question',
+		href: '/contact',
+		c: '#a78bfa',
+	},
+	{
+		icon: 'mdi:book-open-page-variant-outline',
+		kick: 'The long version',
+		title: 'Take The Brevarium.',
+		desc: 'Our magazine, free: featured builds, the crew behind them, and the thinking underneath. Yours to keep.',
+		cta: 'Download the latest',
+		href: '/brevarium/the-brevarium-latest.pdf',
+		c: '#ec4899',
+	},
+];
+
 // CSS-only category filter (fbl-* ids so they never clash with boardroom's)
 const filterCss = cats
 	.map((c) => {
@@ -139,6 +164,35 @@ const filterCss = cats
 								</a>
 							</article>
 						))
+					}
+					{
+						fillers
+							.slice(0, (3 - (rest.length % 3)) % 3)
+							.map((f, i) => (
+								<article
+									class="fb-card fb-card--ask fd-rev"
+									style={`--c:${f.c}; --i:${(rest.length + i) % 3}`}
+								>
+									<a
+										href={f.href}
+										class="fb-card-link fb-ask"
+										data-cursor="repo"
+										data-fa-tilt="8"
+									>
+										<span class="fa-val-glare" aria-hidden="true" />
+										<span class="fb-ask-ic">
+											<Icon width={22} name={f.icon} />
+										</span>
+										<span class="fb-ask-kick">{f.kick}</span>
+										<strong class="fb-ask-title">{f.title}</strong>
+										<span class="fb-ask-desc">{f.desc}</span>
+										<span class="fb-ask-cta">
+											{f.cta}
+											<Icon width={15} name="mdi:arrow-right" />
+										</span>
+									</a>
+								</article>
+							))
 					}
 				</div>
 			</form>
@@ -345,6 +399,68 @@ const filterCss = cats
 	}
 	#fbl-all:checked ~ .fb-chips [for='fbl-all'] span { color: #fff; }
 	#fbl-all:checked ~ .fb-grid .fb-card { display: block; }
+	/* the row-finishers belong to no category, so no filter may hide them */
+	.fb-grid .fb-card--ask { display: block !important; }
+
+	/* ── the row-finishers ──────────────────────────────────────────
+	   Same card shell as a post so the row reads as one row, but no
+	   photograph: an icon, a short ask, and somewhere to go. */
+	/* the shell rule below sets display:block on every card link, so this one
+	   has to be more specific than a bare class or the stack collapses and
+	   the kicker ends up sitting on the same line as the title */
+	.fb-card--ask .fb-card-link.fb-ask {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.5rem;
+		padding: clamp(1.1rem, 2.2vw, 1.5rem);
+		text-decoration: none;
+		background:
+			radial-gradient(120% 90% at 100% 0%, color-mix(in srgb, var(--c) 16%, transparent), transparent 62%),
+			var(--fa-card);
+		border-style: dashed;
+	}
+	.fb-ask-ic {
+		display: grid;
+		place-items: center;
+		width: 44px;
+		height: 44px;
+		border-radius: 0.8rem;
+		color: #fff;
+		background: linear-gradient(140deg, var(--c), color-mix(in srgb, var(--c) 50%, #ec4899));
+		box-shadow: 0 16px 30px -16px color-mix(in srgb, var(--c) 85%, transparent);
+	}
+	.fb-ask-kick {
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+		color: color-mix(in srgb, var(--c) 78%, var(--fa-ink));
+	}
+	.fb-ask-title {
+		font-size: 1.05rem;
+		font-weight: 800;
+		letter-spacing: -0.015em;
+		line-height: 1.25;
+	}
+	.fb-ask-desc {
+		font-size: 0.88rem;
+		line-height: 1.6;
+		color: var(--fa-muted);
+	}
+	.fb-ask-cta {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		margin-top: auto;
+		padding-top: 0.4rem;
+		font-size: 0.84rem;
+		font-weight: 800;
+		color: color-mix(in srgb, var(--c) 82%, var(--fa-ink));
+	}
+	.fb-card--ask:hover .fb-ask-cta { gap: 0.6rem; }
+	.fb-ask-cta :global(svg) { transition: transform 0.25s ease; }
+	.fb-card--ask:hover .fb-ask-cta :global(svg) { transform: translateX(3px); }
 
 	.fb-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
 	.fb-card { display: block; }

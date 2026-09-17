@@ -17,6 +17,9 @@ export function initValueFan() {
 		const blades = Array.from(fan.querySelectorAll<HTMLElement>('[data-vfan-blade]'));
 		const slots = Array.from(fan.querySelectorAll<HTMLElement>('[data-vfan-slot]'));
 		const dots = Array.from(fan.querySelectorAll<HTMLElement>('[data-vfan-dot]'));
+		const readout = fan.querySelector<HTMLElement>('[data-vfan-at]');
+		const prev = fan.querySelector<HTMLButtonElement>('[data-vfan-prev]');
+		const next = fan.querySelector<HTMLButtonElement>('[data-vfan-next]');
 		if (blades.length < 2 || slots.length !== blades.length) return;
 
 		const total = blades.length;
@@ -35,6 +38,7 @@ export function initValueFan() {
 				s.classList.toggle('is-on', i === at);
 				s.setAttribute('aria-hidden', i === at ? 'false' : 'true');
 			});
+			if (readout) readout.textContent = String(at + 1).padStart(2, '0');
 			dots.forEach((d, i) => {
 				d.setAttribute('aria-selected', i === at ? 'true' : 'false');
 				// restart the drain rather than letting it continue from where
@@ -62,6 +66,14 @@ export function initValueFan() {
 			b.addEventListener('focus', () => take(i, 12000));
 		});
 		dots.forEach((d, i) => d.addEventListener('click', () => take(i, 12000)));
+		// the arrows park the walk for longer: somebody steering wants to read
+		prev?.addEventListener('click', () => take(at - 1, 16000));
+		next?.addEventListener('click', () => take(at + 1, 16000));
+		// and the same from the keyboard once anything in the fan has focus
+		fan.addEventListener('keydown', (e) => {
+			if (e.key === 'ArrowLeft') { e.preventDefault(); take(at - 1, 16000); }
+			if (e.key === 'ArrowRight') { e.preventDefault(); take(at + 1, 16000); }
+		});
 
 		if ('IntersectionObserver' in window) {
 			new IntersectionObserver(

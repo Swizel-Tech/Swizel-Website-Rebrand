@@ -113,8 +113,14 @@ const links = [
 							>
 								<Icon width={15} name="mdi:rewind-10" />
 							</button>
+							<!-- the middle control is the volume: crossed-out speaker
+							     while it is silent, speaker with waves once it is
+							     not, so it says what pressing it does -->
 							<button class="spot__sound" type="button" data-spot-sound aria-pressed="false">
-								<Icon width={15} name="mdi:volume-off" />
+								<span class="spot__snd-ic" aria-hidden="true">
+									<Icon class="spot__snd-i spot__snd-i--off" width={16} height={16} name="mdi:volume-off" />
+									<Icon class="spot__snd-i spot__snd-i--on" width={16} height={16} name="mdi:volume-high" />
+								</span>
 								<span data-spot-sound-t>Tap for sound</span>
 							</button>
 							<button
@@ -632,6 +638,26 @@ const links = [
 	}
 	.spot__sound:hover { transform: translateY(-2px); }
 	.spot__dev--reel.is-loud .spot__sound { background: rgba(255, 255, 255, 0.8); }
+	/* the two states of the speaker, sized in pixels rather than ems: the
+	   compact version on a phone sets font-size to zero to drop the label,
+	   and an em-sized icon vanished with it, leaving a blank white pill */
+	.spot__snd-ic {
+		position: relative;
+		display: grid;
+		place-items: center;
+		width: 18px;
+		height: 18px;
+		flex: none;
+	}
+	.spot__snd-i {
+		grid-area: 1 / 1;
+		width: 16px;
+		height: 16px;
+		transition: opacity 0.2s ease, transform 0.25s ease;
+	}
+	.spot__snd-i--on { opacity: 0; transform: scale(0.6); }
+	.spot__dev--reel.is-loud .spot__snd-i--off { opacity: 0; transform: scale(0.6); }
+	.spot__dev--reel.is-loud .spot__snd-i--on { opacity: 1; transform: none; }
 
 	.spot__cap {
 		display: grid;
@@ -1133,12 +1159,13 @@ const links = [
 		.spot__chip { display: none; }
 		.spot__deck { bottom: 0.5rem; gap: 0.22rem; }
 		.spot__sound {
-			font-size: 0;
 			gap: 0;
 			padding: 0.34rem;
 			border-radius: 9999px;
 		}
 		.spot__sound [data-spot-sound-t] { display: none; }
+		.spot__snd-ic { width: 20px; height: 20px; }
+		.spot__snd-i { width: 18px; height: 18px; }
 		.spot__skip { width: 28px; height: 28px; }
 		/* bolder: the labels are the only words up there, so they can afford
 		   to be read from across the room. The shared row already lines them

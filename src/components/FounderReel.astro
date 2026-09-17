@@ -34,13 +34,31 @@ interface Props {
 const {
 	videoId,
 	kicker = 'Founder’s cut',
-	still = '/images/founder/reel-still.jpg',
+	still,
 	variant = 'rig',
 	note,
 	loop = true,
 	endLabel = 'Watch it again',
 	class: klass = '',
 } = Astro.props;
+
+// The cover. Unless a still is handed in deliberately, this is the film's
+// own thumbnail as it is set on YouTube — not a frame we picked, which is
+// what used to sit here and never matched the upload. maxres does not exist
+// for every video, so the script falls back to hq, and then to our still.
+const poster = still || `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`;
+// A chain, not a single fallback: maxres is not generated for every upload,
+// hq always is, and if neither can be reached at all we still want a picture
+// rather than a hole.
+const posterChain = (
+	still
+		? ['/images/founder/reel-still.jpg']
+		: [
+				`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+				`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
+				'/images/founder/reel-still.jpg',
+			]
+).join('|');
 
 // the two handsets behind the live one carry other moments from the same
 // story — the founder we built for, actually at work
@@ -81,13 +99,15 @@ const chips = [
 			<div class="freel__screen" data-freel-screen>
 				<img
 					class="freel__poster"
-					src={still}
+					src={poster}
 					data-freel-poster
+					data-fallback={posterChain}
 					alt=""
-					width="720"
-					height="1280"
+					width="1280"
+					height="720"
+					loading="lazy"
 					decoding="async"
-				/ loading="lazy">
+				/>
 				<div class="freel__mount" data-freel-mount></div>
 
 				<!-- YouTube never sees the pointer, so it never draws its own chrome -->
@@ -390,8 +410,25 @@ const chips = [
 		border: 0;
 		object-fit: cover;
 	}
-	.freel__poster { transition: opacity 0.5s ease; }
+	/* The cover used to be dismissed the moment the player object existed,
+	   which is before a single frame has arrived — so on anything but a fast
+	   line the visitor watched a black rectangle instead of the thumbnail.
+	   It now holds until the film is genuinely playing. */
+	.freel__poster { transition: opacity 0.45s ease; }
 	.freel.is-live .freel__poster { opacity: 0; }
+	/* a slow pulse while the film is still coming down the wire */
+	.freel:not(.is-live) .freel__poster { animation: freel-wait 2.6s ease-in-out infinite; }
+	/* every cover in the chain failed: show the world's gradient rather than
+	   a broken-image hole */
+	.freel.is-coverless .freel__poster { opacity: 0; }
+	.freel.is-coverless .freel__screen {
+		background:
+			radial-gradient(120% 90% at 50% 40%, color-mix(in srgb, var(--fr-a) 40%, #07060f), #07060f);
+	}
+	@keyframes freel-wait {
+		0%, 100% { filter: brightness(1); }
+		50% { filter: brightness(1.08); }
+	}
 	.freel__mount { position: absolute; inset: 0; }
 
 	.freel__shield {
@@ -834,10 +871,12 @@ const chips = [
 			transform: none;
 			padding: 0.34rem;
 			gap: 0;
-			font-size: 0;
 		}
+		/* the label goes; the font size stays. Zeroing it collapsed the icon
+		   with it, because the icon's box is sized in ems. */
 		.freel--cinema .freel__sound-t { display: none; }
 		.freel--cinema .freel__sound-ic { width: 30px; height: 30px; }
+		.freel--cinema .freel__sound-ic :global(svg) { width: 19px; height: 19px; }
 		.freel--cinema.has-sound .freel__sound { transform: translateY(-6px) scale(0.92); }
 		/* the kicker keeps the left half only, so the two never collide */
 		.freel--cinema .freel__top { right: 3.1rem; }

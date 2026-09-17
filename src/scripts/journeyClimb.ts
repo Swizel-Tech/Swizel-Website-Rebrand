@@ -17,9 +17,39 @@ export function initJourneyClimb() {
 		const cards = Array.from(clb.querySelectorAll<HTMLElement>('[data-clb-card]'));
 		const walker = clb.querySelector<HTMLElement>('[data-clb-walker]');
 		const bar = clb.querySelector<HTMLElement>('[data-clb-bar]');
+		const line = clb.querySelector<SVGGeometryElement>('[data-clb-line]');
+		const clip = clb.querySelector<SVGRectElement>('[data-clb-clip]');
 		if (pins.length < 2 || cards.length !== pins.length) return;
 
-		const total = pins.length;
+		// How far along the route each stop sits, as a fraction of the whole
+		// ridge. The line is only stroked up to the current stop, so the route
+		// draws itself in behind the climber instead of being finished before
+		// the visitor arrives.
+		let total = 0;
+		const reach: number[] = [];
+		try {
+			const pts = (line?.getAttribute('points') || '')
+				.trim()
+				.split(/\s+/)
+				.map((pair) => pair.split(',').map(Number) as [number, number]);
+			let run = 0;
+			reach.push(0);
+			for (let i = 1; i < pts.length; i++) {
+				const [x0, y0] = pts[i - 1]!;
+				const [x1, y1] = pts[i]!;
+				run += Math.hypot(x1 - x0, y1 - y0);
+				reach.push(run);
+			}
+			total = line ? line.getTotalLength() : run;
+			if (run > 0) for (let i = 0; i < reach.length; i++) reach[i] = reach[i]! / run;
+		} catch (e) {
+			/* a browser without getTotalLength keeps the plain line */
+		}
+		if (line && total > 0) {
+			line.style.strokeDasharray = String(total);
+			line.style.strokeDashoffset = String(total);
+		}
+
 		const every = Math.max(0, Number(clb.dataset.every || '5')) * 1000;
 
 		let at = 0;
@@ -40,11 +70,25 @@ export function initJourneyClimb() {
 				walker.style.setProperty('--wx', node.style.getPropertyValue('--x'));
 				walker.style.setProperty('--wy', node.style.getPropertyValue('--y'));
 			}
-			if (bar) bar.style.width = `${((at + 1) / total) * 100}%`;
+			if (bar) bar.style.width = `${((at + 1) / pins.length) * 100}%`;
+
+			// the route, drawn as far as the climb has got
+			const frac = reach[at] ?? at / Math.max(pins.length - 1, 1);
+			if (line && total > 0) {
+				line.style.strokeDashoffset = String(total * (1 - frac));
+			}
+			if (clip) clip.setAttribute('width', String(Math.max(frac, 0.001) * 1000));
+
+			// a short step animation while it is on the move
+			clb.classList.remove('is-walking');
+			void clb.offsetWidth;
+			clb.classList.add('is-walking');
 		};
 
 		const take = (i: number, park = 9000) => {
-			at = ((i % total) + total) % total;
+			const n = pins.length;
+			at = ((i % n) + n) % n;
+			clb.classList.remove('is-resetting');
 			resumeAt = performance.now() + park;
 			last = performance.now();
 			paint();
@@ -72,9 +116,21 @@ export function initJourneyClimb() {
 					return;
 				}
 				if (performance.now() - last >= every) {
-					at = (at + 1) % total;
 					last = performance.now();
-					paint();
+					if (at === pins.length - 1) {
+						// back to the bottom of the hill: hide the marker, reset,
+						// then bring it back, rather than flying it backwards
+						// across the whole ridge
+						clb.classList.add('is-resetting');
+						window.setTimeout(() => {
+							at = 0;
+							paint();
+							window.setTimeout(() => clb.classList.remove('is-resetting'), 60);
+						}, 280);
+					} else {
+						at += 1;
+						paint();
+					}
 				}
 			}, 180);
 		}

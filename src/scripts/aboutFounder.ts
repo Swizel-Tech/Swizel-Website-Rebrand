@@ -141,27 +141,59 @@ function bindFounderMotion(root: HTMLElement) {
 		});
 	}
 
-	// ── the portfolio fan auto-shuffles (top card dives under the deck) ──
+	// ── the portfolio fan turns itself over ─────────────────────────────
+	// It used to twitch: every three seconds the top card flew out and, in
+	// the same frame, every remaining card had its slot number rewritten —
+	// so the whole deck re-animated at once and the hero never sat still.
+	// Now only the card that moved moves. It is re-slotted to the back with
+	// its transition switched off, so it reappears under the deck instead of
+	// sliding across the hero, and the rest glide up one place. It also
+	// stops entirely when it is off screen or the tab is hidden.
 	const fan = root.querySelector<HTMLElement>('.fp-fan');
-	if (fan && !reduce) {
+	if (fan && !reduce && !document.documentElement.classList.contains('perf-lite')) {
+		let seen = true;
+		let busy = false;
+
 		const shuffle = () => {
-			if (fan.matches(':hover')) return; // hover = fanned out, don't fight it
-			const cards = Array.from(
-				fan.querySelectorAll<HTMLElement>('.fp-fan-card')
-			);
+			if (busy || !seen || document.hidden) return;
+			if (fan.matches(':hover')) return; // hover fans it out; do not fight that
+			const cards = Array.from(fan.querySelectorAll<HTMLElement>('.fp-fan-card'));
 			if (cards.length < 2) return;
+			busy = true;
+
 			const top = cards[cards.length - 1]!;
 			top.classList.add('fp-fly');
+
 			window.setTimeout(() => {
-				// dive under: repaint at the bottom of the stack, re-slot everyone
-				fan.insertBefore(top, cards[0]!);
+				// put it at the back with no transition, so the return journey is
+				// never drawn; the others simply take one step up.
+				top.style.transition = 'none';
 				top.classList.remove('fp-fly');
-				Array.from(
-					fan.querySelectorAll<HTMLElement>('.fp-fan-card')
-				).forEach((c, i) => c.style.setProperty('--i', String(i)));
-			}, 600);
+				fan.insertBefore(top, cards[0]!);
+				Array.from(fan.querySelectorAll<HTMLElement>('.fp-fan-card')).forEach(
+					(c, i) => c.style.setProperty('--i', String(i))
+				);
+				// one frame at the new slot before the transition comes back
+				requestAnimationFrame(() => {
+					requestAnimationFrame(() => {
+						top.style.transition = '';
+						busy = false;
+					});
+				});
+			}, 620);
 		};
-		const iv = window.setInterval(shuffle, 3000);
+
+		// five and a half seconds: long enough to read a card, short enough
+		// that the deck is clearly alive
+		const iv = window.setInterval(shuffle, 5500);
+
+		if ('IntersectionObserver' in window) {
+			new IntersectionObserver(
+				(es) => es.forEach((e) => (seen = e.isIntersecting)),
+				{ threshold: 0.25 }
+			).observe(fan);
+		}
+
 		// stop looping if the fan leaves the DOM (swup navigation)
 		const mo = new MutationObserver(() => {
 			if (!document.contains(fan)) {

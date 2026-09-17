@@ -91,7 +91,6 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 						</span>
 					))
 				}
-				<span class="fp-fan-hint">Shuffles on its own · hover to fan</span>
 			</div>
 		</div>
 	</section>
@@ -483,19 +482,17 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 			translateX(calc((var(--i) - (var(--n) - 1) / 2) * 86px)) translateY(calc(var(--i) * 2px));
 	}
 	/* the auto-shuffle: the top card flies out right, dives under the deck */
+	/* the card leaving: a short, unhurried slide with no overshoot. The old
+	   spring curve threw it out and snapped it back, which is most of what
+	   read as fidgeting. */
 	.fp-fan-card.fp-fly {
-		transition: transform 0.62s cubic-bezier(0.5, -0.1, 0.3, 1.2), opacity 0.62s ease;
-		transform: translate(20%, -58%) rotate(16deg) scale(0.96);
-		opacity: 0.35;
+		transition: transform 0.62s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.62s ease;
+		transform: translate(-12%, -62%) rotate(9deg) scale(0.97);
+		opacity: 0.2;
 	}
 	.fp-fan-bar { display: flex; gap: 4px; padding: 8px 10px; background: rgba(255, 255, 255, 0.06); }
 	.fp-fan-bar i { width: 8px; height: 8px; border-radius: 50%; background: color-mix(in srgb, var(--c) 70%, #fff); opacity: 0.7; }
 	.fp-fan-card img { display: block; width: 100%; height: 252px; object-fit: cover; object-position: top; }
-	.fp-fan-hint {
-		position: absolute; bottom: -0.9rem; left: 50%; transform: translateX(-50%);
-		font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
-		color: var(--fa-muted); white-space: nowrap;
-	}
 	@media (prefers-reduced-motion: reduce) { .fp-fan-card { animation: none; } }
 
 	/* ── marquee wall ── */

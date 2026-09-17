@@ -38,6 +38,10 @@ const py = (i: number) => {
 	return 214 - t * 176;
 };
 const ridge = stops.map((_, i) => `${px(i)},${py(i)}`).join(' ');
+
+// the gradient and the clip need ids of their own, so two climbs on one page
+// never borrow each other's
+const uid = Math.random().toString(36).slice(2, 8);
 ---
 
 <div class:list={['clb', klass]} data-clb data-every={String(every)} style={`--clb-n:${n}`}>
@@ -45,20 +49,27 @@ const ridge = stops.map((_, i) => `${px(i)},${py(i)}`).join(' ');
 	<div class="clb__stage">
 		<svg class="clb__svg" viewBox="0 0 1000 260" preserveAspectRatio="none" aria-hidden="true">
 			<defs>
-				<linearGradient id="clbFill" x1="0" y1="0" x2="0" y2="1">
-					<stop offset="0%" stop-color="currentColor" stop-opacity="0.16" />
+				<linearGradient id={`clbFill-${uid}`} x1="0" y1="0" x2="0" y2="1">
+					<stop offset="0%" stop-color="currentColor" stop-opacity="0.18" />
 					<stop offset="100%" stop-color="currentColor" stop-opacity="0" />
 				</linearGradient>
+				<!-- the ground is only filled as far as the climb has got -->
+				<clipPath id={`clbClip-${uid}`}>
+					<rect x="0" y="0" height="260" width="0" data-clb-clip />
+				</clipPath>
 			</defs>
 			<!-- the ground under the climb, so the line has somewhere to stand.
 			     It runs the full width and fades out downward, or it reads as a
 			     solid block with a hard edge halfway across the section. -->
 			<polygon
 				class="clb__fill"
+				style={`fill: url(#clbFill-${uid}); clip-path: url(#clbClip-${uid});`}
 				points={`0,${py(0)} ${ridge} 1000,${py(n - 1)} 1000,260 0,260`}
 			/>
+			<!-- the whole route, faint: where the climb is going -->
 			<polyline class="clb__ghost" points={ridge} />
-			<polyline class="clb__line" points={ridge} />
+			<!-- and the part of it already walked -->
+			<polyline class="clb__line" data-clb-line points={ridge} />
 		</svg>
 
 		<ol class="clb__nodes">
@@ -85,7 +96,9 @@ const ridge = stops.map((_, i) => `${px(i)},${py(i)}`).join(' ');
 
 		<!-- the marker, walking the ridge -->
 		<span class="clb__walker" data-clb-walker aria-hidden="true">
-			<Icon width={15} name="mdi:flag-variant" />
+			<span class="clb__walker-in">
+				<Icon width={16} name="mdi:flag-variant" />
+			</span>
 		</span>
 	</div>
 
@@ -144,10 +157,9 @@ const ridge = stops.map((_, i) => `${px(i)},${py(i)}`).join(' ');
 		height: 100%;
 		overflow: visible;
 	}
-	.clb__fill {
-		color: var(--clb-acc);
-		fill: url(#clbFill);
-	}
+	.clb__fill { color: var(--clb-acc); }
+	.clb__fill { transition: none; }
+	[data-clb-clip] { transition: width 0.85s cubic-bezier(0.4, 0, 0.2, 1); }
 	.clb__ghost,
 	.clb__line {
 		fill: none;
@@ -155,15 +167,17 @@ const ridge = stops.map((_, i) => `${px(i)},${py(i)}`).join(' ');
 		stroke-linejoin: round;
 		vector-effect: non-scaling-stroke;
 	}
-	.clb__ghost { stroke: var(--clb-line); stroke-width: 2; }
+	.clb__ghost { stroke: var(--clb-line); stroke-width: 2.5; stroke-dasharray: 5 7; }
+	/* The route used to draw itself once and then sit there while a flag
+	   hopped along a finished line. Now the line IS the climb: it is only
+	   drawn as far as the marker has walked, so the ridge fills in behind
+	   it and the section reads as something still going up. */
 	.clb__line {
 		stroke: var(--clb-acc);
-		stroke-width: 3;
-		stroke-dasharray: 1400;
-		stroke-dashoffset: 1400;
-		animation: clb-draw 1.6s cubic-bezier(0.4, 0, 0.2, 1) 0.15s forwards;
+		stroke-width: 3.4;
+		filter: drop-shadow(0 4px 10px color-mix(in srgb, var(--clb-acc) 45%, transparent));
+		transition: stroke-dashoffset 0.85s cubic-bezier(0.4, 0, 0.2, 1);
 	}
-	@keyframes clb-draw { to { stroke-dashoffset: 0; } }
 
 	.clb__nodes {
 		position: absolute;
@@ -237,23 +251,53 @@ const ridge = stops.map((_, i) => `${px(i)},${py(i)}`).join(' ');
 		left: var(--wx, 4%);
 		top: var(--wy, 82%);
 		z-index: 3;
+		width: 34px;
+		height: 34px;
+		margin: -36px 0 0 -17px;
+		/* left/top carry it along the ridge; the inner element does the
+		   stepping, so the two never fight over one transform */
+		transition: left 0.85s cubic-bezier(0.45, 0, 0.25, 1),
+			top 0.85s cubic-bezier(0.45, 0, 0.25, 1), opacity 0.3s ease;
+	}
+	.clb__walker-in {
 		display: grid;
 		place-items: center;
-		width: 30px;
-		height: 30px;
-		margin: -32px 0 0 -15px;
+		width: 100%;
+		height: 100%;
 		border-radius: 9999px;
 		color: #fff;
 		background: linear-gradient(140deg, var(--clb-acc), var(--clb-acc2));
-		box-shadow: 0 12px 24px -12px color-mix(in srgb, var(--clb-acc) 90%, transparent);
-		transition: left 0.75s cubic-bezier(0.5, 0, 0.2, 1), top 0.75s cubic-bezier(0.5, 0, 0.2, 1);
+		box-shadow: 0 14px 26px -12px color-mix(in srgb, var(--clb-acc) 90%, transparent);
+	}
+	/* while it is moving it lifts and leans, the way anything climbing does */
+	.clb.is-walking .clb__walker-in { animation: clb-step 0.42s ease-in-out 2; }
+	@keyframes clb-step {
+		0%, 100% { transform: translateY(0) rotate(0deg); }
+		50% { transform: translateY(-5px) rotate(-7deg); }
+	}
+	/* the loop back to the start is a cut, not a flight across the hero */
+	.clb.is-resetting .clb__walker { opacity: 0; transition: opacity 0.25s ease; }
+	/* a ring that pulses out of it, so the marker is findable at a glance */
+	.clb__walker::before {
+		content: '';
+		position: absolute;
+		inset: -5px;
+		border-radius: 9999px;
+		border: 2px solid color-mix(in srgb, var(--clb-acc) 55%, transparent);
+		animation: clb-ping 2.8s ease-out infinite;
+	}
+	@keyframes clb-ping {
+		0% { transform: scale(0.7); opacity: 0.9; }
+		70%, 100% { transform: scale(1.5); opacity: 0; }
 	}
 	.clb__walker::after {
 		content: '';
 		position: absolute;
 		top: 100%;
+		left: 50%;
 		width: 2px;
-		height: 10px;
+		height: 11px;
+		margin-left: -1px;
 		background: linear-gradient(180deg, color-mix(in srgb, var(--clb-acc) 70%, transparent), transparent);
 	}
 
@@ -339,10 +383,13 @@ const ridge = stops.map((_, i) => `${px(i)},${py(i)}`).join(' ');
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.clb__line { animation: none; stroke-dashoffset: 0; }
-		.clb__walker { transition: none; }
+		.clb__line,
+		.clb__walker,
+		[data-clb-clip] { transition: none; }
+		.clb__walker::before,
+		.clb.is-walking .clb__walker-in { animation: none; }
 	}
-	:global(html.perf-lite) .clb__line { animation: none; stroke-dashoffset: 0; }
+	:global(html.perf-lite) .clb__walker::before { animation: none; }
 
 	/* ══ lights out ═══════════════════════════════════════════════════ */
 	:global(html.dark) .clb {

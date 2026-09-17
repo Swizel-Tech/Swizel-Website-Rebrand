@@ -1854,8 +1854,21 @@ iframe {
   .site-header .container {
     gap: 0.75rem;
   }
+  /* The wordmark had been shrunk to make room that a phone header does not
+     actually need — logo plus three 36px controls is barely half of a 360px
+     screen — and it ended up smaller than the same wordmark inside the
+     drawer, which looked like a mistake. It now matches it. */
+  /* The logo column is a 20% flex basis, and the site-wide `svg {max-width:
+     100%}` rule then clamped the wordmark to whatever 20% of a phone came
+     to — about 68px, noticeably smaller than the same wordmark inside the
+     drawer. Below the desktop nav the column sizes to its content instead,
+     and the wordmark gets to be the size it is drawn at. */
+  .site-header .container > div:first-child {
+    flex: 0 0 auto;
+  }
   .site-header .site-logo svg {
-    width: clamp(92px, 26vw, 120px);
+    width: clamp(118px, 32vw, 136px);
+    max-width: none;
     height: auto;
   }
 }
@@ -1865,7 +1878,8 @@ iframe {
     padding-block: 0.9rem;
   }
   .site-header .site-logo svg {
-    width: 88px;
+    width: 116px;
+    max-width: none;
   }
   /* the three round controls shrink together rather than one of them
      falling off the end */
