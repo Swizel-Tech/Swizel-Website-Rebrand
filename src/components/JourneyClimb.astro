@@ -1,0 +1,356 @@
+---
+// The climb.
+//
+// The journey was a flat rule with a card hanging off every year: seven
+// boxes in a row, which is a list wearing a timeline's clothes. A company's
+// first seven years are not flat — they go up — so this draws the ridge,
+// puts a marker on it, and walks the marker from one year to the next while
+// the year it is standing on is written out underneath.
+//
+// One card at a time is deliberate. Seven cards side by side are seven
+// things nobody reads; one card, changing, is a story.
+import { Icon } from 'astro-icon/components';
+
+export interface Stop {
+	tag: string;
+	title: string;
+	desc: string;
+	href?: string;
+	hrefLabel?: string;
+}
+
+interface Props {
+	stops: Stop[];
+	/** seconds each year holds; 0 holds still */
+	every?: number;
+	class?: string;
+}
+
+const { stops, every = 5, class: klass = '' } = Astro.props;
+
+const n = stops.length;
+// where each stop sits on the ridge, in the 0–1000 × 0–260 viewBox
+const px = (i: number) => 40 + (920 * i) / Math.max(n - 1, 1);
+// the climb: mostly up, with the small flat stretch every real company has
+const RISE = [0, 0.1, 0.26, 0.38, 0.56, 0.7, 0.86, 1];
+const py = (i: number) => {
+	const t = RISE[Math.min(i, RISE.length - 1)] ?? i / Math.max(n - 1, 1);
+	return 214 - t * 176;
+};
+const ridge = stops.map((_, i) => `${px(i)},${py(i)}`).join(' ');
+---
+
+<div class:list={['clb', klass]} data-clb data-every={String(every)} style={`--clb-n:${n}`}>
+	<!-- ── the ridge ── -->
+	<div class="clb__stage">
+		<svg class="clb__svg" viewBox="0 0 1000 260" preserveAspectRatio="none" aria-hidden="true">
+			<defs>
+				<linearGradient id="clbFill" x1="0" y1="0" x2="0" y2="1">
+					<stop offset="0%" stop-color="currentColor" stop-opacity="0.16" />
+					<stop offset="100%" stop-color="currentColor" stop-opacity="0" />
+				</linearGradient>
+			</defs>
+			<!-- the ground under the climb, so the line has somewhere to stand.
+			     It runs the full width and fades out downward, or it reads as a
+			     solid block with a hard edge halfway across the section. -->
+			<polygon
+				class="clb__fill"
+				points={`0,${py(0)} ${ridge} 1000,${py(n - 1)} 1000,260 0,260`}
+			/>
+			<polyline class="clb__ghost" points={ridge} />
+			<polyline class="clb__line" points={ridge} />
+		</svg>
+
+		<ol class="clb__nodes">
+			{
+				stops.map((s, i) => (
+					<li
+						class="clb__node"
+						style={`--x:${(px(i) / 1000) * 100}%; --y:${(py(i) / 260) * 100}%; --i:${i}`}
+					>
+						<button
+							class="clb__pin"
+							type="button"
+							data-clb-pin={i}
+							aria-pressed={i === 0 ? 'true' : 'false'}
+							aria-label={`${s.tag}: ${s.title}`}
+						>
+							<span class="clb__pin-d" />
+						</button>
+						<span class="clb__year">{s.tag}</span>
+					</li>
+				))
+			}
+		</ol>
+
+		<!-- the marker, walking the ridge -->
+		<span class="clb__walker" data-clb-walker aria-hidden="true">
+			<Icon width={15} name="mdi:flag-variant" />
+		</span>
+	</div>
+
+	<!-- ── the year, written out ── -->
+	<div class="clb__deck">
+		{
+			stops.map((s, i) => (
+				<article
+					class:list={['clb__card', { 'is-on': i === 0 }]}
+					data-clb-card={i}
+					aria-hidden={i === 0 ? 'false' : 'true'}
+				>
+					<span class="clb__card-y">{s.tag}</span>
+					<h3 class="clb__card-t">{s.title}</h3>
+					<p class="clb__card-d">{s.desc}</p>
+					{s.href && (
+						<a class="clb__card-go" href={s.href}>
+							{s.hrefLabel || 'Read on'}
+							<Icon width={15} name="mdi:arrow-right" />
+						</a>
+					)}
+				</article>
+			))
+		}
+	</div>
+
+	<div class="clb__bar" aria-hidden="true">
+		<span class="clb__bar-f" data-clb-bar />
+	</div>
+</div>
+
+<style>
+	.clb {
+		--clb-acc: var(--view-accent, #8b5cf6);
+		--clb-acc2: #ec4899;
+		--clb-ink: #1d1430;
+		--clb-muted: rgba(29, 20, 48, 0.66);
+		--clb-line: rgba(29, 20, 48, 0.12);
+		--clb-paper: #ffffff;
+		display: grid;
+		gap: clamp(1rem, 2vw, 1.5rem);
+		width: 100%;
+		color: var(--clb-ink);
+	}
+
+	/* ── the ridge ──────────────────────────────────────────────────── */
+	.clb__stage {
+		position: relative;
+		width: 100%;
+		height: clamp(150px, 20vw, 240px);
+	}
+	.clb__svg {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		overflow: visible;
+	}
+	.clb__fill {
+		color: var(--clb-acc);
+		fill: url(#clbFill);
+	}
+	.clb__ghost,
+	.clb__line {
+		fill: none;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+		vector-effect: non-scaling-stroke;
+	}
+	.clb__ghost { stroke: var(--clb-line); stroke-width: 2; }
+	.clb__line {
+		stroke: var(--clb-acc);
+		stroke-width: 3;
+		stroke-dasharray: 1400;
+		stroke-dashoffset: 1400;
+		animation: clb-draw 1.6s cubic-bezier(0.4, 0, 0.2, 1) 0.15s forwards;
+	}
+	@keyframes clb-draw { to { stroke-dashoffset: 0; } }
+
+	.clb__nodes {
+		position: absolute;
+		inset: 0;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.clb__node {
+		position: absolute;
+		left: var(--x);
+		top: var(--y);
+		transform: translate(-50%, -50%);
+		display: grid;
+		justify-items: center;
+		gap: 0.3rem;
+	}
+	.clb__pin {
+		display: grid;
+		place-items: center;
+		width: 26px;
+		height: 26px;
+		padding: 0;
+		border: 0;
+		border-radius: 9999px;
+		background: none;
+		cursor: pointer;
+	}
+	.clb__pin-d {
+		width: 11px;
+		height: 11px;
+		border-radius: 9999px;
+		background: var(--clb-paper);
+		border: 2.5px solid color-mix(in srgb, var(--clb-acc) 55%, transparent);
+		transition: transform 0.35s cubic-bezier(0.34, 1.4, 0.64, 1), background 0.3s ease,
+			border-color 0.3s ease, box-shadow 0.3s ease;
+	}
+	.clb__pin:hover .clb__pin-d { transform: scale(1.25); }
+	.clb__pin[aria-pressed='true'] .clb__pin-d {
+		transform: scale(1.45);
+		background: linear-gradient(140deg, var(--clb-acc), var(--clb-acc2));
+		border-color: var(--clb-paper);
+		box-shadow: 0 0 0 4px color-mix(in srgb, var(--clb-acc) 22%, transparent);
+	}
+	/* the first and last years sit on the edge of the stage, so their labels
+	   lean inward rather than hanging off the side of the section */
+	.clb__node:first-child .clb__year { transform: translateX(30%); }
+	.clb__node:last-child .clb__year { transform: translateX(-30%); }
+	.clb__node:first-child .clb__pin[aria-pressed='true'] + .clb__year {
+		transform: translateX(30%) translateY(1px) scale(1.06);
+	}
+	.clb__node:last-child .clb__pin[aria-pressed='true'] + .clb__year {
+		transform: translateX(-30%) translateY(1px) scale(1.06);
+	}
+	.clb__year {
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.04em;
+		white-space: nowrap;
+		color: var(--clb-muted);
+		transition: color 0.3s ease, transform 0.3s ease;
+	}
+	.clb__pin[aria-pressed='true'] + .clb__year {
+		color: var(--clb-acc);
+		transform: translateY(1px) scale(1.06);
+	}
+
+	/* the marker that walks it */
+	.clb__walker {
+		position: absolute;
+		left: var(--wx, 4%);
+		top: var(--wy, 82%);
+		z-index: 3;
+		display: grid;
+		place-items: center;
+		width: 30px;
+		height: 30px;
+		margin: -32px 0 0 -15px;
+		border-radius: 9999px;
+		color: #fff;
+		background: linear-gradient(140deg, var(--clb-acc), var(--clb-acc2));
+		box-shadow: 0 12px 24px -12px color-mix(in srgb, var(--clb-acc) 90%, transparent);
+		transition: left 0.75s cubic-bezier(0.5, 0, 0.2, 1), top 0.75s cubic-bezier(0.5, 0, 0.2, 1);
+	}
+	.clb__walker::after {
+		content: '';
+		position: absolute;
+		top: 100%;
+		width: 2px;
+		height: 10px;
+		background: linear-gradient(180deg, color-mix(in srgb, var(--clb-acc) 70%, transparent), transparent);
+	}
+
+	/* ── the card ───────────────────────────────────────────────────── */
+	.clb__deck { display: grid; min-height: 11rem; }
+	.clb__card {
+		grid-area: 1 / 1;
+		display: grid;
+		align-content: start;
+		gap: 0.5rem;
+		max-width: 46rem;
+		padding: clamp(1.1rem, 2.2vw, 1.7rem);
+		border-radius: 1.2rem;
+		background: var(--clb-paper);
+		border: 1px solid var(--clb-line);
+		box-shadow: 0 1px 0 #fff inset, 0 26px 50px -34px rgba(48, 26, 100, 0.4);
+		opacity: 0;
+		transform: translateY(12px);
+		transition: opacity 0.35s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+		pointer-events: none;
+	}
+	.clb__card.is-on { opacity: 1; transform: none; pointer-events: auto; }
+	.clb__card-y {
+		font-family: 'Bradley Hand', 'Segoe Print', 'Comic Sans MS', cursive;
+		font-size: 1rem;
+		font-weight: 700;
+		color: var(--clb-acc);
+	}
+	.clb__card-t {
+		margin: 0;
+		font-size: clamp(1.15rem, 2.2vw, 1.6rem);
+		font-weight: 800;
+		letter-spacing: -0.015em;
+		line-height: 1.2;
+	}
+	.clb__card-d {
+		margin: 0;
+		font-size: 0.95rem;
+		line-height: 1.65;
+		color: var(--clb-muted);
+	}
+	.clb__card-go {
+		justify-self: start;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		margin-top: 0.2rem;
+		font-size: 0.86rem;
+		font-weight: 800;
+		color: var(--clb-acc);
+		text-decoration: none;
+	}
+	.clb__card-go:hover { text-decoration: underline; }
+
+	.clb__bar {
+		height: 3px;
+		border-radius: 9999px;
+		background: var(--clb-line);
+		overflow: hidden;
+	}
+	.clb__bar-f {
+		display: block;
+		width: 0;
+		height: 100%;
+		border-radius: 9999px;
+		background: linear-gradient(90deg, var(--clb-acc), var(--clb-acc2));
+		transition: width 0.5s ease;
+	}
+
+	/* ── narrow ─────────────────────────────────────────────────────── */
+	@media (max-width: 760px) {
+		.clb__stage { height: 132px; }
+		/* eight years will not fit as words on a phone, so only the one you
+		   are standing on says its name */
+		.clb__year { opacity: 0; transform: translateY(-2px); }
+		.clb__pin[aria-pressed='true'] + .clb__year {
+			opacity: 1;
+			transform: none;
+			font-size: 0.74rem;
+		}
+		.clb__pin { width: 30px; height: 30px; }
+		.clb__deck { min-height: 13rem; }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.clb__line { animation: none; stroke-dashoffset: 0; }
+		.clb__walker { transition: none; }
+	}
+	:global(html.perf-lite) .clb__line { animation: none; stroke-dashoffset: 0; }
+
+	/* ══ lights out ═══════════════════════════════════════════════════ */
+	:global(html.dark) .clb {
+		--clb-ink: #f1edfb;
+		--clb-muted: rgba(241, 237, 251, 0.68);
+		--clb-line: rgba(255, 255, 255, 0.11);
+		--clb-paper: rgba(255, 255, 255, 0.045);
+	}
+	:global(html.dark) .clb__card { box-shadow: none; }
+	:global(html.dark) .clb__pin-d { background: #15102a; }
+</style>

@@ -1,0 +1,754 @@
+---
+// Contact · Founder world — the desk, founder to founder.
+//
+// Every other world's contact page opens with a form. A founder writing to
+// a studio at eleven at night is not short of forms; they are short of
+// certainty. So this opens with the three things they actually want to know
+// before they type a word — what it costs, how long it takes, who owns it —
+// answers it in one line each, shows them the clock on our wall so "we will
+// reply" means something, and only then asks for the message.
+//
+// Root carries `fbody` so the founder engine (.fd-rev reveals, [data-count]
+// counters) animates it, and `view-body-founder` so it is the contact page
+// in this world and nowhere else.
+import { Icon } from 'astro-icon/components';
+import ContactForm from '../blocks/ContactForm.astro';
+
+// the three questions that come before any brief
+const upfront = [
+	{
+		icon: 'mdi:cash-multiple',
+		q: 'What will it cost?',
+		a: 'Fixed scope, fixed price.',
+		d: 'A short discovery, an agreed build, then one number in writing. The number you are quoted is the number you pay.',
+	},
+	{
+		icon: 'mdi:calendar-check-outline',
+		q: 'How long?',
+		a: 'Six weeks is the ceiling.',
+		d: 'Not the floor. A booking site or a landing product often goes live in two to three; we tell you which one you are on day one.',
+	},
+	{
+		icon: 'mdi:key-chain-variant',
+		q: 'Who owns it?',
+		a: 'You do. All of it.',
+		d: 'Every repository, domain, account and design file, handed over documented at launch. Nothing is held hostage.',
+	},
+];
+
+// the routes in, each one starting the first line of the message
+const routes = [
+	{
+		id: 'new',
+		icon: 'mdi:rocket-launch-outline',
+		t: 'I have an idea',
+		d: 'Nothing built yet',
+		seed: 'I have an idea I want built. Here it is in a paragraph: ',
+	},
+	{
+		id: 'rescue',
+		icon: 'mdi:wrench-outline',
+		t: 'I have a product',
+		d: 'Built, and stuck',
+		seed: 'I already have a product and I need help with it. What is going wrong: ',
+	},
+	{
+		id: 'grow',
+		icon: 'mdi:trending-up',
+		t: 'I need growth',
+		d: 'Live, but quiet',
+		seed: 'We are live and we need more of the right people finding us. Where we are today: ',
+	},
+	{
+		id: 'team',
+		icon: 'mdi:account-group-outline',
+		t: 'I need a team',
+		d: 'A department, hired',
+		seed: 'I would like to hire a team from Swizel. What I need covered: ',
+	},
+];
+
+// what the first week actually looks like, day by day
+const week = [
+	{ d: 'Mon', t: 'You write', s: 'This form, or one call. Whichever is faster for you.' },
+	{ d: 'Tue', t: 'We answer', s: 'A real person, usually the same day. If we are wrong for it, we say so.' },
+	{ d: 'Wed', t: 'We meet', s: 'One session to hear the whole thing, not a sales call.' },
+	{ d: 'Thu', t: 'Scope and price', s: 'In writing. What is being built, what it costs, when it lands.' },
+	{ d: 'Fri', t: 'Design starts', s: 'You see something clickable by the end of week one.' },
+];
+
+const lines = [
+	{ ic: 'mdi:whatsapp', k: 'WhatsApp', v: 'Fastest reply', href: 'https://wa.me/2348100204570', out: true },
+	{ ic: 'mdi:phone-outline', k: 'Call the office', v: '+234 810 020 4570', href: 'tel:+2348100204570' },
+	{ ic: 'mdi:email-outline', k: 'Email', v: 'contact@swizel.co', href: 'mailto:contact@swizel.co' },
+	{ ic: 'mdi:map-marker-outline', k: 'The floor', v: 'Lokogoma, Abuja', href: undefined },
+];
+---
+
+<div class="fct fbody view-body view-body-founder">
+	<!-- ambience, the founder world's own -->
+	<div class="fct-bg" aria-hidden="true">
+		<span class="fct-orb fct-orb--a"></span>
+		<span class="fct-orb fct-orb--b"></span>
+		<span class="fct-grid"></span>
+	</div>
+
+	<!-- ── the desk: the form, first ──────────────────────────
+	     A founder who has clicked Contact has already decided to talk.
+	     Making them read three sections before they find a box to type in
+	     is a toll booth. The form is the first thing on the page; the
+	     reasons to trust it come after, for whoever wants them. -->
+	<section class="fct-sec fct-sec--top" id="fct-write">
+		<div class="fct-wrap fct-open">
+			<div class="fct-say fd-rev">
+				<span class="fct-stamp">
+					<Icon width={13} name="mdi:coffee-outline" />
+					Founder to founder
+				</span>
+				<h2 class="fct-h">
+					You bring the idea.<br />
+					<em>We bring the six weeks.</em>
+				</h2>
+				<p class="fct-p">
+					No account manager, no ticket queue. What you write here is read by
+					someone who will be on the build, and answered in plain words.
+				</p>
+
+				<!-- the clock on our wall, so "we will reply" has a shape -->
+				<div class="fct-clock" data-fct-clock>
+					<span class="fct-clock-face">
+						<span class="fct-clock-t" data-fct-time>--:--</span>
+						<span class="fct-clock-z">Abuja · WAT</span>
+					</span>
+					<span class="fct-clock-state" data-fct-state>
+						<span class="fct-clock-pip" aria-hidden="true"></span>
+						<span data-fct-state-t>Checking the floor…</span>
+					</span>
+				</div>
+
+				<!-- the other ways in, for anyone who would rather not type -->
+				<div class="fct-lines">
+					<span class="fct-lines-k">Or skip the form</span>
+					<ul class="fct-lines-l">
+						{
+							lines.map((l) => (
+								<li>
+									{l.href ? (
+										<a
+											href={l.href}
+											target={l.out ? '_blank' : undefined}
+											rel={l.out ? 'noopener noreferrer' : undefined}
+										>
+											<span class="fct-line-ic"><Icon width={17} name={l.ic} /></span>
+											<span class="fct-line-b">
+												<b>{l.k}</b>
+												<em>{l.v}</em>
+											</span>
+											<Icon class="fct-line-go" width={15} name="mdi:arrow-right" />
+										</a>
+									) : (
+										<span class="fct-line-flat">
+											<span class="fct-line-ic"><Icon width={17} name={l.ic} /></span>
+											<span class="fct-line-b">
+												<b>{l.k}</b>
+												<em>{l.v}</em>
+											</span>
+										</span>
+									)}
+								</li>
+							))
+						}
+					</ul>
+				</div>
+			</div>
+
+			<!-- the box you came here for -->
+			<div class="fct-form fd-rev" style="--i:1">
+				<div class="fct-form-top">
+					<span class="fct-form-k">Tell us what you are building</span>
+					<p class="fct-form-n" data-fct-hint>
+						Pick the one that fits and we will write your opening line.
+					</p>
+					<div class="fct-routes">
+						{
+							routes.map((r, i) => (
+								<button
+									class="fct-route"
+									type="button"
+									data-fct-pick
+									data-seed={r.seed}
+									style={`--i:${i}`}
+								>
+									<span class="fct-route-ic">
+										<Icon width={17} name={r.icon} />
+									</span>
+									<span class="fct-route-b">
+										<span class="fct-route-t">{r.t}</span>
+										<span class="fct-route-d">{r.d}</span>
+									</span>
+									<span class="fct-route-tick" aria-hidden="true">
+										<Icon width={12} name="mdi:check" />
+									</span>
+								</button>
+							))
+						}
+					</div>
+				</div>
+
+				<ContactForm />
+
+				<p class="fct-form-f">
+					We sign your NDA or send ours, whichever is faster for your side.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── the three answers, for whoever wants them ────────── -->
+	<section class="fct-sec">
+		<div class="fct-wrap">
+			<div class="fct-head fd-rev">
+				<span class="fct-stamp">Before you ask</span>
+				<h2 class="fct-h2">The three things <em>everybody asks.</em></h2>
+			</div>
+
+			<ul class="fct-upfront fd-rev">
+				{
+					upfront.map((u, i) => (
+						<li class="fct-up" style={`--i:${i}`}>
+							<span class="fct-up-ic">
+								<Icon width={19} name={u.icon} />
+							</span>
+							<span class="fct-up-body">
+								<span class="fct-up-q">{u.q}</span>
+								<strong class="fct-up-a">{u.a}</strong>
+								<span class="fct-up-d">{u.d}</span>
+							</span>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+	</section>
+
+	<!-- ── the first week ───────────────────────────────────── -->
+	<section class="fct-sec">
+		<div class="fct-wrap">
+			<div class="fct-head fd-rev">
+				<span class="fct-stamp">After you press send</span>
+				<h2 class="fct-h2">Your first <em>five days.</em></h2>
+			</div>
+
+			<ol class="fct-week fd-rev" data-fct-week>
+				{
+					week.map((w, i) => (
+						<li class="fct-day" data-fct-day={i} style={`--i:${i}`}>
+							<span class="fct-day-d">{w.d}</span>
+							<span class="fct-day-rail" aria-hidden="true" />
+							<span class="fct-day-body">
+								<strong>{w.t}</strong>
+								<em>{w.s}</em>
+							</span>
+						</li>
+					))
+				}
+			</ol>
+		</div>
+	</section>
+</div>
+
+<style>
+	.fct {
+		--f-acc: var(--view-accent, #8b5cf6);
+		--f-acc2: #ec4899;
+		--f-ink: #f1edfb;
+		--f-muted: rgba(241, 237, 251, 0.66);
+		--f-line: rgba(255, 255, 255, 0.1);
+		--f-paper: rgba(255, 255, 255, 0.04);
+		--f-field: rgba(255, 255, 255, 0.05);
+		--f-lift: none;
+		position: relative;
+		isolation: isolate;
+		padding-block: clamp(2.4rem, 5vw, 4rem) clamp(3rem, 6vw, 5rem);
+		color: var(--f-ink);
+	}
+	/* Daylight is not the absence of the dark theme — it is its own set of
+	   values. The page carries the founder lavender rather than sitting on
+	   the body's neutral grey, cards are paper with an edge and a shadow,
+	   and the form fields are fields. */
+	:global(html:not(.dark)) .fct {
+		--f-ink: #1d1430;
+		--f-muted: rgba(29, 20, 48, 0.66);
+		--f-line: rgba(76, 47, 143, 0.17);
+		--f-paper: #ffffff;
+		--f-field: #fbfaff;
+		--f-lift:
+			0 1px 0 #fff inset,
+			0 24px 44px -32px rgba(48, 26, 100, 0.4),
+			0 5px 14px -11px rgba(48, 26, 100, 0.24);
+		background:
+			radial-gradient(1000px 540px at 84% -8%, rgba(139, 92, 246, 0.14), transparent 62%),
+			linear-gradient(180deg, #f4f1fb 0%, #ece7f8 55%, #f4f1fb 100%);
+	}
+	:global(html.dark) .fct {
+		background: linear-gradient(180deg, #0b0818 0%, #120c24 50%, #0b0818 100%);
+	}
+	.fct-wrap { width: min(1184px, 100%); margin-inline: auto; }
+	.fct-sec { position: relative; z-index: 1; padding-block: clamp(2rem, 4vw, 3.4rem); }
+	.fct-sec--top { padding-top: 0; }
+
+	/* ── ambience ───────────────────────────────────────────────────── */
+	.fct-bg { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+	.fct-orb {
+		position: absolute;
+		border-radius: 50%;
+		filter: blur(70px);
+		opacity: 0.5;
+	}
+	.fct-orb--a {
+		width: 34rem; height: 34rem; top: -12rem; right: -10rem;
+		background: radial-gradient(circle, color-mix(in srgb, var(--f-acc) 50%, transparent), transparent 70%);
+		animation: fct-drift 22s ease-in-out infinite;
+	}
+	.fct-orb--b {
+		width: 28rem; height: 28rem; bottom: -8rem; left: -9rem;
+		background: radial-gradient(circle, color-mix(in srgb, var(--f-acc2) 40%, transparent), transparent 70%);
+		animation: fct-drift 26s ease-in-out -8s infinite reverse;
+	}
+	@keyframes fct-drift {
+		0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+		50% { transform: translate3d(-3%, 4%, 0) scale(1.08); }
+	}
+	.fct-grid {
+		position: absolute;
+		inset: 0;
+		background-image:
+			linear-gradient(to right, color-mix(in srgb, var(--f-ink) 5%, transparent) 1px, transparent 1px),
+			linear-gradient(to bottom, color-mix(in srgb, var(--f-ink) 5%, transparent) 1px, transparent 1px);
+		background-size: 72px 72px;
+		opacity: 0.55;
+		-webkit-mask-image: radial-gradient(70% 46% at 30% 0%, #000, transparent 72%);
+		mask-image: radial-gradient(70% 46% at 30% 0%, #000, transparent 72%);
+	}
+
+	/* ── the desk ───────────────────────────────────────────────────── */
+	.fct-open {
+		display: grid;
+		gap: clamp(1.6rem, 3.4vw, 3rem);
+		align-items: center;
+	}
+	@media (min-width: 980px) {
+		/* the form takes the larger half: it is what the page is for */
+		.fct-open { grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr); align-items: start; }
+	}
+	.fct-stamp {
+		/* a grid item stretches by default, which turned the pill into a bar
+		   the width of the column */
+		justify-self: start;
+		align-self: start;
+		width: fit-content;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		padding: 0.34rem 0.85rem;
+		border-radius: 9999px;
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+		color: #4a27ad;
+		background: rgba(74, 39, 173, 0.09);
+		border: 1px dashed rgba(74, 39, 173, 0.3);
+	}
+	.fct-h {
+		margin: 0.8rem 0 0;
+		font-size: clamp(2rem, 5.2vw, 3.5rem);
+		font-weight: 900;
+		line-height: 1.04;
+		letter-spacing: -0.03em;
+	}
+	.fct-h em,
+	.fct-h2 em {
+		font-style: italic;
+		background: linear-gradient(95deg, #5d34c4, #b81d68);
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	.fct-h2 {
+		margin: 0.6rem 0 0;
+		font-size: clamp(1.5rem, 3.4vw, 2.4rem);
+		font-weight: 900;
+		letter-spacing: -0.025em;
+		line-height: 1.12;
+	}
+	.fct-p {
+		margin: 0.9rem 0 0;
+		max-width: 42ch;
+		font-size: clamp(0.95rem, 1.5vw, 1.06rem);
+		line-height: 1.7;
+		color: var(--f-muted);
+	}
+	.fct-p--c { margin-inline: auto; text-align: center; }
+	.fct-head { display: grid; justify-items: center; text-align: center; margin-bottom: clamp(1.2rem, 2.4vw, 1.8rem); }
+	/* the pill is pinned left in the desk column, but a section heading
+	   centres it with the rest of the heading */
+	.fct-head .fct-stamp { justify-self: center; }
+
+	/* the clock */
+	.fct-clock {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.9rem;
+		margin-top: 1.4rem;
+		padding: 0.55rem 1rem 0.55rem 0.7rem;
+		border-radius: 9999px;
+		background: var(--f-paper);
+		border: 1px solid var(--f-line);
+		box-shadow: var(--f-lift);
+	}
+	.fct-clock-face { display: grid; line-height: 1.1; }
+	.fct-clock-t {
+		font-family: ui-monospace, monospace;
+		font-size: 1.15rem;
+		font-weight: 800;
+		font-variant-numeric: tabular-nums;
+		letter-spacing: -0.02em;
+	}
+	.fct-clock-z {
+		font-size: 0.66rem;
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--f-muted);
+	}
+	.fct-clock-state {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		padding-left: 0.9rem;
+		border-left: 1px solid var(--f-line);
+		font-size: 0.8rem;
+		font-weight: 700;
+		color: var(--f-muted);
+	}
+	.fct-clock-pip {
+		width: 8px;
+		height: 8px;
+		border-radius: 9999px;
+		background: var(--f-acc);
+		box-shadow: 0 0 0 0 color-mix(in srgb, var(--f-acc) 60%, transparent);
+		animation: fct-pip 2.6s ease-out infinite;
+	}
+	@keyframes fct-pip {
+		0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--f-acc) 55%, transparent); }
+		70%, 100% { box-shadow: 0 0 0 9px transparent; }
+	}
+	.fct-clock.is-shut .fct-clock-pip { animation: none; opacity: 0.45; }
+
+	/* ── the three answers ──────────────────────────────────────────── */
+	.fct-upfront {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 0.7rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	@media (max-width: 900px) { .fct-upfront { grid-template-columns: minmax(0, 1fr); } }
+	.fct-up {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.85rem;
+		padding: clamp(0.9rem, 1.8vw, 1.15rem);
+		border-radius: 1rem;
+		background: var(--f-paper);
+		border: 1px solid var(--f-line);
+		box-shadow: var(--f-lift);
+		transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.fct-up:hover { transform: translateY(-4px); }
+	.fct-up-ic {
+		display: grid;
+		place-items: center;
+		width: 38px;
+		height: 38px;
+		flex: none;
+		border-radius: 0.7rem;
+		color: #fff;
+		background: linear-gradient(140deg, var(--f-acc), var(--f-acc2));
+	}
+	.fct-up-body { display: grid; gap: 0.15rem; min-width: 0; }
+	.fct-up-q {
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--f-muted);
+	}
+	.fct-up-a { font-size: 1.02rem; font-weight: 800; letter-spacing: -0.015em; }
+	.fct-up-d { font-size: 0.87rem; line-height: 1.55; color: var(--f-muted); }
+
+	/* ── the routes ─────────────────────────────────────────────────── */
+	/* the chips sit inside the form card now, so they are compact rows
+	   rather than four big tiles competing with the fields under them */
+	.fct-routes {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.5rem;
+	}
+	.fct-route {
+		position: relative;
+		display: flex;
+		align-items: center;
+		gap: 0.55rem;
+		padding: 0.6rem 0.7rem;
+		border-radius: 0.85rem;
+		text-align: left;
+		font: inherit;
+		color: inherit;
+		background: var(--f-field);
+		border: 1px solid var(--f-line);
+		cursor: pointer;
+		transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.24s ease,
+			background 0.24s ease;
+	}
+	.fct-route:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--f-acc) 45%, transparent); }
+	.fct-route-b { display: grid; min-width: 0; line-height: 1.22; }
+	.fct-route-ic {
+		display: grid;
+		place-items: center;
+		width: 30px;
+		height: 30px;
+		flex: none;
+		border-radius: 0.55rem;
+		color: var(--f-acc);
+		background: color-mix(in srgb, var(--f-acc) 12%, transparent);
+		transition: color 0.28s ease, background 0.28s ease;
+	}
+	.fct-route-t { font-size: 0.88rem; font-weight: 800; letter-spacing: -0.01em; }
+	.fct-route-d { font-size: 0.74rem; color: var(--f-muted); }
+	.fct-route-tick {
+		position: absolute;
+		top: 0.4rem;
+		right: 0.45rem;
+		display: grid;
+		place-items: center;
+		width: 18px;
+		height: 18px;
+		border-radius: 9999px;
+		color: #fff;
+		background: linear-gradient(140deg, var(--f-acc), var(--f-acc2));
+		opacity: 0;
+		transform: scale(0.6);
+		transition: opacity 0.25s ease, transform 0.3s cubic-bezier(0.34, 1.4, 0.64, 1);
+	}
+	.fct-route.is-on {
+		border-color: color-mix(in srgb, var(--f-acc) 58%, transparent);
+		background: color-mix(in srgb, var(--f-acc) 9%, var(--f-field));
+	}
+	.fct-route.is-on .fct-route-tick { opacity: 1; transform: none; }
+	.fct-route.is-on .fct-route-ic {
+		color: #fff;
+		background: linear-gradient(140deg, var(--f-acc), var(--f-acc2));
+	}
+
+	/* ── form + direct lines ────────────────────────────────────────── */
+	.fct-form {
+		padding: clamp(1.2rem, 2.4vw, 1.9rem);
+		border-radius: 1.3rem;
+		background: var(--f-paper);
+		border: 1px solid var(--f-line);
+		box-shadow: var(--f-lift);
+	}
+	.fct-lines { margin-top: 1.5rem; }
+	.fct-form-k,
+	.fct-lines-k {
+		display: block;
+		margin-bottom: 1rem;
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+		color: var(--f-muted);
+	}
+	.fct-lines-l { display: grid; gap: 0.35rem; margin: 0; padding: 0; list-style: none; }
+	.fct-lines-l a,
+	.fct-line-flat {
+		display: flex;
+		align-items: center;
+		gap: 0.7rem;
+		padding: 0.6rem 0.7rem;
+		border-radius: 0.8rem;
+		color: inherit;
+		text-decoration: none;
+		border: 1px solid transparent;
+		transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+	}
+	.fct-lines-l a:hover {
+		background: color-mix(in srgb, var(--f-acc) 7%, transparent);
+		border-color: color-mix(in srgb, var(--f-acc) 26%, transparent);
+		transform: translateX(3px);
+	}
+	.fct-line-ic {
+		display: grid;
+		place-items: center;
+		width: 34px;
+		height: 34px;
+		flex: none;
+		border-radius: 0.6rem;
+		color: var(--f-acc);
+		background: color-mix(in srgb, var(--f-acc) 11%, transparent);
+	}
+	.fct-line-b { display: grid; min-width: 0; line-height: 1.25; }
+	.fct-line-b b { font-size: 0.9rem; font-weight: 800; }
+	.fct-line-b em { font-style: normal; font-size: 0.8rem; color: var(--f-muted); }
+	.fct-line-go { margin-left: auto; color: var(--f-acc); flex: none; }
+
+	/* ══ the form ══════════════════════════════════════════════════════
+	   The shared ContactForm is rendered with `textWhite`, because every
+	   other page puts it on a dark panel. On a white founder card that
+	   made the labels white on white and the fields invisible outlines —
+	   the page read as broken. These reach into it and give the labels
+	   ink, the fields a surface, and focus somewhere to land. The form
+	   component itself is untouched, so the other worlds keep theirs. */
+	.fct-form :global(#contact-form) { display: grid; gap: 0.2rem; }
+	.fct-form :global(#contact-form > div) { margin-block: 0.5rem; }
+	.fct-form :global(label > span) {
+		font-size: 0.82rem;
+		font-weight: 800;
+		letter-spacing: 0.01em;
+		color: var(--f-ink) !important;
+	}
+	.fct-form :global(input),
+	.fct-form :global(textarea) {
+		width: 100%;
+		padding: 0.8rem 0.9rem;
+		border-radius: 0.8rem;
+		font: inherit;
+		font-size: 0.95rem;
+		color: var(--f-ink) !important;
+		background: var(--f-field) !important;
+		border: 1px solid var(--f-line) !important;
+		transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+	}
+	.fct-form :global(textarea) { min-height: 9rem; resize: vertical; }
+	.fct-form :global(input::placeholder),
+	.fct-form :global(textarea::placeholder) {
+		color: color-mix(in srgb, var(--f-ink) 42%, transparent) !important;
+	}
+	.fct-form :global(input:focus),
+	.fct-form :global(textarea:focus) {
+		outline: none;
+		border-color: color-mix(in srgb, var(--f-acc) 60%, transparent) !important;
+		box-shadow: 0 0 0 4px color-mix(in srgb, var(--f-acc) 16%, transparent);
+	}
+	/* the shared button is Swizel green; in this world it is the world's
+	   colour, or the last thing on the page belongs to a different site */
+	.fct-form :global(#form-button) {
+		margin-top: 0.4rem;
+		background: linear-gradient(120deg, var(--f-acc), var(--f-acc2)) !important;
+		box-shadow: 0 18px 34px -18px color-mix(in srgb, var(--f-acc) 80%, transparent);
+	}
+	.fct-form :global(#form-button:hover) { filter: saturate(1.1) brightness(1.04); }
+	.fct-form-f {
+		margin: 1.1rem 0 0;
+		padding-top: 0.9rem;
+		border-top: 1px dashed var(--f-line);
+		font-size: 0.82rem;
+		line-height: 1.55;
+		color: var(--f-muted);
+	}
+	.fct-form-top { margin-bottom: 1.1rem; }
+	.fct-form-n {
+		margin: 0.25rem 0 0.8rem;
+		font-size: 0.86rem;
+		line-height: 1.5;
+		color: var(--f-muted);
+	}
+	.fct-say { display: grid; align-content: start; }
+
+	/* ── the first week ─────────────────────────────────────────────── */
+	.fct-week {
+		display: grid;
+		grid-template-columns: repeat(5, minmax(0, 1fr));
+		gap: 0.6rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.fct-day {
+		position: relative;
+		display: grid;
+		gap: 0.5rem;
+		padding: 1rem 0.9rem 1.1rem;
+		border-radius: 1rem;
+		background: var(--f-paper);
+		border: 1px solid var(--f-line);
+		box-shadow: var(--f-lift);
+		transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.fct-day:hover { transform: translateY(-4px); }
+	.fct-day-d {
+		font-size: 0.7rem;
+		font-weight: 900;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--f-acc);
+	}
+	/* the rail fills from left to right across the five days, so the week
+	   reads as a week rather than five loose cards */
+	.fct-day-rail {
+		position: relative;
+		height: 3px;
+		border-radius: 9999px;
+		background: var(--f-line);
+		overflow: hidden;
+	}
+	.fct-day-rail::after {
+		content: '';
+		position: absolute;
+		inset: 0 100% 0 0;
+		border-radius: 9999px;
+		background: linear-gradient(90deg, var(--f-acc), var(--f-acc2));
+		animation: fct-fill 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+		animation-delay: calc(var(--i) * 0.22s + 0.2s);
+	}
+	@keyframes fct-fill { to { inset: 0 0 0 0; } }
+	.fct-day-body { display: grid; gap: 0.25rem; }
+	.fct-day-body strong { font-size: 0.95rem; font-weight: 800; letter-spacing: -0.01em; }
+	.fct-day-body em { font-style: normal; font-size: 0.82rem; line-height: 1.5; color: var(--f-muted); }
+
+	/* ── narrow ─────────────────────────────────────────────────────── */
+	@media (max-width: 979px) {
+		/* on a phone the box comes before the reasons to trust it */
+		.fct-open { display: flex; flex-direction: column; }
+		.fct-say { display: contents; }
+		.fct-say > .fct-stamp { order: 1; justify-self: start; }
+		.fct-say > .fct-h { order: 2; }
+		.fct-say > .fct-p { order: 3; }
+		.fct-form { order: 4; margin-top: 1.2rem; }
+		.fct-say > .fct-clock { order: 5; margin-top: 1.4rem; }
+		.fct-say > .fct-lines { order: 6; }
+		.fct-week { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+		.fct-week > li:last-child { grid-column: 1 / -1; }
+	}
+	@media (max-width: 560px) {
+		.fct-clock { width: 100%; justify-content: space-between; }
+		.fct-routes { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.55rem; }
+		.fct-route { padding: 0.8rem; }
+		.fct-route-t { font-size: 0.9rem; }
+		.fct-route-d { font-size: 0.74rem; }
+		.fct-week { grid-template-columns: minmax(0, 1fr); }
+		.fct-week > li:last-child { grid-column: auto; }
+		.fct-up { padding: 0.85rem; }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.fct-orb, .fct-clock-pip, .fct-day-rail::after { animation: none; }
+		.fct-day-rail::after { inset: 0; }
+	}
+	:global(html.perf-lite) .fct-orb { filter: none; opacity: 0.25; animation: none; }
+
+	/* the dark palette is the component's default now, set at the top. */
+</style>

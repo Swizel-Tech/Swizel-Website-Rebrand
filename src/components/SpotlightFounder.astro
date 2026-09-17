@@ -1068,26 +1068,89 @@ const links = [
 	@media (max-width: 720px) {
 		.spot { padding-top: 3.4rem; }
 		.spot__wrap { width: min(1200px, 100% - 2rem); }
-		/* the film takes the first line on its own; the two accounts we run
-		   sit under it as a pair, rather than three phones fighting for
-		   the same 100vw */
-		.spot__devices { flex-wrap: wrap; gap: 0.8rem 0.7rem; align-items: flex-start; }
-		.spot__dev--reel { order: 1; width: min(70vw, 290px); }
-		/* the pair has to share one line, so each one takes exactly half of
-		   what is left after the gap — no width guess to get wrong */
+		/* ── the three handsets, on one line ────────────────────────
+		   Wrapping was the problem: the film asked for 70vw and the two
+		   accounts each asked for half the row, so the row could never
+		   hold all three and Instagram fell through to a line of its own
+		   under the film's caption. That read as broken rather than
+		   arranged.
+		   Three columns cannot wrap. The film leads at half again the
+		   width of either account, every handset is bottom-aligned on one
+		   floor, each account's label sits in the dead air directly above
+		   its own screen, and the film's caption is lifted out of the flow
+		   so it hangs under the film without pushing it up out of line. */
+		.spot__devices {
+			display: grid;
+			/* minmax(0,…) or the screenshots' intrinsic widths quietly win and
+			   the film stops being the widest of the three */
+			grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr);
+			grid-template-rows: auto;
+			align-items: stretch;
+			gap: 0.4rem;
+			/* the rig takes the whole width of the phone, margins included */
+			width: calc(100% + 1.6rem);
+			margin-inline: -0.8rem;
+			max-width: none;
+			padding-bottom: 3.2rem; /* the caption hangs in here */
+		}
+		/* the markup reads TikTok, film, Instagram for screen readers; the
+		   columns put the film where the eye expects it */
+		/* the row has to be named as well as the column: auto-placement only
+		   ever moves forward, so naming the columns alone pushed the film
+		   onto a second row because TikTok comes first in the markup */
+		.spot__dev--reel { grid-area: 1 / 1; }
+		.spot__dev--tt { grid-area: 1 / 2; }
+		.spot__dev--ig { grid-area: 1 / 3; }
+		.spot__dev,
+		.spot__dev--reel,
 		.spot__dev--ig,
 		.spot__dev--tt {
-			order: 2;
-			width: min(calc((100% - 0.7rem) / 2), 200px);
+			position: relative;
+			display: flex;
+			flex-direction: column;
+			justify-content: flex-end;
+			height: 100%;
+			width: 100%;
+			max-width: none;
 			margin-bottom: 0;
 		}
-		.spot__sound { font-size: 0.7rem; padding: 0.34rem 0.7rem; }
-		/* the two labels are the same height whatever the wording, so the
-		   phones under them line up instead of stepping */
-		.spot__point { min-height: 4.6rem; align-content: end; }
-		.spot__point-t { font-size: 0.8rem; }
-		.spot__point em { font-size: 0.72rem; }
-		.spot__point-a { width: 24px; }
+		.spot__dev--reel .spot__cap {
+			position: absolute;
+			top: calc(100% + 0.4rem);
+			left: 0;
+			right: 0;
+		}
+
+		/* ── let the screenshots be screenshots ─────────────────────
+		   On a phone the film is about 150px wide and had a badge across
+		   its top corner, a wide "Tap for sound" pill across its middle
+		   and a play button on top of that. Three pieces of our chrome
+		   over somebody's face. The badge goes (the caption underneath
+		   already says the same words), the pill loses its label and
+		   becomes a disc, and what is left is a row of three small
+		   controls sitting on the floor of the frame where the picture
+		   is darkest anyway. */
+		.spot__chip { display: none; }
+		.spot__deck { bottom: 0.5rem; gap: 0.22rem; }
+		.spot__sound {
+			font-size: 0;
+			gap: 0;
+			padding: 0.34rem;
+			border-radius: 9999px;
+		}
+		.spot__sound [data-spot-sound-t] { display: none; }
+		.spot__skip { width: 28px; height: 28px; }
+		/* bolder: the labels are the only words up there, so they can afford
+		   to be read from across the room. The shared row already lines them
+		   up, so they no longer need a minimum height to fake it. */
+		.spot__point { min-height: 0; align-content: end; padding-bottom: 0.3rem; gap: 0.06rem; }
+		.spot__point-t { font-size: 0.82rem; font-weight: 800; letter-spacing: -0.01em; }
+		.spot__point em { font-size: 0.76rem; font-weight: 700; }
+		.spot__point-a { width: 22px; margin-top: 0.05rem; }
+		/* the caption under the film, on one tidy pair of lines */
+		.spot__cap { padding-top: 0.45rem; }
+		.spot__cap b { font-size: 0.86rem; }
+		.spot__cap em { font-size: 0.74rem; line-height: 1.3; }
 
 		/* the ledger keeps its titles, drops the second line */
 		.spot__row { gap: 0.6rem; padding: 0.6rem 0; }

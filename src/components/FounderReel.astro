@@ -412,6 +412,18 @@ const chips = [
 			linear-gradient(180deg, rgba(7, 6, 15, 0.6) 0%, transparent 22%, transparent 62%, rgba(7, 6, 15, 0.78) 100%),
 			radial-gradient(120% 90% at 50% 40%, transparent 55%, rgba(7, 6, 15, 0.45) 100%);
 	}
+	/* YouTube paints its own watermark into the bottom of the iframe and there
+	   is no parameter left that removes it. This is an opaque floor under our
+	   control bar, deep enough to swallow it at any frame size. */
+	.freel__screen::after {
+		content: '';
+		position: absolute;
+		z-index: 3;
+		inset: auto 0 0 0;
+		height: clamp(52px, 22%, 88px);
+		pointer-events: none;
+		background: linear-gradient(180deg, transparent, rgba(7, 6, 15, 0.82) 46%, rgba(7, 6, 15, 0.96));
+	}
 
 	/* ── rails ─────────────────────────────────────────────────── */
 	.freel__top {
@@ -793,6 +805,68 @@ const chips = [
 		45%, 100% { opacity: 1; }
 	}
 
+	/* ══ the tablet, on a phone ════════════════════════════════════════
+	   It was a postage stamp wearing desktop chrome: a wide sound pill lying
+	   across the middle of the picture, six controls fighting over 300px of
+	   bar, and a clock cut off at "0:". On a phone the frame goes edge to
+	   edge, the bezel thins to a rim, the sound prompt becomes one round
+	   button up in the corner where it covers nothing, and the bar carries
+	   only what a thumb can actually hit. */
+	@media (max-width: 720px) {
+		.freel--cinema { width: 100%; }
+		.freel--cinema .freel__frame {
+			padding: 5px;
+			border-radius: 1.1rem;
+			box-shadow:
+				0 0 0 1px rgba(255, 255, 255, 0.12) inset,
+				0 22px 46px -26px rgba(12, 6, 32, 0.8);
+		}
+		.freel--cinema .freel__screen { aspect-ratio: 16 / 9; border-radius: 0.8rem; }
+		.freel--cinema .freel__notch { display: none; }
+		.freel--cinema .freel__halo { inset: -14% -6% -2%; }
+
+		/* the prompt: a lit disc in the corner, not a banner over her face */
+		.freel--cinema .freel__sound {
+			left: auto;
+			right: 0.55rem;
+			bottom: auto;
+			top: 0.55rem;
+			transform: none;
+			padding: 0.34rem;
+			gap: 0;
+			font-size: 0;
+		}
+		.freel--cinema .freel__sound-t { display: none; }
+		.freel--cinema .freel__sound-ic { width: 30px; height: 30px; }
+		.freel--cinema.has-sound .freel__sound { transform: translateY(-6px) scale(0.92); }
+		/* the kicker keeps the left half only, so the two never collide */
+		.freel--cinema .freel__top { right: 3.1rem; }
+		.freel--cinema .freel__ratio { display: none; }
+
+		/* one row, no wrapping, nothing clipped */
+		.freel--cinema .freel__bar {
+			left: 0.5rem;
+			right: 0.5rem;
+			bottom: 0.5rem;
+			gap: 0.4rem;
+			padding: 0.34rem 0.5rem 0.34rem 0.34rem;
+		}
+		.freel--cinema .freel__btn { width: 32px; height: 32px; }
+		.freel--cinema .freel__btn--skip,
+		.freel--cinema .freel__btn--vol { width: 28px; height: 28px; }
+		.freel--cinema .freel__len { font-size: 0.72rem; }
+		.freel--cinema .freel__track { height: 4px; }
+	}
+	/* narrower still: the clock keeps only the position, and the film keeps
+	   its skips, because that is what the buttons are for */
+	@media (max-width: 430px) {
+		.freel--cinema .freel__len { font-size: 0.7rem; }
+		.freel--cinema .freel__bar { gap: 0.3rem; padding-right: 0.42rem; }
+		.freel--cinema .freel__btn { width: 30px; height: 30px; }
+		.freel--cinema .freel__btn--skip,
+		.freel--cinema .freel__btn--vol { width: 26px; height: 26px; }
+	}
+
 	/* the fan and the furniture are a wide-screen luxury */
 	@media (min-width: 1024px) {
 		.freel__foot { display: flex; }
@@ -841,7 +915,10 @@ const chips = [
 	   the other frames lean in from the edges, tilted further back, so the
 	   hero still reads as a rig rather than one lonely handset. */
 	@media (max-width: 1023px) {
-		.freel { --fr-w: min(16.5rem, 32vh); }
+		/* the handset width, for the three-phone rig only. The wide frame sets
+		   its own width and was being shrunk to a 264px postage stamp by this
+		   line, which is why the briefing looked tiny on a phone. */
+		.freel:not(.freel--cinema) { --fr-w: min(16.5rem, 32vh); }
 		.freel__halo { inset: -8% -10% 2%; }
 		.freel__ghost {
 			width: calc(var(--fr-w) * 0.72);

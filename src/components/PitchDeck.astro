@@ -1581,8 +1581,12 @@ const faqSchema = {
 	.pdeck.is-theatre .pdeck__exit {
 		position: absolute;
 		z-index: 21;
-		top: 0.9rem;
-		right: 1.2rem;
+		/* The auditorium has a velvet frame around the screen, and a 1.2rem
+		   inset put this button on top of it — sitting half on the frame and
+		   half off the edge, and clipped outright on a narrower laptop. It
+		   now lines up with the Pause and Lights row, inside the picture. */
+		top: 1.5rem;
+		right: clamp(1.6rem, 2.6vw, 2.8rem);
 		display: inline-flex;
 		align-items: center;
 		gap: 0;

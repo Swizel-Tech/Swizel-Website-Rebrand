@@ -290,6 +290,31 @@ html:not(.dark) .view-worlds .gradient-text {
   background-clip: text;
 }
 
+/* The closing call to action is the last thing on every page, and it was
+   teal on all five worlds — so a founder who had just read a purple page in
+   founder's language met a boardroom-blue sign-off. It now takes whichever
+   world is on, and keeps the original teal for the default. */
+html[data-view] .site-footer .ft-cta-title .gradient-text {
+  background: linear-gradient(
+    264.34deg,
+    color-mix(in srgb, var(--view-accent) 62%, #ffffff) 0.47%,
+    var(--view-accent) 45%,
+    color-mix(in srgb, var(--view-accent) 55%, #ec4899) 93.6%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+html:not(.dark)[data-view] .site-footer .ft-cta-title .gradient-text {
+  background: linear-gradient(
+    264.34deg,
+    color-mix(in srgb, var(--view-accent) 85%, #000000) 0.47%,
+    color-mix(in srgb, var(--view-accent) 88%, #000000) 45%,
+    color-mix(in srgb, var(--view-accent) 50%, #b81d68) 93.6%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
 /* Centered content container with consistent gutters */
 .container-pad {
   width: 100%;

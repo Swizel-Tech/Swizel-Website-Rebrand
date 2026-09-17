@@ -7,7 +7,8 @@
 import { Icon } from 'astro-icon/components';
 import CardShuffle from '../CardShuffle.astro';
 import FounderReel from '../FounderReel.astro';
-import OrbitDeck from '../OrbitDeck.astro';
+import ValueFan from '../ValueFan.astro';
+import JourneyClimb from '../JourneyClimb.astro';
 import BranchTree from '../BranchTree.astro';
 import WhiteboardVideo from '../WhiteboardVideo.astro';
 import { teamDetails, MISSION, MISSION_SUPPORT, VISION, CORE_VALUES } from '../../consts';
@@ -305,13 +306,13 @@ const values = [
 				</article>
 			</div>
 
-			<!-- the four promises, one per card -->
+			<!-- the four promises, opening out of one pivot -->
 			<div class="fa-vals">
 				<span class="fa-vals-label fd-rev">Core values · in the order the work happens</span>
-				<OrbitDeck
-					class="fa-wheel"
+				<ValueFan
+					class="fa-fan fd-rev"
 					label="In the order the work happens"
-					every={6}
+					every={5}
 					items={CORE_VALUES.map((v) => ({ icon: v.icon, title: v.name, desc: v.desc }))}
 				/>
 			</div>
@@ -360,35 +361,20 @@ const values = [
 				<h2 class="fa-h">Founder to founder, <em>the short version.</em></h2>
 			</div>
 
-			<ol class="fa-journey" data-drift>
-				<span class="fa-journey-line" aria-hidden="true"></span>
-				{
-					journey.map((j, i) => (
-						<li class="fa-stop fd-rev" style={`--i:${i % 3}`}>
-							<span class="fa-stop-year" aria-hidden="true">{j.tag}</span>
-							<span class="fa-stop-node" aria-hidden="true" />
-							<div class="fa-stop-card">
-								<h3 class="fa-stop-t">{j.title}</h3>
-								<p class="fa-stop-d">{j.desc}</p>
-							</div>
-						</li>
-					))
-				}
-				<li class="fa-stop fa-stop--next fd-rev" style="--i:1">
-					<span class="fa-stop-year" aria-hidden="true">Next</span>
-					<span class="fa-stop-node" aria-hidden="true" />
-					<div class="fa-stop-card">
-						<h3 class="fa-stop-t">Your product.</h3>
-						<p class="fa-stop-d">
-							This chapter is yours to write. We bring the crew.
-						</p>
-						<a href="/contact" class="fa-link">
-							Start Week 1
-							<Icon width={15} name="mdi:arrow-right" />
-						</a>
-					</div>
-				</li>
-			</ol>
+			<JourneyClimb
+				class="fa-climb fd-rev"
+				every={5}
+				stops={[
+					...journey,
+					{
+						tag: 'Next',
+						title: 'Your product.',
+						desc: 'This chapter is yours to write. We bring the crew.',
+						href: '/contact',
+						hrefLabel: 'Start Week 1',
+					},
+				]}
+			/>
 		</div>
 	</section>
 
@@ -698,8 +684,20 @@ const values = [
 		--fa-ink: #1d1430;
 		--fa-muted: rgba(29, 20, 48, 0.66);
 		--fa-acc: #6d3fe0;
-		--fa-line: rgba(29, 20, 48, 0.1);
-		--fa-card: rgba(29, 20, 48, 0.04);
+		/* This whole page was built dark first. A card was a 4% wash of ink and
+		   its edge a 10% hairline — which is exactly right on near-black, and
+		   invisible on a pale lavender page: every card on the About page was
+		   reading as a faint rectangle printed on the background rather than a
+		   card sitting on it. In daylight a card is paper: white, with an edge
+		   you can see and a shadow underneath. Every surface here is built on
+		   these two values, so fixing them fixes the page rather than eleven
+		   separate rules. */
+		--fa-line: rgba(76, 47, 143, 0.17);
+		--fa-card: #ffffff;
+		--fa-lift:
+			0 1px 0 #fff inset,
+			0 24px 44px -32px rgba(48, 26, 100, 0.4),
+			0 5px 14px -11px rgba(48, 26, 100, 0.24);
 		background:
 			radial-gradient(1000px 540px at 82% -6%, rgba(139, 92, 246, 0.12), transparent 62%),
 			linear-gradient(180deg, #f4f1fb 0%, #ece7f8 55%, #f4f1fb 100%);
@@ -1570,9 +1568,89 @@ const values = [
 		pointer-events: none;
 		background: linear-gradient(180deg, transparent, rgba(11, 7, 22, 0.62) 34%, rgba(11, 7, 22, 0.93) 66%);
 	}
+	/* paper needs a shadow or it is just a shape. One rule, every surface on
+	   the page that is meant to sit above the background. */
+	:global(html:not(.dark)) .fabout .fa-mate,
+	:global(html:not(.dark)) .fabout .fa-val-card,
+	:global(html:not(.dark)) .fabout .fa-svc,
+	:global(html:not(.dark)) .fabout .fa-stop-card,
+	:global(html:not(.dark)) .fabout .fa-quote,
+	:global(html:not(.dark)) .fabout .fa-inside-card,
+	:global(html:not(.dark)) .fabout .fa-brev,
+	:global(html:not(.dark)) .fabout .fa-cta-card,
+	:global(html:not(.dark)) .fabout .fa-chip {
+		box-shadow: var(--fa-lift);
+	}
+
 	:global(html:not(.dark)) .fabout .fa-mv-floor {
 		background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.7) 34%, rgba(255, 255, 255, 0.95) 66%);
 	}
+
+	/* ══ daylight ══════════════════════════════════════════════════════
+	   This block was built dark first: a 4% ink wash for the card, a 10%
+	   hairline for the border, and a white top gradient meant to catch light
+	   on a dark surface. Dropped onto a pale lavender page all three vanish,
+	   and the panels read as faint rectangles printed on the background
+	   rather than as cards sitting on it. In daylight they get what a card
+	   actually needs — white paper, a real edge and a shadow to lift it —
+	   and the mission panel gets enough contrast to carry the sentence it
+	   is there to carry. */
+	:global(html:not(.dark)) .fabout .fa-mv-panel {
+		border-color: rgba(76, 47, 143, 0.16);
+		background:
+			linear-gradient(180deg, #ffffff, #fbf9ff 62%, #f6f2fe);
+		box-shadow:
+			0 1px 0 #fff inset,
+			0 26px 48px -32px rgba(48, 26, 100, 0.42),
+			0 6px 16px -12px rgba(48, 26, 100, 0.26);
+	}
+	:global(html:not(.dark)) .fabout .fa-mv-panel:hover {
+		border-color: rgba(76, 47, 143, 0.26);
+		box-shadow:
+			0 1px 0 #fff inset,
+			0 34px 56px -30px rgba(48, 26, 100, 0.5),
+			0 8px 18px -12px rgba(48, 26, 100, 0.3);
+	}
+	/* the tag was accent-on-accent at 14%, which is a whisper on white */
+	:global(html:not(.dark)) .fabout .fa-mv-tag {
+		color: #4a27ad;
+		border-color: rgba(74, 39, 173, 0.3);
+		background: rgba(74, 39, 173, 0.09);
+	}
+	:global(html:not(.dark)) .fabout .fa-mv-sub { color: rgba(29, 20, 48, 0.68); }
+	/* the mission panel: the darkest ink on the page, on the cleanest paper,
+	   because it is the one sentence the company is built on */
+	:global(html:not(.dark)) .fabout .fa-mission {
+		background: linear-gradient(180deg, #ffffff, #f7f3ff);
+		border-color: rgba(76, 47, 143, 0.14);
+		box-shadow:
+			0 1px 0 #fff inset,
+			0 30px 56px -34px rgba(48, 26, 100, 0.45);
+	}
+	:global(html:not(.dark)) .fabout .fa-mission p { color: #160f2b; }
+	/* the rotating ring is a 60% wash of the accent — fine against near-black,
+	   invisible against near-white. In daylight it runs at full strength. */
+	:global(html:not(.dark)) .fabout .fa-mission-ring {
+		padding: 2px;
+		background: conic-gradient(
+			from var(--fa-ang, 0deg),
+			#6d3fe0,
+			rgba(109, 63, 224, 0.12) 30%,
+			#d6247e 55%,
+			rgba(214, 36, 126, 0.12) 80%,
+			#6d3fe0
+		);
+		box-shadow: 0 24px 50px -34px rgba(48, 26, 100, 0.55);
+	}
+	/* the drawn artwork behind each panel was tuned for a dark card and
+	   disappears on white; it needs weight, not opacity */
+	:global(html:not(.dark)) .fabout .fa-arc,
+	:global(html:not(.dark)) .fabout .fa-globe-o,
+	:global(html:not(.dark)) .fabout .fa-globe-m,
+	:global(html:not(.dark)) .fabout .fa-globe-ring {
+		opacity: 0.5;
+	}
+	:global(html:not(.dark)) .fabout .fa-arc-ghost { opacity: 0.16; }
 
 	@media (max-width: 700px) {
 		.fa-mv-floor { height: 52%; }
@@ -2270,7 +2348,7 @@ const values = [
 			max-width: none;
 			margin: 0.9rem calc(50% - 50vw) 0;
 			width: 100vw;
-			padding-inline: 0.75rem;
+			padding-inline: 0.5rem;
 		}
 		/* the huge conic aura reads as a stray ring over content on
 		   small screens — desktop only */

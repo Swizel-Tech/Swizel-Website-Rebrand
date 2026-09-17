@@ -4,6 +4,7 @@ import MainLayout from '../layouts/MainLayout.astro';
 import ContactForm from '../components/blocks/ContactForm.astro';
 import ToastContainer from '../components/elements/ToastContainer.astro';
 import ContactCampus from '../components/sections/ContactCampus.astro';
+import ContactFounder from '../components/sections/ContactFounder.astro';
 import { faq } from '../consts';
 
 const SEO_TITLE = 'Contact Swizel Technologies Limited | Start Your Project';
@@ -24,7 +25,10 @@ const channels = [
 	<!-- Campus world: the front office, with its own sheet and its own desk. -->
 	<ContactCampus />
 
-	<article class="bdbody ct">
+	<!-- Founder world: the desk, with the three answers before the form. -->
+	<ContactFounder />
+
+	<article class="bdbody ct ct--shared">
 		<!-- animated ambience: drifting glow orbs + a faint signal grid -->
 		<div class="ct-bg" aria-hidden="true">
 			<span class="ct-orb ct-orb--1"></span>
@@ -113,6 +117,12 @@ const channels = [
 </style>
 
 <style>
+	/* The founder world now has a contact page of its own, so the shared one
+	   stands down there — and only there; boardroom, builder and studio still
+	   use it. */
+	:global(html[data-view='founder']) .ct--shared { display: none !important; }
+	:global(html[data-view='founder']) .ct-t--founder { display: none; }
+
 	.ct {
 		--bd-accent: #28a6ec;
 		--bd-ink: #f4f6fb;

@@ -66,6 +66,11 @@ function setupReel(root: HTMLElement) {
 		muteBtn2?.setAttribute('aria-label', on ? 'Mute' : 'Unmute');
 	};
 
+	// On a narrow bar there is no room for "0:00 / 9:41", and the second half
+	// was being cut to "0:" — worse than useless. Below this width the clock
+	// shows the position only.
+	const tight = window.matchMedia('(max-width: 430px)');
+
 	// 9:16 was the aspect ratio wearing a clock's clothes. This is the time.
 	const clockText = (secs: number) => {
 		const t = Math.max(0, Math.floor(secs));
@@ -87,7 +92,11 @@ function setupReel(root: HTMLElement) {
 					const frac = (player as any).getVideoLoadedFraction?.();
 					if (typeof frac === 'number') buf.style.width = (frac * 100).toFixed(1) + '%';
 				}
-				if (clock) clock.textContent = `${clockText(now)} / ${clockText(d)}`;
+				if (clock) {
+					clock.textContent = tight.matches
+						? clockText(now)
+						: `${clockText(now)} / ${clockText(d)}`;
+				}
 			}
 		}
 		raf = requestAnimationFrame(draw);
