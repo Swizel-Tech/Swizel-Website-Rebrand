@@ -155,7 +155,6 @@ const buildTypes = [
 					{
 						stats.map((s) => (
 							<li class="builder--stat">
-								<span class="builder--statlabel">{s.label.toLowerCase()}:</span>
 								<span
 									class="builder--statnum"
 									data-count-to={s.to}
@@ -164,6 +163,7 @@ const buildTypes = [
 									{s.to}
 									{s.suffix}
 								</span>
+								<span class="builder--statlabel">{s.label}</span>
 							</li>
 						))
 					}
@@ -673,18 +673,17 @@ const buildTypes = [
 		background: rgba(24, 222, 190, 0.08);
 	}
 
+	/* the same set of four the Campus and Founder heroes carry: the number
+	   large, its label beneath, one line at every width */
 	.builder--stats {
 		display: flex;
 		justify-content: space-between;
-		gap: clamp(0.8rem, 2vw, 1.6rem);
-		flex-wrap: wrap;
+		gap: clamp(0.5rem, 2vw, 1.6rem);
+		flex-wrap: nowrap;
 		padding-top: 1.5rem;
 		border-top: 1px solid rgba(255, 255, 255, 0.08);
 	}
-	@media (max-width: 600px) {
-		.builder--stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem 1rem; }
-		.builder--stat { min-width: 0; }
-	}
+	.builder--stat { flex: 1 1 0; min-width: 0; }
 	.builder--statnum {
 		font-family: 'Bebas Neue', sans-serif;
 		font-size: clamp(1.6rem, 2.4vw, 2.2rem);
@@ -840,60 +839,35 @@ const buildTypes = [
 	.builder--npm.is-copied .builder--npm-i--copy { display: none; }
 	.builder--npm.is-copied .builder--npm-i--done { display: block; }
 
+	/* The numbers are the Campus and Founder set, wrapped in braces so they
+	   still read as a declaration. The rule that sits above the numbers in
+	   those views moves up here, so it stays above the opening brace. */
 	.builder--consts {
 		font-family: ui-monospace, 'SF Mono', Menlo, monospace;
 		margin-top: 0.2rem;
+		padding-top: 1.5rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.08);
 	}
 	.builder--consts-k {
 		display: block;
 		font-size: 0.72rem;
 		color: rgba(223, 243, 247, 0.38);
 	}
-	/* one line, the way the other views carry their numbers — and if the
-	   column ever gets too narrow for four, it scrolls rather than wraps */
 	.builder--consts .builder--stats {
-		display: flex;
-		flex-wrap: nowrap;
-		gap: 0 clamp(0.45rem, 1vw, 1.2rem);
 		list-style: none;
-		margin: 0.25rem 0;
-		padding: 0 0 0 clamp(0.6rem, 0.9vw, 1.1rem);
+		margin: 0.5rem 0 0.6rem;
+		padding: 0 0 0 1.1rem;
 		border: 0;
-		overflow-x: auto;
-		scrollbar-width: none;
 	}
-	.builder--consts .builder--stats::-webkit-scrollbar { display: none; }
-	.builder--consts .builder--stat {
-		display: inline-flex;
-		align-items: baseline;
-		gap: 0.35rem;
-		flex: none;
-		white-space: nowrap;
-	}
-	/* the type shrinks with the column so all four stay on the line */
-	.builder--consts .builder--statlabel {
-		font-size: clamp(0.58rem, 0.82vw, 0.74rem);
-		text-transform: none;
-		letter-spacing: 0;
-		white-space: nowrap;
-	}
-	.builder--consts .builder--statnum {
-		font-size: clamp(0.8rem, 1.16vw, 1.05rem);
-		font-family: inherit;
-	}
-	/* the tightest two-column band: the copy column is at its narrowest
-	   here, so the numbers wear the same small type the phone uses */
-	@media (min-width: 1024px) and (max-width: 1199px) {
-		.builder--consts .builder--stats { gap: 0 0.3rem; padding-left: 0.4rem; }
-		.builder--consts .builder--stat { gap: 0.24rem; }
-		.builder--consts .builder--statlabel { font-size: 0.56rem; }
-		.builder--consts .builder--statnum { font-size: 0.78rem; }
+	.builder--consts .builder--statlabel { text-transform: uppercase; }
+	/* the tightest two-column band — the copy column is at its narrowest
+	   here, so the labels tuck in a little to hold the single line */
+	@media (min-width: 1024px) and (max-width: 1179px) {
+		.builder--statlabel { font-size: 0.66rem; letter-spacing: 0.03em; }
+		.builder--stats { gap: 0.4rem; }
 	}
 	@media (max-width: 600px) {
-		.builder--consts .builder--stats { gap: 0 0.32rem; padding-left: 0.4rem; }
-		.builder--consts .builder--stat { gap: 0.26rem; }
-		.builder--consts .builder--statlabel { font-size: 0.58rem; }
-		.builder--consts .builder--statnum { font-size: 0.8rem; }
+		.builder--consts .builder--stats { padding-left: 0.7rem; }
 		.builder--npm code { font-size: 0.72rem; }
 	}
 
@@ -1744,9 +1718,15 @@ const buildTypes = [
 		.builder--cta { gap: 0.6rem; margin-bottom: 1.4rem; }
 		.builder--cta > * { flex: 1 1 auto; }
 		.builder--tour { padding: 0.8rem 1rem; font-size: 0.78rem; justify-content: center; }
-		.builder--stats {
-			gap: 1.4rem;
+		/* the Founder hero's phone sizing, so the four still share one line */
+		.builder--stats { gap: 0.4rem; padding-top: 1.2rem; }
+		.builder--statnum { font-size: clamp(1.15rem, 5.4vw, 1.7rem); }
+		.builder--statlabel {
+			font-size: clamp(0.62rem, 2.5vw, 0.72rem);
+			letter-spacing: 0.03em;
+			margin-top: 0.2rem;
 		}
+		.builder--consts { padding-top: 1.2rem; }
 		/* the gutter can't scroll with the code pane on phones — drop it
 		   so the numbers never drift out of line with the code */
 		.ide2--editor {
@@ -1826,7 +1806,7 @@ const buildTypes = [
 		color: #0f766e;
 		background: rgba(13, 148, 136, 0.08);
 	}
-	:global(html:not(.dark)) .builder--stats { border-top-color: rgba(20, 22, 42, 0.1); }
+	:global(html:not(.dark)) .builder--consts { border-top-color: rgba(20, 22, 42, 0.1); }
 	:global(html:not(.dark)) .builder--statnum {
 		background: linear-gradient(135deg, #0d9488, #0e7490);
 		-webkit-background-clip: text;
