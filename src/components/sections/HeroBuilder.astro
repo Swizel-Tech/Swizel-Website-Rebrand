@@ -52,12 +52,14 @@ shipped.forEach(([name, sector]) => ship(name, sector));
 done('65+ products live in 10+ countries');`;
 
 // the file tree down the side of the machine: real repos, real work
+// editor.js leads — the machine opens on live code, the way an editor does.
+// The reel sits at the end of the folder, where a media file belongs.
 const tree = [
 	{ kind: 'dir', name: 'swizel', open: true, depth: 0 },
-	{ kind: 'file', name: 'the-reel.mp4', depth: 1, tab: 'watch', icon: 'mdi:play-box-outline' },
 	{ kind: 'file', name: 'editor.js', depth: 1, tab: 'run', icon: 'mdi:language-javascript', dirty: true },
 	{ kind: 'file', name: 'deploy.log', depth: 1, tab: 'term', icon: 'mdi:console' },
 	{ kind: 'file', name: 'README.md', depth: 1, tab: 'read', icon: 'mdi:language-markdown' },
+	{ kind: 'file', name: 'the-reel.mp4', depth: 1, tab: 'watch', icon: 'mdi:play-box-outline' },
 ];
 
 // the deploy log that types itself in the terminal pane
@@ -192,6 +194,17 @@ const buildTypes = [
 					<i></i><i></i><i></i>
 				</span>
 				<span class="wkst__title">swizel — ~/builds</span>
+				<!-- phones have no room for a tree beside the code, so it
+				     arrives as a drawer from this button instead -->
+				<button
+					class="wkst__files"
+					type="button"
+					data-wkst-drawer
+					aria-label="Show the file tree"
+				>
+					<Icon width={14} name="mdi:file-tree-outline" />
+					<span>Files</span>
+				</button>
 				<button class="wkst__k" type="button" data-wkst-open aria-label="Open the command palette">
 					<Icon width={13} name="mdi:magnify" />
 					<span>Jump to…</span>
@@ -214,6 +227,7 @@ const buildTypes = [
 						class="wkst__collapse"
 						type="button"
 						data-wkst-tree
+						data-wkst-drawer
 						aria-label="Hide the file tree"
 						title="Hide the file tree"
 					>
@@ -235,7 +249,7 @@ const buildTypes = [
 								</button>
 							) : n.tab ? (
 								<button
-									class:list={['wkst__file', { 'is-on': n.tab === 'watch' }]}
+									class:list={['wkst__file', { 'is-on': n.tab === 'run' }]}
 									type="button"
 									style={`--d:${n.depth}`}
 									data-bstack-tab={n.tab}
@@ -289,10 +303,7 @@ const buildTypes = [
 
 				<div class="wkst__main">
 					<div class="wkst__tabs" role="tablist" aria-label="Open files">
-						<button class="wkst__tab is-on" type="button" role="tab" aria-selected="true" data-bstack-tab="watch">
-							<Icon width={13} name="mdi:play-box-outline" />the-reel.mp4
-						</button>
-						<button class="wkst__tab" type="button" role="tab" aria-selected="false" data-bstack-tab="run">
+						<button class="wkst__tab is-on" type="button" role="tab" aria-selected="true" data-bstack-tab="run">
 							<Icon width={13} name="mdi:language-javascript" />editor.js
 							<span class="wkst__dot" aria-hidden="true" />
 						</button>
@@ -301,6 +312,9 @@ const buildTypes = [
 						</button>
 						<button class="wkst__tab" type="button" role="tab" aria-selected="false" data-bstack-tab="read">
 							<Icon width={13} name="mdi:language-markdown" />README.md
+						</button>
+						<button class="wkst__tab" type="button" role="tab" aria-selected="false" data-bstack-tab="watch">
+							<Icon width={13} name="mdi:play-box-outline" />the-reel.mp4
 						</button>
 						<button
 							class="wkst__tab wkst__tab--site"
@@ -316,23 +330,9 @@ const buildTypes = [
 					</div>
 
 					<div class="wkst__panes">
-						<!-- the reel, first thing you meet -->
-						<div class="wkst__pane is-on" role="tabpanel" data-bstack-pane="watch">
-							<FilmPlayer
-								videoId="R2jdjZwv-ZE"
-								label="Inside a Swizel build: the engineers, the stack and the ship"
-								tag="git log --the-team"
-								class="wkst__film"
-							/>
-						</div>
-
-						<!-- the editor that actually runs -->
-						<div class="wkst__pane" role="tabpanel" data-bstack-pane="run" hidden>
+						<!-- the editor that actually runs: the machine opens here -->
+						<div class="wkst__pane is-on" role="tabpanel" data-bstack-pane="run">
 							<div class="builder--ide" id="builder-ide" data-tour="ide">
-								<span class="ide2--cue" id="builder-ide-cue" aria-hidden="true">
-									<Icon width={15} name="mdi:gesture-tap" />
-									live · editable
-								</span>
 								<div class="ide2--bar">
 									<span class="ide2--dot"></span>
 									<span class="ide2--dot"></span>
@@ -352,7 +352,10 @@ const buildTypes = [
 									<div class="ide2--console" data-tour="out">
 										<div class="ide2--consolebar">
 											<span>console</span>
-											<span class="ide2--hint">editable · ⌘/Ctrl + Enter</span>
+											<span class="ide2--cue" id="builder-ide-cue">
+												<Icon width={13} name="mdi:gesture-tap" />
+												live · editable<span class="ide2--cue-long"> · ⌘/Ctrl + Enter</span>
+											</span>
 										</div>
 										<div class="ide2--out" id="builder-out"></div>
 									</div>
@@ -374,73 +377,69 @@ const buildTypes = [
 							</div>
 						</div>
 
-						<!-- a shipped site, in a browser -->
-					<div class="wkst__pane" role="tabpanel" data-bstack-pane="site" hidden>
-						<div class="wkst__www">
-							<div class="wkst__www-bar">
-								<span class="wkst__www-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-								<span class="wkst__www-url">
-									<Icon width={12} name="mdi:lock" />
-									<span data-wkst-host>—</span>
-								</span>
-								<a
-									class="wkst__www-go"
-									href="/portfolio"
-									target="_blank"
-									rel="noopener"
-									data-wkst-visit
-								>
-									Visit
-									<Icon width={12} name="mdi:arrow-top-right" />
-								</a>
-							</div>
-							<div class="wkst__www-glass">
-								<img src="" alt="" data-wkst-shot />
-							</div>
-							<p class="wkst__www-cap">
-								<b data-wkst-name>—</b>
-								<span data-wkst-tag>—</span>
-							</p>
-						</div>
-					</div>
-
-					<!-- the readme, because every repo has one -->
+						<!-- the readme, because every repo has one -->
 						<div class="wkst__pane" role="tabpanel" data-bstack-pane="read" hidden>
 							<div class="wkst__read">
 								<h3># Swizel</h3>
-								<p>
-									A senior team you can plug into your idea. We design it,
-									build it, take it to market and keep it running.
-								</p>
+								<p>A senior team you can plug into your idea — designed, built, shipped and kept running.</p>
 								<h4>## What we ship</h4>
 								<ul>
 									<li>Web, iOS and Android, and the APIs behind them</li>
 									<li>ERPs, dashboards, marketplaces, fintech rails</li>
-									<li>The marketing that takes it to people, after launch</li>
 								</ul>
 								<h4>## Getting started</h4>
-								<pre><code>$ swizel init --your-idea
-$ swizel ship</code></pre>
-								<p class="wkst__read-note">
-									→ or press <kbd>⌘K</kbd> and jump straight to it.
+								<pre><code>$ swizel ship</code></pre>
+								<p class="wkst__read-note">→ or press <kbd>⌘K</kbd> and jump straight to it.</p>
+							</div>
+						</div>
+
+						<!-- a shipped site, in a browser -->
+						<div class="wkst__pane" role="tabpanel" data-bstack-pane="site" hidden>
+							<div class="wkst__www">
+								<div class="wkst__www-bar">
+									<span class="wkst__www-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+									<span class="wkst__www-url">
+										<Icon width={12} name="mdi:lock" />
+										<span data-wkst-host>—</span>
+									</span>
+									<a class="wkst__www-go" href="/portfolio" target="_blank" rel="noopener" data-wkst-visit>
+										Visit
+										<Icon width={12} name="mdi:arrow-top-right" />
+									</a>
+								</div>
+								<div class="wkst__www-glass">
+									<img src="" alt="" data-wkst-shot />
+								</div>
+								<p class="wkst__www-cap">
+									<b data-wkst-name>—</b>
+									<span data-wkst-tag>—</span>
 								</p>
 							</div>
 						</div>
-					</div>
 
-					<!-- the status bar every editor wears -->
-					<div class="wkst__status">
-						<span class="wkst__st wkst__st--branch">
-							<Icon width={12} name="mdi:source-branch" />main
-						</span>
-						<span class="wkst__st"><i class="wkst__pulse" aria-hidden="true" />deployed</span>
-						<span class="wkst__st wkst__st--dim">0 errors</span>
-						<span class="wkst__st wkst__st--dim">65+ products</span>
-						<span class="wkst__spacer" aria-hidden="true" />
-						<span class="wkst__st wkst__st--dim">UTF-8</span>
-						<span class="wkst__st wkst__st--dim">Ln 1, Col 1</span>
+						<!-- the reel: last file in the folder, where a media file belongs -->
+						<div class="wkst__pane" role="tabpanel" data-bstack-pane="watch" hidden>
+							<FilmPlayer
+								videoId="R2jdjZwv-ZE"
+								label="Inside a Swizel build: the engineers, the stack and the ship"
+								tag="git log --the-team"
+								class="wkst__film"
+							/>
+						</div>
 					</div>
 				</div>
+			</div>
+			<!-- the status bar every editor wears -->
+			<div class="wkst__status">
+				<span class="wkst__st wkst__st--branch">
+					<Icon width={12} name="mdi:source-branch" />main
+				</span>
+				<span class="wkst__st"><i class="wkst__pulse" aria-hidden="true" />deployed</span>
+				<span class="wkst__st wkst__st--dim">0 errors</span>
+				<span class="wkst__st wkst__st--dim">65+ products</span>
+				<span class="wkst__spacer" aria-hidden="true" />
+				<span class="wkst__st wkst__st--dim">UTF-8</span>
+				<span class="wkst__st wkst__st--dim">Ln 1, Col 1</span>
 			</div>
 
 			<script type="application/json" data-wkst-sites set:html={JSON.stringify(shipped)} />
@@ -572,14 +571,19 @@ $ swizel ship</code></pre>
 	   IDE panel (nowrap code) scrolls internally instead of forcing the whole
 	   hero wider than the phone viewport */
 	.builder--layout > * { min-width: 0; }
-	@media (min-width: 1024px) {
+	/* Two columns only once there is room for two: below this the machine
+	   was squeezed to about 530px, which made every pane short and pushed
+	   the numbers off the end of their line. Stacked, it gets the full
+	   width and the hero reads better on a laptop or a landscape tablet. */
+	@media (min-width: 1200px) {
 		.builder--layout {
 			/* the machine leads: it is the thing people came to touch */
 			grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
 			gap: 2.4rem;
+			/* the machine is the height of one 16/9 window now, so it rides
+			   the middle of the copy rather than leaving a hole beneath it */
+			align-items: center;
 		}
-		/* start the panel at the headline, not the eyebrow line above it */
-		.wkst { margin-top: 2.8rem; }
 	}
 
 	.builder--eyebrow {
@@ -853,28 +857,43 @@ $ swizel ship</code></pre>
 		font-size: 0.72rem;
 		color: rgba(223, 243, 247, 0.38);
 	}
+	/* one line, the way the other views carry their numbers — and if the
+	   column ever gets too narrow for four, it scrolls rather than wraps */
 	.builder--consts .builder--stats {
 		display: flex;
-		flex-wrap: wrap;
-		gap: 0.2rem 1.4rem;
+		flex-wrap: nowrap;
+		gap: 0 clamp(0.45rem, 1vw, 1.2rem);
 		list-style: none;
 		margin: 0.25rem 0;
-		padding: 0 0 0 1.1rem;
+		padding: 0 0 0 clamp(0.6rem, 0.9vw, 1.1rem);
 		border: 0;
+		overflow-x: auto;
+		scrollbar-width: none;
 	}
+	.builder--consts .builder--stats::-webkit-scrollbar { display: none; }
 	.builder--consts .builder--stat {
 		display: inline-flex;
 		align-items: baseline;
-		gap: 0.4rem;
+		gap: 0.35rem;
+		flex: none;
+		white-space: nowrap;
 	}
+	/* the type shrinks with the column so all four stay on the line */
 	.builder--consts .builder--statlabel {
-		font-size: 0.74rem;
+		font-size: clamp(0.58rem, 0.82vw, 0.74rem);
 		text-transform: none;
 		letter-spacing: 0;
+		white-space: nowrap;
 	}
-	.builder--consts .builder--statnum { font-size: 1.05rem; font-family: inherit; }
-	@media (max-width: 520px) {
-		.builder--consts .builder--stats { gap: 0.15rem 1rem; }
+	.builder--consts .builder--statnum {
+		font-size: clamp(0.8rem, 1.16vw, 1.05rem);
+		font-family: inherit;
+	}
+	@media (max-width: 600px) {
+		.builder--consts .builder--stats { gap: 0 0.32rem; padding-left: 0.4rem; }
+		.builder--consts .builder--stat { gap: 0.26rem; }
+		.builder--consts .builder--statlabel { font-size: 0.58rem; }
+		.builder--consts .builder--statnum { font-size: 0.8rem; }
 		.builder--npm code { font-size: 0.72rem; }
 	}
 
@@ -945,11 +964,18 @@ $ swizel ship</code></pre>
 		font-size: 0.64rem;
 	}
 
+	/* The tree is taken out of flow so its length can never decide how tall
+	   the machine is — the open file does that, and the tree scrolls if it
+	   runs past. The column it used to occupy is still reserved by the grid,
+	   so the fold animation is unchanged. */
 	.wkst__body {
+		position: relative;
 		display: grid;
 		grid-template-columns: var(--w-tree) minmax(0, 1fr);
 		transition: grid-template-columns 0.32s cubic-bezier(0.22, 1, 0.36, 1);
 	}
+	.wkst__rail { grid-column: 1; }
+	.wkst__main { grid-column: 2; }
 	/* collapsed: the tree folds away to a rail you can tap to bring back */
 	.wkst.is-folded .wkst__body { grid-template-columns: 2.2rem minmax(0, 1fr); }
 	.wkst.is-folded .wkst__tree { display: none; }
@@ -999,20 +1025,33 @@ $ swizel ship</code></pre>
 
 	/* the tree */
 	.wkst__tree {
+		position: absolute;
+		inset: 0 auto 0 0;
+		width: var(--w-tree);
 		display: flex;
 		flex-direction: column;
-		gap: 0.1rem;
-		padding: 0.55rem 0.35rem;
+		gap: 0.04rem;
+		padding: 0.45rem 0.35rem;
 		border-right: 1px solid var(--w-line);
 		background: rgba(255, 255, 255, 0.012);
-		overflow: hidden;
+		overflow-x: hidden;
+		overflow-y: auto;
+		scrollbar-width: thin;
+		scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+	}
+	.wkst__tree::-webkit-scrollbar { width: 6px; }
+	.wkst__tree::-webkit-scrollbar-thumb {
+		border-radius: 9999px;
+		background: rgba(255, 255, 255, 0.16);
 	}
 	.wkst__dir,
 	.wkst__file {
 		display: flex;
 		align-items: center;
 		gap: 0.34rem;
-		padding: 0.24rem 0.4rem 0.24rem calc(0.4rem + var(--d, 0) * 0.65rem);
+		flex: none;
+		line-height: 1.5;
+		padding: 0.17rem 0.4rem 0.17rem calc(0.4rem + var(--d, 0) * 0.65rem);
 		border: 0;
 		border-radius: 0.35rem;
 		background: transparent;
@@ -1082,55 +1121,119 @@ $ swizel ship</code></pre>
 		50% { opacity: 1; transform: scale(1); }
 	}
 
+	/* ── one window, one height ──────────────────────────────────────
+	   Every file opens into the same box, so no tab is ever longer than
+	   the last and the reel has no dead black beneath it. The box is the
+	   film's own shape, which is why the film fills it exactly. */
 	.wkst__panes {
 		position: relative;
-		flex: 1 1 auto;
-		min-height: clamp(20rem, 34vw, 29rem);
+		flex: none;
+		aspect-ratio: 16 / 9;
 	}
-	.wkst__pane[hidden] { display: none; }
+	.wkst__pane {
+		position: absolute;
+		inset: 0;
+		display: flex;
+		flex-direction: column;
+		min-height: 0;
+		overflow: hidden;
+	}
+	/* [hidden] must win over any display a pane sets for itself: a display
+	   further down the sheet quietly un-hides it, which is how the reel
+	   ended up sitting on top of the editor. */
+	.wkst__pane[hidden] { display: none !important; }
 	.wkst__pane.is-on { animation: wkst-in 0.3s cubic-bezier(0.22, 1, 0.36, 1) both; }
 	@keyframes wkst-in { from { opacity: 0; transform: translateY(6px); } }
-	/* The film keeps its 16/9. Forcing height:100% here collapsed it to a
-	   2px sliver, because the pane has no definite height to resolve
-	   against — the pane's min-height is what gives the box its room. */
-	.wkst [data-bstack-pane='watch'] {
-		padding: 0.55rem;
-		display: grid;
-		align-content: center;
-	}
 
-	/* the editor loses its own frame inside the machine */
-	.wkst .builder--ide { border: 0; border-radius: 0; box-shadow: none; margin: 0; }
-	/* the cue was a bobbing lozenge sitting on the first lines of code.
-	   It is a quiet chip in the corner of the window bar now. */
+	/* the editor loses its own frame inside the machine, and splits the
+	   window between code and console instead of running off the bottom */
+	.wkst .builder--ide {
+		border: 0;
+		border-radius: 0;
+		box-shadow: none;
+		margin: 0;
+		flex: 1 1 auto;
+		min-height: 0;
+		display: flex;
+		flex-direction: column;
+	}
+	.wkst .ide2--bar { flex: none; border-radius: 0; }
+	.wkst .ide2--body { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+	.wkst .ide2--editor { flex: 1 1 auto; min-height: 0; }
+	.wkst .ide2--code { height: 100%; min-height: 0; overflow: auto; }
+	/* the gutter is scrolled to match by hand — a <pre> beside a textarea
+	   has no way of following it otherwise */
+	.wkst .ide2--gutter { overflow: hidden; }
+	/* neither half is allowed to eat the other: the console takes what its
+	   output needs up to half the window, and both scroll past that */
+	.wkst .ide2--console {
+		flex: none;
+		max-height: 50%;
+		display: flex;
+		flex-direction: column;
+		min-height: 0;
+	}
+	.wkst .ide2--consolebar { flex: none; }
+	.wkst .ide2--out {
+		flex: 1 1 auto;
+		min-height: 0;
+		overflow-y: auto;
+		gap: 0.3rem;
+		padding: 0.55rem 0.9rem 0.7rem;
+		font-size: 0.75rem;
+	}
+	.wkst .ide2--pill { font-size: 0.66rem; padding: 0.08rem 0.42rem; }
+	/* The cue was a bobbing lozenge over the code, then a chip that landed
+	   on the LIVE badge. It is a line of the console bar now: always in
+	   view, never on top of anything. */
 	.wkst .ide2--cue {
-		top: auto;
-		bottom: 0.5rem;
-		right: 0.6rem;
-		left: auto;
-		padding: 0.18rem 0.5rem;
-		font-size: 0.64rem;
+		position: static;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3rem;
+		padding: 0;
+		font-size: 0.66rem;
 		font-weight: 600;
 		letter-spacing: 0;
-		border-radius: 0.35rem;
-		background: color-mix(in srgb, var(--view-accent, #18debe) 16%, transparent);
-		border: 1px solid color-mix(in srgb, var(--view-accent, #18debe) 34%, transparent);
-		color: color-mix(in srgb, var(--view-accent, #18debe) 60%, #fff);
+		text-transform: none;
+		border: 0;
+		border-radius: 0;
+		background: none;
+		color: color-mix(in srgb, var(--view-accent, #18debe) 72%, #fff);
 		box-shadow: none;
 		animation: none;
 	}
+	.wkst .ide2--cue.is-hidden { opacity: 0.45; transform: none; }
+	@media (max-width: 480px) {
+		.wkst .ide2--cue-long { display: none; }
+	}
 	.wkst .ide2--cue :global(svg) { width: 12px; height: 12px; }
 
-	/* the film, in the machine's own language */
-	.wkst :global(.flm__screen) { border-radius: 0.5rem; border-color: var(--w-line); }
+	/* the film, in the machine's own language — edge to edge in its window,
+	   no frame and no letterbox of our own making */
+	.wkst :global(.wkst__film) {
+		flex: 1 1 auto;
+		min-height: 0;
+		gap: 0;
+		grid-template-rows: minmax(0, 1fr);
+	}
+	.wkst :global(.wkst__film .flm__screen) {
+		height: 100%;
+		aspect-ratio: auto;
+		border: 0;
+		border-radius: 0;
+		box-shadow: none;
+	}
 	.wkst :global(.flm__tag) { font-family: ui-monospace, monospace; }
 
 	/* the terminal */
 	.wkst__term {
+		flex: 1 1 auto;
+		min-height: 0;
+		overflow-y: auto;
 		padding: 0.9rem 1rem 1.1rem;
 		font-size: 0.74rem;
 		line-height: 1.75;
-		min-height: 17rem;
 	}
 	.wkst__tline {
 		margin: 0;
@@ -1153,11 +1256,13 @@ $ swizel ship</code></pre>
 
 	/* the readme */
 	.wkst__read {
+		flex: 1 1 auto;
+		min-height: 0;
+		overflow-y: auto;
 		padding: 1rem 1.15rem 1.2rem;
 		font-size: 0.78rem;
 		line-height: 1.7;
 		color: rgba(214, 232, 238, 0.72);
-		min-height: 17rem;
 	}
 	.wkst__read h3 { font-size: 0.95rem; color: #eafcff; margin: 0 0 0.5rem; }
 	.wkst__read h4 { font-size: 0.78rem; color: var(--view-accent, #18debe); margin: 0.9rem 0 0.35rem; }
@@ -1182,7 +1287,14 @@ $ swizel ship</code></pre>
 	}
 
 	/* a shipped site, in a browser */
-	.wkst__www { padding: 0.6rem; display: grid; gap: 0.5rem; height: 100%; align-content: start; }
+	.wkst__www {
+		flex: 1 1 auto;
+		min-height: 0;
+		padding: 0.6rem;
+		display: grid;
+		gap: 0.5rem;
+		grid-template-rows: auto minmax(0, 1fr) auto;
+	}
 	.wkst__www-bar {
 		display: flex;
 		align-items: center;
@@ -1230,7 +1342,7 @@ $ swizel ship</code></pre>
 		border-top: 0;
 		border-radius: 0 0 0.45rem 0.45rem;
 		background: #05070b;
-		aspect-ratio: 16 / 10;
+		min-height: 0;
 	}
 	.wkst__www-glass img {
 		display: block;
@@ -1344,14 +1456,60 @@ $ swizel ship</code></pre>
 	}
 	.wkst__cmd[hidden] { display: none; }
 
+	/* the Files button belongs to phones only */
+	.wkst__files {
+		display: none;
+		align-items: center;
+		gap: 0.3rem;
+		margin-left: auto;
+		padding: 0.24rem 0.5rem;
+		border: 1px solid var(--w-line);
+		border-radius: 0.45rem;
+		background: rgba(255, 255, 255, 0.03);
+		color: var(--w-dim);
+		font-family: inherit;
+		font-size: 0.68rem;
+		cursor: pointer;
+	}
+	.wkst.is-drawer .wkst__files {
+		color: #eafcff;
+		border-color: color-mix(in srgb, var(--view-accent, #18debe) 45%, transparent);
+		background: color-mix(in srgb, var(--view-accent, #18debe) 12%, transparent);
+	}
+
 	@media (max-width: 900px) {
 		.wkst__body { grid-template-columns: minmax(0, 1fr); }
-		.wkst__tree { display: none; }
+		.wkst__main { grid-column: 1; }
+		.wkst__files { display: inline-flex; }
+		.wkst__k { margin-left: 0.4rem; }
+		/* the tree slides in over the code rather than beside it — it is how
+		   every editor behaves once the window gets narrow */
+		.wkst__tree,
+		.wkst.is-folded .wkst__tree {
+			display: flex;
+			z-index: 12;
+			width: min(15rem, 74%);
+			transform: translateX(-102%);
+			box-shadow: 10px 0 34px -14px rgba(0, 0, 0, 0.85);
+			background: #0c1118;
+			transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+		}
+		.wkst.is-drawer .wkst__tree { transform: none; }
+		/* the rail has no column of its own here */
+		.wkst .wkst__rail { display: none; }
+	}
+	@media (max-width: 900px) and (prefers-reduced-motion: reduce) {
+		.wkst__tree { transition: none; }
 	}
 	@media (max-width: 640px) {
 		.wkst__title { display: none; }
 		.wkst__k { margin-left: auto; }
-		.wkst__term, .wkst__read { min-height: 13rem; font-size: 0.7rem; }
+		/* a 16/9 window on a phone is only ~190px of usable code, so the
+		   window gets a little taller here — still short enough that the
+		   whole machine sits inside one thumb's scroll */
+		.wkst__panes { aspect-ratio: 3 / 2; }
+		.wkst__term, .wkst__read { font-size: 0.7rem; }
+		.wkst .ide2--out { max-height: 6rem; }
 		.wkst__status { gap: 0.5rem; overflow-x: auto; scrollbar-width: none; }
 	}
 	@media (prefers-reduced-motion: reduce) {
@@ -1569,17 +1727,26 @@ $ swizel ship</code></pre>
 	}
 	/* Compact, well proportioned IDE on phones — scrolls inside, not down the page */
 	@media (max-width: 768px) {
+		/* the same proportions the Founder and Campus heroes use on a phone:
+		   a tighter stack, a headline that fits the thumb, buttons that
+		   share the row, and the numbers kept on one line */
 		.builder--layout {
-			gap: 1.75rem;
+			gap: 1.5rem;
 			padding-top: 0.5rem;
 		}
 		.builder--head {
-			font-size: clamp(2.2rem, 9.5vw, 3.2rem);
+			font-size: clamp(2.1rem, 9vw, 3rem);
+			margin-bottom: 0.7rem;
 		}
 		.builder--sub {
-			font-size: 1rem;
-			margin-bottom: 1.4rem;
+			font-size: 0.97rem;
+			line-height: 1.6;
+			margin-bottom: 1.2rem;
 		}
+		.builder--caps { margin-bottom: 1.2rem; }
+		.builder--cta { gap: 0.6rem; margin-bottom: 1.4rem; }
+		.builder--cta > * { flex: 1 1 auto; }
+		.builder--tour { padding: 0.8rem 1rem; font-size: 0.78rem; justify-content: center; }
 		.builder--stats {
 			gap: 1.4rem;
 		}
@@ -1593,15 +1760,14 @@ $ swizel ship</code></pre>
 		}
 		.ide2--code {
 			min-height: 0;
-			height: 150px;
+			height: 100%;
 			font-size: 0.74rem;
 			overflow: auto;
 		}
 		.ide2--out {
 			min-height: 0;
-			max-height: 168px;
 			overflow-y: auto;
-			padding-bottom: 0.75rem;
+			padding: 0.5rem 0.9rem 0.6rem;
 		}
 		.ide2--row,
 		.ide2--out .ide2--row {

@@ -98,6 +98,11 @@ export function initBuilderView() {
 		renderGutter();
 		dismissCue();
 	});
+	// the gutter is a <pre> beside the textarea, so it cannot follow the
+	// code on its own — without this the line numbers drift as you scroll
+	code.addEventListener('scroll', () => {
+		if (gutter) gutter.scrollTop = code.scrollTop;
+	});
 	renderGutter();
 	runBtn?.addEventListener('click', () => {
 		dismissCue();
@@ -236,6 +241,25 @@ export function initBuilderStack() {
 		// ── the tree folds away ────────────────────────────────────────
 		stack.querySelectorAll<HTMLButtonElement>('[data-wkst-tree]').forEach((b) =>
 			b.addEventListener('click', () => stack.classList.toggle('is-folded'))
+		);
+
+		// ── on a phone the same tree arrives as a drawer over the code ──
+		const drawer = (open?: boolean) =>
+			stack.classList.toggle('is-drawer', open);
+		stack.querySelectorAll<HTMLButtonElement>('[data-wkst-drawer]').forEach((b) =>
+			b.addEventListener('click', () => drawer())
+		);
+		// picking a file is the end of the errand: let the code back in,
+		// and so is tapping the code itself
+		stack.querySelectorAll<HTMLElement>('.wkst__file').forEach((f) =>
+			f.addEventListener('click', () => drawer(false))
+		);
+		stack.querySelector('.wkst__main')?.addEventListener(
+			'pointerdown',
+			() => {
+				if (stack.classList.contains('is-drawer')) drawer(false);
+			},
+			true
 		);
 
 		// ── the folders fold ───────────────────────────────────────────
