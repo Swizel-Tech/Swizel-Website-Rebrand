@@ -136,11 +136,10 @@ const organizationSchema = {
 			// whatever their OS is set to. Dark is opt-in, and once chosen it
 			// is remembered.
 			var stored = localStorage.getItem('theme');
-			var startView = localStorage.getItem('swizel-view');
-			// Light is the house default everywhere except the Builder world:
-			// that one is an editor, and developers read editors dark. An
-			// explicit choice still wins — this only decides the first visit.
-			if (stored === 'dark' || (!stored && startView === 'builder')) {
+			// Light is the house default: a first-time visitor gets daylight
+			// whatever their OS is set to. Dark is opt-in, and once chosen it
+			// is remembered.
+			if (stored === 'dark') {
 				document.documentElement.classList.add('dark');
 			}
 			// Raise the curtain before the first paint. It is released by

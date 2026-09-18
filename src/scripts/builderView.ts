@@ -238,6 +238,18 @@ export function initBuilderStack() {
 			b.addEventListener('click', () => stack.classList.toggle('is-folded'))
 		);
 
+		// ── the folders fold ───────────────────────────────────────────
+		stack.querySelectorAll<HTMLButtonElement>('[data-wkst-fold]').forEach((d) =>
+			d.addEventListener('click', () => {
+				const key = d.dataset.wkstFold;
+				const open = d.getAttribute('aria-expanded') !== 'false';
+				d.setAttribute('aria-expanded', open ? 'false' : 'true');
+				stack
+					.querySelectorAll<HTMLElement>(`[data-wkst-in="${key}"]`)
+					.forEach((n) => (n.hidden = open));
+			})
+		);
+
 		// ── a shipped repo opens in the browser pane ───────────────────
 		const sitesRaw = stack.querySelector('[data-wkst-sites]')?.textContent;
 		if (sitesRaw) {

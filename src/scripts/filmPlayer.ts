@@ -22,19 +22,30 @@ let ytReady: Promise<void> | null = null;
 // YouTube's API loads once per page, however many films are on it
 function loadYouTube(): Promise<void> {
 	if (ytReady) return ytReady;
-	ytReady = new Promise<void>((resolve) => {
+	ytReady = new Promise<void>((resolve, reject) => {
+		// proxies and blockers do refuse youtube outright; give up after a
+		// few seconds rather than spinning at the visitor forever
+		const bail = window.setTimeout(() => reject(new Error('youtube blocked')), 7000);
+		const done = () => {
+			window.clearTimeout(bail);
+			resolve();
+		};
 		const w = window as any;
-		if (w.YT?.Player) return resolve();
+		if (w.YT?.Player) return done();
 		const prev = w.onYouTubeIframeAPIReady;
 		w.onYouTubeIframeAPIReady = () => {
 			if (typeof prev === 'function') prev();
-			resolve();
+			done();
 		};
 		if (!document.querySelector('script[data-yt-api]')) {
 			const s = document.createElement('script');
 			s.src = 'https://www.youtube.com/iframe_api';
 			s.async = true;
 			s.dataset.ytApi = '1';
+			s.addEventListener('error', () => {
+				window.clearTimeout(bail);
+				reject(new Error('youtube blocked'));
+			});
 			document.head.appendChild(s);
 		}
 	});
@@ -177,7 +188,24 @@ export function initFilmPlayers(root: ParentNode = document) {
 				const host = q('[data-flm-yt]');
 				if (!host) return null;
 				film.classList.add('is-waiting');
-				await loadYouTube();
+				try {
+					await loadYouTube();
+				} catch {
+					// nothing to play here; hand them the film on YouTube itself
+					film.classList.remove('is-waiting');
+					film.classList.add('is-blocked');
+					if (!q('.flm__blocked')) {
+						const a = document.createElement('a');
+						a.className = 'flm__blocked';
+						a.href = `https://www.youtube.com/watch?v=${ytId}`;
+						a.target = '_blank';
+						a.rel = 'noopener';
+						a.textContent = 'Watch on YouTube \u2192';
+						screen?.appendChild(a);
+					}
+					ytReady = null; // let a later attempt try again
+					return null;
+				}
 				const mount = document.createElement('div');
 				host.appendChild(mount);
 				const player = await new Promise<any>((resolve) => {

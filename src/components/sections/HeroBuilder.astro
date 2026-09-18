@@ -5,6 +5,7 @@ import CustomButton from '../CustomButton.astro';
 import Section from '../HTML/Section.astro';
 import RotatingHeadline from '../RotatingHeadline.astro';
 import { projects } from '../../data/projects';
+import MentorsBand from '../MentorsBand.astro';
 
 // the repos under shipped/ are the real live sites, with their real shots
 const shippedNames = [
@@ -119,26 +120,10 @@ const buildTypes = [
 			<RotatingHeadline class="builder--head" />
 
 			<p class="builder--sub">
-				If you can imagine it, we build it. Hit run and watch what we have
-				already shipped, live, across every sector and 10+ countries.
+				If you can imagine it, we build it. Hit run and see what we have
+				already shipped, live in 10+ countries.
 			</p>
 
-			<!-- a line you can actually copy, the way every good README opens -->
-			<div class="builder--npm">
-				<code>
-					<span class="builder--npm-p">$</span> npx swizel init
-					<span class="builder--npm-a">--your-idea</span>
-				</code>
-				<button
-					class="builder--npm-c"
-					type="button"
-					data-copy="npx swizel init --your-idea"
-					aria-label="Copy the command"
-				>
-					<Icon class="builder--npm-i builder--npm-i--copy" width={15} name="mdi:content-copy" />
-					<Icon class="builder--npm-i builder--npm-i--done" width={15} name="mdi:check" />
-				</button>
-			</div>
 
 			<div class="builder--caps" aria-label="What we build">
 				<span class="builder--caps-k">we build:</span>
@@ -188,23 +173,13 @@ const buildTypes = [
 				<span class="builder--consts-k">{'};'}</span>
 			</div>
 
-			<a href="/about" class="builder--team" data-tour="team">
-				<span class="builder--team-pic">
-					<img
-						src="/images/hero-team.jpg"
-						alt="The Swizel team"
-						loading="lazy"
-					/>
-					<span class="builder--team-live"></span>
-				</span>
-				<span class="builder--team-txt">
-					<span class="builder--team-k">// the humans behind the code</span>
-					<span class="builder--team-l">
-						The engineers you'll work with
-						<Icon width={14} name="mdi:arrow-right" />
-					</span>
-				</span>
-			</a>
+			<MentorsBand
+				href="/about"
+				kicker="// the humans behind the code"
+				label="The engineers you'll work with"
+				blurb="Not a pool of freelancers. Senior engineers who ship for paying clients, review every pull request, and stay on the product after launch."
+				photo="/images/hero-team.jpg"
+			/>
 		</div>
 
 		<!-- ══ the workstation ══════════════════════════════════════════
@@ -247,17 +222,24 @@ const buildTypes = [
 					{
 						tree.map((n) =>
 							n.kind === 'dir' ? (
-								<span class="wkst__dir" style={`--d:${n.depth}`}>
-									<Icon width={12} name="mdi:chevron-down" />
+								<button
+									class="wkst__dir"
+									type="button"
+									style={`--d:${n.depth}`}
+									data-wkst-fold="swizel"
+									aria-expanded="true"
+								>
+									<Icon class="wkst__caretx" width={12} name="mdi:chevron-down" />
 									<Icon width={13} name="mdi:folder-outline" />
 									{n.name}
-								</span>
+								</button>
 							) : n.tab ? (
 								<button
 									class:list={['wkst__file', { 'is-on': n.tab === 'watch' }]}
 									type="button"
 									style={`--d:${n.depth}`}
 									data-bstack-tab={n.tab}
+									data-wkst-in="swizel"
 								>
 									<Icon width={13} name={n.icon} />
 									{n.name}
@@ -272,11 +254,17 @@ const buildTypes = [
 						)
 					}
 
-					<span class="wkst__dir" style="--d:0">
-						<Icon width={12} name="mdi:chevron-down" />
+					<button
+						class="wkst__dir"
+						type="button"
+						style="--d:0"
+						data-wkst-fold="shipped"
+						aria-expanded="true"
+					>
+						<Icon class="wkst__caretx" width={12} name="mdi:chevron-down" />
 						<Icon width={13} name="mdi:folder-outline" />
 						shipped
-					</span>
+					</button>
 					{
 						shipped.map((s) => (
 							<button
@@ -285,6 +273,7 @@ const buildTypes = [
 								style="--d:1"
 								data-bstack-tab="site"
 								data-wkst-site={s.slug}
+								data-wkst-in="shipped"
 							>
 								<Icon width={13} name="mdi:web" />
 								{s.slug}
@@ -292,6 +281,10 @@ const buildTypes = [
 							</button>
 						))
 					}
+					<a class="wkst__file wkst__file--more" href="/portfolio" style="--d:1" data-wkst-in="shipped">
+						<Icon width={13} name="mdi:plus" />
+						more
+					</a>
 				</aside>
 
 				<div class="wkst__main">
@@ -790,6 +783,24 @@ $ swizel ship</code></pre>
 	}
 
 	/* ===== IDE ===== */
+	/* the shared mentors band, wearing Builder's clothes: monospace label,
+	   a teal edge, and enough contrast to hold on the pale stage */
+	.builder--copy :global(.mband) {
+		border-color: color-mix(in srgb, var(--view-accent, #18debe) 34%, transparent);
+	}
+	.builder--copy :global(.mband:hover) {
+		border-color: color-mix(in srgb, var(--view-accent, #18debe) 65%, transparent);
+	}
+	.builder--copy :global(.mband__k) {
+		font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+		letter-spacing: 0;
+	}
+	:global(html:not(.dark)) .builder--copy :global(.mband) {
+		background:
+			linear-gradient(115deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.62) 55%),
+			color-mix(in srgb, var(--view-accent, #18debe) 8%, transparent);
+	}
+
 	/* ── the copy side: a line you can copy, numbers as a const ── */
 	.builder--npm {
 		display: flex;
@@ -971,6 +982,16 @@ $ swizel ship</code></pre>
 		transition: color 0.2s ease, background 0.2s ease;
 	}
 	.wkst__collapse:hover { color: var(--w-ink); background: rgba(255, 255, 255, 0.06); }
+	.wkst__dir { cursor: pointer; width: 100%; }
+	.wkst__dir:hover { color: var(--w-ink); }
+	.wkst__caretx { transition: transform 0.22s ease; }
+	.wkst__dir[aria-expanded='false'] .wkst__caretx { transform: rotate(-90deg); }
+	.wkst__file[hidden], .wkst__dir[hidden] { display: none; }
+	.wkst__file--more {
+		text-decoration: none;
+		color: color-mix(in srgb, var(--view-accent, #18debe) 75%, #fff);
+	}
+	.wkst__file--more:hover { color: #eafcff; }
 	.wkst__live {
 		width: 5px; height: 5px; border-radius: 9999px; margin-left: auto;
 		background: #28c840; box-shadow: 0 0 6px #28c840;
@@ -1069,16 +1090,22 @@ $ swizel ship</code></pre>
 	.wkst__pane[hidden] { display: none; }
 	.wkst__pane.is-on { animation: wkst-in 0.3s cubic-bezier(0.22, 1, 0.36, 1) both; }
 	@keyframes wkst-in { from { opacity: 0; transform: translateY(6px); } }
-	.wkst [data-bstack-pane='watch'] { padding: 0.55rem; }
-	.wkst [data-bstack-pane='watch'] :global(.flm) { height: 100%; }
-	.wkst [data-bstack-pane='watch'] :global(.flm__screen) { height: 100%; aspect-ratio: auto; }
+	/* The film keeps its 16/9. Forcing height:100% here collapsed it to a
+	   2px sliver, because the pane has no definite height to resolve
+	   against — the pane's min-height is what gives the box its room. */
+	.wkst [data-bstack-pane='watch'] {
+		padding: 0.55rem;
+		display: grid;
+		align-content: center;
+	}
 
 	/* the editor loses its own frame inside the machine */
 	.wkst .builder--ide { border: 0; border-radius: 0; box-shadow: none; margin: 0; }
 	/* the cue was a bobbing lozenge sitting on the first lines of code.
 	   It is a quiet chip in the corner of the window bar now. */
 	.wkst .ide2--cue {
-		top: 0.52rem;
+		top: auto;
+		bottom: 0.5rem;
 		right: 0.6rem;
 		left: auto;
 		padding: 0.18rem 0.5rem;
@@ -1619,6 +1646,9 @@ $ swizel ship</code></pre>
 	:global(html:not(.dark)) .builder--eyebrow { color: #0f766e; }
 	:global(html:not(.dark)) .builder--blink { background: #0f766e; }
 	:global(html:not(.dark)) .builder--sub { color: rgba(16, 32, 31, 0.76); }
+	/* two lines: the copy is cut to the measure rather than the measure
+	   squeezed to the copy, which only ever makes more lines */
+	.builder--sub { max-width: 46ch; }
 	:global(html:not(.dark)) .builder--caps-k { color: #0f766e; }
 	:global(html:not(.dark)) .builder--cap {
 		border-color: rgba(13, 148, 136, 0.3);
