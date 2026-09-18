@@ -205,7 +205,9 @@ export function initBuilderStack() {
 		const show = (name: string) => {
 			tabs.forEach((t) => {
 				const on = t.dataset.bstackTab === name;
-				t.classList.toggle('is-on', on);
+				// the shipped rows all point at the same pane; which of them is
+				// selected is decided by the click, not by the pane name
+				if (!t.dataset.wkstSite) t.classList.toggle('is-on', on);
 				t.setAttribute('aria-selected', on ? 'true' : 'false');
 				t.tabIndex = on ? 0 : -1;
 			});
@@ -230,6 +232,57 @@ export function initBuilderStack() {
 		tabs.forEach((t) =>
 			t.addEventListener('click', () => show(t.dataset.bstackTab || 'watch'))
 		);
+
+		// ── the tree folds away ────────────────────────────────────────
+		stack.querySelectorAll<HTMLButtonElement>('[data-wkst-tree]').forEach((b) =>
+			b.addEventListener('click', () => stack.classList.toggle('is-folded'))
+		);
+
+		// ── a shipped repo opens in the browser pane ───────────────────
+		const sitesRaw = stack.querySelector('[data-wkst-sites]')?.textContent;
+		if (sitesRaw) {
+			type Site = {
+				slug: string;
+				name: string;
+				tagline: string;
+				img: string;
+				url: string;
+				host: string;
+			};
+			let sites: Site[] = [];
+			try {
+				sites = JSON.parse(sitesRaw);
+			} catch {
+				sites = [];
+			}
+			const siteTab = stack.querySelector<HTMLElement>('.wkst__tab--site');
+			const tabName = stack.querySelector<HTMLElement>('[data-wkst-tabname]');
+			const host = stack.querySelector<HTMLElement>('[data-wkst-host]');
+			const shot = stack.querySelector<HTMLImageElement>('[data-wkst-shot]');
+			const visit = stack.querySelector<HTMLAnchorElement>('[data-wkst-visit]');
+			const nameEl = stack.querySelector<HTMLElement>('[data-wkst-name]');
+			const tagEl = stack.querySelector<HTMLElement>('[data-wkst-tag]');
+
+			stack.querySelectorAll<HTMLButtonElement>('[data-wkst-site]').forEach((b) =>
+				b.addEventListener('click', () => {
+					const s = sites.find((x) => x.slug === b.dataset.wkstSite);
+					if (!s) return;
+					stack
+						.querySelectorAll<HTMLElement>('[data-wkst-site]')
+						.forEach((o) => o.classList.toggle('is-on', o === b));
+					if (siteTab) siteTab.hidden = false;
+					if (tabName) tabName.textContent = s.slug;
+					if (host) host.textContent = s.host;
+					if (shot) {
+						shot.src = s.img;
+						shot.alt = `${s.name} — ${s.tagline}`;
+					}
+					if (visit) visit.href = s.url;
+					if (nameEl) nameEl.textContent = s.name;
+					if (tagEl) tagEl.textContent = s.tagline;
+				})
+			);
+		}
 
 		// ── ⌘K, the palette ────────────────────────────────────────────
 		const pal = stack.querySelector<HTMLElement>('[data-wkst-palette]');
@@ -306,6 +359,36 @@ export function initBuilderStack() {
 			ev.preventDefault();
 			show(next.dataset.bstackTab || 'watch');
 			next.focus();
+		});
+	});
+}
+
+
+/** The copyable command in the Builder hero. */
+export function initCopyLines() {
+	document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((b) => {
+		if (b.dataset.copyOn) return;
+		b.dataset.copyOn = '1';
+		b.addEventListener('click', async () => {
+			const text = b.dataset.copy || '';
+			try {
+				await navigator.clipboard.writeText(text);
+			} catch {
+				// clipboard is blocked on insecure origins; fall back to a
+				// hidden textarea so the button still does something
+				const ta = document.createElement('textarea');
+				ta.value = text;
+				ta.style.cssText = 'position:fixed;opacity:0';
+				document.body.appendChild(ta);
+				ta.select();
+				try {
+					document.execCommand('copy');
+				} catch {}
+				ta.remove();
+			}
+			const host = b.closest('.builder--npm');
+			host?.classList.add('is-copied');
+			window.setTimeout(() => host?.classList.remove('is-copied'), 1600);
 		});
 	});
 }

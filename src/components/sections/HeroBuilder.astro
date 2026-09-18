@@ -4,6 +4,28 @@ import FilmPlayer from '../FilmPlayer.astro';
 import CustomButton from '../CustomButton.astro';
 import Section from '../HTML/Section.astro';
 import RotatingHeadline from '../RotatingHeadline.astro';
+import { projects } from '../../data/projects';
+
+// the repos under shipped/ are the real live sites, with their real shots
+const shippedNames = [
+	'AnchorStep Physiotherapy',
+	'Binas Residence',
+	'The Presidential Diary',
+	'JobbLander',
+	'Hemam Synergy',
+	'African Energy Advocacy Initiative',
+];
+const shipped = shippedNames
+	.map((n) => projects.find((p) => p.name === n))
+	.filter((p): p is (typeof projects)[number] => !!p && !!p.url)
+	.map((p) => ({
+		slug: p.slug,
+		name: p.name,
+		tagline: p.tagline,
+		img: p.img,
+		url: p.url as string,
+		host: p.host,
+	}));
 
 const stats = [
 	{ to: 7, suffix: '+', label: 'Years' },
@@ -35,11 +57,6 @@ const tree = [
 	{ kind: 'file', name: 'editor.js', depth: 1, tab: 'run', icon: 'mdi:language-javascript', dirty: true },
 	{ kind: 'file', name: 'deploy.log', depth: 1, tab: 'term', icon: 'mdi:console' },
 	{ kind: 'file', name: 'README.md', depth: 1, tab: 'read', icon: 'mdi:language-markdown' },
-	{ kind: 'dir', name: 'shipped', open: true, depth: 0 },
-	{ kind: 'file', name: 'brixmarket', depth: 1, icon: 'mdi:home-city-outline', muted: true },
-	{ kind: 'file', name: 'betslipswitch', depth: 1, icon: 'mdi:soccer', muted: true },
-	{ kind: 'file', name: 'buygas', depth: 1, icon: 'mdi:fire', muted: true },
-	{ kind: 'file', name: 'tellatrust', depth: 1, icon: 'mdi:bank-outline', muted: true },
 ];
 
 // the deploy log that types itself in the terminal pane
@@ -106,6 +123,23 @@ const buildTypes = [
 				already shipped, live, across every sector and 10+ countries.
 			</p>
 
+			<!-- a line you can actually copy, the way every good README opens -->
+			<div class="builder--npm">
+				<code>
+					<span class="builder--npm-p">$</span> npx swizel init
+					<span class="builder--npm-a">--your-idea</span>
+				</code>
+				<button
+					class="builder--npm-c"
+					type="button"
+					data-copy="npx swizel init --your-idea"
+					aria-label="Copy the command"
+				>
+					<Icon class="builder--npm-i builder--npm-i--copy" width={15} name="mdi:content-copy" />
+					<Icon class="builder--npm-i builder--npm-i--done" width={15} name="mdi:check" />
+				</button>
+			</div>
+
 			<div class="builder--caps" aria-label="What we build">
 				<span class="builder--caps-k">we build:</span>
 				<div class="builder--caps-track">
@@ -132,23 +166,27 @@ const buildTypes = [
 				</button>
 			</div>
 
-			<ul class="builder--stats" data-tour="stats">
-				{
-					stats.map((s) => (
-						<li class="builder--stat">
-							<span
-								class="builder--statnum"
-								data-count-to={s.to}
-								data-suffix={s.suffix}
-							>
-								{s.to}
-								{s.suffix}
-							</span>
-							<span class="builder--statlabel">{s.label}</span>
-						</li>
-					))
-				}
-			</ul>
+			<div class="builder--consts" data-tour="stats">
+				<span class="builder--consts-k">{'const swizel = {'}</span>
+				<ul class="builder--stats">
+					{
+						stats.map((s) => (
+							<li class="builder--stat">
+								<span class="builder--statlabel">{s.label.toLowerCase()}:</span>
+								<span
+									class="builder--statnum"
+									data-count-to={s.to}
+									data-suffix={s.suffix}
+								>
+									{s.to}
+									{s.suffix}
+								</span>
+							</li>
+						))
+					}
+				</ul>
+				<span class="builder--consts-k">{'};'}</span>
+			</div>
 
 			<a href="/about" class="builder--team" data-tour="team">
 				<span class="builder--team-pic">
@@ -187,7 +225,25 @@ const buildTypes = [
 			</div>
 
 			<div class="wkst__body">
+				<button
+					class="wkst__rail"
+					type="button"
+					data-wkst-tree
+					aria-label="Show the file tree"
+					title="Show the file tree"
+				>
+					<Icon width={16} name="mdi:file-tree-outline" />
+				</button>
 				<aside class="wkst__tree" aria-label="Files">
+					<button
+						class="wkst__collapse"
+						type="button"
+						data-wkst-tree
+						aria-label="Hide the file tree"
+						title="Hide the file tree"
+					>
+						<Icon width={15} name="mdi:chevron-double-left" />
+					</button>
 					{
 						tree.map((n) =>
 							n.kind === 'dir' ? (
@@ -215,6 +271,27 @@ const buildTypes = [
 							)
 						)
 					}
+
+					<span class="wkst__dir" style="--d:0">
+						<Icon width={12} name="mdi:chevron-down" />
+						<Icon width={13} name="mdi:folder-outline" />
+						shipped
+					</span>
+					{
+						shipped.map((s) => (
+							<button
+								class="wkst__file"
+								type="button"
+								style="--d:1"
+								data-bstack-tab="site"
+								data-wkst-site={s.slug}
+							>
+								<Icon width={13} name="mdi:web" />
+								{s.slug}
+								<i class="wkst__live" aria-hidden="true" />
+							</button>
+						))
+					}
 				</aside>
 
 				<div class="wkst__main">
@@ -231,6 +308,17 @@ const buildTypes = [
 						</button>
 						<button class="wkst__tab" type="button" role="tab" aria-selected="false" data-bstack-tab="read">
 							<Icon width={13} name="mdi:language-markdown" />README.md
+						</button>
+						<button
+							class="wkst__tab wkst__tab--site"
+							type="button"
+							role="tab"
+							aria-selected="false"
+							data-bstack-tab="site"
+							hidden
+						>
+							<Icon width={13} name="mdi:web" />
+							<span data-wkst-tabname>site</span>
 						</button>
 					</div>
 
@@ -250,7 +338,7 @@ const buildTypes = [
 							<div class="builder--ide" id="builder-ide" data-tour="ide">
 								<span class="ide2--cue" id="builder-ide-cue" aria-hidden="true">
 									<Icon width={15} name="mdi:gesture-tap" />
-									This is real. Edit it, then run
+									live · editable
 								</span>
 								<div class="ide2--bar">
 									<span class="ide2--dot"></span>
@@ -293,7 +381,37 @@ const buildTypes = [
 							</div>
 						</div>
 
-						<!-- the readme, because every repo has one -->
+						<!-- a shipped site, in a browser -->
+					<div class="wkst__pane" role="tabpanel" data-bstack-pane="site" hidden>
+						<div class="wkst__www">
+							<div class="wkst__www-bar">
+								<span class="wkst__www-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+								<span class="wkst__www-url">
+									<Icon width={12} name="mdi:lock" />
+									<span data-wkst-host>—</span>
+								</span>
+								<a
+									class="wkst__www-go"
+									href="/portfolio"
+									target="_blank"
+									rel="noopener"
+									data-wkst-visit
+								>
+									Visit
+									<Icon width={12} name="mdi:arrow-top-right" />
+								</a>
+							</div>
+							<div class="wkst__www-glass">
+								<img src="" alt="" data-wkst-shot />
+							</div>
+							<p class="wkst__www-cap">
+								<b data-wkst-name>—</b>
+								<span data-wkst-tag>—</span>
+							</p>
+						</div>
+					</div>
+
+					<!-- the readme, because every repo has one -->
 						<div class="wkst__pane" role="tabpanel" data-bstack-pane="read" hidden>
 							<div class="wkst__read">
 								<h3># Swizel</h3>
@@ -331,6 +449,8 @@ $ swizel ship</code></pre>
 					</div>
 				</div>
 			</div>
+
+			<script type="application/json" data-wkst-sites set:html={JSON.stringify(shipped)} />
 
 			<!-- ⌘K -->
 			<div class="wkst__palette" data-wkst-palette hidden>
@@ -461,8 +581,9 @@ $ swizel ship</code></pre>
 	.builder--layout > * { min-width: 0; }
 	@media (min-width: 1024px) {
 		.builder--layout {
-			grid-template-columns: 0.92fr 1.08fr;
-			gap: 3rem;
+			/* the machine leads: it is the thing people came to touch */
+			grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+			gap: 2.4rem;
 		}
 		/* start the panel at the headline, not the eyebrow line above it */
 		.wkst { margin-top: 2.8rem; }
@@ -669,11 +790,89 @@ $ swizel ship</code></pre>
 	}
 
 	/* ===== IDE ===== */
+	/* ── the copy side: a line you can copy, numbers as a const ── */
+	.builder--npm {
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		width: fit-content;
+		max-width: 100%;
+		margin-bottom: 1.2rem;
+		padding: 0.5rem 0.55rem 0.5rem 0.8rem;
+		border-radius: 0.55rem;
+		border: 1px solid rgba(24, 222, 190, 0.24);
+		background: rgba(8, 12, 18, 0.72);
+		font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+	}
+	.builder--npm code {
+		font-size: 0.8rem;
+		color: #dff3f7;
+		white-space: nowrap;
+		overflow-x: auto;
+		scrollbar-width: none;
+	}
+	.builder--npm code::-webkit-scrollbar { display: none; }
+	.builder--npm-p { color: var(--view-accent, #18debe); }
+	.builder--npm-a { color: rgba(223, 243, 247, 0.5); }
+	.builder--npm-c {
+		display: grid;
+		place-items: center;
+		flex: none;
+		width: 1.8rem;
+		height: 1.8rem;
+		border: 0;
+		border-radius: 0.4rem;
+		background: rgba(255, 255, 255, 0.06);
+		color: rgba(223, 243, 247, 0.7);
+		cursor: pointer;
+		transition: background 0.2s ease, color 0.2s ease;
+	}
+	.builder--npm-c:hover { background: rgba(24, 222, 190, 0.18); color: #fff; }
+	.builder--npm-i { grid-area: 1 / 1; }
+	.builder--npm-i--done { display: none; color: #28c840; }
+	.builder--npm.is-copied .builder--npm-i--copy { display: none; }
+	.builder--npm.is-copied .builder--npm-i--done { display: block; }
+
+	.builder--consts {
+		font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+		margin-top: 0.2rem;
+	}
+	.builder--consts-k {
+		display: block;
+		font-size: 0.72rem;
+		color: rgba(223, 243, 247, 0.38);
+	}
+	.builder--consts .builder--stats {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.2rem 1.4rem;
+		list-style: none;
+		margin: 0.25rem 0;
+		padding: 0 0 0 1.1rem;
+		border: 0;
+	}
+	.builder--consts .builder--stat {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 0.4rem;
+	}
+	.builder--consts .builder--statlabel {
+		font-size: 0.74rem;
+		text-transform: none;
+		letter-spacing: 0;
+	}
+	.builder--consts .builder--statnum { font-size: 1.05rem; font-family: inherit; }
+	@media (max-width: 520px) {
+		.builder--consts .builder--stats { gap: 0.15rem 1rem; }
+		.builder--npm code { font-size: 0.72rem; }
+	}
+
 	/* ══ the workstation ══════════════════════════════════════════════
 	   A machine, not a card. Chrome on top, tree down the side, tabs over
 	   the panes, status bar underneath. Everything is monospace and every
 	   surface is a shade of the same near-black. */
 	.wkst {
+		--w-tree: 11.5rem;
 		--w-line: rgba(255, 255, 255, 0.07);
 		--w-dim: rgba(214, 232, 238, 0.45);
 		--w-ink: #dff3f7;
@@ -735,7 +934,47 @@ $ swizel ship</code></pre>
 		font-size: 0.64rem;
 	}
 
-	.wkst__body { display: grid; grid-template-columns: 11.5rem minmax(0, 1fr); }
+	.wkst__body {
+		display: grid;
+		grid-template-columns: var(--w-tree) minmax(0, 1fr);
+		transition: grid-template-columns 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	/* collapsed: the tree folds away to a rail you can tap to bring back */
+	.wkst.is-folded .wkst__body { grid-template-columns: 2.2rem minmax(0, 1fr); }
+	.wkst.is-folded .wkst__tree { display: none; }
+	.wkst__rail {
+		display: none;
+		place-items: center;
+		align-content: start;
+		padding-top: 0.6rem;
+		border: 0;
+		border-right: 1px solid var(--w-line);
+		background: rgba(255, 255, 255, 0.012);
+		color: var(--w-dim);
+		cursor: pointer;
+		transition: color 0.2s ease, background 0.2s ease;
+	}
+	.wkst__rail:hover { color: var(--w-ink); background: rgba(255, 255, 255, 0.05); }
+	.wkst.is-folded .wkst__rail { display: grid; }
+	.wkst__collapse {
+		align-self: flex-end;
+		display: grid;
+		place-items: center;
+		width: 1.5rem;
+		height: 1.5rem;
+		margin: -0.15rem 0 0.15rem auto;
+		border: 0;
+		border-radius: 0.35rem;
+		background: transparent;
+		color: var(--w-dim);
+		cursor: pointer;
+		transition: color 0.2s ease, background 0.2s ease;
+	}
+	.wkst__collapse:hover { color: var(--w-ink); background: rgba(255, 255, 255, 0.06); }
+	.wkst__live {
+		width: 5px; height: 5px; border-radius: 9999px; margin-left: auto;
+		background: #28c840; box-shadow: 0 0 6px #28c840;
+	}
 
 	/* the tree */
 	.wkst__tree {
@@ -822,15 +1061,38 @@ $ swizel ship</code></pre>
 		50% { opacity: 1; transform: scale(1); }
 	}
 
-	.wkst__panes { position: relative; flex: 1 1 auto; min-height: 0; }
+	.wkst__panes {
+		position: relative;
+		flex: 1 1 auto;
+		min-height: clamp(20rem, 34vw, 29rem);
+	}
 	.wkst__pane[hidden] { display: none; }
 	.wkst__pane.is-on { animation: wkst-in 0.3s cubic-bezier(0.22, 1, 0.36, 1) both; }
 	@keyframes wkst-in { from { opacity: 0; transform: translateY(6px); } }
-	.wkst [data-bstack-pane='watch'] { padding: 0.6rem; }
+	.wkst [data-bstack-pane='watch'] { padding: 0.55rem; }
+	.wkst [data-bstack-pane='watch'] :global(.flm) { height: 100%; }
+	.wkst [data-bstack-pane='watch'] :global(.flm__screen) { height: 100%; aspect-ratio: auto; }
 
 	/* the editor loses its own frame inside the machine */
 	.wkst .builder--ide { border: 0; border-radius: 0; box-shadow: none; margin: 0; }
-	.wkst .ide2--cue { top: 3.4rem; left: 12px; }
+	/* the cue was a bobbing lozenge sitting on the first lines of code.
+	   It is a quiet chip in the corner of the window bar now. */
+	.wkst .ide2--cue {
+		top: 0.52rem;
+		right: 0.6rem;
+		left: auto;
+		padding: 0.18rem 0.5rem;
+		font-size: 0.64rem;
+		font-weight: 600;
+		letter-spacing: 0;
+		border-radius: 0.35rem;
+		background: color-mix(in srgb, var(--view-accent, #18debe) 16%, transparent);
+		border: 1px solid color-mix(in srgb, var(--view-accent, #18debe) 34%, transparent);
+		color: color-mix(in srgb, var(--view-accent, #18debe) 60%, #fff);
+		box-shadow: none;
+		animation: none;
+	}
+	.wkst .ide2--cue :global(svg) { width: 12px; height: 12px; }
 
 	/* the film, in the machine's own language */
 	.wkst :global(.flm__screen) { border-radius: 0.5rem; border-color: var(--w-line); }
@@ -891,6 +1153,80 @@ $ swizel ship</code></pre>
 		background: rgba(255, 255, 255, 0.09);
 		font-family: inherit;
 	}
+
+	/* a shipped site, in a browser */
+	.wkst__www { padding: 0.6rem; display: grid; gap: 0.5rem; height: 100%; align-content: start; }
+	.wkst__www-bar {
+		display: flex;
+		align-items: center;
+		gap: 0.55rem;
+		padding: 0.34rem 0.45rem;
+		border: 1px solid var(--w-line);
+		border-radius: 0.45rem 0.45rem 0 0;
+		background: rgba(255, 255, 255, 0.04);
+	}
+	.wkst__www-dots { display: inline-flex; gap: 0.25rem; }
+	.wkst__www-dots i { width: 7px; height: 7px; border-radius: 9999px; background: rgba(255,255,255,0.18); }
+	.wkst__www-url {
+		flex: 1 1 auto;
+		min-width: 0;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3rem;
+		padding: 0.14rem 0.5rem;
+		border-radius: 9999px;
+		background: rgba(0, 0, 0, 0.35);
+		color: var(--w-dim);
+		font-size: 0.66rem;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.wkst__www-go {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.25rem;
+		flex: none;
+		padding: 0.2rem 0.5rem;
+		border-radius: 0.35rem;
+		background: var(--view-accent, #18debe);
+		color: #06231c;
+		font-size: 0.66rem;
+		font-weight: 800;
+		text-decoration: none;
+	}
+	.wkst__www-go:hover { filter: brightness(1.1); }
+	.wkst__www-glass {
+		position: relative;
+		overflow: hidden;
+		border: 1px solid var(--w-line);
+		border-top: 0;
+		border-radius: 0 0 0.45rem 0.45rem;
+		background: #05070b;
+		aspect-ratio: 16 / 10;
+	}
+	.wkst__www-glass img {
+		display: block;
+		width: 100%;
+		height: auto;
+		min-height: 100%;
+		object-fit: cover;
+		object-position: 50% 0;
+		transition: object-position 3.5s ease-in-out;
+	}
+	/* hovering scrolls the page, the way looking at a site does */
+	.wkst__www-glass:hover img { object-position: 50% 100%; }
+	.wkst__www-cap {
+		display: flex;
+		align-items: baseline;
+		gap: 0.45rem;
+		margin: 0;
+		font-size: 0.72rem;
+		color: var(--w-dim);
+		flex-wrap: wrap;
+	}
+	.wkst__www-cap b { color: var(--w-ink); }
+	.wkst__tab--site[hidden] { display: none; }
 
 	/* status bar */
 	.wkst__status {
@@ -1253,35 +1589,41 @@ $ swizel ship</code></pre>
 	/* ══ Light mode: the cover goes light too. The stage becomes bright
 	   paper with a soft teal wash; ink flips dark; the IDE stays a dark
 	   "object" on the light stage (code should look like code). ══ */
-	:global(html:not(.dark)) .builder--stage {
-		background: linear-gradient(180deg, #f7fbfa 0%, #eef5f3 100%);
-		color: #14162a;
+	/* Daylight here is a desk lamp, not a lightbox. The Builder view is an
+	   editor, and an editor in daylight is still a slate surface. */
+	:global(html:not(.dark) .builder--stage) {
+		background:
+			radial-gradient(900px 520px at 78% -10%, rgba(13, 148, 136, 0.14), transparent 62%),
+			linear-gradient(180deg, #dde7e6 0%, #cfdcda 100%);
+		color: #10201f;
 	}
+	/* the moving backdrop sits over the stage full-bleed, so it has to come
+	   down with it or it just repaints the old paper */
 	:global(html:not(.dark)) .builder--bg {
 		background:
-			radial-gradient(900px 500px at 78% -10%, rgba(24, 222, 190, 0.14), transparent 60%),
-			linear-gradient(180deg, #f7fbfa 0%, #eef5f3 100%);
+			radial-gradient(900px 500px at 78% -10%, rgba(13, 148, 136, 0.16), transparent 60%),
+			linear-gradient(180deg, #dbe6e4 0%, #c9d8d6 100%);
 	}
 	:global(html:not(.dark)) .builder--bg::before {
 		background:
-			radial-gradient(130% 60% at 50% -12%, rgba(255, 255, 255, 0.65), transparent 55%);
+			radial-gradient(130% 60% at 50% -12%, rgba(255, 255, 255, 0.28), transparent 55%);
 	}
 	:global(html:not(.dark)) .builder--grid {
-		background-image: linear-gradient(rgba(13, 148, 136, 0.09) 1px, transparent 1px),
-			linear-gradient(90deg, rgba(13, 148, 136, 0.09) 1px, transparent 1px);
+		background-image: linear-gradient(rgba(13, 148, 136, 0.13) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(13, 148, 136, 0.13) 1px, transparent 1px);
 	}
 	:global(html:not(.dark)) .builder--scan {
 		background: linear-gradient(180deg, transparent, rgba(13, 148, 136, 0.06), transparent);
 	}
-	:global(html:not(.dark)) .builder--token { color: rgba(15, 118, 110, 0.2); }
+	:global(html:not(.dark)) .builder--token { color: rgba(15, 118, 110, 0.26); }
 	:global(html:not(.dark)) .builder--eyebrow { color: #0f766e; }
 	:global(html:not(.dark)) .builder--blink { background: #0f766e; }
-	:global(html:not(.dark)) .builder--sub { color: rgba(20, 22, 42, 0.68); }
+	:global(html:not(.dark)) .builder--sub { color: rgba(16, 32, 31, 0.76); }
 	:global(html:not(.dark)) .builder--caps-k { color: #0f766e; }
 	:global(html:not(.dark)) .builder--cap {
-		border-color: rgba(13, 148, 136, 0.28);
-		background: rgba(255, 255, 255, 0.72);
-		color: rgba(20, 22, 42, 0.78);
+		border-color: rgba(13, 148, 136, 0.3);
+		background: rgba(255, 255, 255, 0.66);
+		color: rgba(16, 32, 31, 0.82);
 	}
 	:global(html:not(.dark)) .builder--tour {
 		color: #14162a;
@@ -1297,7 +1639,19 @@ $ swizel ship</code></pre>
 		-webkit-background-clip: text;
 		background-clip: text;
 	}
-	:global(html:not(.dark)) .builder--statlabel { color: rgba(20, 22, 42, 0.55); }
+	:global(html:not(.dark)) .builder--statlabel { color: rgba(16, 32, 31, 0.62); }
+	/* the machine keeps its own dark surface in daylight: an editor does */
+	:global(html:not(.dark)) .wkst {
+		border-color: rgba(13, 148, 136, 0.3);
+		box-shadow:
+			0 50px 110px -46px rgba(12, 28, 27, 0.55),
+			0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+	}
+	:global(html:not(.dark)) .builder--npm {
+		background: rgba(9, 22, 21, 0.92);
+		border-color: rgba(13, 148, 136, 0.28);
+	}
+	:global(html:not(.dark)) .builder--consts-k { color: rgba(16, 32, 31, 0.45); }
 	:global(html:not(.dark)) .builder--team {
 		border-color: rgba(20, 22, 42, 0.12);
 		background: rgba(255, 255, 255, 0.72);
