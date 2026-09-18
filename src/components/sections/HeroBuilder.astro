@@ -118,8 +118,8 @@ const buildTypes = [
 			<RotatingHeadline class="builder--head" />
 
 			<p class="builder--sub">
-				If you can imagine it, we build it. Hit run and see what we have
-				already shipped, live in 10+ countries.
+				If you can imagine it, we build it. Press play, open the editor,
+				and run our code yourself.
 			</p>
 
 
@@ -175,10 +175,10 @@ const buildTypes = [
 				label="The engineers you'll work with"
 				blurb="Not a pool of freelancers. Senior engineers who ship for paying clients, review every pull request, and stay on the product after launch."
 				photo="/images/hero-team.jpg"
-				photoRatio="1712 / 1160"
-				photoPos="50% 8%"
-				photoWidth="clamp(124px, 13vw, 152px)"
-				photoWidthSm="116px"
+				photoRatio="1040 / 1024"
+				photoPos="50% 50%"
+				photoWidth="clamp(104px, 11vw, 126px)"
+				photoWidthSm="104px"
 			/>
 		</div>
 
@@ -1544,6 +1544,16 @@ const buildTypes = [
 	@media (max-width: 640px) {
 		.wkst__title { display: none; }
 		.wkst__k { margin-left: auto; }
+		/* all four files fit the strip rather than running off the edge */
+		.wkst__tab { padding: 0.5rem 0.5rem; font-size: 0.64rem; gap: 0.26rem; }
+		.wkst__tab :global(svg) { width: 11px; height: 11px; }
+		.wkst__files { padding: 0.22rem 0.42rem; font-size: 0.64rem; }
+		.wkst__k { padding: 0.22rem 0.42rem; font-size: 0.64rem; }
+	}
+	/* the narrowest phones: the names alone say which file is which */
+	@media (max-width: 430px) {
+		.wkst__tab :global(svg) { display: none; }
+		.wkst__tab { padding: 0.5rem 0.62rem; }
 		.wkst__term, .wkst__read { font-size: 0.7rem; }
 		.wkst .ide2--out { max-height: 6rem; }
 		.wkst__status { gap: 0.5rem; overflow-x: auto; scrollbar-width: none; }
@@ -1774,7 +1784,7 @@ const buildTypes = [
 		.builder--eyebrow { order: 1; align-self: flex-start; }
 		.builder--layout :global(.builder--head) { order: 2; }
 		.builder--sub { order: 3; }
-		.wkst { order: 4; margin: 0 0 1.5rem; }
+		.wkst { order: 4; margin: 0.15rem 0 0.35rem; }
 		.builder--caps { order: 5; }
 		.builder--cta { order: 6; }
 		.builder--consts { order: 7; }
@@ -1783,26 +1793,56 @@ const buildTypes = [
 	}
 	/* Compact, well proportioned IDE on phones — scrolls inside, not down the page */
 	@media (max-width: 768px) {
-		/* the same proportions the Founder and Campus heroes use on a phone:
-		   a tighter stack, a headline that fits the thumb, buttons that
-		   share the row, and the numbers kept on one line */
+		/* ── the phone ────────────────────────────────────────────────
+		   Everything above the machine is squeezed, because the machine is
+		   what people came for and it should arrive inside the first
+		   screenful. Margins are dropped in favour of one flex gap, so the
+		   rhythm is set in a single place. */
 		.builder--layout {
-			gap: 1.5rem;
-			padding-top: 0.5rem;
+			gap: 1.1rem;
+			padding-top: 0.25rem;
 		}
+		.builder--eyebrow { margin-bottom: 0; }
 		.builder--head {
-			font-size: clamp(2.1rem, 9vw, 3rem);
-			margin-bottom: 0.7rem;
+			font-size: clamp(2.05rem, 8.6vw, 2.9rem);
+			margin-bottom: 0;
+			line-height: 1.02;
 		}
 		.builder--sub {
-			font-size: 0.97rem;
-			line-height: 1.6;
-			margin-bottom: 1.2rem;
+			font-size: 0.95rem;
+			line-height: 1.55;
+			margin-bottom: 0;
+			max-width: 34ch;
 		}
-		.builder--caps { margin-bottom: 1.2rem; }
-		.builder--cta { gap: 0.6rem; margin-bottom: 1.4rem; }
-		.builder--cta > * { flex: 1 1 auto; }
-		.builder--tour { padding: 0.8rem 1rem; font-size: 0.78rem; justify-content: center; }
+		/* the label used to sit on top of the first chips, because the
+		   track's fade began underneath it. Its own line, and they clear. */
+		.builder--caps {
+			display: grid;
+			gap: 0.4rem;
+			max-width: none;
+			margin-bottom: 0;
+		}
+		.builder--caps-track {
+			-webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 80%, transparent);
+			mask-image: linear-gradient(90deg, transparent, #000 7%, #000 80%, transparent);
+		}
+		/* the build button owns its row; the tour is a quiet line under it
+		   rather than a second slab of the same weight */
+		.builder--cta {
+			display: grid;
+			gap: 0.55rem;
+			margin-bottom: 0;
+		}
+		.builder--cta > :global(a) { width: 100%; }
+		/* the build button owns the full width; the tour is a small pill
+		   centred beneath it, so the two are not the same shout */
+		.builder--layout .builder--tour {
+			width: auto;
+			justify-self: center;
+			justify-content: center;
+			padding: 0.55rem 1.15rem;
+			font-size: 0.76rem;
+		}
 		/* the Founder hero's phone sizing, so the four still share one line */
 		.builder--stats { gap: 0.4rem; padding-top: 1.2rem; }
 		.builder--statnum { font-size: clamp(1.15rem, 5.4vw, 1.7rem); }
