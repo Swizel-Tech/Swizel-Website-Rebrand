@@ -191,10 +191,22 @@ export function openTourChooser(pageSteps: TourStep[], legs: TourLeg[]) {
 	requestAnimationFrame(() => wrap.classList.add('is-on'));
 
 	const shut = () => {
+		document.removeEventListener('keydown', onKey);
 		wrap.remove();
 		document.documentElement.classList.remove('tour-open');
 	};
-	wrap.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', shut));
+	// Escape closes it too, the way every other dialog on the site does
+	const onKey = (e: KeyboardEvent) => {
+		if (e.key === 'Escape') shut();
+	};
+	document.addEventListener('keydown', onKey);
+	wrap.querySelectorAll('[data-close]').forEach((b) =>
+		b.addEventListener('click', (e) => {
+			e.preventDefault();
+			e.stopPropagation();
+			shut();
+		})
+	);
 	wrap.querySelector('[data-door="page"]')?.addEventListener('click', () => {
 		shut();
 		startTour(pageSteps);

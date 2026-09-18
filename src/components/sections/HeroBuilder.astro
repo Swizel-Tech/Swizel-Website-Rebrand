@@ -28,6 +28,43 @@ const shipped = [
 shipped.forEach(([name, sector]) => ship(name, sector));
 done('65+ products live in 10+ countries');`;
 
+// the file tree down the side of the machine: real repos, real work
+const tree = [
+	{ kind: 'dir', name: 'swizel', open: true, depth: 0 },
+	{ kind: 'file', name: 'the-reel.mp4', depth: 1, tab: 'watch', icon: 'mdi:play-box-outline' },
+	{ kind: 'file', name: 'editor.js', depth: 1, tab: 'run', icon: 'mdi:language-javascript', dirty: true },
+	{ kind: 'file', name: 'deploy.log', depth: 1, tab: 'term', icon: 'mdi:console' },
+	{ kind: 'file', name: 'README.md', depth: 1, tab: 'read', icon: 'mdi:language-markdown' },
+	{ kind: 'dir', name: 'shipped', open: true, depth: 0 },
+	{ kind: 'file', name: 'brixmarket', depth: 1, icon: 'mdi:home-city-outline', muted: true },
+	{ kind: 'file', name: 'betslipswitch', depth: 1, icon: 'mdi:soccer', muted: true },
+	{ kind: 'file', name: 'buygas', depth: 1, icon: 'mdi:fire', muted: true },
+	{ kind: 'file', name: 'tellatrust', depth: 1, icon: 'mdi:bank-outline', muted: true },
+];
+
+// the deploy log that types itself in the terminal pane
+const deployLog = [
+	{ t: '$ git push origin main', cls: 'cmd' },
+	{ t: 'Enumerating objects: 148, done.', cls: 'dim' },
+	{ t: 'To github.com:swizel/brixmarket.git', cls: 'dim' },
+	{ t: '   a91f2c4..7d3e8b1  main -> main', cls: 'dim' },
+	{ t: '$ swizel deploy --prod', cls: 'cmd' },
+	{ t: '✓ install      1.8s', cls: 'ok' },
+	{ t: '✓ typecheck    0.9s', cls: 'ok' },
+	{ t: '✓ build        6.2s', cls: 'ok' },
+	{ t: '✓ tests 214/214', cls: 'ok' },
+	{ t: '▲ live in 10+ countries · 0 errors', cls: 'live' },
+];
+
+// what the palette offers on ⌘K
+const palette = [
+	{ label: 'Start your build', hint: 'contact', href: '/contact', icon: 'mdi:rocket-launch-outline' },
+	{ label: 'See what we have shipped', hint: 'portfolio', href: '/portfolio', icon: 'mdi:package-variant-closed' },
+	{ label: 'Read the stack', hint: 'services', href: '/services', icon: 'mdi:layers-outline' },
+	{ label: 'Meet the engineers', hint: 'about', href: '/about', icon: 'mdi:account-group-outline' },
+	{ label: 'Join the crew', hint: 'programs', href: '/programs', icon: 'mdi:school-outline' },
+];
+
 const buildTypes = [
 	'iOS apps',
 	'Android apps',
@@ -132,93 +169,195 @@ const buildTypes = [
 			</a>
 		</div>
 
-		<!-- One panel, two tabs: the reel and the live editor share a frame
-		     the way two files share an editor window. -->
-		<div class="bstack" data-bstack>
-			<div class="bstack__tabs" role="tablist" aria-label="Hero panel">
-				<button
-					class="bstack__tab is-on"
-					type="button"
-					role="tab"
-					aria-selected="true"
-					aria-controls="bstack-run"
-					data-bstack-tab="run"
-				>
-					<Icon width={14} name="mdi:code-tags" />
-					editor.js
-					<span class="bstack__dot" aria-hidden="true" />
-				</button>
-				<button
-					class="bstack__tab"
-					type="button"
-					role="tab"
-					aria-selected="false"
-					aria-controls="bstack-watch"
-					data-bstack-tab="watch"
-				>
-					<Icon width={14} name="mdi:play-box-outline" />
-					the-reel.mp4
-				</button>
-				<span class="bstack__spacer" aria-hidden="true" />
-				<span class="bstack__hint" aria-hidden="true">
-					<Icon width={13} name="mdi:keyboard-outline" />
-					tab to switch
+		<!-- ══ the workstation ══════════════════════════════════════════
+		     Not a panel with a video in it: a developer's machine. Tree down
+		     the side, tabs across the top, a status bar underneath, and ⌘K
+		     for the palette. The live editor is one of the files. -->
+		<div class="wkst" data-bstack data-wkst>
+			<div class="wkst__chrome">
+				<span class="wkst__dots" aria-hidden="true">
+					<i></i><i></i><i></i>
 				</span>
-			</div>
-
-			<div class="bstack__panes">
-				<div
-					class="bstack__pane is-on"
-					id="bstack-run"
-					role="tabpanel"
-					data-bstack-pane="run"
-				>
-		<div class="builder--ide" id="builder-ide" data-tour="ide">
-			<span class="ide2--cue" id="builder-ide-cue" aria-hidden="true">
-				<Icon width={15} name="mdi:gesture-tap" />
-				This is real. Edit it, then run
-			</span>
-			<div class="ide2--bar">
-				<span class="ide2--dot"></span>
-				<span class="ide2--dot"></span>
-				<span class="ide2--dot"></span>
-				<span class="ide2--file">swizel.dev</span>
-				<span class="ide2--live"><span class="ide2--livedot"></span>live</span>
-				<button class="ide2--run ide2--run--pulse" type="button" data-tour="run">
-					<svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-					Run
+				<span class="wkst__title">swizel — ~/builds</span>
+				<button class="wkst__k" type="button" data-wkst-open aria-label="Open the command palette">
+					<Icon width={13} name="mdi:magnify" />
+					<span>Jump to…</span>
+					<kbd>⌘K</kbd>
 				</button>
 			</div>
-			<div class="ide2--body">
-				<div class="ide2--editor">
-					<pre class="ide2--gutter" aria-hidden="true"></pre>
-					<textarea class="ide2--code" spellcheck="false" aria-label="Live code editor">{builderCode}</textarea>
-				</div>
-				<div class="ide2--console" data-tour="out">
-					<div class="ide2--consolebar">
-						<span>console</span>
-						<span class="ide2--hint">editable · ⌘/Ctrl + Enter</span>
+
+			<div class="wkst__body">
+				<aside class="wkst__tree" aria-label="Files">
+					{
+						tree.map((n) =>
+							n.kind === 'dir' ? (
+								<span class="wkst__dir" style={`--d:${n.depth}`}>
+									<Icon width={12} name="mdi:chevron-down" />
+									<Icon width={13} name="mdi:folder-outline" />
+									{n.name}
+								</span>
+							) : n.tab ? (
+								<button
+									class:list={['wkst__file', { 'is-on': n.tab === 'watch' }]}
+									type="button"
+									style={`--d:${n.depth}`}
+									data-bstack-tab={n.tab}
+								>
+									<Icon width={13} name={n.icon} />
+									{n.name}
+									{n.dirty && <i class="wkst__dirty" aria-hidden="true" />}
+								</button>
+							) : (
+								<span class:list={['wkst__file', 'is-muted']} style={`--d:${n.depth}`}>
+									<Icon width={13} name={n.icon} />
+									{n.name}
+								</span>
+							)
+						)
+					}
+				</aside>
+
+				<div class="wkst__main">
+					<div class="wkst__tabs" role="tablist" aria-label="Open files">
+						<button class="wkst__tab is-on" type="button" role="tab" aria-selected="true" data-bstack-tab="watch">
+							<Icon width={13} name="mdi:play-box-outline" />the-reel.mp4
+						</button>
+						<button class="wkst__tab" type="button" role="tab" aria-selected="false" data-bstack-tab="run">
+							<Icon width={13} name="mdi:language-javascript" />editor.js
+							<span class="wkst__dot" aria-hidden="true" />
+						</button>
+						<button class="wkst__tab" type="button" role="tab" aria-selected="false" data-bstack-tab="term">
+							<Icon width={13} name="mdi:console" />deploy.log
+						</button>
+						<button class="wkst__tab" type="button" role="tab" aria-selected="false" data-bstack-tab="read">
+							<Icon width={13} name="mdi:language-markdown" />README.md
+						</button>
 					</div>
-					<div class="ide2--out" id="builder-out"></div>
+
+					<div class="wkst__panes">
+						<!-- the reel, first thing you meet -->
+						<div class="wkst__pane is-on" role="tabpanel" data-bstack-pane="watch">
+							<FilmPlayer
+								videoId="R2jdjZwv-ZE"
+								label="Inside a Swizel build: the engineers, the stack and the ship"
+								tag="git log --the-team"
+								class="wkst__film"
+							/>
+						</div>
+
+						<!-- the editor that actually runs -->
+						<div class="wkst__pane" role="tabpanel" data-bstack-pane="run" hidden>
+							<div class="builder--ide" id="builder-ide" data-tour="ide">
+								<span class="ide2--cue" id="builder-ide-cue" aria-hidden="true">
+									<Icon width={15} name="mdi:gesture-tap" />
+									This is real. Edit it, then run
+								</span>
+								<div class="ide2--bar">
+									<span class="ide2--dot"></span>
+									<span class="ide2--dot"></span>
+									<span class="ide2--dot"></span>
+									<span class="ide2--file">swizel.dev</span>
+									<span class="ide2--live"><span class="ide2--livedot"></span>live</span>
+									<button class="ide2--run ide2--run--pulse" type="button" data-tour="run">
+										<svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+										Run
+									</button>
+								</div>
+								<div class="ide2--body">
+									<div class="ide2--editor">
+										<pre class="ide2--gutter" aria-hidden="true"></pre>
+										<textarea class="ide2--code" spellcheck="false" aria-label="Live code editor">{builderCode}</textarea>
+									</div>
+									<div class="ide2--console" data-tour="out">
+										<div class="ide2--consolebar">
+											<span>console</span>
+											<span class="ide2--hint">editable · ⌘/Ctrl + Enter</span>
+										</div>
+										<div class="ide2--out" id="builder-out"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- the deploy that already happened -->
+						<div class="wkst__pane" role="tabpanel" data-bstack-pane="term" hidden>
+							<div class="wkst__term" data-wkst-term>
+								{
+									deployLog.map((l, i) => (
+										<p class:list={['wkst__tline', `is-${l.cls}`]} style={`--i:${i}`}>
+											{l.t}
+										</p>
+									))
+								}
+								<p class="wkst__tline is-caret"><span class="wkst__caret" aria-hidden="true" /></p>
+							</div>
+						</div>
+
+						<!-- the readme, because every repo has one -->
+						<div class="wkst__pane" role="tabpanel" data-bstack-pane="read" hidden>
+							<div class="wkst__read">
+								<h3># Swizel</h3>
+								<p>
+									A senior team you can plug into your idea. We design it,
+									build it, take it to market and keep it running.
+								</p>
+								<h4>## What we ship</h4>
+								<ul>
+									<li>Web, iOS and Android, and the APIs behind them</li>
+									<li>ERPs, dashboards, marketplaces, fintech rails</li>
+									<li>The marketing that takes it to people, after launch</li>
+								</ul>
+								<h4>## Getting started</h4>
+								<pre><code>$ swizel init --your-idea
+$ swizel ship</code></pre>
+								<p class="wkst__read-note">
+									→ or press <kbd>⌘K</kbd> and jump straight to it.
+								</p>
+							</div>
+						</div>
+					</div>
+
+					<!-- the status bar every editor wears -->
+					<div class="wkst__status">
+						<span class="wkst__st wkst__st--branch">
+							<Icon width={12} name="mdi:source-branch" />main
+						</span>
+						<span class="wkst__st"><i class="wkst__pulse" aria-hidden="true" />deployed</span>
+						<span class="wkst__st wkst__st--dim">0 errors</span>
+						<span class="wkst__st wkst__st--dim">65+ products</span>
+						<span class="wkst__spacer" aria-hidden="true" />
+						<span class="wkst__st wkst__st--dim">UTF-8</span>
+						<span class="wkst__st wkst__st--dim">Ln 1, Col 1</span>
+					</div>
 				</div>
 			</div>
-		</div>
-				</div>
 
-				<div
-					class="bstack__pane"
-					id="bstack-watch"
-					role="tabpanel"
-					data-bstack-pane="watch"
-					hidden
-				>
-					<FilmPlayer
-						videoId="R2jdjZwv-ZE"
-						label="Inside a Swizel build: the engineers, the stack and the ship"
-						tag="git log --the-team"
-						caption="// the humans behind the commits"
-						class="bstack__film"
-					/>
+			<!-- ⌘K -->
+			<div class="wkst__palette" data-wkst-palette hidden>
+				<div class="wkst__palette-card" role="dialog" aria-label="Command palette">
+					<div class="wkst__palette-in">
+						<Icon width={15} name="mdi:chevron-right" />
+						<input
+							type="text"
+							placeholder="Type a command…"
+							aria-label="Command"
+							data-wkst-q
+						/>
+						<kbd>esc</kbd>
+					</div>
+					<ul class="wkst__palette-list" data-wkst-list>
+						{
+							palette.map((c, i) => (
+								<li>
+									<a class:list={['wkst__cmd', { 'is-on': i === 0 }]} href={c.href} data-wkst-cmd>
+										<Icon width={15} name={c.icon} />
+										<span>{c.label}</span>
+										<em>{c.hint}</em>
+									</a>
+								</li>
+							))
+						}
+					</ul>
 				</div>
 			</div>
 		</div>
@@ -326,7 +465,7 @@ const buildTypes = [
 			gap: 3rem;
 		}
 		/* start the panel at the headline, not the eyebrow line above it */
-		.bstack { margin-top: 2.8rem; }
+		.wkst { margin-top: 2.8rem; }
 	}
 
 	.builder--eyebrow {
@@ -530,134 +669,332 @@ const buildTypes = [
 	}
 
 	/* ===== IDE ===== */
-	/* ══ the panel: an editor window with two files open ══════════════
-	   The tab strip is the chrome; the panes below it swap. The IDE keeps
-	   every style it already had, it just lives inside the frame now. */
-	.bstack {
+	/* ══ the workstation ══════════════════════════════════════════════
+	   A machine, not a card. Chrome on top, tree down the side, tabs over
+	   the panes, status bar underneath. Everything is monospace and every
+	   surface is a shade of the same near-black. */
+	.wkst {
+		--w-line: rgba(255, 255, 255, 0.07);
+		--w-dim: rgba(214, 232, 238, 0.45);
+		--w-ink: #dff3f7;
 		position: relative;
-		border-radius: 1rem;
+		border-radius: 0.9rem;
 		overflow: hidden;
-		border: 1px solid rgba(24, 222, 190, 0.22);
-		background: linear-gradient(180deg, #0d1219, #090c12);
+		border: 1px solid rgba(24, 222, 190, 0.2);
+		background: #0a0e14;
 		box-shadow:
-			0 40px 90px -46px rgba(0, 0, 0, 0.95),
-			0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+			0 50px 110px -50px rgba(0, 0, 0, 0.96),
+			0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+			0 0 90px -40px color-mix(in srgb, var(--view-accent, #18debe) 60%, transparent);
+		font-family: ui-monospace, 'SF Mono', Menlo, monospace;
 	}
-	.bstack::before {
-		/* the hairline of accent every builder surface wears */
-		content: '';
-		position: absolute;
-		inset: 0 0 auto 0;
-		height: 2px;
-		background: linear-gradient(90deg, transparent, var(--view-accent, #18debe), transparent);
-		opacity: 0.7;
-	}
-	.bstack__tabs {
+
+	/* title bar */
+	.wkst__chrome {
 		display: flex;
-		align-items: stretch;
-		gap: 0;
-		padding: 0 0.4rem;
-		border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-		background: rgba(255, 255, 255, 0.02);
+		align-items: center;
+		gap: 0.7rem;
+		padding: 0.5rem 0.7rem;
+		border-bottom: 1px solid var(--w-line);
+		background: rgba(255, 255, 255, 0.025);
+	}
+	.wkst__dots { display: inline-flex; gap: 0.35rem; }
+	.wkst__dots i {
+		width: 10px; height: 10px; border-radius: 9999px; display: block;
+		background: #2b3440;
+	}
+	.wkst__dots i:nth-child(1) { background: #ff5f57; }
+	.wkst__dots i:nth-child(2) { background: #febc2e; }
+	.wkst__dots i:nth-child(3) { background: #28c840; }
+	.wkst__title { font-size: 0.72rem; color: var(--w-dim); }
+	.wkst__k {
+		margin-left: auto;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.38rem;
+		padding: 0.24rem 0.5rem;
+		border: 1px solid var(--w-line);
+		border-radius: 0.45rem;
+		background: rgba(255, 255, 255, 0.03);
+		color: var(--w-dim);
+		font-family: inherit;
+		font-size: 0.68rem;
+		cursor: pointer;
+		transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+	}
+	.wkst__k:hover {
+		color: var(--w-ink);
+		border-color: rgba(24, 222, 190, 0.4);
+		background: rgba(24, 222, 190, 0.08);
+	}
+	.wkst__k kbd {
+		padding: 0 0.25rem;
+		border-radius: 0.25rem;
+		background: rgba(255, 255, 255, 0.08);
+		font-family: inherit;
+		font-size: 0.64rem;
+	}
+
+	.wkst__body { display: grid; grid-template-columns: 11.5rem minmax(0, 1fr); }
+
+	/* the tree */
+	.wkst__tree {
+		display: flex;
+		flex-direction: column;
+		gap: 0.1rem;
+		padding: 0.55rem 0.35rem;
+		border-right: 1px solid var(--w-line);
+		background: rgba(255, 255, 255, 0.012);
+		overflow: hidden;
+	}
+	.wkst__dir,
+	.wkst__file {
+		display: flex;
+		align-items: center;
+		gap: 0.34rem;
+		padding: 0.24rem 0.4rem 0.24rem calc(0.4rem + var(--d, 0) * 0.65rem);
+		border: 0;
+		border-radius: 0.35rem;
+		background: transparent;
+		color: var(--w-dim);
+		font-family: inherit;
+		font-size: 0.7rem;
+		text-align: left;
+		white-space: nowrap;
+	}
+	.wkst__dir { color: rgba(214, 232, 238, 0.62); font-weight: 600; }
+	.wkst__file { cursor: pointer; transition: background 0.18s ease, color 0.18s ease; }
+	.wkst__file:hover { background: rgba(255, 255, 255, 0.05); color: var(--w-ink); }
+	.wkst__file.is-on {
+		background: color-mix(in srgb, var(--view-accent, #18debe) 14%, transparent);
+		color: #eafcff;
+	}
+	.wkst__file.is-muted { cursor: default; opacity: 0.45; }
+	.wkst__dirty {
+		width: 5px; height: 5px; border-radius: 9999px; margin-left: auto;
+		background: var(--view-accent, #18debe);
+	}
+
+	.wkst__main { display: flex; flex-direction: column; min-width: 0; }
+
+	/* tabs */
+	.wkst__tabs {
+		display: flex;
+		border-bottom: 1px solid var(--w-line);
 		overflow-x: auto;
 		scrollbar-width: none;
 	}
-	.bstack__tabs::-webkit-scrollbar { display: none; }
-	.bstack__tab {
+	.wkst__tabs::-webkit-scrollbar { display: none; }
+	.wkst__tab {
 		position: relative;
 		display: inline-flex;
 		align-items: center;
-		gap: 0.42rem;
+		gap: 0.36rem;
 		flex: none;
-		padding: 0.62rem 0.85rem;
+		padding: 0.58rem 0.8rem;
 		border: 0;
+		border-right: 1px solid var(--w-line);
 		background: transparent;
-		color: rgba(214, 232, 238, 0.55);
-		font-family: ui-monospace, 'SF Mono', Menlo, monospace;
-		font-size: 0.74rem;
-		letter-spacing: 0.01em;
+		color: var(--w-dim);
+		font-family: inherit;
+		font-size: 0.72rem;
 		cursor: pointer;
 		white-space: nowrap;
-		transition: color 0.22s ease, background 0.22s ease;
+		transition: color 0.2s ease, background 0.2s ease;
 	}
-	.bstack__tab:hover { color: #dff3f7; background: rgba(255, 255, 255, 0.035); }
-	.bstack__tab.is-on { color: #eafcff; background: rgba(24, 222, 190, 0.08); }
-	.bstack__tab.is-on::after {
+	.wkst__tab:hover { color: var(--w-ink); background: rgba(255, 255, 255, 0.03); }
+	.wkst__tab.is-on { color: #eafcff; background: rgba(24, 222, 190, 0.07); }
+	.wkst__tab.is-on::after {
 		content: '';
 		position: absolute;
-		inset: auto 0.5rem -1px 0.5rem;
+		inset: auto 0 -1px 0;
 		height: 2px;
-		border-radius: 2px;
 		background: var(--view-accent, #18debe);
 		box-shadow: 0 0 12px color-mix(in srgb, var(--view-accent, #18debe) 70%, transparent);
 	}
-	/* the unsaved-changes dot every editor puts on a live file */
-	.bstack__dot {
-		width: 6px;
-		height: 6px;
-		border-radius: 9999px;
+	.wkst__dot {
+		width: 6px; height: 6px; border-radius: 9999px;
 		background: var(--view-accent, #18debe);
-		box-shadow: 0 0 8px color-mix(in srgb, var(--view-accent, #18debe) 80%, transparent);
-		animation: bstack-pulse 2.4s ease-in-out infinite;
+		animation: wkst-pulse 2.4s ease-in-out infinite;
 	}
-	@keyframes bstack-pulse {
-		0%, 100% { opacity: 0.45; transform: scale(0.85); }
+	@keyframes wkst-pulse {
+		0%, 100% { opacity: 0.4; transform: scale(0.85); }
 		50% { opacity: 1; transform: scale(1); }
 	}
-	.bstack__spacer { flex: 1 1 auto; }
-	.bstack__hint {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.3rem;
-		flex: none;
-		padding-right: 0.5rem;
-		font-family: ui-monospace, monospace;
-		font-size: 0.64rem;
-		color: rgba(214, 232, 238, 0.32);
-		align-self: center;
+
+	.wkst__panes { position: relative; flex: 1 1 auto; min-height: 0; }
+	.wkst__pane[hidden] { display: none; }
+	.wkst__pane.is-on { animation: wkst-in 0.3s cubic-bezier(0.22, 1, 0.36, 1) both; }
+	@keyframes wkst-in { from { opacity: 0; transform: translateY(6px); } }
+	.wkst [data-bstack-pane='watch'] { padding: 0.6rem; }
+
+	/* the editor loses its own frame inside the machine */
+	.wkst .builder--ide { border: 0; border-radius: 0; box-shadow: none; margin: 0; }
+	.wkst .ide2--cue { top: 3.4rem; left: 12px; }
+
+	/* the film, in the machine's own language */
+	.wkst :global(.flm__screen) { border-radius: 0.5rem; border-color: var(--w-line); }
+	.wkst :global(.flm__tag) { font-family: ui-monospace, monospace; }
+
+	/* the terminal */
+	.wkst__term {
+		padding: 0.9rem 1rem 1.1rem;
+		font-size: 0.74rem;
+		line-height: 1.75;
+		min-height: 17rem;
 	}
-	.bstack__panes { position: relative; }
-	.bstack__pane[hidden] { display: none; }
-	.bstack__pane.is-on { animation: bstack-in 0.32s cubic-bezier(0.22, 1, 0.36, 1) both; }
-	@keyframes bstack-in {
-		from { opacity: 0; transform: translateY(6px); }
-	}
-	/* inside the frame the IDE drops its own border and corners */
-	.bstack .builder--ide {
-		border: 0;
-		border-radius: 0;
-		box-shadow: none;
+	.wkst__tline {
 		margin: 0;
+		color: var(--w-dim);
+		opacity: 0;
+		animation: wkst-line 0.3s ease forwards;
+		animation-delay: calc(var(--i) * 0.14s + 0.1s);
 	}
-	/* the film's own class is applied inside FilmPlayer, so it never gets
-	   this component's scope hash — reach it through .bstack instead */
-	.bstack [data-bstack-pane='watch'] { padding: 0.7rem; }
-	.bstack :global(.flm__screen) { border-radius: 0.6rem; }
-	.bstack :global(.flm__bar) {
-		background: rgba(255, 255, 255, 0.03);
-		border-color: rgba(24, 222, 190, 0.18);
+	@keyframes wkst-line { to { opacity: 1; } }
+	.wkst__tline.is-cmd { color: #eafcff; }
+	.wkst__tline.is-ok { color: #6ee7b7; }
+	.wkst__tline.is-live { color: var(--view-accent, #18debe); font-weight: 700; }
+	.wkst__caret {
+		display: inline-block;
+		width: 8px; height: 15px;
+		background: var(--view-accent, #18debe);
+		animation: wkst-blink 1s steps(2) infinite;
 	}
-	.bstack :global(.flm__cap) {
-		font-family: ui-monospace, 'SF Mono', Menlo, monospace;
-		font-weight: 400;
-		font-size: 0.72rem;
-		color: rgba(214, 232, 238, 0.42);
+	@keyframes wkst-blink { 50% { opacity: 0; } }
+
+	/* the readme */
+	.wkst__read {
+		padding: 1rem 1.15rem 1.2rem;
+		font-size: 0.78rem;
+		line-height: 1.7;
+		color: rgba(214, 232, 238, 0.72);
+		min-height: 17rem;
 	}
-	/* the cue used to hang off the top of a free-standing IDE. Inside the
-	   frame it has a tab strip and a window bar above it, so it drops to
-	   the first line of the editor and points at the code it is about. */
-	.bstack .ide2--cue { top: auto; bottom: auto; }
-	.bstack [data-bstack-pane='run'] { position: relative; }
-	.bstack .ide2--cue {
-		/* measured from the IDE, which already starts below the tab strip:
-		   just clear of the window bar, on the first line of code */
-		top: 3.75rem;
-		left: 14px;
+	.wkst__read h3 { font-size: 0.95rem; color: #eafcff; margin: 0 0 0.5rem; }
+	.wkst__read h4 { font-size: 0.78rem; color: var(--view-accent, #18debe); margin: 0.9rem 0 0.35rem; }
+	.wkst__read ul { list-style: none; margin: 0; padding: 0; }
+	.wkst__read li { padding-left: 1rem; position: relative; }
+	.wkst__read li::before { content: '-'; position: absolute; left: 0; color: var(--w-dim); }
+	.wkst__read pre {
+		margin: 0.4rem 0 0;
+		padding: 0.6rem 0.7rem;
+		border-radius: 0.4rem;
+		background: rgba(255, 255, 255, 0.04);
+		color: #eafcff;
+		font-size: 0.74rem;
+		overflow-x: auto;
+	}
+	.wkst__read-note { margin-top: 0.8rem; color: var(--w-dim); }
+	.wkst__read kbd {
+		padding: 0 0.28rem;
+		border-radius: 0.25rem;
+		background: rgba(255, 255, 255, 0.09);
+		font-family: inherit;
+	}
+
+	/* status bar */
+	.wkst__status {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		padding: 0.34rem 0.7rem;
+		border-top: 1px solid var(--w-line);
+		background: rgba(24, 222, 190, 0.05);
+		font-size: 0.66rem;
+		color: var(--w-dim);
+	}
+	.wkst__st { display: inline-flex; align-items: center; gap: 0.28rem; white-space: nowrap; }
+	.wkst__st--branch { color: var(--view-accent, #18debe); }
+	.wkst__st--dim { opacity: 0.6; }
+	.wkst__spacer { flex: 1 1 auto; }
+	.wkst__pulse {
+		width: 6px; height: 6px; border-radius: 9999px;
+		background: #28c840;
+		box-shadow: 0 0 8px #28c840;
+		animation: wkst-pulse 2s ease-in-out infinite;
+	}
+
+	/* ⌘K */
+	.wkst__palette {
+		position: absolute;
+		inset: 0;
+		z-index: 20;
+		display: grid;
+		place-items: start center;
+		padding-top: 3.4rem;
+		background: rgba(4, 6, 10, 0.72);
+		-webkit-backdrop-filter: blur(4px);
+		backdrop-filter: blur(4px);
+	}
+	.wkst__palette[hidden] { display: none; }
+	.wkst__palette-card {
+		width: min(26rem, calc(100% - 2rem));
+		border-radius: 0.6rem;
+		overflow: hidden;
+		border: 1px solid rgba(24, 222, 190, 0.3);
+		background: #0d131a;
+		box-shadow: 0 30px 70px -30px rgba(0, 0, 0, 0.9);
+		animation: wkst-in 0.2s ease both;
+	}
+	.wkst__palette-in {
+		display: flex;
+		align-items: center;
+		gap: 0.45rem;
+		padding: 0.6rem 0.7rem;
+		border-bottom: 1px solid var(--w-line);
+		color: var(--view-accent, #18debe);
+	}
+	.wkst__palette-in input {
+		flex: 1 1 auto;
+		min-width: 0;
+		border: 0;
+		background: transparent;
+		color: var(--w-ink);
+		font-family: inherit;
+		font-size: 0.8rem;
+		outline: none;
+	}
+	.wkst__palette-in kbd {
+		padding: 0 0.28rem;
+		border-radius: 0.25rem;
+		background: rgba(255, 255, 255, 0.08);
+		color: var(--w-dim);
+		font-family: inherit;
+		font-size: 0.62rem;
+	}
+	.wkst__palette-list { list-style: none; margin: 0; padding: 0.3rem; max-height: 14rem; overflow-y: auto; }
+	.wkst__cmd {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.44rem 0.5rem;
+		border-radius: 0.4rem;
+		color: rgba(214, 232, 238, 0.8);
+		font-size: 0.76rem;
+		text-decoration: none;
+	}
+	.wkst__cmd em { margin-left: auto; font-style: normal; font-size: 0.66rem; color: var(--w-dim); }
+	.wkst__cmd.is-on,
+	.wkst__cmd:hover {
+		background: color-mix(in srgb, var(--view-accent, #18debe) 16%, transparent);
+		color: #eafcff;
+	}
+	.wkst__cmd[hidden] { display: none; }
+
+	@media (max-width: 900px) {
+		.wkst__body { grid-template-columns: minmax(0, 1fr); }
+		.wkst__tree { display: none; }
 	}
 	@media (max-width: 640px) {
-		.bstack .ide2--cue { font-size: 0.68rem; padding: 0.4rem 0.7rem; left: 10px; }
+		.wkst__title { display: none; }
+		.wkst__k { margin-left: auto; }
+		.wkst__term, .wkst__read { min-height: 13rem; font-size: 0.7rem; }
+		.wkst__status { gap: 0.5rem; overflow-x: auto; scrollbar-width: none; }
 	}
-	@media (max-width: 640px) { .bstack__hint { display: none; } }
+	@media (prefers-reduced-motion: reduce) {
+		.wkst__tline { opacity: 1; animation: none; }
+		.wkst__caret, .wkst__dot, .wkst__pulse { animation: none; }
+	}
 
 	.builder--ide {
 		position: relative;

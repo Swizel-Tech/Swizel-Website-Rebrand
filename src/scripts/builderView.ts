@@ -228,8 +228,73 @@ export function initBuilderStack() {
 		};
 
 		tabs.forEach((t) =>
-			t.addEventListener('click', () => show(t.dataset.bstackTab || 'run'))
+			t.addEventListener('click', () => show(t.dataset.bstackTab || 'watch'))
 		);
+
+		// ── ⌘K, the palette ────────────────────────────────────────────
+		const pal = stack.querySelector<HTMLElement>('[data-wkst-palette]');
+		const q = stack.querySelector<HTMLInputElement>('[data-wkst-q]');
+		if (pal && q) {
+			const cmds = Array.from(stack.querySelectorAll<HTMLAnchorElement>('[data-wkst-cmd]'));
+			const visible = () => cmds.filter((c) => !c.hidden);
+			const mark = (el: HTMLElement | undefined) =>
+				cmds.forEach((c) => c.classList.toggle('is-on', c === el));
+
+			const openPal = () => {
+				pal.hidden = false;
+				q.value = '';
+				cmds.forEach((c) => (c.hidden = false));
+				mark(cmds[0]);
+				q.focus();
+			};
+			const shutPal = () => {
+				pal.hidden = true;
+			};
+
+			stack
+				.querySelector<HTMLButtonElement>('[data-wkst-open]')
+				?.addEventListener('click', openPal);
+			pal.addEventListener('click', (e) => {
+				if (e.target === pal) shutPal();
+			});
+
+			q.addEventListener('input', () => {
+				const needle = q.value.trim().toLowerCase();
+				cmds.forEach((c) => {
+					c.hidden = !!needle && !c.textContent?.toLowerCase().includes(needle);
+				});
+				mark(visible()[0]);
+			});
+
+			q.addEventListener('keydown', (e) => {
+				const list = visible();
+				const at = list.findIndex((c) => c.classList.contains('is-on'));
+				if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+					e.preventDefault();
+					const next = list[(at + (e.key === 'ArrowDown' ? 1 : list.length - 1)) % list.length];
+					mark(next);
+					next?.scrollIntoView({ block: 'nearest' });
+				} else if (e.key === 'Enter') {
+					e.preventDefault();
+					list[Math.max(0, at)]?.click();
+				} else if (e.key === 'Escape') {
+					shutPal();
+				}
+			});
+
+			// the keystroke every developer already has in their fingers
+			document.addEventListener('keydown', (e) => {
+				if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+					// only when the machine is actually on screen
+					const r = stack.getBoundingClientRect();
+					if (r.bottom < 0 || r.top > window.innerHeight) return;
+					e.preventDefault();
+					pal.hidden ? openPal() : shutPal();
+				} else if (e.key === 'Escape' && !pal.hidden) {
+					shutPal();
+				}
+			});
+		}
 
 		// arrow keys walk the strip, the way a real tab bar does
 		stack.querySelector('[role="tablist"]')?.addEventListener('keydown', (e) => {
@@ -239,7 +304,7 @@ export function initBuilderStack() {
 			const next = tabs[(at + (ev.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
 			if (!next) return;
 			ev.preventDefault();
-			show(next.dataset.bstackTab || 'run');
+			show(next.dataset.bstackTab || 'watch');
 			next.focus();
 		});
 	});

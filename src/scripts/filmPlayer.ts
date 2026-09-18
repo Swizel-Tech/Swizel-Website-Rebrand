@@ -71,6 +71,20 @@ export function initFilmPlayers(root: ParentNode = document) {
 		const screen = q('[data-flm-screen]');
 
 		const ambient = film.dataset.ambient === '1';
+
+		// maxresdefault does not exist for every YouTube video, and a blocked
+		// or missing thumbnail would leave a broken image on the glass
+		const stillEl = q<HTMLImageElement>('[data-flm-poster]');
+		if (stillEl) {
+			stillEl.addEventListener('error', () => {
+				if (!stillEl.dataset.fell && stillEl.src.includes('maxresdefault')) {
+					stillEl.dataset.fell = '1';
+					stillEl.src = stillEl.src.replace('maxresdefault', 'hqdefault');
+				} else {
+					stillEl.remove();
+				}
+			});
+		}
 		const rates = (q('[data-flm-rates]')?.textContent || '1')
 			.split(',')
 			.map(Number)

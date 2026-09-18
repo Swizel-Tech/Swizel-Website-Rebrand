@@ -96,66 +96,68 @@ const rates = [0.5, 1, 1.25, 1.5, 2];
 		</button>
 
 		<span class="flm__spin" aria-hidden="true" data-flm-spin />
-	</div>
 
-	<!-- ── the transport ── -->
-	<div class="flm__bar" data-flm-bar>
-		<button class="flm__b flm__b--play" type="button" data-flm-play aria-label="Play">
-			<Icon class="flm__i flm__i--play" width={17} name="mdi:play" />
-			<Icon class="flm__i flm__i--pause" width={17} name="mdi:pause" />
-		</button>
+		<!-- ── the transport, on the glass ── -->
+		<div class="flm__bar" data-flm-bar>
+			<div
+				class="flm__seek"
+				role="slider"
+				tabindex="0"
+				aria-label="Seek"
+				aria-valuemin="0"
+				aria-valuemax="100"
+				aria-valuenow="0"
+				data-flm-seek
+			>
+				<span class="flm__seek-track" aria-hidden="true">
+					<span class="flm__seek-buf" data-flm-buf />
+					<span class="flm__seek-fill" data-flm-fill />
+					<span class="flm__seek-knob" data-flm-knob />
+				</span>
+			</div>
 
-		<button class="flm__b" type="button" data-flm-skip="-10" aria-label="Back ten seconds">
-			<Icon width={16} name="mdi:rewind-10" />
-		</button>
-		<button class="flm__b" type="button" data-flm-skip="10" aria-label="Forward ten seconds">
-			<Icon width={16} name="mdi:fast-forward-10" />
-		</button>
+			<div class="flm__row">
+				<button class="flm__b flm__b--play" type="button" data-flm-play aria-label="Play">
+					<Icon class="flm__i flm__i--play" width={17} name="mdi:play" />
+					<Icon class="flm__i flm__i--pause" width={17} name="mdi:pause" />
+				</button>
+				<button class="flm__b" type="button" data-flm-skip="-10" aria-label="Back ten seconds">
+					<Icon width={16} name="mdi:rewind-10" />
+				</button>
+				<button class="flm__b" type="button" data-flm-skip="10" aria-label="Forward ten seconds">
+					<Icon width={16} name="mdi:fast-forward-10" />
+				</button>
 
-		<span class="flm__t" data-flm-now>0:00</span>
+				<div class="flm__vol">
+					<button class="flm__b" type="button" data-flm-mute aria-label="Mute">
+						<Icon class="flm__i flm__i--loud" width={17} name="mdi:volume-high" />
+						<Icon class="flm__i flm__i--muted" width={17} name="mdi:volume-off" />
+					</button>
+					<input
+						class="flm__vol-range"
+						type="range"
+						min="0"
+						max="100"
+						value="100"
+						aria-label="Volume"
+						data-flm-vol
+					/>
+				</div>
 
-		<div
-			class="flm__seek"
-			role="slider"
-			tabindex="0"
-			aria-label="Seek"
-			aria-valuemin="0"
-			aria-valuemax="100"
-			aria-valuenow="0"
-			data-flm-seek
-		>
-			<span class="flm__seek-track" aria-hidden="true">
-				<span class="flm__seek-buf" data-flm-buf />
-				<span class="flm__seek-fill" data-flm-fill />
-				<span class="flm__seek-knob" data-flm-knob />
-			</span>
+				<span class="flm__t" data-flm-now>0:00</span>
+				<span class="flm__t flm__t--dim">/</span>
+				<span class="flm__t flm__t--dim" data-flm-dur>0:00</span>
+
+				<span class="flm__spacer" aria-hidden="true" />
+
+				<button class="flm__b flm__b--rate" type="button" data-flm-rate aria-label="Playback speed">
+					<b data-flm-rate-t>1×</b>
+				</button>
+				<button class="flm__b" type="button" data-flm-full aria-label="Full screen">
+					<Icon width={16} name="mdi:fullscreen" />
+				</button>
+			</div>
 		</div>
-
-		<span class="flm__t flm__t--dim" data-flm-dur>0:00</span>
-
-		<button class="flm__b flm__b--rate" type="button" data-flm-rate aria-label="Playback speed">
-			<b data-flm-rate-t>1×</b>
-		</button>
-
-		<div class="flm__vol">
-			<button class="flm__b" type="button" data-flm-mute aria-label="Mute">
-				<Icon class="flm__i flm__i--loud" width={17} name="mdi:volume-high" />
-				<Icon class="flm__i flm__i--muted" width={17} name="mdi:volume-off" />
-			</button>
-			<input
-				class="flm__vol-range"
-				type="range"
-				min="0"
-				max="100"
-				value="100"
-				aria-label="Volume"
-				data-flm-vol
-			/>
-		</div>
-
-		<button class="flm__b" type="button" data-flm-full aria-label="Full screen">
-			<Icon width={16} name="mdi:fullscreen" />
-		</button>
 	</div>
 
 	{caption && <figcaption class="flm__cap">{caption}</figcaption>}
@@ -275,50 +277,68 @@ const rates = [0.5, 1, 1.25, 1.5, 2];
 	.flm.is-waiting .flm__spin { opacity: 1; animation: flm-spin 0.8s linear infinite; }
 	@keyframes flm-spin { to { transform: rotate(1turn); } }
 
-	/* ── the bar ── */
+	/* ══ the transport, on the glass ══════════════════════════════════
+	   It rides the bottom of the picture on its own scrim, shows while the
+	   film is parked or the pointer is near, and gets out of the way once
+	   it is running and nobody is asking. The scrub line spans the full
+	   width above the buttons, the way a film player should. */
 	.flm__bar {
+		position: absolute;
+		inset: auto 0 0 0;
+		z-index: 6;
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 0.15rem;
+		padding: 2.6rem 0.65rem 0.55rem;
+		background: linear-gradient(180deg, transparent, rgba(4, 5, 10, 0.55) 45%, rgba(4, 5, 10, 0.88));
+		opacity: 0;
+		transform: translateY(8px);
+		transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+		pointer-events: none;
+	}
+	.flm__bar > * { pointer-events: auto; }
+	/* parked, hovered, focused or being scrubbed: the controls are there */
+	.flm:not(.is-playing) .flm__bar,
+	.flm__screen:hover .flm__bar,
+	.flm.is-scrubbing .flm__bar,
+	.flm__bar:focus-within {
+		opacity: 1;
+		transform: none;
+	}
+	/* until the film has started the big button owns the frame */
+	.flm:not(.is-started) .flm__bar { opacity: 0; pointer-events: none; }
+
+	.flm__row {
 		display: flex;
 		align-items: center;
-		gap: 0.3rem;
-		padding: 0.4rem 0.55rem;
-		border-radius: 0.7rem;
-		border: 1px solid color-mix(in srgb, var(--flm-a) 20%, transparent);
-		background: rgba(10, 12, 18, 0.82);
-		-webkit-backdrop-filter: blur(10px);
-		backdrop-filter: blur(10px);
-	}
-	:global(html:not(.dark)) .flm__bar {
-		background: rgba(255, 255, 255, 0.92);
-		border-color: rgba(20, 22, 40, 0.14);
-		box-shadow: 0 12px 30px -24px rgba(20, 22, 40, 0.7);
+		gap: 0.2rem;
 	}
 
 	.flm__b {
 		display: grid;
 		place-items: center;
 		flex: none;
-		width: 1.95rem;
-		height: 1.95rem;
+		width: 2.1rem;
+		height: 2.1rem;
 		border: 0;
-		border-radius: 0.5rem;
+		border-radius: 0.55rem;
 		background: transparent;
-		color: #dfe9ee;
+		color: rgba(240, 249, 252, 0.92);
 		cursor: pointer;
-		transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+		transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
 	}
-	:global(html:not(.dark)) .flm__b { color: #2a3140; }
-	.flm__b:hover {
-		background: color-mix(in srgb, var(--flm-a) 18%, transparent);
-		color: #fff;
-	}
-	:global(html:not(.dark)) .flm__b:hover { color: #101426; }
-	.flm__b:active { transform: scale(0.92); }
+	.flm__b:hover { background: rgba(255, 255, 255, 0.16); color: #fff; }
+	.flm__b:active { transform: scale(0.9); }
+	.flm__b:focus-visible { outline: 2px solid var(--flm-a); outline-offset: 1px; }
 	.flm__b--play {
-		background: linear-gradient(120deg, #fff, var(--flm-a));
+		width: 2.3rem;
+		height: 2.3rem;
+		margin-right: 0.15rem;
+		background: var(--flm-a);
 		color: #06231c;
+		box-shadow: 0 6px 18px -8px color-mix(in srgb, var(--flm-a) 90%, transparent);
 	}
-	:global(html:not(.dark)) .flm__b--play { color: #06231c; }
-	.flm__b--play:hover { color: #06231c; filter: brightness(1.06); }
+	.flm__b--play:hover { background: var(--flm-a); filter: brightness(1.12); color: #06231c; }
 
 	.flm__i--pause { display: none; }
 	.flm.is-playing .flm__i--play { display: none; }
@@ -327,26 +347,25 @@ const rates = [0.5, 1, 1.25, 1.5, 2];
 	.flm.is-muted .flm__i--loud { display: none; }
 	.flm.is-muted .flm__i--muted { display: block; }
 
-	.flm__b--rate { width: auto; padding: 0 0.42rem; font-size: 0.7rem; font-weight: 800; }
+	.flm__b--rate { width: auto; padding: 0 0.45rem; font-size: 0.7rem; font-weight: 800; }
 
 	.flm__t {
 		flex: none;
-		min-width: 2.5rem;
+		min-width: 2.45rem;
 		font-size: 0.68rem;
 		font-weight: 700;
 		font-variant-numeric: tabular-nums;
 		text-align: center;
-		color: #cfe0e6;
+		color: rgba(240, 249, 252, 0.9);
 	}
-	.flm__t--dim { color: rgba(207, 224, 230, 0.6); }
-	:global(html:not(.dark)) .flm__t { color: #3a4354; }
-	:global(html:not(.dark)) .flm__t--dim { color: rgba(58, 67, 84, 0.6); }
+	.flm__t--dim { color: rgba(240, 249, 252, 0.55); }
 
-	/* the scrub line */
+	.flm__spacer { flex: 1 1 auto; }
+
+	/* the scrub line: full width, above the buttons */
 	.flm__seek {
-		flex: 1 1 auto;
-		min-width: 3rem;
-		height: 1.6rem;
+		width: 100%;
+		height: 1.1rem;
 		display: flex;
 		align-items: center;
 		cursor: pointer;
@@ -356,11 +375,13 @@ const rates = [0.5, 1, 1.25, 1.5, 2];
 	.flm__seek-track {
 		position: relative;
 		width: 100%;
-		height: 4px;
+		height: 3px;
 		border-radius: 9999px;
-		background: rgba(255, 255, 255, 0.16);
+		background: rgba(255, 255, 255, 0.22);
+		transition: height 0.18s ease;
 	}
-	:global(html:not(.dark)) .flm__seek-track { background: rgba(20, 22, 40, 0.16); }
+	.flm__seek:hover .flm__seek-track,
+	.flm.is-scrubbing .flm__seek-track { height: 5px; }
 	.flm__seek-buf,
 	.flm__seek-fill {
 		position: absolute;
@@ -369,21 +390,20 @@ const rates = [0.5, 1, 1.25, 1.5, 2];
 		border-radius: inherit;
 		width: 0%;
 	}
-	.flm__seek-buf { background: rgba(255, 255, 255, 0.2); }
-	:global(html:not(.dark)) .flm__seek-buf { background: rgba(20, 22, 40, 0.14); }
-	.flm__seek-fill { background: linear-gradient(90deg, var(--flm-a), color-mix(in srgb, var(--flm-a) 55%, #fff)); }
+	.flm__seek-buf { background: rgba(255, 255, 255, 0.24); }
+	.flm__seek-fill { background: var(--flm-a); }
 	.flm__seek-knob {
 		position: absolute;
 		top: 50%;
 		left: 0%;
-		width: 11px;
-		height: 11px;
-		margin: -5.5px 0 0 -5.5px;
+		width: 12px;
+		height: 12px;
+		margin: -6px 0 0 -6px;
 		border-radius: 9999px;
 		background: #fff;
-		box-shadow: 0 0 0 3px color-mix(in srgb, var(--flm-a) 55%, transparent);
+		box-shadow: 0 0 0 4px color-mix(in srgb, var(--flm-a) 45%, transparent);
 		transform: scale(0.001);
-		transition: transform 0.2s ease;
+		transition: transform 0.18s ease;
 	}
 	.flm__seek:hover .flm__seek-knob,
 	.flm__seek:focus-visible .flm__seek-knob,
@@ -394,7 +414,7 @@ const rates = [0.5, 1, 1.25, 1.5, 2];
 	.flm__vol-range {
 		width: 0;
 		opacity: 0;
-		height: 4px;
+		height: 3px;
 		accent-color: var(--flm-a);
 		cursor: pointer;
 		transition: width 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
@@ -415,11 +435,18 @@ const rates = [0.5, 1, 1.25, 1.5, 2];
 	.flm--ambient .flm__vol { display: none; }
 
 	@media (max-width: 640px) {
-		.flm__bar { gap: 0.15rem; padding: 0.35rem 0.4rem; }
-		.flm__b { width: 1.75rem; height: 1.75rem; }
-		.flm__t { min-width: 2.15rem; font-size: 0.62rem; }
+		.flm__bar { padding: 2rem 0.45rem 0.45rem; }
+		.flm__row { gap: 0.1rem; }
+		.flm__b { width: 1.9rem; height: 1.9rem; }
+		.flm__b--play { width: 2.1rem; height: 2.1rem; }
+		.flm__t { min-width: 2.1rem; font-size: 0.62rem; }
 		.flm__vol-range { display: none; }
 		.flm__b--rate { display: none; }
+		/* on a touch screen there is no hover, so the bar stays out */
+		.flm.is-started .flm__bar { opacity: 1; transform: none; }
+	}
+	@media (hover: none) {
+		.flm.is-started .flm__bar { opacity: 1; transform: none; }
 	}
 	@media (prefers-reduced-motion: reduce) {
 		.flm__spin { animation: none !important; }

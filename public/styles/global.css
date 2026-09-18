@@ -1670,14 +1670,38 @@ html[data-view='campus'] .tour-hole { border-color: #f59e0b; border-style: dashe
   transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .tour-doors.is-on .tour-doors-card { transform: none; }
+/* The close button used to be a bare glyph: its hit area was the size of
+   the × itself, which is why it so often missed. It is a real target now. */
 .tour-doors-x {
   position: absolute;
-  top: 0.6rem;
-  right: 0.8rem;
-  font-size: 1.4rem;
+  top: 0.55rem;
+  right: 0.55rem;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 1.35rem;
   line-height: 1;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.72);
   cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease,
+    border-color 0.2s ease;
+}
+.tour-doors-x:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.28);
+  color: #fff;
+  transform: rotate(90deg);
+}
+.tour-doors-x:active { transform: rotate(90deg) scale(0.9); }
+.tour-doors-x:focus-visible {
+  outline: 2px solid var(--view-accent, #18debe);
+  outline-offset: 2px;
 }
 .tour-doors-k {
   display: block;
@@ -1729,7 +1753,16 @@ html[data-view='campus'] .tour-door strong { font-family: 'Bradley Hand', 'Segoe
 html:not(.dark) .tour-doors-card { background: #fff; color: #14162a; border-color: rgba(20, 22, 42, 0.12); }
 html:not(.dark) .tour-door { border-color: rgba(20, 22, 42, 0.14); background: rgba(20, 22, 42, 0.03); }
 html:not(.dark) .tour-door em { color: rgba(20, 22, 42, 0.66); }
-html:not(.dark) .tour-doors-x { color: rgba(20, 22, 42, 0.45); }
+html:not(.dark) .tour-doors-x {
+  color: rgba(20, 22, 42, 0.62);
+  border-color: rgba(20, 22, 42, 0.14);
+  background: rgba(20, 22, 42, 0.05);
+}
+html:not(.dark) .tour-doors-x:hover {
+  background: rgba(20, 22, 42, 0.12);
+  border-color: rgba(20, 22, 42, 0.3);
+  color: #101426;
+}
 
 @media (prefers-reduced-motion: reduce) {
   .tour-hand, .tour-hand.is-tap, .tour-hand.is-tap .tour-hand-tip { transition: none; animation: none; }
