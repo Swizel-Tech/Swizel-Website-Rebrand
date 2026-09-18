@@ -150,7 +150,6 @@ const buildTypes = [
 			</div>
 
 			<div class="builder--consts" data-tour="stats">
-				<span class="builder--consts-k">{'const swizel = {'}</span>
 				<ul class="builder--stats">
 					{
 						stats.map((s) => (
@@ -168,7 +167,6 @@ const buildTypes = [
 						))
 					}
 				</ul>
-				<span class="builder--consts-k">{'};'}</span>
 			</div>
 
 			<MentorsBand
@@ -177,6 +175,10 @@ const buildTypes = [
 				label="The engineers you'll work with"
 				blurb="Not a pool of freelancers. Senior engineers who ship for paying clients, review every pull request, and stay on the product after launch."
 				photo="/images/hero-team.jpg"
+				photoRatio="1712 / 1160"
+				photoPos="50% 8%"
+				photoWidth="clamp(124px, 13vw, 152px)"
+				photoWidthSm="116px"
 			/>
 		</div>
 
@@ -848,15 +850,10 @@ const buildTypes = [
 		padding-top: 1.5rem;
 		border-top: 1px solid rgba(255, 255, 255, 0.08);
 	}
-	.builder--consts-k {
-		display: block;
-		font-size: 0.72rem;
-		color: rgba(223, 243, 247, 0.38);
-	}
 	.builder--consts .builder--stats {
 		list-style: none;
-		margin: 0.5rem 0 0.6rem;
-		padding: 0 0 0 1.1rem;
+		margin: 0;
+		padding: 0;
 		border: 0;
 	}
 	.builder--consts .builder--statlabel { text-transform: uppercase; }
@@ -867,7 +864,6 @@ const buildTypes = [
 		.builder--stats { gap: 0.4rem; }
 	}
 	@media (max-width: 600px) {
-		.builder--consts .builder--stats { padding-left: 0.7rem; }
 		.builder--npm code { font-size: 0.72rem; }
 	}
 
@@ -967,6 +963,60 @@ const buildTypes = [
 	}
 	.wkst__rail:hover { color: var(--w-ink); background: rgba(255, 255, 255, 0.05); }
 	.wkst.is-folded .wkst__rail { display: grid; }
+
+	/* ── the fold control asks to be found ────────────────────────────
+	   Both faces of it — the arrow that tucks the tree away and the rail
+	   icon that brings it back — breathe in the view's accent until the
+	   visitor has used one, after which they have the idea and it stops. */
+	.wkst__collapse,
+	.wkst__rail {
+		position: relative;
+		color: color-mix(in srgb, var(--view-accent, #18debe) 70%, #fff);
+	}
+	.wkst__collapse::after,
+	.wkst__rail::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		border-radius: inherit;
+		box-shadow: 0 0 0 0 color-mix(in srgb, var(--view-accent, #18debe) 60%, transparent);
+		animation: wkst-ask 2.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+		pointer-events: none;
+	}
+	.wkst__collapse :global(svg),
+	.wkst__rail :global(svg) {
+		position: relative;
+		animation: wkst-nudge 2.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+	}
+	.wkst__rail :global(svg) { animation-name: wkst-nudge-r; }
+	/* once it has been used, the point is made */
+	.wkst.is-taught .wkst__collapse::after,
+	.wkst.is-taught .wkst__rail::after,
+	.wkst.is-taught .wkst__collapse :global(svg),
+	.wkst.is-taught .wkst__rail :global(svg) { animation: none; }
+	@keyframes wkst-ask {
+		0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--view-accent, #18debe) 55%, transparent); }
+		60%, 100% { box-shadow: 0 0 0 9px color-mix(in srgb, var(--view-accent, #18debe) 0%, transparent); }
+	}
+	@keyframes wkst-nudge {
+		0%, 55%, 100% { transform: translateX(0); }
+		70% { transform: translateX(-3px); }
+		85% { transform: translateX(-1px); }
+	}
+	@keyframes wkst-nudge-r {
+		0%, 55%, 100% { transform: translateX(0); }
+		70% { transform: translateX(3px); }
+		85% { transform: translateX(1px); }
+	}
+	.wkst__collapse { background: color-mix(in srgb, var(--view-accent, #18debe) 12%, transparent); }
+	.wkst.is-taught .wkst__collapse { background: transparent; color: var(--w-dim); }
+	.wkst.is-taught .wkst__rail { color: var(--w-dim); }
+	@media (prefers-reduced-motion: reduce) {
+		.wkst__collapse::after,
+		.wkst__rail::after,
+		.wkst__collapse :global(svg),
+		.wkst__rail :global(svg) { animation: none; }
+	}
 	.wkst__collapse {
 		align-self: flex-end;
 		display: grid;
@@ -1433,6 +1483,7 @@ const buildTypes = [
 
 	/* the Files button belongs to phones only */
 	.wkst__files {
+		position: relative;
 		display: none;
 		align-items: center;
 		gap: 0.3rem;
@@ -1446,6 +1497,16 @@ const buildTypes = [
 		font-size: 0.68rem;
 		cursor: pointer;
 	}
+	.wkst__files::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		border-radius: inherit;
+		box-shadow: 0 0 0 0 color-mix(in srgb, var(--view-accent, #18debe) 55%, transparent);
+		animation: wkst-ask 2.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+		pointer-events: none;
+	}
+	.wkst.is-taught .wkst__files::after { animation: none; }
 	.wkst.is-drawer .wkst__files {
 		color: #eafcff;
 		border-color: color-mix(in srgb, var(--view-accent, #18debe) 45%, transparent);
@@ -1453,7 +1514,11 @@ const buildTypes = [
 	}
 
 	@media (max-width: 900px) {
-		.wkst__body { grid-template-columns: minmax(0, 1fr); }
+		/* the folded state must not open a rail column here — the tree is a
+		   drawer on this side of the breakpoint, and pressing play sets
+		   is-folded on every screen */
+		.wkst__body,
+		.wkst.is-folded .wkst__body { grid-template-columns: minmax(0, 1fr); }
 		.wkst__main { grid-column: 1; }
 		.wkst__files { display: inline-flex; }
 		.wkst__k { margin-left: 0.4rem; }
@@ -1692,8 +1757,28 @@ const buildTypes = [
 	}
 	.ide2--err { color: #ff7a7a; }
 
+	/* ── phones and tablets: the machine comes third ──────────────────
+	   A developer should meet the machine before the pitch, so the reel
+	   sits right under the promise instead of at the foot of a long
+	   column. `display: contents` dissolves the copy column so the
+	   workstation can be ordered in among its lines, the way the Founder
+	   hero lifts its film. */
 	@media (max-width: 1023px) {
-		.builder--layout { min-height: auto; }
+		.builder--layout {
+			display: flex;
+			flex-direction: column;
+			align-items: stretch;
+			min-height: auto;
+		}
+		.builder--copy { display: contents; }
+		.builder--eyebrow { order: 1; align-self: flex-start; }
+		.builder--layout :global(.builder--head) { order: 2; }
+		.builder--sub { order: 3; }
+		.wkst { order: 4; margin: 0 0 1.5rem; }
+		.builder--caps { order: 5; }
+		.builder--cta { order: 6; }
+		.builder--consts { order: 7; }
+		.builder--copy :global(.mband) { order: 8; }
 		.builder--token:nth-child(n + 6) { display: none; }
 	}
 	/* Compact, well proportioned IDE on phones — scrolls inside, not down the page */
@@ -1824,8 +1909,7 @@ const buildTypes = [
 		background: rgba(9, 22, 21, 0.92);
 		border-color: rgba(13, 148, 136, 0.28);
 	}
-	:global(html:not(.dark)) .builder--consts-k { color: rgba(16, 32, 31, 0.45); }
-	:global(html:not(.dark)) .builder--team {
+		:global(html:not(.dark)) .builder--team {
 		border-color: rgba(20, 22, 42, 0.12);
 		background: rgba(255, 255, 255, 0.72);
 	}

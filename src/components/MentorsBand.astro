@@ -11,6 +11,13 @@ interface Props {
 	label?: string;
 	blurb?: string;
 	photo?: string;
+	/** the photo's own shape — give it the source's ratio and nothing is
+	    cropped. The default suits the square-ish mentors portrait. */
+	photoRatio?: string;
+	photoPos?: string;
+	photoWidth?: string;
+	/** the same, once the band stacks on a phone */
+	photoWidthSm?: string;
 }
 
 const {
@@ -20,10 +27,20 @@ const {
 	blurb =
 		'Not lecturers reading slides. Working engineers who ship for paying clients, and who will review every line you write.',
 	photo = '/images/mentors-duo.jpg',
+	photoRatio = '1000 / 985',
+	photoPos = '50% 18%',
+	photoWidth = 'clamp(88px, 9.5vw, 104px)',
+	photoWidthSm = '88px',
 } = Astro.props;
 ---
 
-<a href={href} class="mband" data-tour="team" data-mentors>
+<a
+	href={href}
+	class="mband"
+	data-tour="team"
+	data-mentors
+	style={`--mb-ratio:${photoRatio};--mb-pos:${photoPos};--mb-w:${photoWidth};--mb-w-sm:${photoWidthSm}`}
+>
 	<span class="mband__aura" aria-hidden="true"></span>
 	<span class="mband__spot" aria-hidden="true"></span>
 
@@ -109,8 +126,8 @@ const {
 	.mband__pic {
 		position: relative;
 		flex: none;
-		width: clamp(88px, 9.5vw, 104px);
-		aspect-ratio: 1000 / 985;
+		width: var(--mb-w, clamp(88px, 9.5vw, 104px));
+		aspect-ratio: var(--mb-ratio, 1000 / 985);
 		border-radius: 0.85rem;
 		overflow: hidden;
 		background: #f5c518;
@@ -120,7 +137,7 @@ const {
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
-		object-position: 50% 18%;
+		object-position: var(--mb-pos, 50% 18%);
 		transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 	}
 	.mband:hover .mband__pic img { transform: scale(1.06); }
@@ -207,7 +224,7 @@ const {
 			border-radius: 1.1rem;
 			margin-top: 1.35rem;
 		}
-		.mband__pic { width: 88px; border-radius: 0.8rem; }
+		.mband__pic { width: var(--mb-w-sm, 88px); border-radius: 0.8rem; }
 		.mband__k { font-size: 0.7rem; }
 		.mband__l { font-size: 0.95rem; }
 		.mband__d { font-size: 0.78rem; line-height: 1.5; }

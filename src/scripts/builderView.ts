@@ -239,15 +239,38 @@ export function initBuilderStack() {
 		);
 
 		// ── the tree folds away ────────────────────────────────────────
+		// The control breathes until it has been used once; after that the
+		// visitor knows it is there and it settles down.
+		const taught = () => stack.classList.add('is-taught');
 		stack.querySelectorAll<HTMLButtonElement>('[data-wkst-tree]').forEach((b) =>
-			b.addEventListener('click', () => stack.classList.toggle('is-folded'))
+			b.addEventListener('click', () => {
+				taught();
+				stack.classList.toggle('is-folded');
+			})
 		);
+
+		// ── press play and the tree steps out of the way ───────────────
+		// A film wants the whole window. The player owns its own state, so
+		// the first time it reports itself started, the tree folds.
+		const film = stack.querySelector<HTMLElement>('[data-flm]');
+		if (film && 'MutationObserver' in window) {
+			const watch = new MutationObserver(() => {
+				if (!film.classList.contains('is-started')) return;
+				watch.disconnect();
+				taught();
+				stack.classList.add('is-folded');
+			});
+			watch.observe(film, { attributes: true, attributeFilter: ['class'] });
+		}
 
 		// ── on a phone the same tree arrives as a drawer over the code ──
 		const drawer = (open?: boolean) =>
 			stack.classList.toggle('is-drawer', open);
 		stack.querySelectorAll<HTMLButtonElement>('[data-wkst-drawer]').forEach((b) =>
-			b.addEventListener('click', () => drawer())
+			b.addEventListener('click', () => {
+				taught();
+				drawer();
+			})
 		);
 		// picking a file is the end of the errand: let the code back in,
 		// and so is tapping the code itself
