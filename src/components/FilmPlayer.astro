@@ -1,0 +1,427 @@
+---
+// A film with a real transport, themed off the active view's accent.
+//
+// One component drives two very different sources. A local file is a plain
+// <video>; a YouTube id is an iframe with YouTube's own chrome switched off
+// and the IFrame API driving it. Either way the control bar below is ours:
+// play, a scrubbable line with buffered fill, elapsed and total, ten seconds
+// either way, speed, mute with a volume slider, and full screen. So the same
+// furniture appears whether the film sits on our server or YouTube's.
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+	/** a YouTube id — takes precedence over src */
+	videoId?: string;
+	/** a file in /public, e.g. /videos/how-we-build.mp4 */
+	src?: string;
+	poster?: string;
+	label?: string;
+	/** the little corner flag on the picture */
+	tag?: string;
+	caption?: string;
+	/** start muted and loop, the way a silent showreel behaves */
+	ambient?: boolean;
+	ratio?: string;
+	class?: string;
+}
+
+const {
+	videoId,
+	src,
+	poster,
+	label = 'Play the film',
+	tag,
+	caption,
+	ambient = false,
+	ratio = '16 / 9',
+	class: klass = '',
+} = Astro.props;
+
+// A YouTube film already has a still: its own thumbnail. Without it the
+// frame is a black rectangle until the iframe mounts on first play.
+const still = poster || (videoId ? `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg` : undefined);
+
+const rates = [0.5, 1, 1.25, 1.5, 2];
+---
+
+<figure
+	class:list={['flm', klass, { 'flm--yt': !!videoId, 'flm--ambient': ambient }]}
+	data-flm
+	data-video-id={videoId}
+	data-ambient={ambient ? '1' : undefined}
+	style={`--flm-ratio:${ratio}`}
+>
+	<div class="flm__screen" data-flm-screen>
+		{
+			videoId ? (
+				<div class="flm__yt" data-flm-yt />
+			) : (
+				<video
+					class="flm__vid"
+					src={src}
+					poster={poster}
+					muted={ambient}
+					loop={ambient}
+					playsinline
+					preload="none"
+					aria-label={label}
+					data-flm-vid
+				/>
+			)
+		}
+
+		{still && videoId && (
+			<img
+				class="flm__poster"
+				src={still}
+				alt=""
+				aria-hidden="true"
+				loading="lazy"
+				decoding="async"
+				data-flm-poster
+			/>
+		)}
+
+		{tag && (
+			<span class="flm__tag" aria-hidden="true">
+				<Icon width={12} name="mdi:filmstrip" />
+				{tag}
+			</span>
+		)}
+
+		<!-- the big invitation, until the film is running -->
+		<button class="flm__big" type="button" data-flm-big aria-label={label}>
+			<span class="flm__big-ring" aria-hidden="true" />
+			<Icon width={26} name="mdi:play" />
+		</button>
+
+		<span class="flm__spin" aria-hidden="true" data-flm-spin />
+	</div>
+
+	<!-- ── the transport ── -->
+	<div class="flm__bar" data-flm-bar>
+		<button class="flm__b flm__b--play" type="button" data-flm-play aria-label="Play">
+			<Icon class="flm__i flm__i--play" width={17} name="mdi:play" />
+			<Icon class="flm__i flm__i--pause" width={17} name="mdi:pause" />
+		</button>
+
+		<button class="flm__b" type="button" data-flm-skip="-10" aria-label="Back ten seconds">
+			<Icon width={16} name="mdi:rewind-10" />
+		</button>
+		<button class="flm__b" type="button" data-flm-skip="10" aria-label="Forward ten seconds">
+			<Icon width={16} name="mdi:fast-forward-10" />
+		</button>
+
+		<span class="flm__t" data-flm-now>0:00</span>
+
+		<div
+			class="flm__seek"
+			role="slider"
+			tabindex="0"
+			aria-label="Seek"
+			aria-valuemin="0"
+			aria-valuemax="100"
+			aria-valuenow="0"
+			data-flm-seek
+		>
+			<span class="flm__seek-track" aria-hidden="true">
+				<span class="flm__seek-buf" data-flm-buf />
+				<span class="flm__seek-fill" data-flm-fill />
+				<span class="flm__seek-knob" data-flm-knob />
+			</span>
+		</div>
+
+		<span class="flm__t flm__t--dim" data-flm-dur>0:00</span>
+
+		<button class="flm__b flm__b--rate" type="button" data-flm-rate aria-label="Playback speed">
+			<b data-flm-rate-t>1×</b>
+		</button>
+
+		<div class="flm__vol">
+			<button class="flm__b" type="button" data-flm-mute aria-label="Mute">
+				<Icon class="flm__i flm__i--loud" width={17} name="mdi:volume-high" />
+				<Icon class="flm__i flm__i--muted" width={17} name="mdi:volume-off" />
+			</button>
+			<input
+				class="flm__vol-range"
+				type="range"
+				min="0"
+				max="100"
+				value="100"
+				aria-label="Volume"
+				data-flm-vol
+			/>
+		</div>
+
+		<button class="flm__b" type="button" data-flm-full aria-label="Full screen">
+			<Icon width={16} name="mdi:fullscreen" />
+		</button>
+	</div>
+
+	{caption && <figcaption class="flm__cap">{caption}</figcaption>}
+	<span class="flm__rates" hidden data-flm-rates>{rates.join(',')}</span>
+</figure>
+
+<style>
+	.flm {
+		--flm-a: var(--view-accent, #18debe);
+		position: relative;
+		margin: 0;
+		display: grid;
+		gap: 0.55rem;
+		width: 100%;
+	}
+
+	.flm__screen {
+		position: relative;
+		overflow: hidden;
+		aspect-ratio: var(--flm-ratio, 16 / 9);
+		border-radius: 0.9rem;
+		background: #07070d;
+		border: 1px solid color-mix(in srgb, var(--flm-a) 26%, transparent);
+		box-shadow:
+			0 30px 70px -34px rgba(0, 0, 0, 0.9),
+			0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+	}
+	.flm__vid,
+	.flm__yt,
+	.flm__poster {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		border: 0;
+		display: block;
+		object-fit: cover;
+	}
+	.flm__yt :global(iframe) {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		border: 0;
+	}
+	.flm__poster {
+		object-fit: cover;
+		z-index: 1;
+		transition: opacity 0.4s ease;
+	}
+	.flm.is-started .flm__poster { opacity: 0; pointer-events: none; }
+
+	.flm__tag {
+		position: absolute;
+		top: 0.7rem;
+		left: 0.7rem;
+		z-index: 3;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.32rem;
+		padding: 0.24rem 0.55rem;
+		border-radius: 9999px;
+		background: rgba(8, 8, 16, 0.72);
+		-webkit-backdrop-filter: blur(6px);
+		backdrop-filter: blur(6px);
+		color: #eef6f8;
+		font-size: 0.6rem;
+		font-weight: 800;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
+
+	/* the invitation */
+	.flm__big {
+		position: absolute;
+		inset: 0;
+		z-index: 4;
+		display: grid;
+		place-items: center;
+		border: 0;
+		background: radial-gradient(60% 60% at 50% 50%, rgba(6, 6, 14, 0.35), rgba(6, 6, 14, 0.62));
+		color: #06231c;
+		cursor: pointer;
+		transition: opacity 0.35s ease;
+	}
+	.flm__big > :global(svg) {
+		position: relative;
+		z-index: 1;
+		margin-left: 3px;
+	}
+	.flm__big-ring {
+		position: absolute;
+		width: 4.4rem;
+		height: 4.4rem;
+		border-radius: 9999px;
+		background: linear-gradient(120deg, #fff, var(--flm-a));
+		box-shadow: 0 0 40px -6px color-mix(in srgb, var(--flm-a) 80%, transparent);
+		transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+	}
+	.flm__big:hover .flm__big-ring { transform: scale(1.08); }
+	.flm.is-started .flm__big { opacity: 0; pointer-events: none; }
+
+	.flm__spin {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		z-index: 5;
+		width: 2rem;
+		height: 2rem;
+		margin: -1rem 0 0 -1rem;
+		border-radius: 9999px;
+		border: 2px solid rgba(255, 255, 255, 0.25);
+		border-top-color: var(--flm-a);
+		opacity: 0;
+		pointer-events: none;
+	}
+	.flm.is-waiting .flm__spin { opacity: 1; animation: flm-spin 0.8s linear infinite; }
+	@keyframes flm-spin { to { transform: rotate(1turn); } }
+
+	/* ── the bar ── */
+	.flm__bar {
+		display: flex;
+		align-items: center;
+		gap: 0.3rem;
+		padding: 0.4rem 0.55rem;
+		border-radius: 0.7rem;
+		border: 1px solid color-mix(in srgb, var(--flm-a) 20%, transparent);
+		background: rgba(10, 12, 18, 0.82);
+		-webkit-backdrop-filter: blur(10px);
+		backdrop-filter: blur(10px);
+	}
+	:global(html:not(.dark)) .flm__bar {
+		background: rgba(255, 255, 255, 0.92);
+		border-color: rgba(20, 22, 40, 0.14);
+		box-shadow: 0 12px 30px -24px rgba(20, 22, 40, 0.7);
+	}
+
+	.flm__b {
+		display: grid;
+		place-items: center;
+		flex: none;
+		width: 1.95rem;
+		height: 1.95rem;
+		border: 0;
+		border-radius: 0.5rem;
+		background: transparent;
+		color: #dfe9ee;
+		cursor: pointer;
+		transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+	}
+	:global(html:not(.dark)) .flm__b { color: #2a3140; }
+	.flm__b:hover {
+		background: color-mix(in srgb, var(--flm-a) 18%, transparent);
+		color: #fff;
+	}
+	:global(html:not(.dark)) .flm__b:hover { color: #101426; }
+	.flm__b:active { transform: scale(0.92); }
+	.flm__b--play {
+		background: linear-gradient(120deg, #fff, var(--flm-a));
+		color: #06231c;
+	}
+	:global(html:not(.dark)) .flm__b--play { color: #06231c; }
+	.flm__b--play:hover { color: #06231c; filter: brightness(1.06); }
+
+	.flm__i--pause { display: none; }
+	.flm.is-playing .flm__i--play { display: none; }
+	.flm.is-playing .flm__i--pause { display: block; }
+	.flm__i--muted { display: none; }
+	.flm.is-muted .flm__i--loud { display: none; }
+	.flm.is-muted .flm__i--muted { display: block; }
+
+	.flm__b--rate { width: auto; padding: 0 0.42rem; font-size: 0.7rem; font-weight: 800; }
+
+	.flm__t {
+		flex: none;
+		min-width: 2.5rem;
+		font-size: 0.68rem;
+		font-weight: 700;
+		font-variant-numeric: tabular-nums;
+		text-align: center;
+		color: #cfe0e6;
+	}
+	.flm__t--dim { color: rgba(207, 224, 230, 0.6); }
+	:global(html:not(.dark)) .flm__t { color: #3a4354; }
+	:global(html:not(.dark)) .flm__t--dim { color: rgba(58, 67, 84, 0.6); }
+
+	/* the scrub line */
+	.flm__seek {
+		flex: 1 1 auto;
+		min-width: 3rem;
+		height: 1.6rem;
+		display: flex;
+		align-items: center;
+		cursor: pointer;
+		touch-action: none;
+	}
+	.flm__seek:focus-visible { outline: 2px solid var(--flm-a); outline-offset: 2px; border-radius: 4px; }
+	.flm__seek-track {
+		position: relative;
+		width: 100%;
+		height: 4px;
+		border-radius: 9999px;
+		background: rgba(255, 255, 255, 0.16);
+	}
+	:global(html:not(.dark)) .flm__seek-track { background: rgba(20, 22, 40, 0.16); }
+	.flm__seek-buf,
+	.flm__seek-fill {
+		position: absolute;
+		inset: 0 auto 0 0;
+		height: 100%;
+		border-radius: inherit;
+		width: 0%;
+	}
+	.flm__seek-buf { background: rgba(255, 255, 255, 0.2); }
+	:global(html:not(.dark)) .flm__seek-buf { background: rgba(20, 22, 40, 0.14); }
+	.flm__seek-fill { background: linear-gradient(90deg, var(--flm-a), color-mix(in srgb, var(--flm-a) 55%, #fff)); }
+	.flm__seek-knob {
+		position: absolute;
+		top: 50%;
+		left: 0%;
+		width: 11px;
+		height: 11px;
+		margin: -5.5px 0 0 -5.5px;
+		border-radius: 9999px;
+		background: #fff;
+		box-shadow: 0 0 0 3px color-mix(in srgb, var(--flm-a) 55%, transparent);
+		transform: scale(0.001);
+		transition: transform 0.2s ease;
+	}
+	.flm__seek:hover .flm__seek-knob,
+	.flm__seek:focus-visible .flm__seek-knob,
+	.flm.is-scrubbing .flm__seek-knob { transform: scale(1); }
+
+	/* volume, revealed on approach so the bar stays calm */
+	.flm__vol { display: flex; align-items: center; gap: 0.1rem; }
+	.flm__vol-range {
+		width: 0;
+		opacity: 0;
+		height: 4px;
+		accent-color: var(--flm-a);
+		cursor: pointer;
+		transition: width 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
+	}
+	.flm__vol:hover .flm__vol-range,
+	.flm__vol:focus-within .flm__vol-range { width: 3.6rem; opacity: 1; }
+
+	.flm__cap {
+		font-family: 'Bradley Hand', 'Segoe Print', 'Comic Sans MS', cursive;
+		font-size: 0.92rem;
+		font-weight: 700;
+		text-align: center;
+		color: var(--flm-cap, rgba(233, 240, 255, 0.72));
+	}
+	:global(html:not(.dark)) .flm__cap { color: rgba(20, 22, 40, 0.62); }
+
+	/* a silent showreel hides the noisy half of the transport */
+	.flm--ambient .flm__vol { display: none; }
+
+	@media (max-width: 640px) {
+		.flm__bar { gap: 0.15rem; padding: 0.35rem 0.4rem; }
+		.flm__b { width: 1.75rem; height: 1.75rem; }
+		.flm__t { min-width: 2.15rem; font-size: 0.62rem; }
+		.flm__vol-range { display: none; }
+		.flm__b--rate { display: none; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.flm__spin { animation: none !important; }
+	}
+</style>

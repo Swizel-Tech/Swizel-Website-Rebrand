@@ -5,6 +5,7 @@
 // shared founder engine animates reveals + counters; tilt/steps/magnetic
 // CTA come from aboutFounder.ts (which binds .fsvc too).
 import { Icon } from 'astro-icon/components';
+import FilmPlayer from '../FilmPlayer.astro';
 import { disciplines } from '../../data/disciplines';
 import OrbitDeck from '../OrbitDeck.astro';
 import BranchTree from '../BranchTree.astro';
@@ -214,29 +215,16 @@ const sectors = [
 					<li><span>03</span> Launch day</li>
 				</ol>
 			</div>
-			<figure class="fs-film" data-fs-film>
+			<div class="fs-film">
 				<span class="fs-film-glow" aria-hidden="true" />
-				<span class="fs-film-screen">
-					<video
-						src="/videos/how-we-build.mp4"
-						poster="/images/how-we-build-poster.jpg"
-						muted
-						loop
-						playsinline
-						preload="none"
-						aria-label="Inside the Swizel studio: an engineer building a Swizel product"
-					></video>
-					<span class="fs-film-tag" aria-hidden="true">
-						<Icon width={12} name="mdi:filmstrip" />
-						On the floor
-					</span>
-					<button class="fs-film-hold" type="button" data-fs-film-play aria-label="Pause the film">
-						<Icon class="fs-film-i fs-film-i--pause" width={18} name="mdi:pause" />
-						<Icon class="fs-film-i fs-film-i--play" width={18} name="mdi:play" />
-					</button>
-				</span>
-				<figcaption class="fs-film-cap">Abuja floor, a normal Tuesday.</figcaption>
-			</figure>
+				<FilmPlayer
+					src="/videos/how-we-build.mp4"
+					poster="/images/how-we-build-poster.jpg"
+					label="Inside the Swizel studio: an engineer building a Swizel product"
+					tag="On the floor"
+					caption="Abuja floor, a normal Tuesday."
+				/>
+			</div>
 		</div>
 	</section>
 
@@ -613,73 +601,22 @@ const sectors = [
 		0%, 100% { opacity: 0.6; transform: scale(1); }
 		50% { opacity: 1; transform: scale(1.05); }
 	}
-	.fs-film-screen {
-		position: relative;
-		display: block;
-		width: 100%;
-		overflow: hidden;
+	/* the shared player keeps the gradient bezel this frame always had */
+	.fs-film :global(.flm) { width: 100%; }
+	.fs-film :global(.flm__screen) {
 		padding: 5px;
 		border-radius: 1.15rem;
+		border: 0;
 		background-image: linear-gradient(150deg, color-mix(in srgb, var(--fa-acc) 70%, #fff 8%), #2a1c52 48%, #ec4899);
 		box-shadow: 0 34px 70px -34px rgba(10, 6, 26, 0.9);
 		transform: rotate(-1.1deg);
 		transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 	}
-	.fs-film:hover .fs-film-screen { transform: rotate(0deg); }
-	.fs-film-screen video {
-		display: block;
-		width: 100%;
-		aspect-ratio: 16 / 9;
-		height: auto;
-		object-fit: cover;
-		border-radius: 0.95rem;
-		background: #0d0718;
-	}
-	.fs-film-tag {
-		position: absolute;
-		top: 0.85rem;
-		left: 0.85rem;
-		display: inline-flex;
-		align-items: center;
-		gap: 0.32rem;
-		padding: 0.24rem 0.58rem;
-		border-radius: 9999px;
-		background: rgba(10, 6, 20, 0.62);
-		-webkit-backdrop-filter: blur(6px);
-		backdrop-filter: blur(6px);
-		font-size: 0.7rem;
-		font-weight: 800;
-		letter-spacing: 0.14em;
-		text-transform: uppercase;
-		color: #fff;
-	}
-	.fs-film-tag :global(svg) { animation: fs-reel 3s ease-in-out infinite; }
-	@keyframes fs-reel {
-		0%, 100% { opacity: 0.7; transform: rotate(0deg); }
-		50% { opacity: 1; transform: rotate(-6deg); }
-	}
-	.fs-film-hold {
-		position: absolute;
-		right: 0.85rem;
-		bottom: 0.85rem;
-		display: grid;
-		place-items: center;
-		width: 40px;
-		height: 40px;
-		border-radius: 9999px;
-		color: #1d1430;
-		background: rgba(255, 255, 255, 0.92);
-		border: 0;
-		cursor: pointer;
-		box-shadow: 0 12px 26px -14px rgba(0, 0, 0, 0.9);
-		transition: transform 0.22s ease;
-	}
-	.fs-film-hold:hover { transform: translateY(-2px); }
-	.fs-film :global(.fs-film-i) { grid-area: 1 / 1; }
-	.fs-film :global(.fs-film-i--play) { display: none; }
-	.fs-film.is-held :global(.fs-film-i--play) { display: block; }
-	.fs-film.is-held :global(.fs-film-i--pause) { display: none; }
-	.fs-film-cap {
+	.fs-film:hover :global(.flm__screen) { transform: rotate(0deg); }
+	.fs-film :global(.flm__vid),
+	.fs-film :global(.flm__poster) { border-radius: 0.95rem; }
+
+	.fs-film :global(.flm__cap) {
 		font-family: 'Bradley Hand', 'Segoe Print', 'Comic Sans MS', cursive;
 		font-size: 0.86rem;
 		color: var(--fa-muted);
@@ -760,6 +697,6 @@ const sectors = [
 		.fs-stats span { font-size: 0.7rem; }
 		/* showreel stacks: copy first, the video placeholder at the bottom */
 		.fs-reel { grid-template-columns: minmax(0, 1fr); }
-		.fs-film-screen { transform: none; }
+		.fs-film :global(.flm__screen) { transform: none; }
 	}
 </style>

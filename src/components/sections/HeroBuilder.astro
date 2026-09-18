@@ -1,5 +1,6 @@
 ---
 import { Icon } from 'astro-icon/components';
+import FilmPlayer from '../FilmPlayer.astro';
 import CustomButton from '../CustomButton.astro';
 import Section from '../HTML/Section.astro';
 import RotatingHeadline from '../RotatingHeadline.astro';
@@ -131,7 +132,47 @@ const buildTypes = [
 			</a>
 		</div>
 
-		<!-- The live IDE -->
+		<!-- One panel, two tabs: the reel and the live editor share a frame
+		     the way two files share an editor window. -->
+		<div class="bstack" data-bstack>
+			<div class="bstack__tabs" role="tablist" aria-label="Hero panel">
+				<button
+					class="bstack__tab is-on"
+					type="button"
+					role="tab"
+					aria-selected="true"
+					aria-controls="bstack-run"
+					data-bstack-tab="run"
+				>
+					<Icon width={14} name="mdi:code-tags" />
+					editor.js
+					<span class="bstack__dot" aria-hidden="true" />
+				</button>
+				<button
+					class="bstack__tab"
+					type="button"
+					role="tab"
+					aria-selected="false"
+					aria-controls="bstack-watch"
+					data-bstack-tab="watch"
+				>
+					<Icon width={14} name="mdi:play-box-outline" />
+					the-reel.mp4
+				</button>
+				<span class="bstack__spacer" aria-hidden="true" />
+				<span class="bstack__hint" aria-hidden="true">
+					<Icon width={13} name="mdi:keyboard-outline" />
+					tab to switch
+				</span>
+			</div>
+
+			<div class="bstack__panes">
+				<div
+					class="bstack__pane is-on"
+					id="bstack-run"
+					role="tabpanel"
+					data-bstack-pane="run"
+				>
 		<div class="builder--ide" id="builder-ide" data-tour="ide">
 			<span class="ide2--cue" id="builder-ide-cue" aria-hidden="true">
 				<Icon width={15} name="mdi:gesture-tap" />
@@ -159,6 +200,25 @@ const buildTypes = [
 						<span class="ide2--hint">editable · ⌘/Ctrl + Enter</span>
 					</div>
 					<div class="ide2--out" id="builder-out"></div>
+				</div>
+			</div>
+		</div>
+				</div>
+
+				<div
+					class="bstack__pane"
+					id="bstack-watch"
+					role="tabpanel"
+					data-bstack-pane="watch"
+					hidden
+				>
+					<FilmPlayer
+						videoId="R2jdjZwv-ZE"
+						label="Inside a Swizel build: the engineers, the stack and the ship"
+						tag="git log --the-team"
+						caption="// the humans behind the commits"
+						class="bstack__film"
+					/>
 				</div>
 			</div>
 		</div>
@@ -265,8 +325,8 @@ const buildTypes = [
 			grid-template-columns: 0.92fr 1.08fr;
 			gap: 3rem;
 		}
-		/* start the IDE at the headline, not the eyebrow line above it */
-		.builder--ide { margin-top: 2.8rem; }
+		/* start the panel at the headline, not the eyebrow line above it */
+		.bstack { margin-top: 2.8rem; }
 	}
 
 	.builder--eyebrow {
@@ -470,6 +530,135 @@ const buildTypes = [
 	}
 
 	/* ===== IDE ===== */
+	/* ══ the panel: an editor window with two files open ══════════════
+	   The tab strip is the chrome; the panes below it swap. The IDE keeps
+	   every style it already had, it just lives inside the frame now. */
+	.bstack {
+		position: relative;
+		border-radius: 1rem;
+		overflow: hidden;
+		border: 1px solid rgba(24, 222, 190, 0.22);
+		background: linear-gradient(180deg, #0d1219, #090c12);
+		box-shadow:
+			0 40px 90px -46px rgba(0, 0, 0, 0.95),
+			0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+	}
+	.bstack::before {
+		/* the hairline of accent every builder surface wears */
+		content: '';
+		position: absolute;
+		inset: 0 0 auto 0;
+		height: 2px;
+		background: linear-gradient(90deg, transparent, var(--view-accent, #18debe), transparent);
+		opacity: 0.7;
+	}
+	.bstack__tabs {
+		display: flex;
+		align-items: stretch;
+		gap: 0;
+		padding: 0 0.4rem;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+		background: rgba(255, 255, 255, 0.02);
+		overflow-x: auto;
+		scrollbar-width: none;
+	}
+	.bstack__tabs::-webkit-scrollbar { display: none; }
+	.bstack__tab {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.42rem;
+		flex: none;
+		padding: 0.62rem 0.85rem;
+		border: 0;
+		background: transparent;
+		color: rgba(214, 232, 238, 0.55);
+		font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+		font-size: 0.74rem;
+		letter-spacing: 0.01em;
+		cursor: pointer;
+		white-space: nowrap;
+		transition: color 0.22s ease, background 0.22s ease;
+	}
+	.bstack__tab:hover { color: #dff3f7; background: rgba(255, 255, 255, 0.035); }
+	.bstack__tab.is-on { color: #eafcff; background: rgba(24, 222, 190, 0.08); }
+	.bstack__tab.is-on::after {
+		content: '';
+		position: absolute;
+		inset: auto 0.5rem -1px 0.5rem;
+		height: 2px;
+		border-radius: 2px;
+		background: var(--view-accent, #18debe);
+		box-shadow: 0 0 12px color-mix(in srgb, var(--view-accent, #18debe) 70%, transparent);
+	}
+	/* the unsaved-changes dot every editor puts on a live file */
+	.bstack__dot {
+		width: 6px;
+		height: 6px;
+		border-radius: 9999px;
+		background: var(--view-accent, #18debe);
+		box-shadow: 0 0 8px color-mix(in srgb, var(--view-accent, #18debe) 80%, transparent);
+		animation: bstack-pulse 2.4s ease-in-out infinite;
+	}
+	@keyframes bstack-pulse {
+		0%, 100% { opacity: 0.45; transform: scale(0.85); }
+		50% { opacity: 1; transform: scale(1); }
+	}
+	.bstack__spacer { flex: 1 1 auto; }
+	.bstack__hint {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3rem;
+		flex: none;
+		padding-right: 0.5rem;
+		font-family: ui-monospace, monospace;
+		font-size: 0.64rem;
+		color: rgba(214, 232, 238, 0.32);
+		align-self: center;
+	}
+	.bstack__panes { position: relative; }
+	.bstack__pane[hidden] { display: none; }
+	.bstack__pane.is-on { animation: bstack-in 0.32s cubic-bezier(0.22, 1, 0.36, 1) both; }
+	@keyframes bstack-in {
+		from { opacity: 0; transform: translateY(6px); }
+	}
+	/* inside the frame the IDE drops its own border and corners */
+	.bstack .builder--ide {
+		border: 0;
+		border-radius: 0;
+		box-shadow: none;
+		margin: 0;
+	}
+	/* the film's own class is applied inside FilmPlayer, so it never gets
+	   this component's scope hash — reach it through .bstack instead */
+	.bstack [data-bstack-pane='watch'] { padding: 0.7rem; }
+	.bstack :global(.flm__screen) { border-radius: 0.6rem; }
+	.bstack :global(.flm__bar) {
+		background: rgba(255, 255, 255, 0.03);
+		border-color: rgba(24, 222, 190, 0.18);
+	}
+	.bstack :global(.flm__cap) {
+		font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+		font-weight: 400;
+		font-size: 0.72rem;
+		color: rgba(214, 232, 238, 0.42);
+	}
+	/* the cue used to hang off the top of a free-standing IDE. Inside the
+	   frame it has a tab strip and a window bar above it, so it drops to
+	   the first line of the editor and points at the code it is about. */
+	.bstack .ide2--cue { top: auto; bottom: auto; }
+	.bstack [data-bstack-pane='run'] { position: relative; }
+	.bstack .ide2--cue {
+		/* measured from the IDE, which already starts below the tab strip:
+		   just clear of the window bar, on the first line of code */
+		top: 3.75rem;
+		left: 14px;
+	}
+	@media (max-width: 640px) {
+		.bstack .ide2--cue { font-size: 0.68rem; padding: 0.4rem 0.7rem; left: 10px; }
+	}
+	@media (max-width: 640px) { .bstack__hint { display: none; } }
+
 	.builder--ide {
 		position: relative;
 		border-radius: 1rem;

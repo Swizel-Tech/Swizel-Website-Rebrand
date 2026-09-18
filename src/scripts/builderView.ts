@@ -183,3 +183,64 @@ export function initBuilderView() {
 		.querySelectorAll('[data-tour-start="builder"]')
 		.forEach((b) => b.addEventListener('click', () => openTourChooser(steps, siteLegs(steps))));
 }
+
+/**
+ * The hero panel: two files open in one editor window. Tab or click to
+ * swap. Switching away from the reel pauses it, because a film playing in
+ * a pane nobody is looking at is just noise.
+ */
+export function initBuilderStack() {
+	document.querySelectorAll<HTMLElement>('[data-bstack]').forEach((stack) => {
+		if (stack.dataset.bstackOn) return;
+		stack.dataset.bstackOn = '1';
+
+		const tabs = Array.from(
+			stack.querySelectorAll<HTMLButtonElement>('[data-bstack-tab]')
+		);
+		const panes = Array.from(
+			stack.querySelectorAll<HTMLElement>('[data-bstack-pane]')
+		);
+		if (!tabs.length || !panes.length) return;
+
+		const show = (name: string) => {
+			tabs.forEach((t) => {
+				const on = t.dataset.bstackTab === name;
+				t.classList.toggle('is-on', on);
+				t.setAttribute('aria-selected', on ? 'true' : 'false');
+				t.tabIndex = on ? 0 : -1;
+			});
+			panes.forEach((p) => {
+				const on = p.dataset.bstackPane === name;
+				p.hidden = !on;
+				p.classList.toggle('is-on', on);
+				// a film in a closed pane stops; the shared player owns its own
+				// state, so pausing its <video> or telling the iframe is enough
+				if (!on) {
+					p.querySelectorAll<HTMLVideoElement>('video').forEach((v) => v.pause());
+					p.querySelectorAll<HTMLIFrameElement>('iframe').forEach((f) =>
+						f.contentWindow?.postMessage(
+							'{"event":"command","func":"pauseVideo","args":""}',
+							'*'
+						)
+					);
+				}
+			});
+		};
+
+		tabs.forEach((t) =>
+			t.addEventListener('click', () => show(t.dataset.bstackTab || 'run'))
+		);
+
+		// arrow keys walk the strip, the way a real tab bar does
+		stack.querySelector('[role="tablist"]')?.addEventListener('keydown', (e) => {
+			const ev = e as KeyboardEvent;
+			if (ev.key !== 'ArrowLeft' && ev.key !== 'ArrowRight') return;
+			const at = tabs.findIndex((t) => t.classList.contains('is-on'));
+			const next = tabs[(at + (ev.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+			if (!next) return;
+			ev.preventDefault();
+			show(next.dataset.bstackTab || 'run');
+			next.focus();
+		});
+	});
+}

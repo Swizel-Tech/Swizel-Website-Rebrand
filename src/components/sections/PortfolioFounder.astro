@@ -5,6 +5,7 @@
 // `fbody` for the shared founder engine; `fpf` is bound by aboutFounder.ts
 // for tilt + magnetic CTAs.
 import { Icon } from 'astro-icon/components';
+import FilmPlayer from '../FilmPlayer.astro';
 import { projects, featuredProjects, sectorLabels, sectorOrder, type ProjectSector } from '../../data/projects';
 
 const sectors = sectorOrder;
@@ -191,11 +192,13 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 					<Icon width={15} name="mdi:arrow-right" />
 				</a>
 			</div>
-			<div class="fp-media">
-				<span class="fa-media-sheen fp-media-sheen" aria-hidden="true"></span>
-				<Icon width={36} name="mdi:play-circle-outline" />
-				<span class="fp-media-label">Video placeholder</span>
-				<span class="fp-media-sub">2:00 · the launches, on loop</span>
+			<div class="fp-media fp-media--film">
+				<FilmPlayer
+					videoId="nFbBpQvT5fQ"
+					label="The Swizel showreel: the products, the builds and the launches"
+					tag="Showreel"
+					caption="The launches, on loop."
+				/>
 			</div>
 		</div>
 	</section>
@@ -597,6 +600,15 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 		border: 1.5px dashed color-mix(in srgb, var(--fa-acc) 40%, transparent);
 		background: color-mix(in srgb, var(--fa-acc) 7%, transparent);
 		color: var(--fa-acc);
+	}
+	/* once a real film lives here the dashed slot furniture comes off */
+	.fp-media--film {
+		display: block;
+		overflow: visible;
+		min-height: 0;
+		border: 0;
+		background: none;
+		padding: 0;
 	}
 	.fp-media-label { font-size: 0.85rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; }
 	.fp-media-sub { font-size: 0.8rem; color: var(--fa-muted); }
