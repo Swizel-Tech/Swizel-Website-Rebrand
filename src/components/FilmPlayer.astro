@@ -21,6 +21,8 @@ interface Props {
 	caption?: string;
 	/** start muted and loop, the way a silent showreel behaves */
 	ambient?: boolean;
+	/** fill a frame that is not 16/9, cropping rather than letterboxing */
+	cover?: boolean;
 	ratio?: string;
 	class?: string;
 }
@@ -33,6 +35,7 @@ const {
 	tag,
 	caption,
 	ambient = false,
+	cover = false,
 	ratio = '16 / 9',
 	class: klass = '',
 } = Astro.props;
@@ -45,7 +48,7 @@ const rates = [0.5, 1, 1.25, 1.5, 2];
 ---
 
 <figure
-	class:list={['flm', klass, { 'flm--yt': !!videoId, 'flm--ambient': ambient }]}
+	class:list={['flm', klass, { 'flm--yt': !!videoId, 'flm--ambient': ambient, 'flm--cover': cover }]}
 	data-flm
 	data-video-id={videoId}
 	data-ambient={ambient ? '1' : undefined}
@@ -202,6 +205,25 @@ const rates = [0.5, 1, 1.25, 1.5, 2];
 		width: 100%;
 		height: 100%;
 		border: 0;
+	}
+
+	/* ── covering a frame that is not 16/9 ────────────────────────────
+	   A <video> takes object-fit; an iframe does not. So the YouTube
+	   frame is given the smallest 16/9 box that still covers the screen
+	   — measured in script, because container-query units are quietly
+	   dropped by some browsers — then centred, with the excess cropped
+	   by the screen's own overflow. No black bars, no squashed picture. */
+	.flm--cover .flm__yt :global(iframe) {
+		inset: auto;
+		top: 50%;
+		left: 50%;
+		width: var(--flm-cw, 100%);
+		height: var(--flm-ch, 100%);
+		/* a global `iframe { max-width: 100% }` would clamp the overhang
+		   straight back to the frame and undo the crop */
+		max-width: none;
+		max-height: none;
+		transform: translate(-50%, -50%);
 	}
 	.flm__poster {
 		object-fit: cover;

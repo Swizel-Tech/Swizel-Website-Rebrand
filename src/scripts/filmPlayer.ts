@@ -83,6 +83,23 @@ export function initFilmPlayers(root: ParentNode = document) {
 
 		const ambient = film.dataset.ambient === '1';
 
+		// ── covering a frame that is not 16/9 ──────────────────────────
+		// The smallest 16/9 box that still covers the screen, written out
+		// as two custom properties the stylesheet reads. Measured rather
+		// than expressed in cq units, which some browsers drop outright.
+		if (film.classList.contains('flm--cover') && screen) {
+			const fit = () => {
+				const r = screen.getBoundingClientRect();
+				if (!r.width || !r.height) return;
+				const s = Math.max(r.width / 16, r.height / 9);
+				screen.style.setProperty('--flm-cw', `${Math.ceil(s * 16)}px`);
+				screen.style.setProperty('--flm-ch', `${Math.ceil(s * 9)}px`);
+			};
+			fit();
+			if ('ResizeObserver' in window) new ResizeObserver(fit).observe(screen);
+			else window.addEventListener('resize', fit);
+		}
+
 		// maxresdefault does not exist for every YouTube video, and a blocked
 		// or missing thumbnail would leave a broken image on the glass
 		const stillEl = q<HTMLImageElement>('[data-flm-poster]');

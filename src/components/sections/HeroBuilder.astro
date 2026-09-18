@@ -40,26 +40,22 @@ const tokens = ['React', 'Flutter', 'Node', 'TypeScript', 'Python', 'Swift', 'Go
 // Kept as a string so Astro does not parse the braces as expressions.
 const builderCode = `// what we ship, across every sector
 const shipped = [
-  ['BuyGas',         'Gas delivery'],
-  ['Betslipswitch',  'Sports'],
-  ['Brixmarket',     'Real estate'],
-  ['TellaTrust',     'Fintech'],
-  ['Saros',          'Education'],
-  ['MasterBuilder',  'Construction ERP'],
+  ['BuyGas',        'Gas delivery'],
+  ['Brixmarket',    'Real estate'],
+  ['TellaTrust',    'Fintech'],
 ];
 
 shipped.forEach(([name, sector]) => ship(name, sector));
 done('65+ products live in 10+ countries');`;
 
 // the file tree down the side of the machine: real repos, real work
-// editor.js leads — the machine opens on live code, the way an editor does.
-// The reel sits at the end of the folder, where a media file belongs.
+// the reel leads: it is the first thing the machine shows you
 const tree = [
 	{ kind: 'dir', name: 'swizel', open: true, depth: 0 },
+	{ kind: 'file', name: 'the-reel.mp4', depth: 1, tab: 'watch', icon: 'mdi:play-box-outline' },
 	{ kind: 'file', name: 'editor.js', depth: 1, tab: 'run', icon: 'mdi:language-javascript', dirty: true },
 	{ kind: 'file', name: 'deploy.log', depth: 1, tab: 'term', icon: 'mdi:console' },
 	{ kind: 'file', name: 'README.md', depth: 1, tab: 'read', icon: 'mdi:language-markdown' },
-	{ kind: 'file', name: 'the-reel.mp4', depth: 1, tab: 'watch', icon: 'mdi:play-box-outline' },
 ];
 
 // the deploy log that types itself in the terminal pane
@@ -249,7 +245,7 @@ const buildTypes = [
 								</button>
 							) : n.tab ? (
 								<button
-									class:list={['wkst__file', { 'is-on': n.tab === 'run' }]}
+									class:list={['wkst__file', { 'is-on': n.tab === 'watch' }]}
 									type="button"
 									style={`--d:${n.depth}`}
 									data-bstack-tab={n.tab}
@@ -303,7 +299,10 @@ const buildTypes = [
 
 				<div class="wkst__main">
 					<div class="wkst__tabs" role="tablist" aria-label="Open files">
-						<button class="wkst__tab is-on" type="button" role="tab" aria-selected="true" data-bstack-tab="run">
+						<button class="wkst__tab is-on" type="button" role="tab" aria-selected="true" data-bstack-tab="watch">
+							<Icon width={13} name="mdi:play-box-outline" />the-reel.mp4
+						</button>
+						<button class="wkst__tab" type="button" role="tab" aria-selected="false" data-bstack-tab="run">
 							<Icon width={13} name="mdi:language-javascript" />editor.js
 							<span class="wkst__dot" aria-hidden="true" />
 						</button>
@@ -312,9 +311,6 @@ const buildTypes = [
 						</button>
 						<button class="wkst__tab" type="button" role="tab" aria-selected="false" data-bstack-tab="read">
 							<Icon width={13} name="mdi:language-markdown" />README.md
-						</button>
-						<button class="wkst__tab" type="button" role="tab" aria-selected="false" data-bstack-tab="watch">
-							<Icon width={13} name="mdi:play-box-outline" />the-reel.mp4
 						</button>
 						<button
 							class="wkst__tab wkst__tab--site"
@@ -330,8 +326,19 @@ const buildTypes = [
 					</div>
 
 					<div class="wkst__panes">
-						<!-- the editor that actually runs: the machine opens here -->
-						<div class="wkst__pane is-on" role="tabpanel" data-bstack-pane="run">
+						<!-- the reel: the first thing the machine shows you -->
+						<div class="wkst__pane is-on" role="tabpanel" data-bstack-pane="watch">
+							<FilmPlayer
+								videoId="R2jdjZwv-ZE"
+								label="Inside a Swizel build: the engineers, the stack and the ship"
+								tag="git log --the-team"
+								cover
+								class="wkst__film"
+							/>
+						</div>
+
+						<!-- the editor that actually runs -->
+						<div class="wkst__pane" role="tabpanel" data-bstack-pane="run" hidden>
 							<div class="builder--ide" id="builder-ide" data-tour="ide">
 								<div class="ide2--bar">
 									<span class="ide2--dot"></span>
@@ -415,16 +422,6 @@ const buildTypes = [
 									<span data-wkst-tag>—</span>
 								</p>
 							</div>
-						</div>
-
-						<!-- the reel: last file in the folder, where a media file belongs -->
-						<div class="wkst__pane" role="tabpanel" data-bstack-pane="watch" hidden>
-							<FilmPlayer
-								videoId="R2jdjZwv-ZE"
-								label="Inside a Swizel build: the engineers, the stack and the ship"
-								tag="git log --the-team"
-								class="wkst__film"
-							/>
 						</div>
 					</div>
 				</div>
@@ -571,19 +568,14 @@ const buildTypes = [
 	   IDE panel (nowrap code) scrolls internally instead of forcing the whole
 	   hero wider than the phone viewport */
 	.builder--layout > * { min-width: 0; }
-	/* Two columns only once there is room for two: below this the machine
-	   was squeezed to about 530px, which made every pane short and pushed
-	   the numbers off the end of their line. Stacked, it gets the full
-	   width and the hero reads better on a laptop or a landscape tablet. */
-	@media (min-width: 1200px) {
+	@media (min-width: 1024px) {
 		.builder--layout {
 			/* the machine leads: it is the thing people came to touch */
 			grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
 			gap: 2.4rem;
-			/* the machine is the height of one 16/9 window now, so it rides
-			   the middle of the copy rather than leaving a hole beneath it */
-			align-items: center;
 		}
+		/* start the panel at the headline, not the eyebrow line above it */
+		.wkst { margin-top: 2.8rem; }
 	}
 
 	.builder--eyebrow {
@@ -889,6 +881,14 @@ const buildTypes = [
 		font-size: clamp(0.8rem, 1.16vw, 1.05rem);
 		font-family: inherit;
 	}
+	/* the tightest two-column band: the copy column is at its narrowest
+	   here, so the numbers wear the same small type the phone uses */
+	@media (min-width: 1024px) and (max-width: 1199px) {
+		.builder--consts .builder--stats { gap: 0 0.3rem; padding-left: 0.4rem; }
+		.builder--consts .builder--stat { gap: 0.24rem; }
+		.builder--consts .builder--statlabel { font-size: 0.56rem; }
+		.builder--consts .builder--statnum { font-size: 0.78rem; }
+	}
 	@media (max-width: 600px) {
 		.builder--consts .builder--stats { gap: 0 0.32rem; padding-left: 0.4rem; }
 		.builder--consts .builder--stat { gap: 0.26rem; }
@@ -1123,12 +1123,13 @@ const buildTypes = [
 
 	/* ── one window, one height ──────────────────────────────────────
 	   Every file opens into the same box, so no tab is ever longer than
-	   the last and the reel has no dead black beneath it. The box is the
-	   film's own shape, which is why the film fills it exactly. */
+	   the last. The box is the generous, near-square one the machine has
+	   always had — the film is stretched to cover it rather than the box
+	   being shrunk down to the film. */
 	.wkst__panes {
 		position: relative;
 		flex: none;
-		aspect-ratio: 16 / 9;
+		height: clamp(20rem, 34vw, 29rem);
 	}
 	.wkst__pane {
 		position: absolute;
@@ -1209,8 +1210,8 @@ const buildTypes = [
 	}
 	.wkst .ide2--cue :global(svg) { width: 12px; height: 12px; }
 
-	/* the film, in the machine's own language — edge to edge in its window,
-	   no frame and no letterbox of our own making */
+	/* the film, in the machine's own language: edge to edge in its window,
+	   no frame of our own. The covering itself lives in FilmPlayer. */
 	.wkst :global(.wkst__film) {
 		flex: 1 1 auto;
 		min-height: 0;
@@ -1504,10 +1505,6 @@ const buildTypes = [
 	@media (max-width: 640px) {
 		.wkst__title { display: none; }
 		.wkst__k { margin-left: auto; }
-		/* a 16/9 window on a phone is only ~190px of usable code, so the
-		   window gets a little taller here — still short enough that the
-		   whole machine sits inside one thumb's scroll */
-		.wkst__panes { aspect-ratio: 3 / 2; }
 		.wkst__term, .wkst__read { font-size: 0.7rem; }
 		.wkst .ide2--out { max-height: 6rem; }
 		.wkst__status { gap: 0.5rem; overflow-x: auto; scrollbar-width: none; }
