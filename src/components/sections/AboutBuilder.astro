@@ -7,6 +7,7 @@
 // [data-count] counters, #bb-git draw) and the motion engine (tilt/glare/
 // magnetic via .bbody) both bind for free.
 import { Icon } from 'astro-icon/components';
+import FilmPlayer from '../FilmPlayer.astro';
 import { teamDetails, MISSION, VISION, CORE_VALUES } from '../../consts';
 
 const stats = [
@@ -30,6 +31,7 @@ const pkgs = [
 const releases = [
 	{ tag: 'v2019.0', hash: 'a1f2019', title: 'The first line of code.', desc: 'Swizel starts in Nigeria, a small, stubborn team taking on its first builds for local businesses.' },
 	{ tag: 'v2020.0', hash: 'b3d2020', title: 'Products, not projects.', desc: 'We stop thinking in deliverables and start thinking in products, software meant to live and grow.' },
+	{ tag: 'v2021.0', hash: 'b8f2021', title: 'The team doubles.', desc: 'Designers, engineers and marketers join in the same year, and the studio starts running whole products end to end.' },
 	{ tag: 'v2022.0', hash: 'c5e2022', title: 'Mobile, everywhere.', desc: 'Native iOS and Android join the practice. The same team now ships across web and phone.' },
 	{ tag: 'v2023.0', hash: 'd7a2023', title: 'At home in every sector.', desc: 'Fintech, real estate, sports, education, logistics, the work spreads across the industries that move Africa.' },
 	{ tag: 'v2024.0', hash: 'e9c2024', title: 'Crossing borders.', desc: 'The work goes global. ConvertMyBetCode serves users in 10+ countries, and the first Brevarium is published.' },
@@ -88,9 +90,10 @@ const quotes = [
 				<span class="ba-kick">// git blame swizel</span>
 				<h2 class="ba-h ba-h--xl">The repo behind <span class="ba-acc">the products.</span></h2>
 				<p class="ba-p">
-					Swizel is one team of designers, engineers and growth marketers,
-					shipping since 2019. Everything you need to launch and grow, in
-					a single repository.
+					One team of designers, engineers and growth marketers, shipping
+					since 2019. Not four agencies to brief, chase and reconcile:
+					design, build, launch and growth in a single repository, with
+					one branch and one team answering for it.
 				</p>
 				<ul class="ba-stats">
 					{
@@ -310,21 +313,26 @@ const quotes = [
 	<!-- ── 06 · assets/ — the studio in frames ─────────────── -->
 	<section class="ba-sec" data-cursor="repo">
 		<div class="ba-wrap ba-assets">
-			<div class="ba-asset ba-asset--video bb-rev" data-fa-tilt="5">
-				<span class="bb-glare" aria-hidden="true"></span>
+			<figure class="ba-asset ba-asset--video bb-rev" data-fa-tilt="5">
+				<FilmPlayer
+					videoId="p563SFG9Nwg"
+					label="A day at the studio: one room, one standard, a lot of coffee"
+					tag="assets/"
+					class="ba-asset-film"
+				/>
+				<figcaption class="ba-asset-name">assets/a-day-at-the-studio.webm</figcaption>
+			</figure>
+			<figure class="ba-asset bb-rev" style="--i:1" data-fa-tilt="5">
+				<img
+					src="/images/about/training-room.jpg"
+					alt="A training session in the Swizel studio"
+					loading="lazy"
+					decoding="async"
+				/>
 				<span class="ba-sheen" aria-hidden="true"></span>
-				<Icon width={32} name="mdi:play-circle-outline" />
-				<span class="ba-asset-name">assets/a-day-at-the-studio.webm</span>
-				<span class="ba-asset-sub">Video placeholder — one room, one standard, a lot of coffee</span>
-			</div>
-			<div class="ba-asset bb-rev" style="--i:1" data-fa-tilt="5">
-				<span class="bb-glare" aria-hidden="true"></span>
-				<span class="ba-sheen" aria-hidden="true"></span>
-				<Icon width={24} name="mdi:image-outline" />
-				<span class="ba-asset-name">assets/training-in-session.jpg</span>
-				<span class="ba-asset-sub">Education at heart — free training + The Brevarium</span>
-				<a href="#ba-brevarium" class="ba-link">Read The Brevarium <Icon width={14} name="mdi:chevron-right" /></a>
-			</div>
+				<figcaption class="ba-asset-name">assets/training-in-session.jpg</figcaption>
+				<a href="#ba-brevarium" class="ba-link ba-asset-link">Read The Brevarium <Icon width={14} name="mdi:chevron-right" /></a>
+			</figure>
 		</div>
 	</section>
 
@@ -439,15 +447,31 @@ const quotes = [
 		color: var(--bu-ink);
 		padding: clamp(3rem, 7vw, 5rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 4rem);
 	}
+	/* Daylight is a desk lamp, not a lightbox — the same slate the hero
+	   and the home body wear, so the About page stops reading as a stack
+	   of white cards with teal text on them. */
 	:global(html:not(.dark)) .babout {
-		--bu-ink: #102420;
-		--bu-muted: rgba(16, 36, 32, 0.66);
-		--bu-faint: rgba(16, 36, 32, 0.45);
-		--bu-line: rgba(16, 36, 32, 0.1);
-		--bu-card: rgba(16, 36, 32, 0.04);
+		--bu-ink: #10201f;
+		--bu-muted: rgba(16, 32, 31, 0.72);
+		--bu-faint: rgba(16, 32, 31, 0.52);
+		--bu-line: rgba(16, 32, 31, 0.14);
+		--bu-card: rgba(16, 32, 31, 0.055);
 		background:
-			radial-gradient(1000px 520px at 85% -4%, rgba(24, 222, 190, 0.1), transparent 60%),
-			linear-gradient(180deg, #f0faf7 0%, #e6f4ef 55%, #f0faf7 100%);
+			radial-gradient(1000px 520px at 85% -4%, rgba(13, 148, 136, 0.16), transparent 62%),
+			linear-gradient(180deg, #dde7e6 0%, #d3e0de 48%, #cfdcda 100%);
+	}
+	:global(html:not(.dark)) .babout::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: 0;
+		pointer-events: none;
+		background-image:
+			linear-gradient(rgba(13, 148, 136, 0.11) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(13, 148, 136, 0.11) 1px, transparent 1px);
+		background-size: 46px 46px;
+		-webkit-mask-image: linear-gradient(180deg, #000, transparent 88%);
+		mask-image: linear-gradient(180deg, #000, transparent 88%);
 	}
 	.ba-sec { position: relative; z-index: 1; padding-block: clamp(1.8rem, 4.5vw, 3.2rem); }
 	.ba-sec--last { padding-bottom: clamp(3rem, 6vw, 4.5rem); }
@@ -728,16 +752,61 @@ const quotes = [
 	/* ── 06 · assets ── */
 	.ba-assets { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: 1rem; }
 	.ba-asset {
-		position: relative; overflow: hidden;
-		display: grid; place-content: center; justify-items: center; gap: 0.35rem;
-		min-height: 220px; text-align: center; padding: 1.4rem;
-		border: 1.5px dashed color-mix(in srgb, var(--bu-acc) 40%, transparent);
-		border-radius: 1rem; background: color-mix(in srgb, var(--bu-acc) 6%, transparent);
+		position: relative;
+		overflow: hidden;
+		margin: 0;
+		display: grid;
+		min-height: 220px;
+		border: 1px solid color-mix(in srgb, var(--bu-acc) 30%, transparent);
+		border-radius: 1rem;
+		background: #05070b;
 		color: var(--bu-acc);
-		transform-style: preserve-3d; will-change: transform;
+		transform-style: preserve-3d;
+		will-change: transform;
 	}
-	.ba-asset-name { font-family: var(--bu-mono); font-size: 0.82rem; font-weight: 700; }
-	.ba-asset-sub { font-size: 0.8rem; color: var(--bu-muted); max-width: 24rem; }
+	.ba-asset img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: 50% 38%;
+		transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.ba-asset:hover img { transform: scale(1.04); }
+	.ba-asset--video :global(.ba-asset-film) { gap: 0; height: 100%; }
+	.ba-asset--video :global(.ba-asset-film .flm__screen) {
+		height: 100%;
+		aspect-ratio: auto;
+		border: 0;
+		border-radius: 0;
+		box-shadow: none;
+	}
+	.ba-asset-name {
+		position: absolute;
+		left: 0.7rem;
+		bottom: 0.6rem;
+		z-index: 3;
+		padding: 0.18rem 0.55rem;
+		border-radius: 0.4rem;
+		background: rgba(6, 10, 16, 0.76);
+		-webkit-backdrop-filter: blur(6px);
+		backdrop-filter: blur(6px);
+		color: #dff3f7;
+		font-family: var(--bu-mono);
+		font-size: 0.72rem;
+		font-weight: 700;
+	}
+	.ba-asset-link {
+		position: absolute;
+		right: 0.7rem;
+		bottom: 0.6rem;
+		z-index: 3;
+		padding: 0.18rem 0.55rem;
+		border-radius: 0.4rem;
+		background: rgba(6, 10, 16, 0.76);
+		-webkit-backdrop-filter: blur(6px);
+		backdrop-filter: blur(6px);
+	}
 	.ba-sheen {
 		position: absolute; inset: 0;
 		background: linear-gradient(115deg, transparent 42%, rgba(255, 255, 255, 0.07) 50%, transparent 60%);
