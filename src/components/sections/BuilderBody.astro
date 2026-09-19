@@ -79,7 +79,7 @@ const files = [
 			{ t: 'mixed', s: [['accent', '- '], ['plain', 'Ads that pay for themselves']] },
 			{ t: 'mixed', s: [['accent', '- '], ['plain', 'Content people actually share']] },
 			{ t: 'plain', s: '' },
-			{ t: 'cm', s: '> shipped is only half the job —' },
+			{ t: 'cm', s: '> shipped is only half the job.' },
 			{ t: 'cm', s: '> someone has to find it.' },
 		],
 	},
@@ -177,8 +177,8 @@ const reviews = [
 				<h2 class="bb-h">Your team, <span class="bb-acc">as a service.</span></h2>
 				<p class="bb-p">
 					Plug a full squad of senior engineers and designers into your
-					idea. We ship it fast, keep it running, and stay to scale it —
-					no hand-offs, no guesswork.
+					idea. We ship it fast, keep it running, and stay to scale it.
+					No hand-offs. No guesswork.
 				</p>
 				<ul class="bb-stats">
 					{
@@ -280,8 +280,8 @@ const reviews = [
 				</ul>
 				<p class="bb-sheet-hint">
 					<Icon width={13} name="mdi:gesture-tap" />
-					<span class="bb-hint-keys">click a frame &mdash; arrows to move, esc to close</span>
-					<span class="bb-hint-touch">tap a frame &mdash; swipe to move</span>
+					<span class="bb-hint-keys">click a frame. arrows to move, esc to close</span>
+					<span class="bb-hint-touch">tap a frame. swipe to move</span>
 				</p>
 			</div>
 
@@ -321,7 +321,7 @@ const reviews = [
 				<div class="bb-game-bar">
 					<span class="bb-game-fill" id="bb-game-fill"></span>
 				</div>
-				<p class="bb-game-msg" id="bb-game-msg">hit the button — we'll handle the rest.</p>
+				<p class="bb-game-msg" id="bb-game-msg">hit the button. we'll handle the rest.</p>
 				<div class="bb-game-row">
 					<button class="bb-game-btn" type="button" id="bb-game-btn">
 						$ npm run build:my-idea
@@ -390,7 +390,7 @@ const reviews = [
 				<span class="bb-kick">// how_we_work</span>
 				<h2 class="bb-h">git log <span class="bb-acc">--your-product</span></h2>
 				<p class="bb-p">
-					No black box. We work in tight, visible loops — you see every
+					No black box. We work in tight, visible loops. You see every
 					commit from the first spec to the release tag, and beyond.
 				</p>
 				<a href="/contact" class="bb-link">
@@ -427,7 +427,7 @@ const reviews = [
 				<span class="bb-kick">// deployments</span>
 				<h2 class="bb-h">Live <span class="bb-acc">in production.</span></h2>
 				<p class="bb-p bb-p--center">
-					Not mockups — real products carrying real businesses, right now.
+					Not mockups. Real products carrying real businesses, right now.
 				</p>
 			</div>
 
@@ -498,7 +498,7 @@ const reviews = [
 
 			<div class="bb-demo bb-rev">
 				<Icon width={30} name="mdi:play-circle-outline" />
-				<span class="bb-demo-label">demo.webm — video placeholder</span>
+				<span class="bb-demo-label">demo.webm . video placeholder</span>
 				<span class="bb-demo-sub">Your product walkthrough drops in here</span>
 			</div>
 		</div>
@@ -512,7 +512,7 @@ const reviews = [
 				<h2 class="bb-h">A stack <span class="bb-acc">you'd pick yourself.</span></h2>
 				<p class="bb-p">
 					Modern, boring-in-the-good-way technology. Chosen for your
-					product's next five years — not for our résumés.
+					product's next five years, not for our resumes.
 				</p>
 			</div>
 
@@ -564,7 +564,7 @@ const reviews = [
 					<div class="bb-stackrow bb-stackrow--joke">
 						<span class="bb-stackkey">fuel:</span>
 						<span class="bb-stackchips">
-							<span class="bb-stackchip bb-stackchip--coffee">coffee — non-negotiable ☕</span>
+							<span class="bb-stackchip bb-stackchip--coffee">coffee, non-negotiable ☕</span>
 						</span>
 					</div>
 				</div>
@@ -658,7 +658,7 @@ const reviews = [
 			<h2 class="bb-h bb-h--xl">Ready to merge?</h2>
 			<p class="bb-p bb-p--center">
 				Tell us what you're building. A senior engineer reads every
-				message — reply within one business day.
+				message, and replies within one business day.
 			</p>
 			<div class="bb-cta-row">
 				<a href="/contact" class="bb-merge fs-cta">
@@ -695,16 +695,34 @@ const reviews = [
 		padding: clamp(3rem, 7vw, 5.5rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 4rem);
 		transition: background 0.4s ease, color 0.4s ease;
 	}
+	/* Daylight here is a desk lamp, not a lightbox — the same slate paper
+	   the hero wears, with the world's grid ruled across it. The page was
+	   reading as a stack of white sections with green text on them. */
 	:global(html:not(.dark)) .bbody {
-		--bu-ink: #102420;
-		--bu-muted: rgba(16, 36, 32, 0.66);
-		--bu-faint: rgba(16, 36, 32, 0.45);
-		--bu-line: rgba(16, 36, 32, 0.1);
-		--bu-card: rgba(16, 36, 32, 0.04);
+		--bu-ink: #10201f;
+		--bu-muted: rgba(16, 32, 31, 0.72);
+		--bu-faint: rgba(16, 32, 31, 0.52);
+		--bu-line: rgba(16, 32, 31, 0.14);
+		--bu-card: rgba(16, 32, 31, 0.055);
+		position: relative;
 		background:
-			radial-gradient(1000px 520px at 85% -4%, rgba(24, 222, 190, 0.1), transparent 60%),
-			linear-gradient(180deg, #eef6f3 0%, #e7f1ee 55%, #eef6f3 100%);
+			radial-gradient(1000px 520px at 85% -4%, rgba(13, 148, 136, 0.16), transparent 62%),
+			linear-gradient(180deg, #dde7e6 0%, #d3e0de 48%, #cfdcda 100%);
 	}
+	:global(html:not(.dark)) .bbody::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: 0;
+		pointer-events: none;
+		background-image:
+			linear-gradient(rgba(13, 148, 136, 0.11) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(13, 148, 136, 0.11) 1px, transparent 1px);
+		background-size: 46px 46px;
+		-webkit-mask-image: linear-gradient(180deg, #000, transparent 85%);
+		mask-image: linear-gradient(180deg, #000, transparent 85%);
+	}
+	:global(html:not(.dark)) .bbody .bb-sec { position: relative; z-index: 1; }
 
 	.bb-sec {
 		padding-block: clamp(2rem, 5vw, 3.5rem);
@@ -718,13 +736,40 @@ const reviews = [
 	}
 
 	/* ── Type ── */
+	/* The kickers were 0.84rem of accent text floating on the background —
+	   the idea read, but the label did not. They are chips now: a rule,
+	   a blinking caret and a tinted plate, so each section announces
+	   itself the way a prompt does. */
+	.bb-cta-call strong { margin-left: 0.4em; }
+
 	.bb-kick {
-		display: inline-block;
-		font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-		font-size: 0.84rem;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+		font-size: 0.8rem;
+		font-weight: 700;
+		letter-spacing: 0.02em;
 		color: var(--bu-acc);
-		margin-bottom: 0.9rem;
+		margin-bottom: 1rem;
+		padding: 0.34rem 0.75rem 0.34rem 0.6rem;
+		border: 1px solid color-mix(in srgb, var(--bu-acc) 32%, transparent);
+		border-left-width: 3px;
+		border-radius: 0.5rem;
+		background: color-mix(in srgb, var(--bu-acc) 11%, transparent);
 	}
+	.bb-kick::after {
+		content: '';
+		width: 7px;
+		height: 13px;
+		background: var(--bu-acc);
+		animation: bb-kick-blink 1.15s steps(2) infinite;
+	}
+	@keyframes bb-kick-blink { 50% { opacity: 0; } }
+	@media (prefers-reduced-motion: reduce) { .bb-kick::after { animation: none; } }
+	/* centred heads keep their chip centred with them */
+	.bb-head { display: flex; flex-direction: column; align-items: center; }
+	.bb-copy .bb-kick, .bb-about .bb-kick { align-self: flex-start; }
 	.bb-h {
 		font-size: clamp(1.9rem, 4.2vw, 3rem);
 		font-weight: 800;
@@ -1813,7 +1858,12 @@ const reviews = [
 	}
 
 	/* ── light mode: accents run too hot — deepen them ── */
-	:global(html:not(.dark)) .bbody .bb-kick { color: #0b8a76; }
+	:global(html:not(.dark)) .bbody .bb-kick {
+		color: #076a5a;
+		border-color: rgba(11, 138, 118, 0.38);
+		background: rgba(11, 138, 118, 0.1);
+	}
+	:global(html:not(.dark)) .bbody .bb-kick::after { background: #0b8a76; }
 	:global(html:not(.dark)) .bbody .bb-link,
 	:global(html:not(.dark)) .bbody .bb-deploys-all,
 	:global(html:not(.dark)) .bbody .bb-game-title,

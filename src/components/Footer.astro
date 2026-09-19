@@ -1212,4 +1212,39 @@ const phones = [
 	.ft-peek-media { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.3rem; height: 80px; border-radius: 0.7rem; border: 1px dashed rgba(255, 255, 255, 0.18); background: radial-gradient(120px 60px at 30% 20%, color-mix(in srgb, var(--pk, #18debe) 14%, transparent), transparent), rgba(255, 255, 255, 0.03); color: rgba(233, 234, 242, 0.45); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; }
 	.ft-peek-body { font-size: 0.76rem; line-height: 1.5; color: rgba(233, 234, 242, 0.75); }
 	@media (pointer: coarse) { .ft-peek { display: none; } }
+
+	/* ── the Builder world's footer ──────────────────────────────────
+	   Every other surface of this world is a dev environment; the footer
+	   was arriving in the house default and undoing that at the last
+	   scroll. It gets the same slate, the same grid and the same teal. */
+	:global(html[data-view='builder']) .site-footer {
+		background:
+			radial-gradient(900px 420px at 80% -10%, rgba(24, 222, 190, 0.12), transparent 62%),
+			linear-gradient(180deg, #080c12 0%, #05080c 100%);
+		border-top: 1px solid rgba(24, 222, 190, 0.18);
+	}
+	:global(html[data-view='builder']:not(.dark)) .site-footer {
+		background:
+			radial-gradient(900px 420px at 80% -10%, rgba(13, 148, 136, 0.16), transparent 62%),
+			linear-gradient(180deg, #cfdcda 0%, #c6d5d3 100%);
+		border-top: 1px solid rgba(13, 148, 136, 0.26);
+	}
+	:global(html[data-view='builder']) .site-footer::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: 0;
+		pointer-events: none;
+		background-image:
+			linear-gradient(rgba(24, 222, 190, 0.07) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(24, 222, 190, 0.07) 1px, transparent 1px);
+		background-size: 46px 46px;
+		-webkit-mask-image: radial-gradient(90% 70% at 50% 0%, #000, transparent 75%);
+		mask-image: radial-gradient(90% 70% at 50% 0%, #000, transparent 75%);
+	}
+	:global(html[data-view='builder']:not(.dark)) .site-footer::after {
+		background-image:
+			linear-gradient(rgba(13, 148, 136, 0.12) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(13, 148, 136, 0.12) 1px, transparent 1px);
+	}
 </style>

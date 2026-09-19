@@ -362,6 +362,7 @@ const isActive = (href: string) => {
 	.m-nav-x:hover { background: var(--m-hover); transform: rotate(90deg); }
 
 	.m-nav-links {
+		position: relative;
 		flex: 1;
 		overflow-y: auto;
 		-webkit-overflow-scrolling: touch;
@@ -369,14 +370,17 @@ const isActive = (href: string) => {
 		display: flex;
 		flex-direction: column;
 		gap: 0.1rem;
+		/* a surface of its own: the faint grid of the world you are in, and
+		   a wash of its accent falling from the top */
+		background-image:
+			radial-gradient(120% 52% at 50% 0%, color-mix(in srgb, var(--m-accent) 14%, transparent), transparent 72%),
+			linear-gradient(color-mix(in srgb, var(--m-border) 65%, transparent) 1px, transparent 1px),
+			linear-gradient(90deg, color-mix(in srgb, var(--m-border) 65%, transparent) 1px, transparent 1px);
+		background-size: 100% 100%, 42px 42px, 42px 42px;
 	}
-	/* With Services collapsed the list used to end halfway up a tall phone
-	   and leave a void above the footer. The rows take some of that room,
-	   and auto margins on the ends centre whatever is left — they resolve
-	   to zero the moment the list overflows, so opening Services still
-	   scrolls from the top. */
-	.m-nav-links > :first-child { margin-top: auto; }
-	.m-nav-links > :last-child { margin-bottom: auto; }
+	/* Centring the stack pushed the whole menu down the screen, which read
+	   as a bug rather than as balance. The links start at the top where a
+	   menu belongs; the room beneath them carries a backdrop instead. */
 	@media (min-height: 700px) {
 		.m-nav-links { gap: 0.3rem; }
 		.m-nav-link { padding-top: 0.85rem; padding-bottom: 0.85rem; }
