@@ -14,6 +14,17 @@ const stats = [
 	{ to: 10, suffix: '+', label: 'countries', short: 'countries' },
 ];
 
+// The studio, as a contact sheet. Real frames, real dimensions — the
+// numbers under each one are the file's own, not decoration.
+const shots = [
+	{ src: '/images/campus/demo-day.jpg', name: 'demo-day.jpg', w: 1600, h: 1280, note: 'shipping it, out loud', big: true },
+	{ src: '/images/campus/pairing.jpg', name: 'pairing.jpg', w: 960, h: 1280, note: 'two heads, one branch' },
+	{ src: '/images/campus/the-lab.jpg', name: 'the-lab.jpg', w: 1200, h: 1600, note: 'the lab, mid-build' },
+	{ src: '/images/campus/class-in-session.jpg', name: 'review.jpg', w: 1200, h: 1600, note: 'reading each other\'s code' },
+	{ src: '/images/campus/studio-floor.jpg', name: 'studio-floor.jpg', w: 1050, h: 1400, note: 'the floor, on a build day' },
+	{ src: '/images/campus/learning.jpg', name: 'heads-down.jpg', w: 1050, h: 1400, note: 'the quiet part of the work' },
+];
+
 // terminal script — $ lines get typed, the rest print
 const termLines = [
 	{ cmd: true, text: 'whoami' },
@@ -232,24 +243,73 @@ const reviews = [
 				<span class="bb-kick">// the_studio</span>
 				<h2 class="bb-h">Real people, <span class="bb-acc">real keyboards.</span></h2>
 			</div>
-			<div class="bb-gallery bb-rev">
-				<div class="bb-shot bb-shot--big">
-					<Icon width={30} name="mdi:image-outline" />
-					<span class="bb-shot-name">team-at-work.jpg</span>
-					<span class="bb-shot-sub">Big horizontal shot — the squad, mid-build</span>
-				</div>
-				<div class="bb-shot-stack">
-					<div class="bb-shot bb-shot--loud">
-						<Icon width={22} name="mdi:image-outline" />
-						<span class="bb-shot-name">launch-day.jpg</span>
-						<span class="bb-shot-sub">The loud one</span>
-					</div>
-					<div class="bb-shot">
-						<Icon width={22} name="mdi:image-outline" />
-						<span class="bb-shot-name">late-night-ship.jpg</span>
-					</div>
-				</div>
+			<div class="bb-sheet bb-rev" data-sheet>
+				<span class="bb-sheet-meta" aria-hidden="true">
+					<i>$</i> ls ~/studio/*.jpg <b>&mdash; {shots.length} frames</b>
+				</span>
+				<ul class="bb-frames">
+					{
+						shots.map((sh, i) => (
+							<li class:list={['bb-frame', { 'bb-frame--big': sh.big }]}>
+								<button
+									class="bb-frame-btn"
+									type="button"
+									data-shot={i}
+									aria-label={`Open ${sh.name}`}
+								>
+									<img
+										src={sh.src}
+										alt={sh.note}
+										width={sh.w}
+										height={sh.h}
+										loading="lazy"
+										decoding="async"
+									/>
+									<span class="bb-frame-scan" aria-hidden="true" />
+									<span class="bb-frame-tag">
+										<b>{sh.name}</b>
+										<i>{sh.w}&times;{sh.h}</i>
+									</span>
+									<span class="bb-frame-open" aria-hidden="true">
+										<Icon width={15} name="mdi:arrow-expand" />
+									</span>
+								</button>
+							</li>
+						))
+					}
+				</ul>
+				<p class="bb-sheet-hint">
+					<Icon width={13} name="mdi:gesture-tap" />
+					<span class="bb-hint-keys">click a frame &mdash; arrows to move, esc to close</span>
+					<span class="bb-hint-touch">tap a frame &mdash; swipe to move</span>
+				</p>
 			</div>
+
+			<!-- the frame, full size -->
+			<div class="bb-lb" data-lb hidden>
+				<button class="bb-lb-shade" type="button" data-lb-close aria-label="Close" />
+				<figure class="bb-lb-card" role="dialog" aria-modal="true" aria-label="Studio photo">
+					<div class="bb-lb-bar">
+						<span class="bb-lb-name" data-lb-name>—</span>
+						<span class="bb-lb-n" data-lb-n>—</span>
+						<button class="bb-lb-x" type="button" data-lb-close aria-label="Close">
+							<Icon width={17} name="mdi:close" />
+						</button>
+					</div>
+					<div class="bb-lb-glass">
+						<img src="" alt="" data-lb-img />
+						<button class="bb-lb-nav bb-lb-nav--p" type="button" data-lb-step="-1" aria-label="Previous">
+							<Icon width={20} name="mdi:chevron-left" />
+						</button>
+						<button class="bb-lb-nav bb-lb-nav--n" type="button" data-lb-step="1" aria-label="Next">
+							<Icon width={20} name="mdi:chevron-right" />
+						</button>
+					</div>
+					<figcaption class="bb-lb-cap" data-lb-note>—</figcaption>
+				</figure>
+			</div>
+
+			<script type="application/json" data-sheet-data set:html={JSON.stringify(shots)} />
 
 			<!-- the idea compiler — a tiny game: hit build, watch it ship -->
 			<div class="bb-game bb-rev" id="bb-game" data-fa-tilt="4">
@@ -832,40 +892,273 @@ const reviews = [
 	}
 
 	/* ── Section 01b: photo collage — one big, two stacked ── */
-	.bb-gallery {
-		display: grid;
-		grid-template-columns: 1fr;
-		gap: clamp(0.9rem, 2vw, 1.25rem);
-	}
-	@media (min-width: 880px) {
-		.bb-gallery {
-			grid-template-columns: 2fr 1fr;
-		}
-	}
-	.bb-shot-stack {
-		display: grid;
-		grid-template-rows: 1fr 1fr;
-		gap: clamp(0.9rem, 2vw, 1.25rem);
-	}
-	.bb-shot {
-		position: relative;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		gap: 0.35rem;
-		min-height: 170px;
-		border-radius: 1rem;
-		border: 1.5px dashed color-mix(in srgb, var(--bu-ink) 20%, transparent);
-		background:
-			radial-gradient(420px 200px at 70% 10%, color-mix(in srgb, var(--bu-acc) 8%, transparent), transparent),
-			var(--bu-card);
-		color: var(--bu-muted);
+	/* ══ 01b · the studio, as a contact sheet ═════════════════════════
+	   Not decorated frames: the photographs themselves, laid out the way a
+	   developer meets files — a listing, with the real dimensions under
+	   each one. The big landscape frame leads; the portraits fall in
+	   beside it. Tapping one opens it full size. */
+	.bb-sheet {
+		border: 1px solid color-mix(in srgb, var(--bu-acc) 18%, transparent);
+		border-radius: 1.1rem;
+		background: color-mix(in srgb, var(--bu-card) 92%, #000);
+		padding: clamp(0.7rem, 1.6vw, 1rem);
 		overflow: hidden;
 	}
-	.bb-shot--big {
-		min-height: clamp(280px, 46vh, 460px);
+	.bb-sheet-meta {
+		display: block;
+		margin-bottom: 0.7rem;
+		font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+		font-size: 0.74rem;
+		color: var(--bu-faint);
 	}
+	.bb-sheet-meta i { font-style: normal; color: var(--bu-acc); }
+	.bb-sheet-meta b { color: color-mix(in srgb, var(--bu-ink) 75%, transparent); font-weight: 600; }
+
+	/* Fixed rows, not aspect ratios: six portraits at 3/4 stacked into a
+	   sheet 1400px tall. The row height is the unit, and the landscape
+	   frame is simply worth four of them. */
+	.bb-frames {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		grid-auto-rows: clamp(138px, 21vw, 220px);
+		gap: clamp(0.5rem, 1.2vw, 0.8rem);
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	/* Three columns, because the maths has to come out: the landscape
+	   frame is worth four cells and the other five are worth one each,
+	   which is nine — three rows of three, with no hole at the end. */
+	@media (min-width: 760px) {
+		.bb-frames {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+			grid-auto-rows: clamp(150px, 15vw, 215px);
+		}
+		.bb-frame--big { grid-column: span 2; grid-row: span 2; }
+	}
+
+	.bb-frame { margin: 0; min-width: 0; }
+	.bb-frame-btn {
+		position: relative;
+		display: block;
+		width: 100%;
+		height: 100%;
+		padding: 0;
+		border: 1px solid color-mix(in srgb, var(--bu-ink) 12%, transparent);
+		border-radius: 0.7rem;
+		overflow: hidden;
+		background: #05070b;
+		cursor: pointer;
+		transition: border-color 0.3s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+			box-shadow 0.35s ease;
+	}
+	.bb-frame-btn img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: 50% 42%;
+		filter: saturate(0.92) contrast(1.04);
+		transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), filter 0.4s ease;
+	}
+	.bb-frame-btn:hover,
+	.bb-frame-btn:focus-visible {
+		border-color: color-mix(in srgb, var(--bu-acc) 55%, transparent);
+		transform: translateY(-3px);
+		box-shadow: 0 22px 44px -26px color-mix(in srgb, var(--bu-acc) 75%, transparent);
+		outline: none;
+	}
+	.bb-frame-btn:hover img,
+	.bb-frame-btn:focus-visible img { transform: scale(1.04); filter: saturate(1) contrast(1.06); }
+
+	/* the faint horizontal rule of a screen, over the picture */
+	.bb-frame-scan {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		background:
+			linear-gradient(180deg, transparent 55%, rgba(3, 6, 10, 0.86)),
+			repeating-linear-gradient(180deg, transparent 0 3px, rgba(0, 0, 0, 0.16) 3px 4px);
+		opacity: 0.9;
+	}
+	.bb-frame-tag {
+		position: absolute;
+		left: 0.55rem;
+		right: 0.55rem;
+		bottom: 0.5rem;
+		display: grid;
+		gap: 1px;
+		font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+		text-align: left;
+		pointer-events: none;
+	}
+	.bb-frame-tag b {
+		font-size: 0.72rem;
+		font-weight: 700;
+		color: #eafcff;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	.bb-frame-tag i {
+		font-style: normal;
+		font-size: 0.62rem;
+		color: color-mix(in srgb, var(--bu-acc) 70%, #fff);
+	}
+	.bb-frame-open {
+		position: absolute;
+		top: 0.5rem;
+		right: 0.5rem;
+		display: grid;
+		place-items: center;
+		width: 1.75rem;
+		height: 1.75rem;
+		border-radius: 0.5rem;
+		background: rgba(6, 10, 16, 0.72);
+		-webkit-backdrop-filter: blur(6px);
+		backdrop-filter: blur(6px);
+		color: #eafcff;
+		opacity: 0;
+		transform: translateY(-4px);
+		transition: opacity 0.25s ease, transform 0.25s ease;
+		pointer-events: none;
+	}
+	.bb-frame-btn:hover .bb-frame-open,
+	.bb-frame-btn:focus-visible .bb-frame-open { opacity: 1; transform: none; }
+	@media (hover: none) { .bb-frame-open { opacity: 1; transform: none; } }
+
+	/* the hint has to match the hands: there is no esc key on a phone */
+	.bb-hint-touch { display: none; }
+	@media (hover: none) {
+		.bb-hint-keys { display: none; }
+		.bb-hint-touch { display: inline; }
+	}
+	.bb-sheet-hint {
+		display: flex;
+		align-items: center;
+		gap: 0.35rem;
+		margin: 0.75rem 0 0;
+		font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+		font-size: 0.68rem;
+		color: var(--bu-faint);
+	}
+
+	/* ── the frame, full size ───────────────────────────────────────── */
+	.bb-lb {
+		position: fixed;
+		inset: 0;
+		z-index: 90;
+		display: grid;
+		place-items: center;
+		padding: clamp(0.8rem, 3vw, 2rem);
+	}
+	.bb-lb[hidden] { display: none; }
+	.bb-lb-shade {
+		position: absolute;
+		inset: 0;
+		border: 0;
+		background: rgba(3, 5, 9, 0.88);
+		-webkit-backdrop-filter: blur(8px);
+		backdrop-filter: blur(8px);
+		cursor: zoom-out;
+		animation: bb-lb-in 0.22s ease both;
+	}
+	.bb-lb-card {
+		position: relative;
+		z-index: 1;
+		margin: 0;
+		width: min(980px, 100%);
+		max-height: 100%;
+		display: flex;
+		flex-direction: column;
+		border-radius: 0.9rem;
+		overflow: hidden;
+		border: 1px solid color-mix(in srgb, var(--bu-acc) 26%, transparent);
+		background: #070b11;
+		box-shadow: 0 50px 110px -40px rgba(0, 0, 0, 0.95);
+		animation: bb-lb-card 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+	}
+	@keyframes bb-lb-in { from { opacity: 0; } }
+	@keyframes bb-lb-card { from { opacity: 0; transform: translateY(12px) scale(0.985); } }
+	.bb-lb-bar {
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		flex: none;
+		padding: 0.5rem 0.5rem 0.5rem 0.8rem;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+		font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+		font-size: 0.74rem;
+		color: #dff3f7;
+	}
+	.bb-lb-n { margin-left: auto; color: var(--bu-faint); font-size: 0.7rem; }
+	.bb-lb-x {
+		display: grid;
+		place-items: center;
+		width: 2rem;
+		height: 2rem;
+		border: 0;
+		border-radius: 0.5rem;
+		background: rgba(255, 255, 255, 0.06);
+		color: #dff3f7;
+		cursor: pointer;
+		transition: background 0.2s ease, color 0.2s ease;
+	}
+	.bb-lb-x:hover { background: color-mix(in srgb, var(--bu-acc) 22%, transparent); color: #fff; }
+	.bb-lb-glass {
+		position: relative;
+		flex: 1 1 auto;
+		min-height: 0;
+		display: grid;
+		place-items: center;
+		background: #04060a;
+	}
+	.bb-lb-glass img {
+		display: block;
+		max-width: 100%;
+		max-height: min(68vh, 620px);
+		object-fit: contain;
+	}
+	.bb-lb-nav {
+		position: absolute;
+		top: 50%;
+		display: grid;
+		place-items: center;
+		width: 2.6rem;
+		height: 2.6rem;
+		margin-top: -1.3rem;
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		border-radius: 9999px;
+		background: rgba(6, 10, 16, 0.72);
+		-webkit-backdrop-filter: blur(6px);
+		backdrop-filter: blur(6px);
+		color: #eafcff;
+		cursor: pointer;
+		transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+	}
+	.bb-lb-nav:hover {
+		background: color-mix(in srgb, var(--bu-acc) 26%, rgba(6, 10, 16, 0.8));
+		border-color: color-mix(in srgb, var(--bu-acc) 55%, transparent);
+	}
+	.bb-lb-nav:active { transform: scale(0.92); }
+	.bb-lb-nav--p { left: 0.6rem; }
+	.bb-lb-nav--n { right: 0.6rem; }
+	.bb-lb-cap {
+		flex: none;
+		padding: 0.6rem 0.9rem 0.75rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.06);
+		font-size: 0.8rem;
+		color: var(--bu-faint);
+	}
+	@media (max-width: 560px) {
+		.bb-lb-nav { width: 2.2rem; height: 2.2rem; margin-top: -1.1rem; }
+		.bb-lb-glass img { max-height: 56vh; }
+		.bb-sheet-hint { font-size: 0.64rem; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.bb-frame-btn, .bb-frame-btn img, .bb-lb-shade, .bb-lb-card { transition: none; animation: none; }
+	}
+
 	.bb-shot-name {
 		font-family: ui-monospace, monospace;
 		font-size: 0.78rem;

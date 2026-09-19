@@ -358,4 +358,112 @@ export function initBuilderBody() {
 		);
 		io.observe(git);
 	}
+
+	// ── the contact sheet: a frame opens full size ──────────────────
+	// Keyboard first — arrows step, Escape closes, focus returns to the
+	// frame you came from — with a swipe on top for a thumb.
+	const sheet = body.querySelector<HTMLElement>('[data-sheet]');
+	const lb = body.querySelector<HTMLElement>('[data-lb]');
+	const raw = body.querySelector('[data-sheet-data]')?.textContent;
+	if (sheet && lb && raw) {
+		type Shot = { src: string; name: string; w: number; h: number; note: string };
+		let shots: Shot[] = [];
+		try {
+			shots = JSON.parse(raw);
+		} catch {
+			shots = [];
+		}
+
+		const img = lb.querySelector<HTMLImageElement>('[data-lb-img]');
+		const nameEl = lb.querySelector<HTMLElement>('[data-lb-name]');
+		const nEl = lb.querySelector<HTMLElement>('[data-lb-n]');
+		const noteEl = lb.querySelector<HTMLElement>('[data-lb-note]');
+		const pad = (n: number) => String(n).padStart(2, '0');
+
+		let at = 0;
+		let opener: HTMLElement | null = null;
+
+		const paint = () => {
+			const sh = shots[at];
+			if (!sh || !img) return;
+			img.src = sh.src;
+			img.alt = sh.note;
+			img.width = sh.w;
+			img.height = sh.h;
+			if (nameEl) nameEl.textContent = sh.name;
+			if (nEl) nEl.textContent = `${pad(at + 1)} / ${pad(shots.length)}`;
+			if (noteEl) noteEl.textContent = sh.note;
+		};
+
+		const step = (d: number) => {
+			at = (at + d + shots.length) % shots.length;
+			paint();
+		};
+
+		const close = () => {
+			lb.hidden = true;
+			document.body.style.overflow = '';
+			opener?.focus();
+			opener = null;
+		};
+
+		const open = (i: number, from: HTMLElement) => {
+			at = i;
+			opener = from;
+			paint();
+			lb.hidden = false;
+			document.body.style.overflow = 'hidden';
+			lb.querySelector<HTMLButtonElement>('.bb-lb-x')?.focus();
+		};
+
+		sheet.querySelectorAll<HTMLButtonElement>('[data-shot]').forEach((b) =>
+			b.addEventListener('click', () => open(Number(b.dataset.shot) || 0, b))
+		);
+		lb.querySelectorAll<HTMLButtonElement>('[data-lb-close]').forEach((b) =>
+			b.addEventListener('click', close)
+		);
+		lb.querySelectorAll<HTMLButtonElement>('[data-lb-step]').forEach((b) =>
+			b.addEventListener('click', () => step(Number(b.dataset.lbStep) || 1))
+		);
+
+		document.addEventListener('keydown', (e) => {
+			if (lb.hidden) return;
+			if (e.key === 'Escape') {
+				e.preventDefault();
+				close();
+			} else if (e.key === 'ArrowRight') {
+				e.preventDefault();
+				step(1);
+			} else if (e.key === 'ArrowLeft') {
+				e.preventDefault();
+				step(-1);
+			}
+		});
+
+		// the same flick the hero's machine answers to
+		let sx = 0;
+		let sy = 0;
+		lb.addEventListener(
+			'touchstart',
+			(e) => {
+				const t = e.touches[0];
+				if (!t) return;
+				sx = t.clientX;
+				sy = t.clientY;
+			},
+			{ passive: true }
+		);
+		lb.addEventListener(
+			'touchend',
+			(e) => {
+				const t = e.changedTouches[0];
+				if (!t) return;
+				const dx = t.clientX - sx;
+				const dy = t.clientY - sy;
+				if (Math.abs(dx) < 46 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+				step(dx < 0 ? 1 : -1);
+			},
+			{ passive: true }
+		);
+	}
 }
