@@ -207,7 +207,9 @@ export function initBuilderStack() {
 		);
 		if (!tabs.length || !panes.length) return;
 
-		const show = (name: string) => {
+		// dir says which way the thumb went, so the pane can arrive from
+		// that side; 0 is a tap, which simply fades up
+		const show = (name: string, dir: -1 | 0 | 1 = 0) => {
 			tabs.forEach((t) => {
 				const on = t.dataset.bstackTab === name;
 				// the shipped rows all point at the same pane; which of them is
@@ -219,7 +221,12 @@ export function initBuilderStack() {
 			panes.forEach((p) => {
 				const on = p.dataset.bstackPane === name;
 				p.hidden = !on;
-				p.classList.toggle('is-on', on);
+				p.classList.remove('is-slide-l', 'is-slide-r');
+				if (on && dir) {
+					void p.offsetWidth; // let the class removal land before the next
+					p.classList.add(dir === 1 ? 'is-slide-r' : 'is-slide-l');
+				}
+				p.classList.toggle('is-on', on && !dir);
 				// a film in a closed pane stops; the shared player owns its own
 				// state, so pausing its <video> or telling the iframe is enough
 				if (!on) {
@@ -235,7 +242,10 @@ export function initBuilderStack() {
 		};
 
 		tabs.forEach((t) =>
-			t.addEventListener('click', () => show(t.dataset.bstackTab || 'watch'))
+			t.addEventListener('click', () => {
+				stack.classList.add('is-moved');
+				show(t.dataset.bstackTab || 'watch');
+			})
 		);
 
 		// ── the tree folds away ────────────────────────────────────────
@@ -407,6 +417,67 @@ export function initBuilderStack() {
 				}
 			});
 		}
+
+		// ── swipe between files ────────────────────────────────────────
+		// A phone has no tab bar worth aiming at, so the panes answer to the
+		// gesture people already use: a flick left or right walks the strip.
+		const strip = Array.from(
+			stack.querySelectorAll<HTMLButtonElement>('.wkst__tabs [data-bstack-tab]')
+		);
+		const panesEl = stack.querySelector<HTMLElement>('.wkst__panes');
+		if (panesEl && strip.length > 1) {
+			let sx = 0;
+			let sy = 0;
+			let live = false;
+
+			const step = (dir: 1 | -1) => {
+				const open = strip.filter((t) => !t.hidden);
+				const at = open.findIndex((t) => t.classList.contains('is-on'));
+				// the stack wraps, so a flick never dead-ends
+				const next = open[(at + dir + open.length) % open.length];
+				if (!next || next === open[at]) return;
+				stack.classList.add('is-moved');
+				show(next.dataset.bstackTab || 'watch', dir);
+				next.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+			};
+
+			panesEl.addEventListener(
+				'touchstart',
+				(e) => {
+					// the film's own transport owns its touches
+					if ((e.target as HTMLElement | null)?.closest('.flm__bar')) return;
+					const t = e.touches[0];
+					if (!t) return;
+					sx = t.clientX;
+					sy = t.clientY;
+					live = true;
+				},
+				{ passive: true }
+			);
+			panesEl.addEventListener(
+				'touchend',
+				(e) => {
+					if (!live) return;
+					live = false;
+					const t = e.changedTouches[0];
+					if (!t) return;
+					const dx = t.clientX - sx;
+					const dy = t.clientY - sy;
+					// a flick, not a scroll and not a tap
+					if (Math.abs(dx) < 48 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+					step(dx < 0 ? 1 : -1);
+				},
+				{ passive: true }
+			);
+		}
+
+		// the strip follows whichever file the tree or a swipe opened
+		tabs.forEach((t) =>
+			t.addEventListener('click', () => {
+				const mate = strip.find((s) => s.dataset.bstackTab === t.dataset.bstackTab);
+				mate?.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+			})
+		);
 
 		// arrow keys walk the strip, the way a real tab bar does
 		stack.querySelector('[role="tablist"]')?.addEventListener('keydown', (e) => {

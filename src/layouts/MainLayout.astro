@@ -250,8 +250,11 @@ const {
 		const menu = document.getElementById('mobile-menu');
 		if (menu) {
 			menu.addEventListener('click', (e) => {
-				const a = (e.target as HTMLElement).closest('a[href]');
-				if (a) toggleMenu('false');
+				const t = e.target as HTMLElement;
+				// a destination link, or a control that opens something over the
+				// page (the worlds chooser) — either way the drawer has done its
+				// job and should get out of the way
+				if (t.closest('a[href]') || t.closest('[data-close-menu]')) toggleMenu('false');
 			});
 		}
 		// Bind the Escape-to-close once on the persistent document, querying the

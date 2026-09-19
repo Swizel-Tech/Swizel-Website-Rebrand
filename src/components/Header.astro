@@ -3,7 +3,7 @@ import { Icon } from 'astro-icon/components';
 import CustomButton from './CustomButton.astro';
 import Logo from './Logo.astro';
 import Link from './Link.astro';
-import { formatLink, links } from '../consts';
+import { formatLink, links, views } from '../consts';
 import { disciplines } from '../data/disciplines';
 
 // Keep "Services" highlighted across the hub AND every /services/<slug> page.
@@ -239,6 +239,18 @@ const isActive = (href: string) => {
 			</nav>
 
 			<div class="m-nav-foot">
+				<!-- the worlds are the whole idea of this site, and the drawer
+				     used to be the one place you could not reach them -->
+				<button class="m-nav-worlds" type="button" data-open-views data-close-menu>
+					<span class="m-nav-worlds-dots" aria-hidden="true">
+						{views.map((v) => <i style={`--c:${v.accent}`} />)}
+					</span>
+					<span class="m-nav-worlds-t">
+						<b>Change your world</b>
+						<em>Five ways to read this site</em>
+					</span>
+					<svg class="m-nav-go" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6" /></svg>
+				</button>
 				<CustomButton elementType="a" class="m-nav-cta" variant="primary" href="/contact" notRounded>
 					Start a project
 				</CustomButton>
@@ -353,10 +365,21 @@ const isActive = (href: string) => {
 		flex: 1;
 		overflow-y: auto;
 		-webkit-overflow-scrolling: touch;
-		padding: 0.7rem 0.65rem 0.4rem;
+		padding: 0.9rem 0.65rem 0.6rem;
 		display: flex;
 		flex-direction: column;
-		gap: 0;
+		gap: 0.1rem;
+	}
+	/* With Services collapsed the list used to end halfway up a tall phone
+	   and leave a void above the footer. The rows take some of that room,
+	   and auto margins on the ends centre whatever is left — they resolve
+	   to zero the moment the list overflows, so opening Services still
+	   scrolls from the top. */
+	.m-nav-links > :first-child { margin-top: auto; }
+	.m-nav-links > :last-child { margin-bottom: auto; }
+	@media (min-height: 700px) {
+		.m-nav-links { gap: 0.3rem; }
+		.m-nav-link { padding-top: 0.85rem; padding-bottom: 0.85rem; }
 	}
 	.m-nav-link {
 		display: flex;
@@ -417,17 +440,24 @@ const isActive = (href: string) => {
 	}
 	.m-nav-ddrow::-webkit-details-marker { display: none; }
 	.m-nav-link--dd { flex: 1; min-width: 0; }
+	/* Services carried two chevrons — its own "go" arrow and the expand
+	   caret — which read as two different promises. The caret alone. */
+	.m-nav-link--dd .m-nav-go { display: none; }
+	/* it reads as part of the Services row, not a tile parked next to it */
 	.m-nav-expand {
 		display: grid;
 		place-items: center;
-		width: 3rem;
+		width: 2.4rem;
+		height: 2.4rem;
 		flex-shrink: 0;
-		border-radius: 0.85rem;
-		background: var(--m-surface);
-		transition: background 0.2s ease;
+		margin-right: 0.3rem;
+		border-radius: 9999px;
+		color: var(--m-muted);
+		background: transparent;
+		transition: background 0.2s ease, color 0.2s ease;
 	}
 	.m-nav-expand:hover { background: var(--m-hover); }
-	.m-nav-dd[open] .m-nav-expand { background: var(--m-hover); }
+	.m-nav-dd[open] .m-nav-expand { background: var(--m-hover); color: var(--m-ink); }
 	.m-nav-dd[open] .m-nav-caret { transform: rotate(180deg); }
 	.m-nav-sub {
 		display: grid;
@@ -749,4 +779,47 @@ const isActive = (href: string) => {
 		--m-border: rgba(245, 158, 11, 0.14);
 		--m-accent: #f59e0b;
 	}
+
+	/* ── the worlds row ─────────────────────────────────────────────── */
+	.m-nav-worlds {
+		display: flex;
+		align-items: center;
+		gap: 0.7rem;
+		width: 100%;
+		padding: 0.6rem 0.7rem;
+		border: 1px solid var(--m-border);
+		border-radius: 0.9rem;
+		background: var(--m-surface);
+		color: var(--m-ink);
+		text-align: left;
+		cursor: pointer;
+		transition: border-color 0.25s ease, background 0.25s ease;
+	}
+	.m-nav-worlds:hover,
+	.m-nav-worlds:focus-visible {
+		border-color: color-mix(in srgb, var(--m-accent) 50%, transparent);
+		background: var(--m-hover);
+	}
+	.m-nav-worlds-dots { display: inline-flex; flex: none; }
+	.m-nav-worlds-dots i {
+		width: 13px;
+		height: 13px;
+		border-radius: 9999px;
+		background: var(--c);
+		border: 2px solid var(--m-bg-solid, #0a0c1a);
+		box-shadow: 0 0 0 1px color-mix(in srgb, var(--c) 45%, transparent);
+	}
+	.m-nav-worlds-dots i + i { margin-left: -5px; }
+	.m-nav-worlds-t { display: grid; gap: 1px; min-width: 0; margin-right: auto; }
+	.m-nav-worlds-t b { font-size: 0.88rem; font-weight: 700; }
+	.m-nav-worlds-t em {
+		font-style: normal;
+		font-size: 0.72rem;
+		color: var(--m-muted);
+	}
+	.m-nav-worlds .m-nav-go { flex: none; opacity: 0.7; }
+	:global(html:not(.dark)) .m-nav-worlds-dots i { --m-bg-solid: #fff; border-color: #fff; }
+
+	/* the chat bubble floats over the bottom-right corner of every page */
+	.m-nav-social { padding-right: 3.4rem; }
 </style>
