@@ -466,4 +466,127 @@ export function initBuilderBody() {
 			{ passive: true }
 		);
 	}
+
+	// ── the review thread ───────────────────────────────────────────
+	// One review open at a time, advancing on its own, and stopping the
+	// moment somebody takes an interest — a carousel that keeps moving
+	// under your hand is a carousel you cannot read.
+	const thread = body.querySelector<HTMLElement>('[data-thread]');
+	const threadRaw = body.querySelector('[data-thread-data]')?.textContent;
+	if (thread && threadRaw) {
+		type Review = { name: string; img: string; pr: string; add: string; cut: string; body: string };
+		let list: Review[] = [];
+		try {
+			list = JSON.parse(threadRaw);
+		} catch {
+			list = [];
+		}
+		const rows = Array.from(thread.querySelectorAll<HTMLButtonElement>('[data-review]'));
+		const open = thread.querySelector<HTMLElement>('[data-open-review]');
+		const q = <T extends HTMLElement>(sel: string) => thread.querySelector<T>(sel);
+
+		if (list.length && rows.length && open) {
+			let at = 0;
+			let timer = 0;
+			let held = false;
+
+			const paint = () => {
+				const r = list[at];
+				if (!r) return;
+				const img = q<HTMLImageElement>('[data-rv-img]');
+				if (img) {
+					img.src = r.img;
+					img.alt = '';
+				}
+				const set = (sel: string, v: string) => {
+					const el = q(sel);
+					if (el) el.textContent = v;
+				};
+				set('[data-rv-name]', r.name);
+				set('[data-rv-body]', r.body);
+				set('[data-rv-add]', r.add);
+				set('[data-rv-cut]', r.cut);
+				set('[data-rv-pr]', r.pr);
+
+				rows.forEach((b, i) => {
+					const on = i === at;
+					b.classList.toggle('is-on', on);
+					b.setAttribute('aria-selected', on ? 'true' : 'false');
+					if (on) {
+						// restart the fill bar from zero for the new row
+						const bar = b.querySelector<HTMLElement>('.bb-qbar i');
+						if (bar) {
+							bar.style.animation = 'none';
+							void bar.offsetWidth;
+							bar.style.animation = '';
+						}
+					}
+				});
+
+				open.classList.remove('is-swap');
+				void open.offsetWidth;
+				open.classList.add('is-swap');
+			};
+
+			const stop = () => {
+				if (timer) window.clearInterval(timer);
+				timer = 0;
+			};
+			const start = () => {
+				stop();
+				if (reduce || held) return;
+				timer = window.setInterval(() => {
+					at = (at + 1) % list.length;
+					paint();
+				}, 6000);
+			};
+			const go = (i: number) => {
+				at = (i + list.length) % list.length;
+				paint();
+				start();
+			};
+
+			rows.forEach((b, i) => b.addEventListener('click', () => go(i)));
+			thread.addEventListener('pointerenter', () => {
+				held = true;
+				stop();
+			});
+			thread.addEventListener('pointerleave', () => {
+				held = false;
+				start();
+			});
+			thread.addEventListener('focusin', () => {
+				held = true;
+				stop();
+			});
+			thread.addEventListener('focusout', (e) => {
+				if (thread.contains(e.relatedTarget as Node)) return;
+				held = false;
+				start();
+			});
+			// arrow keys walk the queue
+			thread.addEventListener('keydown', (e) => {
+				const ev = e as KeyboardEvent;
+				if (ev.key !== 'ArrowDown' && ev.key !== 'ArrowUp') return;
+				ev.preventDefault();
+				go(at + (ev.key === 'ArrowDown' ? 1 : -1));
+				rows[at]?.focus();
+			});
+
+			// nothing runs until the thread is actually on screen
+			if ('IntersectionObserver' in window) {
+				new IntersectionObserver(
+					(entries) => {
+						const en = entries[0];
+						if (!en) return;
+						if (en.isIntersecting) start();
+						else stop();
+					},
+					{ threshold: 0.3 }
+				).observe(thread);
+			} else {
+				start();
+			}
+		}
+	}
 }
