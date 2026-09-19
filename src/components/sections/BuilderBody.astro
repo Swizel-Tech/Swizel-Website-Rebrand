@@ -149,6 +149,8 @@ const stack = [
 	{ key: 'backend', items: ['Node.js', 'Python', 'PostgreSQL'] },
 	{ key: 'cloud', items: ['AWS', 'Firebase'] },
 	{ key: 'design', items: ['Figma'] },
+	{ key: 'testing', items: ['Playwright', 'Vitest'] },
+	{ key: 'ci', items: ['GitHub Actions'] },
 	{ key: 'fuel', items: ['coffee, non-negotiable \u2615'], joke: true },
 ];
 
@@ -568,7 +570,27 @@ const reviews = [
 				</p>
 
 				<!-- the stack is not a list of logos; it is what somebody is
-				     typing on, right now -->
+				     typing on, right now. On a phone it rides under the copy;
+				     from 920px it becomes the left panel of the pair below. -->
+				<figure class="bb-desk">
+					<img
+						src="/images/builder/at-the-keys.jpg"
+						alt="A Swizel engineer at two screens, mid-build"
+						width="875"
+						height="616"
+						loading="lazy"
+						decoding="async"
+					/>
+					<span class="bb-desk-scan" aria-hidden="true" />
+					<figcaption class="bb-desk-cap">
+						<span class="bb-desk-dot" aria-hidden="true" />
+						<b>main</b>
+						<i>two screens, one branch</i>
+					</figcaption>
+				</figure>
+			</div>
+
+			<div class="bb-deskcol bb-rev">
 				<figure class="bb-desk">
 					<img
 						src="/images/builder/at-the-keys.jpg"
@@ -1859,6 +1881,8 @@ const reviews = [
 	}
 
 	/* ── the desk shot, beside the config ───────────────────────────── */
+	.bb-deskcol { display: none; }
+	@media (min-width: 920px) { .bb-deskcol { display: block; } }
 	.bb-desk {
 		position: relative;
 		margin: clamp(1.2rem, 2.6vw, 1.8rem) 0 0;
@@ -2309,16 +2333,31 @@ const reviews = [
 	}
 
 	/* ── Section 05: package.json ── */
+	/* The copy sat in a column with the photograph hanging off the bottom
+	   of it while the config window floated opposite — three things at
+	   three different heights. The copy runs across the top now and the
+	   two panels sit beneath it as an equal pair, aligned top and bottom. */
 	.bb-stackwrap {
 		display: grid;
 		grid-template-columns: 1fr;
-		gap: clamp(1.75rem, 4vw, 3.5rem);
-		align-items: center;
+		gap: clamp(1.2rem, 2.6vw, 1.8rem);
+		align-items: start;
 	}
 	@media (min-width: 920px) {
 		.bb-stackwrap {
-			grid-template-columns: 0.9fr 1.1fr;
+			grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+			column-gap: clamp(1.2rem, 2.4vw, 1.8rem);
 		}
+		/* the copy spans both columns, the panels take one each */
+		.bb-stackwrap > .bb-copy { grid-column: 1 / -1; max-width: 46rem; }
+		.bb-stackwrap > .bb-copy .bb-desk { display: none; }
+		.bb-stackwrap > .bb-deskcol { grid-column: 1; }
+		.bb-stackwrap > .bb-pkg { grid-column: 2; }
+		/* both panels start and finish on the same lines */
+		.bb-stackwrap > .bb-deskcol,
+		.bb-stackwrap > .bb-pkg { align-self: stretch; }
+		.bb-deskcol .bb-desk { margin: 0; height: 100%; }
+		.bb-deskcol .bb-desk img { height: 100%; aspect-ratio: auto; }
 	}
 	.bb-stackbody {
 		padding: 1rem 1.2rem 1.2rem;

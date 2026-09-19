@@ -528,4 +528,11 @@ const incCols = d.included.length % 4 === 0 ? 4 : 3;
 		.bd-node { left: -1.8rem; }
 		.bb-git-line { left: 5px; }
 	}
+
+	/* the mint green reads on a dark panel and disappears on a light one */
+	:global(html:not(.dark)) .bd-review-badge {
+		color: #05663f;
+		border-color: rgba(5, 102, 63, 0.4);
+		background: rgba(5, 102, 63, 0.12);
+	}
 </style>

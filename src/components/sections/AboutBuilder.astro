@@ -111,14 +111,27 @@ const quotes = [
 				</a>
 			</div>
 
-			<div class="ba-win bb-rev" data-fa-tilt="4">
+			<div class="ba-win bb-rev" data-fa-tilt="4" data-bstack>
 				<span class="bb-glare" aria-hidden="true"></span>
 				<div class="ba-winbar">
 					<span class="ba-dot ba-dot--r"></span>
 					<span class="ba-dot ba-dot--y"></span>
 					<span class="ba-dot ba-dot--g"></span>
-					<span class="ba-wintitle">README.md</span>
+					<span class="ba-wintitle">swizel — ~/about</span>
 				</div>
+				<!-- two files, the way the home hero opens: the readme you can
+				     read and the film you can watch, in one window -->
+				<div class="ba-tabs" role="tablist" aria-label="Open files">
+					<button class="ba-tab is-on" type="button" role="tab" aria-selected="true" data-bstack-tab="read">
+						<Icon width={13} name="mdi:language-markdown" />README.md
+					</button>
+					<button class="ba-tab" type="button" role="tab" aria-selected="false" data-bstack-tab="film">
+						<Icon width={13} name="mdi:play-box-outline" />a-day-at-the-studio.webm
+						<span class="ba-tabdot" aria-hidden="true" />
+					</button>
+				</div>
+				<div class="ba-panes">
+					<div class="ba-pane is-on" role="tabpanel" data-bstack-pane="read">
 				<div class="ba-md">
 					<p class="ba-md-h1"># Swizel</p>
 					<p class="ba-md-quote">&gt; You imagine. We build.</p>
@@ -127,6 +140,17 @@ const quotes = [
 					<p class="ba-md-li"><i>-</i> one team, every discipline</p>
 					<p class="ba-md-li"><i>-</i> weeks, not quarters</p>
 					<p class="ba-md-li"><i>-</i> we stay after launch</p>
+				</div>
+					</div>
+					<div class="ba-pane" role="tabpanel" data-bstack-pane="film" hidden>
+						<FilmPlayer
+							videoId="p563SFG9Nwg"
+							label="A day at the studio: one room, one standard, a lot of coffee"
+							tag="a day at the studio"
+							cover
+							class="ba-hero-film"
+						/>
+					</div>
 				</div>
 				<div class="ba-winfoot">
 					<span class="ba-live" aria-hidden="true"></span>
@@ -312,17 +336,8 @@ const quotes = [
 
 	<!-- ── 06 · assets/ — the studio in frames ─────────────── -->
 	<section class="ba-sec" data-cursor="repo">
-		<div class="ba-wrap ba-assets">
-			<figure class="ba-asset ba-asset--video bb-rev" data-fa-tilt="5">
-				<FilmPlayer
-					videoId="p563SFG9Nwg"
-					label="A day at the studio: one room, one standard, a lot of coffee"
-					tag="assets/"
-					class="ba-asset-film"
-				/>
-				<figcaption class="ba-asset-name">assets/a-day-at-the-studio.webm</figcaption>
-			</figure>
-			<figure class="ba-asset bb-rev" style="--i:1" data-fa-tilt="5">
+		<div class="ba-wrap">
+			<figure class="ba-asset ba-asset--wide bb-rev">
 				<img
 					src="/images/about/training-room.jpg"
 					alt="A training session in the Swizel studio"
@@ -536,6 +551,75 @@ const quotes = [
 	:is(.ba-win, .ba-mvv-card, .ba-pkg, .ba-mate, .ba-asset, .ba-brev, .ba-pr):hover .bb-glare { opacity: 1; }
 
 	/* ── 01 · open ── */
+	/* ── the hero window: two files, one frame ──────────────────────── */
+	.ba-tabs {
+		display: flex;
+		border-bottom: 1px solid var(--bu-line);
+		overflow-x: auto;
+		scrollbar-width: none;
+	}
+	.ba-tabs::-webkit-scrollbar { display: none; }
+	.ba-tab {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.36rem;
+		flex: none;
+		padding: 0.55rem 0.8rem;
+		border: 0;
+		border-right: 1px solid var(--bu-line);
+		background: transparent;
+		color: var(--bu-faint);
+		font-family: var(--bu-mono);
+		font-size: 0.72rem;
+		cursor: pointer;
+		white-space: nowrap;
+		transition: color 0.2s ease, background 0.2s ease;
+	}
+	.ba-tab:hover { color: var(--bu-ink); background: color-mix(in srgb, var(--bu-acc) 7%, transparent); }
+	.ba-tab.is-on { color: #eafcff; background: color-mix(in srgb, var(--bu-acc) 12%, transparent); }
+	.ba-tab.is-on::after {
+		content: '';
+		position: absolute;
+		inset: auto 0 -1px 0;
+		height: 2px;
+		background: var(--bu-acc);
+		box-shadow: 0 0 12px color-mix(in srgb, var(--bu-acc) 70%, transparent);
+	}
+	.ba-tabdot {
+		width: 6px;
+		height: 6px;
+		border-radius: 9999px;
+		background: var(--bu-acc);
+		animation: ba-tabdot 2.4s ease-in-out infinite;
+	}
+	@keyframes ba-tabdot {
+		0%, 100% { opacity: 0.4; transform: scale(0.85); }
+		50% { opacity: 1; transform: scale(1); }
+	}
+	/* one window height for both files, so the frame never jumps */
+	.ba-panes { position: relative; aspect-ratio: 16 / 11; }
+	.ba-pane { position: absolute; inset: 0; display: flex; flex-direction: column; min-height: 0; overflow: auto; }
+	.ba-pane[hidden] { display: none !important; }
+	.ba-pane[data-bstack-pane='film'] { overflow: hidden; }
+	.ba-panes :global(.ba-hero-film) { flex: 1 1 auto; min-height: 0; gap: 0; }
+	.ba-panes :global(.ba-hero-film .flm__screen) {
+		height: 100%;
+		aspect-ratio: auto;
+		border: 0;
+		border-radius: 0;
+		box-shadow: none;
+	}
+	@media (prefers-reduced-motion: reduce) { .ba-tabdot { animation: none; } }
+
+	/* the studio frame, full width — a pair of unequal boxes read as two
+	   things that had not been introduced to each other */
+	.ba-asset--wide { min-height: 0; }
+	.ba-asset--wide img { aspect-ratio: 21 / 9; }
+
+	/* daylight needs a darker green than the dark theme's mint */
+	:global(html:not(.dark)) .babout .ba-pr-badge { color: #05663f; border-color: rgba(5, 102, 63, 0.4); }
+
 	.ba-open { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 4vw, 3.2rem); align-items: center; }
 	.ba-stats { display: flex; align-items: stretch; margin: 1.5rem 0 1.3rem; padding: 0; list-style: none; }
 	.ba-stats li { flex: 1; min-width: 0; padding: 0.2rem 0.9rem; border-left: 1px solid color-mix(in srgb, var(--bu-acc) 25%, transparent); transition: transform 0.25s ease; }

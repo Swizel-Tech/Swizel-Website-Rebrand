@@ -282,9 +282,15 @@ export function initFilmPlayers(root: ParentNode = document) {
 		bigBtn?.addEventListener('click', start);
 		playBtn?.addEventListener('click', toggle);
 
-		// tapping the picture toggles, the way a phone player does
+		// Tapping the picture toggles, the way a phone player does — but the
+		// transport lives INSIDE the screen, so every control was bubbling up
+		// to here and getting a second, opposite instruction. Pause paused
+		// then immediately played again, and mute did both at once, which is
+		// why the sound button looked wired to the pause button.
 		screen?.addEventListener('click', (e) => {
-			if ((e.target as HTMLElement).closest('[data-flm-big]')) return;
+			const t = e.target as HTMLElement | null;
+			if (t?.closest('[data-flm-big]')) return;
+			if (t?.closest('[data-flm-bar]')) return;
 			if (started) void toggle();
 		});
 

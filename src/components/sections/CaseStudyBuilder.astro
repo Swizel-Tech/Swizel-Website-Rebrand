@@ -735,4 +735,11 @@ const heroBadges = cs.results.slice(0, 2);
 		.cb-node { left: -1.8rem; }
 		.bb-git-line { left: 5px; }
 	}
+
+	/* the mint green reads on a dark panel and disappears on a light one */
+	:global(html:not(.dark)) .cb-pr-badge {
+		color: #05663f;
+		border-color: rgba(5, 102, 63, 0.4);
+		background: rgba(5, 102, 63, 0.12);
+	}
 </style>
