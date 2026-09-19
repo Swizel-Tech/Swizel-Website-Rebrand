@@ -27,6 +27,14 @@ const pkgs = [
 	{ name: '@swizel/education', icon: 'mdi:school-outline', desc: 'Free training and The Brevarium, putting real, job-ready skills in the hands of the next builders.', tags: ['training', 'brevarium', 'mentoring'] },
 ];
 
+// the studio, in three frames: the wide room, the pair at one screen, and
+// the table with the whole team on it
+const studioShots = [
+	{ src: '/images/builder/studio-grid.jpg', name: 'assets/the-floor.jpg', alt: 'The Swizel studio floor, the team heads-down on live builds' },
+	{ src: '/images/builder/over-the-shoulder.jpg', name: 'assets/pairing.jpg', alt: 'A Swizel engineer reviewing a build over a colleague\'s shoulder' },
+	{ src: '/images/builder/the-table.jpg', name: 'assets/the-table.jpg', alt: 'The whole team around the studio table in Abuja' },
+];
+
 // the real road — same milestones as Boardroom/Founder, as release tags
 const releases = [
 	{ tag: 'v2019.0', hash: 'a1f2019', title: 'The first line of code.', desc: 'Swizel starts in Nigeria, a small, stubborn team taking on its first builds for local businesses.' },
@@ -122,16 +130,16 @@ const quotes = [
 				<!-- two files, the way the home hero opens: the readme you can
 				     read and the film you can watch, in one window -->
 				<div class="ba-tabs" role="tablist" aria-label="Open files">
-					<button class="ba-tab is-on" type="button" role="tab" aria-selected="true" data-bstack-tab="read">
-						<Icon width={13} name="mdi:language-markdown" />README.md
-					</button>
-					<button class="ba-tab" type="button" role="tab" aria-selected="false" data-bstack-tab="film">
+					<button class="ba-tab is-on" type="button" role="tab" aria-selected="true" data-bstack-tab="film">
 						<Icon width={13} name="mdi:play-box-outline" />a-day-at-the-studio.webm
 						<span class="ba-tabdot" aria-hidden="true" />
 					</button>
+					<button class="ba-tab" type="button" role="tab" aria-selected="false" data-bstack-tab="read">
+						<Icon width={13} name="mdi:language-markdown" />README.md
+					</button>
 				</div>
 				<div class="ba-panes">
-					<div class="ba-pane is-on" role="tabpanel" data-bstack-pane="read">
+					<div class="ba-pane" role="tabpanel" data-bstack-pane="read" hidden>
 				<div class="ba-md">
 					<p class="ba-md-h1"># Swizel</p>
 					<p class="ba-md-quote">&gt; You imagine. We build.</p>
@@ -142,12 +150,13 @@ const quotes = [
 					<p class="ba-md-li"><i>-</i> we stay after launch</p>
 				</div>
 					</div>
-					<div class="ba-pane" role="tabpanel" data-bstack-pane="film" hidden>
+					<div class="ba-pane is-on" role="tabpanel" data-bstack-pane="film">
 						<FilmPlayer
 							videoId="p563SFG9Nwg"
 							label="A day at the studio: one room, one standard, a lot of coffee"
 							tag="a day at the studio"
 							cover
+							autoplay
 							class="ba-hero-film"
 						/>
 					</div>
@@ -337,17 +346,21 @@ const quotes = [
 	<!-- ── 06 · assets/ — the studio in frames ─────────────── -->
 	<section class="ba-sec" data-cursor="repo">
 		<div class="ba-wrap">
-			<figure class="ba-asset ba-asset--wide bb-rev">
-				<img
-					src="/images/about/training-room.jpg"
-					alt="A training session in the Swizel studio"
-					loading="lazy"
-					decoding="async"
-				/>
-				<span class="ba-sheen" aria-hidden="true"></span>
-				<figcaption class="ba-asset-name">assets/training-in-session.jpg</figcaption>
-				<a href="#ba-brevarium" class="ba-link ba-asset-link">Read The Brevarium <Icon width={14} name="mdi:chevron-right" /></a>
-			</figure>
+			<div class="ba-shelf bb-rev">
+				{
+					studioShots.map((sh, i) => (
+						<figure class:list={['ba-asset', { 'ba-asset--lead': i === 0 }]} style={`--i:${i}`}>
+							<img src={sh.src} alt={sh.alt} loading="lazy" decoding="async" />
+							<span class="ba-sheen" aria-hidden="true" />
+							<figcaption class="ba-asset-name">{sh.name}</figcaption>
+						</figure>
+					))
+				}
+			</div>
+			<a href="#ba-brevarium" class="ba-link ba-shelf-link bb-rev">
+				Read The Brevarium
+				<Icon width={14} name="mdi:chevron-right" />
+			</a>
 		</div>
 	</section>
 
@@ -489,6 +502,8 @@ const quotes = [
 		mask-image: linear-gradient(180deg, #000, transparent 88%);
 	}
 	.ba-sec { position: relative; z-index: 1; padding-block: clamp(1.8rem, 4.5vw, 3.2rem); }
+	/* the first section sat a whole section's padding below the header */
+	.ba-sec:first-of-type { padding-top: clamp(0.5rem, 1.4vw, 1rem); }
 	.ba-sec--last { padding-bottom: clamp(3rem, 6vw, 4.5rem); }
 	.ba-wrap { max-width: 74rem; margin: 0 auto; }
 
@@ -552,6 +567,39 @@ const quotes = [
 
 	/* ── 01 · open ── */
 	/* ── the hero window: two files, one frame ──────────────────────── */
+	/* the window is a dark object in both themes, so its tabs answer to
+	   the window: --bu-faint is a dark grey in daylight and vanished */
+	.ba-win .ba-tabs { background: rgba(255, 255, 255, 0.025); }
+	.ba-win .ba-tab { color: rgba(214, 232, 238, 0.58); }
+	.ba-win .ba-tab:hover { color: #eafcff; }
+	.ba-win .ba-tab.is-on { color: #eafcff; }
+
+	/* three frames: the wide room leads, the two portraits sit beside it */
+	.ba-shelf {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: clamp(0.5rem, 1.2vw, 0.85rem);
+	}
+	/* three columns: the wide room is worth four cells and the two
+	   portraits one each — six, which is two full rows with no hole */
+	@media (min-width: 820px) {
+		.ba-shelf {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+			grid-auto-rows: clamp(180px, 18vw, 250px);
+		}
+		.ba-asset--lead { grid-column: span 2; grid-row: span 2; }
+	}
+	.ba-shelf .ba-asset { min-height: 0; }
+	.ba-shelf .ba-asset img { width: 100%; height: 100%; object-fit: cover; }
+	/* the two portraits crop to a landscape cell, and centring them framed
+	   the ceiling — the people are in the lower half of both */
+	.ba-shelf .ba-asset:not(.ba-asset--lead) img { object-position: 50% 72%; }
+	@media (max-width: 819px) {
+		.ba-shelf .ba-asset img { aspect-ratio: 4 / 3; }
+		.ba-asset--lead { grid-column: span 2; }
+	}
+	.ba-shelf-link { display: inline-flex; margin-top: 1rem; }
+
 	.ba-tabs {
 		display: flex;
 		border-bottom: 1px solid var(--bu-line);

@@ -23,6 +23,9 @@ interface Props {
 	ambient?: boolean;
 	/** fill a frame that is not 16/9, cropping rather than letterboxing */
 	cover?: boolean;
+	/** start on its own once on screen — muted, because every browser
+	    refuses autoplay with sound, and the visitor can unmute */
+	autoplay?: boolean;
 	ratio?: string;
 	class?: string;
 }
@@ -36,6 +39,7 @@ const {
 	caption,
 	ambient = false,
 	cover = false,
+	autoplay = false,
 	ratio = '16 / 9',
 	class: klass = '',
 } = Astro.props;
@@ -52,6 +56,7 @@ const rates = [0.5, 1, 1.25, 1.5, 2];
 	data-flm
 	data-video-id={videoId}
 	data-ambient={ambient ? '1' : undefined}
+	data-autoplay={autoplay ? '1' : undefined}
 	style={`--flm-ratio:${ratio}`}
 >
 	<div class="flm__screen" data-flm-screen>

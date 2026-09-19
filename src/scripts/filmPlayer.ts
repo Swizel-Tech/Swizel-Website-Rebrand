@@ -279,6 +279,31 @@ export function initFilmPlayers(root: ParentNode = document) {
 			paint();
 		};
 
+		// ── starting on its own ────────────────────────────────────────
+		// Muted, because every browser refuses autoplay with sound, and only
+		// once the film is actually on screen — a video playing in a pane
+		// nobody has scrolled to is wasted bandwidth.
+		if (film.dataset.autoplay === '1' && 'IntersectionObserver' in window) {
+			const auto = new IntersectionObserver(
+				(entries) => {
+					const en = entries[0];
+					if (!en?.isIntersecting || started) return;
+					auto.disconnect();
+					void (async () => {
+						const a = await build();
+						if (!a) return;
+						a.muted(true);
+						started = true;
+						film.classList.add('is-started');
+						a.play();
+						paint();
+					})();
+				},
+				{ threshold: 0.4 }
+			);
+			auto.observe(film);
+		}
+
 		bigBtn?.addEventListener('click', start);
 		playBtn?.addEventListener('click', toggle);
 
