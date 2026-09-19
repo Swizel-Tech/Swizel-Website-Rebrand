@@ -5,11 +5,13 @@
 // testimonials as pull-request approvals.
 import { Icon } from 'astro-icon/components';
 
+// `short` is what a phone shows: the divided row keeps all four on one
+// line there, and two-word labels wrap into a ragged stack at that width
 const stats = [
-	{ to: 65, suffix: '+', label: 'products shipped' },
-	{ to: 25, suffix: '+', label: 'specialists' },
-	{ to: 7, suffix: '+', label: 'years in production' },
-	{ to: 10, suffix: '+', label: 'countries' },
+	{ to: 65, suffix: '+', label: 'products shipped', short: 'products' },
+	{ to: 25, suffix: '+', label: 'specialists', short: 'specialists' },
+	{ to: 7, suffix: '+', label: 'years in production', short: 'years' },
+	{ to: 10, suffix: '+', label: 'countries', short: 'countries' },
 ];
 
 // terminal script — $ lines get typed, the rest print
@@ -172,7 +174,8 @@ const reviews = [
 						stats.map((s) => (
 							<li>
 								<strong data-count={s.to} data-suffix={s.suffix}>0{s.suffix}</strong>
-								<span>{s.label}</span>
+								<span class="bb-st-long">{s.label}</span>
+								<span class="bb-st-short">{s.short}</span>
 							</li>
 						))
 					}
@@ -1807,6 +1810,15 @@ const reviews = [
 	.bb-stats li:hover { transform: translateY(-3px); }
 	.bb-stats strong { white-space: nowrap; font-size: clamp(1.3rem, 2.2vw, 1.8rem) !important; }
 	.bb-stats span { font-size: 0.72rem !important; line-height: 1.3; }
+	.bb-st-short { display: none; }
+	/* four columns of ~90px cannot hold "years in production" on one line,
+	   and the wrap left the numbers sitting on a ragged stack of labels */
+	@media (max-width: 560px) {
+		.bb-st-long { display: none; }
+		.bb-st-short { display: block; }
+		.bb-stats li { padding: 0.2rem 0.55rem; }
+		.bb-stats span { font-size: 0.68rem !important; white-space: nowrap; }
+	}
 
 	/* commit-activity heatmap — waves of green, like a good week */
 	.bb-heat { margin: 1.2rem 0 1.4rem; }
