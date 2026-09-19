@@ -566,6 +566,25 @@ const reviews = [
 					Modern, boring-in-the-good-way technology. Chosen for your
 					product's next five years, not for our resumes.
 				</p>
+
+				<!-- the stack is not a list of logos; it is what somebody is
+				     typing on, right now -->
+				<figure class="bb-desk">
+					<img
+						src="/images/builder/at-the-keys.jpg"
+						alt="A Swizel engineer at two screens, mid-build"
+						width="875"
+						height="616"
+						loading="lazy"
+						decoding="async"
+					/>
+					<span class="bb-desk-scan" aria-hidden="true" />
+					<figcaption class="bb-desk-cap">
+						<span class="bb-desk-dot" aria-hidden="true" />
+						<b>main</b>
+						<i>two screens, one branch</i>
+					</figcaption>
+				</figure>
 			</div>
 
 			<div class="bb-pkg bb-rev" data-fa-tilt="4">
@@ -1839,18 +1858,84 @@ const reviews = [
 		.bb-deploy-go { grid-row: 1; grid-column: 2; }
 	}
 
+	/* ── the desk shot, beside the config ───────────────────────────── */
+	.bb-desk {
+		position: relative;
+		margin: clamp(1.2rem, 2.6vw, 1.8rem) 0 0;
+		border-radius: 0.9rem;
+		overflow: hidden;
+		border: 1px solid color-mix(in srgb, var(--bu-acc) 26%, transparent);
+		background: #05070b;
+		box-shadow: 0 34px 70px -40px rgba(0, 0, 0, 0.8);
+	}
+	.bb-desk img {
+		display: block;
+		width: 100%;
+		height: auto;
+		aspect-ratio: 875 / 616;
+		object-fit: cover;
+		filter: saturate(0.94) contrast(1.05);
+		transform: scale(1.01);
+		transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1), filter 0.4s ease;
+	}
+	.bb-desk:hover img { transform: scale(1.045); filter: saturate(1.04) contrast(1.06); }
+	/* the same screen-rule the contact sheet wears, so the two agree */
+	.bb-desk-scan {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		background:
+			linear-gradient(180deg, transparent 58%, rgba(3, 6, 10, 0.88)),
+			repeating-linear-gradient(180deg, transparent 0 3px, rgba(0, 0, 0, 0.14) 3px 4px);
+	}
+	.bb-desk-cap {
+		position: absolute;
+		left: 0.7rem;
+		bottom: 0.6rem;
+		right: 0.7rem;
+		display: flex;
+		align-items: center;
+		gap: 0.45rem;
+		font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+		font-size: 0.72rem;
+		color: #dff3f7;
+	}
+	.bb-desk-cap b { font-weight: 700; color: color-mix(in srgb, var(--bu-acc) 75%, #fff); }
+	.bb-desk-cap i { font-style: normal; margin-left: auto; color: rgba(223, 243, 247, 0.6); }
+	.bb-desk-dot {
+		width: 7px;
+		height: 7px;
+		border-radius: 9999px;
+		background: #46d39a;
+		box-shadow: 0 0 8px #46d39a;
+		animation: bb-desk-beat 2s ease-in-out infinite;
+	}
+	@keyframes bb-desk-beat { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+	@media (prefers-reduced-motion: reduce) {
+		.bb-desk img { transition: none; }
+		.bb-desk-dot { animation: none; }
+	}
+
 	/* ── reviews, as a review thread ──────────────────────────────────
 	   Four cards sitting still said four people liked us. A thread says
 	   they queued up and signed off: the queue down one side, one review
 	   open at a time, and the bar under each name filling while it is
 	   theirs. */
+	/* A window stays a window in daylight — the same rule stack.config
+	   and proof-of-work.log follow. Riding the page's own surface left
+	   the diff chips and the approved badge as pale green on pale green,
+	   which is what made them hard to read. */
 	.bb-thread {
+		--tr-ink: #dff3f7;
+		--tr-dim: rgba(214, 232, 238, 0.52);
+		--tr-line: rgba(255, 255, 255, 0.08);
 		max-width: 62rem;
 		margin: 0 auto;
 		border-radius: 1rem;
 		overflow: hidden;
-		border: 1px solid color-mix(in srgb, var(--bu-acc) 22%, transparent);
-		background: var(--bu-card);
+		border: 1px solid color-mix(in srgb, var(--bu-acc) 26%, transparent);
+		background: #0a0e15;
+		color: var(--tr-ink);
 		box-shadow: 0 40px 84px -48px rgba(0, 0, 0, 0.8);
 	}
 	.bb-thread-count {
@@ -1877,11 +1962,11 @@ const reviews = [
 		display: grid;
 		gap: 0.2rem;
 		align-content: start;
-		border-bottom: 1px solid var(--bu-line);
-		background: color-mix(in srgb, var(--bu-ink) 4%, transparent);
+		border-bottom: 1px solid var(--tr-line);
+		background: rgba(255, 255, 255, 0.015);
 	}
 	@media (min-width: 820px) {
-		.bb-queue { border-bottom: 0; border-right: 1px solid var(--bu-line); }
+		.bb-queue { border-bottom: 0; border-right: 1px solid var(--tr-line); }
 	}
 	.bb-qrow {
 		position: relative;
@@ -1910,12 +1995,12 @@ const reviews = [
 		border: 1px solid color-mix(in srgb, var(--bu-acc) 40%, transparent);
 	}
 	.bb-qname { display: grid; gap: 1px; min-width: 0; margin-right: auto; }
-	.bb-qname strong { font-size: 0.86rem; font-weight: 700; color: var(--bu-ink); }
+	.bb-qname strong { font-size: 0.86rem; font-weight: 700; color: var(--tr-ink); }
 	.bb-qname em {
 		font-style: normal;
 		font-family: 'JetBrains Mono', ui-monospace, monospace;
 		font-size: 0.66rem;
-		color: var(--bu-faint);
+		color: var(--tr-dim);
 	}
 	.bb-qtick { flex: none; color: #46d39a; opacity: 0.55; }
 	.bb-qrow.is-on .bb-qtick { opacity: 1; }
@@ -1947,17 +2032,17 @@ const reviews = [
 		border: 1px solid color-mix(in srgb, var(--bu-acc) 45%, transparent);
 	}
 	.bb-open-who { display: grid; gap: 1px; margin-right: auto; }
-	.bb-open-who strong { font-size: 1rem; font-weight: 700; color: var(--bu-ink); }
-	.bb-open-who em { font-style: normal; font-size: 0.76rem; color: var(--bu-faint); }
+	.bb-open-who strong { font-size: 1rem; font-weight: 700; color: var(--tr-ink); }
+	.bb-open-who em { font-style: normal; font-size: 0.76rem; color: var(--tr-dim); }
 	.bb-open-badge {
 		display: inline-flex;
 		align-items: center;
 		gap: 0.3rem;
 		padding: 0.24rem 0.6rem;
 		border-radius: 9999px;
-		border: 1px solid rgba(70, 211, 154, 0.4);
-		background: rgba(70, 211, 154, 0.14);
-		color: #46d39a;
+		border: 1px solid rgba(94, 232, 173, 0.55);
+		background: rgba(70, 211, 154, 0.2);
+		color: #6ff0bb;
 		font-size: 0.66rem;
 		font-weight: 800;
 		letter-spacing: 0.08em;
@@ -1969,7 +2054,7 @@ const reviews = [
 		border-left: 2px solid color-mix(in srgb, var(--bu-acc) 45%, transparent);
 		font-size: clamp(1rem, 1.5vw, 1.18rem);
 		line-height: 1.6;
-		color: var(--bu-ink);
+		color: var(--tr-ink);
 	}
 	.bb-open-body::before { content: '\201C'; }
 	.bb-open-body::after { content: '\201D'; }
@@ -1982,9 +2067,9 @@ const reviews = [
 		font-size: 0.74rem;
 	}
 	.bb-diff { padding: 0.16rem 0.5rem; border-radius: 0.35rem; }
-	.bb-diff--add { background: rgba(70, 211, 154, 0.16); color: #46d39a; }
-	.bb-diff--cut { background: rgba(255, 122, 122, 0.14); color: #ff9b9b; }
-	.bb-open-file { margin-left: auto; color: var(--bu-faint); }
+	.bb-diff--add { background: rgba(70, 211, 154, 0.2); color: #6ff0bb; }
+	.bb-diff--cut { background: rgba(255, 122, 122, 0.18); color: #ffb3b3; }
+	.bb-open-file { margin-left: auto; color: var(--tr-dim); }
 
 	/* each new review is a fresh comment landing in the thread */
 	.bb-open.is-swap .bb-open-head,
