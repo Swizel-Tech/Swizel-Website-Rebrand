@@ -9,6 +9,7 @@
 // guestbook rotation) binds, and `sabout` so the shared motion engine
 // (tilt / glare / team modal / magnetic CTAs) binds too.
 import { Icon } from 'astro-icon/components';
+import FilmPlayer from '../FilmPlayer.astro';
 import { teamDetails, MISSION, VISION, CORE_VALUES } from '../../consts';
 
 const stats = [
@@ -72,12 +73,14 @@ const quotes = [
 	{ text: 'Thorough, polite and always on time. They make hard things feel easy.', name: 'Cheta', role: 'E-commerce' },
 ];
 
+// The two video slots were dashed boxes with filenames written in them.
+// They carry the real films now; the stills keep their frames.
 const studioFrames = [
-	{ wide: true, video: true, name: 'studio-life.mp4 — video placeholder', sub: 'A day in the residence' },
-	{ video: false, name: 'critique-friday.jpg' },
-	{ video: false, name: 'sketch-wall.jpg' },
-	{ video: true, name: 'launch-night.mp4 — video' },
-	{ video: false, name: 'the-desk-after-hours.jpg' },
+	{ wide: true, videoId: 'yyCMSZBVG2I', name: 'studio-life.mp4', sub: 'A day in the residence' },
+	{ img: '/images/campus/the-lab.jpg', name: 'critique-friday.jpg' },
+	{ img: '/images/campus/class-in-session.jpg', name: 'sketch-wall.jpg' },
+	{ videoId: 'nFbBpQvT5fQ', name: 'launch-night.mp4', sub: 'The showreel' },
+	{ img: '/images/campus/studio-floor.jpg', name: 'the-desk-after-hours.jpg' },
 ];
 ---
 
@@ -120,9 +123,12 @@ const studioFrames = [
 					<span class="sa-wire" aria-hidden="true"></span>
 					<span class="sa-glare" aria-hidden="true"></span>
 					<span class="sa-centerpiece-media">
-						<Icon width={40} name="mdi:play-circle-outline" />
-						<span class="sa-cp-name">the-makers.mp4 — video placeholder</span>
-						<span class="sa-cp-sub">Two minutes inside the residence</span>
+						<FilmPlayer
+							videoId="yyCMSZBVG2I"
+							label="Portrait of a Studio: two minutes inside the residence"
+							tag="the-makers.mp4"
+							class="sa-cp-film"
+						/>
 					</span>
 					<figcaption class="sa-plaque sa-plaque--lg">
 						<strong>Portrait of a Studio</strong>
@@ -339,11 +345,19 @@ const studioFrames = [
 			<div class="sa-media sd-rev">
 				{
 					studioFrames.map((f) => (
-						<div class:list={['sa-frame', { 'sa-frame--wide': f.wide }]}>
-							<Icon width={f.wide ? 34 : 24} name={f.video ? 'mdi:play-circle-outline' : 'mdi:image-outline'} />
-							<span class="sa-frame-name">{f.name}</span>
-							{f.sub && <span class="sa-frame-sub">{f.sub}</span>}
-						</div>
+						<figure class:list={['sa-frame', { 'sa-frame--wide': f.wide, 'sa-frame--film': !!f.videoId }]}>
+							{f.videoId ? (
+								<FilmPlayer
+									videoId={f.videoId}
+									label={`${f.name} — ${f.sub}`}
+									tag={f.sub}
+									class="sa-frame-film"
+								/>
+							) : (
+								<img src={f.img} alt={f.name} loading="lazy" decoding="async" />
+							)}
+							<figcaption class="sa-frame-name">{f.name}</figcaption>
+						</figure>
 					))
 				}
 			</div>
@@ -1292,6 +1306,48 @@ const studioFrames = [
 		gap: 1rem;
 		grid-template-columns: repeat(4, minmax(0, 1fr));
 	}
+	/* a frame now holds a picture or a film, not a dashed note to self */
+	.sa-frame { position: relative; margin: 0; overflow: hidden; }
+	.sa-frame img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: 50% 40%;
+		transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.sa-frame:hover img { transform: scale(1.04); }
+	.sa-frame-name {
+		position: absolute;
+		left: 0.6rem;
+		bottom: 0.5rem;
+		z-index: 2;
+		padding: 0.16rem 0.5rem;
+		border-radius: 0.35rem;
+		background: rgba(8, 8, 14, 0.7);
+		-webkit-backdrop-filter: blur(6px);
+		backdrop-filter: blur(6px);
+		color: #f6f3ef;
+		font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+		font-size: 0.64rem;
+		letter-spacing: 0.02em;
+	}
+	.sa-frame--film { display: grid; }
+	.sa-frame--film :global(.sa-frame-film) { gap: 0; height: 100%; }
+	.sa-frame--film :global(.sa-frame-film .flm__screen) {
+		height: 100%;
+		aspect-ratio: auto;
+		border-radius: 0;
+		border: 0;
+		box-shadow: none;
+	}
+	.sa-centerpiece-media :global(.sa-cp-film) { gap: 0; width: 100%; }
+	.sa-centerpiece-media :global(.sa-cp-film .flm__screen) {
+		border-radius: 0;
+		border: 0;
+		box-shadow: none;
+	}
+
 	.sa-frame {
 		display: flex;
 		flex-direction: column;
