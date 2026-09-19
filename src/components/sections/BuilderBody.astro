@@ -4,6 +4,8 @@
 // process as a git graph, shipped work as a deployments panel, and
 // testimonials as pull-request approvals.
 import { Icon } from 'astro-icon/components';
+import { projects } from '../../data/projects';
+import FilmPlayer from '../FilmPlayer.astro';
 
 // `short` is what a phone shows: the divided row keeps all four on one
 // line there, and two-word labels wrap into a ragged stack at that width
@@ -109,14 +111,36 @@ const commits = [
 	{ hash: 'e2f7a58', type: 'chore', msg: 'scale & maintain', desc: 'We stay on for uptime, growth and the next features.' },
 ];
 
-const deploys = [
-	{ name: 'brixmarket', domain: 'brixmarket.com', sector: 'Real estate', img: '/images/portfolio/brix%20marketplace.jpg', url: 'https://brixmarket.com/', uptime: '99.9%' },
-	{ name: 'betslipswitch', domain: 'betslipswitch.com', sector: 'Sports', img: '/images/portfolio/betslipswitch.jpg', url: 'https://betslipswitch.com/', uptime: '99.9%' },
-	{ name: 'saros-learning', domain: 'sarosinternationallearning.com', sector: 'Education', img: '/images/portfolio/sarosgp.jpg', url: 'https://sarosinternationallearning.com/', uptime: '99.9%' },
-	{ name: 'convertmybetcode', domain: 'convertmybetcode.com', sector: 'Sports', img: '', url: 'https://convertmybetcode.com/', uptime: '99.8%' },
-	{ name: 'buygas', domain: 'buygas.org', sector: 'On-demand delivery', img: '', url: 'https://buygas.org/', uptime: '99.9%' },
-	{ name: 'purple-panda', domain: 'purplepanda.world', sector: 'Marketing', img: '/images/portfolio/purplepanda%20world.jpg', url: '', uptime: '99.9%' },
+// The wall is built from the real project list, not a hand-kept copy of
+// it that drifted: three rows had no screenshot and one that was marked
+// live had no address to go to. A project with a URL is in production
+// and links out; one without is still in build and links to its own
+// breakdown page, the way Campus and Founder do it.
+const deployNames = [
+	'TrueVerdict',
+	'The Presidential Diary',
+	'Afribarn Links',
+	'Skaldon WatchTower ERP',
+	'Younique Magazine',
+	'Journalists Global Foundation',
+	'BuyGas',
+	'Purple Panda',
 ];
+const deploys = deployNames
+	.map((n) => projects.find((pr) => pr.name === n))
+	.filter((pr): pr is (typeof projects)[number] => !!pr)
+	.map((pr) => ({
+		name: pr.slug,
+		label: pr.name,
+		domain: pr.url ? pr.host : 'in build',
+		sector: pr.tagline,
+		img: pr.img,
+		url: pr.url || '',
+		href: pr.url || `/portfolio/${pr.slug}`,
+		live: !!pr.url,
+		uptime: pr.url ? '99.9%' : '—',
+	}));
+
 
 const sectors = [
 	'fintech',
@@ -456,39 +480,31 @@ const reviews = [
 					<span></span>
 				</div>
 				{
-					deploys.map((d) => {
-						const Tag = d.url ? 'a' : 'div';
-						return (
-							<Tag
-								class="bb-deploy"
-								href={d.url || undefined}
-								target={d.url ? '_blank' : undefined}
-								rel={d.url ? 'noopener noreferrer' : undefined}
-							>
-								<span class="bb-deploy-id">
-									{d.img ? (
-										<img src={d.img} alt="" loading="lazy" />
-									) : (
-										<span class="bb-deploy-ph">
-											<Icon width={15} name="mdi:image-outline" />
-										</span>
-									)}
-									<span class="bb-deploy-name">
-										<strong>{d.name}</strong>
-										<em>{d.domain} · {d.sector}</em>
-									</span>
+					deploys.map((d, i) => (
+						<a
+							class:list={['bb-deploy', { 'is-build': !d.live }]}
+							href={d.href}
+							target={d.live ? '_blank' : undefined}
+							rel={d.live ? 'noopener noreferrer' : undefined}
+							style={`--d:${i * 0.06}s`}
+						>
+							<span class="bb-deploy-id">
+								<img src={d.img} alt="" loading="lazy" decoding="async" />
+								<span class="bb-deploy-name">
+									<strong>{d.name}</strong>
+									<em>{d.domain} · {d.sector}</em>
 								</span>
-								<span class="bb-deploy-status">
-									<span class="bb-live" aria-hidden="true"></span>
-									Ready · Production
-								</span>
-								<span class="bb-deploy-uptime">{d.uptime}</span>
-								<span class="bb-deploy-go">
-									{d.url && <Icon width={15} name="mdi:arrow-top-right" />}
-								</span>
-							</Tag>
-						);
-					})
+							</span>
+							<span class="bb-deploy-status">
+								<span class="bb-live" aria-hidden="true" />
+								{d.live ? 'Ready · Production' : 'Building · Preview'}
+							</span>
+							<span class="bb-deploy-uptime">{d.uptime}</span>
+							<span class="bb-deploy-go">
+								<Icon width={15} name={d.live ? 'mdi:arrow-top-right' : 'mdi:file-document-outline'} />
+							</span>
+						</a>
+					))
 				}
 				<a class="bb-deploys-all" href="/portfolio">
 					View all 65+ projects
@@ -496,10 +512,26 @@ const reviews = [
 				</a>
 			</div>
 
-			<div class="bb-demo bb-rev">
-				<Icon width={30} name="mdi:play-circle-outline" />
-				<span class="bb-demo-label">demo.webm . video placeholder</span>
-				<span class="bb-demo-sub">Your product walkthrough drops in here</span>
+			<!-- the reel, in its own window: a dashed box saying a video goes
+			     here is a note to ourselves, not a thing to show a visitor -->
+			<div class="bb-reel bb-rev">
+				<div class="bb-reel-bar">
+					<span class="bb-dot bb-dot--r" />
+					<span class="bb-dot bb-dot--y" />
+					<span class="bb-dot bb-dot--g" />
+					<span class="bb-reel-file">how-we-build.mp4</span>
+					<span class="bb-reel-badge">
+						<span class="bb-live" aria-hidden="true" />
+						from the studio
+					</span>
+				</div>
+				<FilmPlayer
+					src="/videos/how-we-build.mp4"
+					poster="/images/how-we-build-poster.jpg"
+					label="How Swizel builds: first sketch to launch day"
+					tag="raw footage"
+					class="bb-reel-film"
+				/>
 			</div>
 		</div>
 	</section>
@@ -1769,6 +1801,58 @@ const reviews = [
 		.bb-deploy-status { grid-column: 1; }
 		.bb-deploy-uptime { display: none; }
 		.bb-deploy-go { grid-row: 1; grid-column: 2; }
+	}
+
+	/* a preview build is not production, and the dot should not claim it is */
+	.bb-deploy.is-build .bb-live {
+		background: #f5b13d;
+		box-shadow: 0 0 8px rgba(245, 177, 61, 0.7);
+	}
+	.bb-deploy.is-build .bb-deploy-status { color: #e0a13a; }
+	.bb-deploy.is-build .bb-deploy-uptime { opacity: 0.45; }
+
+	/* ── the reel, in a window of its own ─────────────────────────── */
+	.bb-reel {
+		margin-top: clamp(1.4rem, 3vw, 2.2rem);
+		border-radius: 1rem;
+		overflow: hidden;
+		border: 1px solid color-mix(in srgb, var(--bu-acc) 24%, transparent);
+		background: #0a0e14;
+		box-shadow:
+			0 44px 90px -46px rgba(0, 0, 0, 0.85),
+			0 0 70px -40px color-mix(in srgb, var(--bu-acc) 60%, transparent);
+	}
+	.bb-reel-bar {
+		display: flex;
+		align-items: center;
+		gap: 0.45rem;
+		padding: 0.6rem 0.85rem;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+		background: rgba(255, 255, 255, 0.025);
+	}
+	.bb-reel-file {
+		margin-left: 0.5rem;
+		font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+		font-size: 0.74rem;
+		color: rgba(214, 232, 238, 0.55);
+	}
+	.bb-reel-badge {
+		margin-left: auto;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		font-family: 'JetBrains Mono', ui-monospace, monospace;
+		font-size: 0.66rem;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: color-mix(in srgb, var(--bu-acc) 78%, #fff);
+	}
+	/* the film fills the window edge to edge, no frame of its own */
+	.bb-reel :global(.bb-reel-film) { gap: 0; }
+	.bb-reel :global(.bb-reel-film .flm__screen) {
+		border: 0;
+		border-radius: 0;
+		box-shadow: none;
 	}
 
 	/* demo placeholder */
