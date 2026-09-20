@@ -142,15 +142,19 @@ const deploys = deployNames
 	}));
 
 
-// the stack, as a config file the window writes out row by row
+// The stack, as a config file the window writes out row by row. Drawn
+// from the same toolkit the services page lists, so the two agree and
+// nothing here is a tool we do not actually reach for.
 const stack = [
-	{ key: 'frontend', items: ['React', 'Next.js', 'TypeScript'] },
-	{ key: 'mobile', items: ['Flutter', 'React Native'] },
-	{ key: 'backend', items: ['Node.js', 'Python', 'PostgreSQL'] },
-	{ key: 'cloud', items: ['AWS', 'Firebase'] },
-	{ key: 'design', items: ['Figma'] },
-	{ key: 'testing', items: ['Playwright', 'Vitest'] },
-	{ key: 'ci', items: ['GitHub Actions'] },
+	{ key: 'frontend', items: ['React', 'Next.js', 'Vue', 'Astro', 'Svelte', 'Tailwind', 'TypeScript'] },
+	{ key: 'mobile', items: ['Flutter', 'React Native', 'Swift', 'Kotlin', 'Expo'] },
+	{ key: 'backend', items: ['Node', 'Python', 'PHP', 'Laravel', 'Django', 'Go'] },
+	{ key: 'data', items: ['PostgreSQL', 'MongoDB', 'Redis', 'Supabase', 'Prisma'] },
+	{ key: 'cloud', items: ['AWS', 'Vercel', 'Docker', 'Cloudflare', 'Firebase'] },
+	{ key: 'commerce', items: ['Stripe', 'Paystack', 'Shopify', 'WooCommerce'] },
+	{ key: 'cms', items: ['WordPress', 'Sanity', 'Contentful', 'Webflow'] },
+	{ key: 'design', items: ['Figma', 'Illustrator', 'After Effects', 'Framer'] },
+	{ key: 'quality', items: ['Playwright', 'Jest', 'Storybook', 'Sentry', 'GitHub Actions'] },
 	{ key: 'fuel', items: ['coffee, non-negotiable \u2615'], joke: true },
 ];
 
@@ -626,7 +630,7 @@ const reviews = [
 									{row.items.map((it, k) => (
 										<span
 											class:list={['bb-stackchip', { 'bb-stackchip--coffee': row.joke }]}
-											style={`--i:${r * 3 + k}`}
+											style={`--i:${r * 7 + k}`}
 										>
 											{it}
 										</span>
@@ -2136,6 +2140,12 @@ const reviews = [
 		color: #eafcff;
 		transform: translateY(-2px);
 	}
+	/* ten rows of real tools rather than three: the keys keep their column
+	   and the chips wrap inside theirs */
+	.bb-stackrow { align-items: baseline; }
+	.bb-stackchips { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+	.bb-stackchip { font-size: 0.72rem; padding: 0.18rem 0.5rem; }
+
 	.bb-stackcaret {
 		display: inline-block;
 		width: 8px;
