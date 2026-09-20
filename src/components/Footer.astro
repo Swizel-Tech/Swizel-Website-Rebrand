@@ -215,6 +215,74 @@ const phones = [
 				}
 			</div>
 
+			<!-- Builder gets a program: follow.sh, one line per channel,
+			     with the exit code of a run that always passes. -->
+			<div class="ft-term">
+				<div class="ft-term-bar">
+					<i aria-hidden="true"></i><i aria-hidden="true"></i><i aria-hidden="true"></i>
+					<span class="ft-term-file">follow.sh</span>
+				</div>
+				<div class="ft-term-body">
+					<p class="ft-term-cmd"><span>$</span> swizel follow --all</p>
+					{
+						socials.map((sc, i) => (
+							<a
+								class="ft-term-row"
+								href={sc.href}
+								target="_blank"
+								rel="noopener noreferrer"
+								style={`--pk:${sc.color}; --i:${i}`}
+							>
+								<span class="ft-term-ok" aria-hidden="true">✓</span>
+								<span class="ft-term-key">{sc.name.toLowerCase()}</span>
+								<span class="ft-term-val">{sc.short}</span>
+								<span class="ft-term-note">{sc.tag.toLowerCase()}</span>
+							</a>
+						))
+					}
+					<p class="ft-term-out">
+						<span class="ft-term-ok" aria-hidden="true">✓</span>
+						4 channels linked
+						<span class="ft-term-caret" aria-hidden="true"></span>
+					</p>
+				</div>
+			</div>
+
+			<!-- Founder gets the thing founders stand in front of: a deck
+			     on a projector screen, one slide, four lines. -->
+			<div class="ft-deck">
+				<span class="ft-deck-beam" aria-hidden="true"></span>
+				<div class="ft-deck-screen">
+					<span class="ft-deck-no">04 / 04</span>
+					<span class="ft-deck-title">Where we post</span>
+					<ul class="ft-deck-list">
+						{
+							socials.map((sc, i) => (
+								<li style={`--pk:${sc.color}; --i:${i}`}>
+									<a href={sc.href} target="_blank" rel="noopener noreferrer">
+										<span class="ft-deck-ic">
+											{sc.isX ? (
+												<svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true">
+													<path d="M13.86 10.9 21.2 2.4h-1.74l-6.37 7.38L7.99 2.4H2.4l7.7 11.2-7.7 8.95h1.74l6.73-7.82 5.38 7.82h5.59l-7.98-11.65Zm-2.38 2.77-.78-1.11L4.77 3.71h2.67l5.01 7.16.78 1.12 6.51 9.3h-2.67l-5.59-7.99Z" />
+												</svg>
+											) : (
+												<Icon size={16} name={sc.icon} />
+											)}
+										</span>
+										<b>{sc.name}</b>
+										<em>{sc.tag}</em>
+										<span class="ft-deck-go" aria-hidden="true">
+											<Icon width={13} name="mdi:arrow-top-right" />
+										</span>
+									</a>
+								</li>
+							))
+						}
+					</ul>
+				</div>
+				<span class="ft-deck-stand" aria-hidden="true"></span>
+			</div>
+
 			<div class="ft-socials">
 				{
 					socials.map((s) => (
@@ -1352,4 +1420,167 @@ const phones = [
 	:global(html[data-view='campus']:not(.dark)) .ft-social-handle { color: #92400e; }
 	:global(html[data-view='studio']:not(.dark)) .ft-social-handle { color: #9d174d; }
 	:global(html[data-view='boardroom']:not(.dark)) .ft-social-handle { color: #1e40af; }
+
+	/* ══ the socials, as an object each world would actually own ══════
+	   Campus pins paper to cork. Builder runs a script. Founder puts it
+	   on a projector screen. The plain card list stays for the worlds
+	   that have no object of their own. */
+	.ft-term, .ft-deck { display: none; }
+	:global(html[data-view='builder']) .ft-socials,
+	:global(html[data-view='founder']) .ft-socials { display: none; }
+
+	/* ── Builder: follow.sh ─────────────────────────────────────────── */
+	:global(html[data-view='builder']) .ft-term {
+		display: block;
+		border-radius: 0.8rem;
+		overflow: hidden;
+		border: 1px solid rgba(24, 222, 190, 0.26);
+		background: #080d13;
+		box-shadow: 0 26px 56px -30px rgba(0, 0, 0, 0.8);
+		font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+	}
+	.ft-term-bar {
+		display: flex;
+		align-items: center;
+		gap: 0.3rem;
+		padding: 0.5rem 0.7rem;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+		background: rgba(255, 255, 255, 0.03);
+	}
+	.ft-term-bar i { width: 9px; height: 9px; border-radius: 9999px; background: #2b3440; }
+	.ft-term-bar i:nth-child(1) { background: #ff5f57; }
+	.ft-term-bar i:nth-child(2) { background: #febc2e; }
+	.ft-term-bar i:nth-child(3) { background: #28c840; }
+	.ft-term-file { margin-left: 0.4rem; font-size: 0.7rem; color: rgba(214, 232, 238, 0.5); }
+	.ft-term-body { padding: 0.7rem 0.75rem 0.8rem; font-size: 0.74rem; line-height: 1.75; }
+	.ft-term-cmd { margin: 0 0 0.35rem; color: #dff3f7; }
+	.ft-term-cmd span { color: #18debe; margin-right: 0.4rem; }
+	.ft-term-row {
+		display: grid;
+		grid-template-columns: auto 5.6rem minmax(0, 1fr);
+		align-items: baseline;
+		gap: 0 0.5rem;
+		padding: 0.12rem 0.3rem;
+		border-radius: 0.3rem;
+		color: rgba(223, 243, 247, 0.72);
+		transition: background 0.18s ease, color 0.18s ease;
+	}
+	.ft-term-row:hover { background: rgba(24, 222, 190, 0.12); color: #eafcff; }
+	.ft-term-ok { color: #2ee889; }
+	.ft-term-key { color: #8dfeea; }
+	.ft-term-val { color: #dff3f7; }
+	.ft-term-note { grid-column: 3; color: rgba(223, 243, 247, 0.42); font-size: 0.68rem; }
+	.ft-term-row:hover .ft-term-note { color: rgba(223, 243, 247, 0.7); }
+	.ft-term-out { margin: 0.4rem 0 0; color: rgba(223, 243, 247, 0.55); }
+	.ft-term-caret {
+		display: inline-block; width: 7px; height: 0.9em; margin-left: 0.35rem;
+		vertical-align: text-bottom; background: #18debe;
+		animation: ft-term-blink 1s steps(2) infinite;
+	}
+	@keyframes ft-term-blink { 50% { opacity: 0; } }
+	/* daylight: the terminal stays a dark object, the way every editor does */
+
+	/* ── Founder: the deck on the screen ───────────────────────────── */
+	:global(html[data-view='founder']) .ft-deck { display: block; position: relative; }
+	.ft-deck-beam {
+		position: absolute;
+		left: 50%;
+		top: -18px;
+		width: 78%;
+		height: 30px;
+		transform: translateX(-50%);
+		background: linear-gradient(180deg, color-mix(in srgb, var(--view-accent, #8b5cf6) 30%, transparent), transparent);
+		filter: blur(9px);
+		pointer-events: none;
+	}
+	.ft-deck-screen {
+		position: relative;
+		padding: 0.9rem 0.95rem 1rem;
+		border-radius: 0.5rem;
+		border: 1px solid rgba(167, 139, 250, 0.3);
+		background:
+			radial-gradient(120% 80% at 50% -10%, rgba(167, 139, 250, 0.16), transparent 60%),
+			linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+		box-shadow: 0 22px 50px -26px rgba(0, 0, 0, 0.7);
+	}
+	:global(html[data-view='founder']:not(.dark)) .ft-deck-screen {
+		border-color: rgba(109, 40, 217, 0.22);
+		background:
+			radial-gradient(120% 80% at 50% -10%, rgba(109, 40, 217, 0.12), transparent 60%),
+			linear-gradient(180deg, #ffffff, #f7f4ff);
+	}
+	.ft-deck-no {
+		position: absolute;
+		top: 0.7rem;
+		right: 0.8rem;
+		font-family: ui-monospace, monospace;
+		font-size: 0.62rem;
+		letter-spacing: 0.1em;
+		color: var(--ft-faint);
+	}
+	.ft-deck-title {
+		display: block;
+		font-size: 0.95rem;
+		font-weight: 800;
+		margin-bottom: 0.15rem;
+		color: var(--ft-ink);
+	}
+	.ft-deck-title::after {
+		content: '';
+		display: block;
+		width: 2.2rem;
+		height: 3px;
+		margin-top: 0.45rem;
+		border-radius: 999px;
+		background: var(--view-accent, #8b5cf6);
+	}
+	.ft-deck-list { list-style: none; margin: 0.7rem 0 0; padding: 0; display: grid; gap: 0.1rem; }
+	.ft-deck-list a {
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		padding: 0.42rem 0.4rem;
+		border-radius: 0.5rem;
+		transition: background 0.2s ease, transform 0.2s ease;
+	}
+	.ft-deck-list a:hover {
+		background: color-mix(in srgb, var(--view-accent, #8b5cf6) 12%, transparent);
+		transform: translateX(3px);
+	}
+	.ft-deck-ic {
+		display: grid;
+		place-items: center;
+		width: 26px;
+		height: 26px;
+		flex: none;
+		border-radius: 0.45rem;
+		background: color-mix(in srgb, var(--pk, #8b5cf6) 18%, transparent);
+		color: var(--pk, #8b5cf6);
+	}
+	:global(html[data-view='founder']) .ft-deck-list b { font-size: 0.84rem; font-weight: 800; color: var(--ft-ink); }
+	:global(html[data-view='founder']) .ft-deck-list em {
+		font-style: normal;
+		margin-left: auto;
+		font-size: 0.7rem;
+		color: var(--ft-faint);
+		white-space: nowrap;
+	}
+	.ft-deck-go { color: var(--ft-faint); flex: none; }
+	.ft-deck-list a:hover .ft-deck-go { color: var(--view-accent, #8b5cf6); }
+	.ft-deck-stand {
+		display: block;
+		width: 34%;
+		height: 10px;
+		margin: 0 auto;
+		border-radius: 0 0 0.4rem 0.4rem;
+		background: linear-gradient(180deg, rgba(167, 139, 250, 0.32), transparent);
+	}
+	@media (max-width: 520px) {
+		:global(html[data-view='founder']) .ft-deck-list em { display: none; }
+		.ft-term-row { grid-template-columns: auto 5rem minmax(0, 1fr); }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.ft-term-caret { animation: none; }
+		.ft-deck-list a:hover { transform: none; }
+	}
 </style>
