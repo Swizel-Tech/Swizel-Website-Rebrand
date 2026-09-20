@@ -280,6 +280,18 @@ export function initBuilderBody() {
 		const shots = Array.from(
 			con.querySelectorAll<HTMLElement>('[data-pb-shot]')
 		);
+		// ── the rail: fold it away, or pick a deployment yourself ──────
+		const taught = () => con.classList.add('is-taught');
+		con.querySelectorAll<HTMLButtonElement>('[data-pb-fold]').forEach((b) =>
+			b.addEventListener('click', () => {
+				taught();
+				con.classList.toggle('is-folded');
+			})
+		);
+		const railRows = Array.from(
+			con.querySelectorAll<HTMLButtonElement>('[data-pb-pick]')
+		);
+
 		if (data.length && cmd && fill && log && url && name && sector) {
 			const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 			let i = 0;
@@ -294,11 +306,23 @@ export function initBuilderBody() {
 				while (log.children.length > 4) log.removeChild(log.firstChild!);
 			};
 
+			// a click on the rail jumps the queue to that deployment
+			railRows.forEach((r, n) =>
+				r.addEventListener('click', () => {
+					taught();
+					i = n;
+					railRows.forEach((o, m) => o.classList.toggle('is-on', m === n));
+				})
+			);
+
 			const deploy = async () => {
 				if (running) return;
 				running = true;
 				while (visible) {
 					const d = data[i % data.length]!;
+					railRows.forEach((r, n) =>
+						r.classList.toggle('is-on', n === i % data.length)
+					);
 					i++;
 					const command = `swizel deploy ${d.slug} --prod`;
 					cmd.textContent = '';

@@ -618,7 +618,11 @@ const sectors = [
 	.bs-stage p { font-size: 0.92rem; line-height: 1.6; color: var(--bu-muted); margin: 0; max-width: 36rem; }
 
 	/* proof row: showreel + numbers */
-	.bs-proofrow { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); gap: clamp(0.8rem, 1.6vw, 1.2rem); align-items: start; }
+		/* both panels are one pair: same top, same bottom */
+	.bs-proofrow { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); gap: clamp(0.8rem, 1.6vw, 1.2rem); align-items: stretch; }
+	.bs-proofrow > * { min-height: 0; }
+	.bs-nums { display: flex; flex-direction: column; }
+	.bs-nums ul { flex: 1 1 auto; display: flex; flex-direction: column; justify-content: space-evenly; margin: 0; }
 	/* the old dashed placeholder rule lived here and outranked the window
 	   above by coming later in the sheet — it is the window's rule now */
 	.bs-reel {

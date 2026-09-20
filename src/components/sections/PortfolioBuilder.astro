@@ -21,9 +21,9 @@ const stats = [
 ];
 
 // the console ships these on a loop (real projects with real screenshots)
-const consoleProjects = ['hemam-synergy', 'betslipswitch', 'binas-residence', 'jobblander', 'anchorstep', 'trueverdict']
-	.map((s) => projects.find((p) => p.slug === s))
-	.filter(Boolean) as typeof projects;
+// The console used to cycle six hand-picked slugs. It runs the whole
+// live estate now — anything with a real address and a real screenshot.
+const consoleProjects = projects.filter((p) => !!p.url && !!p.img);
 
 const marquee = [...projects, ...projects];
 const rot = [...projects.slice(6), ...projects.slice(0, 6)];
@@ -85,6 +85,43 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 					<span class="pb-win-live"><i></i>shipping on loop</span>
 				</div>
 				<div class="pb-console-grid">
+					<aside class="pb-rail" aria-label="Deployments">
+						<button
+							class="pb-fold"
+							type="button"
+							data-pb-fold
+							aria-label="Hide the deployment list"
+							title="Hide the deployment list"
+						>
+							<Icon width={15} name="mdi:chevron-double-left" />
+						</button>
+						<span class="pb-rail-k">{consoleProjects.length} live</span>
+						<ul class="pb-rail-list">
+							{
+								consoleProjects.map((p, i) => (
+									<li>
+										<button
+											class:list={['pb-rail-row', { 'is-on': i === 0 }]}
+											type="button"
+											data-pb-pick={i}
+										>
+											<i class="pb-rail-dot" aria-hidden="true" />
+											{p.slug}
+										</button>
+									</li>
+								))
+							}
+						</ul>
+					</aside>
+					<button
+						class="pb-unfold"
+						type="button"
+						data-pb-fold
+						aria-label="Show the deployment list"
+						title="Show the deployment list"
+					>
+						<Icon width={16} name="mdi:file-tree-outline" />
+					</button>
 					<div class="pb-term">
 						<p class="pb-tline"><span class="pb-prompt">$</span> <span id="pb-cmd"></span><span class="pb-caret" aria-hidden="true"></span></p>
 						<div class="pb-bar"><span class="pb-fill" id="pb-fill"></span></div>
@@ -432,7 +469,7 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 	.pb-console:hover .bb-glare { opacity: 1; }
 
 	/* hero */
-	.pb-hero { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: clamp(2rem, 4vw, 3rem); align-items: center; }
+	.pb-hero { display: grid; grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr); gap: clamp(1.6rem, 3vw, 2.4rem); align-items: center; }
 	.pb-stats { display: flex; align-items: stretch; margin: 1.5rem 0 1.4rem; padding: 0; list-style: none; }
 	.pb-stats li { flex: 1; min-width: 0; padding: 0.2rem 0.85rem; border-left: 1px solid color-mix(in srgb, var(--bu-acc) 25%, transparent); transition: transform 0.25s ease; }
 	.pb-stats li:first-child { padding-left: 0; border-left: 0; }
@@ -461,8 +498,129 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 	.pb-win-live { margin-left: auto; display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--bu-mono); font-size: 0.7rem; color: #2ee889; }
 	.pb-win-live i { width: 7px; height: 7px; border-radius: 50%; background: #2ee889; animation: pb-live 2s ease-in-out infinite; }
 	@keyframes pb-live { 0%, 100% { box-shadow: 0 0 0 0 rgba(46, 232, 137, 0.5); } 50% { box-shadow: 0 0 0 4px rgba(46, 232, 137, 0); } }
-	.pb-console-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-	.pb-term { padding: 1rem 1.1rem 1.1rem; border-right: 1px solid rgba(255, 255, 255, 0.06); min-height: 250px; }
+	/* ── the console: a rail of deployments, a terminal, a preview ──── */
+	.pb-console-grid {
+		display: grid;
+		grid-template-columns: 11rem minmax(0, 1fr) minmax(0, 1.05fr);
+		transition: grid-template-columns 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.pb-console.is-folded .pb-console-grid { grid-template-columns: 2.4rem minmax(0, 1fr) minmax(0, 1.05fr); }
+	.pb-console.is-folded .pb-rail { display: none; }
+	.pb-rail {
+		grid-column: 1;
+		display: flex;
+		flex-direction: column;
+		gap: 0.15rem;
+		padding: 0.6rem 0.4rem;
+		border-right: 1px solid rgba(255, 255, 255, 0.06);
+		background: rgba(255, 255, 255, 0.015);
+		overflow-y: auto;
+		max-height: 340px;
+		scrollbar-width: thin;
+		scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+	}
+	.pb-rail-k {
+		order: -1;
+		font-family: var(--bu-mono);
+		font-size: 0.64rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: rgba(232, 240, 244, 0.42);
+		padding: 0 0.35rem 0.35rem;
+	}
+	.pb-rail-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.12rem; }
+	.pb-rail-row {
+		display: flex;
+		align-items: center;
+		gap: 0.36rem;
+		width: 100%;
+		padding: 0.26rem 0.4rem;
+		border: 0;
+		border-radius: 0.35rem;
+		background: transparent;
+		color: rgba(232, 240, 244, 0.6);
+		font-family: var(--bu-mono);
+		font-size: 0.68rem;
+		text-align: left;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		cursor: pointer;
+		transition: background 0.18s ease, color 0.18s ease;
+	}
+	.pb-rail-row:hover { background: rgba(255, 255, 255, 0.05); color: #eafcff; }
+	.pb-rail-row.is-on { background: color-mix(in srgb, var(--bu-acc) 15%, transparent); color: #eafcff; }
+	.pb-rail-dot {
+		width: 5px; height: 5px; flex: none; border-radius: 9999px;
+		background: #28c840; box-shadow: 0 0 6px #28c840;
+	}
+
+	/* the fold, on both faces, breathing until it has been used once */
+	.pb-fold,
+	.pb-unfold {
+		position: relative;
+		display: grid;
+		place-items: center;
+		border: 0;
+		border-radius: 0.4rem;
+		background: color-mix(in srgb, var(--bu-acc) 14%, transparent);
+		color: color-mix(in srgb, var(--bu-acc) 72%, #fff);
+		cursor: pointer;
+	}
+	.pb-fold { order: -2; align-self: flex-end; width: 1.6rem; height: 1.6rem; margin-bottom: 0.25rem; }
+	.pb-unfold {
+		display: none;
+		grid-column: 1;
+		align-self: start;
+		justify-self: center;
+		width: 1.9rem;
+		height: 1.9rem;
+		margin-top: 0.6rem;
+		background: transparent;
+	}
+	.pb-console.is-folded .pb-unfold { display: grid; }
+	.pb-fold::after,
+	.pb-unfold::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		border-radius: inherit;
+		box-shadow: 0 0 0 0 color-mix(in srgb, var(--bu-acc) 60%, transparent);
+		animation: pb-ask 2.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+		pointer-events: none;
+	}
+	.pb-fold :global(svg) { animation: pb-nudge 2.2s cubic-bezier(0.22, 1, 0.36, 1) infinite; }
+	.pb-unfold :global(svg) { animation: pb-nudge-r 2.2s cubic-bezier(0.22, 1, 0.36, 1) infinite; }
+	.pb-console.is-taught .pb-fold::after,
+	.pb-console.is-taught .pb-unfold::after,
+	.pb-console.is-taught .pb-fold :global(svg),
+	.pb-console.is-taught .pb-unfold :global(svg) { animation: none; }
+	.pb-console.is-taught .pb-fold { background: transparent; color: rgba(232, 240, 244, 0.5); }
+	@keyframes pb-ask {
+		0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--bu-acc) 55%, transparent); }
+		60%, 100% { box-shadow: 0 0 0 9px color-mix(in srgb, var(--bu-acc) 0%, transparent); }
+	}
+	@keyframes pb-nudge {
+		0%, 55%, 100% { transform: translateX(0); }
+		70% { transform: translateX(-3px); }
+		85% { transform: translateX(-1px); }
+	}
+	@keyframes pb-nudge-r {
+		0%, 55%, 100% { transform: translateX(0); }
+		70% { transform: translateX(3px); }
+		85% { transform: translateX(1px); }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.pb-fold::after, .pb-unfold::after,
+		.pb-fold :global(svg), .pb-unfold :global(svg) { animation: none; }
+	}
+	@media (max-width: 880px) {
+		.pb-console-grid,
+		.pb-console.is-folded .pb-console-grid { grid-template-columns: minmax(0, 1fr); }
+		.pb-rail, .pb-unfold { display: none; }
+		.pb-console.is-folded .pb-unfold { display: none; }
+	}
+	.pb-term { grid-column: 2; padding: 1rem 1.1rem 1.1rem; border-right: 1px solid rgba(255, 255, 255, 0.06); min-height: 300px; }
 	.pb-tline { margin: 0 0 0.65rem; font-family: var(--bu-mono); font-size: 0.82rem; color: #e8f0f4; min-height: 1.3em; }
 	.pb-prompt { color: var(--bu-acc); margin-right: 0.35rem; }
 	.pb-caret { display: inline-block; width: 7px; height: 0.95em; margin-left: 2px; vertical-align: text-bottom; background: var(--bu-acc); animation: pb-caret 0.9s steps(1) infinite; }
@@ -487,9 +645,39 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 		transition: opacity 0.5s ease, transform 0.6s ease;
 	}
 	.pb-preview-img img.is-on { opacity: 1; transform: none; }
-	.pb-preview-meta { display: flex; align-items: center; gap: 0.55rem; padding: 0.6rem 0.9rem; border-top: 1px solid rgba(255, 255, 255, 0.06); }
-	.pb-preview-meta b { font-size: 0.82rem; font-weight: 800; color: #e8f0f4; }
-	.pb-preview-meta em { flex: 1; min-width: 0; font-style: normal; font-family: var(--bu-mono); font-size: 0.7rem; color: rgba(232, 240, 244, 0.5); }
+	/* The sector label was free to wrap inside a flex row, so a two-word
+	   sector broke around the status pill. Name and sector share a column,
+	   the status keeps its own. */
+	.pb-preview-meta {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		align-items: center;
+		gap: 0.15rem 0.6rem;
+		padding: 0.6rem 0.9rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.06);
+	}
+	.pb-preview-meta b {
+		grid-column: 1;
+		font-size: 0.82rem;
+		font-weight: 800;
+		color: #e8f0f4;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.pb-preview-meta em {
+		grid-column: 1;
+		grid-row: 2;
+		min-width: 0;
+		font-style: normal;
+		font-family: var(--bu-mono);
+		font-size: 0.7rem;
+		color: rgba(232, 240, 244, 0.5);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.pb-status { grid-column: 2; grid-row: 1 / span 2; }
 	.pb-status { display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--bu-mono); font-size: 0.7rem; color: #2ee889; white-space: nowrap; }
 	.pb-status i { width: 7px; height: 7px; border-radius: 50%; background: #2ee889; animation: pb-live 2s ease-in-out infinite; }
 
