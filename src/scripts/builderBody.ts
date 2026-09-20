@@ -303,7 +303,9 @@ export function initBuilderBody() {
 				p.className = cls;
 				p.textContent = text;
 				log.appendChild(p);
-				while (log.children.length > 4) log.removeChild(log.firstChild!);
+				// the log is a strip now, not a column: it holds the last
+				// three lines and the newest is the one you can always see
+				while (log.children.length > 3) log.removeChild(log.firstChild!);
 			};
 
 			// a click on the rail jumps the queue to that deployment

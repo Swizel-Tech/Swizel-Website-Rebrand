@@ -86,16 +86,18 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 				</div>
 				<div class="pb-console-grid">
 					<aside class="pb-rail" aria-label="Deployments">
-						<button
-							class="pb-fold"
-							type="button"
-							data-pb-fold
-							aria-label="Hide the deployment list"
-							title="Hide the deployment list"
-						>
-							<Icon width={15} name="mdi:chevron-double-left" />
-						</button>
-						<span class="pb-rail-k">{consoleProjects.length} live</span>
+						<div class="pb-rail-head">
+							<span class="pb-rail-k">{consoleProjects.length} live</span>
+							<button
+								class="pb-fold"
+								type="button"
+								data-pb-fold
+								aria-label="Hide the deployment list"
+								title="Hide the deployment list"
+							>
+								<Icon width={15} name="mdi:chevron-double-left" />
+							</button>
+						</div>
 						<ul class="pb-rail-list">
 							{
 								consoleProjects.map((p, i) => (
@@ -113,6 +115,7 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 							}
 						</ul>
 					</aside>
+
 					<button
 						class="pb-unfold"
 						type="button"
@@ -122,34 +125,42 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 					>
 						<Icon width={16} name="mdi:file-tree-outline" />
 					</button>
-					<div class="pb-term">
-						<p class="pb-tline"><span class="pb-prompt">$</span> <span id="pb-cmd"></span><span class="pb-caret" aria-hidden="true"></span></p>
-						<div class="pb-bar"><span class="pb-fill" id="pb-fill"></span></div>
-						<div class="pb-log" id="pb-log"></div>
-					</div>
-					<div class="pb-preview">
-						<span class="pb-preview-bar">
-							<i></i><i></i><i></i>
-							<span class="pb-preview-url" id="pb-url">…</span>
-						</span>
-						<span class="pb-preview-img">
-							{
-								consoleProjects.map((p, i) => (
-									<img
-										src={p.img}
-										alt={p.name}
-										loading={i === 0 ? 'eager' : 'lazy'}
-										data-pb-shot={p.slug}
-										class:list={[{ 'is-on': i === 0 }]}
-									/>
-								))
-							}
-						</span>
-						<span class="pb-preview-meta">
-							<b id="pb-name">{consoleProjects[0]?.name}</b>
-							<em id="pb-sector">{sectorLabels[consoleProjects[0]?.sector]}</em>
-							<span class="pb-status" id="pb-status"><i></i>Ready · Production</span>
-						</span>
+
+					<!-- the site itself is the headline: it takes the room, and
+					     the deploy log runs as a strip underneath it -->
+					<div class="pb-stage">
+						<div class="pb-preview">
+							<span class="pb-preview-bar">
+								<i></i><i></i><i></i>
+								<span class="pb-preview-url" id="pb-url">…</span>
+								<b class="pb-preview-name" id="pb-name">{consoleProjects[0]?.name}</b>
+								<em class="pb-preview-sector" id="pb-sector">{sectorLabels[consoleProjects[0]?.sector]}</em>
+								<span class="pb-status" id="pb-status"><i></i>Ready · Production</span>
+							</span>
+							<span class="pb-preview-img">
+								{
+									consoleProjects.map((p, i) => (
+										<img
+											src={p.img}
+											alt={p.name}
+											loading={i === 0 ? 'eager' : 'lazy'}
+											data-pb-shot={p.slug}
+											class:list={[{ 'is-on': i === 0 }]}
+										/>
+									))
+								}
+							</span>
+						</div>
+
+						<div class="pb-term">
+							<p class="pb-tline">
+								<span class="pb-prompt">$</span>
+								<span id="pb-cmd"></span>
+								<span class="pb-caret" aria-hidden="true"></span>
+							</p>
+							<div class="pb-bar"><span class="pb-fill" id="pb-fill"></span></div>
+							<div class="pb-log" id="pb-log"></div>
+						</div>
 					</div>
 				</div>
 				{
@@ -501,13 +512,15 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 	/* ── the console: a rail of deployments, a terminal, a preview ──── */
 	.pb-console-grid {
 		display: grid;
-		grid-template-columns: 11rem minmax(0, 1fr) minmax(0, 1.05fr);
+		grid-template-columns: 11rem minmax(0, 1fr);
 		transition: grid-template-columns 0.32s cubic-bezier(0.22, 1, 0.36, 1);
 	}
-	.pb-console.is-folded .pb-console-grid { grid-template-columns: 2.4rem minmax(0, 1fr) minmax(0, 1.05fr); }
+	.pb-console.is-folded .pb-console-grid { grid-template-columns: 2.6rem minmax(0, 1fr); }
 	.pb-console.is-folded .pb-rail { display: none; }
 	.pb-rail {
 		grid-column: 1;
+		position: relative;
+		z-index: 5;
 		display: flex;
 		flex-direction: column;
 		gap: 0.15rem;
@@ -515,18 +528,17 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 		border-right: 1px solid rgba(255, 255, 255, 0.06);
 		background: rgba(255, 255, 255, 0.015);
 		overflow-y: auto;
-		max-height: 340px;
 		scrollbar-width: thin;
 		scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
 	}
+	.pb-rail-head { display: flex; align-items: center; gap: 0.4rem; padding: 0 0.15rem 0.4rem 0.35rem; }
 	.pb-rail-k {
-		order: -1;
+		margin-right: auto;
 		font-family: var(--bu-mono);
 		font-size: 0.64rem;
 		letter-spacing: 0.08em;
 		text-transform: uppercase;
 		color: rgba(232, 240, 244, 0.42);
-		padding: 0 0.35rem 0.35rem;
 	}
 	.pb-rail-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.12rem; }
 	.pb-rail-row {
@@ -559,6 +571,7 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 	.pb-fold,
 	.pb-unfold {
 		position: relative;
+		z-index: 6;
 		display: grid;
 		place-items: center;
 		border: 0;
@@ -567,7 +580,7 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 		color: color-mix(in srgb, var(--bu-acc) 72%, #fff);
 		cursor: pointer;
 	}
-	.pb-fold { order: -2; align-self: flex-end; width: 1.6rem; height: 1.6rem; margin-bottom: 0.25rem; }
+	.pb-fold { width: 1.55rem; height: 1.55rem; }
 	.pb-unfold {
 		display: none;
 		grid-column: 1;
@@ -620,24 +633,54 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 		.pb-rail, .pb-unfold { display: none; }
 		.pb-console.is-folded .pb-unfold { display: none; }
 	}
-	.pb-term { grid-column: 2; padding: 1rem 1.1rem 1.1rem; border-right: 1px solid rgba(255, 255, 255, 0.06); min-height: 300px; }
-	.pb-tline { margin: 0 0 0.65rem; font-family: var(--bu-mono); font-size: 0.82rem; color: #e8f0f4; min-height: 1.3em; }
+	/* the stage: the site is the headline, the log runs underneath it */
+	.pb-stage { grid-column: 2; display: flex; flex-direction: column; min-width: 0; }
+	.pb-term {
+		flex: none;
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		align-items: center;
+		gap: 0.25rem 0.9rem;
+		padding: 0.6rem 0.9rem 0.7rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.07);
+		background: rgba(255, 255, 255, 0.02);
+	}
+	.pb-tline { grid-column: 1; margin: 0; font-family: var(--bu-mono); font-size: 0.78rem; color: #e8f0f4; min-height: 1.3em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 	.pb-prompt { color: var(--bu-acc); margin-right: 0.35rem; }
 	.pb-caret { display: inline-block; width: 7px; height: 0.95em; margin-left: 2px; vertical-align: text-bottom; background: var(--bu-acc); animation: pb-caret 0.9s steps(1) infinite; }
 	@keyframes pb-caret { 50% { opacity: 0; } }
-	.pb-bar { height: 5px; border-radius: 999px; background: rgba(255, 255, 255, 0.08); overflow: hidden; margin-bottom: 0.7rem; }
+	.pb-bar { grid-column: 1 / -1; grid-row: 2; height: 4px; border-radius: 999px; background: rgba(255, 255, 255, 0.08); overflow: hidden; margin: 0; }
 	.pb-fill { display: block; height: 100%; width: 0%; border-radius: 999px; background: linear-gradient(90deg, #8dfeea, var(--bu-acc), #28a6ec); transition: width 0.35s ease; }
-	.pb-log { display: grid; gap: 0.28rem; font-family: var(--bu-mono); font-size: 0.74rem; color: rgba(232, 240, 244, 0.6); }
+	.pb-log {
+		grid-column: 2;
+		grid-row: 1;
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		gap: 0.75rem;
+		max-width: min(30rem, 52%);
+		overflow: hidden;
+		font-family: var(--bu-mono);
+		font-size: 0.72rem;
+		color: rgba(232, 240, 244, 0.6);
+		white-space: nowrap;
+		/* the oldest line fades out at the left rather than being chopped */
+		-webkit-mask-image: linear-gradient(90deg, transparent, #000 12%);
+		mask-image: linear-gradient(90deg, transparent, #000 12%);
+	}
 	.pb-log :global(p) { margin: 0; animation: pb-login 0.3s ease both; }
 	.pb-log :global(.ok) { color: #2ee889; }
 	.pb-log :global(.info) { color: rgba(232, 240, 244, 0.6); }
 	.pb-log :global(.accent) { color: var(--bu-acc); font-weight: 700; }
 	@keyframes pb-login { from { opacity: 0; transform: translateY(4px); } }
-	.pb-preview { display: grid; grid-template-rows: auto 1fr auto; min-height: 250px; }
+	.pb-preview { flex: 1 1 auto; display: flex; flex-direction: column; min-height: 0; }
 	.pb-preview-bar { display: flex; align-items: center; gap: 4px; padding: 8px 10px; background: rgba(255, 255, 255, 0.04); }
 	.pb-preview-bar i { width: 7px; height: 7px; border-radius: 50%; background: rgba(255, 255, 255, 0.25); }
+	.pb-preview-name { margin-left: 0.55rem; font-size: 0.76rem; font-weight: 800; color: #e8f0f4; white-space: nowrap; }
+	.pb-preview-sector { margin-left: auto; font-style: normal; font-family: var(--bu-mono); font-size: 0.68rem; color: rgba(232, 240, 244, 0.5); white-space: nowrap; }
+	.pb-preview-bar .pb-status { margin-left: 0.7rem; }
 	.pb-preview-url { margin-left: 0.4rem; font-family: var(--bu-mono); font-size: 0.7rem; color: var(--bu-acc); transition: opacity 0.3s ease; }
-	.pb-preview-img { position: relative; display: block; overflow: hidden; min-height: 130px; }
+	.pb-preview-img { position: relative; flex: 1 1 auto; display: block; overflow: hidden; min-height: clamp(16rem, 26vw, 23rem); background: #05070b; }
 	.pb-preview-img img {
 		position: absolute; inset: 0; width: 100%; height: 100%;
 		object-fit: cover; object-position: top;
