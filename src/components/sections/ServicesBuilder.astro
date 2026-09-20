@@ -5,6 +5,7 @@
 // pipeline and a stack.config. Root carries `bbody` so the builder engine
 // (.bb-rev, [data-count], #bb-git draw) and the motion engine both bind.
 import { Icon } from 'astro-icon/components';
+import FilmPlayer from '../FilmPlayer.astro';
 import { disciplines } from '../../data/disciplines';
 
 const stats = [
@@ -201,14 +202,32 @@ const sectors = [
 
 	<!-- ── 04 · numbers + showreel ─────────────────────────── -->
 	<section class="bs-sec" data-cursor="repo">
-		<div class="bs-wrap bs-proofrow">
-			<div class="bs-reel bb-rev" data-fa-tilt="5">
-				<span class="bb-glare" aria-hidden="true"></span>
-				<span class="bs-sheen" aria-hidden="true"></span>
-				<Icon width={32} name="mdi:play-circle-outline" />
-				<span class="bs-reel-name">assets/how-we-build.webm</span>
-				<span class="bs-reel-sub">2:00 showreel — first sketch to launch day, the honest middle included</span>
+		<div class="bs-wrap">
+			<div class="bs-head bb-rev">
+				<span class="bs-kick">// proof</span>
+				<h2 class="bs-h">See how we build.</h2>
+				<p class="bs-p bs-p--center">
+					Two minutes from first sketch to launch day, and the numbers
+					underneath it.
+				</p>
 			</div>
+		</div>
+		<div class="bs-wrap bs-proofrow">
+			<figure class="bs-reel bb-rev">
+				<div class="bs-reel-bar">
+					<span class="bs-dot bs-dot--r" aria-hidden="true" />
+					<span class="bs-dot bs-dot--y" aria-hidden="true" />
+					<span class="bs-dot bs-dot--g" aria-hidden="true" />
+					<span class="bs-reel-name">how-we-build.mp4</span>
+				</div>
+				<FilmPlayer
+					src="/videos/how-we-build.mp4"
+					poster="/images/how-we-build-poster.jpg"
+					label="How Swizel builds: first sketch to launch day"
+					tag="from the studio"
+					class="bs-reel-film"
+				/>
+			</figure>
 			<div class="bs-nums bb-rev" style="--i:1" data-fa-tilt="5">
 				<span class="bb-glare" aria-hidden="true"></span>
 				<span class="bs-kick">// measured the only way that matters</span>
@@ -264,7 +283,12 @@ const sectors = [
 	<!-- ── 06 · sectors ────────────────────────────────────── -->
 	<section class="bs-sec" data-cursor="repo">
 		<div class="bs-head bb-rev">
-			<span class="bs-kick">// at home in your industry</span>
+			<span class="bs-kick">// sectors.json</span>
+			<h2 class="bs-h">At home in <span class="bs-acc">your industry.</span></h2>
+			<p class="bs-p bs-p--center">
+				Seven years of builds across the industries that move Africa,
+				so the first sprint is not spent learning yours.
+			</p>
 		</div>
 		<div class="bs-marquee bs-marquee--sectors bb-rev" aria-hidden="true">
 			<div class="bs-marquee-track bs-marquee-track--slow">
@@ -329,16 +353,64 @@ const sectors = [
 		color: var(--bu-ink);
 		padding: clamp(3rem, 7vw, 5rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 4rem);
 	}
+	/* the same slate the hero, the home body and the About page wear */
 	:global(html:not(.dark)) .bsvc {
-		--bu-ink: #102420;
-		--bu-muted: rgba(16, 36, 32, 0.66);
-		--bu-faint: rgba(16, 36, 32, 0.45);
-		--bu-line: rgba(16, 36, 32, 0.1);
-		--bu-card: rgba(16, 36, 32, 0.04);
+		--bu-ink: #10201f;
+		--bu-muted: rgba(16, 32, 31, 0.72);
+		--bu-faint: rgba(16, 32, 31, 0.52);
+		--bu-line: rgba(16, 32, 31, 0.14);
+		--bu-card: rgba(16, 32, 31, 0.055);
 		background:
-			radial-gradient(1000px 520px at 85% -4%, rgba(24, 222, 190, 0.1), transparent 60%),
-			linear-gradient(180deg, #f0faf7 0%, #e6f4ef 55%, #f0faf7 100%);
+			radial-gradient(1000px 520px at 85% -4%, rgba(13, 148, 136, 0.16), transparent 62%),
+			linear-gradient(180deg, #dde7e6 0%, #d3e0de 48%, #cfdcda 100%);
 	}
+	:global(html:not(.dark)) .bsvc::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: 0;
+		pointer-events: none;
+		background-image:
+			linear-gradient(rgba(13, 148, 136, 0.11) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(13, 148, 136, 0.11) 1px, transparent 1px);
+		background-size: 46px 46px;
+		-webkit-mask-image: linear-gradient(180deg, #000, transparent 88%);
+		mask-image: linear-gradient(180deg, #000, transparent 88%);
+	}
+	/* the reel: a window, not a dashed note about a video */
+	.bs-reel {
+		margin: 0;
+		border-radius: 1rem;
+		overflow: hidden;
+		border: 1px solid color-mix(in srgb, var(--bu-acc) 26%, transparent);
+		background: #0a0e14;
+		box-shadow: 0 40px 84px -46px rgba(0, 0, 0, 0.8);
+	}
+	.bs-reel-bar {
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
+		padding: 0.55rem 0.8rem;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+		background: rgba(255, 255, 255, 0.025);
+	}
+	.bs-dot { width: 10px; height: 10px; border-radius: 9999px; background: #2b3440; }
+	.bs-dot--r { background: #ff5f57; }
+	.bs-dot--y { background: #febc2e; }
+	.bs-dot--g { background: #28c840; }
+	.bs-reel-name {
+		margin-left: 0.4rem;
+		font-family: var(--bu-mono);
+		font-size: 0.74rem;
+		color: rgba(214, 232, 238, 0.55);
+	}
+	.bs-reel :global(.bs-reel-film) { gap: 0; }
+	.bs-reel :global(.bs-reel-film .flm__screen) {
+		border: 0;
+		border-radius: 0;
+		box-shadow: none;
+	}
+
 	.bs-sec { position: relative; z-index: 1; padding-block: clamp(1.8rem, 4.5vw, 3.2rem); }
 	.bs-sec--last { padding-bottom: clamp(3rem, 6vw, 4.5rem); }
 	.bs-wrap { max-width: 74rem; margin: 0 auto; }
@@ -546,18 +618,23 @@ const sectors = [
 	.bs-stage p { font-size: 0.92rem; line-height: 1.6; color: var(--bu-muted); margin: 0; max-width: 36rem; }
 
 	/* proof row: showreel + numbers */
-	.bs-proofrow { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: 1rem; align-items: stretch; }
+	.bs-proofrow { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); gap: clamp(0.8rem, 1.6vw, 1.2rem); align-items: start; }
+	/* the old dashed placeholder rule lived here and outranked the window
+	   above by coming later in the sheet — it is the window's rule now */
 	.bs-reel {
-		position: relative; overflow: hidden;
-		display: grid; place-content: center; justify-items: center; gap: 0.35rem;
-		min-height: 230px; text-align: center; padding: 1.4rem;
-		border: 1.5px dashed color-mix(in srgb, var(--bu-acc) 40%, transparent);
-		border-radius: 1rem; background: color-mix(in srgb, var(--bu-acc) 6%, transparent);
-		color: var(--bu-acc);
-		transform-style: preserve-3d; will-change: transform;
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		overflow: hidden;
+		margin: 0;
+		border-radius: 1rem;
+		border: 1px solid color-mix(in srgb, var(--bu-acc) 26%, transparent);
+		background: #0a0e14;
+		box-shadow: 0 40px 84px -46px rgba(0, 0, 0, 0.8);
 	}
-	.bs-reel-name { font-family: var(--bu-mono); font-size: 0.84rem; font-weight: 700; }
-	.bs-reel-sub { font-size: 0.8rem; color: var(--bu-muted); max-width: 26rem; }
+	.bs-reel-bar { flex: none; }
+	.bs-reel :global(.bs-reel-film) { flex: 1 1 auto; min-height: 0; }
+	.bs-reel-name { font-family: var(--bu-mono); font-size: 0.78rem; font-weight: 700; }
 	.bs-sheen {
 		position: absolute; inset: 0;
 		background: linear-gradient(115deg, transparent 42%, rgba(255, 255, 255, 0.07) 50%, transparent 60%);
