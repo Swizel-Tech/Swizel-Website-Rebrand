@@ -5,6 +5,7 @@
 // widget: a LIVE DEPLOY CONSOLE that ships real projects on a loop —
 // terminal types the deploy, the preview pane swaps to the real product.
 import { Icon } from 'astro-icon/components';
+import FilmPlayer from '../FilmPlayer.astro';
 import { projects, featuredProjects, sectorLabels, sectorOrder, type ProjectSector } from '../../data/projects';
 
 const sectors = sectorOrder;
@@ -256,6 +257,35 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 					))
 				}
 			</div>
+		</div>
+	</section>
+
+	<!-- ── 02b · the showreel ──────────────────────────────── -->
+	<section class="pb-sec" data-cursor="term">
+		<div class="pb-wrap">
+			<div class="pb-head bb-rev">
+				<span class="pb-kick">// showreel</span>
+				<h2 class="pb-h">Watch the work <span class="pb-acc">move.</span></h2>
+				<p class="pb-p pb-p--center">
+					The products, the builds and the launches, end to end. Proof
+					in motion rather than in a paragraph.
+				</p>
+			</div>
+			<figure class="pb-reel bb-rev">
+				<div class="pb-reel-bar">
+					<span class="pb-dot pb-dot--r" aria-hidden="true" />
+					<span class="pb-dot pb-dot--y" aria-hidden="true" />
+					<span class="pb-dot pb-dot--g" aria-hidden="true" />
+					<span class="pb-reel-name">the-showreel.mp4</span>
+					<span class="pb-reel-live"><i aria-hidden="true" />65+ products, on loop</span>
+				</div>
+				<FilmPlayer
+					videoId="nFbBpQvT5fQ"
+					label="The Swizel showreel: the products, the builds and the launches"
+					tag="showreel"
+					class="pb-reel-film"
+				/>
+			</figure>
 		</div>
 	</section>
 
@@ -750,6 +780,54 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 	.pb-thumb-bar i { width: 6px; height: 6px; border-radius: 50%; background: color-mix(in srgb, var(--c) 70%, #fff); opacity: 0.6; }
 	.pb-thumb img { width: 100%; height: 108px; object-fit: cover; object-position: top; display: block; }
 	@media (prefers-reduced-motion: reduce) { .pb-marquee-track { animation: none; } }
+
+	/* the showreel, in a window of its own */
+	.pb-reel {
+		margin: 0;
+		max-width: 62rem;
+		margin-inline: auto;
+		border-radius: 1rem;
+		overflow: hidden;
+		border: 1px solid color-mix(in srgb, var(--bu-acc) 26%, transparent);
+		background: #0a0e14;
+		box-shadow: 0 44px 92px -48px rgba(0, 0, 0, 0.85);
+	}
+	.pb-reel-bar {
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
+		padding: 0.6rem 0.85rem;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+		background: rgba(255, 255, 255, 0.025);
+	}
+	.pb-reel-name {
+		margin-left: 0.45rem;
+		font-family: var(--bu-mono);
+		font-size: 0.74rem;
+		color: rgba(214, 232, 238, 0.55);
+	}
+	.pb-reel-live {
+		margin-left: auto;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		font-family: var(--bu-mono);
+		font-size: 0.68rem;
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+		color: color-mix(in srgb, var(--bu-acc) 78%, #fff);
+	}
+	.pb-reel-live i {
+		width: 7px; height: 7px; border-radius: 9999px;
+		background: #2ee889; box-shadow: 0 0 8px #2ee889;
+		animation: pb-live 2s ease-in-out infinite;
+	}
+	.pb-reel :global(.pb-reel-film) { gap: 0; }
+	.pb-reel :global(.pb-reel-film .flm__screen) {
+		border: 0;
+		border-radius: 0;
+		box-shadow: none;
+	}
 
 	/* ── featured ─────────────────────────────────────────────────────
 	   Nine case studies as alternating full-width rows is nine screens of
