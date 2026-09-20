@@ -18,6 +18,18 @@ const catColor: Record<string, string> = { EdTech: '#2bb3c0', Fintech: '#6366f1'
 const col = (c: string) => catColor[c] ?? '#18debe';
 const mdName = (slug: string) => `${slug.replace(/[^a-z0-9-]/g, '')}.md`;
 
+// the strip under the hero counts what is actually in the directory —
+// no invented figures, it moves on its own as posts land
+const totalMins = posts.reduce((n, e) => n + readTime(e.body), 0);
+const years = posts.map((e) => new Date(e.data.pubDate).getFullYear());
+const firstYear = Math.min(...years);
+const stats = [
+	{ k: 'entries', v: String(posts.length) },
+	{ k: 'topics', v: String(cats.length) },
+	{ k: 'read_time', v: `${totalMins} min` },
+	{ k: 'since', v: String(firstYear) },
+];
+
 const filterCss = cats
 	.map((c) => {
 		const s = catSlug(c);
@@ -50,6 +62,17 @@ const filterCss = cats
 				What we're building, learning and seeing across the African
 				digital landscape.
 			</p>
+
+			<ul class="bj-stats">
+				{
+					stats.map((st, i) => (
+						<li style={`--i:${i}`}>
+							<b>{st.v}</b>
+							<span>{st.k}</span>
+						</li>
+					))
+				}
+			</ul>
 		</div>
 	</section>
 
@@ -198,7 +221,7 @@ const filterCss = cats
 	.bbl {
 		--bu-ink: #e8f0f4;
 		--bu-muted: rgba(232, 240, 244, 0.62);
-		--bu-faint: rgba(232, 240, 244, 0.4);
+		--bu-faint: rgba(232, 240, 244, 0.6);
 		--bu-acc: var(--view-accent, #18debe);
 		--bu-line: rgba(255, 255, 255, 0.08);
 		--bu-card: rgba(255, 255, 255, 0.03);
@@ -215,14 +238,29 @@ const filterCss = cats
 		padding: clamp(3rem, 7vw, 5rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 4rem);
 	}
 	:global(html:not(.dark)) .bbl {
-		--bu-ink: #102420;
-		--bu-muted: rgba(16, 36, 32, 0.66);
-		--bu-faint: rgba(16, 36, 32, 0.45);
-		--bu-line: rgba(16, 36, 32, 0.1);
-		--bu-card: rgba(16, 36, 32, 0.04);
+		--bu-ink: #10201f;
+		--bu-muted: rgba(16, 32, 31, 0.72);
+		--bu-faint: rgba(16, 32, 31, 0.6);
+		--bu-line: rgba(16, 32, 31, 0.14);
+		--bu-card: rgba(255, 255, 255, 0.55);
 		background:
-			radial-gradient(1000px 520px at 85% -4%, rgba(24, 222, 190, 0.1), transparent 60%),
-			linear-gradient(180deg, #f0faf7 0%, #e6f4ef 55%, #f0faf7 100%);
+			radial-gradient(1000px 520px at 85% -4%, rgba(13, 148, 136, 0.16), transparent 62%),
+			linear-gradient(180deg, #dde7e6 0%, #d3e0de 48%, #cfdcda 100%);
+	}
+	/* the same 46px teal grid the hero, home, about, services and portfolio
+	   carry in daylight — the journal was the last page still on mint */
+	:global(html:not(.dark)) .bbl::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: 0;
+		pointer-events: none;
+		background-image:
+			linear-gradient(rgba(13, 148, 136, 0.11) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(13, 148, 136, 0.11) 1px, transparent 1px);
+		background-size: 46px 46px;
+		mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.35) 42%, transparent 78%);
+		-webkit-mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.35) 42%, transparent 78%);
 	}
 	.bj-sec { position: relative; z-index: 1; padding-block: clamp(1.6rem, 4vw, 2.8rem); }
 	.bj-sec--last { padding-bottom: clamp(3rem, 6vw, 4.5rem); }
@@ -265,10 +303,33 @@ const filterCss = cats
 	.bj-head .bj-kick { text-align: center; }
 	.bj-hero { text-align: center; max-width: 50rem; }
 	.bj-hero .bj-kick { text-align: center; }
+
+	/* what is actually in the directory, counted */
+	.bj-stats {
+		display: flex; flex-wrap: wrap; justify-content: center;
+		gap: 0.5rem; margin: 1.4rem 0 0; padding: 0; list-style: none;
+	}
+	.bj-stats li {
+		display: inline-flex; align-items: baseline; gap: 0.45rem;
+		padding: 0.4rem 0.85rem;
+		border: 1px solid var(--bu-line);
+		border-left: 2px solid color-mix(in srgb, var(--bu-acc) 55%, transparent);
+		border-radius: 0.55rem;
+		background: var(--bu-card);
+		font-family: var(--bu-mono);
+		animation: bj-stat-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+		animation-delay: calc(var(--i) * 90ms + 0.2s);
+	}
+	.bj-stats b { font-size: 0.95rem; font-weight: 800; color: var(--bu-acc); }
+	:global(html:not(.dark)) .bbl .bj-stats b { color: #0b8a76; }
+	.bj-stats span { font-size: 0.72rem; color: var(--bu-muted); }
+	.bj-stats span::before { content: '// '; opacity: 0.55; }
+	@keyframes bj-stat-in { from { opacity: 0; transform: translateY(10px); } }
+	@media (prefers-reduced-motion: reduce) { .bj-stats li { animation: none; } }
 	.bj-link { display: inline-flex; align-items: center; gap: 0.45rem; font-family: var(--bu-mono); font-size: 0.86rem; font-weight: 700; color: var(--bu-acc); transition: gap 0.25s ease; }
 	.bj-link:hover { gap: 0.75rem; }
 	:global(html:not(.dark)) .bbl .bj-link { color: #0b8a76; }
-	.bj-meta { display: block; font-family: var(--bu-mono); font-size: 0.7rem; color: var(--bu-faint); }
+	.bj-meta { display: block; font-family: var(--bu-mono); font-size: 0.74rem; color: var(--bu-faint); }
 	.bj-file { display: inline-flex; align-items: center; gap: 0.4rem; font-family: var(--bu-mono); font-size: 0.72rem; color: var(--c, var(--bu-acc)); margin-bottom: 0.65rem; }
 
 	.bb-rev {
@@ -341,7 +402,21 @@ const filterCss = cats
 	#bbl-all:checked ~ .bj-chips [for='bbl-all'] span { color: #04211a; }
 	#bbl-all:checked ~ .bj-grid .bj-card { display: block; }
 
-	.bj-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+	/* Two columns, not three: four entries in a three-column grid left two
+	   dead cells on the second row. An odd last entry stretches across both
+	   and turns side-on, so the block is always square no matter how many
+	   posts land. */
+	.bj-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.1rem; }
+	.bj-card:last-child:nth-child(odd) { grid-column: 1 / -1; }
+	.bj-card:last-child:nth-child(odd) .bj-card-link { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); grid-template-areas: 'bar bar' 'media body'; }
+	.bj-card:last-child:nth-child(odd) .bj-card-bar { grid-area: bar; }
+	.bj-card:last-child:nth-child(odd) .bj-card-media { grid-area: media; height: 100%; }
+	.bj-card:last-child:nth-child(odd) .bj-card-media img { height: 100%; min-height: 220px; }
+	.bj-card:last-child:nth-child(odd) .bj-card-body { grid-area: body; align-self: center; padding: 1.4rem 1.6rem; }
+	.bj-card:last-child:nth-child(odd) .bj-card-body strong { font-size: 1.28rem; }
+	.bj-card:last-child:nth-child(odd) .bj-card-desc { -webkit-line-clamp: 4; }
+	/* a filtered view can leave a single card: it stretches the same way */
+	#bbl-all:not(:checked) ~ .bj-grid .bj-card { grid-column: auto; }
 	.bj-card { display: block; }
 	.bj-card-link {
 		position: relative; overflow: hidden; display: block; height: 100%;
@@ -359,13 +434,13 @@ const filterCss = cats
 	}
 	.bj-card-bar { display: flex; align-items: center; gap: 4px; padding: 8px 10px; background: rgba(255, 255, 255, 0.05); }
 	.bj-card-bar i { width: 7px; height: 7px; border-radius: 50%; background: color-mix(in srgb, var(--c, #18debe) 70%, #fff); opacity: 0.55; }
-	.bj-card-file { margin-left: 0.4rem; font-family: var(--bu-mono); font-size: 0.7rem; color: var(--bu-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+	.bj-card-file { margin-left: 0.4rem; font-family: var(--bu-mono); font-size: 0.72rem; color: var(--bu-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 	.bj-card-cat { margin-left: auto; font-family: var(--bu-mono); font-size: 0.7rem; font-weight: 700; color: var(--c, var(--bu-acc)); flex-shrink: 0; }
 	.bj-card-media { display: block; overflow: hidden; }
-	.bj-card-media img { display: block; width: 100%; height: 160px; object-fit: cover; transition: transform 0.5s ease; }
+	.bj-card-media img { display: block; width: 100%; height: 210px; object-fit: cover; transition: transform 0.5s ease; }
 	.bj-card:hover .bj-card-media img { transform: scale(1.06); }
-	.bj-card-body { display: block; padding: 0.9rem 1rem 1rem; }
-	.bj-card-body strong { display: block; font-size: 1rem; font-weight: 800; line-height: 1.3; margin-bottom: 0.4rem; }
+	.bj-card-body { display: block; padding: 1.1rem 1.2rem 1.2rem; }
+	.bj-card-body strong { display: block; font-size: 1.1rem; font-weight: 800; line-height: 1.3; margin-bottom: 0.45rem; }
 	.bj-card-desc {
 		display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 		font-size: 0.85rem; line-height: 1.55; color: var(--bu-muted); margin-bottom: 0.5rem;
@@ -421,10 +496,10 @@ const filterCss = cats
 
 	/* Brevarium promo */
 	.bj-mag {
-		display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 1.2rem; align-items: center;
-		max-width: 52rem; margin: 0 auto;
+		display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 1.8rem; align-items: center;
+		max-width: 74rem; margin: 0 auto;
 		border: 1px solid var(--bu-line); border-radius: 1.1rem;
-		background: var(--bu-card); padding: 1.1rem;
+		background: var(--bu-card); padding: 1.6rem;
 		color: var(--bu-ink);
 		transform-style: preserve-3d; will-change: transform;
 		transition: border-color 0.3s ease;
@@ -433,16 +508,21 @@ const filterCss = cats
 	.bj-mag-cover { border-radius: 0.6rem; overflow: hidden; transform: rotate(-2deg); box-shadow: 0 16px 32px -14px rgba(0, 0, 0, 0.6); }
 	.bj-mag-cover img { display: block; width: 100%; height: auto; }
 	.bj-mag-meta .bj-kick { margin-bottom: 0.35rem; }
-	.bj-mag-meta strong { display: block; font-size: 1.05rem; font-weight: 850; }
-	.bj-mag-meta em { display: block; font-style: normal; font-size: 0.84rem; line-height: 1.5; color: var(--bu-muted); margin: 0.25rem 0 0.55rem; }
+	.bj-mag-meta strong { display: block; font-size: 1.3rem; font-weight: 850; }
+	.bj-mag-meta em { display: block; font-style: normal; font-size: 0.92rem; max-width: 42rem; line-height: 1.5; color: var(--bu-muted); margin: 0.25rem 0 0.55rem; }
 
 	@media (max-width: 980px) {
 		.bj-feature { grid-template-columns: minmax(0, 1fr); }
-		.bj-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+		.bj-card:last-child:nth-child(odd) .bj-card-link { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'bar' 'media' 'body'; }
+		.bj-card:last-child:nth-child(odd) .bj-card-media img { min-height: 0; height: 210px; }
+		.bj-card:last-child:nth-child(odd) .bj-card-body { padding: 1.1rem 1.2rem 1.2rem; }
+		.bj-card:last-child:nth-child(odd) .bj-card-body strong { font-size: 1.1rem; }
 	}
 	@media (max-width: 640px) {
 		.bj-grid { grid-template-columns: minmax(0, 1fr); }
-		.bj-mag { grid-template-columns: 100px minmax(0, 1fr); }
+		.bj-card:last-child:nth-child(odd) { grid-column: auto; }
+		.bj-mag { grid-template-columns: 120px minmax(0, 1fr); gap: 1.1rem; padding: 1.1rem; }
+		.bj-stats li { padding: 0.35rem 0.65rem; }
 		/* phones: newsletter input + button run edge to edge */
 		.bj-news-input { flex: 1 0 100%; max-width: none; }
 		.bj-news-btn { width: 100%; justify-content: center; }
