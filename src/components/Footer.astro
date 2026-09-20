@@ -1342,4 +1342,14 @@ const phones = [
 	@media (prefers-reduced-motion: reduce) {
 		:global(html[data-view='founder']) .ft-social:hover { transform: none; }
 	}
+
+	/* The handle line used --view-accent, whose default is #86e2ef — a
+	   light blue that all but disappears on light paper. Each world gets
+	   a daylight handle colour dark enough to read. */
+	:global(html:not(.dark)) .ft-social-handle { color: #1d4ed8; }
+	:global(html[data-view='builder']:not(.dark)) .ft-social-handle { color: #06614f; }
+	:global(html[data-view='founder']:not(.dark)) .ft-social-handle { color: #5b21b6; }
+	:global(html[data-view='campus']:not(.dark)) .ft-social-handle { color: #92400e; }
+	:global(html[data-view='studio']:not(.dark)) .ft-social-handle { color: #9d174d; }
+	:global(html[data-view='boardroom']:not(.dark)) .ft-social-handle { color: #1e40af; }
 </style>

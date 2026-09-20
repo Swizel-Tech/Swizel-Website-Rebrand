@@ -254,7 +254,7 @@ const isActive = (href: string) => {
 				<CustomButton elementType="a" class="m-nav-cta" variant="primary" href="/contact" notRounded>
 					Start a project
 				</CustomButton>
-				<div class="m-nav-social">
+				<div class="m-nav-social" data-no-tip>
 					<a href="https://wa.me/2348100204570" aria-label="WhatsApp" target="_blank" rel="noopener"><Icon width={18} name="mdi:whatsapp" /></a>
 					<a href="https://www.linkedin.com/company/swizel-technologies" aria-label="LinkedIn" target="_blank" rel="noopener"><Icon width={18} name="mdi:linkedin" /></a>
 					<a href="https://www.instagram.com/swizelhq" aria-label="Instagram" target="_blank" rel="noopener"><Icon width={18} name="mdi:instagram" /></a>
@@ -826,4 +826,58 @@ const isActive = (href: string) => {
 
 	/* the chat bubble floats over the bottom-right corner of every page */
 	.m-nav-social { padding-right: 3.4rem; }
+
+	/* ══ the drawer socials, per world ═══════════════════════════════
+	   They were one grey pill repeated five times in every view. Campus
+	   already dresses its drawer; these now match their own worlds, and
+	   none of them relies on an accent that disappears on light paper. */
+	.m-nav-social a { position: relative; }
+	/* the browser's own tooltip from aria-label is suppressed by giving
+	   the link a visible accessible name instead of a hover bubble */
+	.m-nav-social a::after { content: none; }
+
+	/* ── Builder: square terminal tiles with a bracket that lights ── */
+	html[data-view='builder'] .m-nav-social { gap: 0.35rem; }
+	html[data-view='builder'] .m-nav-social a:any-link {
+		width: 36px;
+		height: 32px;
+		border-radius: 0.4rem;
+		border-color: rgba(24, 222, 190, 0.28);
+		background: rgba(24, 222, 190, 0.08);
+		color: color-mix(in srgb, var(--m-accent) 88%, #fff);
+	}
+	html[data-view='builder']:not(.dark) .m-nav-social a:any-link {
+		border-color: rgba(11, 138, 118, 0.34);
+		background: rgba(11, 138, 118, 0.1);
+		color: #06614f;
+	}
+	html[data-view='builder'] .m-nav-social a:any-link:hover {
+		transform: none;
+		background: color-mix(in srgb, var(--m-accent) 20%, transparent);
+		box-shadow: inset 0 -2px 0 var(--m-accent);
+	}
+
+	/* ── Founder: soft lavender coins that lift ─────────────────────── */
+	html[data-view='founder'] .m-nav-social { gap: 0.4rem; }
+	html[data-view='founder'] .m-nav-social a:any-link {
+		width: 36px;
+		height: 36px;
+		border-radius: 9999px;
+		border-color: rgba(167, 139, 250, 0.32);
+		background: color-mix(in srgb, var(--m-accent) 14%, transparent);
+		color: color-mix(in srgb, var(--m-accent) 90%, #fff);
+	}
+	html[data-view='founder']:not(.dark) .m-nav-social a:any-link {
+		border-color: rgba(109, 40, 217, 0.26);
+		background: rgba(109, 40, 217, 0.1);
+		color: #4c1d95;
+	}
+	html[data-view='founder'] .m-nav-social a:any-link:hover {
+		transform: translateY(-3px);
+		box-shadow: 0 10px 20px -10px color-mix(in srgb, var(--m-accent) 80%, transparent);
+	}
+
+	/* ── Studio and Boardroom keep the house pill, but readable ────── */
+	html[data-view='studio']:not(.dark) .m-nav-social a:any-link,
+	html[data-view='boardroom']:not(.dark) .m-nav-social a:any-link { color: #1b2333; }
 </style>
