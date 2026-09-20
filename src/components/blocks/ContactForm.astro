@@ -41,7 +41,12 @@ import Input from '../HTML/Input.astro';
 
 	const toast = toaster();
 
-	const contactForm = document.querySelector<HTMLFormElement>('#contact-form');
+	// Every world dresses this form differently, so the page can hold more
+	// than one copy of it (founder's desk, builder's editor, the shared
+	// fallback) with only one visible at a time. Wire them ALL, and scope
+	// every lookup to the form it belongs to — a page-wide querySelector
+	// only ever found the first copy and left every other one dead.
+	const contactForms = document.querySelectorAll<HTMLFormElement>('form#contact-form');
 
 	const formDataSchema = z.object({
 		email: z.string().email(),
@@ -50,17 +55,19 @@ import Input from '../HTML/Input.astro';
 		phoneNumber: z.string().optional(),
 	});
 
-	if (contactForm) {
+	contactForms.forEach((contactForm) => {
 		const allFormInputs: (HTMLInputElement | HTMLTextAreaElement)[] = [];
 
 		const allErrorParagraph: HTMLParagraphElement[] = [];
 
 		contactFormDetails.forEach(({ name }) => {
-			const inputEle = document.querySelector<HTMLInputElement | HTMLTextAreaElement>(
+			const inputEle = contactForm.querySelector<HTMLInputElement | HTMLTextAreaElement>(
 				`#${name}`
 			);
 
-			const paragraphEle = document.querySelector<HTMLParagraphElement>(`#${name}-error`);
+			const paragraphEle = contactForm.querySelector<HTMLParagraphElement>(
+				`#${name}-error`
+			);
 
 			if (inputEle) {
 				allFormInputs.push(inputEle);
@@ -99,7 +106,9 @@ import Input from '../HTML/Input.astro';
 			const res = formDataSchema.safeParse(formData);
 
 			if (res.success) {
-				const emailButtonn = assetNull(document.getElementById('form-button'));
+				const emailButtonn = assetNull(
+					contactForm.querySelector<HTMLElement>('#form-button')
+				);
 
 				emailButtonn.textContent = 'Loading...';
 
@@ -152,5 +161,5 @@ import Input from '../HTML/Input.astro';
 				}
 			}
 		};
-	}
+	});
 </script>

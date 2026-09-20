@@ -412,6 +412,8 @@ const sectors = [
 	}
 
 	.bs-sec { position: relative; z-index: 1; padding-block: clamp(1.8rem, 4.5vw, 3.2rem); }
+	/* the first section sat a whole section's padding below the header */
+	.bs-sec:first-of-type { padding-top: clamp(0.5rem, 1.4vw, 1rem); }
 	.bs-sec--last { padding-bottom: clamp(3rem, 6vw, 4.5rem); }
 	.bs-wrap { max-width: 74rem; margin: 0 auto; }
 

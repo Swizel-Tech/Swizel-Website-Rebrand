@@ -1,0 +1,685 @@
+---
+// Builder's contact page: not a form on a page, an editor with a file open.
+//
+// The brief IS a JSON document. Every field is a key in it, the pane on
+// the right shows the object taking shape as you type, and submitting is
+// a build: the terminal underneath runs the steps and reports back. The
+// real <ContactForm> is mounted inside the editor so validation, EmailJS
+// and the toasts all keep working — this is chrome around a form that
+// already ships, not a second form to keep in sync.
+import { Icon } from 'astro-icon/components';
+import ContactForm from '../blocks/ContactForm.astro';
+import { faq } from '../../consts';
+
+const contactFaq = faq.slice(0, 5);
+
+const channels = [
+	{ key: 'phone', icon: 'mdi:phone-outline', value: '+234 810 020 4570', href: 'tel:+2348100204570' },
+	{ key: 'whatsapp', icon: 'mdi:whatsapp', value: 'wa.me/2348100204570', href: 'https://wa.me/2348100204570' },
+	{ key: 'email', icon: 'mdi:email-outline', value: 'contact@swizel.co', href: 'mailto:contact@swizel.co' },
+	{ key: 'office', icon: 'mdi:map-marker-outline', value: '2155 Peculiar Estate, Lokogoma, Abuja', href: undefined },
+	{ key: 'hours', icon: 'mdi:clock-outline', value: 'Mon–Sat · 09:00–18:00 WAT', href: undefined },
+];
+
+const tree = [
+	{ name: 'brief.json', tab: 'brief', icon: 'mdi:code-json', dirty: true },
+	{ name: 'contact.sh', tab: 'reach', icon: 'mdi:console' },
+	{ name: 'FAQ.md', tab: 'faq', icon: 'mdi:language-markdown' },
+];
+---
+
+<div class="cbx bbody view-body view-body-builder">
+	<div class="cbx-bg" aria-hidden="true">
+		<span class="cbx-grid"></span>
+		<span class="cbx-scan"></span>
+	</div>
+
+	<section class="cbx-sec">
+		<div class="cbx-wrap">
+			<div class="cbx-head">
+				<span class="cbx-kick">
+					<span class="cbx-blink" aria-hidden="true"></span>$ swizel init --your-idea
+				</span>
+				<h1 class="cbx-h">Open a <span class="cbx-acc">pull request.</span></h1>
+				<p class="cbx-p">
+					Fill the brief and hit build. A senior engineer reads every one
+					and replies within one business day.
+				</p>
+			</div>
+
+			<!-- ══ the editor ══════════════════════════════════════════ -->
+			<div class="cbx-ide" data-cbx>
+				<div class="cbx-chrome">
+					<span class="cbx-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+					<span class="cbx-title">swizel — ~/new-project</span>
+					<span class="cbx-branch">
+						<Icon width={12} name="mdi:source-branch" />
+						your-product
+					</span>
+				</div>
+
+				<div class="cbx-body">
+					<aside class="cbx-tree" aria-label="Files">
+						<span class="cbx-tree-k">EXPLORER</span>
+						{
+							tree.map((f, i) => (
+								<button
+									class:list={['cbx-file', { 'is-on': i === 0 }]}
+									type="button"
+									data-cbx-tab={f.tab}
+								>
+									<Icon width={13} name={f.icon} />
+									{f.name}
+									{f.dirty && <i class="cbx-dirty" aria-hidden="true" />}
+								</button>
+							))
+						}
+					</aside>
+
+					<div class="cbx-main">
+						<div class="cbx-tabs" role="tablist" aria-label="Open files">
+							{
+								tree.map((f, i) => (
+									<button
+										class:list={['cbx-tab', { 'is-on': i === 0 }]}
+										type="button"
+										role="tab"
+										aria-selected={i === 0 ? 'true' : 'false'}
+										data-cbx-tab={f.tab}
+									>
+										<Icon width={12} name={f.icon} />
+										{f.name}
+									</button>
+								))
+							}
+						</div>
+
+						<!-- brief.json: the form, as a file you are editing -->
+						<div class="cbx-pane is-on" role="tabpanel" data-cbx-pane="brief">
+							<div class="cbx-split">
+								<div class="cbx-editor">
+									<div class="cbx-form" data-cbx-form>
+										<p class="cbx-brace">{'{'}</p>
+										<ContactForm />
+										<p class="cbx-brace">{'}'}</p>
+									</div>
+								</div>
+
+								<!-- the object, taking shape as you type -->
+								<aside class="cbx-preview" aria-hidden="true">
+									<span class="cbx-preview-k">// live preview · brief.json</span>
+									<pre class="cbx-json" data-cbx-json><span class="tk-p">{'{'}</span>
+  <span class="tk-k">"name"</span><span class="tk-p">:</span> <span class="tk-s" data-k="name">""</span><span class="tk-p">,</span>
+  <span class="tk-k">"email"</span><span class="tk-p">:</span> <span class="tk-s" data-k="email">""</span><span class="tk-p">,</span>
+  <span class="tk-k">"phone"</span><span class="tk-p">:</span> <span class="tk-s" data-k="phoneNumber">""</span><span class="tk-p">,</span>
+  <span class="tk-k">"message"</span><span class="tk-p">:</span> <span class="tk-s" data-k="message">""</span>
+<span class="tk-p">{'}'}</span></pre>
+									<span class="cbx-valid" data-cbx-valid>
+										<i aria-hidden="true"></i>
+										<b data-cbx-valid-t>0 / 3 required fields</b>
+									</span>
+
+									<div class="cbx-next">
+										<span class="cbx-preview-k">// what happens after you hit build</span>
+										<ol class="cbx-steps">
+											<li><b>01</b> A senior engineer reads the brief — no bots, no sales desk.</li>
+											<li><b>02</b> We reply within one business day with questions or a call.</li>
+											<li><b>03</b> You get scope, timeline and a fixed estimate in writing.</li>
+										</ol>
+										<p class="cbx-sla">
+											<span class="cbx-ok">✓</span> 65 products shipped · 10+ countries · since 2019
+										</p>
+									</div>
+								</aside>
+							</div>
+						</div>
+
+						<!-- contact.sh -->
+						<div class="cbx-pane" role="tabpanel" data-cbx-pane="reach" hidden>
+							<div class="cbx-sh">
+								<p class="cbx-sh-cmd"><span>$</span> cat contact.sh</p>
+								{
+									channels.map((c) => {
+										const Tag = c.href ? 'a' : 'div';
+										return (
+											<Tag
+												class="cbx-sh-row"
+												href={c.href}
+												target={c.href?.startsWith('http') ? '_blank' : undefined}
+												rel={c.href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+											>
+												<span class="cbx-sh-ic"><Icon width={14} name={c.icon} /></span>
+												<span class="cbx-sh-key">{c.key}</span>
+												<span class="cbx-sh-eq">=</span>
+												<span class="cbx-sh-val">"{c.value}"</span>
+											</Tag>
+										);
+									})
+								}
+								<button class="cbx-sh-row cbx-sh-row--live" type="button" data-open-chat>
+									<span class="cbx-sh-ic cbx-sh-ic--live">
+										<span class="cbx-sh-dot" aria-hidden="true"></span>
+										<Icon width={14} name="mdi:message-text-outline" />
+									</span>
+									<span class="cbx-sh-key">live_chat</span>
+									<span class="cbx-sh-eq">=</span>
+									<span class="cbx-sh-val">"open now — start a thread"</span>
+								</button>
+
+								<p class="cbx-sh-cmd cbx-sh-cmd--2"><span>$</span> ./contact.sh --status</p>
+								<p class="cbx-sh-out"><span class="cbx-ok">✓</span> every brief read by a senior engineer</p>
+								<p class="cbx-sh-out"><span class="cbx-ok">✓</span> first reply within one business day</p>
+								<p class="cbx-sh-out">
+									<span class="cbx-ok">✓</span> NDA on request, before you share anything
+									<span class="cbx-caret" aria-hidden="true"></span>
+								</p>
+							</div>
+						</div>
+
+						<!-- FAQ.md -->
+						<div class="cbx-pane" role="tabpanel" data-cbx-pane="faq" hidden>
+							<div class="cbx-md">
+								<p class="cbx-md-h"># Frequently asked</p>
+								{
+									contactFaq.map((f) => (
+										<details class="cbx-q">
+											<summary>
+												<span class="cbx-q-mark">##</span>
+												{f.question.replace(/\s+\?/g, '?').trim()}
+												<Icon class="cbx-q-caret" width={15} name="mdi:chevron-down" />
+											</summary>
+											<p>{f.answer.trim()}</p>
+										</details>
+									))
+								}
+							</div>
+						</div>
+
+						<!-- the build output -->
+						<div class="cbx-term" data-cbx-term>
+							<div class="cbx-term-bar">
+								<span>terminal</span>
+								<span class="cbx-term-hint">the brief ships from here</span>
+							</div>
+							<div class="cbx-term-out" data-cbx-out>
+								<p class="cbx-dim"><span class="cbx-ok">➜</span> swizel-cli 3.2.0 · connected to abuja-1</p>
+								<p class="cbx-dim">$ watch brief.json</p>
+								<p class="cbx-dim">
+									waiting for the brief…<span class="cbx-caret" aria-hidden="true"></span>
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="cbx-status">
+					<span class="cbx-st"><Icon width={12} name="mdi:source-branch" />your-product</span>
+					<span class="cbx-st"><i class="cbx-pulse" aria-hidden="true"></i>ready</span>
+					<span class="cbx-st cbx-st--dim" data-cbx-count>0 errors</span>
+					<span class="cbx-spacer" aria-hidden="true"></span>
+					<span class="cbx-st cbx-st--dim">UTF-8</span>
+					<span class="cbx-st cbx-st--dim">JSON</span>
+				</div>
+			</div>
+		</div>
+	</section>
+</div>
+
+<style>
+	.cbx {
+		--bu-ink: #e8f0f4;
+		--bu-muted: rgba(232, 240, 244, 0.64);
+		--bu-faint: rgba(232, 240, 244, 0.42);
+		--bu-acc: var(--view-accent, #18debe);
+		--bu-line: rgba(255, 255, 255, 0.08);
+		--bu-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+		position: relative;
+		isolation: isolate;
+		color: var(--bu-ink);
+		background:
+			radial-gradient(900px 500px at 82% -8%, rgba(24, 222, 190, 0.12), transparent 60%),
+			linear-gradient(180deg, #0b0f17 0%, #080a11 100%);
+	}
+	:global(html:not(.dark)) .cbx {
+		--bu-ink: #10201f;
+		--bu-muted: rgba(16, 32, 31, 0.72);
+		--bu-faint: rgba(16, 32, 31, 0.52);
+		--bu-line: rgba(16, 32, 31, 0.14);
+		color: #10201f;
+		background:
+			radial-gradient(1000px 520px at 85% -4%, rgba(13, 148, 136, 0.16), transparent 62%),
+			linear-gradient(180deg, #dde7e6 0%, #d3e0de 48%, #cfdcda 100%);
+	}
+	.cbx-bg { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+	.cbx-grid {
+		position: absolute; inset: 0;
+		background-image:
+			linear-gradient(rgba(24, 222, 190, 0.06) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(24, 222, 190, 0.06) 1px, transparent 1px);
+		background-size: 44px 44px;
+		mask-image: radial-gradient(ellipse 90% 70% at 60% 20%, #000 30%, transparent 100%);
+		-webkit-mask-image: radial-gradient(ellipse 90% 70% at 60% 20%, #000 30%, transparent 100%);
+	}
+	:global(html:not(.dark)) .cbx-grid {
+		background-image:
+			linear-gradient(rgba(13, 148, 136, 0.12) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(13, 148, 136, 0.12) 1px, transparent 1px);
+	}
+	.cbx-scan {
+		position: absolute; left: 0; right: 0; height: 180px;
+		background: linear-gradient(180deg, transparent, rgba(24, 222, 190, 0.05), transparent);
+		animation: cbx-scan 8s linear infinite;
+	}
+	@keyframes cbx-scan { 0% { top: -20%; } 100% { top: 120%; } }
+
+	.cbx-sec { position: relative; z-index: 1; padding: clamp(4rem, 6.4vw, 6rem) 0 clamp(3rem, 6vw, 4.5rem); }
+	.cbx-wrap { max-width: 76rem; margin: 0 auto; }
+	.cbx-head { text-align: center; margin-bottom: clamp(1.2rem, 2.6vw, 1.9rem); }
+	.cbx-kick {
+		display: inline-flex; align-items: center; gap: 0.5rem;
+		font-family: var(--bu-mono); font-size: 0.82rem; font-weight: 700;
+		color: var(--bu-acc); margin-bottom: 0.9rem;
+		padding: 0.34rem 0.75rem 0.34rem 0.6rem;
+		border: 1px solid color-mix(in srgb, var(--bu-acc) 32%, transparent);
+		border-left-width: 3px; border-radius: 0.5rem;
+		background: color-mix(in srgb, var(--bu-acc) 11%, transparent);
+	}
+	:global(html:not(.dark)) .cbx-kick { color: #076a5a; border-color: rgba(11, 138, 118, 0.38); background: rgba(11, 138, 118, 0.1); }
+	.cbx-blink { width: 8px; height: 15px; background: currentColor; animation: cbx-blink 1.1s steps(2) infinite; }
+	@keyframes cbx-blink { 50% { opacity: 0; } }
+	.cbx-h { font-size: clamp(2rem, 4.6vw, 3.1rem); font-weight: 850; letter-spacing: -0.02em; line-height: 1.06; margin: 0 0 0.6rem; }
+	.cbx-acc { background: linear-gradient(95deg, #8dfeea, var(--bu-acc), #28a6ec); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+	:global(html:not(.dark)) .cbx-acc { background: linear-gradient(95deg, #0b8a76, #0d7fb8); -webkit-background-clip: text; background-clip: text; }
+	.cbx-p { max-width: 42rem; margin: 0 auto; color: var(--bu-muted); font-size: 1rem; line-height: 1.65; }
+
+	/* ── the editor ─────────────────────────────────────────────────── */
+	.cbx-ide {
+		border-radius: 1rem; overflow: hidden;
+		border: 1px solid color-mix(in srgb, var(--bu-acc) 24%, transparent);
+		background: #0a0e14;
+		box-shadow: 0 50px 110px -50px rgba(0, 0, 0, 0.95), 0 0 90px -46px color-mix(in srgb, var(--bu-acc) 55%, transparent);
+		font-family: var(--bu-mono);
+	}
+	/* The editor is a dark object in BOTH themes, so it re-declares the dark
+	   ink inside itself — otherwise light mode's dark ink lands on the
+	   editor's near-black panel and disappears. */
+	:global(html:not(.dark)) .cbx-ide {
+		--bu-ink: #e8f0f4;
+		--bu-muted: rgba(232, 240, 244, 0.64);
+		--bu-faint: rgba(232, 240, 244, 0.42);
+		--bu-line: rgba(255, 255, 255, 0.08);
+		color: var(--bu-ink);
+		border-color: rgba(11, 138, 118, 0.4);
+		box-shadow: 0 40px 90px -46px rgba(16, 32, 31, 0.55);
+	}
+
+	.cbx-chrome { display: flex; align-items: center; gap: 0.7rem; padding: 0.55rem 0.8rem; border-bottom: 1px solid var(--bu-line); background: rgba(255, 255, 255, 0.025); }
+	.cbx-dots { display: inline-flex; gap: 0.35rem; }
+	.cbx-dots i { width: 10px; height: 10px; border-radius: 9999px; background: #2b3440; }
+	.cbx-dots i:nth-child(1) { background: #ff5f57; }
+	.cbx-dots i:nth-child(2) { background: #febc2e; }
+	.cbx-dots i:nth-child(3) { background: #28c840; }
+	.cbx-title { font-size: 0.74rem; color: rgba(214, 232, 238, 0.62); }
+	.cbx-branch { margin-left: auto; display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.7rem; color: color-mix(in srgb, var(--bu-acc) 80%, #fff); }
+
+	.cbx-body { display: grid; grid-template-columns: 11rem minmax(0, 1fr); }
+	.cbx-tree { display: flex; flex-direction: column; gap: 0.06rem; padding: 0.6rem 0.4rem; border-right: 1px solid var(--bu-line); background: rgba(255, 255, 255, 0.015); }
+	.cbx-tree-k { font-size: 0.62rem; letter-spacing: 0.12em; color: rgba(232, 240, 244, 0.56); padding: 0 0.35rem 0.4rem; }
+	.cbx-file {
+		display: flex; align-items: center; gap: 0.36rem; width: 100%;
+		padding: 0.26rem 0.4rem; border: 0; border-radius: 0.35rem;
+		background: transparent; color: rgba(232, 240, 244, 0.6);
+		font-family: inherit; font-size: 0.7rem; text-align: left; cursor: pointer;
+		transition: background 0.18s ease, color 0.18s ease;
+	}
+	.cbx-file:hover { background: rgba(255, 255, 255, 0.05); color: #eafcff; }
+	.cbx-file.is-on { background: color-mix(in srgb, var(--bu-acc) 15%, transparent); color: #eafcff; }
+	.cbx-dirty { width: 5px; height: 5px; border-radius: 9999px; margin-left: auto; background: var(--bu-acc); }
+
+	.cbx-main { display: flex; flex-direction: column; min-width: 0; }
+	.cbx-tabs { display: flex; border-bottom: 1px solid var(--bu-line); overflow-x: auto; scrollbar-width: none; }
+	.cbx-tabs::-webkit-scrollbar { display: none; }
+	.cbx-tab {
+		position: relative; display: inline-flex; align-items: center; gap: 0.34rem; flex: none;
+		padding: 0.55rem 0.8rem; border: 0; border-right: 1px solid var(--bu-line);
+		background: transparent; color: rgba(214, 232, 238, 0.55);
+		font-family: inherit; font-size: 0.7rem; cursor: pointer; white-space: nowrap;
+		transition: color 0.2s ease, background 0.2s ease;
+	}
+	.cbx-tab:hover { color: #eafcff; background: rgba(255, 255, 255, 0.03); }
+	.cbx-tab.is-on { color: #eafcff; background: color-mix(in srgb, var(--bu-acc) 10%, transparent); }
+	.cbx-tab.is-on::after { content: ''; position: absolute; inset: auto 0 -1px 0; height: 2px; background: var(--bu-acc); box-shadow: 0 0 12px color-mix(in srgb, var(--bu-acc) 70%, transparent); }
+
+	.cbx-pane { flex: 1 1 auto; min-height: 30rem; }
+	@media (max-width: 900px) { .cbx-pane { min-height: 0; } }
+	.cbx-pane[hidden] { display: none !important; }
+	.cbx-split { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr); }
+	@media (max-width: 900px) { .cbx-split { grid-template-columns: minmax(0, 1fr); } }
+
+	.cbx-editor { border-right: 1px solid var(--bu-line); }
+	/* The gutter is drawn by the rows themselves, so the numbers always line
+	   up with the lines they belong to instead of drifting off a fixed
+	   line-height. */
+	.cbx-form {
+		counter-reset: cbx-ln;
+		position: relative;
+		padding: 1rem 1.2rem 1.2rem 3.2rem;
+	}
+	.cbx-form::before {
+		content: '';
+		position: absolute;
+		inset: 0 auto 0 2.4rem;
+		width: 1px;
+		background: var(--bu-line);
+	}
+	.cbx-brace { margin: 0; font-size: 0.86rem; color: rgba(232, 240, 244, 0.58); }
+	.cbx-form > p,
+	.cbx-form :global(#contact-form > div) {
+		position: relative;
+		counter-increment: cbx-ln;
+	}
+	.cbx-form > p::before,
+	.cbx-form :global(#contact-form > div)::before {
+		content: counter(cbx-ln);
+		position: absolute;
+		left: -3.2rem;
+		top: 0.1em;
+		width: 1.8rem;
+		text-align: right;
+		font-size: 0.74rem;
+		line-height: 1.5;
+		color: rgba(232, 240, 244, 0.26);
+		user-select: none;
+	}
+
+	/* the real form, wearing the editor's clothes */
+	.cbx-form :global(#contact-form) { margin: 0.4rem 0 0.6rem; padding-left: 1rem; }
+	.cbx-form :global(#contact-form > *) { margin-bottom: 0.9rem; }
+	.cbx-form :global(#contact-form label) { gap: 0.4rem !important; }
+	.cbx-form :global(#contact-form label > span) {
+		font-family: var(--bu-mono) !important;
+		font-size: 0.74rem !important;
+		letter-spacing: 0.01em;
+		color: #7fe9d8 !important;
+		font-weight: 600 !important;
+	}
+	/* the label reads like a key in the object it is filling */
+	.cbx-form :global(#contact-form label > span)::before { content: '"'; opacity: 0.55; }
+	.cbx-form :global(#contact-form label > span)::after { content: '":'; opacity: 0.55; }
+	.cbx-form :global(#contact-form input),
+	.cbx-form :global(#contact-form textarea) {
+		width: 100%;
+		border-radius: 0.5rem !important;
+		border: 1px solid rgba(255, 255, 255, 0.12) !important;
+		background: rgba(255, 255, 255, 0.04) !important;
+		color: #dff3f7 !important;
+		font-family: var(--bu-mono) !important;
+		font-size: 0.82rem !important;
+		padding: 0.6rem 0.75rem !important;
+	}
+	.cbx-form :global(#contact-form input:focus),
+	.cbx-form :global(#contact-form textarea:focus) {
+		outline: none !important;
+		border-color: var(--bu-acc) !important;
+		box-shadow: 0 0 0 3px color-mix(in srgb, var(--bu-acc) 22%, transparent) !important;
+	}
+	.cbx-form :global(#contact-form input::placeholder),
+	.cbx-form :global(#contact-form textarea::placeholder) { color: rgba(223, 243, 247, 0.32) !important; }
+	.cbx-form :global(#form-button) {
+		margin-left: 0 !important;
+		border-radius: 0.5rem !important;
+		padding: 0.7rem 1.4rem !important;
+		font-family: var(--bu-mono) !important;
+		font-size: 0.82rem !important;
+		font-weight: 700 !important;
+	}
+	.cbx-form :global(#form-button)::before { content: '▶ '; }
+
+	/* the preview pane */
+	.cbx-preview { padding: 1rem 1.1rem; background: rgba(255, 255, 255, 0.015); display: flex; flex-direction: column; gap: 0.7rem; }
+	.cbx-preview-k { font-size: 0.7rem; color: rgba(232, 240, 244, 0.56); }
+	.cbx-json { margin: 0; font-size: 0.8rem; line-height: 1.9; white-space: pre-wrap; word-break: break-word; }
+	.tk-p { color: rgba(232, 240, 244, 0.58); }
+	.tk-k { color: #8dfeea; }
+	.tk-s { color: rgba(255, 212, 121, 0.45); transition: color 0.2s ease; }
+	.tk-s.is-set { color: #ffd479; }
+	.cbx-valid { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.72rem; color: var(--bu-faint); }
+	.cbx-valid i { width: 8px; height: 8px; border-radius: 9999px; background: #febc2e; box-shadow: 0 0 8px #febc2e; }
+	.cbx-valid.is-ready i { background: #2ee889; box-shadow: 0 0 8px #2ee889; }
+	.cbx-valid.is-ready b { color: #2ee889; }
+
+	.cbx-next { margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--bu-line); display: grid; gap: 0.6rem; }
+	.cbx-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.55rem; }
+	.cbx-steps li { display: flex; gap: 0.55rem; font-size: 0.76rem; line-height: 1.55; color: rgba(223, 243, 247, 0.72); }
+	.cbx-steps b { flex: none; color: var(--bu-acc); font-weight: 700; }
+	.cbx-sla { margin: 0; font-size: 0.74rem; color: rgba(223, 243, 247, 0.62); }
+
+	/* contact.sh */
+	.cbx-sh { padding: 1.1rem 1.2rem 1.2rem; font-size: 0.8rem; line-height: 2.1; }
+	.cbx-sh-cmd { margin: 0 0 0.5rem; color: #dff3f7; }
+	.cbx-sh-cmd span { color: var(--bu-acc); margin-right: 0.4rem; }
+	.cbx-sh-row { display: flex; align-items: center; gap: 0.5rem; padding: 0.2rem 0.4rem; border-radius: 0.35rem; color: rgba(223, 243, 247, 0.75); transition: background 0.18s ease; }
+	a.cbx-sh-row:hover { background: color-mix(in srgb, var(--bu-acc) 12%, transparent); color: #eafcff; }
+	.cbx-sh-ic { display: grid; place-items: center; width: 22px; height: 22px; flex: none; border-radius: 0.35rem; background: color-mix(in srgb, var(--bu-acc) 14%, transparent); color: color-mix(in srgb, var(--bu-acc) 85%, #fff); }
+	.cbx-sh-key { color: #8dfeea; }
+	.cbx-sh-eq { color: rgba(232, 240, 244, 0.4); }
+	.cbx-sh-val { color: #ffd479; }
+	.cbx-sh-out { margin: 0; color: rgba(223, 243, 247, 0.72); padding-left: 0.4rem; }
+	.cbx-sh-cmd--2 { margin-top: 1.1rem; }
+	button.cbx-sh-row { width: 100%; border: 0; background: transparent; font: inherit; text-align: left; cursor: pointer; }
+	button.cbx-sh-row:hover { background: color-mix(in srgb, var(--bu-acc) 12%, transparent); color: #eafcff; }
+	.cbx-sh-ic--live { position: relative; }
+	.cbx-sh-dot { position: absolute; top: -2px; right: -2px; width: 7px; height: 7px; border-radius: 9999px; background: #2ee889; box-shadow: 0 0 0 0 rgba(46, 232, 137, 0.6); animation: cbx-live 1.9s ease-out infinite; }
+	@keyframes cbx-live { 0% { box-shadow: 0 0 0 0 rgba(46, 232, 137, 0.55); } 100% { box-shadow: 0 0 0 7px rgba(46, 232, 137, 0); } }
+	.cbx-ok { color: #2ee889; }
+	.cbx-caret { display: inline-block; width: 7px; height: 0.9em; margin-left: 0.35rem; vertical-align: text-bottom; background: var(--bu-acc); animation: cbx-blink 1s steps(2) infinite; }
+
+	/* FAQ.md */
+	.cbx-md { padding: 1.1rem 1.2rem 1.3rem; }
+	.cbx-md-h { margin: 0 0 0.7rem; font-size: 0.95rem; color: #eafcff; }
+	.cbx-q { border-bottom: 1px solid var(--bu-line); }
+	.cbx-q summary { display: flex; align-items: center; gap: 0.5rem; padding: 0.7rem 0.2rem; cursor: pointer; list-style: none; font-size: 0.86rem; color: var(--bu-ink); }
+	.cbx-q summary::-webkit-details-marker { display: none; }
+	.cbx-q-mark { color: var(--bu-acc); font-size: 0.8rem; }
+	.cbx-q-caret { margin-left: auto; color: var(--bu-faint); transition: transform 0.25s ease; }
+	.cbx-q[open] .cbx-q-caret { transform: rotate(180deg); }
+	.cbx-q p { margin: 0 0 0.9rem; padding-left: 1.6rem; font-family: 'Inter', sans-serif; font-size: 0.88rem; line-height: 1.65; color: var(--bu-muted); }
+
+	/* the terminal */
+	.cbx-term { border-top: 1px solid var(--bu-line); background: rgba(0, 0, 0, 0.25); }
+	.cbx-term-bar { display: flex; align-items: center; justify-content: space-between; padding: 0.45rem 0.9rem; border-bottom: 1px solid var(--bu-line); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(232, 240, 244, 0.56); }
+	.cbx-term-hint { text-transform: none; letter-spacing: 0; }
+	.cbx-term-out { padding: 0.6rem 0.9rem 0.8rem; min-height: 4.6rem; font-size: 0.78rem; line-height: 1.9; }
+	.cbx-term-out :global(p) { margin: 0; animation: cbx-line 0.3s ease both; }
+	.cbx-dim { color: rgba(232, 240, 244, 0.6); }
+	.cbx-term-out :global(.ok) { color: #2ee889; }
+	.cbx-term-out :global(.acc) { color: var(--bu-acc); font-weight: 700; }
+	.cbx-term-out :global(.err) { color: #ff7a7a; }
+	@keyframes cbx-line { from { opacity: 0; transform: translateY(4px); } }
+
+	.cbx-status { display: flex; align-items: center; gap: 0.75rem; padding: 0.34rem 0.8rem; border-top: 1px solid var(--bu-line); background: color-mix(in srgb, var(--bu-acc) 6%, transparent); font-size: 0.68rem; color: rgba(232, 240, 244, 0.66); }
+	.cbx-st { display: inline-flex; align-items: center; gap: 0.28rem; white-space: nowrap; }
+	.cbx-st--dim { opacity: 0.86; }
+	.cbx-spacer { flex: 1 1 auto; }
+	.cbx-pulse { width: 6px; height: 6px; border-radius: 9999px; background: #28c840; box-shadow: 0 0 8px #28c840; animation: cbx-pulse 2s ease-in-out infinite; }
+	@keyframes cbx-pulse { 0%, 100% { opacity: 0.45; } 50% { opacity: 1; } }
+
+	@media (max-width: 900px) {
+		.cbx-body { grid-template-columns: minmax(0, 1fr); }
+		.cbx-tree { display: none; }
+		.cbx-form { padding-left: 1.1rem; }
+		.cbx-form::before { display: none; }
+		.cbx-form > p::before,
+		.cbx-form :global(#contact-form > div)::before { display: none; }
+		.cbx-preview { border-top: 1px solid var(--bu-line); }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.cbx-scan, .cbx-blink, .cbx-caret, .cbx-pulse, .cbx-sh-dot { animation: none !important; }
+	}
+</style>
+
+<script>
+	// Drives the editor: tabs, the live JSON mirror, the required-field
+	// counter and the terminal that "builds" the brief on submit. The form
+	// itself is still owned by ContactForm — this only narrates it.
+	const REQUIRED = ['name', 'email', 'message'] as const;
+
+	const esc = (v: string) =>
+		v.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n');
+
+	const setup = () => {
+		document.querySelectorAll<HTMLElement>('[data-cbx]').forEach((ide) => {
+			if (ide.dataset.cbxOn === '1') return;
+			ide.dataset.cbxOn = '1';
+
+			/* ── tabs ─────────────────────────────────────────────── */
+			const tabs = ide.querySelectorAll<HTMLButtonElement>('[data-cbx-tab]');
+			const panes = ide.querySelectorAll<HTMLElement>('[data-cbx-pane]');
+
+			const open = (name: string) => {
+				tabs.forEach((t) => {
+					const on = t.dataset.cbxTab === name;
+					t.classList.toggle('is-on', on);
+					if (t.hasAttribute('role')) t.setAttribute('aria-selected', String(on));
+				});
+				panes.forEach((p) => {
+					const on = p.dataset.cbxPane === name;
+					p.hidden = !on;
+					p.classList.toggle('is-on', on);
+				});
+			};
+
+			tabs.forEach((t) => {
+				t.addEventListener('click', () => open(t.dataset.cbxTab ?? 'brief'));
+			});
+
+			/* ── the live JSON mirror ─────────────────────────────── */
+			const form = ide.querySelector<HTMLFormElement>('form#contact-form');
+			const json = ide.querySelector<HTMLElement>('[data-cbx-json]');
+			const valid = ide.querySelector<HTMLElement>('[data-cbx-valid]');
+			const validT = ide.querySelector<HTMLElement>('[data-cbx-valid-t]');
+			const count = ide.querySelector<HTMLElement>('[data-cbx-count]');
+			const out = ide.querySelector<HTMLElement>('[data-cbx-out]');
+			if (!form) return;
+
+			const field = (n: string) =>
+				form.querySelector<HTMLInputElement | HTMLTextAreaElement>(`[name="${n}"]`);
+
+			const ok = (n: string, v: string) => {
+				if (n === 'email') return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+				if (n === 'name') return v.trim().length >= 3;
+				if (n === 'message') return v.trim().length >= 5;
+				return true;
+			};
+
+			const sync = () => {
+				json?.querySelectorAll<HTMLElement>('[data-k]').forEach((span) => {
+					const n = span.dataset.k ?? '';
+					const v = field(n)?.value ?? '';
+					span.textContent = `"${esc(v).slice(0, 140)}"`;
+					span.classList.toggle('is-set', v.length > 0);
+				});
+
+				const done = REQUIRED.filter((n) => ok(n, field(n)?.value ?? '')).length;
+				if (validT) validT.textContent = `${done} / 3 required fields`;
+				valid?.classList.toggle('is-ready', done === 3);
+				if (count) {
+					const errs = 3 - done;
+					count.textContent = errs === 0 ? '0 errors' : `${errs} problems`;
+				}
+			};
+
+			form.addEventListener('input', sync);
+			form.addEventListener('change', sync);
+			sync();
+
+			/* ── the terminal ─────────────────────────────────────── */
+			let running = false;
+
+			const line = (html: string, delay: number) =>
+				window.setTimeout(() => {
+					if (!out) return;
+					const p = document.createElement('p');
+					p.innerHTML = html;
+					out.appendChild(p);
+					out.scrollTop = out.scrollHeight;
+				}, delay);
+
+			const clear = () => {
+				if (out) out.textContent = '';
+			};
+
+			// capture, so the terminal starts narrating before ContactForm's
+			// own submit handler runs
+			form.addEventListener(
+				'submit',
+				() => {
+					if (running) return;
+
+					const missing = REQUIRED.filter((n) => !ok(n, field(n)?.value ?? ''));
+
+					if (missing.length) {
+						clear();
+						line('<span class="err">✖</span> build failed — brief.json is incomplete', 0);
+						missing.forEach((n, i) =>
+							line(
+								`<span class="cbx-dim">  at</span> brief.json <span class="err">"${n}"</span> <span class="cbx-dim">is required</span>`,
+								120 + i * 110
+							)
+						);
+						line('<span class="cbx-dim">$ fix the fields above and run again</span>', 160 + missing.length * 110);
+						return;
+					}
+
+					running = true;
+					clear();
+					line('<span class="acc">$</span> swizel build --brief brief.json', 0);
+					line('<span class="cbx-dim">⠋ validating schema…</span>', 260);
+					line('<span class="ok">✓</span> schema valid <span class="cbx-dim">(4 keys)</span>', 620);
+					line('<span class="cbx-dim">⠋ routing to an engineer…</span>', 820);
+					line('<span class="ok">✓</span> queued for review', 1180);
+					// the send can resolve before the build lines finish printing,
+					// so the verdict waits its turn at the end of the log
+					const lastLine = Date.now() + 1180;
+					const after = () => Math.max(0, lastLine - Date.now()) + 120;
+
+					// ContactForm clears the fields on a successful send and
+					// puts the button back to "Submit" either way, so watch
+					// both to report honestly.
+					const btn = form.querySelector<HTMLElement>('#form-button');
+					const started = Date.now();
+					const watch = window.setInterval(() => {
+						const busy = btn?.textContent?.trim() === 'Loading...';
+						if (busy || Date.now() - started < 900) {
+							if (Date.now() - started > 25000) {
+								window.clearInterval(watch);
+								running = false;
+							}
+							return;
+						}
+						window.clearInterval(watch);
+						running = false;
+						const sent = (field('email')?.value ?? '') === '';
+						if (sent) {
+							line(
+								'<span class="ok">✓</span> brief delivered <span class="cbx-dim">— an engineer replies within one business day</span>',
+								after()
+							);
+							sync();
+						} else {
+							line(
+								'<span class="err">✖</span> could not deliver <span class="cbx-dim">— reach us at</span> <span class="acc">contact@swizel.co</span>',
+								after()
+							);
+						}
+					}, 300);
+				},
+				true
+			);
+		});
+	};
+
+	setup();
+	document.addEventListener('astro:page-load', setup);
+	document.addEventListener('swup:contentReplaced', setup);
+</script>

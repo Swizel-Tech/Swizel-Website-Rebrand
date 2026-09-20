@@ -604,7 +604,9 @@ const quotes = [
 	.ba-shelf .ba-asset { min-height: 0; }
 	.ba-shelf .ba-asset img { width: 100%; height: 100%; object-fit: cover; }
 	/* the table shot still crops; its people sit low in the frame */
-	.ba-shelf .ba-asset:nth-child(3) img { object-position: 50% 96%; }
+	/* the source is cropped to the table now, so the frame sits on the
+	   laptops rather than hunting for people below the fold */
+	.ba-shelf .ba-asset:nth-child(3) img { object-position: 50% 28%; }
 	@media (max-width: 819px) {
 		.ba-shelf .ba-asset img { aspect-ratio: 4 / 3; }
 		.ba-asset--lead { grid-column: span 2; }
