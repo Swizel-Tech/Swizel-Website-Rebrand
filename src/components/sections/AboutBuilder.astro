@@ -155,7 +155,6 @@ const quotes = [
 							videoId="p563SFG9Nwg"
 							label="A day at the studio: one room, one standard, a lot of coffee"
 							tag="a day at the studio"
-							cover
 							autoplay
 							class="ba-hero-film"
 						/>
@@ -346,6 +345,14 @@ const quotes = [
 	<!-- ── 06 · assets/ — the studio in frames ─────────────── -->
 	<section class="ba-sec" data-cursor="repo">
 		<div class="ba-wrap">
+			<div class="ba-head bb-rev">
+				<span class="ba-kick">// assets</span>
+				<h2 class="ba-h">The room <span class="ba-acc">it gets built in.</span></h2>
+				<p class="ba-p ba-p--center">
+					No stock photography. One studio in Abuja, the same table
+					every day, and whatever is on the screens that afternoon.
+				</p>
+			</div>
 			<div class="ba-shelf bb-rev">
 				{
 					studioShots.map((sh, i) => (
@@ -435,7 +442,7 @@ const quotes = [
 		<div class="ba-cta bb-rev">
 			<span class="ba-orbit" aria-hidden="true"><i></i><i></i><i></i></span>
 			<p class="ba-cta-cmd">$ git clone swizel/<span class="ba-acc">your-story</span></p>
-			<h2 class="ba-h ba-h--xl">Write the next chapter with us.</h2>
+			<h2 class="ba-h ba-h--xl ba-h--one">Write the next chapter with us.</h2>
 			<p class="ba-p ba-p--center">
 				Tell us what you're building. A senior engineer reads every
 				message, reply within one business day.
@@ -580,20 +587,24 @@ const quotes = [
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 		gap: clamp(0.5rem, 1.2vw, 0.85rem);
 	}
-	/* three columns: the wide room is worth four cells and the two
-	   portraits one each — six, which is two full rows with no hole */
+	/* Two columns. The wide room takes the left and runs the full height;
+	   the portrait keeps its own shape at the top right, with the table
+	   shot under it. Squeezing a 960x1280 frame into a landscape cell was
+	   what made that corner look wrong. */
 	@media (min-width: 820px) {
 		.ba-shelf {
-			grid-template-columns: repeat(3, minmax(0, 1fr));
-			grid-auto-rows: clamp(180px, 18vw, 250px);
+			grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+			align-items: stretch;
 		}
-		.ba-asset--lead { grid-column: span 2; grid-row: span 2; }
+		.ba-asset--lead { grid-column: 1; grid-row: 1 / span 2; }
+		.ba-shelf .ba-asset:nth-child(2) { grid-column: 2; grid-row: 1; aspect-ratio: 3 / 4; }
+		.ba-shelf .ba-asset:nth-child(3) { grid-column: 2; grid-row: 2; aspect-ratio: 16 / 10; }
+		.ba-asset--lead img { height: 100%; }
 	}
 	.ba-shelf .ba-asset { min-height: 0; }
 	.ba-shelf .ba-asset img { width: 100%; height: 100%; object-fit: cover; }
-	/* the two portraits crop to a landscape cell, and centring them framed
-	   the ceiling — the people are in the lower half of both */
-	.ba-shelf .ba-asset:not(.ba-asset--lead) img { object-position: 50% 72%; }
+	/* the table shot still crops; its people sit low in the frame */
+	.ba-shelf .ba-asset:nth-child(3) img { object-position: 50% 96%; }
 	@media (max-width: 819px) {
 		.ba-shelf .ba-asset img { aspect-ratio: 4 / 3; }
 		.ba-asset--lead { grid-column: span 2; }
@@ -646,7 +657,7 @@ const quotes = [
 		50% { opacity: 1; transform: scale(1); }
 	}
 	/* one window height for both files, so the frame never jumps */
-	.ba-panes { position: relative; aspect-ratio: 16 / 11; }
+	.ba-panes { position: relative; aspect-ratio: 16 / 9; }
 	.ba-pane { position: absolute; inset: 0; display: flex; flex-direction: column; min-height: 0; overflow: auto; }
 	.ba-pane[hidden] { display: none !important; }
 	.ba-pane[data-bstack-pane='film'] { overflow: hidden; }
@@ -668,7 +679,13 @@ const quotes = [
 	/* daylight needs a darker green than the dark theme's mint */
 	:global(html:not(.dark)) .babout .ba-pr-badge { color: #05663f; border-color: rgba(5, 102, 63, 0.4); }
 
-	.ba-open { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 4vw, 3.2rem); align-items: center; }
+	/* the window carries a 16/9 film, so it earns the wider column */
+	/* the closing line is short enough to hold together; wrapping it put
+	   'with us.' alone on a second line */
+	.ba-h--one { max-width: none; white-space: nowrap; }
+	@media (max-width: 720px) { .ba-h--one { white-space: normal; } }
+
+	.ba-open { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: clamp(1.6rem, 3.2vw, 2.6rem); align-items: center; }
 	.ba-stats { display: flex; align-items: stretch; margin: 1.5rem 0 1.3rem; padding: 0; list-style: none; }
 	.ba-stats li { flex: 1; min-width: 0; padding: 0.2rem 0.9rem; border-left: 1px solid color-mix(in srgb, var(--bu-acc) 25%, transparent); transition: transform 0.25s ease; }
 	.ba-stats li:first-child { padding-left: 0; border-left: 0; }

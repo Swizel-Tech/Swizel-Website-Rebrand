@@ -289,7 +289,10 @@ export function initFilmPlayers(root: ParentNode = document) {
 					const en = entries[0];
 					if (!en?.isIntersecting || started) return;
 					auto.disconnect();
-					void (async () => {
+					// a beat first — a film that starts the instant the section
+					// arrives reads as an ad, not as the studio
+					window.setTimeout(() => {
+						void (async () => {
 						const a = await build();
 						if (!a) return;
 						a.muted(true);
@@ -297,7 +300,8 @@ export function initFilmPlayers(root: ParentNode = document) {
 						film.classList.add('is-started');
 						a.play();
 						paint();
-					})();
+						})();
+					}, 1400);
 				},
 				{ threshold: 0.4 }
 			);
