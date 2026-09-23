@@ -2380,12 +2380,6 @@ const reviews = [
 		align-items: center;
 		gap: 0.75rem;
 	}
-	@media (max-width: 480px) {
-		.bb-stackrow {
-			grid-template-columns: 1fr;
-			gap: 0.3rem;
-		}
-	}
 	.bb-stackkey {
 		font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 		font-size: 0.84rem;
@@ -2412,6 +2406,40 @@ const reviews = [
 		color: #8dfeea;
 		transform: translateY(-2px);
 	}
+	/* ── stack.config on a phone ──────────────────────────────────────
+	   Ten groups of chips wrapping onto three lines each ran for well
+	   over a thousand pixels — you scrolled the config forever. Each
+	   group is one swipeable line now: the key stays put on the left,
+	   the chips run off the right edge under a fade, and the whole
+	   widget fits on a screen. Nothing is hidden — it moves sideways
+	   instead of down. */
+	@media (max-width: 640px) {
+		.bb-stackrow {
+			grid-template-columns: 5.4rem minmax(0, 1fr);
+			align-items: center;
+			gap: 0.5rem;
+		}
+		.bb-stackkey { font-size: 0.76rem; }
+		.bb-stackchips {
+			flex-wrap: nowrap;
+			overflow-x: auto;
+			overscroll-behavior-x: contain;
+			-webkit-overflow-scrolling: touch;
+			scrollbar-width: none;
+			scroll-snap-type: x proximity;
+			padding-right: 1.6rem;
+			mask-image: linear-gradient(90deg, #000 84%, transparent 100%);
+			-webkit-mask-image: linear-gradient(90deg, #000 84%, transparent 100%);
+		}
+		.bb-stackchips::-webkit-scrollbar { display: none; }
+		.bb-stackchip {
+			flex: none;
+			scroll-snap-align: start;
+			font-size: 0.74rem;
+			padding: 0.24rem 0.6rem;
+		}
+	}
+
 	.bb-stackrow--joke {
 		padding-top: 0.35rem;
 		border-top: 1px dashed rgba(255, 255, 255, 0.1);

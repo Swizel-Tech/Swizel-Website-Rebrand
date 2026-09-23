@@ -281,6 +281,11 @@ export function initBuilderBody() {
 			con.querySelectorAll<HTMLElement>('[data-pb-shot]')
 		);
 		// ── the rail: fold it away, or pick a deployment yourself ──────
+		// On a phone the rail is a drawer over the preview, so the console
+		// opens folded — otherwise the list would cover the site on load.
+		const narrow = () => window.matchMedia('(max-width: 880px)').matches;
+		if (narrow()) con.classList.add('is-folded');
+
 		const taught = () => con.classList.add('is-taught');
 		con.querySelectorAll<HTMLButtonElement>('[data-pb-fold]').forEach((b) =>
 			b.addEventListener('click', () => {
@@ -288,6 +293,14 @@ export function initBuilderBody() {
 				con.classList.toggle('is-folded');
 			})
 		);
+		// tapping the scrim (anywhere outside the drawer) closes it
+		con.addEventListener('click', (e) => {
+			if (!narrow() || con.classList.contains('is-folded')) return;
+			const t = e.target as HTMLElement | null;
+			if (t && !t.closest('.pb-rail') && !t.closest('[data-pb-fold]')) {
+				con.classList.add('is-folded');
+			}
+		});
 		const railRows = Array.from(
 			con.querySelectorAll<HTMLButtonElement>('[data-pb-pick]')
 		);
@@ -314,6 +327,9 @@ export function initBuilderBody() {
 					taught();
 					i = n;
 					railRows.forEach((o, m) => o.classList.toggle('is-on', m === n));
+					// on a phone the rail sits over the preview, so get out
+					// of the way once a site has been chosen
+					if (narrow()) con.classList.add('is-folded');
 				})
 			);
 

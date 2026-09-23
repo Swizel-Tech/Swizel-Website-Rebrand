@@ -741,7 +741,26 @@ const sectors = [
 		.bs-stats li { padding: 0.1rem 0.5rem; }
 		.bs-stats strong { font-size: 1.05rem; }
 		.bs-stats span { font-size: 0.7rem; }
-		.bs-stack-row { grid-template-columns: minmax(0, 1fr); gap: 0.3rem; }
+		/* stack.config on a phone: each group becomes one swipeable line
+		   rather than three wrapped rows, so nine groups fit on a screen
+		   instead of running for a thousand pixels. Nothing is hidden —
+		   the chips move sideways under a fade. */
+		.bs-stack-row { grid-template-columns: 5.6rem minmax(0, 1fr); align-items: center; gap: 0.5rem; }
+		.bs-stack-key { font-size: 0.76rem; }
+		.bs-stack-key :global(svg) { display: none; }
+		.bs-stack-chips {
+			flex-wrap: nowrap;
+			overflow-x: auto;
+			overscroll-behavior-x: contain;
+			-webkit-overflow-scrolling: touch;
+			scrollbar-width: none;
+			scroll-snap-type: x proximity;
+			padding-right: 1.6rem;
+			mask-image: linear-gradient(90deg, #000 84%, transparent 100%);
+			-webkit-mask-image: linear-gradient(90deg, #000 84%, transparent 100%);
+		}
+		.bs-stack-chips::-webkit-scrollbar { display: none; }
+		.bs-stack-chips i { flex: none; scroll-snap-align: start; font-size: 0.74rem; padding: 0.24rem 0.6rem; }
 		.bs-pipe { padding-left: 1.8rem; }
 		.bs-node { left: -1.8rem; }
 		.bb-git-line { left: 5px; }
