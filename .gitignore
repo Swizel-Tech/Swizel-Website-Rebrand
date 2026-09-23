@@ -26,3 +26,6 @@ src/data/.idea
 
 # full-resolution originals of the images optimised for the web
 _image-originals/
+
+# local sandbox dev config (never commit)
+astro.config.dev.mjs

@@ -208,7 +208,12 @@ const filterCss = cats
 					<span class="bj-kick">// docs/the-brevarium — long-form, in print</span>
 					<strong>Prefer the magazine? Read The Brevarium.</strong>
 					<em>Our featured projects, the team and the thinking behind the work, cover to cover.</em>
-					<span class="bj-link"><Icon width={15} name="mdi:download" /> download latest.pdf</span>
+					<span class="bj-mag-foot">
+						<span class="bj-link"><Icon width={15} name="mdi:download" /> download latest.pdf</span>
+						<code class="bj-mag-cmd">
+							<b>$</b> curl -O https://swizel.co/brevarium/the-brevarium-latest.pdf
+						</code>
+					</span>
 				</span>
 			</a>
 		</div>
@@ -240,7 +245,7 @@ const filterCss = cats
 	:global(html:not(.dark)) .bbl {
 		--bu-ink: #10201f;
 		--bu-muted: rgba(16, 32, 31, 0.72);
-		--bu-faint: rgba(16, 32, 31, 0.6);
+		--bu-faint: rgba(16, 32, 31, 0.74);
 		--bu-line: rgba(16, 32, 31, 0.14);
 		--bu-card: rgba(255, 255, 255, 0.55);
 		background:
@@ -289,7 +294,7 @@ const filterCss = cats
 	@media (prefers-reduced-motion: reduce) { .bj-orb { animation: none; } .bj-spark { display: none; } }
 
 	.bj-kick { display: block; font-family: var(--bu-mono); font-size: 0.8rem; color: var(--bu-acc); margin-bottom: 0.8rem; }
-	:global(html:not(.dark)) .bbl .bj-kick { color: #0b8a76; }
+	:global(html:not(.dark)) .bbl .bj-kick { color: #076a5a; }
 	.bj-h { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 850; letter-spacing: -0.025em; line-height: 1.08; margin: 0 0 1rem; }
 	.bj-h--xl { font-size: clamp(2.1rem, 4.4vw, 3.2rem); }
 	.bj-acc {
@@ -321,14 +326,14 @@ const filterCss = cats
 		animation-delay: calc(var(--i) * 90ms + 0.2s);
 	}
 	.bj-stats b { font-size: 0.95rem; font-weight: 800; color: var(--bu-acc); }
-	:global(html:not(.dark)) .bbl .bj-stats b { color: #0b8a76; }
+	:global(html:not(.dark)) .bbl .bj-stats b { color: #076a5a; }
 	.bj-stats span { font-size: 0.72rem; color: var(--bu-muted); }
 	.bj-stats span::before { content: '// '; opacity: 0.55; }
 	@keyframes bj-stat-in { from { opacity: 0; transform: translateY(10px); } }
 	@media (prefers-reduced-motion: reduce) { .bj-stats li { animation: none; } }
 	.bj-link { display: inline-flex; align-items: center; gap: 0.45rem; font-family: var(--bu-mono); font-size: 0.86rem; font-weight: 700; color: var(--bu-acc); transition: gap 0.25s ease; }
 	.bj-link:hover { gap: 0.75rem; }
-	:global(html:not(.dark)) .bbl .bj-link { color: #0b8a76; }
+	:global(html:not(.dark)) .bbl .bj-link { color: #076a5a; }
 	.bj-meta { display: block; font-family: var(--bu-mono); font-size: 0.74rem; color: var(--bu-faint); }
 	.bj-file { display: inline-flex; align-items: center; gap: 0.4rem; font-family: var(--bu-mono); font-size: 0.72rem; color: var(--c, var(--bu-acc)); margin-bottom: 0.65rem; }
 
@@ -509,7 +514,23 @@ const filterCss = cats
 	.bj-mag-cover img { display: block; width: 100%; height: auto; }
 	.bj-mag-meta .bj-kick { margin-bottom: 0.35rem; }
 	.bj-mag-meta strong { display: block; font-size: 1.3rem; font-weight: 850; }
-	.bj-mag-meta em { display: block; font-style: normal; font-size: 0.92rem; max-width: 42rem; line-height: 1.5; color: var(--bu-muted); margin: 0.25rem 0 0.55rem; }
+	.bj-mag-foot { display: flex; align-items: center; flex-wrap: wrap; gap: 0.75rem 1.1rem; }
+	.bj-mag-cmd {
+		flex: 1 1 22rem; min-width: 0;
+		display: flex; align-items: center; gap: 0.5rem;
+		padding: 0.45rem 0.8rem;
+		border: 1px solid var(--bu-line);
+		border-radius: 0.5rem;
+		background: rgba(0, 0, 0, 0.25);
+		font-family: var(--bu-mono); font-size: 0.76rem;
+		color: var(--bu-muted);
+		white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+	}
+	:global(html:not(.dark)) .bbl .bj-mag-cmd { background: rgba(255, 255, 255, 0.6); }
+	.bj-mag-cmd b { color: var(--bu-acc); font-weight: 700; }
+	:global(html:not(.dark)) .bbl .bj-mag-cmd b { color: #076a5a; }
+	@media (max-width: 760px) { .bj-mag-cmd { display: none; } }
+	.bj-mag-meta em { display: block; font-style: normal; font-size: 0.92rem; max-width: 46rem; line-height: 1.5; color: var(--bu-muted); margin: 0.25rem 0 0.55rem; }
 
 	@media (max-width: 980px) {
 		.bj-feature { grid-template-columns: minmax(0, 1fr); }
