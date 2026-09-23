@@ -1,70 +1,130 @@
 import { openTourChooser, siteLegs, type TourStep } from './tour';
 
 export function initStudioView() {
-	const g = document.getElementById('studio-gallery');
-	if (!g) return;
-	const slides = Array.from(g.querySelectorAll<HTMLElement>('.sg--slide'));
-	const thumbs = Array.from(g.querySelectorAll<HTMLElement>('.sg--thumb'));
-	if (!slides.length) return;
-	let cur = 0;
-	let timer = 0;
+	const hero = document.querySelector<HTMLElement>('[data-shr]');
 
-	const show = (n: number) => {
-		cur = (n + slides.length) % slides.length;
-		slides.forEach((s, i) => s.classList.toggle('is-active', i === cur));
-		thumbs.forEach((t, i) => t.classList.toggle('is-active', i === cur));
-	};
-	const next = () => show(cur + 1);
-	const prev = () => show(cur - 1);
+	if (hero) {
+		const wall = hero.querySelector<HTMLElement>('[data-shr-wall]');
+		const frame = hero.querySelector<HTMLElement>('.shr-hero-frame');
+		const still = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-	const startAuto = () => {
-		stopAuto();
-		timer = window.setInterval(next, 3200);
-	};
-	const stopAuto = () => {
-		if (timer) window.clearInterval(timer);
-		timer = 0;
-	};
+		// ── the room takes its colour from whatever you are looking at ──
+		const swatches = Array.from(
+			hero.querySelectorAll<HTMLButtonElement>('[data-shr-palette] [data-shr-tint]')
+		);
+		let held = swatches[0]?.dataset.shrTint || '#ec4899';
 
-	g.querySelector('[data-sg-next]')?.addEventListener('click', () => {
-		next();
-		startAuto();
-	});
-	g.querySelector('[data-sg-prev]')?.addEventListener('click', () => {
-		prev();
-		startAuto();
-	});
-	thumbs.forEach((t) =>
-		t.addEventListener('click', () => {
-			show(Number(t.dataset.go || '0'));
-			startAuto();
-		})
-	);
-	g.addEventListener('pointerenter', stopAuto);
-	g.addEventListener('pointerleave', startAuto);
+		const tint = (hex: string) => hero.style.setProperty('--sa', hex);
 
-	const isStudio = () =>
-		document.documentElement.getAttribute('data-view') === 'studio';
-	if (isStudio()) startAuto();
-	window.addEventListener('swizel:viewchange', (e) => {
-		const v = (e as CustomEvent).detail;
-		if (v === 'studio') {
-			show(0);
-			startAuto();
-		} else stopAuto();
-	});
+		// the swatch's name and hex are read out in the label above the
+		// rail rather than printed inside the chip, where they sat on top
+		// of the colour they were describing
+		const nameEl = hero.querySelector<HTMLElement>('[data-shr-swatch-name]');
+		const hexEl = hero.querySelector<HTMLElement>('[data-shr-swatch-hex]');
+		const say = (sw: HTMLElement) => {
+			const [name, hex] = (sw.getAttribute('aria-label') || '').split(/\s(?=#)/);
+			if (nameEl && name) nameEl.textContent = name;
+			if (hexEl && hex) hexEl.textContent = hex;
+		};
+
+		swatches.forEach((sw) => {
+			sw.addEventListener('click', () => {
+				held = sw.dataset.shrTint || held;
+				swatches.forEach((o) => o.classList.toggle('is-on', o === sw));
+				say(sw);
+				tint(held);
+			});
+			sw.addEventListener('pointerenter', () => {
+				say(sw);
+				tint(sw.dataset.shrTint || held);
+			});
+			sw.addEventListener('pointerleave', () => {
+				const on = swatches.find((o) => o.classList.contains('is-on'));
+				if (on) say(on);
+				tint(held);
+			});
+		});
+
+		// hovering a hung piece borrows its colour; leaving gives it back
+		hero.querySelectorAll<HTMLElement>('.shr-hung').forEach((art) => {
+			const c = art.dataset.shrTint;
+			if (!c) return;
+			const take = () => tint(c);
+			const give = () => tint(held);
+			art.addEventListener('pointerenter', take);
+			art.addEventListener('focus', take);
+			art.addEventListener('pointerleave', give);
+			art.addEventListener('blur', give);
+		});
+
+		// ── the spotlight and the parallax ──────────────────────────
+		// One pointermove, one rAF, three writes. The wall's pieces read
+		// --px/--py and multiply by their own depth in CSS, so the further
+		// a piece hangs the further it swims — no per-element maths here.
+		if (!still.matches) {
+			let raf = 0;
+			let px = 0;
+			let py = 0;
+			let mx = 60;
+			let my = 34;
+
+			const paint = () => {
+				raf = 0;
+				hero.style.setProperty('--mx', `${mx}%`);
+				hero.style.setProperty('--my', `${my}%`);
+				if (wall) {
+					wall.style.setProperty('--px', `${px.toFixed(2)}px`);
+					wall.style.setProperty('--py', `${py.toFixed(2)}px`);
+				}
+				if (frame) {
+					frame.style.setProperty('--ry', `${(px * 0.28).toFixed(2)}deg`);
+					frame.style.setProperty('--rx', `${(-py * 0.3).toFixed(2)}deg`);
+				}
+			};
+
+			hero.addEventListener('pointermove', (e) => {
+				if (e.pointerType === 'touch') return;
+				const r = hero.getBoundingClientRect();
+				const nx = (e.clientX - r.left) / r.width;
+				const ny = (e.clientY - r.top) / r.height;
+				mx = nx * 100;
+				my = ny * 100;
+				px = (nx - 0.5) * -14;
+				py = (ny - 0.5) * -10;
+				if (!raf) raf = requestAnimationFrame(paint);
+			});
+
+			hero.addEventListener('pointerleave', () => {
+				mx = 60;
+				my = 34;
+				px = 0;
+				py = 0;
+				if (!raf) raf = requestAnimationFrame(paint);
+			});
+		}
+	}
 
 	// the tour walks the whole studio world, hero to footer
 	const steps: TourStep[] = [
 		{
-			sel: '.hero-studio .rhead',
-			title: 'Our promise',
-			body: 'You imagine it. We design, build, scale and launch it.',
+			sel: '.hero-studio .shr-head',
+			title: 'Private view',
+			body: 'You imagine it. We design, build, film and launch it — and it ends up on this wall.',
 		},
 		{
-			sel: '#studio-gallery .sg--stage',
-			title: 'Real work',
-			body: 'A living gallery of products we designed and shipped. It plays on its own, or take control.',
+			sel: '#studio-gallery .shr-hero-frame',
+			title: 'The studio reel',
+			body: 'A year of work in ninety seconds. It runs on its own — press anywhere on it to take control.',
+		},
+		{
+			sel: '#studio-gallery .shr-hung--a',
+			title: 'Six pieces, hung',
+			body: 'Real client work, each in its own frame. Touch one and the whole room takes its colour.',
+		},
+		{
+			sel: '.hero-studio .shr-palette',
+			title: 'The palette',
+			body: 'Five house colours. Pick one and the gallery is repainted around you.',
 		},
 		{
 			sel: '#view-banner .vw-head',

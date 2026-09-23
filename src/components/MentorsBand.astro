@@ -148,7 +148,7 @@ const {
 		border-radius: inherit;
 		padding: 1.5px;
 		background: conic-gradient(
-			from var(--a, 0deg),
+			from var(--mb-a, 0deg),
 			transparent 0deg,
 			color-mix(in srgb, var(--mb) 90%, transparent) 60deg,
 			transparent 140deg,
@@ -164,12 +164,16 @@ const {
 		mask-composite: exclude;
 		animation: mb-spin 5.5s linear infinite;
 	}
-	@property --a {
+	/* NB: @property registers document-wide, whatever component declares it.
+	   As plain `--a` this quietly broke every other `--a` on the site — any
+	   colour written to it was rejected as not-an-angle and fell back to
+	   0deg. Namespaced. */
+	@property --mb-a {
 		syntax: '<angle>';
 		inherits: false;
 		initial-value: 0deg;
 	}
-	@keyframes mb-spin { to { --a: 360deg; } }
+	@keyframes mb-spin { to { --mb-a: 360deg; } }
 
 	.mband__body { display: flex; flex-direction: column; gap: 0.18rem; min-width: 0; }
 

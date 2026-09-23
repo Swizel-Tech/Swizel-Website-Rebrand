@@ -1,253 +1,807 @@
 ---
+// Studio hero — PRIVATE VIEW.
+//
+// Not a hero with a slideshow bolted on: an opening night. The room is a
+// gallery — wall texture, hanging rails, a spotlight that follows your
+// pointer, dust in the beam, film grain over everything. The centrepiece is
+// the studio reel, hung in a frame with a real brass plaque. Six pieces of
+// actual client work hang around it at different depths and drift as you
+// move; touch one and the whole room takes its colour, because the work is
+// where the palette comes from.
+//
+// Every piece here is real: name, sector, year and colour all come from
+// projects.ts, so the wall cannot drift out of step with the portfolio.
 import { Icon } from 'astro-icon/components';
 import CustomButton from '../CustomButton.astro';
-import Section from '../HTML/Section.astro';
-import RotatingHeadline from '../RotatingHeadline.astro';
+import FilmPlayer from '../FilmPlayer.astro';
 import TeamChip from '../TeamChip.astro';
+import { projects } from '../../data/projects';
 
-const stats = [
-	{ to: 65, suffix: '+', label: 'Products' },
-	{ to: 9, suffix: '', label: 'Sectors' },
-	{ to: 7, suffix: '+', label: 'Years' },
-	{ to: 40, suffix: '+', label: 'Brands' },
+const pick = (slug: string) => projects.find((p) => p.slug === slug)!;
+
+// six pieces, hung around the film. Order matters: it is the hanging plan.
+const wall = [
+	{ p: pick('brixmarket'), pos: 'a', depth: 3 },
+	{ p: pick('purple-panda'), pos: 'b', depth: 1 },
+	{ p: pick('beauty-hive'), pos: 'c', depth: 2 },
+	{ p: pick('saros'), pos: 'd', depth: 2 },
+	{ p: pick('betslipswitch'), pos: 'e', depth: 1 },
+	{ p: pick('my-eya-estate'), pos: 'f', depth: 3 },
+].filter((w) => w.p);
+
+// the headline's moving word
+const flips = ['unforgettable.', 'unmistakable.', 'irresistible.', 'worth keeping.'];
+
+// the edition numbers, set like a catalogue colophon
+const colophon = [
+	{ n: '65+', l: 'works' },
+	{ n: '40+', l: 'brands' },
+	{ n: '9', l: 'sectors' },
+	{ n: '2019', l: 'est.' },
 ];
 
-const projects = [
-	{ name: 'Brixmarket', sector: 'E commerce', img: '/images/portfolio/brix%20marketplace.jpg' },
-	{ name: 'Betslipswitch', sector: 'Sports', img: '/images/portfolio/betslipswitch.jpg' },
-	{ name: 'My Eya Estate', sector: 'Real estate', img: '/images/portfolio/my%20eya%20estate.jpg' },
-	{ name: 'Purple Panda', sector: 'Marketing', img: '/images/portfolio/purplepanda%20world.jpg' },
-	{ name: 'Saros GP', sector: 'Finance', img: '/images/portfolio/sarosgp.jpg' },
-	{ name: 'Beauty Hive', sector: 'Beauty', img: '/images/portfolio/beauty-hive.webp' },
+// the studio palette — a second way to retint the room
+const palette = [
+	{ hex: '#ec4899', name: 'Signal Pink' },
+	{ hex: '#a855f7', name: 'Ultra Violet' },
+	{ hex: '#f59e0b', name: 'Gold Leaf' },
+	{ hex: '#38bdf8', name: 'Cyan Wash' },
+	{ hex: '#34d399', name: 'Verdigris' },
+];
+
+const ticker = [
+	'brand identity', 'art direction', 'ui/ux', 'motion', 'photography',
+	'packaging', 'editorial', 'web', 'mobile', 'campaigns',
 ];
 ---
 
-<Section
-	sectionClass="hero--stage hero-view hero-studio studio--stage relative overflow-hidden"
-	divClass="relative z-10 pb-16 sm:pb-24"
->
-	<div class="studio--bg" aria-hidden="true">
-		<span class="studio--glow studio--glow-1"></span>
-		<span class="studio--glow studio--glow-2"></span>
+<section class="shr hero-view hero-studio" data-shr>
+	<!-- ══ the room ══════════════════════════════════════════════ -->
+	<div class="shr-room" aria-hidden="true">
+		<span class="shr-wallpaper"></span>
+		<span class="shr-orb shr-orb--1"></span>
+		<span class="shr-orb shr-orb--2"></span>
+		<span class="shr-orb shr-orb--3"></span>
+		<span class="shr-beam" data-shr-beam></span>
+		<span class="shr-grain"></span>
+		{Array.from({ length: 14 }).map((_, i) => <i class="shr-mote" style={`--m:${i}`}></i>)}
 	</div>
 
-	<div class="studio--layout">
-		<div class="studio--copy">
-			<span class="studio--eyebrow">
-				<Icon width={15} name="mdi:palette-outline" />
-				Swizel Studio · The Craft Issue
+	<div class="shr-wrap">
+		<!-- ══ the catalogue ═══════════════════════════════════════ -->
+		<div class="shr-copy">
+			<span class="shr-plaque">
+				<Icon width={13} name="mdi:palette-outline" />
+				Swizel Studio · Private view
+				<i>2026</i>
 			</span>
 
-			<RotatingHeadline class="studio--head" />
+			<h1 class="shr-head rhead">
+				<span class="shr-line"><span>We make brands</span></span>
+				<span class="shr-line"><span>people find</span></span>
+				<span class="shr-flip" aria-label={flips[0]}>
+					{flips.map((w, i) => <b style={`--f:${i}`} aria-hidden={i > 0 ? 'true' : undefined}>{w}</b>)}
+				</span>
+			</h1>
 
-			<p class="studio--sub">
-				A studio of designers and engineers whose work hangs in the real
-				world. Brands you can buy from, apps you can download. Step into
-				the gallery.
+			<p class="shr-sub">
+				A studio of designers, engineers and film-makers. The work on this
+				wall is live in the world — shops you can buy from, apps you can
+				open. Walk the room.
 			</p>
 
-			<div class="studio--cta">
+			<div class="shr-cta">
 				<CustomButton
 					variant="accent"
 					elementType="a"
 					href="/portfolio"
-					class="flex items-center justify-center gap-2"
+					class="shr-btn flex items-center justify-center gap-2"
 				>
-					See the full portfolio
+					Enter the gallery
 					<Icon width={18} name="mdi:arrow-right" />
 				</CustomButton>
-				<button class="studio--tour" type="button" data-tour-start="studio">
-					<Icon width={16} name="mdi:compass-outline" />
+				<button class="shr-ghost" type="button" data-tour-start="studio">
+					<span class="shr-ghost-ic"><Icon width={14} name="mdi:compass-outline" /></span>
 					Take the 20s tour
 				</button>
 			</div>
 
-			<ul class="studio--stats" data-tour="stats">
+			<!-- the palette: touch a colour, the room wears it -->
+			<div class="shr-palette" data-shr-palette>
+				<span class="shr-palette-k">
+					the studio palette ·
+					<b data-shr-swatch-name>{palette[0]?.name}</b>
+					<i data-shr-swatch-hex>{palette[0]?.hex}</i>
+				</span>
+				<span class="shr-swatches">
+					{
+						palette.map((c, i) => (
+							<button
+								class:list={['shr-swatch', { 'is-on': i === 0 }]}
+								type="button"
+								style={`--c:${c.hex}; --s:${i}`}
+								data-shr-tint={c.hex}
+								title={`${c.name} · ${c.hex}`}
+								aria-label={`${c.name} ${c.hex}`}
+							>
+								<i></i>
+							</button>
+						))
+					}
+				</span>
+			</div>
+
+			<ul class="shr-colophon" data-tour="stats">
 				{
-					stats.map((s) => (
-						<li class="studio--stat">
-							<span class="studio--statnum" data-count-to={s.to} data-suffix={s.suffix}>
-								{s.to}
-								{s.suffix}
-							</span>
-							<span class="studio--statlabel">{s.label}</span>
+					colophon.map((c, i) => (
+						<li style={`--i:${i}`}>
+							<b>{c.n}</b>
+							<span>{c.l}</span>
 						</li>
 					))
 				}
 			</ul>
 
-			<TeamChip kicker="// the designers behind the work" label="See who designs your brand" />
+			<TeamChip kicker="// the hands behind the work" label="Meet the studio" />
 		</div>
 
-		<!-- Work gallery widget -->
-		<div class="studio--gallery" id="studio-gallery" data-tour="gallery">
-			<div class="sg--stage">
-				{
-					projects.map((p, i) => (
-						<figure class:list={['sg--slide', { 'is-active': i === 0 }]} data-i={i}>
-							<img src={p.img} alt={`${p.name} — ${p.sector}`} loading="lazy" />
-							<figcaption class="sg--cap">
-								<span class="sg--pill">{p.sector}</span>
-								<span class="sg--name">{p.name}</span>
-							</figcaption>
-						</figure>
-					))
-				}
-				<button class="sg--arrow sg--prev" type="button" data-sg-prev aria-label="Previous project">
-					<Icon width={20} name="mdi:chevron-left" />
-				</button>
-				<button class="sg--arrow sg--next" type="button" data-sg-next aria-label="Next project">
-					<Icon width={20} name="mdi:chevron-right" />
-				</button>
-			</div>
-			<div class="sg--thumbs" data-tour="thumbs">
-				{
-					projects.map((p, i) => (
-						<button class:list={['sg--thumb', { 'is-active': i === 0 }]} data-go={i} type="button" aria-label={p.name}>
-							<img src={p.img} alt="" loading="lazy" />
-						</button>
-					))
-				}
-			</div>
+		<!-- ══ the wall ════════════════════════════════════════════ -->
+		<div class="shr-wall" id="studio-gallery" data-tour="gallery" data-shr-wall>
+			<span class="shr-rail" aria-hidden="true"></span>
+
+			<!-- the centrepiece: the reel, framed and labelled -->
+			<figure class="shr-hero-frame sg--stage" data-shr-depth="0">
+				<span class="shr-fillet" aria-hidden="true"></span>
+				<FilmPlayer
+					videoId="EHi0Z2yqAr8"
+					poster="/images/film/crew.jpg"
+					label="The studio reel — a year of work in ninety seconds"
+					tag="now showing"
+					ambient
+					cover
+					autoplay
+					ratio="16 / 10"
+					class="shr-film"
+				/>
+				<figcaption class="shr-label">
+					<span class="shr-label-t">The Studio Reel</span>
+					<span class="shr-label-m">Moving image · Swizel Studio · 2026</span>
+				</figcaption>
+			</figure>
+
+			<!-- six pieces, hung -->
+			{
+				wall.map(({ p, pos, depth }, i) => (
+					<a
+						class:list={['shr-hung', `shr-hung--${pos}`]}
+						href={p.url ?? `/work/${p.slug}`}
+						target={p.url ? '_blank' : undefined}
+						rel={p.url ? 'noopener noreferrer' : undefined}
+						style={`--c:${p.color}; --d:${depth}; --i:${i}`}
+						data-shr-depth={depth}
+						data-shr-tint={p.color}
+						data-cursor="repo"
+					>
+						<span class="shr-hung-frame">
+							<img src={p.img} alt={`${p.name} — ${p.tagline}`} loading={i < 3 ? 'eager' : 'lazy'} />
+							<span class="shr-hung-glass" aria-hidden="true"></span>
+						</span>
+						<span class="shr-hung-label">
+							<b>{p.name}</b>
+							<em>{p.tags[0] ?? 'Work'} · {p.year}</em>
+						</span>
+					</a>
+				))
+			}
 		</div>
 	</div>
-</Section>
+
+	<!-- ══ the ticker ════════════════════════════════════════════ -->
+	<div class="shr-ticker" aria-hidden="true">
+		<div class="shr-ticker-track">
+			{
+				[0, 1].map(() => (
+					<span class="shr-ticker-run">
+						{ticker.map((t) => (
+							<span class="shr-ticker-i">
+								{t}
+								<i></i>
+							</span>
+						))}
+					</span>
+				))
+			}
+		</div>
+	</div>
+</section>
 
 <style>
-	.studio--stage {
-		background:
-			radial-gradient(800px 480px at 82% -8%, rgba(236, 72, 153, 0.2), transparent 60%),
-			linear-gradient(180deg, #1d1020 0%, #160d1b 55%, #100a14 100%);
-		color: #fbeaf4;
-		isolation: isolate;
-	}
-	.studio--bg {
-		position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-		width: 100vw; height: 100%; z-index: 0; overflow: hidden; pointer-events: none;
-		background:
-			/* faint gallery-wall frame grid — the museum, in the bones */
-			repeating-linear-gradient(90deg, transparent 0 119px, rgba(236, 72, 153, 0.05) 119px 120px),
-			repeating-linear-gradient(180deg, transparent 0 119px, rgba(255, 255, 255, 0.025) 119px 120px),
-			radial-gradient(800px 480px at 82% -8%, rgba(236, 72, 153, 0.2), transparent 60%),
-			linear-gradient(180deg, #150a12 0%, #110810 55%, #0c060a 100%);
-	}
-	/* studio CTA runs the museum pink */
-	:global(.hero-studio .btn--accent) {
-		background-image: linear-gradient(95deg, #ec4899, #be1862) !important;
-		color: #fff !important;
-		-webkit-text-fill-color: #fff;
-		box-shadow: 0 14px 34px -12px rgba(236, 72, 153, 0.6) !important;
-	}
-	.studio--glow { position: absolute; border-radius: 9999px; filter: blur(70px); }
-	.studio--glow-1 { width: 40vw; height: 40vw; top: -12%; right: -6%; background: radial-gradient(circle, rgba(236, 72, 153, 0.3), transparent 65%); }
-	.studio--glow-2 { width: 32vw; height: 32vw; bottom: -16%; left: -8%; background: radial-gradient(circle, rgba(139, 92, 246, 0.22), transparent 65%); }
-
-	.studio--layout { position: relative; z-index: 1; display: grid; gap: 2.5rem; align-items: start; min-height: calc(100vh - 90px); padding-top: 2rem; }
-	@media (min-width: 1024px) { .studio--layout { grid-template-columns: 0.86fr 1.14fr; gap: 3rem; } }
-
-	.studio--eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: #f9a8d4; border: 1.5px solid rgba(249, 168, 212, 0.4); padding: 0.35rem 0.85rem; border-radius: 9999px; margin-bottom: 1.3rem; }
-	.studio--head { font-size: clamp(2.6rem, 6vw, 5.2rem); margin-bottom: 1.4rem; }
-	.studio--sub { max-width: 30rem; color: rgba(251, 234, 244, 0.7); font-size: 1.08rem; line-height: 1.65; margin-bottom: 1.8rem; }
-	.studio--cta { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem; }
-	.studio--tour { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; font-weight: 600; color: #fbeaf4; padding: 0.85rem 1.2rem; border-radius: 9999px; border: 1px dashed rgba(249, 168, 212, 0.5); transition: 0.25s ease; }
-	.studio--tour:hover { border-color: #ec4899; color: #f9a8d4; background: rgba(236, 72, 153, 0.1); }
-	.studio--stats { display: flex; justify-content: space-between; gap: clamp(0.8rem, 2vw, 1.6rem); flex-wrap: wrap; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.08); }
-	@media (max-width: 600px) { .studio--stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem 1rem; } .studio--stat { min-width: 0; } }
-	.studio--statnum { font-family: 'Bebas Neue', sans-serif; font-size: clamp(1.6rem, 2.4vw, 2.2rem); line-height: 1; background: linear-gradient(135deg, #f9a8d4, #ec4899); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
-	.studio--statlabel { display: block; font-size: 0.74rem; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(251, 234, 244, 0.5); margin-top: 0.3rem; }
-
-	/* ===== gallery ===== */
-	.studio--gallery { width: 100%; }
-	@media (min-width: 1024px) {
-		/* Top-align the columns. Rather than over-stretching the big stage to
-		   fill the copy height, keep it a natural size and let the thumbnails
-		   grow to take up the rest — bigger thumbs, a calmer hero. */
-		.studio--layout { min-height: auto; align-items: stretch; }
-		/* The gallery starts at the headline ("YOU"), not the eyebrow chip above
-		   it: drop it by the eyebrow's footprint and let it stretch to the bottom
-		   of the copy, so it spans exactly the headline-down block. */
-		.studio--gallery {
-			display: flex;
-			flex-direction: column;
-			margin-top: 3.6rem;
-		}
-		/* Share the height: the stage isn't over-stretched and the thumbnails sit
-		   in two rows of bigger landscape tiles that fill the rest. */
-		.studio--gallery .sg--stage { flex: 1.7 1 0; aspect-ratio: auto; min-height: 240px; }
-		.studio--gallery .sg--thumbs {
-			flex: 1 1 0;
-			min-height: 0;
-			display: grid;
-			grid-template-columns: repeat(3, 1fr);
-			grid-auto-rows: 1fr;
-			gap: 0.6rem;
-		}
-		.studio--gallery .sg--thumb { aspect-ratio: auto; }
-	}
-	.sg--stage {
+	/* ═══ the room ═══════════════════════════════════════════════════
+	   One custom property, --sa, is the room's colour. Everything that
+	   glows reads from it, so retinting the hero is a single variable
+	   write from the script — the orbs, the beam, the type, the frames
+	   and the ticker all follow together. */
+	.shr {
+		--sa: #ec4899;
+		--ink: #fdeaf5;
+		--muted: rgba(253, 234, 245, 0.68);
+		--faint: rgba(253, 234, 245, 0.62);
+		--wall: #120a14;
+		--frame: rgba(255, 255, 255, 0.14);
+		--serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
 		position: relative;
-		aspect-ratio: 16 / 11;
-		border-radius: 1.25rem;
+		isolation: isolate;
 		overflow: hidden;
-		border: 1px solid rgba(236, 72, 153, 0.25);
-		box-shadow: 0 40px 90px -40px rgba(0, 0, 0, 0.85);
-		background: #0f0a14;
-	}
-	.sg--slide { position: absolute; inset: 0; margin: 0; opacity: 0; transform: scale(1.04); transition: opacity 0.6s ease, transform 0.8s ease; }
-	.sg--slide.is-active { opacity: 1; transform: scale(1); }
-	.sg--slide img { width: 100%; height: 100%; object-fit: cover; }
-	.sg--cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 2.5rem 1.25rem 1.1rem; display: flex; flex-direction: column; gap: 0.35rem; background: linear-gradient(to top, rgba(15, 10, 20, 0.92), transparent); }
-	.sg--pill { width: fit-content; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding: 0.25rem 0.65rem; border-radius: 9999px; background: rgba(236, 72, 153, 0.9); color: #fff; }
-	.sg--name { font-family: 'Bebas Neue', sans-serif; font-size: 1.7rem; letter-spacing: 1px; color: #fff; }
-	.sg--arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; display: grid; place-items: center; border-radius: 9999px; background: rgba(15, 10, 20, 0.55); color: #fff; border: 1px solid rgba(255, 255, 255, 0.18); backdrop-filter: blur(6px); cursor: pointer; transition: background 0.2s ease, transform 0.2s ease; }
-	.sg--arrow:hover { background: #ec4899; transform: translateY(-50%) scale(1.08); }
-	.sg--prev { left: 12px; }
-	.sg--next { right: 12px; }
-	.sg--thumbs { display: flex; gap: 0.6rem; margin-top: 0.85rem; }
-	.sg--thumb { flex: 1; aspect-ratio: 16 / 10; border-radius: 0.6rem; overflow: hidden; border: 2px solid transparent; opacity: 0.5; cursor: pointer; transition: opacity 0.25s ease, border-color 0.25s ease, transform 0.25s ease; }
-	.sg--thumb img { width: 100%; height: 100%; object-fit: cover; }
-	.sg--thumb:hover { opacity: 0.85; }
-	.sg--thumb.is-active { opacity: 1; border-color: #ec4899; transform: translateY(-2px); }
-
-	@media (max-width: 1023px) { .studio--layout { min-height: auto; } }
-	@media (max-width: 768px) {
-		.studio--layout { gap: 1.75rem; padding-top: 0.5rem; }
-		.studio--head { font-size: clamp(2.2rem, 9.5vw, 3.2rem); }
-		.studio--sub { font-size: 1rem; margin-bottom: 1.4rem; }
-		.sg--name { font-size: 1.4rem; }
-	}
-
-	/* ══ Light mode: museum-white gallery wall, ink type. ══ */
-	:global(html:not(.dark)) .studio--stage,
-	:global(html:not(.dark)) .studio--bg {
+		color: var(--ink);
+		padding: clamp(1rem, 3vw, 2.2rem) 5% 0;
 		background:
-			repeating-linear-gradient(90deg, transparent 0 119px, rgba(190, 24, 98, 0.05) 119px 120px),
-			repeating-linear-gradient(180deg, transparent 0 119px, rgba(30, 12, 24, 0.03) 119px 120px),
-			radial-gradient(800px 480px at 82% -8%, rgba(236, 72, 153, 0.14), transparent 60%),
-			linear-gradient(180deg, #fdf6fa 0%, #f9eff5 55%, #f5e9f0 100%);
-		color: #23101c;
+			radial-gradient(1200px 700px at 78% -12%, color-mix(in srgb, var(--sa) 22%, transparent), transparent 62%),
+			linear-gradient(180deg, #1a0e1c 0%, #140a16 46%, #0c0610 100%);
+		transition: background 0.9s ease;
 	}
-	:global(html:not(.dark)) .studio--glow { opacity: 0.5; }
-	:global(html:not(.dark)) .studio--eyebrow {
-		color: #be1862;
-		border-color: rgba(190, 24, 98, 0.4);
+
+	.shr-room { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+
+	/* the wall itself: a fine damask grid, like gallery linen */
+	.shr-wallpaper {
+		position: absolute; inset: 0;
+		background-image:
+			repeating-linear-gradient(90deg, transparent 0 79px, rgba(255, 255, 255, 0.028) 79px 80px),
+			repeating-linear-gradient(180deg, transparent 0 79px, rgba(255, 255, 255, 0.018) 79px 80px);
+		mask-image: radial-gradient(ellipse 85% 75% at 60% 30%, #000 20%, transparent 92%);
+		-webkit-mask-image: radial-gradient(ellipse 85% 75% at 60% 30%, #000 20%, transparent 92%);
 	}
-	:global(html:not(.dark)) .studio--sub { color: rgba(35, 16, 28, 0.68); }
-	:global(html:not(.dark)) .studio--tour {
-		color: #23101c;
-		border-color: rgba(190, 24, 98, 0.4);
+
+	.shr-orb { position: absolute; border-radius: 9999px; filter: blur(80px); will-change: transform; }
+	.shr-orb--1 {
+		width: 46vw; height: 46vw; top: -16%; right: -8%;
+		background: radial-gradient(circle, color-mix(in srgb, var(--sa) 42%, transparent), transparent 66%);
+		animation: shr-drift-a 22s ease-in-out infinite;
 	}
-	:global(html:not(.dark)) .studio--tour:hover { color: #be1862; }
-	:global(html:not(.dark)) .studio--stats { border-top-color: rgba(35, 16, 28, 0.1); }
-	:global(html:not(.dark)) .studio--statnum {
-		background: linear-gradient(135deg, #db2777, #be1862);
+	.shr-orb--2 {
+		width: 34vw; height: 34vw; bottom: -18%; left: -6%;
+		background: radial-gradient(circle, rgba(168, 85, 247, 0.34), transparent 66%);
+		animation: shr-drift-b 27s ease-in-out infinite;
+	}
+	.shr-orb--3 {
+		width: 26vw; height: 26vw; top: 38%; left: 42%;
+		background: radial-gradient(circle, color-mix(in srgb, var(--sa) 26%, transparent), transparent 68%);
+		animation: shr-drift-c 19s ease-in-out infinite;
+	}
+	@keyframes shr-drift-a { 0%, 100% { transform: translate3d(0, 0, 0) scale(1); } 50% { transform: translate3d(-5%, 6%, 0) scale(1.1); } }
+	@keyframes shr-drift-b { 0%, 100% { transform: translate3d(0, 0, 0) scale(1); } 50% { transform: translate3d(7%, -5%, 0) scale(1.12); } }
+	@keyframes shr-drift-c { 0%, 100% { transform: translate3d(0, 0, 0) scale(0.95); } 50% { transform: translate3d(-8%, -7%, 0) scale(1.15); } }
+
+	/* the spotlight, following the pointer across the wall */
+	.shr-beam {
+		position: absolute;
+		inset: -20%;
+		background: radial-gradient(
+			420px 420px at calc(var(--mx, 60%)) calc(var(--my, 34%)),
+			color-mix(in srgb, var(--sa) 20%, transparent),
+			transparent 64%
+		);
+		transition: background 0.35s ease-out;
+		mix-blend-mode: screen;
+	}
+
+	/* film grain, moving — the whole room is shot on 35mm */
+	.shr-grain {
+		position: absolute; inset: -50%;
+		opacity: 0.32;
+		background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.42'/%3E%3C/svg%3E");
+		animation: shr-grain 0.7s steps(4) infinite;
+	}
+	@keyframes shr-grain {
+		0% { transform: translate(0, 0); }
+		25% { transform: translate(-3%, 2%); }
+		50% { transform: translate(2%, -3%); }
+		75% { transform: translate(-2%, -2%); }
+		100% { transform: translate(0, 0); }
+	}
+
+	/* dust, drifting up through the beam */
+	.shr-mote {
+		position: absolute;
+		width: 3px; height: 3px;
+		border-radius: 9999px;
+		background: color-mix(in srgb, var(--sa) 70%, #fff);
+		box-shadow: 0 0 8px 1px color-mix(in srgb, var(--sa) 55%, transparent);
+		left: calc((var(--m) * 7.1%) + 2%);
+		bottom: -10px;
+		opacity: 0;
+		animation: shr-float 14s linear infinite;
+		animation-delay: calc(var(--m) * -1.15s);
+	}
+	@keyframes shr-float {
+		0% { transform: translate3d(0, 0, 0) scale(0.6); opacity: 0; }
+		12% { opacity: 0.85; }
+		80% { opacity: 0.55; }
+		100% { transform: translate3d(28px, -104vh, 0) scale(1.1); opacity: 0; }
+	}
+
+	/* ═══ layout ═════════════════════════════════════════════════ */
+	.shr-wrap {
+		position: relative;
+		z-index: 2;
+		max-width: 84rem;
+		margin: 0 auto;
+		display: grid;
+		gap: clamp(2rem, 4vw, 3.2rem);
+		align-items: center;
+		padding-bottom: clamp(3rem, 6vw, 4.5rem);
+	}
+	@media (min-width: 1080px) {
+		.shr-wrap { grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr); }
+	}
+
+	/* ═══ the catalogue side ═════════════════════════════════════ */
+	.shr-plaque {
+		display: inline-flex; align-items: center; gap: 0.5rem;
+		font-size: 0.7rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+		color: color-mix(in srgb, var(--sa) 40%, #fff);
+		padding: 0.42rem 0.9rem;
+		border: 1px solid color-mix(in srgb, var(--sa) 45%, transparent);
+		border-radius: 0.2rem;
+		background: color-mix(in srgb, var(--sa) 10%, transparent);
+		margin-bottom: 1.5rem;
+		transform: rotate(-1.4deg);
+		box-shadow: 0 10px 26px -16px color-mix(in srgb, var(--sa) 80%, transparent);
+		animation: shr-sway 7s ease-in-out infinite;
+	}
+	.shr-plaque i { font-style: normal; opacity: 0.66; letter-spacing: 0.14em; }
+	@keyframes shr-sway { 0%, 100% { transform: rotate(-1.4deg); } 50% { transform: rotate(0.6deg); } }
+
+	.shr-head {
+		font-family: var(--serif);
+		font-weight: 500;
+		font-size: clamp(2.5rem, 5.2vw, 4.4rem);
+		line-height: 1.04;
+		letter-spacing: -0.02em;
+		margin: 0 0 1.3rem;
+	}
+	/* each line lifts out from behind a mask on load */
+	.shr-line { display: block; overflow: hidden; }
+	.shr-line > span {
+		display: block;
+		animation: shr-lift 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+	}
+	.shr-line:nth-child(1) > span { animation-delay: 0.1s; }
+	.shr-line:nth-child(2) > span { animation-delay: 0.22s; }
+	@keyframes shr-lift { from { transform: translateY(105%); } }
+
+	/* the word that keeps changing its mind */
+	/* the swapping word sets a touch smaller than the lines above it, so
+	   the longest of them still clears the column at every width */
+	.shr-flip {
+		display: block;
+		position: relative;
+		font-size: 0.88em;
+		height: 1.3em;
+		overflow: hidden;
+	}
+	.shr-flip b {
+		position: absolute;
+		inset: 0;
+		font-weight: 600;
+		font-style: italic;
+		white-space: nowrap;
+		background: linear-gradient(96deg, color-mix(in srgb, var(--sa) 55%, #fff), var(--sa) 45%, #a855f7);
 		-webkit-background-clip: text;
 		background-clip: text;
+		-webkit-text-fill-color: transparent;
+		opacity: 0;
+		animation: shr-flip 13.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+		animation-delay: calc(var(--f) * 3.3s + 0.5s);
 	}
-	:global(html:not(.dark)) .studio--statlabel { color: rgba(35, 16, 28, 0.55); }
-	:global(html:not(.dark)) .sg--stage {
-		border-color: rgba(190, 24, 98, 0.25);
-		box-shadow: 0 40px 90px -44px rgba(35, 16, 28, 0.4);
-		background: #fff;
+	@keyframes shr-flip {
+		0% { opacity: 0; transform: translateY(70%) rotate(3deg); }
+		3%, 22% { opacity: 1; transform: translateY(0) rotate(0deg); }
+		25%, 100% { opacity: 0; transform: translateY(-70%) rotate(-3deg); }
+	}
+
+	.shr-sub {
+		max-width: 31rem;
+		color: var(--muted);
+		font-size: 1.04rem;
+		line-height: 1.68;
+		margin: 0 0 1.7rem;
+		animation: shr-in 0.9s ease 0.4s both;
+	}
+	@keyframes shr-in { from { opacity: 0; transform: translateY(14px); } }
+
+	.shr-cta {
+		display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap;
+		margin-bottom: 1.8rem;
+		animation: shr-in 0.9s ease 0.5s both;
+	}
+	:global(.hero-studio .btn--accent) {
+		position: relative;
+		overflow: hidden;
+		background-image: linear-gradient(96deg, var(--sa), color-mix(in srgb, var(--sa) 40%, #7c1d4f)) !important;
+		color: #fff !important;
+		-webkit-text-fill-color: #fff;
+		border-radius: 9999px !important;
+		box-shadow: 0 16px 40px -14px color-mix(in srgb, var(--sa) 75%, transparent) !important;
+		transition: transform 0.25s ease, box-shadow 0.25s ease;
+	}
+	:global(.hero-studio .btn--accent:hover) {
+		transform: translateY(-2px);
+		box-shadow: 0 24px 54px -14px color-mix(in srgb, var(--sa) 85%, transparent) !important;
+	}
+	/* a sheen crossing the button, like light over gloss */
+	:global(.hero-studio .btn--accent::after) {
+		content: '';
+		position: absolute; inset: 0;
+		background: linear-gradient(112deg, transparent 38%, rgba(255, 255, 255, 0.34) 50%, transparent 62%);
+		background-size: 260% 100%;
+		background-position: 140% 0;
+		animation: shr-sheen 4.2s ease-in-out infinite;
+		pointer-events: none;
+	}
+	@keyframes shr-sheen { 0%, 58% { background-position: 140% 0; } 100% { background-position: -140% 0; } }
+
+	.shr-ghost {
+		display: inline-flex; align-items: center; gap: 0.55rem;
+		font-size: 0.84rem; font-weight: 600;
+		color: var(--ink);
+		padding: 0.8rem 1.25rem;
+		border-radius: 9999px;
+		border: 1px solid color-mix(in srgb, var(--sa) 40%, transparent);
+		background: color-mix(in srgb, var(--sa) 7%, transparent);
+		cursor: pointer;
+		transition: border-color 0.25s ease, background 0.25s ease, transform 0.25s ease;
+	}
+	.shr-ghost:hover { border-color: var(--sa); background: color-mix(in srgb, var(--sa) 16%, transparent); transform: translateY(-2px); }
+	.shr-ghost-ic {
+		display: grid; place-items: center;
+		width: 22px; height: 22px; border-radius: 9999px;
+		background: color-mix(in srgb, var(--sa) 22%, transparent);
+		color: color-mix(in srgb, var(--sa) 45%, #fff);
+		animation: shr-pulse 2.4s ease-in-out infinite;
+	}
+	@keyframes shr-pulse {
+		0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--sa) 55%, transparent); }
+		60% { box-shadow: 0 0 0 8px color-mix(in srgb, var(--sa) 0%, transparent); }
+	}
+
+	/* ═══ the palette ════════════════════════════════════════════ */
+	.shr-palette { margin-bottom: 1.5rem; animation: shr-in 0.9s ease 0.6s both; }
+	.shr-palette-k {
+		display: block;
+		font-family: var(--serif);
+		font-style: italic;
+		font-size: 0.82rem;
+		color: var(--faint);
+		margin-bottom: 0.5rem;
+	}
+	.shr-palette-k b {
+		font-style: normal;
+		font-weight: 700;
+		color: color-mix(in srgb, var(--sa) 42%, #fff);
+	}
+	:global(html:not(.dark)) .shr-palette-k b { color: color-mix(in srgb, var(--sa) 62%, #2a0c1a); }
+	.shr-palette-k i {
+		font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+		font-style: normal;
+		font-size: 0.74rem;
+		letter-spacing: 0.02em;
+		margin-left: 0.3rem;
+		opacity: 0.8;
+	}
+	.shr-swatches { display: flex; gap: 0.4rem; }
+	.shr-swatch {
+		position: relative;
+		display: grid;
+		place-items: center;
+		width: 2.6rem; height: 2.6rem;
+		padding: 0;
+		border: 0;
+		border-radius: 0.55rem;
+		background: transparent;
+		cursor: pointer;
+		transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.shr-swatch i {
+		position: absolute; inset: 0;
+		border-radius: inherit;
+		background: var(--c);
+		box-shadow: 0 8px 20px -10px var(--c);
+		transition: transform 0.3s cubic-bezier(0.34, 1.4, 0.64, 1), box-shadow 0.3s ease;
+		animation: shr-swatch-in 0.6s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+		animation-delay: calc(var(--s) * 70ms + 0.65s);
+	}
+	@keyframes shr-swatch-in { from { opacity: 0; transform: translateY(12px) scale(0.6); } }
+	.shr-swatch:hover { width: 4.4rem; }
+	.shr-swatch:hover i { transform: scale(1.04); box-shadow: 0 14px 30px -10px var(--c); }
+	.shr-swatch.is-on { width: 4.4rem; }
+	.shr-swatch.is-on i { box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.55), 0 14px 30px -10px var(--c); }
+
+	/* ═══ the colophon ═══════════════════════════════════════════ */
+	.shr-colophon {
+		display: flex; flex-wrap: wrap; gap: clamp(1rem, 2.6vw, 2.2rem);
+		list-style: none; margin: 0 0 1.5rem; padding: 1.2rem 0 0;
+		border-top: 1px solid rgba(255, 255, 255, 0.1);
+	}
+	.shr-colophon li { animation: shr-in 0.8s ease both; animation-delay: calc(var(--i) * 90ms + 0.7s); }
+	.shr-colophon b {
+		display: block;
+		font-family: var(--serif);
+		font-weight: 600;
+		font-size: clamp(1.6rem, 2.5vw, 2.1rem);
+		line-height: 1;
+		background: linear-gradient(135deg, color-mix(in srgb, var(--sa) 40%, #fff), var(--sa));
+		-webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+	}
+	.shr-colophon span {
+		display: block;
+		font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase;
+		color: var(--faint); margin-top: 0.3rem;
+	}
+
+	/* ═══ the wall ═══════════════════════════════════════════════ */
+	.shr-wall {
+		position: relative;
+		perspective: 1400px;
+		min-height: clamp(26rem, 42vw, 34rem);
+		animation: shr-in 1s ease 0.3s both;
+	}
+	/* the hanging rail, running along the top of the wall */
+	.shr-rail {
+		position: absolute; top: 0.5rem; left: -6%; right: -6%;
+		height: 1px;
+		background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--sa) 40%, rgba(255,255,255,0.3)), transparent);
+	}
+
+	.shr-hero-frame {
+		position: relative;
+		margin: 0 auto;
+		width: min(74%, 34rem);
+		border-radius: 0.5rem;
+		padding: 0.7rem 0.7rem 0;
+		background: linear-gradient(150deg, #2a1b25, #150d15 60%);
+		border: 1px solid color-mix(in srgb, var(--sa) 30%, transparent);
+		box-shadow:
+			0 60px 120px -50px rgba(0, 0, 0, 0.95),
+			0 0 90px -40px color-mix(in srgb, var(--sa) 70%, transparent);
+		transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(0);
+		transform-style: preserve-3d;
+		transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+		will-change: transform;
+	}
+	/* the gilt fillet just inside the frame */
+	.shr-fillet {
+		position: absolute; inset: 0.35rem;
+		border-radius: 0.3rem;
+		border: 1px solid color-mix(in srgb, var(--sa) 34%, rgba(255, 255, 255, 0.18));
+		pointer-events: none;
+		z-index: 3;
+	}
+	.shr-hero-frame :global(.shr-film) { border-radius: 0.25rem; overflow: hidden; }
+
+	.shr-label {
+		display: block;
+		text-align: center;
+		padding: 0.85rem 0.6rem 0.9rem;
+	}
+	.shr-label-t {
+		display: block;
+		font-family: var(--serif);
+		font-style: italic;
+		font-size: 1.02rem;
+		color: var(--ink);
+	}
+	.shr-label-m {
+		display: block;
+		font-size: 0.66rem;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--faint);
+		margin-top: 0.25rem;
+	}
+
+	/* ── the hung pieces ── */
+	.shr-hung {
+		position: absolute;
+		width: clamp(7rem, 12vw, 10.5rem);
+		z-index: 4;
+		color: var(--ink);
+		transform:
+			translate3d(calc(var(--px, 0px) * var(--d)), calc(var(--py, 0px) * var(--d)), 0)
+			rotate(var(--rot, 0deg));
+		transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+		animation: shr-hang 0.9s cubic-bezier(0.34, 1.3, 0.64, 1) both;
+		animation-delay: calc(var(--i) * 110ms + 0.55s);
+		will-change: transform;
+	}
+	@keyframes shr-hang { from { opacity: 0; transform: translateY(-26px) rotate(-4deg); } }
+
+	.shr-hung--a { top: 1%; left: -10%; --rot: -3.2deg; }
+	.shr-hung--b { top: 34%; left: -15%; --rot: 2.4deg; }
+	.shr-hung--c { bottom: 1%; left: -8%; --rot: -1.8deg; }
+	/* the wall's right edge is the page's right edge, so these hang inward;
+	   the left-hand three can overhang into the catalogue column freely */
+	.shr-hung--d { top: 0%; right: -2%; --rot: 2.8deg; }
+	.shr-hung--e { top: 36%; right: -5%; --rot: -2.2deg; }
+	.shr-hung--f { bottom: 0%; right: -1%; --rot: 3deg; }
+
+	.shr-hung-frame {
+		position: relative;
+		display: block;
+		border-radius: 0.3rem;
+		overflow: hidden;
+		padding: 0.3rem;
+		background: linear-gradient(150deg, #2a1b25, #150d15 60%);
+		border: 1px solid var(--frame);
+		box-shadow: 0 26px 56px -26px rgba(0, 0, 0, 0.92);
+		transition: box-shadow 0.35s ease, border-color 0.35s ease;
+	}
+	.shr-hung-frame img {
+		display: block;
+		width: 100%;
+		aspect-ratio: 4 / 3;
+		object-fit: cover;
+		border-radius: 0.15rem;
+		transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1), filter 0.45s ease;
+		filter: saturate(0.78) brightness(0.82);
+	}
+	/* glass: a diagonal reflection that slides off on hover */
+	.shr-hung-glass {
+		position: absolute; inset: 0.3rem;
+		border-radius: 0.15rem;
+		background: linear-gradient(118deg, rgba(255, 255, 255, 0.2) 0%, transparent 34%, transparent 66%, rgba(255, 255, 255, 0.08) 100%);
+		opacity: 0.75;
+		transition: opacity 0.4s ease, transform 0.6s ease;
+		pointer-events: none;
+	}
+	.shr-hung:hover { z-index: 8; }
+	.shr-hung:hover .shr-hung-frame {
+		border-color: color-mix(in srgb, var(--c) 70%, transparent);
+		box-shadow:
+			0 40px 80px -30px rgba(0, 0, 0, 0.95),
+			0 0 60px -14px color-mix(in srgb, var(--c) 75%, transparent);
+	}
+	.shr-hung:hover .shr-hung-frame img { transform: scale(1.07); filter: saturate(1.12) brightness(1); }
+	.shr-hung:hover .shr-hung-glass { opacity: 0.25; transform: translateX(14%); }
+
+	.shr-hung-label {
+		display: block;
+		padding: 0.45rem 0.1rem 0;
+		opacity: 0;
+		transform: translateY(-5px);
+		transition: opacity 0.3s ease, transform 0.3s ease;
+	}
+	.shr-hung:hover .shr-hung-label, .shr-hung:focus-visible .shr-hung-label { opacity: 1; transform: translateY(0); }
+	.shr-hung-label b {
+		display: block;
+		font-family: var(--serif);
+		font-weight: 600;
+		font-size: 0.86rem;
+		line-height: 1.2;
+	}
+	.shr-hung-label em {
+		display: block;
+		font-style: normal;
+		font-size: 0.62rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: color-mix(in srgb, var(--c) 45%, #fff);
+		margin-top: 0.15rem;
+	}
+
+	/* ═══ the ticker ═════════════════════════════════════════════ */
+	.shr-ticker {
+		position: relative;
+		z-index: 2;
+		margin: 0 -5%;
+		padding: 0.85rem 0;
+		border-top: 1px solid rgba(255, 255, 255, 0.09);
+		border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+		background: color-mix(in srgb, var(--sa) 7%, transparent);
+		overflow: hidden;
+		mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+		-webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+	}
+	.shr-ticker-track { display: flex; width: max-content; animation: shr-roll 34s linear infinite; }
+	.shr-ticker-run { display: flex; align-items: center; }
+	.shr-ticker-i {
+		display: inline-flex; align-items: center; gap: 1.6rem;
+		font-family: var(--serif);
+		font-style: italic;
+		font-size: clamp(0.95rem, 1.5vw, 1.25rem);
+		color: var(--muted);
+		padding-right: 1.6rem;
+		white-space: nowrap;
+	}
+	.shr-ticker-i i {
+		width: 5px; height: 5px; border-radius: 9999px;
+		background: var(--sa);
+		box-shadow: 0 0 10px 1px color-mix(in srgb, var(--sa) 65%, transparent);
+	}
+	@keyframes shr-roll { to { transform: translateX(-50%); } }
+	.shr-ticker:hover .shr-ticker-track { animation-play-state: paused; }
+
+	/* ═══ daylight ═══════════════════════════════════════════════
+	   The same room with the blinds open: a warm plaster wall, ink
+	   type, the frames now pale mounts. The pieces stay saturated,
+	   because in daylight the work is what you look at. */
+	:global(html:not(.dark)) .shr {
+		--ink: #24101c;
+		--muted: rgba(36, 16, 28, 0.72);
+		--faint: rgba(36, 16, 28, 0.68);
+		--frame: rgba(36, 16, 28, 0.16);
+		color: #24101c;
+		background:
+			radial-gradient(1200px 700px at 78% -12%, color-mix(in srgb, var(--sa) 16%, transparent), transparent 62%),
+			linear-gradient(180deg, #f7ecf1 0%, #f1e3ea 48%, #ece0e6 100%);
+	}
+	:global(html:not(.dark)) .shr-wallpaper {
+		background-image:
+			repeating-linear-gradient(90deg, transparent 0 79px, rgba(36, 16, 28, 0.045) 79px 80px),
+			repeating-linear-gradient(180deg, transparent 0 79px, rgba(36, 16, 28, 0.03) 79px 80px);
+	}
+	:global(html:not(.dark)) .shr-grain { opacity: 0.16; }
+	:global(html:not(.dark)) .shr-orb { opacity: 0.55; }
+	:global(html:not(.dark)) .shr-beam { mix-blend-mode: multiply; opacity: 0.5; }
+	:global(html:not(.dark)) .shr-mote { opacity: 0; }
+	:global(html:not(.dark)) .shr-plaque { color: #a01050; border-color: rgba(160, 16, 80, 0.4); }
+	:global(html:not(.dark)) .shr-flip b {
+		background: linear-gradient(96deg, #a01050, var(--sa) 60%, #7c3aed);
+		-webkit-background-clip: text; background-clip: text;
+	}
+	:global(html:not(.dark)) .shr-colophon { border-top-color: rgba(36, 16, 28, 0.14); }
+	:global(html:not(.dark)) .shr-colophon b {
+		background: linear-gradient(135deg, #a01050, #7c3aed);
+		-webkit-background-clip: text; background-clip: text;
+	}
+	:global(html:not(.dark)) .shr-hero-frame,
+	:global(html:not(.dark)) .shr-hung-frame {
+		background: linear-gradient(150deg, #fffdfe, #f3e7ed 60%);
+	}
+	:global(html:not(.dark)) .shr-hung-frame img { filter: saturate(0.95) brightness(0.98); }
+	:global(html:not(.dark)) .shr-hung-glass { opacity: 0.4; }
+	:global(html:not(.dark)) .shr-hung-label em { color: color-mix(in srgb, var(--c) 72%, #3a0f26); }
+	:global(html:not(.dark)) .shr-ticker {
+		border-color: rgba(36, 16, 28, 0.14);
+	}
+	:global(html:not(.dark)) .shr-rail {
+		background: linear-gradient(90deg, transparent, rgba(36, 16, 28, 0.28), transparent);
+	}
+
+	/* ═══ smaller rooms ══════════════════════════════════════════ */
+	@media (max-width: 1079px) {
+		.shr-wall { min-height: 0; padding: 3.2rem 0 8rem; }
+		.shr-hero-frame { width: 100%; }
+		.shr-hung { width: clamp(6rem, 17vw, 9rem); }
+		.shr-hung--a { top: 0; left: 0; }
+		.shr-hung--b { top: 0; left: 50%; transform: translateX(-50%) rotate(var(--rot)); }
+		.shr-hung--c { top: 0; right: 0; left: auto; bottom: auto; }
+		.shr-hung--d { bottom: 0; left: 0; right: auto; top: auto; }
+		.shr-hung--e { bottom: 0; left: 50%; right: auto; top: auto; transform: translateX(-50%) rotate(var(--rot)); }
+		.shr-hung--f { bottom: 0; right: 0; top: auto; }
+	}
+	@media (max-width: 620px) {
+		.shr-wall { padding: 2.6rem 0 7rem; }
+		.shr-hung { width: calc(33.333% - 0.5rem); }
+		.shr-hung-label { opacity: 1; transform: none; }
+		.shr-hung-label b { font-size: 0.72rem; }
+		.shr-hung-label em { font-size: 0.56rem; }
+		.shr-head { font-size: clamp(2.1rem, 9vw, 3rem); }
+		.shr-sub { font-size: 0.98rem; }
+		.shr-swatch { width: 2.2rem; height: 2.2rem; }
+		.shr-swatch:hover, .shr-swatch.is-on { width: 3.8rem; }
+	}
+
+	/* ═══ stillness, on request ══════════════════════════════════ */
+	@media (prefers-reduced-motion: reduce) {
+		.shr-orb, .shr-grain, .shr-mote, .shr-plaque, .shr-flip b,
+		.shr-ticker-track, .shr-ghost-ic, .shr-swatch i,
+		.shr-line > span, .shr-sub, .shr-cta, .shr-palette,
+		.shr-colophon li, .shr-wall, .shr-hung,
+		:global(.hero-studio .btn--accent::after) { animation: none !important; }
+		.shr-mote { display: none; }
+		.shr-flip b { opacity: 0; }
+		.shr-flip b:first-child { opacity: 1; }
+		.shr-hero-frame, .shr-hung { transition: none; }
 	}
 </style>
