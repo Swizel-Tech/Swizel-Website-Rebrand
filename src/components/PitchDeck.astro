@@ -481,6 +481,8 @@ const faqSchema = {
 									href={s.work.url}
 									target={s.work.url.startsWith('http') ? '_blank' : undefined}
 									rel={s.work.url.startsWith('http') ? 'noopener' : undefined}
+									data-leaving={s.work.url.startsWith('http') ? '' : undefined}
+									data-leaving-name={s.work.url.startsWith('http') ? s.work.name : undefined}
 								>
 									<span class="pdeck__work-mark" aria-hidden="true">
 										<Icon width={19} name={s.kickerIcon} />

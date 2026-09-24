@@ -137,6 +137,7 @@ export function initBoardroomBody() {
 			if (linkedinEl) {
 				if (linkedin) {
 					linkedinEl.href = linkedin;
+					linkedinEl.dataset.leavingName = `${name} on LinkedIn`;
 					linkedinEl.hidden = false;
 				} else {
 					linkedinEl.hidden = true;

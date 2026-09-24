@@ -213,7 +213,7 @@ const logos = [
 								href={w.url || undefined}
 								target={w.url && w.url.startsWith('http') ? '_blank' : undefined}
 								rel={w.url && w.url.startsWith('http') ? 'noopener noreferrer' : undefined}
-								data-leaving={w.url && w.url.startsWith('http') ? w.name : undefined}
+								data-leaving={w.url && w.url.startsWith('http') ? new URL(w.url).hostname.replace(/^www\./, '') : undefined}
 								data-leaving-name={w.url && w.url.startsWith('http') ? w.name : undefined}
 							>
 								<span class="sd-art-frame">
@@ -275,7 +275,7 @@ const logos = [
 							href={ex.url || undefined}
 							target={ex.url ? '_blank' : undefined}
 							rel={ex.url ? 'noopener noreferrer' : undefined}
-							data-leaving={ex.url ? ex.name : undefined}
+							data-leaving={ex.url ? new URL(ex.url).hostname.replace(/^www\./, '') : undefined}
 							data-leaving-name={ex.url ? ex.name : undefined}
 						>
 							<img src={ex.img} alt={`${ex.name} — ${ex.sector}`} loading="lazy" />
@@ -290,7 +290,7 @@ const logos = [
 								{ex.tags.map((t) => <li>{t}</li>)}
 							</ul>
 							{ex.url && (
-								<a href={ex.url} target="_blank" rel="noopener noreferrer" data-leaving={ex.name} data-leaving-name={ex.name} class="sd-link">
+								<a href={ex.url} target="_blank" rel="noopener noreferrer" data-leaving={new URL(ex.url).hostname.replace(/^www\./, '')} data-leaving-name={ex.name} class="sd-link">
 									View the live piece
 									<Icon width={15} name="mdi:arrow-top-right" />
 								</a>
@@ -1854,4 +1854,66 @@ const logos = [
 		color: var(--sd-muted);
 	}
 
+
+	/* ═══ the phone: wall labels, not mastheads ══════════════════
+	   The folio strip is a masthead for a wide page — on a phone it was
+	   three lines of shouted capitals above anything worth reading. And
+	   the section rule, a two-column row on the desktop, broke its own
+	   eyebrow mid-phrase ("In the / studio") fighting the caption for
+	   the same row. Stacked, each line is whole. */
+	@media (max-width: 720px) {
+		.sd-folio { display: none; }
+
+		/* the five steps are one chain, not two broken halves: the label
+		   takes its own line and the chain holds a single row, sized to
+		   fit a 360px screen and free to slide if it ever doesn't */
+		.sd-fs-how {
+			display: block;
+			padding: 1rem 0;
+		}
+		.sd-fs-how-label {
+			display: block;
+			margin-bottom: 0.55rem;
+			font-size: 0.66rem;
+			letter-spacing: 0.2em;
+		}
+		.sd-fs-flow {
+			flex-wrap: nowrap;
+			gap: 0.42rem;
+			overflow-x: auto;
+			scrollbar-width: none;
+			-webkit-overflow-scrolling: touch;
+		}
+		.sd-fs-flow::-webkit-scrollbar { display: none; }
+		.sd-fs-flow li { gap: 0.42rem; flex: none; }
+		.sd-fs-step { font-size: 0.92rem; white-space: nowrap; }
+		.sd-fs-arrow { font-size: 0.8rem; }
+
+		.sd-rule {
+			display: block;
+			padding-bottom: 0.7rem;
+		}
+		.sd-rule span:first-child {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+			white-space: nowrap;
+			font-size: 0.66rem;
+			letter-spacing: 0.2em;
+		}
+		.sd-rule span:first-child::before {
+			content: '';
+			flex: none;
+			width: 1.15rem;
+			height: 2px;
+			background: currentColor;
+			opacity: 0.85;
+		}
+		.sd-rule span:last-child {
+			display: block;
+			margin-top: 0.34rem;
+			font-size: 1.04rem;
+			line-height: 1.32;
+		}
+	}
 </style>

@@ -44,9 +44,13 @@ export function initStudioBody() {
 				if (live.dataset.out) {
 					visit.target = '_blank';
 					visit.rel = 'noopener noreferrer';
+					visit.dataset.leaving = live.dataset.host || '';
+					visit.dataset.leavingName = live.dataset.name || '';
 				} else {
 					visit.removeAttribute('target');
 					visit.removeAttribute('rel');
+					delete visit.dataset.leaving;
+					delete visit.dataset.leavingName;
 				}
 			}
 			if (plaque) {
@@ -73,7 +77,12 @@ export function initStudioBody() {
 			card.addEventListener('click', () => {
 				if (i !== at) { go(i); start(); return; }
 				const href = card.dataset.href;
-				if (href) window.open(href, card.dataset.out ? '_blank' : '_self');
+				if (!href) return;
+				if (!card.dataset.out) { window.location.href = href; return; }
+				// Off our turf: ask first, exactly as every other outbound link does.
+				const leave = (window as any).swizelLeave;
+				if (leave) leave(href, card.dataset.host || '', card.dataset.name || '');
+				else window.open(href, '_blank', 'noopener,noreferrer');
 			})
 		);
 		spot.addEventListener('pointerenter', stop);

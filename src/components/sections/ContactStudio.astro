@@ -1,0 +1,934 @@
+---
+// Contact · Studio world — the Commissions Desk of The Swizel Gallery.
+//
+// Every other world asks you to fill in a form. A gallery takes a
+// commission: you fill in a slip at the desk, the attendant stamps it, and
+// somebody comes back to you. So the message is a commission slip on paper
+// — ruled lines, a catalogue number, a wax seal — and the direct routes in
+// are engraved plates on the desk beside it, with a bell to ring if you
+// would rather just talk. The questions people ask before commissioning
+// anything are filed behind it as index cards.
+//
+// Root carries `sbody` (studio engine: .sd-rev reveals) and `sct` (motion
+// engine: tilt / glare), and `view-body-studio` so it is the contact page in
+// this world and nowhere else.
+import { Icon } from 'astro-icon/components';
+import ContactForm from '../blocks/ContactForm.astro';
+import { faq } from '../../consts';
+
+const deskFaq = faq.slice(0, 6);
+
+// the routes in, as plates on the desk
+const plates = [
+	{
+		icon: 'mdi:phone-outline',
+		k: 'By telephone',
+		v: '+234 810 020 4570',
+		note: 'Mon to Sat, 9am to 6pm WAT',
+		href: 'tel:+2348100204570',
+	},
+	{
+		icon: 'mdi:whatsapp',
+		k: 'On WhatsApp',
+		v: 'Message the desk',
+		note: 'Voice notes, sketches and links all welcome',
+		href: 'https://wa.me/2348100204570',
+		out: true,
+	},
+	{
+		icon: 'mdi:email-outline',
+		k: 'By letter',
+		v: 'contact@swizel.co',
+		note: 'A project manager reads every one',
+		href: 'mailto:contact@swizel.co',
+	},
+	{
+		icon: 'mdi:map-marker-outline',
+		k: 'In person',
+		v: '2155 Peculiar Estate, Lokogoma, Abuja',
+		note: 'Come and see the walls for yourself',
+		href: undefined,
+	},
+];
+
+// the commission slip carries a number, the way everything here does
+const slipNo = new Date().getFullYear();
+---
+
+<div class="sct sbody view-body view-body-studio">
+	<!-- ambience: the room the desk stands in -->
+	<div class="sct-room" aria-hidden="true">
+		<span class="sct-wash sct-wash--1"></span>
+		<span class="sct-wash sct-wash--2"></span>
+		<span class="sct-grain"></span>
+	</div>
+
+	<!-- ── A · the desk ────────────────────────────────────── -->
+	<section class="sct-sec sct-entry">
+		<div class="sct-wrap">
+			<div class="sct-folio sd-rev">
+				<span>The Swizel Gallery — Commissions Desk</span>
+				<span>Tell us what to craft</span>
+				<span>The door is open</span>
+			</div>
+
+			<div class="sct-open">
+				<div class="sct-open-main">
+					<span class="sct-ghost" aria-hidden="true">hello</span>
+					<h1 class="sct-display sd-rev">
+						Commission<br />
+						<em>the studio.</em>
+					</h1>
+				</div>
+				<div class="sct-open-side sd-rev">
+					<figure class="sct-scroll">
+						<span class="sct-scroll-grain" aria-hidden="true"></span>
+						<p class="sct-scroll-lead">
+							A finished brief or a rough thought on the back of a
+							napkin, both are welcome at this desk. Tell us what you
+							want made and who it is for. A project manager reads
+							every slip that comes in, and you hear back inside one
+							working day.
+						</p>
+					</figure>
+					<span class="sct-open-cue">
+						<span class="sct-pulse" aria-hidden="true"></span>
+						Someone is at the desk right now
+					</span>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── B · the slip and the plates ─────────────────────── -->
+	<section class="sct-sec" data-cursor="pen">
+		<div class="sct-wrap">
+			<div class="sct-rule sd-rev">
+				<span>The commission</span>
+				<span>Fill in the slip · we do the rest</span>
+			</div>
+
+			<div class="sct-desk">
+				<!-- the slip: the shared form, dressed as paper -->
+				<div class="sct-slip sd-rev" data-fa-tilt="2">
+					<span class="sa-glare" aria-hidden="true"></span>
+					<span class="sct-slip-head">
+						<span class="sct-slip-title">Commission slip</span>
+						<span class="sct-slip-no">No. {slipNo} / ____</span>
+					</span>
+					<span class="sct-slip-sub">
+						The Swizel Gallery · Commissions Desk · Abuja
+					</span>
+					<div class="sct-form">
+						<ContactForm />
+					</div>
+					<span class="sct-slip-foot">
+						<span class="sct-seal" aria-hidden="true"></span>
+						<em>Received and read by a person, not a robot.</em>
+					</span>
+					<span class="sct-slip-perf" aria-hidden="true"></span>
+				</div>
+
+				<!-- the desk itself -->
+				<aside class="sct-plates sd-rev">
+					<span class="sct-plates-k">Or speak to the desk</span>
+
+					{
+						plates.map((p, i) => {
+							const Tag = p.href ? 'a' : 'div';
+							return (
+								<Tag
+									class="sct-plate"
+									href={p.href}
+									target={p.out ? '_blank' : undefined}
+									rel={p.out ? 'noopener noreferrer' : undefined}
+									style={`--i:${i}`}
+								>
+									<span class="sct-plate-screw sct-plate-screw--l" aria-hidden="true" />
+									<span class="sct-plate-screw sct-plate-screw--r" aria-hidden="true" />
+									<span class="sct-plate-ic"><Icon width={18} name={p.icon} /></span>
+									<span class="sct-plate-txt">
+										<span class="sct-plate-k">{p.k}</span>
+										<strong class="sct-plate-v">{p.v}</strong>
+										<em class="sct-plate-note">{p.note}</em>
+									</span>
+								</Tag>
+							);
+						})
+					}
+
+					<!-- the bell you ring when you would rather just talk -->
+					<button class="sct-bell" type="button" data-open-chat>
+						<span class="sct-bell-dome" aria-hidden="true">
+							<i class="sct-bell-shine"></i>
+						</span>
+						<span class="sct-bell-txt">
+							<span class="sct-plate-k">Live chat <i class="sct-on">open</i></span>
+							<strong class="sct-plate-v">Ring the bell</strong>
+							<em class="sct-plate-note">Someone answers, here, now</em>
+						</span>
+					</button>
+
+					<span class="sct-stamp">
+						<i>Reply</i>
+						<b>within one</b>
+						<i>business day</i>
+					</span>
+				</aside>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── C · the index cards ─────────────────────────────── -->
+	<section class="sct-sec sct-sec--last" data-cursor="repo">
+		<div class="sct-wrap">
+			<div class="sct-rule sd-rev">
+				<span>Before you commission</span>
+				<span>The questions we are asked most</span>
+			</div>
+			<div class="sct-cards">
+				{
+					deskFaq.map((f, i) => (
+						<details class="sct-card sd-rev" style={`--i:${i % 3}`} open={i === 0}>
+							<summary>
+								<span class="sct-card-no" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+								<span class="sct-card-q">{f.question.replace(/\s+\?/g, '?').trim()}</span>
+								<span class="sct-card-pull" aria-hidden="true">
+									<Icon width={16} name="mdi:chevron-down" />
+								</span>
+							</summary>
+							<p>{f.answer.trim()}</p>
+						</details>
+					))
+				}
+			</div>
+		</div>
+	</section>
+</div>
+
+<style>
+	/* ── Studio Contact — the commissions desk. ── */
+	.sct {
+		--sa-ink: #f3edf0;
+		--sa-muted: rgba(243, 237, 240, 0.64);
+		--sa-faint: rgba(243, 237, 240, 0.42);
+		--sa-acc: var(--view-accent, #ec4899);
+		--sa-line: rgba(243, 237, 240, 0.14);
+		--sa-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+		/* the paper stock, warm in both themes: the slip is lit, the room is not */
+		--sc-paper: #f2e7d5;
+		--sc-paper-2: #e9dcc4;
+		--sc-ink: #2c1c14;
+		--sc-soft: rgba(44, 28, 20, 0.68);
+		--sc-faint: rgba(44, 28, 20, 0.46);
+		--sc-rule: rgba(120, 82, 40, 0.24);
+		--sc-brass: #d9a48c;
+		font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+		position: relative;
+		isolation: isolate;
+		overflow: hidden;
+		background:
+			radial-gradient(1100px 560px at 84% -6%, rgba(236, 72, 153, 0.13), transparent 60%),
+			radial-gradient(820px 480px at 8% 52%, rgba(168, 85, 247, 0.07), transparent 60%),
+			linear-gradient(180deg, #0f0a0d 0%, #130c11 50%, #0b0709 100%);
+		color: var(--sa-ink);
+		padding: clamp(1.25rem, 2.5vw, 2rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 4rem);
+		transition: background 0.4s ease, color 0.4s ease;
+	}
+	:global(html:not(.dark)) .sct {
+		--sa-ink: #1c151a;
+		--sa-muted: rgba(28, 21, 26, 0.7);
+		--sa-faint: rgba(28, 21, 26, 0.48);
+		--sa-acc: #cf2570;
+		--sa-line: rgba(28, 21, 26, 0.14);
+		--sc-paper: #fbf5ea;
+		--sc-paper-2: #f4ecda;
+		--sc-brass: #b07c5e;
+		background:
+			radial-gradient(1100px 560px at 84% -6%, rgba(236, 72, 153, 0.07), transparent 60%),
+			linear-gradient(180deg, #f3ece6 0%, #ece2da 55%, #f3ece6 100%);
+	}
+
+	/* ── the room ── */
+	.sct-room { position: absolute; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+	.sct-wash {
+		position: absolute;
+		border-radius: 50%;
+		filter: blur(70px);
+		opacity: 0.5;
+		animation: sct-drift 26s ease-in-out infinite;
+	}
+	.sct-wash--1 {
+		width: 42vw;
+		height: 42vw;
+		top: -12%;
+		right: -6%;
+		background: radial-gradient(circle, color-mix(in srgb, var(--sa-acc) 26%, transparent), transparent 68%);
+	}
+	.sct-wash--2 {
+		width: 36vw;
+		height: 36vw;
+		bottom: -10%;
+		left: -8%;
+		background: radial-gradient(circle, rgba(168, 85, 247, 0.18), transparent 68%);
+		animation-delay: -9s;
+	}
+	@keyframes sct-drift {
+		0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+		50% { transform: translate3d(2.5%, -3%, 0) scale(1.07); }
+	}
+	.sct-grain {
+		position: absolute;
+		inset: 0;
+		opacity: 0.5;
+		background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)' opacity='0.035'/%3E%3C/svg%3E");
+	}
+
+	.sct-sec { padding-block: clamp(1.4rem, 3vw, 2.4rem); }
+	/* the slip is what people came for: the entrance gives it the room */
+	.sct-entry { padding-top: clamp(0.35rem, 1vw, 0.7rem); padding-bottom: clamp(0.5rem, 1.2vw, 0.9rem); }
+	.sct-sec--last { padding-bottom: clamp(1.5rem, 3vw, 2.5rem); }
+	.sct-wrap { max-width: 80rem; margin: 0 auto; }
+
+	.sct-folio {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+		flex-wrap: wrap;
+		padding: 0.6rem 0;
+		border-top: 2px solid var(--sa-ink);
+		border-bottom: 1px solid var(--sa-line);
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--sa-faint);
+		margin-bottom: clamp(1rem, 2.2vw, 1.6rem);
+	}
+	.sct-folio span:first-child { color: var(--sa-ink); }
+
+	.sct-rule {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 1rem;
+		padding-bottom: 0.5rem;
+		border-bottom: 1px solid var(--sa-line);
+		margin-bottom: clamp(1rem, 2.2vw, 1.6rem);
+		font-size: 0.74rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+	}
+	.sct-rule span:first-child { color: var(--sa-acc); }
+	.sct-rule span:last-child {
+		color: var(--sa-faint);
+		font-style: italic;
+		font-family: var(--sa-serif);
+		letter-spacing: 0.02em;
+		text-transform: none;
+		font-size: 0.98rem;
+		font-weight: 400;
+	}
+
+	/* ── A · the entrance ── */
+	.sct-open {
+		display: grid;
+		gap: clamp(1.1rem, 2.6vw, 2.2rem);
+		align-items: end;
+	}
+	@media (min-width: 920px) {
+		.sct-open { grid-template-columns: 1.1fr 0.9fr; }
+	}
+	.sct-open-main { position: relative; }
+	.sct-ghost {
+		position: absolute;
+		left: -0.06em;
+		bottom: -0.08em;
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: clamp(6rem, 16vw, 13rem);
+		line-height: 0.74;
+		color: color-mix(in srgb, var(--sa-ink) 3.5%, transparent);
+		pointer-events: none;
+		user-select: none;
+		z-index: 0;
+	}
+	.sct-display {
+		position: relative;
+		z-index: 1;
+		font-size: clamp(2.5rem, 5.6vw, 4.3rem);
+		font-weight: 850;
+		letter-spacing: -0.03em;
+		line-height: 0.98;
+		margin: 0;
+	}
+	.sct-display em {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-weight: 500;
+		letter-spacing: -0.01em;
+		color: var(--sa-acc);
+	}
+	.sct-open-side { max-width: 34rem; }
+
+	.sct-scroll {
+		position: relative;
+		margin: 0 0 0.85rem;
+		padding: 1.35rem 1.7rem;
+		color: var(--sc-ink);
+		background:
+			radial-gradient(130% 100% at 14% 0%, rgba(255, 255, 255, 0.6), transparent 62%),
+			linear-gradient(166deg, #fbf4e6 0%, #f4ecda 58%, #ece1c9 100%);
+		box-shadow:
+			inset 0 0 22px rgba(120, 82, 40, 0.11),
+			0 18px 42px -26px rgba(0, 0, 0, 0.5);
+		transform: rotate(0.45deg);
+		-webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='220' preserveAspectRatio='none'%3E%3Cfilter id='t' x='-6%' y='-12%' width='112%' height='124%'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.017 0.062' numOctaves='4' seed='7' result='n'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='n' scale='10' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3Crect x='10' y='11' width='580' height='198' rx='18' ry='22' fill='%23fff' filter='url(%23t)'/%3E%3C/svg%3E");
+		mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='220' preserveAspectRatio='none'%3E%3Cfilter id='t' x='-6%' y='-12%' width='112%' height='124%'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.017 0.062' numOctaves='4' seed='7' result='n'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='n' scale='10' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3Crect x='10' y='11' width='580' height='198' rx='18' ry='22' fill='%23fff' filter='url(%23t)'/%3E%3C/svg%3E");
+		-webkit-mask-size: 100% 100%;
+		mask-size: 100% 100%;
+		-webkit-mask-repeat: no-repeat;
+		mask-repeat: no-repeat;
+	}
+	.sct-scroll-grain {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		opacity: 0.5;
+		mix-blend-mode: multiply;
+		background-image:
+			repeating-linear-gradient(91deg, rgba(120, 82, 40, 0.055) 0 1px, transparent 1px 5px),
+			url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='150' height='150' filter='url(%23g)' opacity='0.4'/%3E%3C/svg%3E");
+	}
+	.sct-scroll-lead {
+		position: relative;
+		z-index: 1;
+		margin: 0;
+		color: var(--sc-ink);
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: clamp(1.04rem, 1.38vw, 1.24rem);
+		line-height: 1.62;
+	}
+	.sct-open-cue {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+		font-size: 0.82rem;
+		font-weight: 700;
+		letter-spacing: 0.02em;
+		color: var(--sa-muted);
+	}
+	.sct-pulse {
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		background: #3ddc97;
+		box-shadow: 0 0 0 0 rgba(61, 220, 151, 0.6);
+		animation: sct-ping 2.4s ease-out infinite;
+	}
+	@keyframes sct-ping {
+		0% { box-shadow: 0 0 0 0 rgba(61, 220, 151, 0.55); }
+		70% { box-shadow: 0 0 0 9px rgba(61, 220, 151, 0); }
+		100% { box-shadow: 0 0 0 0 rgba(61, 220, 151, 0); }
+	}
+
+	/* ── B · the desk ── */
+	.sct-desk {
+		display: grid;
+		gap: clamp(1.4rem, 3vw, 2.2rem);
+		align-items: start;
+	}
+	@media (min-width: 980px) {
+		.sct-desk { grid-template-columns: 1.25fr 0.75fr; }
+	}
+
+	/* the slip ── paper on the desk, torn along the bottom */
+	.sct-slip {
+		position: relative;
+		padding: clamp(1.3rem, 2.6vw, 2rem) clamp(1.2rem, 2.6vw, 2.1rem) clamp(1.6rem, 3vw, 2.3rem);
+		color: var(--sc-ink);
+		background:
+			radial-gradient(120% 90% at 20% 0%, rgba(255, 255, 255, 0.55), transparent 58%),
+			linear-gradient(168deg, var(--sc-paper) 0%, var(--sc-paper-2) 100%);
+		border: 1px solid var(--sc-rule);
+		border-radius: 0.24rem;
+		box-shadow:
+			inset 0 0 0 1px rgba(255, 255, 255, 0.5),
+			inset 0 0 44px rgba(120, 82, 40, 0.08),
+			0 34px 76px -32px rgba(0, 0, 0, 0.68);
+		transform: rotate(-0.25deg);
+	}
+	/* the ruled paper it is printed on */
+	.sct-slip::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		opacity: 0.4;
+		mix-blend-mode: multiply;
+		background-image: repeating-linear-gradient(180deg, transparent 0 33px, rgba(120, 82, 40, 0.09) 33px 34px);
+		border-radius: inherit;
+	}
+	.sct-slip-head {
+		position: relative;
+		z-index: 1;
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 1rem;
+		flex-wrap: wrap;
+		padding-bottom: 0.45rem;
+		border-bottom: 2px solid var(--sc-ink);
+	}
+	.sct-slip-title {
+		font-size: clamp(1.02rem, 1.9vw, 1.3rem);
+		font-weight: 900;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+	}
+	.sct-slip-no {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 0.88rem;
+		color: var(--sc-faint);
+		white-space: nowrap;
+	}
+	.sct-slip-sub {
+		position: relative;
+		z-index: 1;
+		display: block;
+		margin: 0.4rem 0 1.35rem;
+		font-size: 0.68rem;
+		font-weight: 700;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--sc-faint);
+	}
+	.sct-slip-foot {
+		position: relative;
+		z-index: 1;
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		margin-top: 1.2rem;
+		padding-top: 0.9rem;
+		border-top: 1px solid var(--sc-rule);
+	}
+	.sct-slip-foot em {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 0.88rem;
+		color: var(--sc-soft);
+	}
+	.sct-seal {
+		flex: none;
+		width: 30px;
+		height: 30px;
+		border-radius: 46% 54% 52% 48% / 50% 46% 54% 50%;
+		background: radial-gradient(circle at 34% 30%, #e0608f, var(--sa-acc) 58%, #7c1039);
+		box-shadow: inset 0 -2px 4px rgba(0, 0, 0, 0.35), 0 4px 10px -4px rgba(0, 0, 0, 0.5);
+	}
+	.sct-seal::after {
+		content: 'S';
+		display: grid;
+		place-items: center;
+		height: 100%;
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 0.82rem;
+		color: rgba(255, 255, 255, 0.7);
+	}
+	/* the perforated edge it was torn from the pad along */
+	.sct-slip-perf {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: -1px;
+		height: 6px;
+		background-image: radial-gradient(circle at 5px 6px, transparent 4px, var(--sc-rule) 4px 4.6px, transparent 4.7px);
+		background-size: 11px 12px;
+		background-repeat: repeat-x;
+		opacity: 0.7;
+		pointer-events: none;
+	}
+
+	/* the shared ContactForm, dressed as ruled lines on the slip.
+	   It ships with `textWhite` because every other world puts it on a dark
+	   panel; on cream paper that made the labels invisible. These give it
+	   ink, rules to write on, and a stamped button. */
+	.sct-form { position: relative; z-index: 1; }
+	.sct-form :global(#contact-form) { display: grid; gap: 0.1rem; }
+	.sct-form :global(#contact-form > div) { margin-block: 0.45rem; }
+	.sct-form :global(label > span) {
+		font-size: 0.68rem !important;
+		font-weight: 800;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--sc-faint) !important;
+	}
+	.sct-form :global(input),
+	.sct-form :global(textarea) {
+		width: 100%;
+		padding: 0.55rem 0.15rem;
+		border: 0 !important;
+		border-bottom: 1.5px solid color-mix(in srgb, var(--sc-ink) 32%, transparent) !important;
+		border-radius: 0 !important;
+		background: transparent !important;
+		color: var(--sc-ink) !important;
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 1.04rem;
+		transition: border-color 0.2s ease, box-shadow 0.2s ease;
+	}
+	.sct-form :global(textarea) { min-height: 7.5rem; resize: vertical; }
+	.sct-form :global(input::placeholder),
+	.sct-form :global(textarea::placeholder) {
+		color: var(--sc-faint) !important;
+		font-style: italic;
+	}
+	.sct-form :global(input:focus),
+	.sct-form :global(textarea:focus) {
+		outline: none;
+		border-bottom-color: var(--sa-acc) !important;
+		box-shadow: 0 2px 0 -1px var(--sa-acc);
+	}
+	/* the button is the desk stamp coming down */
+	.sct-form :global(#form-button) {
+		margin-top: 0.9rem;
+		border-radius: 0 !important;
+		padding-inline: 2.6rem !important;
+		font-weight: 900 !important;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		font-size: 0.78rem !important;
+		background: linear-gradient(95deg, var(--sa-acc), #a855f7) !important;
+		box-shadow: 0 16px 34px -16px color-mix(in srgb, var(--sa-acc) 80%, transparent);
+		transition: transform 0.18s ease, filter 0.25s ease;
+	}
+	.sct-form :global(#form-button:hover) { filter: brightness(1.07); transform: translateY(-1px); }
+	.sct-form :global(#form-button:active) { transform: translateY(1px) scale(0.99); }
+
+	/* ── the plates on the desk ── */
+	.sct-plates { display: grid; gap: 0.6rem; align-content: start; }
+	.sct-plates-k {
+		font-size: 0.68rem;
+		font-weight: 800;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+		color: var(--sa-faint);
+		margin-bottom: 0.2rem;
+	}
+	.sct-plate,
+	.sct-bell {
+		position: relative;
+		display: flex;
+		align-items: center;
+		gap: 0.85rem;
+		width: 100%;
+		text-align: left;
+		padding: 0.85rem 1rem 0.85rem 1.1rem;
+		border: 1px solid color-mix(in srgb, var(--sc-brass) 42%, transparent);
+		border-radius: 0.2rem;
+		background:
+			linear-gradient(140deg, color-mix(in srgb, var(--sc-brass) 17%, transparent), transparent 62%),
+			color-mix(in srgb, var(--sa-ink) 5%, transparent);
+		color: var(--sa-ink);
+		cursor: pointer;
+		transition: border-color 0.25s ease, transform 0.25s ease, background 0.25s ease;
+	}
+	.sct-plate:hover,
+	.sct-bell:hover {
+		transform: translateX(3px);
+		border-color: color-mix(in srgb, var(--sc-brass) 85%, transparent);
+		background:
+			linear-gradient(140deg, color-mix(in srgb, var(--sc-brass) 26%, transparent), transparent 62%),
+			color-mix(in srgb, var(--sa-ink) 7%, transparent);
+	}
+	/* the two screws that hold an engraved plate to the desk */
+	.sct-plate-screw {
+		position: absolute;
+		top: 50%;
+		width: 5px;
+		height: 5px;
+		margin-top: -2.5px;
+		border-radius: 50%;
+		background: radial-gradient(circle at 34% 30%, color-mix(in srgb, var(--sc-brass) 96%, #fff 30%), #7d5240);
+		opacity: 0.75;
+	}
+	.sct-plate-screw--l { left: 0.4rem; }
+	.sct-plate-screw--r { right: 0.4rem; }
+	.sct-plate-ic {
+		flex: none;
+		display: grid;
+		place-items: center;
+		width: 2.1rem;
+		height: 2.1rem;
+		border-radius: 50%;
+		color: var(--sc-brass);
+		border: 1px solid color-mix(in srgb, var(--sc-brass) 40%, transparent);
+	}
+	.sct-plate-txt { display: grid; gap: 0.1rem; min-width: 0; }
+	.sct-plate-k {
+		font-size: 0.62rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--sa-faint);
+	}
+	.sct-plate-v {
+		font-size: 0.96rem;
+		font-weight: 800;
+		letter-spacing: -0.005em;
+		color: var(--sa-ink);
+		overflow-wrap: anywhere;
+	}
+	.sct-plate-note {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 0.8rem;
+		color: var(--sa-faint);
+	}
+
+	/* the bell */
+	.sct-bell { border-color: color-mix(in srgb, var(--sa-acc) 42%, transparent); }
+	.sct-bell:hover { border-color: color-mix(in srgb, var(--sa-acc) 80%, transparent); }
+	.sct-bell-dome {
+		position: relative;
+		flex: none;
+		width: 2.2rem;
+		height: 2.1rem;
+		transform-origin: 50% 92%;
+	}
+	/* the dome */
+	.sct-bell-dome::before {
+		content: '';
+		position: absolute;
+		left: 9%;
+		right: 9%;
+		top: 16%;
+		bottom: 26%;
+		border-radius: 50% 50% 12% 12% / 68% 68% 20% 20%;
+		background:
+			radial-gradient(60% 45% at 32% 22%, rgba(255, 255, 255, 0.6), transparent 70%),
+			linear-gradient(165deg, color-mix(in srgb, var(--sc-brass) 96%, #fff 26%), #8d5b44 66%, #5f3a2a);
+		box-shadow: 0 5px 12px -7px rgba(0, 0, 0, 0.7);
+	}
+	/* the base it sits on */
+	.sct-bell-dome::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 16%;
+		height: 4px;
+		border-radius: 2px;
+		background: linear-gradient(180deg, color-mix(in srgb, var(--sc-brass) 92%, #fff 16%), #5f3a2a);
+	}
+	.sct-bell:hover .sct-bell-dome { animation: sct-ring 0.55s ease-in-out; }
+	@keyframes sct-ring {
+		0%, 100% { transform: rotate(0); }
+		25% { transform: rotate(-9deg); }
+		60% { transform: rotate(7deg); }
+	}
+	/* the knob on top, where you press it */
+	.sct-bell-shine {
+		position: absolute;
+		left: 50%;
+		top: 4%;
+		width: 6px;
+		height: 6px;
+		margin-left: -3px;
+		border-radius: 50%;
+		background: linear-gradient(180deg, color-mix(in srgb, var(--sc-brass) 92%, #fff 40%), #7d5240);
+		z-index: 1;
+	}
+	.sct-bell-txt { display: grid; gap: 0.1rem; text-align: left; }
+	.sct-on {
+		display: inline-block;
+		margin-left: 0.35rem;
+		padding: 0.06rem 0.38rem;
+		font-style: normal;
+		font-size: 0.56rem;
+		letter-spacing: 0.12em;
+		color: #063;
+		background: #3ddc97;
+		border-radius: 2px;
+	}
+
+	/* the stamp the attendant presses on every slip */
+	.sct-stamp {
+		display: grid;
+		justify-self: start;
+		justify-items: center;
+		gap: 0.1rem;
+		margin-top: 0.75rem;
+		padding: 0.7rem 1.35rem;
+		border: 2px solid color-mix(in srgb, var(--sa-acc) 55%, transparent);
+		border-radius: 0.2rem;
+		color: var(--sa-acc);
+		transform: rotate(-2.2deg);
+		box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--sa-acc) 30%, transparent);
+		opacity: 0.92;
+	}
+	.sct-stamp i {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 0.78rem;
+		letter-spacing: 0.04em;
+	}
+	.sct-stamp b {
+		font-size: 0.88rem;
+		font-weight: 900;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+	}
+
+	/* ── C · the index cards ── */
+	.sct-cards {
+		display: grid;
+		gap: 0.8rem;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+	@media (max-width: 860px) {
+		.sct-cards { grid-template-columns: 1fr; }
+	}
+	.sct-card {
+		align-self: start;
+		position: relative;
+		padding: 0;
+		color: var(--sc-ink);
+		background:
+			radial-gradient(120% 90% at 20% 0%, rgba(255, 255, 255, 0.5), transparent 58%),
+			linear-gradient(168deg, var(--sc-paper) 0%, var(--sc-paper-2) 100%);
+		border: 1px solid var(--sc-rule);
+		border-radius: 0.2rem;
+		box-shadow:
+			inset 0 0 0 1px rgba(255, 255, 255, 0.45),
+			0 18px 40px -26px rgba(0, 0, 0, 0.6);
+		transition: box-shadow 0.3s ease, transform 0.3s ease;
+	}
+	.sct-card:hover { transform: translateY(-2px); }
+	/* the red index line every catalogue card is ruled with. It sits under
+	   the question rather than at a fixed height, so a question that runs
+	   to two lines isn't struck through by it. */
+	.sct-card summary {
+		display: flex;
+		align-items: center;
+		gap: 0.7rem;
+		padding: 0.95rem 1rem;
+		cursor: pointer;
+		list-style: none;
+		border-bottom: 1px solid color-mix(in srgb, var(--sa-acc) 30%, transparent);
+	}
+	.sct-card summary::-webkit-details-marker { display: none; }
+	.sct-card-no {
+		flex: none;
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 0.82rem;
+		color: var(--sa-acc);
+	}
+	.sct-card-q {
+		flex: 1 1 auto;
+		font-size: 0.94rem;
+		font-weight: 800;
+		letter-spacing: -0.005em;
+		line-height: 1.35;
+	}
+	.sct-card-pull {
+		flex: none;
+		display: grid;
+		place-items: center;
+		width: 1.6rem;
+		height: 1.6rem;
+		border-radius: 50%;
+		color: var(--sc-brass);
+		border: 1px solid color-mix(in srgb, var(--sc-brass) 45%, transparent);
+		transition: transform 0.28s ease, background 0.25s ease;
+	}
+	.sct-card[open] .sct-card-pull {
+		transform: rotate(180deg);
+		background: color-mix(in srgb, var(--sc-brass) 18%, transparent);
+	}
+	.sct-card p {
+		margin: 0;
+		padding: 0 1rem 1.05rem;
+		font-size: 0.9rem;
+		line-height: 1.68;
+		color: var(--sc-soft);
+	}
+
+	/* ── shared bits ── */
+	.sa-glare {
+		position: absolute;
+		inset: 0;
+		border-radius: inherit;
+		background: radial-gradient(360px 240px at var(--gx, 50%) var(--gy, 18%), color-mix(in srgb, var(--sa-acc) 10%, transparent), transparent 70%);
+		opacity: 0;
+		transition: opacity 0.3s ease;
+		pointer-events: none;
+		z-index: 2;
+	}
+	[data-fa-tilt]:hover .sa-glare { opacity: 1; }
+
+	.sd-rev {
+		opacity: 0;
+		transform: translateY(22px);
+		transition: opacity 0.65s ease, transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+		transition-delay: calc(var(--i, 0) * 0.06s);
+	}
+	.sd-rev.is-on { opacity: 1; transform: translateY(0); }
+
+	@media (prefers-reduced-motion: reduce) {
+		.sd-rev { opacity: 1; transform: none; transition: none; }
+		.sct-wash, .sct-pulse { animation: none; }
+	}
+
+	/* ═══ the phone ══════════════════════════════════════════════ */
+	@media (max-width: 720px) {
+		.sct-folio { display: none; }
+
+		/* on a phone the entrance was a whole screen of its own; the
+		   heading stays, everything around it gives up its slack so the
+		   thing people came for is reachable in one short scroll */
+		.sct-sec { padding-block: 1.1rem; }
+		.sct-display { font-size: clamp(2.2rem, 11.5vw, 3.1rem); }
+		.sct-open { gap: 0.85rem; }
+		.sct-scroll { padding: 1.1rem 1.3rem; }
+		.sct-scroll-lead { font-size: 1rem; line-height: 1.55; }
+
+		/* the outline word crowds the display type at this size */
+		.sct-ghost { display: none; }
+
+		.sct-rule { display: block; padding-bottom: 0.7rem; }
+		.sct-rule span:first-child {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+			white-space: nowrap;
+			font-size: 0.66rem;
+			letter-spacing: 0.2em;
+		}
+		.sct-rule span:first-child::before {
+			content: '';
+			flex: none;
+			width: 1.15rem;
+			height: 2px;
+			background: currentColor;
+			opacity: 0.85;
+		}
+		.sct-rule span:last-child {
+			display: block;
+			margin-top: 0.34rem;
+			font-size: 1.04rem;
+			line-height: 1.32;
+		}
+
+		.sct-slip { transform: none; }
+		.sct-slip-head { flex-wrap: nowrap; }
+		.sct-slip-title { font-size: 0.96rem; letter-spacing: 0.16em; }
+		.sct-stamp { justify-self: start; }
+	}
+</style>

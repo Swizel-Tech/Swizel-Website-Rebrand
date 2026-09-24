@@ -37,4 +37,4 @@ The real estate market is plagued with a lot of volatility, ranging from the eco
 
 We believe trust is the foundation of every successful venture. That is why we have created a platform where buyers and sellers can interact knowing that they are in a safe space. We aim to be a stabilizing and reliable entity in the real estate market. Our great team of young professionals is always working to ensure both customers and landlords enjoy a mutually beneficial relationship and experience.
 
-<a class="!text-darker underline underline-offset-2" target="_blank" rel="noopener noreferrer" href="https://brixmarket.com/">Visit Brixmarket<a>
+<a class="!text-darker underline underline-offset-2" target="_blank" rel="noopener noreferrer" data-leaving="brixmarket.com" data-leaving-name="Brixmarket" href="https://brixmarket.com/">Visit Brixmarket<a>

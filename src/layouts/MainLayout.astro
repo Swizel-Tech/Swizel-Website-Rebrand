@@ -930,6 +930,10 @@ const {
 				leaveModal.classList.add('is-open');
 				document.body.style.overflow = 'hidden';
 			};
+			// Carousels and canvas-style widgets navigate from script rather than
+			// from an <a>, so they can't rely on the delegated listener below.
+			// They call this instead, and nothing leaves the site unannounced.
+			(window as any).swizelLeave = openLeave;
 			const closeLeave = () => {
 				leaveModal.classList.remove('is-open');
 				document.body.style.overflow = '';

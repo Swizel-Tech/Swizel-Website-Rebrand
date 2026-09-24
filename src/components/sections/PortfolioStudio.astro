@@ -12,11 +12,12 @@ const sectorShown: Record<ProjectSector, string> = {
 	agri: '12+', health: '6+', property: '14+', media: '9+', commerce: '8+', product: '18+',
 };
 
+// `short` is what the phone shows — see the note by .sp-wings below.
 const stats = [
-	{ n: '65+', label: 'works in the collection' },
-	{ n: '15+', label: 'sectors curated' },
-	{ n: '7+', label: 'years exhibiting' },
-	{ n: '10+', label: 'countries on loan to' },
+	{ n: '65+', label: 'works in the collection', short: 'works' },
+	{ n: '15+', label: 'sectors curated', short: 'sectors' },
+	{ n: '7+', label: 'years exhibiting', short: 'years' },
+	{ n: '10+', label: 'countries on loan to', short: 'countries' },
 ];
 
 // Where a tile goes: the full case study when there is one, the live site
@@ -87,6 +88,7 @@ const spotWorks = [
 									data-meta={`${sectorLabels[p.sector]} · ${p.year}`}
 									data-href={dest(p)}
 									data-out={leaves(p) ? '1' : undefined}
+									data-host={leaves(p) ? p.host : undefined}
 									style={`--c:${p.color}`}
 								>
 									<span class="sp-card-mat">
@@ -105,7 +107,15 @@ const spotWorks = [
 						<figcaption class="sp-plaque sp-spot-plaque" id="sp-spot-plaque">
 							<strong id="sp-spot-name">{spotWorks[0].name}</strong>
 							<span id="sp-spot-meta">{sectorLabels[spotWorks[0].sector]} · {spotWorks[0].year}</span>
-							<a class="sp-visit" id="sp-spot-visit" href={dest(spotWorks[0])}>
+							<a
+								class="sp-visit"
+								id="sp-spot-visit"
+								href={dest(spotWorks[0])}
+								target={leaves(spotWorks[0]) ? '_blank' : undefined}
+								rel={leaves(spotWorks[0]) ? 'noopener noreferrer' : undefined}
+								data-leaving={leaves(spotWorks[0]) ? spotWorks[0].host : undefined}
+								data-leaving-name={leaves(spotWorks[0]) ? spotWorks[0].name : undefined}
+							>
 								Visit the work
 								<Icon width={13} name="mdi:arrow-top-right" />
 							</a>
@@ -135,7 +145,8 @@ const spotWorks = [
 				{stats.map((s) => (
 					<li>
 						<strong>{s.n}</strong>
-						<span>{s.label}</span>
+						<span class="sp-wing-l">{s.label}</span>
+						<span class="sp-wing-s">{s.short}</span>
 					</li>
 				))}
 			</ul>
@@ -624,9 +635,7 @@ const spotWorks = [
 		font-size: 0.86rem;
 		color: var(--sa-faint);
 	}
-	@media (max-width: 620px) {
-		.sp-wings { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 1.4rem; }
-	}
+	.sp-wing-s { display: none; }
 
 	/* ── B · exhibitions ── */
 	.sp-ex {
@@ -688,6 +697,10 @@ const spotWorks = [
 		color: var(--c, var(--sa-acc));
 		margin-bottom: 0.6rem;
 	}
+	/* the work's own colour is chosen to shout on a dark wall; on the light
+	   one it has to be taken down a stop or it stops being readable */
+	:global(html:not(.dark)) .sp-exkick,
+	:global(html:not(.dark)) .sp-extag { color: color-mix(in srgb, var(--c, var(--sa-acc)) 66%, #000); }
 	.sp-exname {
 		margin: 0 0 0.3rem;
 		font-size: clamp(1.7rem, 3.5vw, 2.6rem);
@@ -1151,14 +1164,14 @@ const spotWorks = [
 		}
 		.sp-wings li { flex: 1 1 0; min-width: 0; text-align: center; }
 		.sp-wings strong { font-size: clamp(1.15rem, 5.4vw, 1.6rem); }
-		.sp-wings span {
+		/* a shorter word beats a truncated one: "countri…" is not a label */
+		.sp-wing-l { display: none; }
+		.sp-wing-s {
 			display: block;
-			font-size: 0.58rem;
-			letter-spacing: 0.04em;
+			font-size: 0.66rem;
+			letter-spacing: 0.03em;
 			line-height: 1.25;
 			white-space: nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
 		}
 
 		/* the tabs scroll, and say so: the rail nudges once on arrival and
@@ -1204,4 +1217,39 @@ const spotWorks = [
 	.sp-call { font-size: 1.05rem; }
 	.sp-call strong { font-size: 1.32em; letter-spacing: 0.005em; }
 
+
+	/* ═══ the phone: wall labels, not mastheads ══════════════════
+	   The folio strip is a masthead for a wide page — on a phone it was
+	   three lines of shouted capitals above anything worth reading. And
+	   the section rule, a two-column row on the desktop, broke its own
+	   eyebrow mid-phrase ("In the / studio") fighting the caption for
+	   the same row. Stacked, each line is whole. */
+	@media (max-width: 720px) {
+		.sp-rule {
+			display: block;
+			padding-bottom: 0.7rem;
+		}
+		.sp-rule span:first-child {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+			white-space: nowrap;
+			font-size: 0.66rem;
+			letter-spacing: 0.2em;
+		}
+		.sp-rule span:first-child::before {
+			content: '';
+			flex: none;
+			width: 1.15rem;
+			height: 2px;
+			background: currentColor;
+			opacity: 0.85;
+		}
+		.sp-rule span:last-child {
+			display: block;
+			margin-top: 0.34rem;
+			font-size: 1.04rem;
+			line-height: 1.32;
+		}
+	}
 </style>

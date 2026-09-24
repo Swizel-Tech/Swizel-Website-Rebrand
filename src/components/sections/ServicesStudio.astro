@@ -797,4 +797,41 @@ materials[3]!.tools.push('Git', 'Jest', 'Playwright', 'Sentry');
 		.sv-materials { grid-template-columns: minmax(0, 1fr); }
 	}
 
+
+	/* ═══ the phone: wall labels, not mastheads ══════════════════
+	   The folio strip is a masthead for a wide page — on a phone it was
+	   three lines of shouted capitals above anything worth reading. And
+	   the section rule, a two-column row on the desktop, broke its own
+	   eyebrow mid-phrase ("In the / studio") fighting the caption for
+	   the same row. Stacked, each line is whole. */
+	@media (max-width: 720px) {
+		.sv-folio { display: none; }
+
+		.sv-rule {
+			display: block;
+			padding-bottom: 0.7rem;
+		}
+		.sv-rule span:first-child {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+			white-space: nowrap;
+			font-size: 0.66rem;
+			letter-spacing: 0.2em;
+		}
+		.sv-rule span:first-child::before {
+			content: '';
+			flex: none;
+			width: 1.15rem;
+			height: 2px;
+			background: currentColor;
+			opacity: 0.85;
+		}
+		.sv-rule span:last-child {
+			display: block;
+			margin-top: 0.34rem;
+			font-size: 1.04rem;
+			line-height: 1.32;
+		}
+	}
 </style>

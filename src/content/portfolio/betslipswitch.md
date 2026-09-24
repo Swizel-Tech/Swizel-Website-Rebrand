@@ -34,4 +34,4 @@ The inability to transfer bet selection across bookies, untrusted platforms that
 
 We created a safe space where we not only offer conversion services that help betters transfer bet selections across bookies, but also a community where tipsters and sports enthusiasts meet for conversations, predictions, and the occasional good old sports banter.
 
-<a class="!text-darker underline underline-offset-2" target="_blank" rel="noopener noreferrer" href="https://www.betslipswitch.com/">Visit Betslipswitch<a>
+<a class="!text-darker underline underline-offset-2" target="_blank" rel="noopener noreferrer" data-leaving="betslipswitch.com" data-leaving-name="Betslipswitch" href="https://www.betslipswitch.com/">Visit Betslipswitch<a>

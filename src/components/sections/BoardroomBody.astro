@@ -2,6 +2,7 @@
 // Boardroom view body — deep, glossy, glassy. Asymmetric mosaic tiles,
 // scrolling sectors + client logos, rotating client words, cinematic CTA.
 import { Icon } from 'astro-icon/components';
+import { projects } from '../../data/projects';
 
 const numbers = [
 	{ to: 65, suffix: '+', label: 'Products shipped' },
@@ -49,14 +50,34 @@ const process = [
 	{ n: '03', title: 'Launch & scale', desc: 'Market, manage and grow what we shipped.' },
 ];
 
-const work = [
-	{ name: 'Brixmarket', sector: 'Real estate marketplace', img: '/images/portfolio/brix%20marketplace.jpg', url: 'https://brixmarket.com/', cls: 'bd-work--feature' },
-	{ name: 'Betslipswitch', sector: 'Sports', img: '/images/portfolio/betslipswitch.jpg', url: 'https://betslipswitch.com/', cls: 'bd-work--side' },
-	{ name: 'Saros', sector: 'Education', img: '/images/portfolio/sarosgp.jpg', url: 'https://sarosinternationallearning.com/', cls: 'bd-work--side' },
-	{ name: 'Purple Panda', sector: 'Marketing', img: '/images/portfolio/purplepanda%20world.jpg', url: '', cls: 'bd-work--third' },
-	{ name: 'Beauty Hive', sector: 'Beauty', img: '/images/portfolio/beauty-hive.webp', url: '', cls: 'bd-work--third' },
-	{ name: 'My Eya Estate', sector: 'Real estate', img: '/images/portfolio/my%20eya%20estate.jpg', url: '', cls: 'bd-work--third' },
+// Read off projects.ts so a card is never a dead <div>: a piece with a live
+// site goes there (behind the leaving notice), and the rest open their own
+// write-up. Nothing in this grid is unclickable.
+const workSlugs: [string, string, string][] = [
+	['brixmarket', 'Real estate marketplace', 'bd-work--feature'],
+	['betslipswitch', 'Sports', 'bd-work--side'],
+	['saros', 'Education', 'bd-work--side'],
+	['purple-panda', 'Marketing', 'bd-work--third'],
+	['beauty-hive', 'Beauty', 'bd-work--third'],
+	['my-eya-estate', 'Real estate', 'bd-work--third'],
 ];
+
+const work = workSlugs
+	.map(([slug, sector, cls]) => {
+		const p = projects.find((pr) => pr.slug === slug);
+		if (!p) return null;
+		const out = !p.caseStudy && !!p.url;
+		return {
+			name: p.name,
+			sector,
+			img: p.img,
+			cls,
+			url: p.caseStudy ? `/work/${p.slug}` : p.url || '',
+			out,
+			host: p.host,
+		};
+	})
+	.filter((w): w is NonNullable<typeof w> => !!w);
 
 const sectors = [
 	'Fintech',
@@ -352,8 +373,10 @@ const logos = [
 						<Tag
 							class:list={['bd-work-card', w.cls]}
 							href={w.url || undefined}
-							target={w.url ? '_blank' : undefined}
-							rel={w.url ? 'noopener noreferrer' : undefined}
+							target={w.out ? '_blank' : undefined}
+							rel={w.out ? 'noopener noreferrer' : undefined}
+							data-leaving={w.out ? w.host : undefined}
+							data-leaving-name={w.out ? w.name : undefined}
 						>
 							<img src={w.img} alt={`${w.name} — ${w.sector}`} loading="lazy" />
 							<span class="bd-work-veil" aria-hidden="true" />
@@ -363,7 +386,8 @@ const logos = [
 							</span>
 							{w.url && (
 								<span class="bd-work-go" aria-hidden="true">
-									<Icon width={16} name="mdi:arrow-top-right" />
+									{/* the arrow tells the truth: out of the site, or into the write-up */}
+									<Icon width={16} name={w.out ? 'mdi:arrow-top-right' : 'mdi:arrow-right'} />
 								</span>
 							)}
 						</Tag>

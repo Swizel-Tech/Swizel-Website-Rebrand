@@ -262,6 +262,8 @@ const heroBadges = cs.results.slice(0, 2);
 										href={it.url || undefined}
 										target={it.url ? '_blank' : undefined}
 										rel={it.url ? 'noopener noreferrer' : undefined}
+										data-leaving={it.url ? '' : undefined}
+										data-leaving-name={it.url ? it.outlet : undefined}
 									>
 										<span class="cc-press-outlet">{it.outlet}</span>
 										<span class="cc-press-title">{it.title}</span>

@@ -1,8 +1,15 @@
 ---
-// Blog index · Studio world — the Reading Room of The Swizel Gallery. The
-// same journal (featured lead, category filter, all posts, newsletter,
-// Brevarium promo) told as essays hung and shelved in a quiet room. Root
-// carries `sbody` (studio engine: .sd-rev reveals) and `sbl` (motion
+// Blog index · Studio world — the Reading Room of The Swizel Gallery.
+//
+// The other four worlds tell the journal as a front page, a directory, a
+// notice board and a feed. This one is a room you sit down in: the lead on
+// an unrolled sheet, the featured essay open on a brass reading stand under
+// its lamp, and every other essay a leaf sewn into the house journal —
+// tipped-in plate, catalogue number in the margin, category pressed in ink.
+// The index runs along a card-catalogue rail that always holds one line and
+// slides.
+//
+// Root carries `sbody` (studio engine: .sd-rev reveals) and `sbl` (motion
 // engine: tilt / glare / magnetic).
 import { Icon } from 'astro-icon/components';
 import type { CollectionEntry } from 'astro:content';
@@ -18,6 +25,34 @@ const readTime = (body: string) => Math.max(1, Math.round((body?.trim().split(/\
 const fmtDate = (d: Date) => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 const catColor: Record<string, string> = { EdTech: '#2bb3c0', Fintech: '#6366f1', Marketing: '#ec4899', Technology: '#18debe', Insights: '#a855f7' };
 const col = (c: string) => catColor[c] ?? '#ec4899';
+// every leaf is numbered in the margin, the way a bound journal is
+const folioNo = (i: number) => String(i + 1).padStart(2, '0');
+
+// A shelf that stops halfway through its last row looks unfinished rather
+// than uncrowded. These are the studio's version of the founder world's
+// fillers: blank leaves, still to be written on, that do something useful
+// while they wait.
+const blanks = [
+	{
+		icon: 'mdi:pencil-outline',
+		kick: 'Open brief',
+		title: 'What should we write next?',
+		desc: 'Something you keep searching for and never finding a straight answer to? Tell us, and the house will take it on.',
+		cta: 'Send us the question',
+		href: '/contact',
+		c: '#a855f7',
+	},
+	{
+		icon: 'mdi:book-open-page-variant-outline',
+		kick: 'The long version',
+		title: 'Take The Brevarium.',
+		desc: 'Our magazine, free: featured builds, the crew behind them and the thinking underneath. Yours to keep.',
+		cta: 'Download the latest',
+		href: '/brevarium/the-brevarium-latest.pdf',
+		c: '#ec4899',
+	},
+];
+const blanksShown = blanks.slice(0, (3 - (posts.length % 3)) % 3);
 
 const filterCss = cats
 	.map((c) => {
@@ -25,8 +60,9 @@ const filterCss = cats
 		const cc = col(c);
 		return [
 			`#sbl-${s}:checked ~ .sb-shelf .sb-essay:not(.c-${s}){display:none}`,
-			`#sbl-${s}:checked ~ .sb-tabs label[for="sbl-${s}"]{color:#fff;background:${cc};border-color:transparent}`,
-			`#sbl-${s}:checked ~ .sb-tabs label[for="sbl-${s}"] em{color:rgba(255,255,255,0.85)}`,
+			`#sbl-${s}:checked ~ .sb-rail-wrap .sb-tabs label[for="sbl-${s}"]{--tab:${cc};color:#fff;background:${cc};border-color:${cc};transform:translateY(-2px)}`,
+			`#sbl-${s}:checked ~ .sb-rail-wrap .sb-tabs label[for="sbl-${s}"] em{color:rgba(255,255,255,0.88)}`,
+			`#sbl-${s}:checked ~ .sb-rail-wrap .sb-tabs label[for="sbl-${s}"]::after{background:rgba(255,255,255,0.75)}`,
 		].join('');
 	})
 	.join('');
@@ -38,20 +74,27 @@ const filterCss = cats
 		<div class="sb-wrap">
 			<div class="sb-folio sd-rev">
 				<span>The Swizel Gallery — Reading Room</span>
-				<span>Essays & field notes from the house</span>
+				<span>Essays &amp; field notes from the house</span>
 				<span>Quiet, please</span>
 			</div>
 			<div class="sb-open">
-				<h2 class="sb-display sd-rev">
-					The reading<br />
-					<em>room.</em>
-				</h2>
+				<div class="sb-open-main">
+					<span class="sb-ghost" aria-hidden="true">read</span>
+					<h2 class="sb-display sd-rev">
+						The reading<br />
+						<em>room.</em>
+					</h2>
+				</div>
 				<div class="sb-open-side sd-rev">
-					<p class="sb-lead">
-						Field notes on technology, design, fintech, edtech and
-						growth. What the house is building, learning and seeing
-						across the African digital landscape. Take a seat.
-					</p>
+					<figure class="sb-scroll">
+						<span class="sb-scroll-grain" aria-hidden="true"></span>
+						<p class="sb-scroll-lead">
+							Field notes on technology, design, fintech, edtech and
+							growth. What the house is building, learning and seeing
+							across the African digital landscape, written by the
+							people doing the building. Take a seat, take your time.
+						</p>
+					</figure>
 					<a href="#sb-shelf" class="sb-link">
 						Browse the shelf
 						<Icon width={15} name="mdi:arrow-down" />
@@ -61,7 +104,9 @@ const filterCss = cats
 		</div>
 	</section>
 
-	<!-- ── B · on the lectern (featured essay) ─────────────── -->
+	<!-- ── B · on the lectern (featured essay) ─────────────────
+	     A brass reading stand: the sheet lies back a few degrees under
+	     its own lamp, with a rail along the bottom holding it there. -->
 	{
 		featured && (
 			<section class="sb-sec" data-cursor="pen">
@@ -70,28 +115,31 @@ const filterCss = cats
 						<span>On the lectern</span>
 						<span>The essay of the moment</span>
 					</div>
-					<a
-						href={`/blog/${featured.slug}`}
-						class="sb-lectern sd-rev"
-						style={`--c:${col(featured.data.category)}`}
-						data-fa-tilt="4"
-					>
-						<span class="sa-glare" aria-hidden="true" />
-						<span class="sb-lectern-media">
-							<img src={featured.data.heroImage} alt={featured.data.title} loading="eager" />
-							<span class="sb-lectern-cat">{featured.data.category}</span>
+					<div class="sb-stand sd-rev" style={`--c:${col(featured.data.category)}`}>
+						<span class="sb-lamp" aria-hidden="true">
+							<i class="sb-lamp-arm" />
+							<i class="sb-lamp-shade" />
+							<i class="sb-lamp-pool" />
 						</span>
-						<span class="sb-lectern-body">
-							<span class="sb-kick">Essay · {featured.data.category} · {fmtDate(featured.data.pubDate)}</span>
-							<strong class="sb-lectern-title">{featured.data.title}</strong>
-							<span class="sb-lectern-desc">{featured.data.description}</span>
-							<span class="sb-meta">By {featured.data.author} · {readTime(featured.body)} min read</span>
-							<span class="sb-link">
-								Read the essay
-								<Icon width={15} name="mdi:arrow-right" />
+						<a href={`/blog/${featured.slug}`} class="sb-lectern" data-fa-tilt="3">
+							<span class="sa-glare" aria-hidden="true" />
+							<span class="sb-lectern-plate">
+								<img src={featured.data.heroImage} alt={featured.data.title} loading="eager" />
+								<span class="sb-stamp">{featured.data.category}</span>
 							</span>
-						</span>
-					</a>
+							<span class="sb-lectern-body">
+								<span class="sb-kick">The essay of the moment · {fmtDate(featured.data.pubDate)}</span>
+								<strong class="sb-lectern-title">{featured.data.title}</strong>
+								<span class="sb-lectern-desc sb-drop">{featured.data.description}</span>
+								<span class="sb-meta">By {featured.data.author} · {readTime(featured.body)} min read</span>
+								<span class="sb-link">
+									Read the essay
+									<Icon width={15} name="mdi:arrow-right" />
+								</span>
+							</span>
+						</a>
+						<span class="sb-rail" aria-hidden="true"></span>
+					</div>
 				</div>
 			</section>
 		)
@@ -107,16 +155,25 @@ const filterCss = cats
 			<form class="sb-filter" autocomplete="off">
 				<input class="sb-radio" type="radio" name="sbl" id="sbl-all" checked />
 				{cats.map((c) => <input class="sb-radio" type="radio" name="sbl" id={`sbl-${catSlug(c)}`} />)}
-				<div class="sb-tabs sd-rev">
-					<label class="sb-tab" for="sbl-all">All essays <em>{posts.length}</em></label>
-					{
-						cats.map((c) => (
-							<label class="sb-tab" for={`sbl-${catSlug(c)}`}>
-								{c} <em>{catCount(c)}</em>
-							</label>
-						))
-					}
+
+				<!-- the index: card-catalogue tabs on a rail, always one line -->
+				<div class="sb-rail-wrap sd-rev">
+					<div class="sb-rail-line" aria-hidden="true"></div>
+					<div class="sb-tabs" data-sb-tabs>
+						<label class="sb-tab" for="sbl-all">All essays <em>{posts.length}</em></label>
+						{
+							cats.map((c) => (
+								<label class="sb-tab" for={`sbl-${catSlug(c)}`} style={`--tab:${col(c)}`}>
+									{c} <em>{catCount(c)}</em>
+								</label>
+							))
+						}
+					</div>
+					<span class="sb-rail-cue" aria-hidden="true">
+						<Icon width={16} name="mdi:chevron-right" />
+					</span>
 				</div>
+
 				<div class="sb-shelf">
 					{
 						posts.map((p, i) => (
@@ -124,17 +181,47 @@ const filterCss = cats
 								class:list={['sb-essay', 'sd-rev', `c-${catSlug(p.data.category)}`]}
 								style={`--c:${col(p.data.category)}; --i:${i % 3}`}
 							>
-								<a href={`/blog/${p.slug}`} class="sb-essay-link" data-fa-tilt="6">
+								<a href={`/blog/${p.slug}`} class="sb-leaf" data-fa-tilt="5">
 									<span class="sa-glare" aria-hidden="true" />
-									<span class="sb-essay-frame">
+									<span class="sb-leaf-no" aria-hidden="true">No. {folioNo(i)}</span>
+									<span class="sb-leaf-stitch" aria-hidden="true"></span>
+									<span class="sb-leaf-plate">
 										<img src={p.data.heroImage} alt={p.data.title} loading="lazy" />
-										<span class="sb-essay-cat">{p.data.category}</span>
+										<span class="sb-stamp sb-stamp--sm">{p.data.category}</span>
 									</span>
-									<figcaption class="sb-essay-plaque">
+									<figcaption class="sb-leaf-body">
 										<strong>{p.data.title}</strong>
-										<span class="sb-essay-desc">{p.data.description}</span>
+										<span class="sb-leaf-desc sb-drop">{p.data.description}</span>
 										<em>{fmtDate(p.data.pubDate)} · {readTime(p.body)} min read</em>
 									</figcaption>
+									<span class="sb-leaf-curl" aria-hidden="true"></span>
+								</a>
+							</figure>
+						))
+					}
+					{
+						blanksShown.map((f, i) => (
+							<figure
+								class="sb-essay sb-essay--blank sd-rev"
+								style={`--c:${f.c}; --i:${(posts.length + i) % 3}`}
+							>
+								<a href={f.href} class="sb-leaf sb-leaf--blank" data-fa-tilt="5">
+									<span class="sa-glare" aria-hidden="true" />
+									<span class="sb-leaf-no" aria-hidden="true">No. {folioNo(posts.length + i)}</span>
+									<span class="sb-leaf-stitch" aria-hidden="true"></span>
+									<span class="sb-blank-plate">
+										<span class="sb-blank-ic"><Icon width={24} name={f.icon} /></span>
+										<span class="sb-blank-kick">{f.kick}</span>
+									</span>
+									<figcaption class="sb-leaf-body">
+										<strong>{f.title}</strong>
+										<span class="sb-leaf-desc">{f.desc}</span>
+										<span class="sb-blank-cta">
+											{f.cta}
+											<Icon width={14} name="mdi:arrow-right" />
+										</span>
+									</figcaption>
+									<span class="sb-leaf-curl" aria-hidden="true"></span>
 								</a>
 							</figure>
 						))
@@ -144,12 +231,15 @@ const filterCss = cats
 		</div>
 	</section>
 
-	<!-- ── D · private view invitations (newsletter) ───────── -->
+	<!-- ── D · private view invitations (newsletter) ─────────
+	     A letterpress invitation: double rule, wax seal, and a line to
+	     write your address on rather than a box to type into. -->
 	<section class="sb-sec" data-cursor="phone">
 		<div class="sb-wrap">
 			<div class="sb-invite sd-rev">
+				<span class="sb-seal" aria-hidden="true"></span>
 				<span class="sb-invite-k">Private view invitations</span>
-				<h2 class="sb-h2">The next essay, <em>hand-delivered.</em></h2>
+				<h2 class="sb-h2">The next essay, <em>delivered by hand.</em></h2>
 				<p class="sb-lead sb-lead--center">
 					No spam, no fluff. Just our sharpest thinking on building for
 					the African market, when it is worth your time.
@@ -157,7 +247,10 @@ const filterCss = cats
 				<form class="sb-invite-form" name="newsletter" method="post" data-netlify="true" netlify-honeypot="bot-field">
 					<input type="hidden" name="form-name" value="newsletter" />
 					<p class="sb-hp"><label>Don't fill this out: <input name="bot-field" /></label></p>
-					<input class="sb-invite-input" type="email" name="email" placeholder="you@company.com" required aria-label="Email address" />
+					<label class="sb-rsvp">
+						<span class="sb-rsvp-k">R.S.V.P.</span>
+						<input class="sb-invite-input" type="email" name="email" placeholder="you@company.com" required aria-label="Email address" />
+					</label>
 					<button class="sb-invite-btn fa-cta" type="submit">
 						Request an invite
 						<Icon width={16} name="mdi:arrow-right" />
@@ -170,18 +263,21 @@ const filterCss = cats
 	<!-- ── E · the catalogue (Brevarium promo) ─────────────── -->
 	<section class="sb-sec sb-sec--last" data-cursor="repo">
 		<div class="sb-wrap">
-			<a class="sb-mag sd-rev" href="/brevarium/the-brevarium-latest.pdf" download data-fa-tilt="5">
-				<span class="sa-glare" aria-hidden="true"></span>
-				<span class="sb-mag-cover">
-					<img src="/images/portfolio/mag-latest-cover.jpg" alt="The Brevarium magazine" loading="lazy" />
-				</span>
-				<span class="sb-mag-meta">
-					<span class="sb-kick">The catalogue · long-form, in print</span>
-					<strong>Prefer the magazine? Read The Brevarium.</strong>
-					<em>Our featured projects, the team and the thinking behind the work, cover to cover.</em>
-					<span class="sb-link"><Icon width={15} name="mdi:download" /> Download the latest edition</span>
-				</span>
-			</a>
+			<div class="sb-stand sb-stand--mag sd-rev">
+				<a class="sb-mag" href="/brevarium/the-brevarium-latest.pdf" download data-fa-tilt="4">
+					<span class="sa-glare" aria-hidden="true"></span>
+					<span class="sb-mag-cover">
+						<img src="/images/portfolio/mag-latest-cover.jpg" alt="The Brevarium magazine" loading="lazy" />
+					</span>
+					<span class="sb-mag-meta">
+						<span class="sb-kick">The catalogue · in print, at length</span>
+						<strong>Prefer the magazine? Read The Brevarium.</strong>
+						<em>Our featured projects, the team and the thinking behind the work, cover to cover.</em>
+						<span class="sb-link"><Icon width={15} name="mdi:download" /> Download the latest edition</span>
+					</span>
+				</a>
+				<span class="sb-rail" aria-hidden="true"></span>
+			</div>
 		</div>
 	</section>
 </div>
@@ -189,7 +285,7 @@ const filterCss = cats
 <style is:global set:html={filterCss}></style>
 
 <style>
-	/* ── Studio Blog — the gallery dress. ── */
+	/* ── Studio Blog — the reading room. ── */
 	.sbl {
 		--sa-ink: #f3edf0;
 		--sa-muted: rgba(243, 237, 240, 0.64);
@@ -198,6 +294,15 @@ const filterCss = cats
 		--sa-line: rgba(243, 237, 240, 0.14);
 		--sa-card: rgba(255, 255, 255, 0.04);
 		--sa-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+		/* paper: the leaves are lit pages in a dark room, so they stay warm
+		   in both themes — only the whiteness of the stock changes */
+		--sb-paper: #f2e7d5;
+		--sb-paper-2: #e9dcc4;
+		--sb-paper-ink: #2c1c14;
+		--sb-paper-soft: rgba(44, 28, 20, 0.66);
+		--sb-paper-faint: rgba(44, 28, 20, 0.45);
+		--sb-paper-line: rgba(120, 82, 40, 0.22);
+		--sb-brass: #d9a48c;
 		font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 		position: relative;
 		isolation: isolate;
@@ -217,13 +322,28 @@ const filterCss = cats
 		--sa-acc: #cf2570;
 		--sa-line: rgba(28, 21, 26, 0.14);
 		--sa-card: rgba(28, 21, 26, 0.035);
+		--sb-paper: #fbf5ea;
+		--sb-paper-2: #f4ecda;
+		--sb-brass: #b07c5e;
 		background:
 			radial-gradient(1100px 560px at 84% -6%, rgba(236, 72, 153, 0.07), transparent 60%),
 			linear-gradient(180deg, #f3ece6 0%, #ece2da 55%, #f3ece6 100%);
 	}
 
-	.sb-sec { padding-block: clamp(2rem, 4.5vw, 3.5rem); }
-	.sb-entry { padding-top: clamp(0.5rem, 1.5vw, 1rem); padding-bottom: clamp(1rem, 2vw, 1.5rem); }
+	/* the room itself: a wash of lamplight, and the faintest wall grain */
+	.sbl::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		pointer-events: none;
+		opacity: 0.5;
+		background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)' opacity='0.035'/%3E%3C/svg%3E");
+	}
+
+	.sb-sec { padding-block: clamp(1.4rem, 3vw, 2.4rem); }
+	/* the essays are what people came for: the entrance gives them the room */
+	.sb-entry { padding-top: clamp(0.35rem, 1vw, 0.7rem); padding-bottom: clamp(0.5rem, 1.2vw, 0.9rem); }
 	.sb-sec--last { padding-bottom: clamp(1.5rem, 3vw, 2.5rem); }
 	.sb-wrap { max-width: 80rem; margin: 0 auto; }
 
@@ -240,7 +360,7 @@ const filterCss = cats
 		letter-spacing: 0.16em;
 		text-transform: uppercase;
 		color: var(--sa-faint);
-		margin-bottom: clamp(1.75rem, 4vw, 3rem);
+		margin-bottom: clamp(1rem, 2.2vw, 1.6rem);
 	}
 	.sb-folio span:first-child { color: var(--sa-ink); }
 	.sb-rule {
@@ -250,7 +370,7 @@ const filterCss = cats
 		gap: 1rem;
 		padding-bottom: 0.5rem;
 		border-bottom: 1px solid var(--sa-line);
-		margin-bottom: clamp(1.5rem, 3.5vw, 2.5rem);
+		margin-bottom: clamp(1rem, 2.2vw, 1.6rem);
 		font-size: 0.74rem;
 		font-weight: 800;
 		letter-spacing: 0.16em;
@@ -268,11 +388,13 @@ const filterCss = cats
 	}
 
 	.sb-display {
-		font-size: clamp(2.8rem, 7vw, 5.6rem);
+		font-size: clamp(2.5rem, 5.6vw, 4.3rem);
 		font-weight: 850;
 		letter-spacing: -0.03em;
 		line-height: 0.98;
 		margin: 0;
+		position: relative;
+		z-index: 1;
 	}
 	.sb-display em {
 		font-family: var(--sa-serif);
@@ -300,7 +422,8 @@ const filterCss = cats
 		font-weight: 800;
 		letter-spacing: 0.16em;
 		text-transform: uppercase;
-		color: var(--c, var(--sa-acc));
+		/* set on paper, so the ink is darkened to hold at this size */
+		color: color-mix(in srgb, var(--c, var(--sa-acc)) 62%, #000);
 		margin-bottom: 0.55rem;
 	}
 	.sb-lead {
@@ -315,7 +438,7 @@ const filterCss = cats
 		font-family: var(--sa-serif);
 		font-style: italic;
 		font-size: 0.86rem;
-		color: var(--sa-faint);
+		color: var(--sb-paper-faint);
 	}
 	.sb-link {
 		display: inline-flex;
@@ -330,6 +453,9 @@ const filterCss = cats
 		max-width: fit-content;
 	}
 	.sb-link:hover { gap: 0.7rem; border-color: var(--c, var(--sa-acc)); }
+	/* the links that sit on paper take the same darkened ink */
+	.sb-lectern .sb-link,
+	.sb-mag .sb-link { color: color-mix(in srgb, var(--c, var(--sa-acc)) 62%, #000); }
 
 	.sa-glare {
 		position: absolute;
@@ -339,135 +465,372 @@ const filterCss = cats
 		opacity: 0;
 		transition: opacity 0.3s ease;
 		pointer-events: none;
-		z-index: 2;
+		z-index: 3;
 	}
 	[data-fa-tilt]:hover .sa-glare { opacity: 1; }
 
-	/* ── A · entrance ── */
+	/* ── A · entrance ────────────────────────────────────────── */
 	.sb-open {
 		display: grid;
-		gap: clamp(1.5rem, 4vw, 3.5rem);
+		gap: clamp(1.1rem, 2.6vw, 2.2rem);
 		align-items: end;
 	}
 	@media (min-width: 920px) {
 		.sb-open { grid-template-columns: 1.15fr 0.85fr; }
 	}
+	.sb-open-main { position: relative; }
+	.sb-ghost {
+		position: absolute;
+		left: -0.06em;
+		bottom: -0.06em;
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: clamp(6rem, 17vw, 14rem);
+		line-height: 0.74;
+		color: color-mix(in srgb, var(--sa-ink) 3.5%, transparent);
+		pointer-events: none;
+		user-select: none;
+		z-index: 0;
+	}
 	.sb-open-side { max-width: 34rem; }
 
-	/* ── B · the lectern ── */
+	/* the lead, on a sheet unrolled across the desk */
+	.sb-scroll {
+		position: relative;
+		margin: 0 0 0.9rem;
+		padding: 1.35rem 1.7rem;
+		color: var(--sb-paper-ink);
+		background:
+			radial-gradient(130% 100% at 14% 0%, rgba(255, 255, 255, 0.6), transparent 62%),
+			linear-gradient(166deg, #fbf4e6 0%, #f4ecda 58%, #ece1c9 100%);
+		box-shadow:
+			inset 0 0 22px rgba(120, 82, 40, 0.11),
+			0 18px 42px -26px rgba(0, 0, 0, 0.5);
+		transform: rotate(-0.5deg);
+		-webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='220' preserveAspectRatio='none'%3E%3Cfilter id='t' x='-6%' y='-12%' width='112%' height='124%'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.016 0.065' numOctaves='4' seed='19' result='n'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='n' scale='10' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3Crect x='10' y='11' width='580' height='198' rx='18' ry='22' fill='%23fff' filter='url(%23t)'/%3E%3C/svg%3E");
+		mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='220' preserveAspectRatio='none'%3E%3Cfilter id='t' x='-6%' y='-12%' width='112%' height='124%'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.016 0.065' numOctaves='4' seed='19' result='n'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='n' scale='10' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3Crect x='10' y='11' width='580' height='198' rx='18' ry='22' fill='%23fff' filter='url(%23t)'/%3E%3C/svg%3E");
+		-webkit-mask-size: 100% 100%;
+		mask-size: 100% 100%;
+		-webkit-mask-repeat: no-repeat;
+		mask-repeat: no-repeat;
+	}
+	.sb-scroll-grain {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		opacity: 0.5;
+		mix-blend-mode: multiply;
+		background-image:
+			repeating-linear-gradient(91deg, rgba(120, 82, 40, 0.055) 0 1px, transparent 1px 5px),
+			url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='150' height='150' filter='url(%23g)' opacity='0.4'/%3E%3C/svg%3E");
+	}
+	.sb-scroll-lead {
+		position: relative;
+		z-index: 1;
+		margin: 0;
+		/* the seal is pressed bottom-right; the last line stops short of it */
+		padding-right: 2.6rem;
+		color: var(--sb-paper-ink);
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: clamp(1.06rem, 1.4vw, 1.28rem);
+		line-height: 1.62;
+	}
+	/* pressed where the sheet was closed */
+	.sb-scroll::after {
+		content: '';
+		position: absolute;
+		z-index: 2;
+		right: 1.5rem;
+		bottom: 1rem;
+		width: 30px;
+		height: 30px;
+		border-radius: 46% 54% 52% 48% / 50% 46% 54% 50%;
+		background: radial-gradient(circle at 34% 30%, #e0608f, var(--sa-acc) 58%, #7c1039);
+		box-shadow: inset 0 -2px 4px rgba(0, 0, 0, 0.35), 0 4px 10px -4px rgba(0, 0, 0, 0.5);
+		opacity: 0.9;
+	}
+
+	/* ── B · the lectern ─────────────────────────────────────── */
+	.sb-stand {
+		position: relative;
+		padding-top: clamp(1.6rem, 3.4vw, 2.6rem);
+		perspective: 1500px;
+	}
+	.sb-stand--mag { padding-top: 0.5rem; }
+
+	/* the reading lamp over the stand */
+	.sb-lamp {
+		position: absolute;
+		top: 0;
+		left: clamp(1.5rem, 8vw, 6rem);
+		width: 120px;
+		height: clamp(2.2rem, 5vw, 3.6rem);
+		pointer-events: none;
+		z-index: 0;
+	}
+	.sb-lamp-arm {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 66px;
+		height: 60%;
+		border-left: 3px solid var(--sb-brass);
+		border-top: 3px solid var(--sb-brass);
+		border-radius: 3px 14px 0 0;
+		opacity: 0.9;
+	}
+	.sb-lamp-shade {
+		position: absolute;
+		left: 40px;
+		top: 58%;
+		width: 58px;
+		height: 20px;
+		clip-path: polygon(22% 0, 78% 0, 100% 100%, 0 100%);
+		background: linear-gradient(170deg, color-mix(in srgb, var(--sb-brass) 96%, #fff 24%), #8d5b44 70%, #6b4232);
+		box-shadow: 0 6px 16px -7px rgba(0, 0, 0, 0.6);
+	}
+	.sb-lamp-pool {
+		position: absolute;
+		left: -22px;
+		bottom: -180px;
+		width: 340px;
+		height: 220px;
+		background: radial-gradient(60% 70% at 26% 6%, rgba(255, 222, 180, 0.3), transparent 72%);
+		filter: blur(6px);
+		animation: sb-flicker 6s ease-in-out infinite;
+	}
+	@keyframes sb-flicker {
+		0%, 100% { opacity: 0.85; }
+		42% { opacity: 1; }
+		68% { opacity: 0.78; }
+	}
+
 	.sb-lectern {
 		position: relative;
+		z-index: 1;
 		display: grid;
 		gap: clamp(1.25rem, 3vw, 2.5rem);
 		align-items: center;
-		padding: clamp(1.1rem, 2.5vw, 1.8rem);
-		border-radius: 0.4rem;
-		border: 1px solid color-mix(in srgb, var(--c) 32%, var(--sa-line));
-		background: var(--sa-card);
+		padding: clamp(1.15rem, 2.6vw, 1.9rem);
+		color: var(--sb-paper-ink);
+		background:
+			radial-gradient(120% 100% at 18% 0%, rgba(255, 255, 255, 0.55), transparent 60%),
+			linear-gradient(168deg, var(--sb-paper) 0%, var(--sb-paper-2) 100%);
+		border: 1px solid var(--sb-paper-line);
+		border-radius: 0.3rem;
 		box-shadow:
-			inset 0 0 0 10px color-mix(in srgb, var(--sa-ink) 4%, transparent),
-			0 36px 80px -34px rgba(0, 0, 0, 0.7);
-		color: var(--sa-ink);
-		transition: border-color 0.3s ease, box-shadow 0.3s ease;
+			inset 0 0 0 1px rgba(255, 255, 255, 0.5),
+			inset 0 0 40px rgba(120, 82, 40, 0.1),
+			0 34px 74px -30px rgba(0, 0, 0, 0.66);
+		transform: rotateX(2.6deg);
+		transform-origin: bottom center;
+		transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
 	}
 	.sb-lectern:hover {
-		border-color: color-mix(in srgb, var(--c) 60%, transparent);
+		transform: rotateX(0.6deg) translateY(-3px);
 		box-shadow:
-			inset 0 0 0 10px color-mix(in srgb, var(--sa-ink) 4%, transparent),
-			0 40px 90px -32px color-mix(in srgb, var(--c) 40%, transparent);
+			inset 0 0 0 1px rgba(255, 255, 255, 0.5),
+			inset 0 0 40px rgba(120, 82, 40, 0.1),
+			0 42px 88px -30px color-mix(in srgb, var(--c) 42%, rgba(0, 0, 0, 0.6));
 	}
 	@media (min-width: 880px) {
 		.sb-lectern { grid-template-columns: 1fr 1.05fr; }
 	}
-	.sb-lectern-media {
+	/* the brass rail the sheet rests on */
+	.sb-rail {
+		position: absolute;
+		left: 4%;
+		right: 4%;
+		bottom: -7px;
+		height: 8px;
+		border-radius: 0 0 5px 5px;
+		background: linear-gradient(180deg, color-mix(in srgb, var(--sb-brass) 96%, #fff 25%), #8d5b44 62%, #5f3a2a);
+		box-shadow: 0 10px 22px -10px rgba(0, 0, 0, 0.7);
+		z-index: 2;
+	}
+
+	/* a plate tipped into the page, with its own mount */
+	.sb-lectern-plate {
 		position: relative;
 		display: block;
 		overflow: hidden;
-		border-radius: 0.35rem;
 		aspect-ratio: 16 / 10;
-		border: 1px solid var(--sa-line);
+		background: #fff;
+		padding: 7px;
+		box-shadow: inset 0 0 0 1px var(--sb-paper-line), 0 10px 24px -14px rgba(0, 0, 0, 0.55);
 	}
-	.sb-lectern-media img {
+	.sb-lectern-plate img {
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
 		transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 	}
-	.sb-lectern:hover .sb-lectern-media img { transform: scale(1.05); }
-	.sb-lectern-cat,
-	.sb-essay-cat {
+	.sb-lectern:hover .sb-lectern-plate img { transform: scale(1.045); }
+
+	/* the category, pressed in ink rather than printed on a pill */
+	.sb-stamp {
 		position: absolute;
-		left: 0.7rem;
-		bottom: 0.7rem;
-		font-size: 0.7rem;
-		font-weight: 800;
-		letter-spacing: 0.12em;
+		left: 0.8rem;
+		bottom: 0.8rem;
+		z-index: 2;
+		font-size: 0.64rem;
+		font-weight: 900;
+		letter-spacing: 0.18em;
 		text-transform: uppercase;
-		color: #fff;
-		padding: 0.26rem 0.7rem;
-		border-radius: 9999px;
-		background: color-mix(in srgb, var(--c) 80%, #000);
+		/* a stamp is one deep ink: the category's colour at full strength
+		   was teal-on-white at 9px, which nobody could read */
+		color: color-mix(in srgb, var(--c) 50%, #000);
+		padding: 0.3rem 0.62rem;
+		border: 1.5px solid currentColor;
+		box-shadow: 0 0 0 2.5px rgba(255, 255, 255, 0.82), inset 0 0 0 1px currentColor;
+		background: rgba(255, 255, 255, 0.86);
+		transform: rotate(-3.2deg);
+		opacity: 0.94;
 	}
+	.sb-stamp--sm { font-size: 0.58rem; padding: 0.24rem 0.5rem; left: 0.65rem; bottom: 0.65rem; }
+
 	.sb-lectern-body { display: grid; gap: 0.55rem; align-content: center; }
 	.sb-lectern-title {
-		font-size: clamp(1.4rem, 2.8vw, 2.1rem);
-		font-weight: 850;
-		letter-spacing: -0.02em;
-		line-height: 1.15;
+		font-family: var(--sa-serif);
+		font-size: clamp(1.45rem, 2.9vw, 2.15rem);
+		font-weight: 700;
+		letter-spacing: -0.015em;
+		line-height: 1.16;
+		color: var(--sb-paper-ink);
 	}
 	.sb-lectern-desc {
 		font-size: 0.95rem;
-		line-height: 1.65;
-		color: var(--sa-muted);
+		line-height: 1.68;
+		color: var(--sb-paper-soft);
 		display: -webkit-box;
 		-webkit-line-clamp: 3;
 		-webkit-box-orient: vertical;
 		overflow: hidden;
 	}
+	/* the opening letter, set large the way a printed essay sets it */
+	.sb-drop::first-letter {
+		float: left;
+		font-family: var(--sa-serif);
+		font-size: 2.55em;
+		line-height: 0.82;
+		padding: 0.08em 0.1em 0 0;
+		color: var(--c, var(--sa-acc));
+		font-weight: 700;
+	}
 
-	/* ── C · the shelf ── */
+	/* ── C · the index rail ──────────────────────────────────── */
 	.sb-filter { display: block; }
 	.sb-radio { position: absolute; opacity: 0; pointer-events: none; }
+
+	.sb-rail-wrap {
+		position: relative;
+		margin-bottom: clamp(1.6rem, 3.2vw, 2.4rem);
+	}
+	/* the drawer edge the tabs stand on */
+	.sb-rail-line {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		height: 2px;
+		background: linear-gradient(90deg, transparent, var(--sb-brass) 8%, var(--sb-brass) 92%, transparent);
+		opacity: 0.55;
+	}
 	.sb-tabs {
 		display: flex;
-		flex-wrap: wrap;
-		gap: 0.55rem;
-		margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
+		flex-wrap: nowrap;
+		gap: 0.45rem;
+		overflow-x: auto;
+		scrollbar-width: none;
+		-ms-overflow-style: none;
+		-webkit-overflow-scrolling: touch;
+		padding: 0.35rem 2.2rem 0.55rem 0.1rem;
+		scroll-snap-type: x proximity;
 	}
+	.sb-tabs::-webkit-scrollbar { display: none; }
+
 	.sb-tab {
+		position: relative;
+		flex: none;
+		scroll-snap-align: start;
 		display: inline-flex;
 		align-items: baseline;
-		gap: 0.45rem;
-		padding: 0.5rem 1rem;
-		border-radius: 9999px;
+		gap: 0.42rem;
+		padding: 0.58rem 1rem 0.5rem;
+		/* a card-catalogue tab: square shoulders, clipped corners */
+		clip-path: polygon(0.5rem 0, calc(100% - 0.5rem) 0, 100% 100%, 0 100%);
 		border: 1px solid var(--sa-line);
-		font-size: 0.78rem;
+		border-bottom: 0;
+		background: color-mix(in srgb, var(--sa-ink) 5%, transparent);
+		font-size: 0.74rem;
 		font-weight: 800;
-		letter-spacing: 0.08em;
+		letter-spacing: 0.09em;
 		text-transform: uppercase;
+		white-space: nowrap;
 		color: var(--sa-muted);
 		cursor: pointer;
-		transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+		transition: color 0.2s ease, background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
 	}
-	.sb-tab:hover { transform: translateY(-2px); color: var(--sa-ink); }
+	.sb-tab:hover {
+		transform: translateY(-2px);
+		color: var(--sa-ink);
+		border-color: color-mix(in srgb, var(--tab, var(--sa-acc)) 55%, transparent);
+	}
 	.sb-tab em {
 		font-family: var(--sa-serif);
 		font-style: italic;
-		font-size: 0.82rem;
+		font-size: 0.8rem;
 		text-transform: none;
 		letter-spacing: 0;
-		color: var(--sa-acc);
+		color: var(--tab, var(--sa-acc));
 	}
-	#sbl-all:checked ~ .sb-tabs [for='sbl-all'] {
+	/* the little pull under each tab */
+	.sb-tab::after {
+		content: '';
+		position: absolute;
+		left: 50%;
+		bottom: 0.26rem;
+		width: 1.1rem;
+		height: 2px;
+		margin-left: -0.55rem;
+		border-radius: 2px;
+		background: color-mix(in srgb, var(--tab, var(--sa-acc)) 40%, transparent);
+		opacity: 0.7;
+	}
+	#sbl-all:checked ~ .sb-rail-wrap .sb-tabs [for='sbl-all'] {
 		color: #fff;
 		background: linear-gradient(95deg, var(--sa-acc), #a855f7);
 		border-color: transparent;
+		transform: translateY(-2px);
 	}
-	#sbl-all:checked ~ .sb-tabs [for='sbl-all'] em { color: rgba(255, 255, 255, 0.85); }
+	#sbl-all:checked ~ .sb-rail-wrap .sb-tabs [for='sbl-all'] em { color: rgba(255, 255, 255, 0.88); }
+	#sbl-all:checked ~ .sb-rail-wrap .sb-tabs [for='sbl-all']::after { background: rgba(255, 255, 255, 0.75); }
 
+	/* it slides, and it says so: a fading edge with a chevron over it */
+	.sb-rail-cue {
+		position: absolute;
+		right: 0;
+		top: 0.3rem;
+		bottom: 0.35rem;
+		width: 2.6rem;
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		pointer-events: none;
+		color: var(--sa-faint);
+		background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--sa-ink) 4%, transparent) 55%);
+		animation: sb-nudge 2.6s ease-in-out 1.1s 3;
+	}
+	@keyframes sb-nudge {
+		0%, 100% { transform: translateX(0); opacity: 0.55; }
+		50% { transform: translateX(-4px); opacity: 1; }
+	}
+
+	/* ── C · the leaves ──────────────────────────────────────── */
 	.sb-shelf {
 		display: grid;
-		gap: 1.3rem;
+		gap: 1.5rem 1.35rem;
 		grid-template-columns: repeat(3, minmax(0, 1fr));
 	}
 	@media (max-width: 980px) {
@@ -477,160 +840,349 @@ const filterCss = cats
 		.sb-shelf { grid-template-columns: 1fr; }
 	}
 	.sb-essay { margin: 0; }
-	.sb-essay-link {
+
+	/* one leaf, sewn into the house journal */
+	.sb-leaf {
 		position: relative;
 		display: block;
-		color: inherit;
-		border-radius: 0.4rem;
+		height: 100%;
+		padding: 1rem 1rem 1.15rem 2.15rem;
+		color: var(--sb-paper-ink);
+		background:
+			radial-gradient(120% 90% at 20% 0%, rgba(255, 255, 255, 0.5), transparent 58%),
+			linear-gradient(168deg, var(--sb-paper) 0%, var(--sb-paper-2) 100%);
+		border: 1px solid var(--sb-paper-line);
+		border-radius: 0.22rem;
+		box-shadow:
+			inset 0 0 0 1px rgba(255, 255, 255, 0.45),
+			0 22px 48px -28px rgba(0, 0, 0, 0.62);
+		transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
+		overflow: hidden;
 	}
-	.sb-essay-frame {
+	.sb-essay:hover .sb-leaf {
+		transform: translateY(-5px) rotate(-0.35deg);
+		box-shadow:
+			inset 0 0 0 1px rgba(255, 255, 255, 0.45),
+			0 34px 66px -26px color-mix(in srgb, var(--c) 38%, rgba(0, 0, 0, 0.6));
+	}
+	/* the stitch holding the leaf into the spine */
+	.sb-leaf-stitch {
+		position: absolute;
+		left: 1.5rem;
+		top: 1.1rem;
+		bottom: 1.1rem;
+		width: 1px;
+		background: repeating-linear-gradient(
+			180deg,
+			color-mix(in srgb, var(--c) 62%, transparent) 0 7px,
+			transparent 7px 13px
+		);
+		opacity: 0.55;
+	}
+	/* the number in the margin */
+	.sb-leaf-no {
+		position: absolute;
+		left: 0;
+		top: 1.1rem;
+		width: 1.5rem;
+		height: 5.5rem;
+		display: grid;
+		place-items: center;
+		writing-mode: vertical-rl;
+		transform: rotate(180deg);
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 0.7rem;
+		letter-spacing: 0.1em;
+		color: var(--sb-paper-faint);
+		white-space: nowrap;
+	}
+	.sb-leaf-plate {
 		position: relative;
 		display: block;
 		aspect-ratio: 16 / 10;
 		overflow: hidden;
-		border-radius: 0.4rem;
-		border: 1px solid var(--sa-line);
-		box-shadow: inset 0 0 0 8px color-mix(in srgb, var(--sa-ink) 5%, transparent), 0 26px 60px -30px rgba(0, 0, 0, 0.7);
-		background: var(--sa-card);
-		transition: border-color 0.3s ease, box-shadow 0.3s ease;
+		background: #fff;
+		padding: 5px;
+		box-shadow: inset 0 0 0 1px var(--sb-paper-line), 0 8px 18px -12px rgba(0, 0, 0, 0.5);
 	}
-	.sb-essay:hover .sb-essay-frame {
-		border-color: color-mix(in srgb, var(--c) 55%, transparent);
-		box-shadow:
-			inset 0 0 0 8px color-mix(in srgb, var(--sa-ink) 5%, transparent),
-			0 30px 70px -28px color-mix(in srgb, var(--c) 42%, transparent);
-	}
-	.sb-essay-frame img {
+	.sb-leaf-plate img {
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
 		transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 	}
-	.sb-essay:hover .sb-essay-frame img { transform: scale(1.05); }
-	.sb-essay-plaque { display: grid; gap: 0.3rem; padding: 0.75rem 0.2rem 0; }
-	.sb-essay-plaque strong {
-		font-size: 1.02rem;
-		font-weight: 800;
-		letter-spacing: -0.01em;
-		line-height: 1.3;
+	.sb-essay:hover .sb-leaf-plate img { transform: scale(1.05); }
+	.sb-leaf-body {
+		display: grid;
+		gap: 0.34rem;
+		padding-top: 0.85rem;
+		margin-top: 0.75rem;
+		border-top: 1px solid var(--sb-paper-line);
 	}
-	.sb-essay-desc {
-		font-size: 0.88rem;
-		line-height: 1.6;
-		color: var(--sa-muted);
+	.sb-leaf-body strong {
+		font-family: var(--sa-serif);
+		font-size: 1.06rem;
+		font-weight: 700;
+		letter-spacing: -0.005em;
+		line-height: 1.28;
+	}
+	.sb-leaf-desc {
+		font-size: 0.86rem;
+		line-height: 1.62;
+		color: var(--sb-paper-soft);
 		display: -webkit-box;
-		-webkit-line-clamp: 2;
+		-webkit-line-clamp: 3;
 		-webkit-box-orient: vertical;
 		overflow: hidden;
 	}
-	.sb-essay-plaque em {
+	.sb-leaf-body em {
 		font-family: var(--sa-serif);
 		font-style: italic;
-		font-size: 0.8rem;
-		color: var(--sa-faint);
+		font-size: 0.79rem;
+		color: var(--sb-paper-faint);
+	}
+	/* the corner lifts as you reach for it */
+	.sb-leaf-curl {
+		position: absolute;
+		right: 0;
+		bottom: 0;
+		width: 0;
+		height: 0;
+		border-style: solid;
+		border-width: 0 0 0 0;
+		border-color: transparent transparent rgba(120, 82, 40, 0.18) transparent;
+		transition: border-width 0.3s ease;
+	}
+	.sb-essay:hover .sb-leaf-curl {
+		border-width: 0 0 26px 26px;
+		border-color: transparent transparent color-mix(in srgb, var(--c) 26%, transparent) transparent;
 	}
 
-	/* ── D · the invite ── */
-	.sb-invite {
-		max-width: 46rem;
-		margin: 0 auto;
-		text-align: center;
-		padding: clamp(1.75rem, 4vw, 2.75rem);
-		border-radius: 0.4rem;
-		border: 1.5px dashed color-mix(in srgb, var(--sa-acc) 45%, transparent);
-		background: color-mix(in srgb, var(--sa-acc) 5%, transparent);
+	/* a leaf still waiting for its essay: the plate is an empty mount,
+	   ruled in pencil, with the invitation printed underneath */
+	.sb-blank-plate {
+		position: relative;
+		display: grid;
+		place-content: center;
+		justify-items: center;
+		gap: 0.45rem;
+		aspect-ratio: 16 / 10;
+		padding: 5px;
+		background: rgba(255, 255, 255, 0.45);
+		border: 1px dashed color-mix(in srgb, var(--c) 42%, var(--sb-paper-line));
+		box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
 	}
+	.sb-blank-ic {
+		display: grid;
+		place-items: center;
+		width: 2.6rem;
+		height: 2.6rem;
+		border-radius: 50%;
+		color: color-mix(in srgb, var(--c) 58%, #000);
+		border: 1px solid color-mix(in srgb, var(--c) 34%, transparent);
+		background: rgba(255, 255, 255, 0.6);
+	}
+	.sb-blank-kick {
+		font-size: 0.6rem;
+		font-weight: 900;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+		color: color-mix(in srgb, var(--c) 52%, #000);
+	}
+	.sb-blank-cta {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		margin-top: 0.25rem;
+		font-size: 0.82rem;
+		font-weight: 800;
+		color: color-mix(in srgb, var(--c) 58%, #000);
+		transition: gap 0.25s ease;
+	}
+	.sb-essay--blank:hover .sb-blank-cta { gap: 0.62rem; }
+	.sb-leaf--blank .sb-leaf-desc { -webkit-line-clamp: 4; }
+
+	/* ── D · the invitation ──────────────────────────────────── */
+	.sb-invite {
+		position: relative;
+		max-width: 44rem;
+		margin: 1.4rem auto 0;
+		text-align: center;
+		padding: clamp(2.2rem, 4.4vw, 3.1rem) clamp(1.5rem, 4vw, 3rem) clamp(1.9rem, 4vw, 2.6rem);
+		color: var(--sb-paper-ink);
+		background:
+			radial-gradient(120% 90% at 50% 0%, rgba(255, 255, 255, 0.6), transparent 60%),
+			linear-gradient(168deg, var(--sb-paper) 0%, var(--sb-paper-2) 100%);
+		border: 1px solid var(--sb-paper-line);
+		box-shadow:
+			inset 0 0 0 1px rgba(255, 255, 255, 0.5),
+			0 30px 66px -32px rgba(0, 0, 0, 0.66);
+	}
+	/* the double rule an engraved invitation is printed inside */
+	.sb-invite::before {
+		content: '';
+		position: absolute;
+		inset: 0.55rem;
+		border: 1px solid color-mix(in srgb, var(--sa-acc) 30%, transparent);
+		pointer-events: none;
+	}
+	.sb-invite::after {
+		content: '';
+		position: absolute;
+		inset: 0.78rem;
+		border: 3px double color-mix(in srgb, var(--sa-acc) 22%, transparent);
+		pointer-events: none;
+	}
+	/* the seal, pressed at the top where it was closed */
+	.sb-seal {
+		position: absolute;
+		top: -17px;
+		left: 50%;
+		width: 34px;
+		height: 34px;
+		margin-left: -17px;
+		border-radius: 47% 53% 51% 49% / 50% 47% 53% 50%;
+		background: radial-gradient(circle at 34% 30%, #e0608f, var(--sa-acc) 58%, #7c1039);
+		box-shadow: inset 0 -2px 5px rgba(0, 0, 0, 0.35), 0 6px 14px -6px rgba(0, 0, 0, 0.6);
+		z-index: 2;
+	}
+	.sb-seal::after {
+		content: 'S';
+		position: absolute;
+		inset: 0;
+		display: grid;
+		place-items: center;
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 0.92rem;
+		color: rgba(255, 255, 255, 0.72);
+	}
+	.sb-invite .sb-lead { color: var(--sb-paper-soft); }
+	.sb-invite .sb-h2 { color: var(--sb-paper-ink); }
 	.sb-invite-k {
 		display: inline-block;
-		font-size: 0.7rem;
+		font-size: 0.68rem;
 		font-weight: 800;
-		letter-spacing: 0.18em;
+		letter-spacing: 0.24em;
 		text-transform: uppercase;
 		color: var(--sa-acc);
 	}
 	.sb-invite-form {
+		position: relative;
+		z-index: 1;
 		display: flex;
-		gap: 0.6rem;
+		gap: 0.9rem;
+		align-items: flex-end;
 		justify-content: center;
 		flex-wrap: wrap;
-		margin-top: 1.2rem;
+		margin-top: 1.4rem;
 	}
 	.sb-hp { position: absolute; left: -9999px; }
+	/* a line to write your address on, not a box to type into */
+	.sb-rsvp {
+		display: flex;
+		align-items: baseline;
+		gap: 0.6rem;
+		flex: 1 1 19rem;
+		max-width: 23rem;
+		border-bottom: 1.5px solid color-mix(in srgb, var(--sb-paper-ink) 40%, transparent);
+		padding-bottom: 0.2rem;
+		transition: border-color 0.25s ease;
+	}
+	.sb-rsvp:focus-within { border-color: var(--sa-acc); }
+	.sb-rsvp-k {
+		flex: none;
+		font-size: 0.66rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--sb-paper-faint);
+	}
 	.sb-invite-input {
-		flex: 1 1 16rem;
-		max-width: 22rem;
-		padding: 0.85rem 1.15rem;
-		border-radius: 9999px;
-		border: 1px solid var(--sa-line);
-		background: color-mix(in srgb, var(--sa-ink) 5%, transparent);
-		color: var(--sa-ink);
-		font-size: 0.95rem;
-		transition: border-color 0.25s ease, box-shadow 0.25s ease;
+		flex: 1 1 auto;
+		min-width: 0;
+		padding: 0.5rem 0.1rem;
+		border: 0;
+		background: transparent;
+		color: var(--sb-paper-ink);
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 1.02rem;
 	}
-	.sb-invite-input::placeholder { color: var(--sa-faint); }
-	.sb-invite-input:focus {
-		outline: none;
-		border-color: var(--sa-acc);
-		box-shadow: 0 0 0 4px color-mix(in srgb, var(--sa-acc) 20%, transparent);
-	}
-	@media (max-width: 640px) {
-		/* phones: the invite runs edge to edge */
-		.sb-invite-input { flex: 1 0 100%; max-width: none; }
-		.sb-invite-btn { width: 100%; justify-content: center; }
-	}
+	.sb-invite-input::placeholder { color: var(--sb-paper-faint); }
+	.sb-invite-input:focus { outline: none; }
 	.sb-invite-btn {
 		display: inline-flex;
 		align-items: center;
 		gap: 0.5rem;
-		padding: 0.85rem 1.6rem;
-		border-radius: 9999px;
+		padding: 0.78rem 1.5rem;
 		border: 0;
 		cursor: pointer;
 		font-weight: 800;
-		font-size: 0.92rem;
+		font-size: 0.9rem;
+		letter-spacing: 0.02em;
 		color: #fff;
 		background: linear-gradient(95deg, var(--sa-acc), #a855f7);
-		box-shadow: 0 18px 44px -16px color-mix(in srgb, var(--sa-acc) 80%, transparent);
+		box-shadow: 0 16px 38px -16px color-mix(in srgb, var(--sa-acc) 80%, transparent);
 		transition: box-shadow 0.25s ease, filter 0.25s ease;
 		will-change: transform;
 	}
 	.sb-invite-btn:hover { filter: brightness(1.07); }
+	@media (max-width: 640px) {
+		/* phones: the line and the button each take the full width */
+		.sb-rsvp { flex: 1 0 100%; max-width: none; }
+		.sb-invite-btn { width: 100%; justify-content: center; }
+	}
 
-	/* ── E · the catalogue ── */
+	/* ── E · the catalogue ───────────────────────────────────── */
 	.sb-mag {
 		position: relative;
 		display: grid;
 		gap: clamp(1.25rem, 3vw, 2.25rem);
 		align-items: center;
-		padding: clamp(1.1rem, 2.5vw, 1.8rem);
-		border-radius: 0.4rem;
-		border: 1px solid var(--sa-line);
-		background: var(--sa-card);
-		box-shadow: inset 0 0 0 10px color-mix(in srgb, var(--sa-ink) 4%, transparent), 0 30px 70px -32px rgba(0, 0, 0, 0.7);
-		color: var(--sa-ink);
-		transition: border-color 0.3s ease;
+		padding: clamp(1.15rem, 2.6vw, 1.9rem);
+		color: var(--sb-paper-ink);
+		background:
+			radial-gradient(120% 100% at 18% 0%, rgba(255, 255, 255, 0.55), transparent 60%),
+			linear-gradient(168deg, var(--sb-paper) 0%, var(--sb-paper-2) 100%);
+		border: 1px solid var(--sb-paper-line);
+		border-radius: 0.3rem;
+		box-shadow:
+			inset 0 0 0 1px rgba(255, 255, 255, 0.5),
+			0 30px 70px -32px rgba(0, 0, 0, 0.66);
+		transform: rotateX(2.2deg);
+		transform-origin: bottom center;
+		transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 	}
-	.sb-mag:hover { border-color: color-mix(in srgb, var(--sa-acc) 50%, transparent); }
+	.sb-mag:hover { transform: rotateX(0.5deg) translateY(-3px); }
 	@media (min-width: 760px) {
-		.sb-mag { grid-template-columns: 0.55fr 1.45fr; }
+		.sb-mag { grid-template-columns: 0.5fr 1.5fr; }
 	}
 	.sb-mag-cover {
 		display: block;
 		overflow: hidden;
-		border-radius: 0.35rem;
-		border: 1px solid var(--sa-line);
+		background: #fff;
+		padding: 6px;
 		max-width: 16rem;
+		box-shadow: inset 0 0 0 1px var(--sb-paper-line), 0 12px 26px -14px rgba(0, 0, 0, 0.55);
 	}
 	.sb-mag-cover img { display: block; width: 100%; transition: transform 0.5s ease; }
 	.sb-mag:hover .sb-mag-cover img { transform: scale(1.04); }
 	.sb-mag-meta { display: grid; gap: 0.5rem; }
-	.sb-mag-meta strong { font-size: clamp(1.15rem, 2.2vw, 1.55rem); font-weight: 850; letter-spacing: -0.01em; }
+	.sb-mag-meta strong {
+		font-family: var(--sa-serif);
+		font-size: clamp(1.2rem, 2.2vw, 1.6rem);
+		font-weight: 700;
+		letter-spacing: -0.01em;
+	}
 	.sb-mag-meta em {
 		font-family: var(--sa-serif);
 		font-style: italic;
 		font-size: 0.94rem;
-		color: var(--sa-muted);
+		color: var(--sb-paper-soft);
 	}
+	.sb-mag .sb-link { border-bottom-color: color-mix(in srgb, var(--sa-acc) 45%, transparent); }
 
 	/* ── reveals ── */
 	.sd-rev {
@@ -643,5 +1195,61 @@ const filterCss = cats
 
 	@media (prefers-reduced-motion: reduce) {
 		.sd-rev { opacity: 1; transform: none; transition: none; }
+		.sb-lamp-pool, .sb-rail-cue { animation: none; }
+	}
+
+	/* ═══ the phone ══════════════════════════════════════════════
+	   The folio strip is a masthead for a wide page — on a phone it was
+	   three lines of shouted capitals above anything worth reading. And
+	   the section rule, a two-column row on the desktop, broke its own
+	   eyebrow mid-phrase fighting the caption for the same row. */
+	@media (max-width: 720px) {
+		.sb-folio { display: none; }
+
+		/* on a phone the entrance was a whole screen of its own; the
+		   heading stays, everything around it gives up its slack so the
+		   thing people came for is reachable in one short scroll */
+		.sb-sec { padding-block: 1.1rem; }
+		.sb-display { font-size: clamp(2.2rem, 11.5vw, 3.1rem); }
+		.sb-open { gap: 0.85rem; }
+		.sb-scroll { padding: 1.1rem 1.3rem; }
+		.sb-scroll-lead { font-size: 1rem; line-height: 1.55; }
+
+		/* the outline word crowds the display type at this size */
+		.sb-ghost { display: none; }
+
+		.sb-rule {
+			display: block;
+			padding-bottom: 0.7rem;
+		}
+		.sb-rule span:first-child {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+			white-space: nowrap;
+			font-size: 0.66rem;
+			letter-spacing: 0.2em;
+		}
+		.sb-rule span:first-child::before {
+			content: '';
+			flex: none;
+			width: 1.15rem;
+			height: 2px;
+			background: currentColor;
+			opacity: 0.85;
+		}
+		.sb-rule span:last-child {
+			display: block;
+			margin-top: 0.34rem;
+			font-size: 1.04rem;
+			line-height: 1.32;
+		}
+
+		/* the lamp is an ornament the small screen has no room for */
+		.sb-lamp { display: none; }
+		.sb-stand { padding-top: 0.4rem; }
+		.sb-lectern, .sb-mag { transform: none; }
+		.sb-lectern:hover, .sb-mag:hover { transform: translateY(-2px); }
+		.sb-tab { font-size: 0.7rem; padding: 0.52rem 0.82rem 0.46rem; }
 	}
 </style>

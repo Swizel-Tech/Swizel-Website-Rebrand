@@ -116,7 +116,7 @@ const phones = [
 						<i aria-hidden="true"></i>
 						Swizel TV
 					</span>
-					<a class="ft-tv-link" href={YT_URL} target="_blank" rel="noopener noreferrer">
+					<a class="ft-tv-link" href={YT_URL} target="_blank" rel="noopener noreferrer" data-leaving="youtube.com" data-leaving-name="Swizel TV on YouTube">
 						the channel
 						<Icon width={13} name="mdi:arrow-top-right" />
 					</a>
@@ -208,6 +208,8 @@ const phones = [
 							href={sc.href}
 							target="_blank"
 							rel="noopener noreferrer"
+							data-leaving=""
+							data-leaving-name={`Swizel on ${sc.name}`}
 							style={`--pk:${sc.color}; --i:${i}; --r:${(i % 3) - 1}`}
 						>
 							<span class="ft-pin-tack" aria-hidden="true">📌</span>
@@ -246,6 +248,8 @@ const phones = [
 								href={sc.href}
 								target="_blank"
 								rel="noopener noreferrer"
+								data-leaving=""
+								data-leaving-name={`Swizel on ${sc.name}`}
 								style={`--pk:${sc.color}; --i:${i}`}
 								title={sc.tag}
 							>
@@ -283,7 +287,7 @@ const phones = [
 						{
 							socials.map((sc, i) => (
 								<li style={`--pk:${sc.color}; --i:${i}`}>
-									<a href={sc.href} target="_blank" rel="noopener noreferrer">
+									<a href={sc.href} target="_blank" rel="noopener noreferrer" data-leaving="" data-leaving-name={`Swizel on ${sc.name}`}>
 										<span class="ft-deck-ic">
 											{sc.isX ? (
 												<svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true">
@@ -323,6 +327,8 @@ const phones = [
 									href={sc.href}
 									target="_blank"
 									rel="noopener noreferrer"
+									data-leaving=""
+									data-leaving-name={`Swizel on ${sc.name}`}
 									style={`--pk:${sc.color}; --i:${i}`}
 									title={`${sc.name} · ${sc.short}`}
 								>
@@ -350,6 +356,8 @@ const phones = [
 							href={s.href}
 							target="_blank"
 							rel="noopener noreferrer"
+							data-leaving=""
+							data-leaving-name={`Swizel on ${s.name}`}
 							style={`--pk:${s.color}`}
 						>
 							<span class="ft-social-ic">

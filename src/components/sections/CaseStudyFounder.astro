@@ -290,6 +290,8 @@ const heroBadges = cs.results.slice(0, 2);
 										href={it.url ?? undefined}
 										target={it.url ? '_blank' : undefined}
 										rel={it.url ? 'noopener noreferrer' : undefined}
+										data-leaving={it.url ? '' : undefined}
+										data-leaving-name={it.url ? it.outlet : undefined}
 										class="fc-press-item"
 									>
 										<Icon width={17} name="mdi:newspaper-variant-outline" />

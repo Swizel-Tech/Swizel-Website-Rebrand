@@ -111,7 +111,11 @@ function bindFounderMotion(root: HTMLElement) {
 				bio.textContent = btn.dataset.bio || '';
 				const li = btn.dataset.linkedin || '';
 				linkedin.hidden = !li;
-				if (li) linkedin.href = li;
+				if (li) {
+					linkedin.href = li;
+					// so the leaving notice names the person, not "the live product"
+					linkedin.dataset.leavingName = `${n} on LinkedIn`;
+				}
 				let exp: { company: string; jobDesc: string }[] = [];
 				try {
 					exp = JSON.parse(btn.dataset.exp || '[]');

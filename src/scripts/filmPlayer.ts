@@ -228,6 +228,8 @@ export function initFilmPlayers(root: ParentNode = document) {
 						a.href = `https://www.youtube.com/watch?v=${ytId}`;
 						a.target = '_blank';
 						a.rel = 'noopener';
+						a.dataset.leaving = 'youtube.com';
+						a.dataset.leavingName = 'this film on YouTube';
 						a.textContent = 'Watch on YouTube \u2192';
 						screen?.appendChild(a);
 					}

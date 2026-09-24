@@ -512,6 +512,8 @@ const reviews = [
 							href={d.href}
 							target={d.live ? '_blank' : undefined}
 							rel={d.live ? 'noopener noreferrer' : undefined}
+							data-leaving={d.live ? d.domain : undefined}
+							data-leaving-name={d.live ? d.label : undefined}
 							style={`--d:${i * 0.06}s`}
 						>
 							<span class="bb-deploy-id">

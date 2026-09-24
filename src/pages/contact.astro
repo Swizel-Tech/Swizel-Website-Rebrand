@@ -6,6 +6,7 @@ import ToastContainer from '../components/elements/ToastContainer.astro';
 import ContactCampus from '../components/sections/ContactCampus.astro';
 import ContactFounder from '../components/sections/ContactFounder.astro';
 import ContactBuilder from '../components/sections/ContactBuilder.astro';
+import ContactStudio from '../components/sections/ContactStudio.astro';
 import { faq } from '../consts';
 
 const SEO_TITLE = 'Contact Swizel Technologies Limited | Start Your Project';
@@ -31,6 +32,9 @@ const channels = [
 
 	<!-- Builder world: the brief as a file you edit, and a terminal that ships it. -->
 	<ContactBuilder />
+
+	<!-- Studio world: the commissions desk, and a slip to fill in. -->
+	<ContactStudio />
 
 	<article class="bdbody ct ct--shared">
 		<!-- animated ambience: drifting glow orbs + a faint signal grid -->
@@ -120,6 +124,8 @@ const channels = [
 	html[data-view='campus'] .ct { display: none !important; }
 	/* Builder has an editor of its own now, so the shared page stands down. */
 	html[data-view='builder'] .ct { display: none !important; }
+	/* Studio has a commissions desk of its own now. */
+	html[data-view='studio'] .ct { display: none !important; }
 </style>
 
 <style>
@@ -128,6 +134,7 @@ const channels = [
 	   use it. */
 	:global(html[data-view='founder']) .ct--shared { display: none !important; }
 	:global(html[data-view='founder']) .ct-t--founder { display: none; }
+	:global(html[data-view='studio']) .ct--shared { display: none !important; }
 
 	.ct {
 		--bd-accent: #28a6ec;
