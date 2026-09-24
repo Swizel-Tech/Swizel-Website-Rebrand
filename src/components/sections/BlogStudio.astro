@@ -343,7 +343,7 @@ const filterCss = cats
 
 	.sb-sec { padding-block: clamp(1.4rem, 3vw, 2.4rem); }
 	/* the essays are what people came for: the entrance gives them the room */
-	.sb-entry { padding-top: clamp(0.35rem, 1vw, 0.7rem); padding-bottom: clamp(0.5rem, 1.2vw, 0.9rem); }
+	.sb-entry { padding-top: 0.25rem; padding-bottom: clamp(0.4rem, 1vw, 0.75rem); }
 	.sb-sec--last { padding-bottom: clamp(1.5rem, 3vw, 2.5rem); }
 	.sb-wrap { max-width: 80rem; margin: 0 auto; }
 
@@ -360,7 +360,7 @@ const filterCss = cats
 		letter-spacing: 0.16em;
 		text-transform: uppercase;
 		color: var(--sa-faint);
-		margin-bottom: clamp(1rem, 2.2vw, 1.6rem);
+		margin-bottom: clamp(0.75rem, 1.4vw, 1.1rem);
 	}
 	.sb-folio span:first-child { color: var(--sa-ink); }
 	.sb-rule {
@@ -473,7 +473,10 @@ const filterCss = cats
 	.sb-open {
 		display: grid;
 		gap: clamp(1.1rem, 2.6vw, 2.2rem);
-		align-items: end;
+		/* top-aligned, not bottom: `end` hung the heading off the bottom
+		   of a row the taller sheet sized, so a wide screen opened a
+		   dead band above it that grew with the viewport */
+		align-items: start;
 	}
 	@media (min-width: 920px) {
 		.sb-open { grid-template-columns: 1.15fr 0.85fr; }
