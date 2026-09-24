@@ -1520,7 +1520,7 @@ const phones = [
 		top: 0;
 		bottom: 0;
 		width: 1px;
-		background: linear-gradient(180deg, rgba(216, 178, 113, 0.95), rgba(216, 178, 113, 0.35));
+		background: linear-gradient(180deg, rgba(217, 164, 140, 0.95), rgba(217, 164, 140, 0.35));
 	}
 	:global(html[data-view='studio']) .ft-wall-hook::before { left: 0; transform: rotate(11deg); transform-origin: top center; }
 	:global(html[data-view='studio']) .ft-wall-hook::after { right: 0; transform: rotate(-11deg); transform-origin: top center; }
@@ -1529,7 +1529,8 @@ const phones = [
 		position: relative;
 		padding: 0.5rem 0.5rem 0.55rem;
 		border-radius: 2px;
-		background: linear-gradient(140deg, #f4e2bb 0%, #c9a05a 19%, #8d6a32 36%, #e8ce99 56%, #b8873f 74%, #f0dcae 90%, #9c7436 100%);
+		/* rose gold rather than yellow gold — it belongs to this room */
+		background: linear-gradient(140deg, #fbe4e0 0%, #d9a48c 18%, #a86a5c 35%, #f4d3c4 55%, #c98a76 73%, #fbe7dd 89%, #a4675a 100%);
 		box-shadow:
 			inset 0 0 0 1px rgba(255, 246, 224, 0.5),
 			inset 0 0 0 5px rgba(92, 64, 24, 0.26),
@@ -1578,7 +1579,7 @@ const phones = [
 	}
 	/* hairline dividers, the way panes are mounted */
 	:global(html[data-view='studio']) .ft-pane + .ft-pane {
-		box-shadow: inset 1px 0 0 rgba(216, 178, 113, 0.28);
+		box-shadow: inset 1px 0 0 rgba(217, 164, 140, 0.3);
 	}
 	:global(html[data-view='studio']) .ft-pane:hover {
 		background: radial-gradient(90% 80% at 50% 45%, color-mix(in srgb, var(--pk) 26%, transparent), transparent 74%);
@@ -1625,8 +1626,8 @@ const phones = [
 		width: fit-content;
 		padding: 0.22rem 1.2rem;
 		border-radius: 1px;
-		background: linear-gradient(168deg, #e8cd9b 0%, #c2a061 40%, #f1ddb4 62%, #b08c4c 100%);
-		box-shadow: inset 0 1px 0 rgba(255, 250, 233, 0.75), 0 4px 10px -6px rgba(0, 0, 0, 0.8);
+		background: linear-gradient(168deg, #f4d9cd 0%, #cf9d87 40%, #fae3d6 62%, #b87f6b 100%);
+		box-shadow: inset 0 1px 0 rgba(255, 246, 240, 0.8), 0 4px 10px -6px rgba(0, 0, 0, 0.8);
 		text-align: center;
 		line-height: 1.24;
 	}
@@ -1639,7 +1640,7 @@ const phones = [
 		height: 3px;
 		margin-top: -1.5px;
 		border-radius: 9999px;
-		background: radial-gradient(circle at 30% 30%, #fff8e6, #8a6a2e);
+		background: radial-gradient(circle at 30% 30%, #fff4ee, #9c6552);
 	}
 	:global(html[data-view='studio']) .ft-wall-plate::before { left: 0.42rem; }
 	:global(html[data-view='studio']) .ft-wall-plate::after { right: 0.42rem; }
@@ -1648,13 +1649,13 @@ const phones = [
 		font-size: 0.78rem;
 		font-weight: 600;
 		letter-spacing: 0.05em;
-		color: #3a2a10;
+		color: #47251d;
 	}
 	:global(html[data-view='studio']) .ft-wall-plate em {
 		font-family: 'Playfair Display', Georgia, serif;
 		font-style: italic;
 		font-size: 0.66rem;
-		color: rgba(58, 42, 16, 0.78);
+		color: rgba(71, 37, 29, 0.78);
 	}
 	@media (prefers-reduced-motion: reduce) {
 		:global(html[data-view='studio']) .ft-wall-frame { animation: none; }

@@ -72,9 +72,9 @@ const brevariumEditions = [
 ];
 
 const quotes = [
-	{ text: 'Warm, responsive and a true extension of our team. They took the worry out of shipping software.', name: 'Chidimma', role: 'Education' },
-	{ text: 'Geniuses, honestly. Working with them was effortless from the first call to launch day.', name: 'Favour', role: 'Marketing' },
-	{ text: 'Thorough, polite and always on time. They make hard things feel easy.', name: 'Cheta', role: 'E-commerce' },
+	{ text: 'Warm, responsive and a true extension of our team. They took the worry out of shipping software.', name: 'Chidimma', role: 'Education', img: '/testimonial/chidima.jpeg' },
+	{ text: 'Geniuses, honestly. Working with them was effortless from the first call to launch day.', name: 'Favour', role: 'Marketing', img: '/testimonial/favour.jpeg' },
+	{ text: 'Thorough, polite and always on time. They make hard things feel easy.', name: 'Cheta', role: 'E-commerce', img: '/testimonial/cheta.jpeg' },
 ];
 
 // The two video slots were dashed boxes with filenames written in them.
@@ -95,7 +95,7 @@ const studioFrames = [
 	<section class="sa-sec sa-atrium">
 		<div class="sa-wrap">
 			<div class="sa-ticket sd-rev">
-				<span class="sa-ticket-live"><i aria-hidden="true"></i> The gallery is open — free admission</span>
+				<span class="sa-ticket-live">The gallery is open, free admission</span>
 				<span class="sa-ticket-wing">Wing 02 · <em>The Retrospective</em></span>
 			</div>
 			<div class="sa-folio sd-rev">
@@ -450,7 +450,15 @@ const studioFrames = [
 						quotes.map((q, i) => (
 							<blockquote class:list={['sd-quote', { 'is-live': i === 0 }]}>
 								<p>{q.text}</p>
-								<footer>— {q.name}, <em>{q.role}</em></footer>
+								<footer>
+									<span class="sa-quote-face">
+										<img src={q.img} alt={q.name} loading="lazy" decoding="async" />
+									</span>
+									<span class="sa-quote-who">
+										<b>{q.name}</b>
+										<em>{q.role}</em>
+									</span>
+								</footer>
 							</blockquote>
 						))
 					}
@@ -1882,8 +1890,10 @@ const studioFrames = [
 		will-change: transform;
 	}
 	.sa-btn:hover { filter: brightness(1.07); box-shadow: 0 24px 54px -16px color-mix(in srgb, var(--sa-acc) 90%, transparent); }
-	.sa-call { font-size: 0.95rem; color: var(--sa-muted); }
+	.sa-call { font-size: 1.05rem; color: var(--sa-muted); }
 	.sa-call strong {
+		font-size: 1.32em;
+		letter-spacing: 0.005em;
 		font-weight: 850;
 		letter-spacing: -0.01em;
 		color: var(--sa-ink);
@@ -2035,4 +2045,45 @@ const studioFrames = [
 		.sa-spine { transform: none; transition: none; }
 		.sd-quote { transition: none; }
 	}
+	/* the collector, signed and pictured */
+	.sd-quote footer {
+		display: flex;
+		align-items: center;
+		gap: 0.85rem;
+		margin-top: 1.5rem;
+	}
+	.sa-quote-face {
+		flex: none;
+		display: block;
+		width: 3.1rem;
+		height: 3.1rem;
+		border-radius: 9999px;
+		overflow: hidden;
+		padding: 2px;
+		background: linear-gradient(150deg, #f0c9dd, #d8b271 45%, #f3ddb0 78%, #c98fae);
+		box-shadow: 0 10px 22px -12px rgba(0, 0, 0, 0.6);
+	}
+	.sa-quote-face img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		border-radius: 9999px;
+		object-fit: cover;
+		object-position: 50% 22%;
+	}
+	.sa-quote-who { display: grid; line-height: 1.25; }
+	.sa-quote-who b {
+		font-size: 0.82rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--sa-ink);
+	}
+	.sa-quote-who em {
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 0.88rem;
+		color: var(--sa-muted);
+	}
+
 </style>

@@ -4,6 +4,7 @@
 // can walk through. Root carries `sbody` (studio engine: .sd-rev reveals)
 // and `ssvc` (motion engine: tilt / glare / magnetic / .fa-journey draw).
 import { Icon } from 'astro-icon/components';
+import FilmPlayer from '../FilmPlayer.astro';
 import { disciplines } from '../../data/disciplines';
 
 const process = [
@@ -14,6 +15,21 @@ const process = [
 ];
 
 const sectors = ['fintech', 'real estate', 'sports', 'e-commerce', 'education', 'healthcare', 'beauty', 'media', 'travel', 'energy'];
+
+// The materials the studio works in. Founder's wing lists the same stack
+// as a toolkit; a gallery lists its media — oil, bronze, and so on — so it
+// is set here as a materials board.
+const materials = [
+	{ group: 'Design', icon: 'mdi:palette-outline', tools: ['Figma', 'Illustrator', 'Photoshop', 'After Effects', 'Framer'] },
+	{ group: 'Web', icon: 'mdi:language-html5', tools: ['React', 'Next.js', 'Vue', 'Astro', 'Svelte', 'Tailwind', 'TypeScript'] },
+	{ group: 'Mobile', icon: 'mdi:cellphone', tools: ['Flutter', 'React Native', 'Swift', 'Kotlin', 'Expo'] },
+	{ group: 'Backend', icon: 'mdi:server-network', tools: ['Node', 'Python', 'PHP', 'Laravel', 'Django', 'Go'] },
+	{ group: 'Cloud', icon: 'mdi:cloud-outline', tools: ['AWS', 'Vercel', 'Docker', 'Cloudflare', 'GitHub Actions'] },
+	{ group: 'Data', icon: 'mdi:database-outline', tools: ['PostgreSQL', 'MongoDB', 'Redis', 'Supabase', 'Prisma'] },
+	{ group: 'Commerce', icon: 'mdi:cart-outline', tools: ['Stripe', 'Paystack', 'Shopify', 'WooCommerce'] },
+	{ group: 'Content', icon: 'mdi:file-document-edit-outline', tools: ['WordPress', 'Sanity', 'Contentful', 'Webflow'] },
+	{ group: 'Quality', icon: 'mdi:check-decagram-outline', tools: ['Git', 'Jest', 'Playwright', 'Storybook', 'Sentry'] },
+];
 ---
 
 <div class="ssvc sbody view-body view-body-studio">
@@ -31,11 +47,17 @@ const sectors = ['fintech', 'real estate', 'sports', 'e-commerce', 'education', 
 					<em>One house.</em>
 				</h2>
 				<div class="sv-open-side sd-rev">
-					<p class="sv-lead">
-						Design, development, marketing, strategy, maintenance and
-						education — every craft your product needs, practised under
-						one roof by the same hands. Walk into any room.
-					</p>
+					<figure class="sv-scroll">
+						<span class="sv-scroll-grain" aria-hidden="true"></span>
+						<p class="sv-lead">
+							Design, development, marketing, strategy, maintenance
+							and education. Every craft a product needs, practised
+							under one roof by the same hands, so nothing is handed
+							over a fence and nothing is lost in the handing. Walk
+							into any room and the people inside built what is on
+							the walls.
+						</p>
+					</figure>
 					<a href="/contact" class="sv-link">
 						Commission the studio
 						<Icon width={15} name="mdi:arrow-right" />
@@ -106,6 +128,65 @@ const sectors = ['fintech', 'real estate', 'sports', 'e-commerce', 'education', 
 					))
 				}
 			</div>
+		</div>
+	</section>
+
+	<!-- ── C2 · the screening room ─────────────────────────── -->
+	<section class="sv-sec" data-cursor="play">
+		<div class="sv-wrap">
+			<div class="sv-rule sd-rev">
+				<span>The screening room</span>
+				<span>Two minutes, first sketch to launch day</span>
+			</div>
+			<figure class="sv-screen sd-rev" data-fa-tilt="4">
+				<span class="sv-screen-wire" aria-hidden="true"></span>
+				<span class="sv-screen-mat">
+					<FilmPlayer
+						src="/videos/how-we-build.mp4"
+						poster="/images/how-we-build-poster.jpg"
+						label="Inside the Swizel studio: a commission from sketch to launch"
+						tag="on the floor"
+						cover
+						ratio="16 / 9"
+						class="sv-film"
+					/>
+				</span>
+				<figcaption class="sv-screen-plaque">
+					<strong>How a commission is made</strong>
+					<span>Moving image · The Abuja floor · a normal Tuesday</span>
+				</figcaption>
+			</figure>
+		</div>
+	</section>
+
+	<!-- ── C3 · the materials board ────────────────────────── -->
+	<section class="sv-sec" data-cursor="repo">
+		<div class="sv-wrap">
+			<div class="sv-rule sd-rev">
+				<span>The materials</span>
+				<span>What the work is made in</span>
+			</div>
+			<div class="sv-materials">
+				{
+					materials.map((m, i) => (
+						<article class="sv-mat sd-rev" style={`--i:${i}`}>
+							<span class="sv-mat-head">
+								<span class="sv-mat-ic"><Icon width={17} name={m.icon} /></span>
+								{m.group}
+							</span>
+							<span class="sv-mat-tools">
+								{m.tools.map((t, k) => (
+									<i style={`--k:${k}`}>{t}</i>
+								))}
+							</span>
+						</article>
+					))
+				}
+			</div>
+			<p class="sv-mat-note sd-rev">
+				And whatever else a piece calls for. The material is chosen to
+				suit the work, never the other way round.
+			</p>
 		</div>
 	</section>
 
@@ -513,4 +594,178 @@ const sectors = ['fintech', 'real estate', 'sports', 'e-commerce', 'education', 
 		.sv-belt-track { animation: none; }
 		.sv-spine { transform: none; transition: none; }
 	}
+	/* ═══ the wing's opening line, on paper ══════════════════════ */
+	.sv-scroll {
+		position: relative;
+		margin: 0 0 1.1rem;
+		padding: 1.25rem 1.5rem 1.2rem;
+		color: #2c1c14;
+		background:
+			radial-gradient(130% 100% at 14% 0%, rgba(255, 255, 255, 0.6), transparent 62%),
+			linear-gradient(166deg, #fbf4e6 0%, #f4ecda 58%, #ece1c9 100%);
+		box-shadow:
+			inset 0 0 22px rgba(120, 82, 40, 0.11),
+			0 18px 42px -26px rgba(0, 0, 0, 0.5);
+		transform: rotate(-0.4deg);
+		-webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='220' preserveAspectRatio='none'%3E%3Cfilter id='t' x='-6%' y='-12%' width='112%' height='124%'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.018 0.07' numOctaves='4' seed='31' result='n'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='n' scale='11' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3Crect x='10' y='11' width='580' height='198' rx='20' ry='24' fill='%23fff' filter='url(%23t)'/%3E%3C/svg%3E");
+		mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='220' preserveAspectRatio='none'%3E%3Cfilter id='t' x='-6%' y='-12%' width='112%' height='124%'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.018 0.07' numOctaves='4' seed='31' result='n'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='n' scale='11' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3Crect x='10' y='11' width='580' height='198' rx='20' ry='24' fill='%23fff' filter='url(%23t)'/%3E%3C/svg%3E");
+		-webkit-mask-size: 100% 100%;
+		mask-size: 100% 100%;
+		-webkit-mask-repeat: no-repeat;
+		mask-repeat: no-repeat;
+	}
+	.sv-scroll-grain {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		opacity: 0.5;
+		mix-blend-mode: multiply;
+		background-image:
+			repeating-linear-gradient(91deg, rgba(120, 82, 40, 0.055) 0 1px, transparent 1px 5px),
+			url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='150' height='150' filter='url(%23g)' opacity='0.4'/%3E%3C/svg%3E");
+	}
+	.sv-scroll .sv-lead {
+		position: relative;
+		z-index: 1;
+		margin: 0;
+		color: #2c1c14;
+		font-family: var(--sd-serif, 'Playfair Display', Georgia, serif);
+		font-style: italic;
+		font-size: clamp(0.98rem, 1.15vw, 1.1rem);
+		line-height: 1.66;
+	}
+
+	/* ═══ the screening room ═════════════════════════════════════ */
+	.sv-screen {
+		position: relative;
+		margin: 0 auto;
+		max-width: 58rem;
+		padding-top: 1.3rem;
+	}
+	.sv-screen-wire {
+		position: absolute;
+		top: 0;
+		left: 50%;
+		width: 44px;
+		height: 1.4rem;
+		margin-left: -22px;
+		pointer-events: none;
+	}
+	.sv-screen-wire::before,
+	.sv-screen-wire::after {
+		content: '';
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		width: 1px;
+		background: linear-gradient(180deg, rgba(217, 164, 140, 0.95), rgba(217, 164, 140, 0.32));
+		transform-origin: top center;
+	}
+	.sv-screen-wire::before { left: 0; transform: rotate(10deg); }
+	.sv-screen-wire::after { right: 0; transform: rotate(-10deg); }
+	.sv-screen-mat {
+		position: relative;
+		display: block;
+		padding: 0.55rem;
+		border-radius: 2px;
+		background: linear-gradient(140deg, #fbe4e0 0%, #d9a48c 18%, #a86a5c 35%, #f4d3c4 55%, #c98a76 73%, #fbe7dd 89%, #a4675a 100%);
+		box-shadow:
+			inset 0 0 0 1px rgba(255, 246, 240, 0.5),
+			inset 0 0 0 5px rgba(92, 52, 40, 0.24),
+			0 2px 0 rgba(60, 32, 24, 0.42),
+			0 30px 56px -24px rgba(0, 0, 0, 0.8);
+	}
+	.sv-screen-mat :global(.sv-film) { display: block; border-radius: 1px; overflow: hidden; }
+	.sv-screen-plaque {
+		display: grid;
+		justify-items: center;
+		gap: 0.1rem;
+		margin: 0.75rem auto 0;
+		width: fit-content;
+		padding: 0.32rem 1.2rem;
+		border-radius: 1px;
+		background: linear-gradient(168deg, #f4d9cd 0%, #cf9d87 40%, #fae3d6 62%, #b87f6b 100%);
+		box-shadow: inset 0 1px 0 rgba(255, 246, 240, 0.8), 0 5px 12px -7px rgba(0, 0, 0, 0.7);
+		text-align: center;
+	}
+	.sv-screen-plaque strong {
+		font-family: var(--sd-serif, 'Playfair Display', Georgia, serif);
+		font-size: 0.9rem;
+		font-weight: 600;
+		color: #47251d;
+	}
+	.sv-screen-plaque span {
+		font-family: var(--sd-serif, 'Playfair Display', Georgia, serif);
+		font-style: italic;
+		font-size: 0.72rem;
+		color: rgba(71, 37, 29, 0.78);
+	}
+
+	/* ═══ the materials board ════════════════════════════════════ */
+	.sv-materials {
+		display: grid;
+		gap: 0.7rem;
+		grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+	}
+	.sv-mat {
+		display: grid;
+		gap: 0.55rem;
+		padding: 0.95rem 1.1rem 1.05rem;
+		border-radius: 0.4rem;
+		border: 1px solid var(--sd-line, rgba(255, 255, 255, 0.12));
+		background: var(--sd-card, rgba(255, 255, 255, 0.04));
+		transition: border-color 0.3s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.sv-mat:hover {
+		transform: translateY(-3px);
+		border-color: color-mix(in srgb, var(--sd-acc, #ec4899) 50%, transparent);
+	}
+	.sv-mat-head {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-family: var(--sd-serif, 'Playfair Display', Georgia, serif);
+		font-style: italic;
+		font-size: 1rem;
+		color: var(--sd-ink, #f3edf0);
+	}
+	.sv-mat-ic {
+		display: grid;
+		place-items: center;
+		width: 28px;
+		height: 28px;
+		border-radius: 9999px;
+		color: var(--sd-acc, #ec4899);
+		background: color-mix(in srgb, var(--sd-acc, #ec4899) 12%, transparent);
+		border: 1px solid color-mix(in srgb, var(--sd-acc, #ec4899) 26%, transparent);
+	}
+	.sv-mat-tools { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+	.sv-mat-tools i {
+		font-style: normal;
+		font-size: 0.74rem;
+		padding: 0.2rem 0.55rem;
+		border-radius: 9999px;
+		border: 1px solid var(--sd-line, rgba(255, 255, 255, 0.12));
+		color: var(--sd-muted, rgba(243, 237, 240, 0.64));
+		transition: border-color 0.25s ease, color 0.25s ease, transform 0.25s ease;
+	}
+	.sv-mat:hover .sv-mat-tools i { border-color: color-mix(in srgb, var(--sd-acc, #ec4899) 32%, transparent); }
+	.sv-mat-tools i:hover {
+		color: var(--sd-ink, #fff);
+		border-color: var(--sd-acc, #ec4899);
+		transform: translateY(-2px);
+	}
+	.sv-mat-note {
+		margin: 1.2rem auto 0;
+		max-width: 34rem;
+		text-align: center;
+		font-family: var(--sd-serif, 'Playfair Display', Georgia, serif);
+		font-style: italic;
+		font-size: 0.95rem;
+		color: var(--sd-muted, rgba(243, 237, 240, 0.64));
+	}
+	@media (max-width: 620px) {
+		.sv-materials { grid-template-columns: minmax(0, 1fr); }
+	}
+
 </style>
