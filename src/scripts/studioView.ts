@@ -6,27 +6,22 @@ export function initStudioView() {
 	if (hero) {
 		const still = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-		// ── the exhibit ─────────────────────────────────────────────
-		// The reel never moves. The collection travels past it on a ring
-		// of six slots: in from the right (+2, +1), behind the film, out
-		// to the front-left (-1, -2), then off-stage (±3) and round. Each
-		// card is handed its slot number and the sign of it; every bit of
-		// the geometry lives in the stylesheet's slot table.
-		const RING = [1, 2, 3, -3, -2, -1];
-		const FEATURED = 5; // the ring position whose piece the label names
-
-		const deck = hero.querySelector<HTMLElement>('[data-shr-deck]');
-		const show = hero.querySelector<HTMLElement>('.shr-show');
-		const cards = Array.from(hero.querySelectorAll<HTMLElement>('[data-shr-card]'));
-		const ticks = Array.from(hero.querySelectorAll<HTMLElement>('[data-shr-go]'));
+		// ── the wall ────────────────────────────────────────────────
+		// Six pieces hang around the reel. One at a time is "lit": it
+		// lifts off the wall, comes up to full colour, and hands its
+		// colour to the room — orbs, beam, headline word, frames and
+		// ticker all read the same variable. It moves along on its own
+		// every few seconds, and follows the pointer when there is one.
+		const wall = hero.querySelector<HTMLElement>('[data-shr-wall]');
+		const arts = Array.from(hero.querySelectorAll<HTMLElement>('[data-shr-art]'));
+		const reelMat = hero.querySelector<HTMLElement>('.shr-mat--reel');
 		const nameEl = hero.querySelector<HTMLElement>('[data-shr-name]');
 		const metaEl = hero.querySelector<HTMLElement>('[data-shr-meta]');
-		const visitEl = hero.querySelector<HTMLAnchorElement>('[data-shr-visit]');
 		const film = hero.querySelector<HTMLElement>('.shr-reel');
 
-		const n = cards.length;
 		let at = 0;
 		let timer = 0;
+		let pinned: HTMLElement | null = null;
 
 		const retime = (el: HTMLElement | null) => {
 			if (!el) return;
@@ -35,113 +30,58 @@ export function initStudioView() {
 			el.style.animation = '';
 		};
 
-		const place = () => {
-			let live: HTMLElement | undefined;
-
-			cards.forEach((card, i) => {
-				const k = (((i - at) % n) + n) % n;
-				const slot = RING[k] ?? 3;
-				card.dataset.slot = String(slot);
-				card.style.setProperty('--s', String(Math.sign(slot)));
-				const isLive = k === FEATURED;
-				card.classList.toggle('is-live', isLive);
-				if (isLive) live = card;
-			});
-
-			ticks.forEach((t, i) => t.classList.toggle('is-on', i === at));
-			if (!live) return;
-
-			// the room takes the colour of the piece at the front — the
-			// palette comes from the work itself
-			const tint = live.dataset.tint;
+		const light = (art: HTMLElement | undefined | null) => {
+			if (!art) return;
+			arts.forEach((a) => a.classList.toggle('is-lit', a === art));
+			const tint = art.dataset.tint;
 			if (tint) hero.style.setProperty('--sa', tint);
-
-			if (nameEl) { nameEl.textContent = live.dataset.name || ''; retime(nameEl); }
-			if (metaEl) { metaEl.textContent = live.dataset.meta || ''; retime(metaEl); }
-			if (visitEl) {
-				const href = live.dataset.href;
-				visitEl.href = href || '/portfolio';
-				if (live.dataset.external) {
-					visitEl.target = '_blank';
-					visitEl.rel = 'noopener noreferrer';
-				} else {
-					visitEl.removeAttribute('target');
-					visitEl.removeAttribute('rel');
-				}
+			if (nameEl && nameEl.textContent !== art.dataset.name) {
+				nameEl.textContent = art.dataset.name || '';
+				retime(nameEl);
 			}
-			// restart the countdown on the live tick
-			retime(hero.querySelector<HTMLElement>('.shr-tick.is-on i'));
+			if (metaEl && metaEl.textContent !== art.dataset.meta) {
+				metaEl.textContent = art.dataset.meta || '';
+				retime(metaEl);
+			}
 		};
-
-		const go = (i: number) => {
-			at = ((i % n) + n) % n;
-			place();
-		};
-		const turn = (d: number) => go(at + d);
-
-		// it turns on its own — unless the film is running, or you are
-		// touching it
-		const playing = () => !!film?.querySelector('[data-flm].is-started');
 
 		const stop = () => {
 			if (timer) window.clearInterval(timer);
 			timer = 0;
-			show?.classList.add('is-held');
 		};
 		const start = () => {
-			if (still.matches) return;
-			if (timer) window.clearInterval(timer);
-			show?.classList.remove('is-held');
+			if (still.matches || !arts.length) return;
+			stop();
 			timer = window.setInterval(() => {
-				if (playing()) return;
-				turn(1);
-			}, 4600);
+				if (pinned) return;
+				at = (at + 1) % arts.length;
+				light(arts[at]);
+			}, 3600);
 		};
 
-		hero.querySelector('[data-shr-next]')?.addEventListener('click', () => { turn(1); start(); });
-		hero.querySelector('[data-shr-prev]')?.addEventListener('click', () => { turn(-1); start(); });
-		ticks.forEach((t, i) => t.addEventListener('click', () => { go(i); start(); }));
+		// hovering a piece pins the room to it; leaving hands it back to
+		// whatever the rotation had reached
+		arts.forEach((art, i) => {
+			const take = () => {
+				pinned = art;
+				at = i;
+				light(art);
+			};
+			const give = () => {
+				if (pinned === art) pinned = null;
+			};
+			art.addEventListener('pointerenter', take);
+			art.addEventListener('focus', take);
+			art.addEventListener('pointerleave', give);
+			art.addEventListener('blur', give);
+		});
 
-		// clicking a piece brings it to the front; clicking the one already
-		// at the front opens it
-		cards.forEach((card, i) =>
-			card.addEventListener('click', () => {
-				if (card.classList.contains('is-live')) {
-					const href = card.dataset.href;
-					if (href) window.open(href, card.dataset.external ? '_blank' : '_self');
-					return;
-				}
-				go(i - FEATURED);
-				start();
-			})
-		);
-
-		deck?.addEventListener('pointerenter', stop);
-		deck?.addEventListener('pointerleave', start);
-
-		// drag, or swipe, to spin it
-		if (deck) {
-			let downX = 0;
-			let down = false;
-			deck.addEventListener('pointerdown', (e) => {
-				down = true;
-				downX = e.clientX;
-			});
-			deck.addEventListener('pointerup', (e) => {
-				if (!down) return;
-				down = false;
-				const dx = e.clientX - downX;
-				if (Math.abs(dx) > 42) { turn(dx < 0 ? 1 : -1); start(); }
-			});
-			deck.addEventListener('pointercancel', () => { down = false; });
-		}
-
-		place();
+		light(arts[0]);
 		const isStudio = () =>
 			document.documentElement.getAttribute('data-view') === 'studio';
 		if (isStudio()) start();
 		window.addEventListener('swizel:viewchange', (e) => {
-			if ((e as CustomEvent).detail === 'studio') { go(0); start(); }
+			if ((e as CustomEvent).detail === 'studio') { at = 0; light(arts[0]); start(); }
 			else stop();
 		});
 
@@ -157,7 +97,16 @@ export function initStudioView() {
 				raf = 0;
 				hero.style.setProperty('--mx', `${mx}%`);
 				hero.style.setProperty('--my', `${my}%`);
-				if (deck) deck.style.perspectiveOrigin = `${40 + mx * 0.2}% ${40 + my * 0.12}%`;
+				// the pieces read --px/--py and multiply by their own depth,
+				// so the further a frame hangs the further it swims
+				if (wall) {
+					wall.style.setProperty('--px', `${((mx - 50) / 50 * -5).toFixed(2)}px`);
+					wall.style.setProperty('--py', `${((my - 50) / 50 * -4).toFixed(2)}px`);
+				}
+				if (reelMat) {
+					reelMat.style.setProperty('--ry', `${((mx - 50) / 50 * 3).toFixed(2)}deg`);
+					reelMat.style.setProperty('--rx', `${((my - 50) / 50 * -2.4).toFixed(2)}deg`);
+				}
 			};
 
 			hero.addEventListener('pointermove', (e) => {
@@ -170,6 +119,7 @@ export function initStudioView() {
 			hero.addEventListener('pointerleave', () => {
 				mx = 62;
 				my = 34;
+				pinned = null;
 				if (!raf) raf = requestAnimationFrame(paint);
 			});
 		}
@@ -183,14 +133,14 @@ export function initStudioView() {
 			body: 'You imagine it. We design, build, film and launch it — and it ends up on this wall.',
 		},
 		{
-			sel: '#studio-gallery .shr-deck',
-			title: 'The collection, turning',
-			body: 'The studio reel and six real pieces on a carousel. Drag it, or click anything standing behind.',
+			sel: '#studio-gallery .shr-reel',
+			title: 'The studio reel',
+			body: 'A year of work in ninety seconds. It runs on its own — press it to take control.',
 		},
 		{
-			sel: '#studio-gallery .shr-caption',
-			title: 'The label',
-			body: 'Whatever is centre stage is named here — and the whole room repaints itself in that work\'s colour.',
+			sel: '#studio-gallery .shr-side--l',
+			title: 'Six pieces, hung',
+			body: 'Real client work either side of the film. One is lit at a time, and the whole room takes its colour.',
 		},
 		{
 			sel: '#view-banner .vw-head',

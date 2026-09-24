@@ -68,133 +68,38 @@ const ticker = [
 	</div>
 
 	<div class="shr-wrap">
-		<!-- ══ the masthead ════════════════════════════════════════
-		     Its own full-width band. The headline is not sharing a row
-		     with the exhibit any more, so neither has to give way. -->
-		<header class="shr-top">
+		<!-- ══ the catalogue ═══════════════════════════════════════ -->
+		<div class="shr-copy">
 			<span class="shr-plaque">
 				<Icon width={13} name="mdi:palette-outline" />
 				<b>The Swizel Studio</b>
 				<i>the collection, on view</i>
 			</span>
 
-			<div class="shr-masthead">
-				<RotatingHeadline class="shr-rhead" />
+			<RotatingHeadline class="shr-rhead" />
 
-				<div class="shr-aside">
-					<p class="shr-sub">
-						A studio of designers, engineers and film-makers. Everything
-						on the wall below is live in the world — shops you can buy
-						from, apps you can open.
-					</p>
-					<div class="shr-cta">
-						<CustomButton
-							variant="accent"
-							elementType="a"
-							href="/portfolio"
-							class="shr-btn flex items-center justify-center gap-2"
-						>
-							Enter the gallery
-							<Icon width={18} name="mdi:arrow-right" />
-						</CustomButton>
-						<button class="shr-ghost" type="button" data-tour-start="studio">
-							<span class="shr-ghost-ic"><Icon width={14} name="mdi:compass-outline" /></span>
-							Take the 20s tour
-						</button>
-					</div>
-				</div>
-			</div>
-		</header>
+			<p class="shr-sub">
+				A studio of designers, engineers and film-makers. The work on
+				this wall is live in the world — shops you can buy from, apps
+				you can open. Walk the room.
+			</p>
 
-		<!-- ══ the exhibit ═════════════════════════════════════════
-		     The whole width of the room. The reel never leaves the
-		     wall; the collection travels past it — in from the right,
-		     behind the film, out to the left — and whichever piece is
-		     at the front sets the colour of everything. -->
-		<div class="shr-show" id="studio-gallery" data-tour="gallery">
-			<div class="shr-stage" data-shr-deck>
-				<div class="shr-orbit" data-shr-orbit>
-					{
-						works.map((p, i) => (
-							<article
-								class="shr-card"
-								data-shr-card={i}
-								data-tint={p.color}
-								data-name={p.name}
-								data-meta={`${p.tags[0] ?? 'Work'} · ${p.year}`}
-								data-href={p.url ?? `/work/${p.slug}`}
-								data-external={p.url ? '1' : undefined}
-								style={`--c:${p.color}`}
-							>
-								<span class="shr-mat">
-									<span class="shr-fillet" aria-hidden="true"></span>
-									<img
-										src={p.img}
-										alt={`${p.name} — ${p.tagline}`}
-										loading={i < 3 ? 'eager' : 'lazy'}
-										decoding="async"
-									/>
-									<span class="shr-glass" aria-hidden="true"></span>
-								</span>
-							</article>
-						))
-					}
-				</div>
-
-				<figure class="shr-reel" style={`--c:${reel.color}`}>
-					<span class="shr-mat shr-mat--reel">
-						<span class="shr-fillet" aria-hidden="true"></span>
-						<FilmPlayer
-							videoId="EHi0Z2yqAr8"
-							fallback="/images/film/crew.jpg"
-							label="The studio reel — a year of work in ninety seconds"
-							tag="now showing · the studio reel"
-							ambient
-							cover
-							ratio="16 / 10"
-							class="shr-film"
-						/>
-					</span>
-				</figure>
-			</div>
-
-			<div class="shr-caption" data-shr-caption>
-				<button class="shr-turn" type="button" data-shr-prev aria-label="Previous piece">
-					<Icon width={18} name="mdi:chevron-left" />
-				</button>
-
-				<span class="shr-card-label">
-					<b data-shr-name>{works[0]?.name}</b>
-					<em data-shr-meta>{works[0]?.tags[0]} · {works[0]?.year}</em>
-					<a class="shr-visit" href="/portfolio" data-shr-visit>
-						visit the work
-						<Icon width={13} name="mdi:arrow-top-right" />
-					</a>
-				</span>
-
-				<button class="shr-turn" type="button" data-shr-next aria-label="Next piece">
-					<Icon width={18} name="mdi:chevron-right" />
+			<div class="shr-cta">
+				<CustomButton
+					variant="accent"
+					elementType="a"
+					href="/portfolio"
+					class="shr-btn flex items-center justify-center gap-2"
+				>
+					Enter the gallery
+					<Icon width={18} name="mdi:arrow-right" />
+				</CustomButton>
+				<button class="shr-ghost" type="button" data-tour-start="studio">
+					<span class="shr-ghost-ic"><Icon width={14} name="mdi:compass-outline" /></span>
+					Take the 20s tour
 				</button>
 			</div>
 
-			<div class="shr-strip" data-shr-strip>
-				{
-					works.map((_, i) => (
-						<button
-							class:list={['shr-tick', { 'is-on': i === 0 }]}
-							type="button"
-							data-shr-go={i}
-							aria-label={`Piece ${i + 1}`}
-						>
-							<i></i>
-						</button>
-					))
-				}
-			</div>
-		</div>
-
-		<!-- ══ the colophon ════════════════════════════════════════ -->
-		<footer class="shr-foot">
 			<ul class="shr-colophon" data-tour="stats">
 				{
 					colophon.map((c, i) => (
@@ -205,8 +110,94 @@ const ticker = [
 					))
 				}
 			</ul>
+
 			<TeamChip kicker="// the hands behind the work" label="Meet the studio" />
-		</footer>
+		</div>
+
+		<!-- ══ the wall ════════════════════════════════════════════
+		     A salon hang, not a scatter: three pieces down each side on
+		     one rhythm, the reel holding the middle. The room takes the
+		     colour of whichever piece is lit — it moves along on its
+		     own, and follows your pointer if you give it one. -->
+		<div class="shr-wall" id="studio-gallery" data-tour="gallery" data-shr-wall>
+			<span class="shr-rail" aria-hidden="true"></span>
+
+			<div class="shr-side shr-side--l">
+				{
+					works.slice(0, 3).map((p, i) => (
+						<a
+							class="shr-hung"
+							href={p.url ?? `/work/${p.slug}`}
+							target={p.url ? '_blank' : undefined}
+							rel={p.url ? 'noopener noreferrer' : undefined}
+							style={`--c:${p.color}; --d:${i === 1 ? 3 : 2}; --i:${i}; --rot:${[-2.4, 1.6, -1.4][i]}deg`}
+							data-shr-art={i}
+							data-tint={p.color}
+							data-name={p.name}
+							data-meta={`${p.tags[0] ?? 'Work'} · ${p.year}`}
+							data-cursor="repo"
+						>
+							<span class="shr-hung-frame">
+								<span class="shr-fillet" aria-hidden="true"></span>
+								<img src={p.img} alt={`${p.name} — ${p.tagline}`} loading="eager" decoding="async" />
+								<span class="shr-glass" aria-hidden="true"></span>
+							</span>
+						</a>
+					))
+				}
+			</div>
+
+			<figure class="shr-reel" style={`--c:${reel.color}`}>
+				<span class="shr-mat shr-mat--reel">
+					<span class="shr-fillet" aria-hidden="true"></span>
+					<FilmPlayer
+						videoId="EHi0Z2yqAr8"
+						fallback="/images/film/crew.jpg"
+						label="The studio reel — a year of work in ninety seconds"
+						tag="now showing"
+						ambient
+						cover
+						ratio="16 / 10"
+						class="shr-film"
+					/>
+				</span>
+				<figcaption class="shr-label">
+					<span class="shr-label-t">The Studio Reel</span>
+					<span class="shr-label-m">Moving image · Swizel Studio · 2026</span>
+					<span class="shr-lit" data-shr-lit>
+						<i class="shr-lit-dot" aria-hidden="true"></i>
+						lit:
+						<b data-shr-name>{works[0]?.name}</b>
+						<em data-shr-meta>{works[0]?.tags[0]} · {works[0]?.year}</em>
+					</span>
+				</figcaption>
+			</figure>
+
+			<div class="shr-side shr-side--r">
+				{
+					works.slice(3, 6).map((p, i) => (
+						<a
+							class="shr-hung"
+							href={p.url ?? `/work/${p.slug}`}
+							target={p.url ? '_blank' : undefined}
+							rel={p.url ? 'noopener noreferrer' : undefined}
+							style={`--c:${p.color}; --d:${i === 1 ? 3 : 2}; --i:${i + 3}; --rot:${[2.2, -1.8, 1.5][i]}deg`}
+							data-shr-art={i + 3}
+							data-tint={p.color}
+							data-name={p.name}
+							data-meta={`${p.tags[0] ?? 'Work'} · ${p.year}`}
+							data-cursor="repo"
+						>
+							<span class="shr-hung-frame">
+								<span class="shr-fillet" aria-hidden="true"></span>
+								<img src={p.img} alt={`${p.name} — ${p.tagline}`} loading="lazy" decoding="async" />
+								<span class="shr-glass" aria-hidden="true"></span>
+							</span>
+						</a>
+					))
+				}
+			</div>
+		</div>
 	</div>
 
 	<!-- ══ the ticker ════════════════════════════════════════════ -->
@@ -247,7 +238,7 @@ const ticker = [
 		isolation: isolate;
 		overflow: hidden;
 		color: var(--ink);
-		padding: clamp(1rem, 3vw, 2.2rem) 5% 0;
+		padding: clamp(1.8rem, 3.6vw, 3.2rem) 5% 0;
 		background:
 			radial-gradient(1200px 700px at 78% -12%, color-mix(in srgb, var(--sa) 22%, transparent), transparent 62%),
 			linear-gradient(180deg, #1a0e1c 0%, #140a16 46%, #0c0610 100%);
@@ -335,44 +326,23 @@ const ticker = [
 	}
 
 	/* ═══ layout ═════════════════════════════════════════════════ */
-	/* Three bands, stacked: the masthead, the exhibit, the colophon.
-	   The headline used to share a row with the carousel, which meant one
-	   of them was always being squeezed — usually the words. Nothing
-	   shares a row now, so both get the full width of the room. */
 	.shr-wrap {
 		position: relative;
 		z-index: 2;
-		max-width: 96rem;
+		max-width: 92rem;
 		margin: 0 auto;
-		display: flex;
-		flex-direction: column;
-		gap: clamp(1.6rem, 3vw, 2.6rem);
-		padding-bottom: clamp(2rem, 4vw, 3rem);
-	}
-
-	.shr-top { position: relative; z-index: 6; }
-	.shr-masthead {
 		display: grid;
-		gap: clamp(1.2rem, 3vw, 2.6rem);
-		align-items: end;
-	}
-	@media (min-width: 900px) {
-		.shr-masthead { grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); }
-		.shr-aside { padding-bottom: 0.4rem; }
-	}
-	.shr-aside { display: grid; gap: 1.1rem; }
-
-	/* the colophon band closes the room */
-	.shr-foot {
-		display: flex;
-		flex-wrap: wrap;
+		gap: clamp(2rem, 4vw, 3.4rem);
 		align-items: center;
-		justify-content: space-between;
-		gap: clamp(1rem, 3vw, 2rem);
-		padding-top: clamp(0.8rem, 2vw, 1.4rem);
-		border-top: 1px solid rgba(255, 255, 255, 0.1);
+		padding-bottom: clamp(3rem, 6vw, 4.5rem);
 	}
-	:global(html:not(.dark)) .shr-foot { border-top-color: rgba(36, 16, 28, 0.14); }
+	@media (min-width: 1080px) {
+		.shr-wrap { grid-template-columns: minmax(0, 0.76fr) minmax(0, 1.24fr); }
+		/* the wall runs a little past its column on the open side — there
+		   is nothing over there to crowd, and the reel wants the room */
+		.shr-wall { margin-right: -5%; }
+	}
+	.shr-copy { position: relative; z-index: 6; }
 
 	/* ═══ the catalogue side ═════════════════════════════════════ */
 	.shr-plaque {
@@ -388,17 +358,14 @@ const ticker = [
 		box-shadow: 0 10px 26px -16px color-mix(in srgb, var(--sa) 80%, transparent);
 		animation: shr-sway 7s ease-in-out infinite;
 	}
-	.shr-plaque i { font-style: normal; opacity: 0.66; letter-spacing: 0.14em; }
+	.shr-plaque i { font-style: normal; opacity: 0.7; letter-spacing: 0.14em; }
 	@keyframes shr-sway { 0%, 100% { transform: rotate(-1.4deg); } 50% { transform: rotate(0.6deg); } }
 
-	/* The shared Swizel signature, kept as it is in every other world —
-	   only its rotating word is repainted, so it changes colour with the
-	   room. The class is passed into a child component, so it carries no
-	   scope hash of ours and has to be reached globally. */
-	:global(.shr-rhead) {
-		margin-bottom: 1.4rem;
-		animation: shr-in 0.9s ease 0.2s both;
-	}
+	/* The shared Swizel signature, as in every other world — only its
+	   rotating word is repainted, so it changes colour with the room. The
+	   class rides in on a child component and carries no scope hash of
+	   ours, so it has to be reached globally. */
+	:global(.shr-rhead) { margin-bottom: 1.4rem; animation: shr-in 0.9s ease 0.2s both; }
 	:global(.shr-rhead .gradient-text) {
 		background: linear-gradient(96deg, color-mix(in srgb, var(--sa) 55%, #fff), var(--sa) 48%, #a855f7) !important;
 		-webkit-background-clip: text !important;
@@ -412,18 +379,18 @@ const ticker = [
 	}
 
 	.shr-sub {
-		max-width: 34rem;
+		max-width: 31rem;
 		color: var(--muted);
-		font-size: clamp(1rem, 1.2vw, 1.1rem);
+		font-size: 1.04rem;
 		line-height: 1.68;
-		margin: 0;
+		margin: 0 0 1.7rem;
 		animation: shr-in 0.9s ease 0.4s both;
 	}
 	@keyframes shr-in { from { opacity: 0; transform: translateY(14px); } }
 
 	.shr-cta {
 		display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap;
-		margin: 0;
+		margin-bottom: 1.8rem;
 		animation: shr-in 0.9s ease 0.5s both;
 	}
 	:global(.hero-studio .btn--accent) {
@@ -434,7 +401,7 @@ const ticker = [
 		-webkit-text-fill-color: #fff;
 		border-radius: 9999px !important;
 		box-shadow: 0 16px 40px -14px color-mix(in srgb, var(--sa) 75%, transparent) !important;
-		transition: transform 0.25s ease, box-shadow 0.25s ease, background-image 0.6s ease;
+		transition: transform 0.25s ease, box-shadow 0.25s ease, background-image 0.7s ease;
 	}
 	:global(.hero-studio .btn--accent:hover) {
 		transform: translateY(-2px);
@@ -475,11 +442,12 @@ const ticker = [
 		60% { box-shadow: 0 0 0 8px color-mix(in srgb, var(--sa) 0%, transparent); }
 	}
 
-	/* ═══ the colophon ═══════════════════════════════════════════ */
 	.shr-colophon {
-		display: flex; flex-wrap: wrap; gap: clamp(1.2rem, 3vw, 2.6rem);
-		list-style: none; margin: 0; padding: 0;
+		display: flex; flex-wrap: wrap; gap: clamp(1rem, 2.6vw, 2.2rem);
+		list-style: none; margin: 0 0 1.5rem; padding: 1.2rem 0 0;
+		border-top: 1px solid rgba(255, 255, 255, 0.1);
 	}
+	:global(html:not(.dark)) .shr-colophon { border-top-color: rgba(36, 16, 28, 0.14); }
 	.shr-colophon li { animation: shr-in 0.8s ease both; animation-delay: calc(var(--i) * 90ms + 0.7s); }
 	.shr-colophon b {
 		display: block;
@@ -490,278 +458,184 @@ const ticker = [
 		background: linear-gradient(135deg, color-mix(in srgb, var(--sa) 40%, #fff), var(--sa));
 		-webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
 	}
+	:global(html:not(.dark)) .shr-colophon b {
+		background: linear-gradient(135deg, #a01050, #7c3aed);
+		-webkit-background-clip: text; background-clip: text;
+	}
 	.shr-colophon span {
 		display: block;
 		font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase;
 		color: var(--faint); margin-top: 0.3rem;
 	}
 
-	/* ═══ the exhibit ═══════════════════════════════════════════
-	   The reel is fixed centre stage — it never moves, because it is
-	   the thing you came to watch. The collection travels past it on a
-	   ring: in from the right, behind the film, out to the left, then
-	   off-stage and round again. Each piece owns one number, --o, its
-	   slot on that ring; the slots themselves are a small table below,
-	   so each position can be tuned by eye rather than by formula. */
-	.shr-show {
+	/* ═══ the wall ═══════════════════════════════════════════════
+	   A salon hang: three pieces down each side on one rhythm, the
+	   reel holding the middle. It is a grid, not a scatter — every
+	   frame sits on the same vertical beat, which is what stopped it
+	   looking like pictures thrown at a wall. */
+	.shr-wall {
 		position: relative;
-		--card: clamp(19rem, 38vw, 44rem);
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 3.3fr) minmax(0, 1fr);
+		gap: clamp(0.5rem, 1.3vw, 1.1rem);
+		align-items: center;
+		perspective: 1500px;
 		animation: shr-in 1s ease 0.3s both;
 	}
-	/* the polished floor the collection stands on */
-	.shr-show::before {
-		content: '';
-		position: absolute;
-		left: -6%; right: -6%;
-		top: calc(var(--card) * 0.625 + 0.9rem);
+	/* the hanging rail across the top of the wall */
+	.shr-rail {
+		position: absolute; top: -1.1rem; left: -4%; right: -4%;
 		height: 1px;
-		background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--sa) 60%, rgba(255, 255, 255, 0.4)), transparent);
-		opacity: 0.75;
+		background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--sa) 50%, rgba(255, 255, 255, 0.32)), transparent);
 		pointer-events: none;
 	}
-
-	.shr-stage {
-		position: relative;
-		height: calc(var(--card) * 0.625 + 1.6rem);
-		perspective: 1700px;
-		perspective-origin: 50% 42%;
-		touch-action: pan-y;
+	:global(html:not(.dark)) .shr-rail {
+		background: linear-gradient(90deg, transparent, rgba(36, 16, 28, 0.26), transparent);
 	}
-	.shr-orbit { position: absolute; inset: 0; transform-style: preserve-3d; }
+
+	.shr-side {
+		display: grid;
+		gap: clamp(0.5rem, 1.3vw, 1.1rem);
+		min-width: 0;
+	}
 
 	/* ── the reel: the fixed point ── */
-	.shr-reel {
-		position: absolute;
-		top: 0;
-		left: 50%;
-		width: var(--card);
-		margin: 0 0 0 calc(var(--card) / -2);
-		z-index: 20;
-	}
+	.shr-reel { margin: 0; min-width: 0; z-index: 5; }
 	.shr-mat--reel {
+		position: relative;
+		display: block;
+		border-radius: 0.5rem;
+		padding: 0.6rem;
+		background: linear-gradient(150deg, #2c1c26, #160d16 62%);
+		border: 1px solid color-mix(in srgb, var(--sa) 34%, transparent);
 		box-shadow:
-			0 70px 140px -46px rgba(0, 0, 0, 0.96),
-			0 0 130px -24px color-mix(in srgb, var(--sa) 80%, transparent);
-	}
-	.shr-mat--reel::after {
-		/* the reel stands on its own reflection */
-		content: '';
-		position: absolute;
-		left: 5%; right: 5%;
-		top: 100%;
-		height: 38%;
-		border-radius: 0.45rem;
-		background: linear-gradient(180deg, color-mix(in srgb, var(--sa) 30%, transparent), transparent 70%);
-		filter: blur(14px);
-		transform: scaleY(-1);
-		pointer-events: none;
-	}
-
-	/* ── the collection, passing ── */
-	.shr-card {
-		position: absolute;
-		top: 0;
-		left: 50%;
-		width: calc(var(--card) * 0.66);
-		margin-left: calc(var(--card) * -0.33);
-		cursor: pointer;
-		transition:
-			transform 1.05s cubic-bezier(0.22, 1, 0.36, 1),
-			opacity 0.75s ease,
-			filter 0.9s ease;
+			0 60px 120px -46px rgba(0, 0, 0, 0.95),
+			0 0 110px -28px color-mix(in srgb, var(--sa) 75%, transparent);
+		transition: box-shadow 0.8s ease, border-color 0.8s ease;
+		transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+		transform-style: preserve-3d;
 		will-change: transform;
 	}
-	/* the slot table — x is a share of the reel's width, so the whole
-	   arrangement scales with the exhibit */
-	.shr-card[data-slot='1'],
-	.shr-card[data-slot='-1'] {
-		z-index: 12;
-		opacity: 1;
-		filter: brightness(0.9) saturate(0.95);
-		transform:
-			translate3d(calc(var(--s) * var(--card) * 0.72), 1.2%, -120px)
-			rotateY(calc(var(--s) * -16deg))
-			scale(0.72);
-	}
-	.shr-card[data-slot='2'],
-	.shr-card[data-slot='-2'] {
-		z-index: 8;
-		opacity: 0.88;
-		filter: brightness(0.7) saturate(0.7);
-		transform:
-			translate3d(calc(var(--s) * var(--card) * 0.95), 3.4%, -280px)
-			rotateY(calc(var(--s) * -24deg))
-			scale(0.58);
-	}
-	.shr-card[data-slot='3'],
-	.shr-card[data-slot='-3'] {
-		z-index: 4;
-		opacity: 0;
-		filter: brightness(0.5) saturate(0.5);
-		transform:
-			translate3d(calc(var(--s) * var(--card) * 1.12), 5%, -400px)
-			rotateY(calc(var(--s) * -28deg))
-			scale(0.48);
-	}
-	/* the piece at the front of the room is the one the label names */
-	.shr-card.is-live {
-		z-index: 14;
-		opacity: 1;
-		filter: brightness(1.04) saturate(1.12);
-	}
-	.shr-card:hover { filter: brightness(1.08) saturate(1.2); }
-
-	/* the mat, the frame and the glass */
-	.shr-mat {
-		position: relative;
-		display: block;
-		border-radius: 0.45rem;
-		padding: 0.55rem;
-		background: linear-gradient(150deg, #2c1c26, #160d16 62%);
-		border: 1px solid color-mix(in srgb, var(--c, var(--sa)) 36%, transparent);
+	.shr-mat--reel :global(.shr-film) { border-radius: 0.22rem; overflow: hidden; }
+	:global(html:not(.dark)) .shr-mat--reel {
+		background: linear-gradient(150deg, #fffdfe, #f2e5ec 62%);
 		box-shadow:
-			0 44px 90px -44px rgba(0, 0, 0, 0.95),
-			0 0 60px -28px color-mix(in srgb, var(--c, var(--sa)) 60%, transparent);
-		transition: box-shadow 0.7s ease, border-color 0.7s ease;
-		animation: shr-breathe 7s ease-in-out infinite;
+			0 50px 110px -46px rgba(36, 16, 28, 0.48),
+			0 0 90px -28px color-mix(in srgb, var(--sa) 55%, transparent);
 	}
-	@keyframes shr-breathe {
-		0%, 100% { transform: translateY(0); }
-		50% { transform: translateY(-7px); }
-	}
-	.shr-card:nth-child(2n) .shr-mat { animation-delay: -2.3s; }
-	.shr-card:nth-child(3n) .shr-mat { animation-delay: -4.1s; }
-	.shr-fillet {
-		position: absolute; inset: 0.28rem;
-		border-radius: 0.28rem;
-		border: 1px solid color-mix(in srgb, var(--c, var(--sa)) 38%, rgba(255, 255, 255, 0.2));
-		pointer-events: none;
-		z-index: 3;
-	}
-	.shr-mat img {
-		display: block;
-		width: 100%;
-		aspect-ratio: 16 / 10;
-		object-fit: cover;
-		border-radius: 0.2rem;
-	}
-	.shr-mat :global(.shr-film) { border-radius: 0.2rem; overflow: hidden; }
-	.shr-glass {
-		position: absolute; inset: 0.55rem;
-		border-radius: 0.2rem;
-		background: linear-gradient(118deg, rgba(255, 255, 255, 0.24) 0%, transparent 32%, transparent 68%, rgba(255, 255, 255, 0.1) 100%);
-		opacity: 0.8;
-		transition: opacity 0.6s ease, transform 0.8s ease;
-		pointer-events: none;
-	}
-	.shr-card.is-live .shr-glass { opacity: 0.3; transform: translateX(14%); }
 
-	/* ── the label under the show ── */
-	.shr-caption {
-		position: relative;
-		z-index: 12;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: clamp(0.8rem, 2vw, 1.6rem);
-		max-width: 38rem;
-		margin: clamp(0.4rem, 1vw, 0.9rem) auto 0;
-	}
-	.shr-card-label {
-		display: block;
-		flex: 1 1 auto;
-		min-width: 0;
-		text-align: center;
-	}
-	.shr-card-label b {
+	.shr-label { display: block; text-align: center; padding: 0.9rem 0.6rem 0; }
+	.shr-label-t {
 		display: block;
 		font-family: var(--serif);
 		font-style: italic;
-		font-size: clamp(1.05rem, 1.7vw, 1.4rem);
-		line-height: 1.2;
+		font-size: clamp(1rem, 1.4vw, 1.2rem);
 		color: var(--ink);
+	}
+	.shr-label-m {
+		display: block;
+		font-size: 0.66rem; letter-spacing: 0.16em; text-transform: uppercase;
+		color: var(--faint); margin-top: 0.25rem;
+	}
+	/* which piece the room is currently wearing */
+	.shr-lit {
+		display: inline-flex; align-items: baseline; gap: 0.4rem;
+		margin-top: 0.7rem;
+		font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase;
+		color: var(--faint);
+	}
+	.shr-lit-dot {
+		width: 7px; height: 7px; border-radius: 9999px;
+		background: var(--sa);
+		align-self: center;
+		box-shadow: 0 0 10px 1px color-mix(in srgb, var(--sa) 70%, transparent);
+		transition: background 0.7s ease, box-shadow 0.7s ease;
+	}
+	.shr-lit b {
+		font-family: var(--serif);
+		font-style: italic;
+		font-weight: 600;
+		font-size: 0.88rem;
+		letter-spacing: 0;
+		text-transform: none;
+		color: color-mix(in srgb, var(--sa) 45%, #fff);
 		animation: shr-say 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 	}
-	.shr-card-label em {
-		display: block;
-		font-style: normal;
-		font-size: 0.66rem;
-		letter-spacing: 0.17em;
-		text-transform: uppercase;
-		color: var(--faint);
-		margin-top: 0.3rem;
-		animation: shr-say 0.5s cubic-bezier(0.22, 1, 0.36, 1) 60ms both;
-	}
-	@keyframes shr-say { from { opacity: 0; transform: translateY(7px); filter: blur(4px); } }
-	.shr-visit {
-		display: inline-flex; align-items: center; gap: 0.3rem;
-		margin-top: 0.45rem;
-		font-size: 0.72rem; font-weight: 700;
-		letter-spacing: 0.06em; text-transform: uppercase;
-		color: color-mix(in srgb, var(--sa) 45%, #fff);
-		transition: gap 0.25s ease;
-	}
-	.shr-visit:hover { gap: 0.55rem; }
-	:global(html:not(.dark)) .shr-visit { color: color-mix(in srgb, var(--sa) 70%, #2a0c1a); }
-	.shr-visit[hidden] { display: none; }
+	:global(html:not(.dark)) .shr-lit b { color: color-mix(in srgb, var(--sa) 72%, #2a0c1a); }
+	.shr-lit em { font-style: normal; animation: shr-say 0.5s cubic-bezier(0.22, 1, 0.36, 1) 60ms both; }
+	@keyframes shr-say { from { opacity: 0; transform: translateY(6px); filter: blur(4px); } }
 
-	.shr-turn {
-		flex: none;
-		display: grid; place-items: center;
-		width: 2.4rem; height: 2.4rem;
-		border-radius: 9999px;
-		border: 1px solid color-mix(in srgb, var(--sa) 38%, transparent);
-		background: color-mix(in srgb, var(--sa) 10%, transparent);
+	/* ── the hung pieces ── */
+	.shr-hung {
+		display: block;
+		min-width: 0;
 		color: var(--ink);
-		cursor: pointer;
-		transition: background 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+		transform:
+			translate3d(calc(var(--px, 0px) * var(--d)), calc(var(--py, 0px) * var(--d)), 0)
+			rotate(var(--rot, 0deg));
+		transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+		animation: shr-hang 0.9s cubic-bezier(0.34, 1.3, 0.64, 1) both;
+		animation-delay: calc(var(--i) * 100ms + 0.5s);
+		will-change: transform;
 	}
-	.shr-turn:hover {
-		background: color-mix(in srgb, var(--sa) 26%, transparent);
-		border-color: var(--sa);
-		transform: scale(1.08);
-	}
-	.shr-turn:active { transform: scale(0.96); }
+	@keyframes shr-hang { from { opacity: 0; transform: translateY(-24px) rotate(-4deg); } }
 
-	/* ── the film strip ── */
-	.shr-strip {
-		display: flex;
-		justify-content: center;
-		gap: 0.45rem;
-		margin-top: clamp(0.5rem, 1.2vw, 0.9rem);
-	}
-	.shr-tick {
-		width: 1.9rem; height: 1.9rem;
-		display: grid; place-items: center;
-		border: 0; background: transparent; padding: 0;
-		cursor: pointer;
-	}
-	.shr-tick i {
-		display: block;
-		width: 1.5rem; height: 3px;
-		border-radius: 9999px;
-		background: color-mix(in srgb, var(--ink) 26%, transparent);
-		transition: background 0.4s ease, width 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
-	}
-	.shr-tick:hover i { background: color-mix(in srgb, var(--sa) 60%, transparent); }
-	.shr-tick.is-on i {
-		width: 2.6rem;
-		background: color-mix(in srgb, var(--sa) 28%, transparent);
-		box-shadow: 0 0 14px 1px color-mix(in srgb, var(--sa) 45%, transparent);
+	.shr-hung-frame {
 		position: relative;
+		display: block;
+		border-radius: 0.34rem;
 		overflow: hidden;
+		padding: 0.3rem;
+		background: linear-gradient(150deg, #2c1c26, #160d16 62%);
+		border: 1px solid var(--frame);
+		box-shadow: 0 26px 56px -26px rgba(0, 0, 0, 0.92);
+		transition: box-shadow 0.5s ease, border-color 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 	}
-	/* the live tick fills as the show runs down to its next turn */
-	.shr-tick.is-on i::after {
-		content: '';
-		position: absolute; inset: 0;
-		border-radius: inherit;
-		background: var(--sa);
-		transform-origin: left center;
-		animation: shr-count 4.6s linear both;
+	:global(html:not(.dark)) .shr-hung-frame {
+		background: linear-gradient(150deg, #fffdfe, #f3e7ed 62%);
+		box-shadow: 0 22px 46px -26px rgba(36, 16, 28, 0.4);
 	}
-	@keyframes shr-count { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-	.shr-show.is-held .shr-tick.is-on i::after { animation-play-state: paused; }
+	.shr-hung-frame img {
+		display: block;
+		width: 100%;
+		aspect-ratio: 4 / 3;
+		object-fit: cover;
+		border-radius: 0.18rem;
+		filter: saturate(0.72) brightness(0.78);
+		transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1), filter 0.6s ease;
+	}
+	:global(html:not(.dark)) .shr-hung-frame img { filter: saturate(0.88) brightness(0.94); }
+	.shr-fillet {
+		position: absolute; inset: 0.28rem;
+		border-radius: 0.2rem;
+		border: 1px solid color-mix(in srgb, var(--c, var(--sa)) 34%, rgba(255, 255, 255, 0.18));
+		pointer-events: none;
+		z-index: 3;
+	}
+	.shr-mat--reel > .shr-fillet { inset: 0.34rem; border-radius: 0.3rem; }
+	.shr-glass {
+		position: absolute; inset: 0.3rem;
+		border-radius: 0.18rem;
+		background: linear-gradient(118deg, rgba(255, 255, 255, 0.2) 0%, transparent 34%, transparent 66%, rgba(255, 255, 255, 0.08) 100%);
+		opacity: 0.75;
+		transition: opacity 0.5s ease, transform 0.7s ease;
+		pointer-events: none;
+	}
+
+	/* the lit piece — the one the room is wearing. It moves along on
+	   its own, and follows the pointer when there is one. */
+	.shr-hung.is-lit .shr-hung-frame,
+	.shr-hung:hover .shr-hung-frame {
+		transform: translateY(-6px) scale(1.035);
+		border-color: color-mix(in srgb, var(--c) 70%, transparent);
+		box-shadow:
+			0 40px 80px -30px rgba(0, 0, 0, 0.95),
+			0 0 60px -14px color-mix(in srgb, var(--c) 80%, transparent);
+	}
+	.shr-hung.is-lit .shr-hung-frame img,
+	.shr-hung:hover .shr-hung-frame img { filter: saturate(1.1) brightness(1.02); transform: scale(1.05); }
+	.shr-hung.is-lit .shr-glass,
+	.shr-hung:hover .shr-glass { opacity: 0.22; transform: translateX(14%); }
 
 	/* ═══ the ticker ═════════════════════════════════════════════ */
 	.shr-ticker {
@@ -824,53 +698,39 @@ const ticker = [
 		background: linear-gradient(135deg, #a01050, #7c3aed);
 		-webkit-background-clip: text; background-clip: text;
 	}
-	/* daylight: pale mounts, the work at full strength */
-	:global(html:not(.dark)) .shr-mat {
-		background: linear-gradient(150deg, #fffdfe, #f2e5ec 62%);
-		box-shadow:
-			0 40px 90px -46px rgba(36, 16, 28, 0.45),
-			0 0 60px -30px color-mix(in srgb, var(--c, var(--sa)) 45%, transparent);
-	}
-	:global(html:not(.dark)) .shr-card.is-live .shr-mat {
-		box-shadow:
-			0 50px 110px -46px rgba(36, 16, 28, 0.5),
-			0 0 90px -26px color-mix(in srgb, var(--c, var(--sa)) 60%, transparent);
-	}
-	:global(html:not(.dark)) .shr-glass { opacity: 0.4; }
-	:global(html:not(.dark)) .shr-card::after { opacity: 0.35; }
-	:global(html:not(.dark)) .shr-card:not(.is-live)::after { opacity: 0.18; }
-	:global(html:not(.dark)) .shr-tick i { background: rgba(36, 16, 28, 0.2); }
+	:global(html:not(.dark)) .shr-glass { opacity: 0.42; }
 	:global(html:not(.dark)) .shr-ticker { border-color: rgba(36, 16, 28, 0.14); }
 
 	/* ═══ smaller rooms ══════════════════════════════════════════ */
 	@media (max-width: 1079px) {
-		.shr-deck { --card: min(72vw, 30rem); }
+		/* the sides come down under the reel as one even row of six,
+		   which keeps the salon rhythm on a narrower wall */
+		.shr-wall {
+			grid-template-columns: minmax(0, 1fr);
+			gap: clamp(0.8rem, 2.4vw, 1.4rem);
+		}
+		.shr-reel { order: -1; }
+		.shr-side {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+			gap: clamp(0.5rem, 1.6vw, 0.9rem);
+		}
+		.shr-rail { top: -0.8rem; }
 	}
 	@media (max-width: 620px) {
-		/* a phone has no room for neighbours to stand behind: the show
-		   keeps turning, one piece at a time, and the near ones only
-		   peek in at the edges */
-		.shr-deck { --card: 80vw; }
-		.shr-card {
-			transform:
-				translate3d(calc(var(--o, 0) * 58%), 0, calc(abs(var(--o, 0)) * -260px))
-				rotateY(calc(var(--o, 0) * -18deg))
-				scale(calc(1 - abs(var(--o, 0)) * 0.18));
-		}
 		.shr-sub { font-size: 0.98rem; }
-		.shr-turn { width: 2.1rem; height: 2.1rem; }
-		.shr-card-label b { font-size: 1rem; }
+		.shr-label-t { font-size: 0.98rem; }
+		.shr-lit { font-size: 0.62rem; }
+		.shr-lit b { font-size: 0.8rem; }
 	}
 
 	/* ═══ stillness, on request ══════════════════════════════════ */
 	@media (prefers-reduced-motion: reduce) {
-		.shr-orb, .shr-grain, .shr-mote, .shr-plaque, .shr-mat,
-		.shr-ticker-track, .shr-ghost-ic, .shr-tick.is-on i::after,
-		.shr-sub, .shr-cta, .shr-show,
-		.shr-colophon li,
-		.shr-card-label b, .shr-card-label em,
+		.shr-orb, .shr-grain, .shr-mote, .shr-plaque,
+		.shr-ticker-track, .shr-ghost-ic,
+		.shr-sub, .shr-cta, .shr-wall, .shr-hung,
+		.shr-colophon li, .shr-lit b, .shr-lit em,
 		:global(.hero-studio .btn--accent::after) { animation: none !important; }
 		.shr-mote { display: none; }
-		.shr-card { transition: none; }
+		.shr-hung, .shr-hung-frame, .shr-mat--reel { transition: none; }
 	}
 </style>
