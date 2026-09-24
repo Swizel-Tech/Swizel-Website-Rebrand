@@ -107,10 +107,12 @@ const ticker = [
 				<span class="shr-curl shr-curl--r" aria-hidden="true"></span>
 
 				<p class="shr-sub">
-					Designers, engineers and storytellers under one roof. Every
-					piece on this wall is <mark class="shr-paint">live in the
-					world</mark>: a shop you can buy from, an app you can open.
-					Come in and walk the room.
+					Designers, engineers and storytellers under one roof, with
+					the range to build you a new service, revamp the product you
+					already have, or carry it into a new market. Every piece on
+					this wall is <mark class="shr-paint">live in the world</mark>:
+					a shop you can buy from, an app you can open. Come in and
+					walk the room.
 				</p>
 
 				<figcaption class="shr-sig">
@@ -547,14 +549,23 @@ const ticker = [
 		mix-blend-mode: multiply;
 	}
 
+	/* Set in the studio's own hand. The lead grew when it took on the
+	   range of what the studio does, and a serif italic sets far narrower
+	   than the sans did — the longer line fits the sheet without the
+	   scroll having to stretch to hold it. */
 	.shr-sub {
 		position: relative;
 		z-index: 2;
 		margin: 0;
 		color: #2a1a12;
-		font-size: 1.04rem;
-		line-height: 1.72;
+		font-family: var(--serif);
+		font-style: italic;
+		font-size: clamp(1.02rem, 1.25vw, 1.16rem);
+		line-height: 1.58;
+		letter-spacing: 0.004em;
 	}
+	/* the painted phrase keeps its weight against the italic */
+	.shr-sub .shr-paint { font-style: normal; }
 
 	/* the brush stroke: a rough swipe laid under one phrase, painted on
 	   as the canvas arrives */

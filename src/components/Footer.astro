@@ -294,6 +294,44 @@ const phones = [
 				<span class="ft-deck-stand" aria-hidden="true"></span>
 			</div>
 
+			<!-- Studio keeps its own: the channels hung as four small
+			     works on a gallery wall, each in a gilt frame with a
+			     brass plaque under it. -->
+			<div class="ft-wall">
+				<span class="ft-wall-rail" aria-hidden="true"></span>
+				{
+					socials.map((sc, i) => (
+						<a
+							class="ft-work"
+							href={sc.href}
+							target="_blank"
+							rel="noopener noreferrer"
+							style={`--pk:${sc.color}; --i:${i}; --r:${[-1.8, 1.4, -1.2, 1.7][i] ?? 0}deg`}
+						>
+							<span class="ft-work-hook" aria-hidden="true"></span>
+							<span class="ft-work-frame">
+								<span class="ft-work-mat">
+									<span class="ft-work-ic">
+										{sc.isX ? (
+											<svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true">
+												<path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+											</svg>
+										) : (
+											<Icon size={26} name={sc.icon} />
+										)}
+									</span>
+									<span class="ft-work-glass" aria-hidden="true"></span>
+								</span>
+							</span>
+							<span class="ft-work-plaque">
+								<b>{sc.name}</b>
+								<em>{sc.short}</em>
+							</span>
+						</a>
+					))
+				}
+			</div>
+
 			<div class="ft-socials">
 				{
 					socials.map((s) => (
@@ -1436,9 +1474,121 @@ const phones = [
 	   Campus pins paper to cork. Builder runs a script. Founder puts it
 	   on a projector screen. The plain card list stays for the worlds
 	   that have no object of their own. */
-	.ft-term, .ft-deck { display: none; }
+	.ft-term, .ft-deck, .ft-wall { display: none; }
 	:global(html[data-view='builder']) .ft-socials,
-	:global(html[data-view='founder']) .ft-socials { display: none; }
+	:global(html[data-view='founder']) .ft-socials,
+	:global(html[data-view='studio']) .ft-socials { display: none; }
+
+	/* ── Studio: four small works, hung and labelled ────────────────
+	   Campus pins cards to a board, Builder runs a script, Founder puts
+	   it on a projector. The studio hangs its channels: a gilt frame
+	   each, glass over the top, and a brass plaque underneath. */
+	:global(html[data-view='studio']) .ft-wall {
+		position: relative;
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: clamp(0.9rem, 2.2vw, 1.4rem);
+		padding-top: 1.1rem;
+	}
+	/* the rail they all hang from */
+	:global(html[data-view='studio']) .ft-wall-rail {
+		position: absolute;
+		top: 0.3rem;
+		left: -4%;
+		right: -4%;
+		height: 1px;
+		background: linear-gradient(90deg, transparent, rgba(236, 72, 153, 0.5), transparent);
+	}
+	:global(html[data-view='studio']) .ft-work {
+		position: relative;
+		display: grid;
+		justify-items: center;
+		gap: 0.5rem;
+		padding-top: 0.75rem;
+		color: inherit;
+		transform: rotate(var(--r));
+		transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+		animation: ft-work-in 0.7s cubic-bezier(0.34, 1.3, 0.64, 1) both;
+		animation-delay: calc(var(--i) * 90ms);
+	}
+	@keyframes ft-work-in { from { opacity: 0; transform: translateY(-14px) rotate(var(--r)); } }
+	:global(html[data-view='studio']) .ft-work:hover { transform: rotate(0deg) translateY(-4px); }
+	/* the wire up to the rail */
+	:global(html[data-view='studio']) .ft-work-hook {
+		position: absolute;
+		top: -0.45rem;
+		left: 50%;
+		width: 1px;
+		height: 1.2rem;
+		background: rgba(236, 72, 153, 0.55);
+	}
+	:global(html[data-view='studio']) .ft-work-frame {
+		display: block;
+		width: 100%;
+		padding: 0.42rem;
+		border-radius: 3px;
+		background: linear-gradient(150deg, #e9c98f, #b98f4e 46%, #f3ddb0 78%, #a87f42);
+		box-shadow: 0 16px 34px -18px rgba(0, 0, 0, 0.85);
+	}
+	:global(html[data-view='studio']) .ft-work-mat {
+		position: relative;
+		display: grid;
+		place-items: center;
+		aspect-ratio: 4 / 3;
+		border-radius: 1px;
+		background:
+			radial-gradient(120% 100% at 30% 10%, color-mix(in srgb, var(--pk) 82%, #fff 18%), transparent 70%),
+			linear-gradient(160deg, var(--pk), color-mix(in srgb, var(--pk) 55%, #120a10));
+		color: #fff;
+		overflow: hidden;
+	}
+	/* the glass, and the light sliding off it */
+	:global(html[data-view='studio']) .ft-work-glass {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(118deg, rgba(255, 255, 255, 0.34) 0%, transparent 34%, transparent 68%, rgba(255, 255, 255, 0.14) 100%);
+		transition: transform 0.7s ease, opacity 0.5s ease;
+	}
+	:global(html[data-view='studio']) .ft-work:hover .ft-work-glass { transform: translateX(16%); opacity: 0.45; }
+	:global(html[data-view='studio']) .ft-work-ic { position: relative; z-index: 1; display: grid; place-items: center; }
+	/* the brass plaque */
+	:global(html[data-view='studio']) .ft-work-plaque {
+		display: grid;
+		justify-items: center;
+		gap: 0.05rem;
+		padding: 0.25rem 0.55rem;
+		border-radius: 2px;
+		background: linear-gradient(170deg, rgba(233, 201, 143, 0.22), rgba(184, 143, 78, 0.14));
+		border: 1px solid rgba(233, 201, 143, 0.3);
+		text-align: center;
+		line-height: 1.2;
+	}
+	:global(html[data-view='studio']) .ft-work-plaque b {
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: #f3ddb0;
+	}
+	:global(html[data-view='studio']) .ft-work-plaque em {
+		font-family: 'Playfair Display', Georgia, serif;
+		font-style: italic;
+		font-size: 0.72rem;
+		color: rgba(243, 221, 176, 0.72);
+	}
+	:global(html[data-view='studio']:not(.dark)) .ft-work-plaque {
+		background: linear-gradient(170deg, rgba(184, 143, 78, 0.18), rgba(184, 143, 78, 0.1));
+		border-color: rgba(150, 110, 52, 0.34);
+	}
+	:global(html[data-view='studio']:not(.dark)) .ft-work-plaque b { color: #6b4a18; }
+	:global(html[data-view='studio']:not(.dark)) .ft-work-plaque em { color: rgba(107, 74, 24, 0.8); }
+	@media (max-width: 420px) {
+		:global(html[data-view='studio']) .ft-wall { gap: 0.7rem; }
+		:global(html[data-view='studio']) .ft-work-plaque b { font-size: 0.66rem; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		:global(html[data-view='studio']) .ft-work { animation: none; }
+	}
 
 	/* ── Builder: follow.sh ─────────────────────────────────────────── */
 	:global(html[data-view='builder']) .ft-term {

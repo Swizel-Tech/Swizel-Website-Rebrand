@@ -5,16 +5,23 @@
 // longest, richest world — built to be filled with the studio's own media.
 import { Icon } from 'astro-icon/components';
 import FilmPlayer from '../FilmPlayer.astro';
+import { projects } from '../../data/projects';
 
 // the collection wall — varying tile sizes, each with a museum plaque
+// The collection wall. Three of these used to hang with no link at all —
+// a gallery of work you cannot go and see. Every piece on the wall now
+// points at something live, and the live URL comes from projects.ts so
+// the wall cannot drift out of step with the portfolio.
+const live = (slug: string) => projects.find((pr) => pr.slug === slug)?.url ?? undefined;
+
 const collection = [
-	{ name: 'Brixmarket', sector: 'Real estate', medium: 'Brand · Web · App', year: "'23", img: '/images/portfolio/brix%20marketplace.jpg', url: 'https://brixmarket.com/', size: 'lg' },
+	{ name: 'Hemam Synergy', sector: 'Agritech', medium: 'Brand · Web · Content', year: "'23", img: '/images/portfolio/shot-hemamsynergy.jpg', url: live('hemam-synergy'), size: 'lg' },
 	{ name: 'Betslipswitch', sector: 'Sports', medium: 'Web · App · Growth', year: "'22", img: '/images/portfolio/betslipswitch.jpg', url: 'https://betslipswitch.com/', size: 'tall' },
-	{ name: 'Purple Panda', sector: 'Marketing', medium: 'Brand · Campaign', year: "'23", img: '/images/portfolio/purplepanda%20world.jpg', url: '', size: 'sm' },
-	{ name: 'Saros', sector: 'Education', medium: 'Brand · Platform', year: "'24", img: '/images/portfolio/sarosgp.jpg', url: 'https://sarosinternationallearning.com/', size: 'sm' },
-	{ name: 'Beauty Hive', sector: 'Beauty', medium: 'Brand · Store', year: "'24", img: '/images/portfolio/beauty-hive.webp', url: '', size: 'wide' },
-	{ name: 'My Eya Estate', sector: 'Real estate', medium: 'Brand · Web', year: "'25", img: '/images/portfolio/my%20eya%20estate.jpg', url: '', size: 'sm' },
-	{ name: 'Anchorstep', sector: 'Healthcare', medium: 'Brand · Web', year: "'25", img: '/images/portfolio/shot-anchorstep.jpg', url: 'https://anchorsteppt.com/', size: 'sm' },
+	{ name: 'AnchorStep', sector: 'Healthcare', medium: 'Brand · Booking', year: "'25", img: '/images/portfolio/shot-anchorstep.jpg', url: live('anchorstep'), size: 'sm' },
+	{ name: 'Binas Residence', sector: 'Hospitality', medium: 'Brand · Web', year: "'24", img: '/images/portfolio/shot-binasresidence.jpg', url: live('binas-residence'), size: 'sm' },
+	{ name: 'JobbLander', sector: 'Careers', medium: 'Product · Brand · Web app', year: "'25", img: '/images/portfolio/shot-jobblander.jpg', url: live('jobblander'), size: 'wide' },
+	{ name: 'African Energy', sector: 'Energy', medium: 'Brand · Web', year: "'24", img: '/images/portfolio/shot-africaneai.jpg', url: live('african-energy'), size: 'sm' },
+	{ name: 'Skaldon Group', sector: 'Property', medium: 'Brand · Web', year: "'24", img: '/images/portfolio/shot-skaldongroup.jpg', url: live('skaldon-group'), size: 'sm' },
 ];
 
 // big alternating case-study exhibitions
@@ -46,6 +53,23 @@ const exhibitions = [
 		img: '/images/portfolio/sarosgp.jpg',
 		url: 'https://sarosinternationallearning.com/',
 	},
+];
+
+// Behind the glass: the four stages, each with a real photograph from the
+// floor rather than a named placeholder box.
+const processShots = [
+	{ cap: 'Research', note: 'we learn the market and the user', img: '/images/campus/the-lab.jpg', alt: 'The Swizel team working through a brief' },
+	{ cap: 'Concept', note: 'directions, explored boldly', img: '/images/builder/over-the-shoulder.jpg', alt: 'A designer reviewing directions over a colleague\'s shoulder' },
+	{ cap: 'Craft', note: 'refined until it sings', img: '/images/builder/at-the-keys.jpg', alt: 'An engineer at two screens, mid build' },
+	{ cap: 'Ship', note: 'launched, polished, alive', img: '/images/campus/demo-day.jpg', alt: 'The team on launch day' },
+];
+
+// In the studio: the rooms themselves, in film and frames.
+const studioFrames = [
+	{ img: '/images/builder/studio-grid.jpg', cap: 'The floor', sub: 'Abuja, on a Tuesday', pos: '50% 34%' },
+	{ img: '/images/campus/pairing.jpg', cap: 'Critique', sub: 'two heads, one screen', pos: '50% 28%' },
+	{ img: '/images/builder/the-table.jpg', cap: 'The table', sub: 'where the work gets argued over', pos: '50% 30%' },
+	{ img: '/images/founder/studio.jpg', cap: 'The desk', sub: 'and everything on it', pos: '50% 12%' },
 ];
 
 const crafts = [
@@ -109,10 +133,11 @@ const logos = [
 				A gallery of work<br />
 				that went <em>to market.</em>
 			</h2>
-			<p class="sd-lead sd-rev">
-				Not a moodboard. A studio of designers and engineers whose work
-				lives in the real world, brands you can buy from, apps you can
-				download, products people actually use. Walk the rooms.
+			<p class="sd-lead sd-lead--script sd-rev">
+				Nothing in these rooms is a mood board. Every piece went to
+				market and stayed there: brands people buy from, apps they keep
+				on the home screen, systems quietly running a business this
+				morning. Walk the rooms and see for yourself.
 			</p>
 
 			<!-- the centerpiece, on the wall from the very first screen -->
@@ -278,12 +303,12 @@ const logos = [
 			<div class="sd-fs-head sd-rev">
 				<span class="sd-fs-kicker">Design is only the beginning</span>
 				<h2 class="sd-fs-h">We don't just make it pretty.<br /><span>We build the whole machine.</span></h2>
-				<p class="sd-fs-lead">
-					Brand, websites, mobile apps, ERPs, marketing, maintenance —
-					the entire product, designed and engineered by one team. You
-					bring the idea; we take it from blank page to launched, then
-					keep it running and growing. And yes, we do all that and a
-					whole lot more.
+				<p class="sd-fs-lead sd-lead--script">
+					Brand, websites, mobile apps, ERPs, marketing and
+					maintenance. The whole product, designed and engineered by
+					one team. You bring the idea; we take it from a blank page
+					to launched, then stay on to keep it running and growing.
+					And a good deal more besides.
 				</p>
 			</div>
 
@@ -358,12 +383,12 @@ const logos = [
 			</div>
 			<div class="sd-sheet">
 				{
-					process.map((c, i) => (
-						<figure class="sd-shot sd-rev" style={`--i:${i}; --r:${(i % 2 === 0 ? -1.6 : 1.8)}deg`}>
+					processShots.map((c, i) => (
+						<figure class="sd-shot sd-rev" style={`--i:${i}; --r:${i % 2 === 0 ? -1.6 : 1.8}deg`}>
 							<span class="sd-tape" aria-hidden="true"></span>
 							<span class="sd-shot-frame">
-								<Icon width={22} name="mdi:image-outline" />
-								<span>{c.cap.toLowerCase()}-{i + 1}.jpg</span>
+								<img src={c.img} alt={c.alt} loading="lazy" decoding="async" />
+								<span class="sd-shot-no">{String(i + 1).padStart(2, '0')}</span>
 							</span>
 							<figcaption>
 								<strong>{c.cap}</strong>
@@ -384,27 +409,28 @@ const logos = [
 				<span>Footage & frames — your media goes here</span>
 			</div>
 			<div class="sd-media sd-rev">
-				<div class="sd-frame sd-frame--wide">
-					<Icon width={34} name="mdi:play-circle-outline" />
-					<span class="sd-frame-name">studio-tour.mp4 — video placeholder</span>
-					<span class="sd-frame-sub">Walk the rooms with us</span>
+				<div class="sd-frame sd-frame--wide sd-frame--film">
+					<FilmPlayer
+						videoId="FGwbzB1H4yQ"
+						fallback="/images/builder/studio-grid.jpg"
+						label="Walk the rooms with us"
+						tag="studio tour"
+						cover
+						ratio="16 / 10"
+						class="sd-tour"
+					/>
 				</div>
-				<div class="sd-frame">
-					<Icon width={22} name="mdi:image-outline" />
-					<span class="sd-frame-name">moodboard-wall.jpg</span>
-				</div>
-				<div class="sd-frame">
-					<Icon width={22} name="mdi:image-outline" />
-					<span class="sd-frame-name">critique-friday.jpg</span>
-				</div>
-				<div class="sd-frame">
-					<Icon width={26} name="mdi:play-circle-outline" />
-					<span class="sd-frame-name">launch-night.mp4 — video</span>
-				</div>
-				<div class="sd-frame">
-					<Icon width={22} name="mdi:image-outline" />
-					<span class="sd-frame-name">the-desk.jpg</span>
-				</div>
+				{
+					studioFrames.map((f, i) => (
+						<figure class="sd-frame sd-frame--shot" style={`--i:${i}; --pos:${f.pos}`}>
+							<img src={f.img} alt={f.cap} loading="lazy" decoding="async" />
+							<figcaption>
+								<strong>{f.cap}</strong>
+								<em>{f.sub}</em>
+							</figcaption>
+						</figure>
+					))
+				}
 			</div>
 		</div>
 	</section>
@@ -431,7 +457,7 @@ const logos = [
 				{
 					[0, 1].map(() =>
 						logos.map((l) => (
-							<span class="sd-blogo">
+							<span class:list={['sd-blogo', { 'sd-blogo--dark': l.startsWith('shuaproperties') }]}>
 								<img src={`/images/partners/${l}`} alt="" loading="lazy" />
 							</span>
 						))
@@ -488,9 +514,10 @@ const logos = [
 				Add your brand<br />
 				to <em>the collection.</em>
 			</h2>
-			<p class="sd-lead sd-lead--center">
-				We design it, build it, market it and keep it running, the whole
-				machine, under one roof. Bring the brief; we'll hang the result.
+			<p class="sd-lead sd-lead--center sd-lead--script">
+				We design it, build it, market it and keep it running. The whole
+				machine, under one roof. Bring us the brief and we will hang the
+				result.
 			</p>
 			<div class="sd-cta-row">
 				<a href="/contact" class="sd-btn">
@@ -620,6 +647,14 @@ const logos = [
 		color: var(--sd-muted);
 		max-width: 44rem;
 		margin: 0 0 clamp(2rem, 4vw, 3rem);
+	}
+	/* the lines the studio speaks in its own hand */
+	.sd-lead--script {
+		font-family: var(--sd-serif);
+		font-style: italic;
+		font-size: clamp(1.08rem, 1.7vw, 1.35rem);
+		line-height: 1.6;
+		letter-spacing: 0.005em;
 	}
 	.sd-lead--center {
 		text-align: center;
@@ -1316,18 +1351,35 @@ const logos = [
 		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 	}
 	.sd-shot-frame {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		gap: 0.35rem;
+		position: relative;
+		display: block;
 		aspect-ratio: 1;
+		overflow: hidden;
 		background: #efe9e0;
-		color: #8a8076;
-		font-size: 0.7rem;
-		font-weight: 800;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
+	}
+	.sd-shot-frame img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		filter: saturate(0.82) contrast(1.04);
+		transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1), filter 0.5s ease;
+	}
+	.sd-shot:hover .sd-shot-frame img { transform: scale(1.07); filter: saturate(1.08) contrast(1); }
+	/* the frame number, stamped on the print like a contact sheet */
+	.sd-shot-no {
+		position: absolute;
+		left: 0.45rem;
+		bottom: 0.4rem;
+		padding: 0.1rem 0.4rem;
+		border-radius: 2px;
+		background: rgba(18, 12, 10, 0.62);
+		color: #fdf3e8;
+		font-family: var(--sd-serif);
+		font-style: italic;
+		font-size: 0.72rem;
+		letter-spacing: 0.04em;
+		backdrop-filter: blur(4px);
 	}
 	.sd-shot figcaption {
 		display: flex;
@@ -1360,19 +1412,67 @@ const logos = [
 		.sd-media { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 		.sd-frame--wide { grid-column: span 2; }
 	}
+	/* the dashed placeholder boxes are gone: these hold real frames now */
 	.sd-frame {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		gap: 0.35rem;
-		border: 1.5px dashed color-mix(in srgb, var(--sd-ink) 24%, transparent);
-		background:
-			radial-gradient(320px 180px at 70% 10%, color-mix(in srgb, var(--sd-acc) 9%, transparent), transparent),
-			var(--sd-card);
-		color: var(--sd-muted);
-		text-align: center;
-		padding: 0.75rem;
+		position: relative;
+		margin: 0;
+		overflow: hidden;
+		border-radius: 0.3rem;
+		border: 1px solid color-mix(in srgb, var(--sd-ink) 12%, transparent);
+		background: var(--sd-card);
+		box-shadow: 0 22px 44px -26px rgba(0, 0, 0, 0.6);
+	}
+	.sd-frame--film { border: 0; box-shadow: none; overflow: visible; }
+	.sd-frame--film :global(.sd-tour) {
+		height: 100%;
+		border-radius: 0.3rem;
+		overflow: hidden;
+		border: 1px solid color-mix(in srgb, var(--sd-acc) 26%, transparent);
+		box-shadow: 0 34px 70px -32px rgba(0, 0, 0, 0.75);
+	}
+	.sd-frame--shot img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		/* wide rooms cropped into tall frames: centred by default, these
+		   cut people off at the neck, so each carries its own focal point */
+		object-position: var(--pos, 50% 50%);
+		filter: saturate(0.8) brightness(0.94);
+		transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1), filter 0.55s ease;
+	}
+	.sd-frame--shot:hover img { transform: scale(1.08); filter: saturate(1.12) brightness(1.02); }
+	/* the plaque rises off the bottom edge as you come near */
+	.sd-frame--shot figcaption {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		display: grid;
+		gap: 0.08rem;
+		padding: 1.6rem 0.8rem 0.65rem;
+		background: linear-gradient(180deg, transparent, rgba(16, 10, 8, 0.82));
+		transform: translateY(28%);
+		opacity: 0;
+		transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease;
+	}
+	.sd-frame--shot:hover figcaption,
+	.sd-frame--shot:focus-within figcaption { transform: translateY(0); opacity: 1; }
+	.sd-frame--shot figcaption strong {
+		font-size: 0.86rem;
+		font-weight: 800;
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+		color: #fff;
+	}
+	.sd-frame--shot figcaption em {
+		font-family: var(--sd-serif);
+		font-style: italic;
+		font-size: 0.78rem;
+		color: rgba(255, 255, 255, 0.78);
+	}
+	@media (hover: none) {
+		.sd-frame--shot figcaption { transform: translateY(0); opacity: 1; }
 	}
 	.sd-frame-name {
 		font-size: 0.74rem;
@@ -1414,17 +1514,38 @@ const logos = [
 	}
 	.sd-bword em { font-style: italic; transition: color 0.3s ease; }
 	.sd-bword:hover em { color: var(--sd-acc); }
-	.sd-blogo { flex-shrink: 0; display: grid; place-items: center; margin-right: clamp(1.8rem, 3.5vw, 3rem); }
-	.sd-blogo img {
-		height: 26px;
-		width: auto;
-		max-width: 120px;
-		object-fit: contain;
-		filter: grayscale(1) brightness(0) invert(1);
-		opacity: 0.45;
-		transition: opacity 0.3s ease, filter 0.3s ease;
+	/* Every mark used to be flattened to a silhouette with
+	   `brightness(0) invert(1)`, which turns any logo carrying its own
+	   background into a blank slab — several of these simply vanished,
+	   and the rest were grey. They hang on their own plates now and keep
+	   their colours, the way the founder wall does. */
+	.sd-blogo {
+		flex-shrink: 0;
+		display: grid;
+		place-items: center;
+		margin-right: clamp(1rem, 2.4vw, 1.8rem);
+		padding: 0.6rem 1rem;
+		border-radius: 0.7rem;
+		background: #fff;
+		border: 1px solid color-mix(in srgb, var(--sd-ink) 10%, transparent);
+		box-shadow: 0 12px 26px -18px rgba(0, 0, 0, 0.6);
+		opacity: 0.94;
+		transition: transform 0.35s cubic-bezier(0.34, 1.5, 0.64, 1), box-shadow 0.3s ease, opacity 0.3s ease;
 	}
-	:global(html:not(.dark)) .sbody .sd-blogo img { filter: grayscale(1) brightness(0); }
+	.sd-blogo img {
+		height: 28px;
+		width: auto;
+		max-width: 124px;
+		object-fit: contain;
+	}
+	/* shuaproperties is drawn in white, so on a white plate it is simply
+	   not there — it gets a dark one */
+	.sd-blogo--dark { background: #1d1016; border-color: rgba(255, 255, 255, 0.16); }
+	.sd-belt:hover .sd-blogo { opacity: 1; }
+	.sd-blogo:hover {
+		transform: translateY(-4px) scale(1.05);
+		box-shadow: 0 18px 34px -16px color-mix(in srgb, var(--sd-acc) 55%, rgba(0, 0, 0, 0.5));
+	}
 	.sd-blogo:hover img { filter: none; opacity: 1; }
 
 	/* ── I · guestbook ── */
