@@ -33,8 +33,13 @@ export function initStudioView() {
 		const light = (art: HTMLElement | undefined | null) => {
 			if (!art) return;
 			arts.forEach((a) => a.classList.toggle('is-lit', a === art));
+			// two colours go out, and the stylesheet picks whichever the
+			// room is lit for — a colour that carries a dark gallery is
+			// glare on a white wall
 			const tint = art.dataset.tint;
-			if (tint) hero.style.setProperty('--sa', tint);
+			const day = art.dataset.tintDay;
+			if (tint) hero.style.setProperty('--sa-lit', tint);
+			if (day) hero.style.setProperty('--sa-day', day);
 			if (nameEl && nameEl.textContent !== art.dataset.name) {
 				nameEl.textContent = art.dataset.name || '';
 				retime(nameEl);

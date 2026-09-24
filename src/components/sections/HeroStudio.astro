@@ -27,13 +27,17 @@ const pick = (slug: string) => projects.find((p) => p.slug === slug)!;
 // are muted greens and mid blues, which is right there and far too quiet
 // on a gallery wall. These are the exhibition colours: the same six works,
 // lit. projects.ts keeps the real brand colours untouched.
+// Two colours per piece, not one. A colour loud enough to carry a dark
+// gallery is glare on a white wall — the acid lime was unreadable in
+// daylight — so each exhibition colour has a daylight twin, and the
+// stylesheet picks whichever the room is lit for.
 const works = [
-	{ p: pick('brixmarket'), lit: '#00e5ff' },
-	{ p: pick('purple-panda'), lit: '#9d4bff' },
-	{ p: pick('beauty-hive'), lit: '#ff2d95' },
-	{ p: pick('saros'), lit: '#ff7a18' },
-	{ p: pick('betslipswitch'), lit: '#b6ff2e' },
-	{ p: pick('my-eya-estate'), lit: '#ffd028' },
+	{ p: pick('brixmarket'), lit: '#00e5ff', day: '#0089a8' },
+	{ p: pick('purple-panda'), lit: '#9d4bff', day: '#6b21d6' },
+	{ p: pick('beauty-hive'), lit: '#ff2d95', day: '#c2185b' },
+	{ p: pick('saros'), lit: '#ff7a18', day: '#c2410c' },
+	{ p: pick('betslipswitch'), lit: '#00e08a', day: '#0a7f56' },
+	{ p: pick('my-eya-estate'), lit: '#ffd028', day: '#a16207' },
 ].filter((w) => w.p);
 
 // the reel card, described the same way as the works so the plaque and the
@@ -90,11 +94,30 @@ const ticker = [
 
 			<RotatingHeadline class="shr-rhead" />
 
-			<p class="shr-sub">
-				Designers, engineers and storytellers under one roof. Every
-				piece on this wall is live in the world: a shop you can buy
-				from, an app you can open. Come in and walk the room.
-			</p>
+			<!-- Not a paragraph in a box: a scroll, unrolled and weighted
+			     open. Parchment that keeps its colour whichever way the
+			     room is lit, a torn deckle along the top and bottom, both
+			     ends still curled, an underpainting in whatever colour is
+			     on show, one phrase struck through with a brush, and the
+			     studio's signature along the bottom. -->
+			<figure class="shr-canvas">
+				<span class="shr-canvas-wash" aria-hidden="true"></span>
+				<span class="shr-canvas-weave" aria-hidden="true"></span>
+				<span class="shr-curl shr-curl--l" aria-hidden="true"></span>
+				<span class="shr-curl shr-curl--r" aria-hidden="true"></span>
+
+				<p class="shr-sub">
+					Designers, engineers and storytellers under one roof. Every
+					piece on this wall is <mark class="shr-paint">live in the
+					world</mark>: a shop you can buy from, an app you can open.
+					Come in and walk the room.
+				</p>
+
+				<figcaption class="shr-sig">
+					<span class="shr-sig-n">Swizel</span>
+					<span class="shr-sig-m">acrylic on the open web · 2026</span>
+				</figcaption>
+			</figure>
 
 			<div class="shr-cta">
 				<CustomButton
@@ -159,13 +182,14 @@ const ticker = [
 
 			<div class="shr-side shr-side--l">
 				{
-					works.slice(0, 3).map(({ p, lit }, i) => (
+					works.slice(0, 3).map(({ p, lit, day }, i) => (
 						<a
 							class="shr-hung"
 							href="/portfolio#sp-wall"
-							style={`--c:${lit}; --d:${i === 1 ? 3 : 2}; --i:${i}; --rot:${[-3.2, 2.4, -2][i]}deg; --sway:${[6.4, 5.6, 7.1][i]}s`}
+							style={`--c:${lit}; --c-day:${day}; --d:${i === 1 ? 3 : 2}; --i:${i}; --rot:${[-3.2, 2.4, -2][i]}deg; --sway:${[6.4, 5.6, 7.1][i]}s`}
 							data-shr-art={i}
 							data-tint={lit}
+							data-tint-day={day}
 							data-name={p.name}
 							data-meta={`${p.tags[0] ?? 'Work'} · ${p.year}`}
 							data-cursor="repo"
@@ -214,13 +238,14 @@ const ticker = [
 
 			<div class="shr-side shr-side--r">
 				{
-					works.slice(3, 6).map(({ p, lit }, i) => (
+					works.slice(3, 6).map(({ p, lit, day }, i) => (
 						<a
 							class="shr-hung"
 							href="/portfolio#sp-wall"
-							style={`--c:${lit}; --d:${i === 1 ? 3 : 2}; --i:${i + 3}; --rot:${[2.8, -2.2, 2][i]}deg; --sway:${[6.8, 7.4, 6.0][i]}s`}
+							style={`--c:${lit}; --c-day:${day}; --d:${i === 1 ? 3 : 2}; --i:${i + 3}; --rot:${[2.8, -2.2, 2][i]}deg; --sway:${[6.8, 7.4, 6.0][i]}s`}
 							data-shr-art={i + 3}
 							data-tint={lit}
+							data-tint-day={day}
 							data-name={p.name}
 							data-meta={`${p.tags[0] ?? 'Work'} · ${p.year}`}
 							data-cursor="repo"
@@ -267,7 +292,9 @@ const ticker = [
 	   write from the script — the orbs, the beam, the type, the frames
 	   and the ticker all follow together. */
 	.shr {
-		--sa: #ec4899;
+		--sa-lit: #ec4899;
+		--sa-day: #c2185b;
+		--sa: var(--sa-lit);
 		--ink: #fdeaf5;
 		--muted: rgba(253, 234, 245, 0.68);
 		--faint: rgba(253, 234, 245, 0.62);
@@ -419,15 +446,186 @@ const ticker = [
 		background-clip: text !important;
 	}
 
-	.shr-sub {
-		max-width: 31rem;
-		color: var(--muted);
-		font-size: 1.04rem;
-		line-height: 1.68;
+	@keyframes shr-in { from { opacity: 0; transform: translateY(14px); } }
+
+	/* ═══ the scroll ═════════════════════════════════════════════
+	   The lead is not a paragraph in a box. It is a length of parchment,
+	   unrolled and weighted open: a torn deckle along the top and bottom
+	   edges, both ends still curled, the tooth of the paper showing, and
+	   an underpainting that drifts in whatever colour the room is
+	   wearing. Parchment is parchment in any light, so unlike every
+	   other surface here it keeps its own colour in the dark room and
+	   carries dark ink in both. */
+	.shr-canvas {
+		position: relative;
+		max-width: 33rem;
 		margin: 0 0 1.7rem;
+		padding: 1.5rem 2.3rem 1.15rem;
+		/* curved, not square: the corners of a sheet that has been rolled */
+		border-radius: 1.4rem 1.2rem 1.5rem 1.3rem / 2.2rem 2.4rem 2.1rem 2.3rem;
+		overflow: hidden;
+		transform: rotate(-0.55deg);
+		color: #2a1a12;
+		background:
+			radial-gradient(120% 100% at 12% 0%, rgba(255, 255, 255, 0.55), transparent 60%),
+			linear-gradient(168deg, #f8efdc 0%, #f1e4cb 54%, #e9dabd 100%);
+		box-shadow:
+			inset 0 0 26px rgba(120, 82, 40, 0.14),
+			0 26px 60px -28px rgba(0, 0, 0, 0.6);
+		/* The deckle. A repeating scallop gave a doily, not a torn sheet —
+		   the rhythm was too regular to read as paper. This is one mask
+		   drawn with fractal noise displacing the edge of a rounded
+		   rectangle, so no two bites along it are the same. If the mask
+		   fails to load the sheet simply keeps its rounded corners. */
+		-webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='260' preserveAspectRatio='none'%3E%3Cfilter id='t' x='-8%' y='-14%' width='116%' height='128%'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012 0.05' numOctaves='4' seed='11' result='n'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='n' scale='17' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3Crect x='14' y='16' width='572' height='228' rx='30' ry='34' fill='%23fff' filter='url(%23t)'/%3E%3C/svg%3E");
+		mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='260' preserveAspectRatio='none'%3E%3Cfilter id='t' x='-8%' y='-14%' width='116%' height='128%'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012 0.05' numOctaves='4' seed='11' result='n'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='n' scale='17' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3Crect x='14' y='16' width='572' height='228' rx='30' ry='34' fill='%23fff' filter='url(%23t)'/%3E%3C/svg%3E");
+		-webkit-mask-size: 100% 100%;
+		mask-size: 100% 100%;
+		-webkit-mask-repeat: no-repeat;
+		mask-repeat: no-repeat;
 		animation: shr-in 0.9s ease 0.4s both;
 	}
-	@keyframes shr-in { from { opacity: 0; transform: translateY(14px); } }
+
+	/* the two ends, still rolled */
+	.shr-curl {
+		position: absolute;
+		top: -2%;
+		bottom: -2%;
+		width: 1.7rem;
+		z-index: 3;
+		pointer-events: none;
+		border-radius: 50% / 14px;
+	}
+	.shr-curl--l {
+		left: 0;
+		background: linear-gradient(90deg,
+			rgba(103, 69, 30, 0.42) 0%,
+			rgba(146, 103, 52, 0.2) 26%,
+			rgba(255, 252, 240, 0.85) 62%,
+			rgba(120, 82, 40, 0.16) 100%);
+		box-shadow: inset -6px 0 10px -6px rgba(90, 58, 22, 0.5);
+	}
+	.shr-curl--r {
+		right: 0;
+		background: linear-gradient(270deg,
+			rgba(103, 69, 30, 0.42) 0%,
+			rgba(146, 103, 52, 0.2) 26%,
+			rgba(255, 252, 240, 0.85) 62%,
+			rgba(120, 82, 40, 0.16) 100%);
+		box-shadow: inset 6px 0 10px -6px rgba(90, 58, 22, 0.5);
+	}
+
+	/* the underpainting — passes of the room's colour that never settle */
+	.shr-canvas-wash {
+		position: absolute;
+		inset: -30%;
+		pointer-events: none;
+		background:
+			radial-gradient(34% 40% at 22% 28%, color-mix(in srgb, var(--sa) 46%, transparent), transparent 70%),
+			radial-gradient(30% 34% at 78% 66%, color-mix(in srgb, var(--sa) 34%, transparent), transparent 72%),
+			radial-gradient(26% 30% at 58% 12%, rgba(157, 75, 255, 0.24), transparent 74%);
+		filter: blur(24px);
+		opacity: 0.4;
+		mix-blend-mode: multiply;
+		animation: shr-wash 19s ease-in-out infinite;
+	}
+	@keyframes shr-wash {
+		0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+		50% { transform: translate3d(3%, -4%, 0) scale(1.14); }
+	}
+
+	/* the tooth of the paper, and its grain */
+	.shr-canvas-weave {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		opacity: 0.55;
+		background-image:
+			repeating-linear-gradient(92deg, rgba(120, 82, 40, 0.07) 0 1px, transparent 1px 4px),
+			repeating-linear-gradient(2deg, rgba(120, 82, 40, 0.05) 0 1px, transparent 1px 5px),
+			url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)' opacity='0.45'/%3E%3C/svg%3E");
+		mix-blend-mode: multiply;
+	}
+
+	.shr-sub {
+		position: relative;
+		z-index: 2;
+		margin: 0;
+		color: #2a1a12;
+		font-size: 1.04rem;
+		line-height: 1.72;
+	}
+
+	/* the brush stroke: a rough swipe laid under one phrase, painted on
+	   as the canvas arrives */
+	.shr-paint {
+		position: relative;
+		background: none;
+		color: inherit;
+		padding: 0 0.16em;
+		white-space: nowrap;
+	}
+	/* two passes of a loaded brush, laid at slightly different angles —
+	   one stroke on its own reads as a highlighter pill */
+	.shr-paint::before,
+	.shr-paint::after {
+		content: '';
+		position: absolute;
+		z-index: -1;
+		transform-origin: left center;
+		animation: shr-brush 0.8s cubic-bezier(0.34, 1.1, 0.64, 1) 1.1s forwards;
+	}
+	.shr-paint::before {
+		inset: -0.06em -0.22em 0.04em -0.16em;
+		background: linear-gradient(96deg,
+			color-mix(in srgb, var(--sa-day) 62%, transparent),
+			color-mix(in srgb, var(--sa-day) 92%, transparent) 42%,
+			color-mix(in srgb, var(--sa-day) 70%, transparent));
+		border-radius: 48% 52% 36% 64% / 66% 34% 66% 34%;
+		transform: rotate(-1.1deg) scaleX(0);
+	}
+	.shr-paint::after {
+		inset: 0.12em -0.1em -0.1em -0.06em;
+		background: linear-gradient(88deg,
+			color-mix(in srgb, var(--sa-day) 46%, transparent),
+			transparent 38%,
+			color-mix(in srgb, var(--sa-day) 64%, transparent));
+		border-radius: 60% 40% 58% 42% / 40% 58% 42% 60%;
+		transform: rotate(0.9deg) scaleX(0);
+		animation-delay: 1.24s;
+	}
+	@keyframes shr-brush { to { transform: rotate(var(--pr, -1.1deg)) scaleX(1); } }
+	.shr-paint::before { --pr: -1.1deg; }
+	.shr-paint::after { --pr: 0.9deg; }
+	/* the paint is bright in both rooms, so the ink over it is dark in
+	   both — white on a lit stroke was unreadable */
+	.shr-paint { font-weight: 700; color: #fdf6ec; }
+
+	/* the signature, along the bottom edge */
+	.shr-sig {
+		position: relative;
+		z-index: 2;
+		display: flex;
+		align-items: baseline;
+		justify-content: flex-end;
+		gap: 0.55rem;
+		margin-top: 0.9rem;
+		padding-top: 0.6rem;
+		border-top: 1px solid rgba(120, 82, 40, 0.22);
+	}
+	.shr-sig-n {
+		font-family: 'Bradley Hand', 'Segoe Print', 'Comic Sans MS', cursive;
+		font-size: 1.02rem;
+		font-weight: 700;
+		color: color-mix(in srgb, var(--sa-day) 72%, #2a1a12);
+		transform: rotate(-3deg);
+	}
+	.shr-sig-m {
+		font-family: var(--serif);
+		font-style: italic;
+		font-size: 0.7rem;
+		color: rgba(42, 26, 18, 0.6);
+	}
 
 	.shr-cta {
 		display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap;
@@ -858,6 +1056,7 @@ const ticker = [
 	   type, the frames now pale mounts. The pieces stay saturated,
 	   because in daylight the work is what you look at. */
 	:global(html:not(.dark)) .shr {
+		--sa: var(--sa-day);
 		--ink: #24101c;
 		--muted: rgba(36, 16, 28, 0.72);
 		--faint: rgba(36, 16, 28, 0.68);
@@ -883,6 +1082,8 @@ const ticker = [
 		-webkit-background-clip: text; background-clip: text;
 	}
 	:global(html:not(.dark)) .shr-glass { opacity: 0.42; }
+	:global(html:not(.dark)) .shr-hung,
+	:global(html:not(.dark)) .shr-reel { --c: var(--c-day, var(--sa)); }
 	:global(html:not(.dark)) .shr-ticker { border-color: rgba(36, 16, 28, 0.14); }
 
 	/* ═══ smaller rooms ══════════════════════════════════════════ */
@@ -902,7 +1103,7 @@ const ticker = [
 		.shr-copy { display: contents; }
 		.shr-plaque { order: 1; margin-bottom: 0; }
 		:global(.shr-rhead) { order: 2; margin-bottom: 0; }
-		.shr-sub { order: 3; margin: 0 auto; max-width: 34rem; }
+		.shr-canvas { order: 3; margin: 0 auto; max-width: 34rem; }
 		.shr-cta { order: 4; margin-bottom: 0; }
 		.shr-wall { order: 5; align-self: stretch; }
 		.shr-colophon { order: 6; margin-bottom: 0; }
@@ -959,36 +1160,18 @@ const ticker = [
 		}
 
 		/* ── glass ──────────────────────────────────────────────────
-		   The room is behind glass on a phone: the lead sits on a
-		   frosted sheet, the calls and the credit are polished, and
-		   every panel takes a light rim and a gloss along its top edge. */
-		.shr-sub {
-			position: relative;
-			padding: 1rem 1.1rem;
-			border-radius: 1.2rem;
-			border: 1px solid color-mix(in srgb, var(--sa) 26%, rgba(255, 255, 255, 0.18));
-			background: color-mix(in srgb, var(--sa) 7%, rgba(255, 255, 255, 0.05));
-			backdrop-filter: blur(14px) saturate(1.3);
-			-webkit-backdrop-filter: blur(14px) saturate(1.3);
-			box-shadow:
-				inset 0 1px 0 rgba(255, 255, 255, 0.3),
-				0 18px 40px -26px rgba(0, 0, 0, 0.75);
-			overflow: hidden;
-		}
-		:global(html:not(.dark)) .shr-sub {
-			background: color-mix(in srgb, var(--sa) 6%, rgba(255, 255, 255, 0.55));
-			box-shadow:
-				inset 0 1px 0 rgba(255, 255, 255, 0.85),
-				0 18px 40px -28px rgba(36, 16, 28, 0.4);
-		}
-		/* the gloss: a highlight lying across the top of the sheet */
-		.shr-sub::after {
+		   The room is behind glass on a phone: the canvas keeps its own
+		   painted ground, and everything around it is polished — a light
+		   rim and a gloss lying along each top edge. */
+		.shr-canvas { text-align: left; }
+		.shr-canvas::after {
 			content: '';
 			position: absolute;
 			inset: 0 0 auto;
-			height: 52%;
-			background: linear-gradient(180deg, rgba(255, 255, 255, 0.22), transparent);
+			height: 44%;
+			background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), transparent);
 			pointer-events: none;
+			z-index: 3;
 		}
 
 		.shr-plaque,
