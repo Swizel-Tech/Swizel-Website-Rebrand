@@ -17,7 +17,6 @@ import { Icon } from 'astro-icon/components';
 import CustomButton from '../CustomButton.astro';
 import FilmPlayer from '../FilmPlayer.astro';
 import RotatingHeadline from '../RotatingHeadline.astro';
-import TeamChip from '../TeamChip.astro';
 import { projects } from '../../data/projects';
 
 const pick = (slug: string) => projects.find((p) => p.slug === slug)!;
@@ -47,6 +46,14 @@ const colophon = [
 	{ n: '40+', l: 'brands' },
 	{ n: '9', l: 'sectors' },
 	{ n: '2019', l: 'est.' },
+];
+
+// the artists' credit under the catalogue — the same three prints the
+// founder world fans out, read here as portraits in gilt rings
+const crew = [
+	{ img: '/images/team/t1.jpg', who: 'Engineering' },
+	{ img: '/images/team/t2.jpg', who: 'Design & brand' },
+	{ img: '/images/team/t3.jpg', who: 'Product & delivery' },
 ];
 
 const ticker = [
@@ -111,7 +118,30 @@ const ticker = [
 				}
 			</ul>
 
-			<TeamChip kicker="// the hands behind the work" label="Meet the studio" />
+			<!-- Founder has its contact-sheet fan and Campus its mentors
+			     band; the studio had a bare pill. This is its own: the
+			     artists' credit, three portraits in gilt rings with the
+			     name of whoever you point at. -->
+			<a class="shr-crew" href="/about" data-tour="team">
+				<span class="shr-crew-ring" aria-hidden="true"></span>
+				<span class="shr-crew-faces">
+					{
+						crew.map((c, i) => (
+							<span class="shr-crew-face" style={`--i:${i}`} data-shr-face={i} data-who={c.who}>
+								<img src={c.img} alt={`${c.who} at Swizel`} loading="lazy" decoding="async" />
+							</span>
+						))
+					}
+				</span>
+				<span class="shr-crew-txt">
+					<span class="shr-crew-k">the hands behind the work</span>
+					<span class="shr-crew-l">
+						<b data-shr-who>{crew[0]?.who}</b>
+						<em>Meet the studio</em>
+						<Icon width={14} name="mdi:arrow-right" />
+					</span>
+				</span>
+			</a>
 		</div>
 
 		<!-- ══ the wall ════════════════════════════════════════════
@@ -127,9 +157,7 @@ const ticker = [
 					works.slice(0, 3).map((p, i) => (
 						<a
 							class="shr-hung"
-							href={p.url ?? `/work/${p.slug}`}
-							target={p.url ? '_blank' : undefined}
-							rel={p.url ? 'noopener noreferrer' : undefined}
+							href="/portfolio#sp-wall"
 							style={`--c:${p.color}; --d:${i === 1 ? 3 : 2}; --i:${i}; --rot:${[-3.2, 2.4, -2][i]}deg; --sway:${[6.4, 5.6, 7.1][i]}s`}
 							data-shr-art={i}
 							data-tint={p.color}
@@ -154,14 +182,16 @@ const ticker = [
 			<figure class="shr-reel" style={`--c:${reel.color}`}>
 				<span class="shr-mat shr-mat--reel">
 					<span class="shr-fillet" aria-hidden="true"></span>
+					<!-- not ambient: an ambient film is forced muted and has its
+					     volume control hidden, and this one is meant to be
+					     watched with the sound up -->
 					<FilmPlayer
 						videoId="EHi0Z2yqAr8"
 						fallback="/images/film/crew.jpg"
 						label="The studio reel — a year of work in ninety seconds"
 						tag="now showing"
-						ambient
 						cover
-						ratio="16 / 10"
+						ratio="16 / 10.8"
 						class="shr-film"
 					/>
 				</span>
@@ -182,9 +212,7 @@ const ticker = [
 					works.slice(3, 6).map((p, i) => (
 						<a
 							class="shr-hung"
-							href={p.url ?? `/work/${p.slug}`}
-							target={p.url ? '_blank' : undefined}
-							rel={p.url ? 'noopener noreferrer' : undefined}
+							href="/portfolio#sp-wall"
 							style={`--c:${p.color}; --d:${i === 1 ? 3 : 2}; --i:${i + 3}; --rot:${[2.8, -2.2, 2][i]}deg; --sway:${[6.8, 7.4, 6.0][i]}s`}
 							data-shr-art={i + 3}
 							data-tint={p.color}
@@ -474,6 +502,89 @@ const ticker = [
 		display: block;
 		font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase;
 		color: var(--faint); margin-top: 0.3rem;
+	}
+
+	/* ═══ the artists' credit ════════════════════════════════════
+	   Founder fans contact prints, Campus runs a mentors band; the
+	   studio hangs three portraits in gilt rings, the way a gallery
+	   credits the hands that made the show. */
+	.shr-crew {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.9rem;
+		padding: 0.6rem 1.4rem 0.6rem 0.65rem;
+		border-radius: 9999px;
+		border: 1px solid color-mix(in srgb, var(--sa) 34%, transparent);
+		background: color-mix(in srgb, var(--sa) 8%, transparent);
+		color: var(--ink);
+		overflow: hidden;
+		transition: border-color 0.35s ease, background 0.35s ease, transform 0.35s ease;
+		animation: shr-in 0.9s ease 0.85s both;
+	}
+	.shr-crew:hover {
+		transform: translateY(-2px);
+		border-color: color-mix(in srgb, var(--sa) 62%, transparent);
+		background: color-mix(in srgb, var(--sa) 14%, transparent);
+	}
+	/* a slow sweep of the room's colour across the band */
+	.shr-crew-ring {
+		position: absolute; inset: 0;
+		background: linear-gradient(112deg, transparent 34%, color-mix(in srgb, var(--sa) 26%, transparent) 50%, transparent 66%);
+		background-size: 260% 100%;
+		background-position: 140% 0;
+		animation: shr-sheen 5.6s ease-in-out infinite;
+		pointer-events: none;
+	}
+
+	.shr-crew-faces { display: inline-flex; }
+	.shr-crew-face {
+		position: relative;
+		display: block;
+		width: 2.6rem;
+		height: 2.6rem;
+		border-radius: 9999px;
+		overflow: hidden;
+		border: 2px solid color-mix(in srgb, var(--sa) 55%, #f7e6c8);
+		box-shadow: 0 6px 16px -6px rgba(0, 0, 0, 0.7);
+		margin-left: -0.75rem;
+		transition: transform 0.4s cubic-bezier(0.34, 1.35, 0.64, 1), border-color 0.5s ease, z-index 0s;
+		animation: shr-face-in 0.6s cubic-bezier(0.34, 1.35, 0.64, 1) both;
+		animation-delay: calc(var(--i) * 90ms + 0.95s);
+	}
+	.shr-crew-face:first-child { margin-left: 0; }
+	@keyframes shr-face-in { from { opacity: 0; transform: scale(0.5) translateY(8px); } }
+	.shr-crew-face img { display: block; width: 100%; height: 100%; object-fit: cover; }
+	.shr-crew-face.is-on { transform: translateY(-4px) scale(1.12); z-index: 3; }
+	.shr-crew:hover .shr-crew-face { margin-left: -0.45rem; }
+	.shr-crew:hover .shr-crew-face:first-child { margin-left: 0; }
+
+	.shr-crew-txt { display: grid; gap: 0.1rem; min-width: 0; }
+	.shr-crew-k {
+		font-family: var(--serif);
+		font-style: italic;
+		font-size: 0.76rem;
+		color: var(--faint);
+	}
+	.shr-crew-l {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 0.45rem;
+		font-size: 0.9rem;
+		font-weight: 700;
+	}
+	.shr-crew-l b {
+		color: color-mix(in srgb, var(--sa) 45%, #fff);
+		animation: shr-say 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	:global(html:not(.dark)) .shr-crew-l b { color: color-mix(in srgb, var(--sa) 72%, #2a0c1a); }
+	.shr-crew-l em { font-style: normal; font-weight: 600; opacity: 0.72; }
+	.shr-crew-l :global(svg) { align-self: center; transition: transform 0.3s ease; }
+	.shr-crew:hover .shr-crew-l :global(svg) { transform: translateX(3px); }
+	@media (max-width: 420px) {
+		.shr-crew { padding-right: 1rem; gap: 0.6rem; }
+		.shr-crew-face { width: 2.2rem; height: 2.2rem; }
+		.shr-crew-l em { display: none; }
 	}
 
 	/* ═══ the wall ═══════════════════════════════════════════════

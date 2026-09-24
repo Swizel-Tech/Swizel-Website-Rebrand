@@ -77,6 +77,40 @@ export function initStudioView() {
 		});
 
 		light(arts[0]);
+
+		// ── the artists' credit ─────────────────────────────────────
+		// The band names one of the three at a time, on the same idea as
+		// the wall: it walks on its own and hands over to whoever you
+		// point at.
+		const faces = Array.from(hero.querySelectorAll<HTMLElement>('[data-shr-face]'));
+		const whoEl = hero.querySelector<HTMLElement>('[data-shr-who]');
+		if (faces.length && whoEl) {
+			let face = 0;
+			let held: HTMLElement | null = null;
+
+			const say = (f: HTMLElement) => {
+				faces.forEach((o) => o.classList.toggle('is-on', o === f));
+				if (whoEl.textContent !== f.dataset.who) {
+					whoEl.textContent = f.dataset.who || '';
+					retime(whoEl);
+				}
+			};
+
+			faces.forEach((f, i) => {
+				f.addEventListener('pointerenter', () => { held = f; face = i; say(f); });
+				f.addEventListener('pointerleave', () => { if (held === f) held = null; });
+			});
+
+			say(faces[0]!);
+			if (!still.matches) {
+				window.setInterval(() => {
+					if (held) return;
+					face = (face + 1) % faces.length;
+					say(faces[face]!);
+				}, 2600);
+			}
+		}
+
 		const isStudio = () =>
 			document.documentElement.getAttribute('data-view') === 'studio';
 		if (isStudio()) start();

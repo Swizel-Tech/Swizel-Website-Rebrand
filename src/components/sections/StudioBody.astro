@@ -4,6 +4,7 @@
 // a studio reel, museum plaques, a guestbook and a commission desk. The
 // longest, richest world — built to be filled with the studio's own media.
 import { Icon } from 'astro-icon/components';
+import FilmPlayer from '../FilmPlayer.astro';
 
 // the collection wall — varying tile sizes, each with a museum plaque
 const collection = [
@@ -116,11 +117,15 @@ const logos = [
 
 			<!-- the centerpiece, on the wall from the very first screen -->
 			<figure class="sd-centerpiece sd-rev" data-cursor="play">
-				<span class="sd-centerpiece-media">
-					<Icon width={40} name="mdi:play-circle-outline" />
-					<span class="sd-cp-name">gallery-reel.mp4 — video placeholder</span>
-					<span class="sd-cp-sub">A two-minute walk through the collection</span>
-				</span>
+				<FilmPlayer
+					videoId="FGwbzB1H4yQ"
+					fallback="/images/film/room.jpg"
+					label="A walk through the collection"
+					tag="permanent exhibition"
+					cover
+					ratio="21 / 9"
+					class="sd-cp-film"
+				/>
 				<figcaption class="sd-plaque sd-plaque--lg">
 					<strong>The Swizel Collection</strong>
 					<span>Mixed media · 2019—'26 · Permanent exhibition</span>
@@ -643,45 +648,21 @@ const logos = [
 	.sd-centerpiece {
 		margin: 0 0 clamp(1.5rem, 3vw, 2.25rem);
 	}
-	.sd-centerpiece-media {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		gap: 0.5rem;
-		aspect-ratio: 21 / 9;
-		max-height: 520px;
-		min-height: 200px;
+	/* the film fills the hung canvas edge to edge — the mat and frame
+	   line belong to the frame, not to a placeholder inside it */
+	.sd-centerpiece :global(.sd-cp-film) {
+		display: block;
 		border-radius: 0.4rem;
-		/* a hung canvas: thick mat + frame line */
+		overflow: hidden;
 		border: 1px solid var(--sd-line);
 		box-shadow:
 			inset 0 0 0 12px color-mix(in srgb, var(--sd-ink) 5%, transparent),
 			0 40px 90px -36px rgba(0, 0, 0, 0.7);
-		background:
-			radial-gradient(600px 300px at 70% 8%, color-mix(in srgb, var(--sd-acc) 12%, transparent), transparent),
-			var(--sd-card);
-		color: var(--sd-muted);
 	}
-	.sd-cp-name {
-		font-size: 0.74rem;
-		font-weight: 800;
-		letter-spacing: 0.07em;
-		text-transform: uppercase;
-		text-align: center;
-		padding-inline: 0.5rem;
-	}
-	.sd-cp-sub {
-		font-family: var(--sd-serif);
-		font-style: italic;
-		font-size: 0.85rem;
-		text-align: center;
-		color: var(--sd-faint);
-	}
-	/* On phones the cinematic 21:9 strip is too short — give the placeholder real
-	   presence (taller crop) so it reads as the centerpiece it's meant to be. */
 	@media (max-width: 720px) {
-		.sd-centerpiece-media { aspect-ratio: 16 / 11; }
+		/* the cinematic strip is too short on a phone to read as the
+		   centrepiece it is meant to be */
+		.sd-centerpiece :global(.sd-cp-film) { --flm-ratio: 16 / 11; }
 	}
 	/* the gallery label — sleek dark glass, not white tape */
 	.sd-plaque {
