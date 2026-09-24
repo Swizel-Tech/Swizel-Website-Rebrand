@@ -28,8 +28,11 @@ const materials = [
 	{ group: 'Data', icon: 'mdi:database-outline', tools: ['PostgreSQL', 'MongoDB', 'Redis', 'Supabase', 'Prisma'] },
 	{ group: 'Commerce', icon: 'mdi:cart-outline', tools: ['Stripe', 'Paystack', 'Shopify', 'WooCommerce'] },
 	{ group: 'Content', icon: 'mdi:file-document-edit-outline', tools: ['WordPress', 'Sanity', 'Contentful', 'Webflow'] },
-	{ group: 'Quality', icon: 'mdi:check-decagram-outline', tools: ['Git', 'Jest', 'Playwright', 'Storybook', 'Sentry'] },
 ];
+
+// Quality tooling belongs to every bench, so it rides with the backend
+// rather than sitting alone on a third row of one.
+materials[3]!.tools.push('Git', 'Jest', 'Playwright', 'Sentry');
 ---
 
 <div class="ssvc sbody view-body view-body-studio">
@@ -217,7 +220,7 @@ const materials = [
 				does <em>your idea</em> need?
 			</h2>
 			<p class="sv-lead sv-lead--center">
-				Not sure? Bring the brief and we'll walk the wing together — most
+				Not sure? Bring the brief and we'll walk the wing together. Most
 				commissions end up touching more than one atelier anyway.
 			</p>
 			<div class="sv-cta-row">
@@ -359,13 +362,16 @@ const materials = [
 	/* ── A · entrance ── */
 	.sv-open {
 		display: grid;
-		gap: clamp(1.5rem, 4vw, 3.5rem);
-		align-items: end;
+		/* the two columns were a full 3.5rem apart with the headline
+		   ranged left and the sheet ranged right, which opened a corridor
+		   down the middle of the wing */
+		gap: clamp(1.2rem, 2.4vw, 2rem);
+		align-items: center;
 	}
 	@media (min-width: 920px) {
-		.sv-open { grid-template-columns: 1.15fr 0.85fr; }
+		.sv-open { grid-template-columns: 0.94fr 1.06fr; }
 	}
-	.sv-open-side { max-width: 34rem; }
+	.sv-open-side { max-width: 36rem; }
 
 	/* ── B · the doors ── */
 	.sv-doors {
@@ -597,8 +603,8 @@ const materials = [
 	/* ═══ the wing's opening line, on paper ══════════════════════ */
 	.sv-scroll {
 		position: relative;
-		margin: 0 0 1.1rem;
-		padding: 1.25rem 1.5rem 1.2rem;
+		margin: 0 0 1.3rem;
+		padding: 1.7rem 2rem 1.6rem;
 		color: #2c1c14;
 		background:
 			radial-gradient(130% 100% at 14% 0%, rgba(255, 255, 255, 0.6), transparent 62%),
@@ -629,10 +635,24 @@ const materials = [
 		z-index: 1;
 		margin: 0;
 		color: #2c1c14;
-		font-family: var(--sd-serif, 'Playfair Display', Georgia, serif);
+		font-family: var(--sa-serif);
 		font-style: italic;
-		font-size: clamp(0.98rem, 1.15vw, 1.1rem);
-		line-height: 1.66;
+		font-size: clamp(1.08rem, 1.42vw, 1.3rem);
+		line-height: 1.62;
+	}
+	/* a wax seal, pressed where the sheet was closed */
+	.sv-scroll::after {
+		content: '';
+		position: absolute;
+		z-index: 2;
+		right: 1.5rem;
+		bottom: 1rem;
+		width: 30px;
+		height: 30px;
+		border-radius: 46% 54% 52% 48% / 50% 46% 54% 50%;
+		background: radial-gradient(circle at 34% 30%, #e0608f, var(--sa-acc) 58%, #7c1039);
+		box-shadow: inset 0 -2px 4px rgba(0, 0, 0, 0.35), 0 4px 10px -4px rgba(0, 0, 0, 0.5);
+		opacity: 0.9;
 	}
 
 	/* ═══ the screening room ═════════════════════════════════════ */
@@ -689,80 +709,89 @@ const materials = [
 		text-align: center;
 	}
 	.sv-screen-plaque strong {
-		font-family: var(--sd-serif, 'Playfair Display', Georgia, serif);
+		font-family: var(--sa-serif);
 		font-size: 0.9rem;
 		font-weight: 600;
 		color: #47251d;
 	}
 	.sv-screen-plaque span {
-		font-family: var(--sd-serif, 'Playfair Display', Georgia, serif);
+		font-family: var(--sa-serif);
 		font-style: italic;
 		font-size: 0.72rem;
 		color: rgba(71, 37, 29, 0.78);
 	}
 
-	/* ═══ the materials board ════════════════════════════════════ */
+	/* ═══ the materials board ════════════════════════════════════
+	   Written first against --sd-* tokens, which this wing does not
+	   define — the fallbacks were dark-room values, so the whole board
+	   went invisible in daylight. It speaks --sa-* like the rest of the
+	   page now. */
 	.sv-materials {
 		display: grid;
-		gap: 0.7rem;
-		grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+		gap: 0.8rem;
+		grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
 	}
 	.sv-mat {
 		display: grid;
-		gap: 0.55rem;
-		padding: 0.95rem 1.1rem 1.05rem;
+		gap: 0.6rem;
+		padding: 1rem 1.15rem 1.1rem;
 		border-radius: 0.4rem;
-		border: 1px solid var(--sd-line, rgba(255, 255, 255, 0.12));
-		background: var(--sd-card, rgba(255, 255, 255, 0.04));
-		transition: border-color 0.3s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+		border: 1px solid var(--sa-line);
+		background: var(--sa-card);
+		box-shadow: inset 0 0 0 7px color-mix(in srgb, var(--sa-ink) 3%, transparent);
+		transition: border-color 0.3s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
 	}
 	.sv-mat:hover {
 		transform: translateY(-3px);
-		border-color: color-mix(in srgb, var(--sd-acc, #ec4899) 50%, transparent);
+		border-color: color-mix(in srgb, var(--sa-acc) 50%, transparent);
+		box-shadow:
+			inset 0 0 0 7px color-mix(in srgb, var(--sa-ink) 3%, transparent),
+			0 22px 42px -28px color-mix(in srgb, var(--sa-acc) 55%, rgba(0, 0, 0, 0.5));
 	}
 	.sv-mat-head {
 		display: inline-flex;
 		align-items: center;
-		gap: 0.5rem;
-		font-family: var(--sd-serif, 'Playfair Display', Georgia, serif);
+		gap: 0.55rem;
+		font-family: var(--sa-serif);
 		font-style: italic;
-		font-size: 1rem;
-		color: var(--sd-ink, #f3edf0);
+		font-size: 1.05rem;
+		color: var(--sa-ink);
 	}
 	.sv-mat-ic {
 		display: grid;
 		place-items: center;
-		width: 28px;
-		height: 28px;
+		width: 30px;
+		height: 30px;
+		flex: none;
 		border-radius: 9999px;
-		color: var(--sd-acc, #ec4899);
-		background: color-mix(in srgb, var(--sd-acc, #ec4899) 12%, transparent);
-		border: 1px solid color-mix(in srgb, var(--sd-acc, #ec4899) 26%, transparent);
+		color: var(--sa-acc);
+		background: color-mix(in srgb, var(--sa-acc) 12%, transparent);
+		border: 1px solid color-mix(in srgb, var(--sa-acc) 28%, transparent);
 	}
-	.sv-mat-tools { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+	.sv-mat-tools { display: flex; flex-wrap: wrap; gap: 0.32rem; }
 	.sv-mat-tools i {
 		font-style: normal;
-		font-size: 0.74rem;
-		padding: 0.2rem 0.55rem;
+		font-size: 0.76rem;
+		padding: 0.22rem 0.6rem;
 		border-radius: 9999px;
-		border: 1px solid var(--sd-line, rgba(255, 255, 255, 0.12));
-		color: var(--sd-muted, rgba(243, 237, 240, 0.64));
+		border: 1px solid var(--sa-line);
+		color: var(--sa-muted);
 		transition: border-color 0.25s ease, color 0.25s ease, transform 0.25s ease;
 	}
-	.sv-mat:hover .sv-mat-tools i { border-color: color-mix(in srgb, var(--sd-acc, #ec4899) 32%, transparent); }
+	.sv-mat:hover .sv-mat-tools i { border-color: color-mix(in srgb, var(--sa-acc) 30%, transparent); }
 	.sv-mat-tools i:hover {
-		color: var(--sd-ink, #fff);
-		border-color: var(--sd-acc, #ec4899);
+		color: var(--sa-ink);
+		border-color: var(--sa-acc);
 		transform: translateY(-2px);
 	}
 	.sv-mat-note {
-		margin: 1.2rem auto 0;
-		max-width: 34rem;
+		margin: 1.3rem auto 0;
+		max-width: 36rem;
 		text-align: center;
-		font-family: var(--sd-serif, 'Playfair Display', Georgia, serif);
+		font-family: var(--sa-serif);
 		font-style: italic;
-		font-size: 0.95rem;
-		color: var(--sd-muted, rgba(243, 237, 240, 0.64));
+		font-size: 1rem;
+		color: var(--sa-muted);
 	}
 	@media (max-width: 620px) {
 		.sv-materials { grid-template-columns: minmax(0, 1fr); }
