@@ -5,80 +5,82 @@ export function initStudioBody() {
 	if (!body) return;
 	const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-	// ── the Spotlight Room: one work under the light at a time ──
+	// ── the Spotlight Room: a carousel under the lamp ──
+	// Each card is handed one number, its offset from the front; the
+	// stylesheet turns that into position, depth, angle and dimming.
 	const spot = body.querySelector<HTMLElement>('#sp-spot');
 	if (spot && !spot.dataset.spBound) {
 		spot.dataset.spBound = '1';
-		const items = Array.from(
-			spot.querySelectorAll<HTMLElement>('[data-sp-item]')
-		).map((el) => ({
-			img: el.dataset.img || '',
-			name: el.dataset.name || '',
-			meta: el.dataset.meta || '',
-			room: el.dataset.room || '',
-			color: el.dataset.color || '',
-		}));
-		const imgs = [
-			spot.querySelector<HTMLImageElement>('#sp-spot-a')!,
-			spot.querySelector<HTMLImageElement>('#sp-spot-b')!,
-		];
-		const name = spot.querySelector<HTMLElement>('#sp-spot-name')!;
-		const meta = spot.querySelector<HTMLElement>('#sp-spot-meta')!;
-		const room = spot.querySelector<HTMLElement>('#sp-spot-room')!;
-		const plaque = spot.querySelector<HTMLElement>('#sp-spot-plaque')!;
-		const thumbs = Array.from(
-			spot.querySelectorAll<HTMLElement>('[data-sp-go]')
-		);
-		let cur = 0;
-		let front = 0;
+		const cards = Array.from(spot.querySelectorAll<HTMLElement>('[data-sp-card]'));
+		const ticks = Array.from(spot.querySelectorAll<HTMLElement>('[data-sp-go]'));
+		const name = spot.querySelector<HTMLElement>('#sp-spot-name');
+		const meta = spot.querySelector<HTMLElement>('#sp-spot-meta');
+		const visit = spot.querySelector<HTMLAnchorElement>('#sp-spot-visit');
+		const plaque = spot.querySelector<HTMLElement>('#sp-spot-plaque');
+		const n = cards.length;
+		let at = 0;
 		let timer = 0;
 
-		const show = (n: number) => {
-			cur = (n + items.length) % items.length;
-			const it = items[cur]!;
-			// the light dips while the piece is swapped
-			spot.classList.add('sp-dim');
-			const back = imgs[1 - front]!;
-			back.src = it.img;
-			back.alt = it.name;
-			requestAnimationFrame(() => {
-				back.classList.add('is-on');
-				imgs[front]!.classList.remove('is-on');
-				front = 1 - front;
-				spot.style.setProperty('--c', it.color);
-				name.textContent = it.name;
-				meta.textContent = it.meta;
-				room.textContent = it.room;
+		const place = () => {
+			cards.forEach((card, i) => {
+				let o = i - at;
+				if (o > n / 2) o -= n;
+				if (o < -n / 2) o += n;
+				card.style.setProperty('--o', String(o));
+				card.classList.toggle('is-live', o === 0);
+				if (Math.abs(o) > 2) card.setAttribute('data-far', '');
+				else card.removeAttribute('data-far');
+			});
+			ticks.forEach((t, i) => t.classList.toggle('is-on', i === at));
+
+			const live = cards[at];
+			if (!live) return;
+			const c = live.dataset.color;
+			if (c) spot.style.setProperty('--c', c);
+			if (name) name.textContent = live.dataset.name || '';
+			if (meta) meta.textContent = live.dataset.meta || '';
+			if (visit) {
+				visit.href = live.dataset.href || '/portfolio';
+				if (live.dataset.out) {
+					visit.target = '_blank';
+					visit.rel = 'noopener noreferrer';
+				} else {
+					visit.removeAttribute('target');
+					visit.removeAttribute('rel');
+				}
+			}
+			if (plaque) {
 				plaque.classList.remove('sp-pop');
 				void plaque.offsetWidth;
 				plaque.classList.add('sp-pop');
-				thumbs.forEach((t, ti) => t.classList.toggle('is-on', ti === cur));
-				window.setTimeout(() => spot.classList.remove('sp-dim'), 300);
-			});
+			}
 		};
+		const go = (i: number) => { at = ((i % n) + n) % n; place(); };
+		const turn = (d: number) => go(at + d);
+
+		const stop = () => { window.clearInterval(timer); timer = 0; };
 		const start = () => {
-			if (timer || reduce || items.length < 2) return;
-			timer = window.setInterval(() => show(cur + 1), 3400);
+			if (reduce || n < 2) return;
+			stop();
+			timer = window.setInterval(() => turn(1), 3800);
 		};
-		const stop = () => {
-			window.clearInterval(timer);
-			timer = 0;
-		};
-		thumbs.forEach((t) =>
-			t.addEventListener('click', () => {
-				stop();
-				show(Number(t.dataset.spGo || '0'));
-				start();
+
+		spot.querySelector('[data-sp-next]')?.addEventListener('click', () => { turn(1); start(); });
+		spot.querySelector('[data-sp-prev]')?.addEventListener('click', () => { turn(-1); start(); });
+		ticks.forEach((t, i) => t.addEventListener('click', () => { go(i); start(); }));
+		// a card that is not at the front comes forward; the front one opens
+		cards.forEach((card, i) =>
+			card.addEventListener('click', () => {
+				if (i !== at) { go(i); start(); return; }
+				const href = card.dataset.href;
+				if (href) window.open(href, card.dataset.out ? '_blank' : '_self');
 			})
 		);
 		spot.addEventListener('pointerenter', stop);
 		spot.addEventListener('pointerleave', start);
-		const io = new IntersectionObserver(
-			(entries) =>
-				entries.forEach((e) => (e.isIntersecting ? start() : stop())),
-			{ threshold: 0.25 }
-		);
-		io.observe(spot);
+
+		place();
+		start();
 	}
 
 	// ── scroll reveals ──

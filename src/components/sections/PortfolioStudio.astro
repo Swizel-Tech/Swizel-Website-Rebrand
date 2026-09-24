@@ -64,196 +64,72 @@ const spotWorks = [
 					</div>
 				</div>
 
-				<!-- ── the Spotlight Room: one work under the light at a time ── -->
+				<!-- ── the Spotlight Room ───────────────────────────────
+				     The lamp, the beam and the dust stay; the stage under
+				     them is a carousel now. Works ride a ring: the piece
+				     at the front stands square and full size under the
+				     light, its neighbours fall back and turn away. -->
 				<div class="sp-spot sd-rev" id="sp-spot" data-cursor="play">
-					{
-						spotWorks.map((p, i) => (
-							<span
-								data-sp-item
-								data-img={p.img}
-								data-name={p.name}
-								data-meta={`${sectorLabels[p.sector]} · ${p.year}`}
-								data-room={`Room ${String(i + 1).padStart(2, '0')}`}
-								data-color={p.color}
-								hidden
-							/>
-						))
-					}
 					<span class="sp-lamp" aria-hidden="true"></span>
 					<span class="sp-beam" aria-hidden="true"></span>
 					{Array.from({ length: 7 }).map((_, i) => (
 						<i class="sp-dust" style={`--d:${i}`} aria-hidden="true"></i>
 					))}
-					<figure class="sp-spot-stage" data-fa-tilt="3">
-						<span class="sa-glare" aria-hidden="true"></span>
-						<img class="sp-spot-img is-on" id="sp-spot-a" src={spotWorks[0].img} alt={spotWorks[0].name} / loading="lazy" decoding="async">
-						<img class="sp-spot-img" id="sp-spot-b" src={spotWorks[1]?.img} alt="" aria-hidden="true" / loading="lazy" decoding="async">
-						<span class="sp-spot-room" id="sp-spot-room">Room 01</span>
-					</figure>
-					<figcaption class="sp-plaque sp-spot-plaque" id="sp-spot-plaque">
-						<strong id="sp-spot-name">{spotWorks[0].name}</strong>
-						<span id="sp-spot-meta">{sectorLabels[spotWorks[0].sector]} · {spotWorks[0].year}</span>
-					</figcaption>
-					<div class="sp-spot-queue" role="tablist" aria-label="Works under the spotlight">
+
+					<div class="sp-ring" data-sp-ring>
 						{
 							spotWorks.map((p, i) => (
-								<button
-									type="button"
-									class:list={['sp-spot-thumb', { 'is-on': i === 0 }]}
-									data-sp-go={i}
+								<article
+									class:list={['sp-card', { 'is-live': i === 0 }]}
+									data-sp-card={i}
+									data-color={p.color}
+									data-name={p.name}
+									data-meta={`${sectorLabels[p.sector]} · ${p.year}`}
+									data-href={dest(p)}
+									data-out={leaves(p) ? '1' : undefined}
 									style={`--c:${p.color}`}
-									aria-label={p.name}
 								>
-									<img src={p.img} alt="" loading="lazy" />
+									<span class="sp-card-mat">
+										<img src={p.img} alt={p.name} loading={i < 3 ? 'eager' : 'lazy'} decoding="async" />
+										<span class="sp-card-glass" aria-hidden="true"></span>
+									</span>
+								</article>
+							))
+						}
+					</div>
+
+					<div class="sp-turnrow">
+						<button class="sp-turn" type="button" data-sp-prev aria-label="Previous work">
+							<Icon width={18} name="mdi:chevron-left" />
+						</button>
+						<figcaption class="sp-plaque sp-spot-plaque" id="sp-spot-plaque">
+							<strong id="sp-spot-name">{spotWorks[0].name}</strong>
+							<span id="sp-spot-meta">{sectorLabels[spotWorks[0].sector]} · {spotWorks[0].year}</span>
+							<a class="sp-visit" id="sp-spot-visit" href={dest(spotWorks[0])}>
+								Visit the work
+								<Icon width={13} name="mdi:arrow-top-right" />
+							</a>
+						</figcaption>
+						<button class="sp-turn" type="button" data-sp-next aria-label="Next work">
+							<Icon width={18} name="mdi:chevron-right" />
+						</button>
+					</div>
+
+					<div class="sp-strip">
+						{
+							spotWorks.map((_, i) => (
+								<button
+									class:list={['sp-tick', { 'is-on': i === 0 }]}
+									type="button"
+									data-sp-go={i}
+									aria-label={`Work ${i + 1}`}
+								>
+									<i></i>
 								</button>
 							))
 						}
 					</div>
 				</div>
-			</div>
-			<ul class="sp-wings sd-rev">
-				{stats.map((s) => (
-					<li>
-						<strong>{s.n}</strong>
-						<span>{s.label}</span>
-					</li>
-				))}
-			</ul>
-		</div>
-	</section>
-
-	<!-- ── B · featured exhibitions (the big rooms) ────────── -->
-	<section class="sp-sec" data-cursor="play">
-		<div class="sp-wrap">
-			<div class="sp-rule sd-rev">
-				<span>Featured exhibitions</span>
-				<span>The big rooms · full case studies</span>
-			</div>
-			{
-				featuredProjects.map((p, i) => (
-					<div class:list={['sp-ex', 'sd-rev', { 'sp-ex--rev': i % 2 === 1 }]} style={`--c:${p.color}`}>
-						<a class="sp-exmedia" href={`/work/${p.slug}`} data-fa-tilt="4" aria-label={`${p.name} case study`}>
-							<span class="sa-glare" aria-hidden="true" />
-							<img src={p.img} alt={p.name} loading="lazy" />
-							<span class="sp-exveil" aria-hidden="true" />
-							<span class="sp-exroom">Room {roman[i] || p.year}</span>
-						</a>
-						<div class="sp-excopy">
-							<span class="sp-exkick">Room {roman[i]} · {sectorLabels[p.sector]} · {p.year}</span>
-							<h2 class="sp-exname">{p.name}</h2>
-							<p class="sp-extag">{p.tagline}</p>
-							<p class="sp-exblurb">{p.blurb}</p>
-							<span class="sp-extags">
-								{p.tags.map((t) => <i>{t}</i>)}
-							</span>
-							<a href={`/work/${p.slug}`} class="sp-link">
-								Walk the exhibition
-								<Icon width={15} name="mdi:arrow-right" />
-							</a>
-						</div>
-					</div>
-				))
-			}
-		</div>
-	</section>
-
-	<!-- ── C · the full wall (filterable catalogue) ────────── -->
-	<section class="sp-sec" id="sp-wall" data-cursor="repo">
-		<div class="sp-wrap">
-			<div class="sp-rule sd-rev">
-				<span>The full wall</span>
-				<span>Choose an index tab · hanging now</span>
-			</div>
-			<form class="sp-filter" autocomplete="off">
-				<input class="sp-radio" type="radio" name="spf" id="spf-all" checked />
-				{sectors.map((s) => <input class="sp-radio" type="radio" name="spf" id={`spf-${s}`} />)}
-				<div class="sp-tabs sd-rev">
-					<label class="sp-tab" for="spf-all">All works <em>65+</em></label>
-					{
-						sectors.map((s) => (
-							<label class="sp-tab" for={`spf-${s}`}>
-								{sectorLabels[s]} <em>{sectorShown[s]}</em>
-							</label>
-						))
-					}
-				</div>
-				<div class="sp-wall">
-					{
-						projects.map((p, i) => {
-							const href = dest(p);
-							const hasCase = !!p.caseStudy;
-							const Tag = href ? 'a' : 'div';
-							return (
-								<figure class:list={['sp-art', 'sd-rev', `s-${p.sector}`]} style={`--c:${p.color}; --i:${i % 3}`}>
-									<Tag
-										class="sp-art-link"
-										href={href ?? undefined}
-										data-leaving={leaves(p) ? p.host : undefined}
-										data-leaving-name={leaves(p) ? p.name : undefined}
-										rel={leaves(p) ? 'noopener noreferrer' : undefined}
-										aria-label={p.name}
-									>
-										<span class="sp-art-frame" data-fa-tilt="5">
-											<span class="sa-glare" aria-hidden="true" />
-											<img src={p.img} alt={p.name} loading="lazy" />
-											{hasCase && (
-												<span class="sp-art-ribbon">Featured exhibition</span>
-											)}
-											{href && !hasCase && (
-												<span class="sp-art-view" aria-hidden="true">
-													View live <Icon width={13} name="mdi:arrow-top-right" />
-												</span>
-											)}
-										</span>
-										<figcaption class="sp-plaque">
-											<strong>{p.name}</strong>
-											<span>{sectorLabels[p.sector]} · {p.year}</span>
-										</figcaption>
-									</Tag>
-								</figure>
-							);
-						})
-					}
-					<!-- the reserved slot: visible under every tab -->
-					<a
-						class="sp-art sp-next s-agri s-health s-property s-media s-commerce s-product"
-						href="/contact"
-						data-cursor="phone"
-					>
-						<span class="sp-next-frame">
-							<Icon width={26} name="mdi:plus" />
-							<strong>This spot is reserved.</strong>
-							<em>For your brand. Bring the brief and we will frame the result.</em>
-						</span>
-						<span class="sp-plaque">
-							<strong>Untitled, {new Date().getFullYear()}</strong>
-							<span>Your sector · Commission open</span>
-						</span>
-					</a>
-				</div>
-			</form>
-		</div>
-	</section>
-
-	<!-- ── D · the commission desk ─────────────────────────── -->
-	<section class="sp-sec sp-sec--cta" data-cursor="phone">
-		<div class="sp-wrap sp-cta sd-rev">
-			<h2 class="sp-display sp-display--cta">
-				The wall has<br />
-				<em>one space left.</em>
-			</h2>
-			<p class="sp-lead sp-lead--center">
-				Every piece up there started as somebody's rough idea. Bring
-				yours. We design it, build it, hang it and keep it alive.
-			</p>
-			<div class="sp-cta-row">
-				<a href="/contact" class="sp-btn fa-cta">
-					Reserve the spot
-					<Icon width={17} name="mdi:arrow-right" />
-				</a>
-				<a href="tel:+2348100204570" class="sp-call">
-					or call <strong>+234 810 020 4570</strong>
-				</a>
 			</div>
 		</div>
 	</section>
@@ -956,4 +832,161 @@ const spotWorks = [
 		.sd-rev { opacity: 1; transform: none; transition: none; }
 		.sp-beam, .sp-dust { animation: none; }
 	}
+	/* ═══ the carousel under the lamp ════════════════════════════
+	   Each card owns one number, --o, its offset from the front. The
+	   stylesheet does the rest, so turning the wall is a single integer
+	   written to eight elements. */
+	.sp-ring {
+		position: relative;
+		--card: clamp(19rem, 34vw, 38rem);
+		height: calc(var(--card) * 0.66 + 1.5rem);
+		perspective: 1700px;
+		perspective-origin: 50% 44%;
+		touch-action: pan-y;
+	}
+	.sp-card {
+		position: absolute;
+		top: 0;
+		left: 50%;
+		width: var(--card);
+		margin: 0 0 0 calc(var(--card) / -2);
+		cursor: pointer;
+		transform:
+			translate3d(calc(var(--o, 0) * 46%), calc(abs(var(--o, 0)) * 2%), calc(abs(var(--o, 0)) * -230px))
+			rotateY(calc(var(--o, 0) * -26deg))
+			scale(calc(1 - abs(var(--o, 0)) * 0.14));
+		z-index: calc(10 - abs(var(--o, 0)));
+		filter: brightness(calc(1 - abs(var(--o, 0)) * 0.26)) saturate(calc(1 - abs(var(--o, 0)) * 0.3));
+		transition:
+			transform 0.95s cubic-bezier(0.22, 1, 0.36, 1),
+			opacity 0.6s ease,
+			filter 0.7s ease;
+		will-change: transform;
+	}
+	.sp-card[data-far] { opacity: 0; pointer-events: none; }
+	.sp-card.is-live { cursor: default; filter: brightness(1.04) saturate(1.08); }
+
+	.sp-card-mat {
+		position: relative;
+		display: block;
+		padding: 0.5rem;
+		border-radius: 3px;
+		background: linear-gradient(150deg, #2c1c26, #160d16 62%);
+		border: 1px solid color-mix(in srgb, var(--c) 34%, transparent);
+		box-shadow:
+			0 50px 100px -44px rgba(0, 0, 0, 0.95),
+			0 0 70px -30px color-mix(in srgb, var(--c) 60%, transparent);
+		transition: box-shadow 0.6s ease;
+	}
+	:global(html:not(.dark)) .sp-card-mat {
+		background: linear-gradient(150deg, #fffdfe, #f2e5ec 62%);
+		box-shadow:
+			0 40px 88px -46px rgba(36, 16, 28, 0.45),
+			0 0 60px -30px color-mix(in srgb, var(--c) 45%, transparent);
+	}
+	.sp-card.is-live .sp-card-mat {
+		box-shadow:
+			0 60px 120px -44px rgba(0, 0, 0, 0.95),
+			0 0 110px -26px color-mix(in srgb, var(--c) 85%, transparent);
+	}
+	.sp-card-mat img {
+		display: block;
+		width: 100%;
+		aspect-ratio: 16 / 10;
+		object-fit: cover;
+		border-radius: 1px;
+	}
+	.sp-card-glass {
+		position: absolute;
+		inset: 0.5rem;
+		border-radius: 1px;
+		background: linear-gradient(118deg, rgba(255, 255, 255, 0.22) 0%, transparent 32%, transparent 68%, rgba(255, 255, 255, 0.09) 100%);
+		opacity: 0.8;
+		transition: opacity 0.5s ease, transform 0.7s ease;
+		pointer-events: none;
+	}
+	.sp-card.is-live .sp-card-glass { opacity: 0.22; transform: translateX(14%); }
+
+	/* the label, with the arrows either side of it */
+	.sp-turnrow {
+		position: relative;
+		z-index: 12;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: clamp(0.8rem, 2vw, 1.6rem);
+		max-width: 40rem;
+		margin: clamp(0.6rem, 1.4vw, 1.1rem) auto 0;
+	}
+	.sp-turn {
+		flex: none;
+		display: grid;
+		place-items: center;
+		width: 2.5rem;
+		height: 2.5rem;
+		border-radius: 9999px;
+		border: 1px solid color-mix(in srgb, var(--sa-acc) 38%, transparent);
+		background: color-mix(in srgb, var(--sa-acc) 10%, transparent);
+		color: var(--sa-ink);
+		cursor: pointer;
+		transition: background 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+	}
+	.sp-turn:hover {
+		background: color-mix(in srgb, var(--sa-acc) 26%, transparent);
+		border-color: var(--sa-acc);
+		transform: scale(1.08);
+	}
+	.sp-turn:active { transform: scale(0.96); }
+	.sp-spot-plaque { flex: 1 1 auto; min-width: 0; text-align: center; }
+	.sp-visit {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3rem;
+		margin-top: 0.4rem;
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		/* the plaque is dark in both themes, so this reads light on it
+		   rather than taking the room's ink */
+		color: color-mix(in srgb, var(--c) 40%, #ffffff);
+		transition: gap 0.25s ease, color 0.25s ease;
+	}
+	.sp-visit:hover { gap: 0.55rem; color: #fff; }
+
+	/* where you are along the wall */
+	.sp-strip { display: flex; justify-content: center; gap: 0.4rem; margin-top: clamp(0.5rem, 1.2vw, 0.9rem); }
+	.sp-tick { width: 1.8rem; height: 1.8rem; display: grid; place-items: center; border: 0; background: transparent; padding: 0; cursor: pointer; }
+	.sp-tick i {
+		display: block;
+		width: 1.4rem;
+		height: 3px;
+		border-radius: 9999px;
+		background: color-mix(in srgb, var(--sa-ink) 24%, transparent);
+		transition: background 0.4s ease, width 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
+	}
+	.sp-tick:hover i { background: color-mix(in srgb, var(--sa-acc) 60%, transparent); }
+	.sp-tick.is-on i {
+		width: 2.4rem;
+		background: var(--sa-acc);
+		box-shadow: 0 0 14px 1px color-mix(in srgb, var(--sa-acc) 60%, transparent);
+	}
+
+	@media (max-width: 959px) {
+		.sp-ring { --card: min(76vw, 32rem); }
+	}
+	@media (max-width: 620px) {
+		.sp-ring { --card: 82vw; }
+		.sp-card {
+			transform:
+				translate3d(calc(var(--o, 0) * 58%), 0, calc(abs(var(--o, 0)) * -260px))
+				rotateY(calc(var(--o, 0) * -18deg))
+				scale(calc(1 - abs(var(--o, 0)) * 0.18));
+		}
+		.sp-turn { width: 2.1rem; height: 2.1rem; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.sp-card { transition: none; }
+	}
+
 </style>
