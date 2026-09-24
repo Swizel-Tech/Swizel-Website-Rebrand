@@ -191,7 +191,7 @@ const ticker = [
 						label="The studio reel — a year of work in ninety seconds"
 						tag="now showing"
 						cover
-						ratio="16 / 10.8"
+						ratio="16 / 11.6"
 						class="shr-film"
 					/>
 				</span>
@@ -881,9 +881,33 @@ const ticker = [
 	:global(html:not(.dark)) .shr-ticker { border-color: rgba(36, 16, 28, 0.14); }
 
 	/* ═══ smaller rooms ══════════════════════════════════════════ */
+	/* ═══ the phone ══════════════════════════════════════════════
+	   Stacked, the film ended up 700px down the page behind a wall of
+	   words — on the one screen most people actually use, the highlight
+	   was the last thing they reached. The catalogue is dissolved into
+	   the column with `display: contents` so every part can be ordered
+	   independently: headline, lead, calls, THEN the film and the
+	   prints, and the numbers and the credit after. */
 	@media (max-width: 1079px) {
-		/* the sides come down under the reel as one even row of six,
-		   which keeps the salon rhythm on a narrower wall */
+		.shr-wrap {
+			display: flex;
+			flex-direction: column;
+			/* the desktop rule centres the two columns; as a stacked
+			   column that centring shrank every block to its own content
+			   width, which is why the calls would not fill their row */
+			align-items: stretch;
+			gap: clamp(1.2rem, 4vw, 2rem);
+		}
+		.shr-copy { display: contents; }
+		.shr-plaque { order: 1; align-self: flex-start; margin-bottom: 0; }
+		:global(.shr-rhead) { order: 2; margin-bottom: 0; }
+		.shr-sub { order: 3; margin-bottom: 0; }
+		.shr-cta { order: 4; margin-bottom: 0; }
+		.shr-wall { order: 5; }
+		.shr-colophon { order: 6; margin-bottom: 0; }
+		.shr-crew { order: 7; align-self: flex-start; }
+
+		/* the film first, then both sides as one wall of six under it */
 		.shr-wall {
 			grid-template-columns: minmax(0, 1fr);
 			gap: clamp(0.8rem, 2.4vw, 1.4rem);
@@ -894,12 +918,51 @@ const ticker = [
 			gap: clamp(0.5rem, 1.6vw, 0.9rem);
 		}
 		.shr-rail { top: -0.8rem; }
+
+		/* both calls, equal halves, side by side */
+		.shr-cta { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; }
+		/* CustomButton ships its own width utility, so the cell being full
+		   width is not enough — the control has to be told to fill it */
+		.shr-cta > :global(*),
+		.shr-cta :global(.btn),
+		.shr-cta :global(.btn--accent) { width: 100% !important; max-width: none !important; }
+		.shr-ghost { justify-content: center; padding-inline: 0.75rem; }
 	}
 	@media (max-width: 620px) {
 		.shr-sub { font-size: 0.98rem; }
 		.shr-label-t { font-size: 0.98rem; }
 		.shr-lit { font-size: 0.62rem; }
 		.shr-lit b { font-size: 0.8rem; }
+		/* the plaque's sub-label had nowhere to go and broke the chip
+		   over two ragged lines */
+		.shr-plaque { font-size: 0.64rem; letter-spacing: 0.14em; padding: 0.4rem 0.75rem; }
+		.shr-plaque i { display: none; }
+		/* the credit band was squeezed until its name and its call fell
+		   off; it runs full width here, with the words on their own line */
+		.shr-crew {
+			align-self: stretch;
+			width: 100%;
+			border-radius: 1.1rem;
+			padding: 0.7rem 0.9rem;
+		}
+		.shr-crew-txt { flex: 1 1 auto; min-width: 0; }
+		/* the name and the call have one line between them here, so they
+		   are set small enough to share it rather than wrap the arrow
+		   onto a line of its own */
+		.shr-crew-l { flex-wrap: nowrap; font-size: 0.76rem; gap: 0.35rem; }
+		.shr-crew-l em { display: inline; white-space: nowrap; }
+		.shr-crew-l b { white-space: nowrap; }
+		.shr-crew-face { width: 2.2rem; height: 2.2rem; }
+		.shr-crew-k { font-size: 0.7rem; }
+		/* two half-width calls left 'Enter the gallery' breaking over two
+		   lines; full width each, stacked, reads as deliberate and gives
+		   a thumb something to aim at */
+		.shr-cta { grid-template-columns: 1fr; gap: 0.6rem; }
+		.shr-scribble { font-size: 0.6rem; }
+		.shr-hung-frame { padding: 0.28rem 0.28rem 1.05rem; }
+		.shr-peg { width: 7px; height: 16px; margin-left: -3.5px; top: -0.95rem; }
+		.shr-swing { transform-origin: 50% -0.9rem; }
+		.shr-hung { padding-top: 1.15rem; }
 	}
 
 	/* ═══ stillness, on request ══════════════════════════════════ */

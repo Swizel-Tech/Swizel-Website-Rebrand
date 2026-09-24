@@ -288,9 +288,11 @@ const rates = [0.5, 1, 1.25, 1.5, 2];
 		height: 4.4rem;
 		border-radius: 9999px;
 		background: linear-gradient(120deg, #fff, var(--flm-a));
-		box-shadow: 0 0 40px -6px color-mix(in srgb, var(--flm-a) 80%, transparent);
+		box-shadow:
+			0 0 50px -4px color-mix(in srgb, var(--flm-a) 90%, transparent),
+			0 0 0 0 color-mix(in srgb, var(--flm-a) 55%, transparent);
 		transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-		animation: flm-beat 2.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+		animation: flm-beat 1.9s cubic-bezier(0.22, 1, 0.36, 1) infinite;
 	}
 	/* two rings leaving the button, half a beat apart, so the invitation
 	   carries across a dark frame instead of sitting quietly in it */
@@ -303,18 +305,21 @@ const rates = [0.5, 1, 1.25, 1.5, 2];
 		border-radius: 9999px;
 		border: 2px solid var(--flm-a);
 		opacity: 0;
-		animation: flm-ping 2.2s cubic-bezier(0.16, 0.8, 0.4, 1) infinite;
+		animation: flm-ping 1.9s cubic-bezier(0.16, 0.8, 0.4, 1) infinite;
 		pointer-events: none;
 	}
-	.flm__big::after { animation-delay: 1.1s; }
+	.flm__big::after { animation-delay: 0.95s; }
+	/* the invitation, turned up: a deeper breath and two rings that travel
+	   further, so the button reads as "press me" across a busy still */
 	@keyframes flm-beat {
 		0%, 100% { transform: scale(1); }
-		50% { transform: scale(1.06); }
+		42% { transform: scale(1.13); }
+		62% { transform: scale(1.04); }
 	}
 	@keyframes flm-ping {
-		0% { opacity: 0.85; transform: scale(1); }
-		70% { opacity: 0; transform: scale(2.1); }
-		100% { opacity: 0; transform: scale(2.1); }
+		0% { opacity: 0.95; transform: scale(1); border-width: 3px; }
+		70% { opacity: 0; transform: scale(2.8); border-width: 1px; }
+		100% { opacity: 0; transform: scale(2.8); border-width: 1px; }
 	}
 	.flm__big:hover .flm__big-ring { transform: scale(1.12); animation-play-state: paused; }
 	.flm.is-started .flm__big::before,

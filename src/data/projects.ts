@@ -567,7 +567,7 @@ export const projects: Project[] = [
 		host: 'sarosgp',
 		sector: 'product',
 		tags: ['Website', 'Maintenance'],
-		color: '#14b8a6',
+		color: '#f97316',
 		year: '2023',
 	},
 ];
