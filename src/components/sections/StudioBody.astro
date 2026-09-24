@@ -98,10 +98,12 @@ const services = [
 
 const howWeWork = ['Research', 'Design', 'Build', 'Launch', 'Grow'];
 
+// The collectors, with their portraits — the same three faces the other
+// About worlds show, so a quote here has a person attached to it.
 const quotes = [
-	{ text: 'They turned our brand into something we are proud to show off.', name: 'Favour', role: 'Marketing' },
-	{ text: 'Warm, responsive and seriously talented designers.', name: 'Chidimma', role: 'Education' },
-	{ text: 'Thorough, polished and always on time.', name: 'Cheta', role: 'E-commerce' },
+	{ text: 'They turned our brand into something we are proud to show off.', name: 'Favour', role: 'Marketing', img: '/testimonial/favour.jpeg' },
+	{ text: 'Warm, responsive and seriously talented designers.', name: 'Chidimma', role: 'Education', img: '/testimonial/chidima.jpeg' },
+	{ text: 'Thorough, polished and always on time.', name: 'Cheta', role: 'E-commerce', img: '/testimonial/cheta.jpeg' },
 ];
 
 const sectors = ['fintech', 'real estate', 'sports', 'e-commerce', 'education', 'healthcare', 'beauty', 'media', 'travel', 'energy'];
@@ -481,7 +483,15 @@ const logos = [
 						quotes.map((q, i) => (
 							<blockquote class:list={['sd-quote', { 'is-live': i === 0 }]}>
 								<p>{q.text}</p>
-								<footer>— {q.name}, <em>{q.role}</em></footer>
+								<footer>
+									<span class="sd-quote-face">
+										<img src={q.img} alt={q.name} loading="lazy" decoding="async" />
+									</span>
+									<span class="sd-quote-who">
+										<b>{q.name}</b>
+										<em>{q.role}</em>
+									</span>
+								</footer>
 							</blockquote>
 						))
 					}
@@ -1797,6 +1807,47 @@ const logos = [
 		.sd-say-l > span, .sd-say-flip b { animation: none !important; }
 		.sd-say-flip b { opacity: 0; }
 		.sd-say-flip b:first-child { opacity: 1; }
+	}
+
+	/* the collector, signed and pictured */
+	.sd-quote footer {
+		display: flex;
+		align-items: center;
+		gap: 0.8rem;
+		margin-top: 1.4rem;
+	}
+	.sd-quote-face {
+		flex: none;
+		display: block;
+		width: 3rem;
+		height: 3rem;
+		border-radius: 9999px;
+		overflow: hidden;
+		padding: 2px;
+		background: linear-gradient(150deg, #e9c98f, #b98f4e 50%, #f3ddb0);
+		box-shadow: 0 8px 20px -10px rgba(0, 0, 0, 0.6);
+	}
+	.sd-quote-face img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		border-radius: 9999px;
+		object-fit: cover;
+		object-position: 50% 22%;
+	}
+	.sd-quote-who { display: grid; line-height: 1.25; }
+	.sd-quote-who b {
+		font-size: 0.82rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--sd-ink);
+	}
+	.sd-quote-who em {
+		font-family: var(--sd-serif);
+		font-style: italic;
+		font-size: 0.86rem;
+		color: var(--sd-muted);
 	}
 
 </style>

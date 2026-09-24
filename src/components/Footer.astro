@@ -309,36 +309,37 @@ const phones = [
 				<span class="ft-deck-stand" aria-hidden="true"></span>
 			</div>
 
-			<!-- Studio keeps its own: the channels hung as four small
-			     works on a gallery wall, each in a gilt frame with a
-			     brass plaque under it. -->
+			<!-- Studio keeps its own: not four frames but one — a single
+			     work, four panes behind the same glass, plate along the
+			     bottom. Four separate frames took half the footer. -->
 			<div class="ft-wall">
-				<span class="ft-wall-rail" aria-hidden="true"></span>
-				{
-					socials.map((sc, i) => (
-						<a
-							class="ft-work"
-							href={sc.href}
-							target="_blank"
-							rel="noopener noreferrer"
-							style={`--pk:${sc.color}; --i:${i}; --r:${[-1.8, 1.4, -1.2, 1.7][i] ?? 0}deg`}
-						>
-							<span class="ft-work-hook" aria-hidden="true"></span>
-							<span class="ft-work-frame">
-								<span class="ft-work-mat">
-	<span class="ft-work-ic">
+				<span class="ft-wall-hook" aria-hidden="true"></span>
+				<div class="ft-wall-frame">
+					<div class="ft-wall-mount">
+						{
+							socials.map((sc, i) => (
+								<a
+									class="ft-pane"
+									href={sc.href}
+									target="_blank"
+									rel="noopener noreferrer"
+									style={`--pk:${sc.color}; --i:${i}`}
+									title={`${sc.name} · ${sc.short}`}
+								>
+									<span class="ft-pane-ic">
 										<Fragment set:html={MARKS[sc.icon] ?? MARKS.twitter} />
 									</span>
-									<span class="ft-work-glass" aria-hidden="true"></span>
-								</span>
-							</span>
-							<span class="ft-work-plaque">
-								<b>{sc.name}</b>
-								<em>{sc.short}</em>
-							</span>
-						</a>
-					))
-				}
+									<span class="ft-pane-n">{sc.name}</span>
+								</a>
+							))
+						}
+						<span class="ft-wall-glass" aria-hidden="true"></span>
+					</div>
+					<span class="ft-wall-plate">
+						<b>Follow the build</b>
+						<em>@swizelhq · four channels, one studio</em>
+					</span>
+				</div>
 			</div>
 
 			<div class="ft-socials">
@@ -1488,187 +1489,149 @@ const phones = [
 	:global(html[data-view='founder']) .ft-socials,
 	:global(html[data-view='studio']) .ft-socials { display: none; }
 
-	/* ── Studio: the channels, hung as a salon wall ─────────────────
+	/* ── Studio: one work, four panes ───────────────────────────────
 	   Campus pins cards to a board, Builder runs a script, Founder uses
-	   a projector. The studio hangs its channels the way it hangs
-	   everything else: a deep mount, a carved gilt frame with a real
-	   bevel rather than a flat gold rectangle, museum glass with the
-	   light sliding across it, and an engraved plate screwed to the wall
-	   underneath. A picture light above the row lifts as you reach it. */
+	   a projector. The studio hangs a single painting: a carved gilt
+	   moulding with a real bevel, four panes on one mount behind one
+	   sheet of glass, and an engraved plate along the bottom. Four
+	   separate frames were handsome and took half the footer. */
 	:global(html[data-view='studio']) .ft-wall {
+		/* the base rule hides every world-specific object; this one has to
+		   turn itself back on */
+		display: block;
 		position: relative;
-		display: grid;
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: clamp(1rem, 2.6vw, 1.6rem) clamp(0.8rem, 2vw, 1.2rem);
-		padding: 1.6rem 0 0.4rem;
+		padding-top: 1.35rem;
+		max-width: 22rem;
 	}
-	/* the picture light, washing down the wall */
-	:global(html[data-view='studio']) .ft-wall::before {
-		content: '';
+	/* the two wires up to the rail */
+	:global(html[data-view='studio']) .ft-wall-hook {
 		position: absolute;
-		top: -0.4rem;
-		left: 6%;
-		right: 6%;
-		height: 62%;
-		background: radial-gradient(120% 100% at 50% 0%, rgba(255, 233, 194, 0.16), transparent 72%);
-		pointer-events: none;
-	}
-	:global(html[data-view='studio']:not(.dark)) .ft-wall::before {
-		background: radial-gradient(120% 100% at 50% 0%, rgba(160, 16, 80, 0.07), transparent 72%);
-	}
-	/* the rail they all hang from */
-	:global(html[data-view='studio']) .ft-wall-rail {
-		position: absolute;
-		top: 0.55rem;
-		left: -3%;
-		right: -3%;
-		height: 1px;
-		background: linear-gradient(90deg, transparent, rgba(216, 178, 113, 0.75) 18%, rgba(216, 178, 113, 0.75) 82%, transparent);
-	}
-	:global(html[data-view='studio']:not(.dark)) .ft-wall-rail {
-		background: linear-gradient(90deg, transparent, rgba(150, 110, 52, 0.55) 18%, rgba(150, 110, 52, 0.55) 82%, transparent);
-	}
-
-	:global(html[data-view='studio']) .ft-work {
-		position: relative;
-		display: grid;
-		justify-items: center;
-		gap: 0.55rem;
-		padding-top: 1.1rem;
-		color: inherit;
-		transform: rotate(var(--r));
-		transform-origin: 50% -0.6rem;
-		transition: transform 0.5s cubic-bezier(0.34, 1.25, 0.64, 1);
-		animation: ft-work-in 0.8s cubic-bezier(0.34, 1.3, 0.64, 1) both;
-		animation-delay: calc(var(--i) * 100ms);
-	}
-	@keyframes ft-work-in { from { opacity: 0; transform: translateY(-16px) rotate(calc(var(--r) * 2.4)); } }
-	:global(html[data-view='studio']) .ft-work:hover { transform: rotate(0deg) translateY(-5px); }
-
-	/* two wires to the rail, the way a heavy frame is actually hung */
-	:global(html[data-view='studio']) .ft-work-hook {
-		position: absolute;
-		top: -0.55rem;
+		top: 0;
 		left: 50%;
-		width: 34px;
-		height: 1.55rem;
-		margin-left: -17px;
+		width: 52px;
+		height: 1.4rem;
+		margin-left: -26px;
 		pointer-events: none;
 	}
-	:global(html[data-view='studio']) .ft-work-hook::before,
-	:global(html[data-view='studio']) .ft-work-hook::after {
+	:global(html[data-view='studio']) .ft-wall-hook::before,
+	:global(html[data-view='studio']) .ft-wall-hook::after {
 		content: '';
 		position: absolute;
 		top: 0;
 		bottom: 0;
 		width: 1px;
-		background: linear-gradient(180deg, rgba(216, 178, 113, 0.9), rgba(216, 178, 113, 0.35));
+		background: linear-gradient(180deg, rgba(216, 178, 113, 0.95), rgba(216, 178, 113, 0.35));
 	}
-	:global(html[data-view='studio']) .ft-work-hook::before { left: 0; transform: rotate(9deg); transform-origin: top center; }
-	:global(html[data-view='studio']) .ft-work-hook::after { right: 0; transform: rotate(-9deg); transform-origin: top center; }
+	:global(html[data-view='studio']) .ft-wall-hook::before { left: 0; transform: rotate(11deg); transform-origin: top center; }
+	:global(html[data-view='studio']) .ft-wall-hook::after { right: 0; transform: rotate(-11deg); transform-origin: top center; }
 
-	/* the frame: a carved moulding, with a bevel caught by the light */
-	:global(html[data-view='studio']) .ft-work-frame {
+	:global(html[data-view='studio']) .ft-wall-frame {
 		position: relative;
-		display: block;
-		width: 100%;
-		padding: 0.55rem;
+		padding: 0.5rem 0.5rem 0.55rem;
 		border-radius: 2px;
-		background:
-			linear-gradient(135deg, #f6e3bc 0%, #c9a05a 18%, #8d6a32 34%, #e8ce99 52%, #b8873f 70%, #f0dcae 86%, #9c7436 100%);
+		background: linear-gradient(140deg, #f4e2bb 0%, #c9a05a 19%, #8d6a32 36%, #e8ce99 56%, #b8873f 74%, #f0dcae 90%, #9c7436 100%);
 		box-shadow:
-			inset 0 0 0 1px rgba(255, 245, 219, 0.5),
-			inset 0 0 0 6px rgba(92, 64, 24, 0.28),
-			0 2px 0 rgba(60, 40, 14, 0.5),
-			0 22px 40px -18px rgba(0, 0, 0, 0.9);
-		transition: box-shadow 0.4s ease;
-	}
-	:global(html[data-view='studio']) .ft-work:hover .ft-work-frame {
-		box-shadow:
-			inset 0 0 0 1px rgba(255, 250, 235, 0.75),
-			inset 0 0 0 6px rgba(92, 64, 24, 0.22),
+			inset 0 0 0 1px rgba(255, 246, 224, 0.5),
+			inset 0 0 0 5px rgba(92, 64, 24, 0.26),
 			0 2px 0 rgba(60, 40, 14, 0.45),
-			0 30px 54px -18px rgba(0, 0, 0, 0.95),
-			0 0 46px -12px color-mix(in srgb, var(--pk) 80%, transparent);
+			0 24px 44px -20px rgba(0, 0, 0, 0.85);
+		transform: rotate(-0.5deg);
+		transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
+		animation: ft-work-in 0.8s cubic-bezier(0.34, 1.3, 0.64, 1) both;
 	}
-	/* the inner bevel, so the mount sits below the moulding */
-	:global(html[data-view='studio']) .ft-work-frame::after {
-		content: '';
-		position: absolute;
-		inset: 0.42rem;
-		border-radius: 1px;
+	@keyframes ft-work-in { from { opacity: 0; transform: translateY(-14px) rotate(-1.6deg); } }
+	:global(html[data-view='studio']) .ft-wall-frame:hover {
+		transform: rotate(0deg) translateY(-3px);
 		box-shadow:
-			inset 1px 1px 0 rgba(0, 0, 0, 0.35),
-			inset -1px -1px 0 rgba(255, 246, 224, 0.45);
-		pointer-events: none;
-		z-index: 2;
+			inset 0 0 0 1px rgba(255, 250, 236, 0.72),
+			inset 0 0 0 5px rgba(92, 64, 24, 0.2),
+			0 2px 0 rgba(60, 40, 14, 0.42),
+			0 32px 58px -20px rgba(0, 0, 0, 0.9);
 	}
 
-	/* the mount: deep card, not a coloured slab */
-	:global(html[data-view='studio']) .ft-work-mat {
+	/* the mount, ruled into four panes */
+	:global(html[data-view='studio']) .ft-wall-mount {
 		position: relative;
 		display: grid;
-		place-items: center;
-		aspect-ratio: 4 / 3;
-		border-radius: 0;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		border-radius: 1px;
 		overflow: hidden;
 		background:
-			radial-gradient(90% 76% at 50% 42%, color-mix(in srgb, var(--pk) 30%, transparent), transparent 72%),
-			linear-gradient(168deg, #241722 0%, #17101a 60%, #120b12 100%);
-		color: #fff;
-		box-shadow: inset 0 0 44px rgba(0, 0, 0, 0.65);
+			radial-gradient(120% 90% at 50% 8%, rgba(255, 233, 194, 0.12), transparent 70%),
+			linear-gradient(168deg, #241722 0%, #17101a 62%, #120b12 100%);
+		box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.35), inset -1px -1px 0 rgba(255, 246, 224, 0.4);
 	}
-	:global(html[data-view='studio']:not(.dark)) .ft-work-mat {
+	:global(html[data-view='studio']:not(.dark)) .ft-wall-mount {
 		background:
-			radial-gradient(90% 76% at 50% 42%, color-mix(in srgb, var(--pk) 24%, transparent), transparent 72%),
+			radial-gradient(120% 90% at 50% 8%, rgba(160, 16, 80, 0.07), transparent 70%),
 			linear-gradient(168deg, #fdfaf4 0%, #f3e9dc 62%, #ece0cf 100%);
-		box-shadow: inset 0 0 40px rgba(120, 82, 40, 0.16);
 	}
-	/* the mark, cut in the channel's own colour and lit from above */
-	:global(html[data-view='studio']) .ft-work-ic {
+	:global(html[data-view='studio']) .ft-pane {
 		position: relative;
-		z-index: 1;
+		display: grid;
+		justify-items: center;
+		align-content: center;
+		gap: 0.3rem;
+		padding: 0.95rem 0.3rem 0.85rem;
+		color: inherit;
+		transition: background 0.35s ease;
+	}
+	/* hairline dividers, the way panes are mounted */
+	:global(html[data-view='studio']) .ft-pane + .ft-pane {
+		box-shadow: inset 1px 0 0 rgba(216, 178, 113, 0.28);
+	}
+	:global(html[data-view='studio']) .ft-pane:hover {
+		background: radial-gradient(90% 80% at 50% 45%, color-mix(in srgb, var(--pk) 26%, transparent), transparent 74%);
+	}
+	:global(html[data-view='studio']) .ft-pane-ic {
 		display: grid;
 		place-items: center;
 		color: color-mix(in srgb, var(--pk) 42%, #ffffff);
-		filter: drop-shadow(0 0 22px color-mix(in srgb, var(--pk) 80%, transparent));
-		transition: transform 0.45s cubic-bezier(0.34, 1.4, 0.64, 1), color 0.4s ease;
+		filter: drop-shadow(0 0 16px color-mix(in srgb, var(--pk) 75%, transparent));
+		transition: transform 0.4s cubic-bezier(0.34, 1.4, 0.64, 1), color 0.35s ease;
 	}
-	:global(html[data-view='studio']:not(.dark)) .ft-work-ic {
+	:global(html[data-view='studio']) .ft-pane-ic :global(svg) { width: 22px; height: 22px; }
+	:global(html[data-view='studio']:not(.dark)) .ft-pane-ic {
 		color: color-mix(in srgb, var(--pk) 88%, #1a0d14);
-		filter: drop-shadow(0 6px 14px color-mix(in srgb, var(--pk) 50%, transparent));
+		filter: drop-shadow(0 4px 10px color-mix(in srgb, var(--pk) 45%, transparent));
 	}
-	:global(html[data-view='studio']) .ft-work:hover .ft-work-ic {
-		transform: scale(1.12);
-		color: color-mix(in srgb, var(--pk) 30%, #ffffff);
+	:global(html[data-view='studio']) .ft-pane:hover .ft-pane-ic { transform: scale(1.16); }
+	:global(html[data-view='studio']) .ft-pane-n {
+		font-family: 'Playfair Display', Georgia, serif;
+		font-style: italic;
+		font-size: 0.68rem;
+		letter-spacing: 0.02em;
+		color: rgba(253, 234, 245, 0.62);
 	}
-	/* museum glass: a single sheet of reflection that slides off */
-	:global(html[data-view='studio']) .ft-work-glass {
+	:global(html[data-view='studio']:not(.dark)) .ft-pane-n { color: rgba(36, 16, 28, 0.6); }
+
+	/* one sheet of glass over the whole mount */
+	:global(html[data-view='studio']) .ft-wall-glass {
 		position: absolute;
 		inset: 0;
-		background: linear-gradient(118deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.06) 26%, transparent 42%, transparent 66%, rgba(255, 255, 255, 0.12) 100%);
+		pointer-events: none;
+		background: linear-gradient(116deg, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0.05) 24%, transparent 40%, transparent 68%, rgba(255, 255, 255, 0.1) 100%);
 		transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease;
 	}
-	:global(html[data-view='studio']) .ft-work:hover .ft-work-glass { transform: translateX(22%) translateY(-6%); opacity: 0.4; }
+	:global(html[data-view='studio']) .ft-wall-frame:hover .ft-wall-glass { transform: translateX(16%); opacity: 0.45; }
 
-	/* the plate, engraved and screwed to the wall */
-	:global(html[data-view='studio']) .ft-work-plaque {
+	/* the engraved plate along the bottom edge */
+	:global(html[data-view='studio']) .ft-wall-plate {
 		position: relative;
 		display: grid;
 		justify-items: center;
 		gap: 0.02rem;
-		padding: 0.3rem 1.1rem;
+		margin: 0.5rem auto 0;
+		width: fit-content;
+		padding: 0.22rem 1.2rem;
 		border-radius: 1px;
 		background: linear-gradient(168deg, #e8cd9b 0%, #c2a061 40%, #f1ddb4 62%, #b08c4c 100%);
-		box-shadow:
-			inset 0 1px 0 rgba(255, 250, 233, 0.75),
-			0 5px 12px -7px rgba(0, 0, 0, 0.8);
+		box-shadow: inset 0 1px 0 rgba(255, 250, 233, 0.75), 0 4px 10px -6px rgba(0, 0, 0, 0.8);
 		text-align: center;
 		line-height: 1.24;
 	}
-	/* the two screws holding it on */
-	:global(html[data-view='studio']) .ft-work-plaque::before,
-	:global(html[data-view='studio']) .ft-work-plaque::after {
+	:global(html[data-view='studio']) .ft-wall-plate::before,
+	:global(html[data-view='studio']) .ft-wall-plate::after {
 		content: '';
 		position: absolute;
 		top: 50%;
@@ -1678,30 +1641,23 @@ const phones = [
 		border-radius: 9999px;
 		background: radial-gradient(circle at 30% 30%, #fff8e6, #8a6a2e);
 	}
-	:global(html[data-view='studio']) .ft-work-plaque::before { left: 0.4rem; }
-	:global(html[data-view='studio']) .ft-work-plaque::after { right: 0.4rem; }
-	:global(html[data-view='studio']) .ft-work-plaque b {
+	:global(html[data-view='studio']) .ft-wall-plate::before { left: 0.42rem; }
+	:global(html[data-view='studio']) .ft-wall-plate::after { right: 0.42rem; }
+	:global(html[data-view='studio']) .ft-wall-plate b {
 		font-family: 'Playfair Display', Georgia, serif;
-		font-size: 0.8rem;
+		font-size: 0.78rem;
 		font-weight: 600;
-		letter-spacing: 0.06em;
+		letter-spacing: 0.05em;
 		color: #3a2a10;
 	}
-	:global(html[data-view='studio']) .ft-work-plaque em {
+	:global(html[data-view='studio']) .ft-wall-plate em {
 		font-family: 'Playfair Display', Georgia, serif;
 		font-style: italic;
-		font-size: 0.7rem;
-		color: rgba(58, 42, 16, 0.76);
-	}
-	@media (max-width: 420px) {
-		:global(html[data-view='studio']) .ft-wall { gap: 0.8rem 0.6rem; }
-		:global(html[data-view='studio']) .ft-work-ic { width: 2.5rem; height: 2.5rem; }
-		:global(html[data-view='studio']) .ft-work-plaque { padding-inline: 0.8rem; }
-		:global(html[data-view='studio']) .ft-work-plaque b { font-size: 0.72rem; }
-		:global(html[data-view='studio']) .ft-work-plaque em { font-size: 0.64rem; }
+		font-size: 0.66rem;
+		color: rgba(58, 42, 16, 0.78);
 	}
 	@media (prefers-reduced-motion: reduce) {
-		:global(html[data-view='studio']) .ft-work { animation: none; }
+		:global(html[data-view='studio']) .ft-wall-frame { animation: none; }
 	}
 
 	/* ── Builder: follow.sh ─────────────────────────────────────────── */

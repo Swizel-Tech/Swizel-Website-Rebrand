@@ -21,23 +21,27 @@ const stats = [
 
 // the six disciplines as ateliers — same content as every other view
 const ateliers = [
-	{ n: '01', icon: 'mdi:palette-outline', title: 'Design', desc: 'Brand identity, graphics and product design — interfaces your customers find effortless.' },
+	{ n: '01', icon: 'mdi:palette-outline', title: 'Design', desc: 'Brand identity, graphics and product design. Interfaces your customers find effortless.' },
 	{ n: '02', icon: 'mdi:code-tags', title: 'Development', desc: 'Web and mobile engineering built to scale. We build, test and ship fast, without breaking things.' },
-	{ n: '03', icon: 'mdi:bullhorn-outline', title: 'Marketing', desc: 'We grow your audience across every platform that matters, and co-market the products we ship.' },
-	{ n: '04', icon: 'mdi:compass-outline', title: 'Strategy', desc: 'Research, define, lock the goal — a tailored product roadmap before a line of code is written.' },
+	{ n: '03', icon: 'mdi:bullhorn-outline', title: 'Marketing', desc: 'We grow your audience across every platform that matters, and market the products we ship alongside you.' },
+	{ n: '04', icon: 'mdi:compass-outline', title: 'Strategy', desc: 'Research, define and lock the goal. A tailored product roadmap before a line of code is written.' },
 	{ n: '05', icon: 'mdi:wrench-outline', title: 'Maintenance', desc: 'Improving existing products and keeping complex systems healthy, secure and online, year after year.' },
-	{ n: '06', icon: 'mdi:school-outline', title: 'Education', desc: 'Free training and The Brevarium, putting real, job-ready skills in the hands of the next makers.' },
+	{ n: '06', icon: 'mdi:school-outline', title: 'Education', desc: 'IT and SIWES internships, NYSC placements and The Brevarium, putting real skills in the hands of the next makers.' },
 ];
 
 // the real road — same milestones as every About world, as exhibition volumes
+// Eight volumes, one per year. 2021 was simply missing before, which left
+// the wall claiming the studio skipped a year — and the volume numbers
+// counted around the hole.
 const history = [
-	{ year: '2019', vol: 'Vol. I', title: 'The first room opens.', desc: 'Swizel starts in Nigeria — a small, stubborn team taking on its first builds for local businesses.' },
-	{ year: '2020', vol: 'Vol. II', title: 'Products, not projects.', desc: 'We stop thinking in deliverables and start thinking in products — work meant to live and grow.' },
-	{ year: '2022', vol: 'Vol. III', title: 'Mobile joins the collection.', desc: 'Native iOS and Android join the practice. The same house now ships across web and phone.' },
-	{ year: '2023', vol: 'Vol. IV', title: 'At home in every sector.', desc: 'Fintech, real estate, sports, education, logistics — the work spreads across the industries that move Africa.' },
-	{ year: '2024', vol: 'Vol. V', title: 'Crossing borders.', desc: 'The work goes global. ConvertMyBetCode serves users in 10+ countries, and the first Brevarium is published.' },
-	{ year: '2025', vol: 'Vol. VI', title: 'Teaching the next ones.', desc: 'We open our free training programme — growing new engineers, designers and marketers on real products.' },
-	{ year: '2026', vol: 'Vol. VII', title: '65+ and counting.', desc: 'Seven years in, more than sixty-five products live in the market, and we are only warming up.' },
+	{ year: '2019', vol: 'Vol. I', title: 'The first room opens.', desc: 'Swizel starts in Nigeria, a small and stubborn team taking on its first builds for local businesses.' },
+	{ year: '2020', vol: 'Vol. II', title: 'Products, not projects.', desc: 'We stop thinking in deliverables and start thinking in products: work meant to live and grow.' },
+	{ year: '2021', vol: 'Vol. III', title: 'The house takes shape.', desc: 'Design, engineering and growth stop being separate hires and become one practice under one roof.' },
+	{ year: '2022', vol: 'Vol. IV', title: 'Mobile joins the collection.', desc: 'Native iOS and Android join the practice. The same house now ships across web and phone.' },
+	{ year: '2023', vol: 'Vol. V', title: 'At home in every sector.', desc: 'Fintech, real estate, sports, education, logistics. The work spreads across the industries that move Africa.' },
+	{ year: '2024', vol: 'Vol. VI', title: 'Crossing borders.', desc: 'The work goes global. ConvertMyBetCode serves users in 10+ countries, and the first Brevarium is published.' },
+	{ year: '2025', vol: 'Vol. VII', title: 'Teaching the next ones.', desc: 'We open the doors to interns and service year members, growing new engineers and designers on real products.' },
+	{ year: '2026', vol: 'Vol. VIII', title: 'Sixty five and counting.', desc: 'Seven years in, more than sixty five products live in the market, and we are only warming up.' },
 ];
 
 // same crew, same order, same modal data as the other About worlds
@@ -75,12 +79,14 @@ const quotes = [
 
 // The two video slots were dashed boxes with filenames written in them.
 // They carry the real films now; the stills keep their frames.
+// Captions, not filenames. These are wall labels, and a wall label does
+// not read "the-desk-after-hours.jpg".
 const studioFrames = [
-	{ wide: true, videoId: 'yyCMSZBVG2I', name: 'studio-life.mp4', sub: 'A day in the residence' },
-	{ img: '/images/campus/the-lab.jpg', name: 'critique-friday.jpg' },
-	{ img: '/images/campus/class-in-session.jpg', name: 'sketch-wall.jpg' },
-	{ videoId: 'nFbBpQvT5fQ', name: 'launch-night.mp4', sub: 'The showreel' },
-	{ img: '/images/campus/studio-floor.jpg', name: 'the-desk-after-hours.jpg' },
+	{ wide: true, videoId: 'IPFBUQ-pZRY', name: 'A day in the residence', sub: 'Moving image · 2026' },
+	{ img: '/images/campus/the-lab.jpg', name: 'Critique, Friday' },
+	{ img: '/images/campus/class-in-session.jpg', name: 'The sketch wall' },
+	{ videoId: 'nFbBpQvT5fQ', name: 'Opening night', sub: 'The showreel' },
+	{ img: '/images/campus/studio-floor.jpg', name: 'The floor, after hours' },
 ];
 ---
 
@@ -104,13 +110,16 @@ const studioFrames = [
 						Portrait of<br />
 						<em>the studio.</em>
 					</h2>
-					<p class="sa-lead sa-lead--open sd-rev">
-						Every piece on our walls was made by hands you can meet.
-						Swizel is one house of designers, engineers and growth
-						marketers, shipping since 2019 — we design the idea, build
-						it, take it to market, and stay to grow it. This wing is
-						about the makers.
-					</p>
+					<figure class="sa-scroll sa-scroll--open sd-rev">
+						<span class="sa-scroll-grain" aria-hidden="true"></span>
+						<p class="sa-lead sa-lead--open">
+							Every piece on these walls was made by hands you can
+							meet. One house of designers, engineers and growth
+							marketers, shipping since 2019: we shape the idea,
+							build it, take it to market, and stay on to grow it.
+							This wing is about the makers.
+						</p>
+					</figure>
 					<div class="sa-open-cues sd-rev">
 						<a href="/portfolio" class="sa-link">
 							See the collection first
@@ -124,9 +133,12 @@ const studioFrames = [
 					<span class="sa-glare" aria-hidden="true"></span>
 					<span class="sa-centerpiece-media">
 						<FilmPlayer
-							videoId="yyCMSZBVG2I"
+							videoId="p563SFG9Nwg"
+							fallback="/images/founder/studio.jpg"
 							label="Portrait of a Studio: two minutes inside the residence"
-							tag="the-makers.mp4"
+							tag="the makers"
+							cover
+							ratio="16 / 10"
 							class="sa-cp-film"
 						/>
 					</span>
@@ -174,17 +186,19 @@ const studioFrames = [
 					deserve software as good as anything built anywhere. <em>Not
 					a vendor. A studio in residence.</em>
 				</p>
-				<div class="sa-wt-side sd-rev">
+				<figure class="sa-scroll sa-scroll--side sd-rev">
+					<span class="sa-scroll-grain" aria-hidden="true"></span>
 					<p>
-						Sixty-five works later, the practice holds one rule — the
-						same hands that imagine a piece stay to build it, hang it,
-						and keep it alive in the market.
+						Sixty five works later the practice still holds to one
+						rule: the hands that imagine a piece are the hands that
+						build it, hang it, and keep it alive in the market.
 					</p>
 					<p>
-						One team, every discipline. Weeks, not quarters. And we
-						stay long after the opening night.
+						One team, every discipline, working in weeks rather than
+						quarters. And we are still here long after the opening
+						night.
 					</p>
-				</div>
+				</figure>
 			</div>
 		</div>
 	</section>
@@ -661,17 +675,24 @@ const studioFrames = [
 		color: var(--sa-ink);
 		background: color-mix(in srgb, var(--sa-acc) 7%, transparent);
 	}
+	/* the admission light. At 7px with a 7px halo it read as a full
+	   stop rather than a live indicator — it is a lamp now, and it
+	   glows as well as pulses. */
 	.sa-ticket-live i {
-		width: 7px;
-		height: 7px;
+		position: relative;
+		width: 11px;
+		height: 11px;
+		flex: none;
 		border-radius: 50%;
-		background: var(--sa-acc);
-		box-shadow: 0 0 0 0 color-mix(in srgb, var(--sa-acc) 55%, transparent);
+		background: radial-gradient(circle at 34% 30%, #fff, var(--sa-acc) 62%, color-mix(in srgb, var(--sa-acc) 55%, #000));
+		box-shadow:
+			0 0 12px 2px color-mix(in srgb, var(--sa-acc) 75%, transparent),
+			0 0 0 0 color-mix(in srgb, var(--sa-acc) 60%, transparent);
 		animation: sa-adm-pulse 1.9s ease-out infinite;
 	}
 	@keyframes sa-adm-pulse {
-		0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--sa-acc) 55%, transparent); }
-		100% { box-shadow: 0 0 0 7px transparent; }
+		0% { box-shadow: 0 0 12px 2px color-mix(in srgb, var(--sa-acc) 75%, transparent), 0 0 0 0 color-mix(in srgb, var(--sa-acc) 60%, transparent); }
+		100% { box-shadow: 0 0 12px 2px color-mix(in srgb, var(--sa-acc) 45%, transparent), 0 0 0 13px transparent; }
 	}
 	.sa-ticket-wing em {
 		font-family: var(--sa-serif);
@@ -1138,25 +1159,126 @@ const studioFrames = [
 	@media (max-width: 560px) {
 		.sa-ateliers { grid-template-columns: 1fr; }
 	}
-	.sa-atelier {
+	/* ═══ the wall scrolls ═══════════════════════════════════════
+	   The retrospective's two long passages are written on paper, not
+	   set in a box — but a finer paper than the hero's: thinner stock,
+	   a smaller tear, no curled ends, so the two read as different
+	   documents from the same house. */
+	.sa-scroll {
 		position: relative;
-		padding: 1.3rem 1.3rem 1.4rem;
-		border-radius: 0.4rem;
-		border: 1px solid var(--sa-line);
-		background: var(--sa-card);
-		box-shadow: inset 0 0 0 8px color-mix(in srgb, var(--sa-ink) 4%, transparent);
-		transition: border-color 0.25s ease;
+		margin: 0;
+		padding: 1.25rem 1.5rem 1.15rem;
+		color: #2c1c14;
+		background:
+			radial-gradient(130% 100% at 14% 0%, rgba(255, 255, 255, 0.6), transparent 62%),
+			linear-gradient(166deg, #fbf4e6 0%, #f4ecda 58%, #ece1c9 100%);
+		box-shadow:
+			inset 0 0 22px rgba(120, 82, 40, 0.11),
+			0 18px 42px -26px rgba(0, 0, 0, 0.5);
+		-webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='220' preserveAspectRatio='none'%3E%3Cfilter id='t' x='-6%' y='-12%' width='112%' height='124%'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.018 0.07' numOctaves='4' seed='23' result='n'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='n' scale='11' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3Crect x='10' y='11' width='580' height='198' rx='20' ry='24' fill='%23fff' filter='url(%23t)'/%3E%3C/svg%3E");
+		mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='220' preserveAspectRatio='none'%3E%3Cfilter id='t' x='-6%' y='-12%' width='112%' height='124%'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.018 0.07' numOctaves='4' seed='23' result='n'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='n' scale='11' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3Crect x='10' y='11' width='580' height='198' rx='20' ry='24' fill='%23fff' filter='url(%23t)'/%3E%3C/svg%3E");
+		-webkit-mask-size: 100% 100%;
+		mask-size: 100% 100%;
+		-webkit-mask-repeat: no-repeat;
+		mask-repeat: no-repeat;
 	}
-	.sa-atelier:hover { border-color: color-mix(in srgb, var(--sa-acc) 50%, transparent); }
-	.sa-atelier-n {
+	.sa-scroll--open { max-width: 34rem; transform: rotate(-0.4deg); }
+	.sa-scroll--side { transform: rotate(0.35deg); }
+	.sa-scroll-grain {
 		position: absolute;
-		top: 0.9rem;
-		right: 1.1rem;
+		inset: 0;
+		pointer-events: none;
+		opacity: 0.5;
+		mix-blend-mode: multiply;
+		background-image:
+			repeating-linear-gradient(91deg, rgba(120, 82, 40, 0.055) 0 1px, transparent 1px 5px),
+			url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='150' height='150' filter='url(%23g)' opacity='0.4'/%3E%3C/svg%3E");
+	}
+	/* the hand it is written in */
+	.sa-scroll p,
+	.sa-scroll .sa-lead {
+		position: relative;
+		z-index: 1;
+		margin: 0 0 0.7rem;
+		color: #2c1c14;
 		font-family: var(--sa-serif);
 		font-style: italic;
-		font-size: 1rem;
-		color: var(--sa-faint);
+		font-size: clamp(0.98rem, 1.15vw, 1.1rem);
+		line-height: 1.68;
 	}
+	.sa-scroll p:last-of-type { margin-bottom: 0; }
+
+	/* ═══ the ateliers, hung ═════════════════════════════════════
+	   Six cards in a row read as a pricing table. They are six small
+	   paintings now: a moulding, a mount, glass with the light sliding
+	   off it, and a plate with the number engraved on it. */
+	.sa-atelier {
+		position: relative;
+		padding: 0.5rem;
+		border-radius: 2px;
+		border: 0;
+		background: linear-gradient(140deg, #f2e2bd 0%, #c9a05a 20%, #8d6a32 38%, #e8ce99 58%, #b8873f 76%, #efdbae 92%, #9c7436 100%);
+		box-shadow:
+			inset 0 0 0 1px rgba(255, 246, 224, 0.5),
+			inset 0 0 0 5px rgba(92, 64, 24, 0.26),
+			0 2px 0 rgba(60, 40, 14, 0.42),
+			0 26px 48px -24px rgba(0, 0, 0, 0.72);
+		transform: rotate(var(--tilt, 0deg));
+		transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
+	}
+	.sa-atelier:nth-child(3n+1) { --tilt: -0.7deg; }
+	.sa-atelier:nth-child(3n+2) { --tilt: 0.5deg; }
+	.sa-atelier:nth-child(3n) { --tilt: -0.35deg; }
+	.sa-atelier:hover {
+		transform: rotate(0deg) translateY(-6px);
+		box-shadow:
+			inset 0 0 0 1px rgba(255, 250, 236, 0.72),
+			inset 0 0 0 5px rgba(92, 64, 24, 0.2),
+			0 2px 0 rgba(60, 40, 14, 0.4),
+			0 36px 62px -22px rgba(0, 0, 0, 0.8),
+			0 0 46px -14px color-mix(in srgb, var(--sa-acc) 70%, transparent);
+	}
+	/* the mount the work sits on */
+	.sa-atelier::after {
+		content: '';
+		position: absolute;
+		inset: 0.5rem;
+		border-radius: 1px;
+		background:
+			radial-gradient(120% 90% at 22% 6%, color-mix(in srgb, var(--sa-acc) 12%, transparent), transparent 66%),
+			linear-gradient(168deg, #fbf5ea, #f1e6d6 62%, #e9dcc8);
+		box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.16), inset -1px -1px 0 rgba(255, 250, 236, 0.7);
+		z-index: 0;
+	}
+	:global(html.dark) .sa-atelier::after {
+		background:
+			radial-gradient(120% 90% at 22% 6%, color-mix(in srgb, var(--sa-acc) 20%, transparent), transparent 66%),
+			linear-gradient(168deg, #241722, #1a1019 62%, #150c14);
+	}
+	/* the glass */
+	.sa-atelier > .sa-glare {
+		z-index: 2;
+		border-radius: 1px;
+		inset: 0.5rem;
+	}
+	.sa-atelier > :not(.sa-glare):not(.sa-atelier-n) { position: relative; z-index: 1; }
+	.sa-atelier-n {
+		position: absolute;
+		z-index: 3;
+		top: 1.2rem;
+		right: 1.5rem;
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 1.05rem;
+		color: color-mix(in srgb, var(--sa-acc) 60%, var(--sa-faint));
+	}
+	.sa-atelier-ic,
+	.sa-atelier-t,
+	.sa-atelier-d { margin-inline: 1.35rem; }
+	.sa-atelier-ic { margin-top: 1.35rem; }
+	.sa-atelier-t { margin-right: 3.2rem; }
+	.sa-atelier-d { margin-bottom: 1.45rem; }
+
 	.sa-atelier-ic {
 		display: grid;
 		place-items: center;
