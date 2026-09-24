@@ -35,7 +35,13 @@ const marquee2 = [...rot, ...rot];
 // Case studies open their on-site /work page; other products link to the live
 // site — but those external clicks pass through a "you're leaving Swizel"
 // confirmation (see [data-leaving]) so people can bounce back and keep exploring.
-const dest = (p: (typeof projects)[number]) => (p.caseStudy ? `/work/${p.slug}` : p.url);
+// Where a tile goes: the full case study when there is one, the live site
+// when there is one, and otherwise the work's own short entry — before
+// this, a project with neither simply linked nowhere.
+const dest = (p: (typeof projects)[number]) =>
+	p.caseStudy ? `/work/${p.slug}` : (p.url ?? `/work/${p.slug}`);
+/** true only when the tile really does leave swizel.co */
+const leaves = (p: (typeof projects)[number]) => !p.caseStudy && !!p.url;
 // the custom cursor adapts to each project's sector (health ≠ briefcase)
 const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'pulse', property: 'layers', media: 'book', commerce: 'pkg', product: 'repo' };
 ---
@@ -82,14 +88,14 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 		<div class="pf-marquee" aria-hidden="true">
 			<div class="pf-marquee-track">
 				{marquee.map((p) => (
-					<a href={dest(p) ?? undefined} data-leaving={p.caseStudy ? undefined : p.host} data-leaving-name={p.caseStudy ? undefined : p.name} class="pf-thumb" style={`--c:${p.color}`} tabindex="-1">
+					<a href={dest(p) ?? undefined} data-leaving={leaves(p) ? p.host : undefined} data-leaving-name={leaves(p) ? p.name : undefined} class="pf-thumb" style={`--c:${p.color}`} tabindex="-1">
 						<img src={p.img} alt="" loading="eager" decoding="async" />
 					</a>
 				))}
 			</div>
 			<div class="pf-marquee-track pf-marquee-track--rev">
 				{marquee2.map((p) => (
-					<a href={dest(p) ?? undefined} data-leaving={p.caseStudy ? undefined : p.host} data-leaving-name={p.caseStudy ? undefined : p.name} class="pf-thumb" style={`--c:${p.color}`} tabindex="-1">
+					<a href={dest(p) ?? undefined} data-leaving={leaves(p) ? p.host : undefined} data-leaving-name={leaves(p) ? p.name : undefined} class="pf-thumb" style={`--c:${p.color}`} tabindex="-1">
 						<img src={p.img} alt="" loading="eager" decoding="async" />
 					</a>
 				))}

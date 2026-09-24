@@ -19,7 +19,13 @@ const stats = [
 	{ n: '10+', label: 'countries on loan to' },
 ];
 
-const dest = (p: (typeof projects)[number]) => (p.caseStudy ? `/work/${p.slug}` : p.url);
+// Where a tile goes: the full case study when there is one, the live site
+// when there is one, and otherwise the work's own short entry — before
+// this, a project with neither simply linked nowhere.
+const dest = (p: (typeof projects)[number]) =>
+	p.caseStudy ? `/work/${p.slug}` : (p.url ?? `/work/${p.slug}`);
+/** true only when the tile really does leave swizel.co */
+const leaves = (p: (typeof projects)[number]) => !p.caseStudy && !!p.url;
 const roman = ['01', '02', '03', '04', '05', '06'];
 
 // the spotlight cycles these real works (featured first, then more with shots)
@@ -182,9 +188,9 @@ const spotWorks = [
 									<Tag
 										class="sp-art-link"
 										href={href ?? undefined}
-										data-leaving={href && !hasCase ? p.host : undefined}
-										data-leaving-name={href && !hasCase ? p.name : undefined}
-										rel={href && !hasCase ? 'noopener noreferrer' : undefined}
+										data-leaving={leaves(p) ? p.host : undefined}
+										data-leaving-name={leaves(p) ? p.name : undefined}
+										rel={leaves(p) ? 'noopener noreferrer' : undefined}
 										aria-label={p.name}
 									>
 										<span class="sp-art-frame" data-fa-tilt="5">
@@ -380,13 +386,20 @@ const spotWorks = [
 	/* ── A · entrance — copy left, the Spotlight Room right ── */
 	.sp-open {
 		display: grid;
-		gap: clamp(2rem, 4.5vw, 4rem);
+		/* 4rem between the columns squeezed the copy into a narrow
+		   measure and still left the stage too small to carry the wing */
+		gap: clamp(1.4rem, 2.8vw, 2.4rem);
 		align-items: center;
 		margin-bottom: clamp(2rem, 4vw, 3rem);
 	}
 	@media (min-width: 960px) {
-		.sp-open { grid-template-columns: 1fr 1.05fr; }
+		.sp-open { grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr); }
+		/* the stage runs a little past its column on the open side, the
+		   way the home wall does */
+		.sp-spot { margin-right: -4%; }
 	}
+	.sp-open-copy { min-width: 0; }
+	.sp-lead { max-width: 33rem; }
 	.sp-open-copy { position: relative; }
 	.sp-ghost {
 		position: absolute;
@@ -695,17 +708,32 @@ const spotWorks = [
 	/* ── C · the wall ── */
 	.sp-filter { display: block; }
 	.sp-radio { position: absolute; opacity: 0; pointer-events: none; }
+	/* Seven tabs wrapped onto a second row with one lonely tab on it.
+	   They run on one line now and scroll if the wall is narrow, with a
+	   fade at each end so it is clear there is more. */
 	.sp-tabs {
 		display: flex;
-		flex-wrap: wrap;
-		gap: 0.55rem;
+		flex-wrap: nowrap;
+		gap: 0.5rem;
 		margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
+		padding-bottom: 0.3rem;
+		overflow-x: auto;
+		overscroll-behavior-x: contain;
+		scrollbar-width: none;
+		scroll-snap-type: x proximity;
+		mask-image: linear-gradient(90deg, transparent, #000 2.5%, #000 97.5%, transparent);
+		-webkit-mask-image: linear-gradient(90deg, transparent, #000 2.5%, #000 97.5%, transparent);
 	}
+	.sp-tabs::-webkit-scrollbar { display: none; }
+	.sp-tab { flex: none; scroll-snap-align: start; }
 	.sp-tab {
 		display: inline-flex;
 		align-items: baseline;
-		gap: 0.45rem;
-		padding: 0.5rem 1rem;
+		gap: 0.38rem;
+		padding: 0.48rem 0.85rem;
+		font-size: 0.78rem;
+		letter-spacing: 0.06em;
+		white-space: nowrap;
 		border-radius: 9999px;
 		border: 1px solid var(--sa-line);
 		font-size: 0.78rem;

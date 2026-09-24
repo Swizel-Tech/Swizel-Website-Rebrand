@@ -30,7 +30,13 @@ const marquee = [...projects, ...projects];
 const rot = [...projects.slice(6), ...projects.slice(0, 6)];
 const marquee2 = [...rot, ...rot];
 
-const dest = (p: (typeof projects)[number]) => (p.caseStudy ? `/work/${p.slug}` : p.url);
+// Where a tile goes: the full case study when there is one, the live site
+// when there is one, and otherwise the work's own short entry — before
+// this, a project with neither simply linked nowhere.
+const dest = (p: (typeof projects)[number]) =>
+	p.caseStudy ? `/work/${p.slug}` : (p.url ?? `/work/${p.slug}`);
+/** true only when the tile really does leave swizel.co */
+const leaves = (p: (typeof projects)[number]) => !p.caseStudy && !!p.url;
 const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'pulse', property: 'layers', media: 'book', commerce: 'pkg', product: 'repo' };
 ---
 
@@ -103,7 +109,7 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 			<div class="fp-marquee-track">
 				{
 					marquee.map((p) => (
-						<a href={dest(p) ?? undefined} data-leaving={p.caseStudy ? undefined : p.host} data-leaving-name={p.caseStudy ? undefined : p.name} class="fp-thumb" style={`--c:${p.color}`} tabindex="-1">
+						<a href={dest(p) ?? undefined} data-leaving={leaves(p) ? p.host : undefined} data-leaving-name={leaves(p) ? p.name : undefined} class="fp-thumb" style={`--c:${p.color}`} tabindex="-1">
 							<img src={p.img} alt="" loading="eager" decoding="async" />
 						</a>
 					))
@@ -112,7 +118,7 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 			<div class="fp-marquee-track fp-marquee-track--rev">
 				{
 					marquee2.map((p) => (
-						<a href={dest(p) ?? undefined} data-leaving={p.caseStudy ? undefined : p.host} data-leaving-name={p.caseStudy ? undefined : p.name} class="fp-thumb" style={`--c:${p.color}`} tabindex="-1">
+						<a href={dest(p) ?? undefined} data-leaving={leaves(p) ? p.host : undefined} data-leaving-name={leaves(p) ? p.name : undefined} class="fp-thumb" style={`--c:${p.color}`} tabindex="-1">
 							<img src={p.img} alt="" loading="eager" decoding="async" />
 						</a>
 					))
@@ -274,9 +280,9 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 									<Tag
 										class="fp-card-link"
 										href={href ?? undefined}
-										data-leaving={href && !hasCase ? p.host : undefined}
-										data-leaving-name={href && !hasCase ? p.name : undefined}
-										rel={href && !hasCase ? 'noopener noreferrer' : undefined}
+										data-leaving={leaves(p) ? p.host : undefined}
+										data-leaving-name={leaves(p) ? p.name : undefined}
+										rel={leaves(p) ? 'noopener noreferrer' : undefined}
 										aria-label={p.name}
 									>
 										<span class:list={['fp-shot', { 'fp-shot--app': p.kind === 'app' }]}>

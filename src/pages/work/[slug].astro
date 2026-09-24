@@ -5,12 +5,18 @@ import CaseStudyFounder from '../../components/sections/CaseStudyFounder.astro';
 import CaseStudyBuilder from '../../components/sections/CaseStudyBuilder.astro';
 import CaseStudyStudio from '../../components/sections/CaseStudyStudio.astro';
 import CaseStudyCampus from '../../components/sections/CaseStudyCampus.astro';
+import CaseStudyShort from '../../components/sections/CaseStudyShort.astro';
 import { featuredProjects, projects } from '../../data/projects';
 
 export async function getStaticPaths() {
-	return featuredProjects.map((p) => {
-		// "others" = the other featured case studies, for the Next card
-		const others = featuredProjects.filter((o) => o.slug !== p.slug);
+	// Six works have neither a live site nor a written case study, so their
+	// tiles on the wall pointed nowhere at all. Every project gets a page
+	// now: the seven with a full case study get the full telling, and the
+	// rest get a short exhibition entry built only from what is on record.
+	return projects.map((p) => {
+		const others = p.caseStudy
+			? featuredProjects.filter((o) => o.slug !== p.slug)
+			: projects.filter((o) => o.slug !== p.slug && (o.caseStudy || !o.url)).slice(0, 6);
 		return { params: { slug: p.slug }, props: { project: p, others } };
 	});
 }
@@ -22,19 +28,19 @@ const seoDesc = project.tagline || project.caseStudy?.intro || '';
 ---
 
 <MainLayout title={seoTitle} description={seoDesc} image={project.img}>
-	<CaseStudy project={project} others={others} />
+	{project.caseStudy && <CaseStudy project={project} others={others} />}
 
 	<!-- Founder world: the whole launch story, founder momentum. -->
-	<CaseStudyFounder project={project} others={others} />
+	{project.caseStudy && <CaseStudyFounder project={project} others={others} />}
 
 	<!-- Builder world: the launch as a deploy report. -->
-	<CaseStudyBuilder project={project} others={others} />
+	{project.caseStudy && <CaseStudyBuilder project={project} others={others} />}
 
 	<!-- Studio world: the launch as a single-work exhibition. -->
-	<CaseStudyStudio project={project} others={others} />
+	{project.caseStudy && <CaseStudyStudio project={project} others={others} />}
 
 	<!-- Campus world: the launch as a gold-star write-up. -->
-	<CaseStudyCampus project={project} others={others} />
+	{project.caseStudy && <CaseStudyCampus project={project} others={others} />}
 
 	<!-- Fallback for the remaining worlds: a simple summary + link out. -->
 	<div class="alt-view-only case-fallback" style="max-width:48rem;margin:0 auto;padding:5rem 1.5rem;">
@@ -45,6 +51,7 @@ const seoDesc = project.tagline || project.caseStudy?.intro || '';
 			<p style="margin-top:1.5rem;"><a href={project.caseStudy.liveUrl} target="_blank" rel="noopener" style="font-weight:700;">Visit live site →</a></p>
 		)}
 	</div>
+	{!project.caseStudy && <CaseStudyShort project={project} others={others} />}
 </MainLayout>
 
 <style is:global>
