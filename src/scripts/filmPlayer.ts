@@ -104,14 +104,25 @@ export function initFilmPlayers(root: ParentNode = document) {
 		// or missing thumbnail would leave a broken image on the glass
 		const stillEl = q<HTMLImageElement>('[data-flm-poster]');
 		if (stillEl) {
-			stillEl.addEventListener('error', () => {
+			const nextRung = () => {
+				const local = stillEl.dataset.flmPosterFallback;
 				if (!stillEl.dataset.fell && stillEl.src.includes('maxresdefault')) {
 					stillEl.dataset.fell = '1';
 					stillEl.src = stillEl.src.replace('maxresdefault', 'hqdefault');
+				} else if (local && stillEl.dataset.fell !== '2') {
+					// last rung: a still of our own, so the frame is never empty
+					stillEl.dataset.fell = '2';
+					stillEl.src = local;
 				} else {
 					stillEl.remove();
 				}
-			});
+			};
+			stillEl.addEventListener('error', nextRung);
+			// the thumbnail is in the HTML, so it can fail while the parser
+			// is still working and be done failing before this listener
+			// exists. An error event does not replay, so catch that case by
+			// asking the image how it got on.
+			if (stillEl.complete && stillEl.naturalWidth === 0) nextRung();
 		}
 		const rates = (q('[data-flm-rates]')?.textContent || '1')
 			.split(',')

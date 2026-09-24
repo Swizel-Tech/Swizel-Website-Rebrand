@@ -136,18 +136,32 @@ const logos = [
 		</div>
 	</section>
 
-	<!-- ── B · giant type, drifting ────────────────────────── -->
-	<div class="sd-marquee" aria-hidden="true">
-		<div class="sd-marquee-track">
-			{
-				[0, 1].map(() => (
-					<span class="sd-marquee-text">
-						the&nbsp;collection&nbsp;✦&nbsp;on&nbsp;view&nbsp;now&nbsp;✦&nbsp;
-					</span>
-				))
-			}
+	<!-- ── B · the statement, over drifting type ───────────── -->
+	<section class="sd-statement" data-cursor="quote">
+		<div class="sd-marquee" aria-hidden="true">
+			<div class="sd-marquee-track">
+				{
+					[0, 1].map(() => (
+						<span class="sd-marquee-text">
+							the&nbsp;collection&nbsp;✦&nbsp;on&nbsp;view&nbsp;now&nbsp;✦&nbsp;
+						</span>
+					))
+				}
+			</div>
 		</div>
-	</div>
+
+		<p class="sd-say sd-rev">
+			<span class="sd-say-l"><span>We make brands</span></span>
+			<span class="sd-say-l"><span>people find</span></span>
+			<span class="sd-say-flip" aria-label="unforgettable">
+				{
+					['unforgettable.', 'unmistakable.', 'irresistible.', 'worth keeping.'].map((w, i) => (
+						<b style={`--f:${i}`} aria-hidden={i > 0 ? 'true' : undefined}>{w}</b>
+					))
+				}
+			</span>
+		</p>
+	</section>
 
 	<!-- ── C · the collection wall (work shown directly!) ──── -->
 	<section class="sd-sec" id="sd-work" data-cursor="repo">
@@ -1605,4 +1619,82 @@ const logos = [
 		.sd-quote { transition: none; }
 		.sd-art .sd-plaque { opacity: 1; transform: none; }
 	}
+	/* ═══ the statement ══════════════════════════════════════════
+	   The line that used to open the hero, given a room of its own.
+	   Each line lifts out from behind a mask, and the last word keeps
+	   changing its mind — the drifting marquee runs behind it as
+	   texture rather than as the whole idea. */
+	.sd-statement {
+		position: relative;
+		display: grid;
+		place-items: center;
+		padding: clamp(4rem, 11vw, 9rem) 5% clamp(3.5rem, 9vw, 7rem);
+		overflow: hidden;
+	}
+	.sd-statement .sd-marquee {
+		position: absolute;
+		inset: 50% 0 auto;
+		transform: translateY(-50%);
+		opacity: 0.16;
+		pointer-events: none;
+	}
+	.sd-say {
+		position: relative;
+		z-index: 1;
+		margin: 0;
+		max-width: 22ch;
+		text-align: center;
+		font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+		font-weight: 500;
+		font-size: clamp(2.2rem, 6.2vw, 5.2rem);
+		line-height: 1.04;
+		letter-spacing: -0.02em;
+		color: var(--sd-ink, #fbeaf4);
+	}
+	.sd-say-l { display: block; overflow: hidden; }
+	.sd-say-l > span {
+		display: block;
+		animation: sd-lift 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+	}
+	.sd-rev.is-on .sd-say-l:nth-child(1) > span { animation-delay: 0.05s; }
+	.sd-rev.is-on .sd-say-l:nth-child(2) > span { animation-delay: 0.18s; }
+	@keyframes sd-lift { from { transform: translateY(105%); } }
+
+	.sd-say-flip {
+		display: block;
+		position: relative;
+		font-size: 0.9em;
+		height: 1.3em;
+		overflow: hidden;
+	}
+	.sd-say-flip b {
+		position: absolute;
+		inset: 0;
+		font-weight: 600;
+		font-style: italic;
+		white-space: nowrap;
+		background: linear-gradient(96deg, #f9a8d4, #ec4899 45%, #a855f7);
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+		opacity: 0;
+		animation: sd-flip 13.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+		animation-delay: calc(var(--f) * 3.3s + 0.6s);
+	}
+	:global(html:not(.dark)) .sd-say-flip b {
+		background: linear-gradient(96deg, #a01050, #ec4899 55%, #7c3aed);
+		-webkit-background-clip: text;
+		background-clip: text;
+	}
+	@keyframes sd-flip {
+		0% { opacity: 0; transform: translateY(70%) rotate(3deg); }
+		3%, 22% { opacity: 1; transform: translateY(0) rotate(0deg); }
+		25%, 100% { opacity: 0; transform: translateY(-70%) rotate(-3deg); }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.sd-say-l > span, .sd-say-flip b { animation: none !important; }
+		.sd-say-flip b { opacity: 0; }
+		.sd-say-flip b:first-child { opacity: 1; }
+	}
+
 </style>

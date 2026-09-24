@@ -4,101 +4,172 @@ export function initStudioView() {
 	const hero = document.querySelector<HTMLElement>('[data-shr]');
 
 	if (hero) {
-		const wall = hero.querySelector<HTMLElement>('[data-shr-wall]');
-		const frame = hero.querySelector<HTMLElement>('.shr-hero-frame');
 		const still = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-		// ── the room takes its colour from whatever you are looking at ──
-		const swatches = Array.from(
-			hero.querySelectorAll<HTMLButtonElement>('[data-shr-palette] [data-shr-tint]')
-		);
-		let held = swatches[0]?.dataset.shrTint || '#ec4899';
+		// ── the exhibit ─────────────────────────────────────────────
+		// The reel never moves. The collection travels past it on a ring
+		// of six slots: in from the right (+2, +1), behind the film, out
+		// to the front-left (-1, -2), then off-stage (±3) and round. Each
+		// card is handed its slot number and the sign of it; every bit of
+		// the geometry lives in the stylesheet's slot table.
+		const RING = [1, 2, 3, -3, -2, -1];
+		const FEATURED = 5; // the ring position whose piece the label names
 
-		const tint = (hex: string) => hero.style.setProperty('--sa', hex);
+		const deck = hero.querySelector<HTMLElement>('[data-shr-deck]');
+		const show = hero.querySelector<HTMLElement>('.shr-show');
+		const cards = Array.from(hero.querySelectorAll<HTMLElement>('[data-shr-card]'));
+		const ticks = Array.from(hero.querySelectorAll<HTMLElement>('[data-shr-go]'));
+		const nameEl = hero.querySelector<HTMLElement>('[data-shr-name]');
+		const metaEl = hero.querySelector<HTMLElement>('[data-shr-meta]');
+		const visitEl = hero.querySelector<HTMLAnchorElement>('[data-shr-visit]');
+		const film = hero.querySelector<HTMLElement>('.shr-reel');
 
-		// the swatch's name and hex are read out in the label above the
-		// rail rather than printed inside the chip, where they sat on top
-		// of the colour they were describing
-		const nameEl = hero.querySelector<HTMLElement>('[data-shr-swatch-name]');
-		const hexEl = hero.querySelector<HTMLElement>('[data-shr-swatch-hex]');
-		const say = (sw: HTMLElement) => {
-			const [name, hex] = (sw.getAttribute('aria-label') || '').split(/\s(?=#)/);
-			if (nameEl && name) nameEl.textContent = name;
-			if (hexEl && hex) hexEl.textContent = hex;
+		const n = cards.length;
+		let at = 0;
+		let timer = 0;
+
+		const retime = (el: HTMLElement | null) => {
+			if (!el) return;
+			el.style.animation = 'none';
+			void el.offsetWidth;
+			el.style.animation = '';
 		};
 
-		swatches.forEach((sw) => {
-			sw.addEventListener('click', () => {
-				held = sw.dataset.shrTint || held;
-				swatches.forEach((o) => o.classList.toggle('is-on', o === sw));
-				say(sw);
-				tint(held);
+		const place = () => {
+			let live: HTMLElement | undefined;
+
+			cards.forEach((card, i) => {
+				const k = (((i - at) % n) + n) % n;
+				const slot = RING[k] ?? 3;
+				card.dataset.slot = String(slot);
+				card.style.setProperty('--s', String(Math.sign(slot)));
+				const isLive = k === FEATURED;
+				card.classList.toggle('is-live', isLive);
+				if (isLive) live = card;
 			});
-			sw.addEventListener('pointerenter', () => {
-				say(sw);
-				tint(sw.dataset.shrTint || held);
+
+			ticks.forEach((t, i) => t.classList.toggle('is-on', i === at));
+			if (!live) return;
+
+			// the room takes the colour of the piece at the front — the
+			// palette comes from the work itself
+			const tint = live.dataset.tint;
+			if (tint) hero.style.setProperty('--sa', tint);
+
+			if (nameEl) { nameEl.textContent = live.dataset.name || ''; retime(nameEl); }
+			if (metaEl) { metaEl.textContent = live.dataset.meta || ''; retime(metaEl); }
+			if (visitEl) {
+				const href = live.dataset.href;
+				visitEl.href = href || '/portfolio';
+				if (live.dataset.external) {
+					visitEl.target = '_blank';
+					visitEl.rel = 'noopener noreferrer';
+				} else {
+					visitEl.removeAttribute('target');
+					visitEl.removeAttribute('rel');
+				}
+			}
+			// restart the countdown on the live tick
+			retime(hero.querySelector<HTMLElement>('.shr-tick.is-on i'));
+		};
+
+		const go = (i: number) => {
+			at = ((i % n) + n) % n;
+			place();
+		};
+		const turn = (d: number) => go(at + d);
+
+		// it turns on its own — unless the film is running, or you are
+		// touching it
+		const playing = () => !!film?.querySelector('[data-flm].is-started');
+
+		const stop = () => {
+			if (timer) window.clearInterval(timer);
+			timer = 0;
+			show?.classList.add('is-held');
+		};
+		const start = () => {
+			if (still.matches) return;
+			if (timer) window.clearInterval(timer);
+			show?.classList.remove('is-held');
+			timer = window.setInterval(() => {
+				if (playing()) return;
+				turn(1);
+			}, 4600);
+		};
+
+		hero.querySelector('[data-shr-next]')?.addEventListener('click', () => { turn(1); start(); });
+		hero.querySelector('[data-shr-prev]')?.addEventListener('click', () => { turn(-1); start(); });
+		ticks.forEach((t, i) => t.addEventListener('click', () => { go(i); start(); }));
+
+		// clicking a piece brings it to the front; clicking the one already
+		// at the front opens it
+		cards.forEach((card, i) =>
+			card.addEventListener('click', () => {
+				if (card.classList.contains('is-live')) {
+					const href = card.dataset.href;
+					if (href) window.open(href, card.dataset.external ? '_blank' : '_self');
+					return;
+				}
+				go(i - FEATURED);
+				start();
+			})
+		);
+
+		deck?.addEventListener('pointerenter', stop);
+		deck?.addEventListener('pointerleave', start);
+
+		// drag, or swipe, to spin it
+		if (deck) {
+			let downX = 0;
+			let down = false;
+			deck.addEventListener('pointerdown', (e) => {
+				down = true;
+				downX = e.clientX;
 			});
-			sw.addEventListener('pointerleave', () => {
-				const on = swatches.find((o) => o.classList.contains('is-on'));
-				if (on) say(on);
-				tint(held);
+			deck.addEventListener('pointerup', (e) => {
+				if (!down) return;
+				down = false;
+				const dx = e.clientX - downX;
+				if (Math.abs(dx) > 42) { turn(dx < 0 ? 1 : -1); start(); }
 			});
+			deck.addEventListener('pointercancel', () => { down = false; });
+		}
+
+		place();
+		const isStudio = () =>
+			document.documentElement.getAttribute('data-view') === 'studio';
+		if (isStudio()) start();
+		window.addEventListener('swizel:viewchange', (e) => {
+			if ((e as CustomEvent).detail === 'studio') { go(0); start(); }
+			else stop();
 		});
 
-		// hovering a hung piece borrows its colour; leaving gives it back
-		hero.querySelectorAll<HTMLElement>('.shr-hung').forEach((art) => {
-			const c = art.dataset.shrTint;
-			if (!c) return;
-			const take = () => tint(c);
-			const give = () => tint(held);
-			art.addEventListener('pointerenter', take);
-			art.addEventListener('focus', take);
-			art.addEventListener('pointerleave', give);
-			art.addEventListener('blur', give);
-		});
-
-		// ── the spotlight and the parallax ──────────────────────────
-		// One pointermove, one rAF, three writes. The wall's pieces read
-		// --px/--py and multiply by their own depth in CSS, so the further
-		// a piece hangs the further it swims — no per-element maths here.
+		// ── the spotlight ───────────────────────────────────────────
+		// One pointermove, one rAF, two writes: the beam's centre. The
+		// deck tilts a shade with it so the room has a little depth.
 		if (!still.matches) {
 			let raf = 0;
-			let px = 0;
-			let py = 0;
-			let mx = 60;
+			let mx = 62;
 			let my = 34;
 
 			const paint = () => {
 				raf = 0;
 				hero.style.setProperty('--mx', `${mx}%`);
 				hero.style.setProperty('--my', `${my}%`);
-				if (wall) {
-					wall.style.setProperty('--px', `${px.toFixed(2)}px`);
-					wall.style.setProperty('--py', `${py.toFixed(2)}px`);
-				}
-				if (frame) {
-					frame.style.setProperty('--ry', `${(px * 0.28).toFixed(2)}deg`);
-					frame.style.setProperty('--rx', `${(-py * 0.3).toFixed(2)}deg`);
-				}
+				if (deck) deck.style.perspectiveOrigin = `${40 + mx * 0.2}% ${40 + my * 0.12}%`;
 			};
 
 			hero.addEventListener('pointermove', (e) => {
 				if (e.pointerType === 'touch') return;
 				const r = hero.getBoundingClientRect();
-				const nx = (e.clientX - r.left) / r.width;
-				const ny = (e.clientY - r.top) / r.height;
-				mx = nx * 100;
-				my = ny * 100;
-				px = (nx - 0.5) * -14;
-				py = (ny - 0.5) * -10;
+				mx = ((e.clientX - r.left) / r.width) * 100;
+				my = ((e.clientY - r.top) / r.height) * 100;
 				if (!raf) raf = requestAnimationFrame(paint);
 			});
-
 			hero.addEventListener('pointerleave', () => {
-				mx = 60;
+				mx = 62;
 				my = 34;
-				px = 0;
-				py = 0;
 				if (!raf) raf = requestAnimationFrame(paint);
 			});
 		}
@@ -107,24 +178,19 @@ export function initStudioView() {
 	// the tour walks the whole studio world, hero to footer
 	const steps: TourStep[] = [
 		{
-			sel: '.hero-studio .shr-head',
+			sel: '.hero-studio .shr-rhead',
 			title: 'Private view',
 			body: 'You imagine it. We design, build, film and launch it — and it ends up on this wall.',
 		},
 		{
-			sel: '#studio-gallery .shr-hero-frame',
-			title: 'The studio reel',
-			body: 'A year of work in ninety seconds. It runs on its own — press anywhere on it to take control.',
+			sel: '#studio-gallery .shr-deck',
+			title: 'The collection, turning',
+			body: 'The studio reel and six real pieces on a carousel. Drag it, or click anything standing behind.',
 		},
 		{
-			sel: '#studio-gallery .shr-hung--a',
-			title: 'Six pieces, hung',
-			body: 'Real client work, each in its own frame. Touch one and the whole room takes its colour.',
-		},
-		{
-			sel: '.hero-studio .shr-palette',
-			title: 'The palette',
-			body: 'Five house colours. Pick one and the gallery is repainted around you.',
+			sel: '#studio-gallery .shr-caption',
+			title: 'The label',
+			body: 'Whatever is centre stage is named here — and the whole room repaints itself in that work\'s colour.',
 		},
 		{
 			sel: '#view-banner .vw-head',

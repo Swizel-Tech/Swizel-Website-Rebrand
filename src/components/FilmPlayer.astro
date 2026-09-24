@@ -23,6 +23,8 @@ interface Props {
 	ambient?: boolean;
 	/** fill a frame that is not 16/9, cropping rather than letterboxing */
 	cover?: boolean;
+	/** a local still to fall back to if YouTube's thumbnail will not load */
+	fallback?: string;
 	/** start on its own once on screen — muted, because every browser
 	    refuses autoplay with sound, and the visitor can unmute */
 	autoplay?: boolean;
@@ -39,13 +41,17 @@ const {
 	caption,
 	ambient = false,
 	cover = false,
+	fallback,
 	autoplay = false,
 	ratio = '16 / 9',
 	class: klass = '',
 } = Astro.props;
 
 // A YouTube film already has a still: its own thumbnail. Without it the
-// frame is a black rectangle until the iframe mounts on first play.
+// frame is a black rectangle until the iframe mounts on first play. maxres
+// does not exist for every upload and some networks refuse i.ytimg.com
+// outright, so the poster walks down a ladder — maxres, then hq, then
+// whatever local still the caller handed us.
 const still = poster || (videoId ? `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg` : undefined);
 
 const rates = [0.5, 1, 1.25, 1.5, 2];
@@ -87,6 +93,7 @@ const rates = [0.5, 1, 1.25, 1.5, 2];
 				loading="lazy"
 				decoding="async"
 				data-flm-poster
+				data-flm-poster-fallback={fallback}
 			/>
 		)}
 
