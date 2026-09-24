@@ -131,6 +131,150 @@ const spotWorks = [
 					</div>
 				</div>
 			</div>
+			<ul class="sp-wings sd-rev">
+				{stats.map((s) => (
+					<li>
+						<strong>{s.n}</strong>
+						<span>{s.label}</span>
+					</li>
+				))}
+			</ul>
+		</div>
+	</section>
+
+	<!-- ── B · featured exhibitions (the big rooms) ────────── -->
+	<section class="sp-sec" data-cursor="play">
+		<div class="sp-wrap">
+			<div class="sp-rule sd-rev">
+				<span>Featured exhibitions</span>
+				<span>The big rooms · full case studies</span>
+			</div>
+			{
+				featuredProjects.map((p, i) => (
+					<div class:list={['sp-ex', 'sd-rev', { 'sp-ex--rev': i % 2 === 1 }]} style={`--c:${p.color}`}>
+						<a class="sp-exmedia" href={`/work/${p.slug}`} data-fa-tilt="4" aria-label={`${p.name} case study`}>
+							<span class="sa-glare" aria-hidden="true" />
+							<img src={p.img} alt={p.name} loading="lazy" />
+							<span class="sp-exveil" aria-hidden="true" />
+							<span class="sp-exroom">Room {roman[i] || p.year}</span>
+						</a>
+						<div class="sp-excopy">
+							<span class="sp-exkick">Room {roman[i]} · {sectorLabels[p.sector]} · {p.year}</span>
+							<h2 class="sp-exname">{p.name}</h2>
+							<p class="sp-extag">{p.tagline}</p>
+							<p class="sp-exblurb">{p.blurb}</p>
+							<span class="sp-extags">
+								{p.tags.map((t) => <i>{t}</i>)}
+							</span>
+							<a href={`/work/${p.slug}`} class="sp-link">
+								Walk the exhibition
+								<Icon width={15} name="mdi:arrow-right" />
+							</a>
+						</div>
+					</div>
+				))
+			}
+		</div>
+	</section>
+
+	<!-- ── C · the full wall (filterable catalogue) ────────── -->
+	<section class="sp-sec" id="sp-wall" data-cursor="repo">
+		<div class="sp-wrap">
+			<div class="sp-rule sd-rev">
+				<span>The full wall</span>
+				<span>Choose an index tab · hanging now</span>
+			</div>
+			<form class="sp-filter" autocomplete="off">
+				<input class="sp-radio" type="radio" name="spf" id="spf-all" checked />
+				{sectors.map((s) => <input class="sp-radio" type="radio" name="spf" id={`spf-${s}`} />)}
+				<div class="sp-tabs sd-rev">
+					<label class="sp-tab" for="spf-all">All works <em>65+</em></label>
+					{
+						sectors.map((s) => (
+							<label class="sp-tab" for={`spf-${s}`}>
+								{sectorLabels[s]} <em>{sectorShown[s]}</em>
+							</label>
+						))
+					}
+				</div>
+				<div class="sp-wall">
+					{
+						projects.map((p, i) => {
+							const href = dest(p);
+							const hasCase = !!p.caseStudy;
+							const Tag = href ? 'a' : 'div';
+							return (
+								<figure class:list={['sp-art', 'sd-rev', `s-${p.sector}`]} style={`--c:${p.color}; --i:${i % 3}`}>
+									<Tag
+										class="sp-art-link"
+										href={href ?? undefined}
+										data-leaving={leaves(p) ? p.host : undefined}
+										data-leaving-name={leaves(p) ? p.name : undefined}
+										rel={leaves(p) ? 'noopener noreferrer' : undefined}
+										aria-label={p.name}
+									>
+										<span class="sp-art-frame" data-fa-tilt="5">
+											<span class="sa-glare" aria-hidden="true" />
+											<img src={p.img} alt={p.name} loading="lazy" />
+											{hasCase && (
+												<span class="sp-art-ribbon">Featured exhibition</span>
+											)}
+											{href && !hasCase && (
+												<span class="sp-art-view" aria-hidden="true">
+													View live <Icon width={13} name="mdi:arrow-top-right" />
+												</span>
+											)}
+										</span>
+										<figcaption class="sp-plaque">
+											<strong>{p.name}</strong>
+											<span>{sectorLabels[p.sector]} · {p.year}</span>
+										</figcaption>
+									</Tag>
+								</figure>
+							);
+						})
+					}
+					<!-- the reserved slot: visible under every tab -->
+					<a
+						class="sp-art sp-next s-agri s-health s-property s-media s-commerce s-product"
+						href="/contact"
+						data-cursor="phone"
+					>
+						<span class="sp-next-frame">
+							<Icon width={26} name="mdi:plus" />
+							<strong>This spot is reserved.</strong>
+							<em>For your brand. Bring the brief and we will frame the result.</em>
+						</span>
+						<span class="sp-plaque">
+							<strong>Untitled, {new Date().getFullYear()}</strong>
+							<span>Your sector · Commission open</span>
+						</span>
+					</a>
+				</div>
+			</form>
+		</div>
+	</section>
+
+	<!-- ── D · the commission desk ─────────────────────────── -->
+	<section class="sp-sec sp-sec--cta" data-cursor="phone">
+		<div class="sp-wrap sp-cta sd-rev">
+			<h2 class="sp-display sp-display--cta">
+				The wall has<br />
+				<em>one space left.</em>
+			</h2>
+			<p class="sp-lead sp-lead--center">
+				Every piece up there started as somebody's rough idea. Bring
+				yours. We design it, build it, hang it and keep it alive.
+			</p>
+			<div class="sp-cta-row">
+				<a href="/contact" class="sp-btn fa-cta">
+					Reserve the spot
+					<Icon width={17} name="mdi:arrow-right" />
+				</a>
+				<a href="tel:+2348100204570" class="sp-call">
+					or call <strong>+234 810 020 4570</strong>
+				</a>
+			</div>
 		</div>
 	</section>
 </div>
