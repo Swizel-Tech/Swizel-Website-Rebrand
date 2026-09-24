@@ -130,17 +130,21 @@ const ticker = [
 							href={p.url ?? `/work/${p.slug}`}
 							target={p.url ? '_blank' : undefined}
 							rel={p.url ? 'noopener noreferrer' : undefined}
-							style={`--c:${p.color}; --d:${i === 1 ? 3 : 2}; --i:${i}; --rot:${[-2.4, 1.6, -1.4][i]}deg`}
+							style={`--c:${p.color}; --d:${i === 1 ? 3 : 2}; --i:${i}; --rot:${[-3.2, 2.4, -2][i]}deg; --sway:${[6.4, 5.6, 7.1][i]}s`}
 							data-shr-art={i}
 							data-tint={p.color}
 							data-name={p.name}
 							data-meta={`${p.tags[0] ?? 'Work'} · ${p.year}`}
 							data-cursor="repo"
 						>
-							<span class="shr-hung-frame">
-								<span class="shr-fillet" aria-hidden="true"></span>
-								<img src={p.img} alt={`${p.name} — ${p.tagline}`} loading="eager" decoding="async" />
-								<span class="shr-glass" aria-hidden="true"></span>
+							<span class="shr-line" aria-hidden="true"></span>
+							<span class="shr-swing">
+								<span class="shr-peg" aria-hidden="true"></span>
+								<span class="shr-hung-frame">
+									<img src={p.img} alt={`${p.name} — ${p.tagline}`} loading="eager" decoding="async" />
+									<span class="shr-glass" aria-hidden="true"></span>
+									<span class="shr-scribble">{p.name}</span>
+								</span>
 							</span>
 						</a>
 					))
@@ -181,17 +185,21 @@ const ticker = [
 							href={p.url ?? `/work/${p.slug}`}
 							target={p.url ? '_blank' : undefined}
 							rel={p.url ? 'noopener noreferrer' : undefined}
-							style={`--c:${p.color}; --d:${i === 1 ? 3 : 2}; --i:${i + 3}; --rot:${[2.2, -1.8, 1.5][i]}deg`}
+							style={`--c:${p.color}; --d:${i === 1 ? 3 : 2}; --i:${i + 3}; --rot:${[2.8, -2.2, 2][i]}deg; --sway:${[6.8, 7.4, 6.0][i]}s`}
 							data-shr-art={i + 3}
 							data-tint={p.color}
 							data-name={p.name}
 							data-meta={`${p.tags[0] ?? 'Work'} · ${p.year}`}
 							data-cursor="repo"
 						>
-							<span class="shr-hung-frame">
-								<span class="shr-fillet" aria-hidden="true"></span>
-								<img src={p.img} alt={`${p.name} — ${p.tagline}`} loading="lazy" decoding="async" />
-								<span class="shr-glass" aria-hidden="true"></span>
+							<span class="shr-line" aria-hidden="true"></span>
+							<span class="shr-swing">
+								<span class="shr-peg" aria-hidden="true"></span>
+								<span class="shr-hung-frame">
+									<img src={p.img} alt={`${p.name} — ${p.tagline}`} loading="lazy" decoding="async" />
+									<span class="shr-glass" aria-hidden="true"></span>
+									<span class="shr-scribble">{p.name}</span>
+								</span>
 							</span>
 						</a>
 					))
@@ -337,10 +345,10 @@ const ticker = [
 		padding-bottom: clamp(3rem, 6vw, 4.5rem);
 	}
 	@media (min-width: 1080px) {
-		.shr-wrap { grid-template-columns: minmax(0, 0.76fr) minmax(0, 1.24fr); }
+		.shr-wrap { grid-template-columns: minmax(0, 0.73fr) minmax(0, 1.27fr); }
 		/* the wall runs a little past its column on the open side — there
 		   is nothing over there to crowd, and the reel wants the room */
-		.shr-wall { margin-right: -5%; }
+		.shr-wall { margin-right: -2%; }
 	}
 	.shr-copy { position: relative; z-index: 6; }
 
@@ -476,8 +484,8 @@ const ticker = [
 	.shr-wall {
 		position: relative;
 		display: grid;
-		grid-template-columns: minmax(0, 1fr) minmax(0, 3.3fr) minmax(0, 1fr);
-		gap: clamp(0.5rem, 1.3vw, 1.1rem);
+		grid-template-columns: minmax(0, 0.95fr) minmax(0, 3.9fr) minmax(0, 0.95fr);
+		gap: clamp(0.7rem, 1.7vw, 1.4rem);
 		align-items: center;
 		perspective: 1500px;
 		animation: shr-in 1s ease 0.3s both;
@@ -565,77 +573,137 @@ const ticker = [
 	.shr-lit em { font-style: normal; animation: shr-say 0.5s cubic-bezier(0.22, 1, 0.36, 1) 60ms both; }
 	@keyframes shr-say { from { opacity: 0; transform: translateY(6px); filter: blur(4px); } }
 
-	/* ── the hung pieces ── */
+	/* ── the pieces: polaroids, pegged to a line ──────────────────
+	   Three jobs, three elements, so none of them fight over the one
+	   transform: the anchor takes the pointer parallax, the swing takes
+	   the dangle, and the print itself takes the hover lift. */
 	.shr-hung {
+		position: relative;
 		display: block;
 		min-width: 0;
+		padding-top: 1.5rem;
 		color: var(--ink);
-		transform:
-			translate3d(calc(var(--px, 0px) * var(--d)), calc(var(--py, 0px) * var(--d)), 0)
-			rotate(var(--rot, 0deg));
+		transform: translate3d(calc(var(--px, 0px) * var(--d)), calc(var(--py, 0px) * var(--d)), 0);
 		transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 		animation: shr-hang 0.9s cubic-bezier(0.34, 1.3, 0.64, 1) both;
 		animation-delay: calc(var(--i) * 100ms + 0.5s);
 		will-change: transform;
 	}
-	@keyframes shr-hang { from { opacity: 0; transform: translateY(-24px) rotate(-4deg); } }
+	@keyframes shr-hang { from { opacity: 0; transform: translateY(-22px); } }
 
+	/* the line it hangs from, running out past the print either side */
+	.shr-line {
+		position: absolute;
+		top: 0.35rem;
+		left: -14%;
+		right: -14%;
+		height: 1px;
+		background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4) 12%, rgba(255, 255, 255, 0.5) 88%, transparent);
+		pointer-events: none;
+	}
+	:global(html:not(.dark)) .shr-line {
+		background: linear-gradient(90deg, transparent, rgba(36, 16, 28, 0.32) 12%, rgba(36, 16, 28, 0.36) 88%, transparent);
+	}
+
+	/* everything below the peg swings together */
+	.shr-swing {
+		display: block;
+		transform-origin: 50% -1.1rem;
+		transform: rotate(var(--rot, 0deg));
+		animation: shr-dangle var(--sway, 6s) ease-in-out infinite;
+		animation-delay: calc(var(--i) * -0.9s);
+		will-change: transform;
+	}
+	@keyframes shr-dangle {
+		0%, 100% { transform: rotate(var(--rot, 0deg)); }
+		50% { transform: rotate(calc(var(--rot, 0deg) * -0.85)); }
+	}
+
+	/* the peg holding it to the line */
+	.shr-peg {
+		position: absolute;
+		top: -1.15rem;
+		left: 50%;
+		width: 9px;
+		height: 20px;
+		margin-left: -4.5px;
+		border-radius: 2px;
+		background: linear-gradient(180deg, #e9d9c6, #c9ab89);
+		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.45);
+		z-index: 4;
+	}
+	.shr-peg::after {
+		content: '';
+		position: absolute;
+		inset: 6px 2px auto;
+		height: 1px;
+		background: rgba(0, 0, 0, 0.22);
+	}
+
+	/* the print: a white mount with a deep chin, like every polaroid */
 	.shr-hung-frame {
 		position: relative;
 		display: block;
-		border-radius: 0.34rem;
-		overflow: hidden;
-		padding: 0.3rem;
-		background: linear-gradient(150deg, #2c1c26, #160d16 62%);
-		border: 1px solid var(--frame);
-		box-shadow: 0 26px 56px -26px rgba(0, 0, 0, 0.92);
-		transition: box-shadow 0.5s ease, border-color 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-	}
-	:global(html:not(.dark)) .shr-hung-frame {
-		background: linear-gradient(150deg, #fffdfe, #f3e7ed 62%);
-		box-shadow: 0 22px 46px -26px rgba(36, 16, 28, 0.4);
+		padding: 0.42rem 0.42rem 1.5rem;
+		border-radius: 3px;
+		background: linear-gradient(170deg, #fdfaf6, #f0e7dd);
+		box-shadow:
+			0 20px 34px -18px rgba(0, 0, 0, 0.8),
+			0 2px 6px rgba(0, 0, 0, 0.28);
+		transition: box-shadow 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 	}
 	.shr-hung-frame img {
 		display: block;
 		width: 100%;
-		aspect-ratio: 4 / 3;
+		aspect-ratio: 1 / 1;
 		object-fit: cover;
-		border-radius: 0.18rem;
-		filter: saturate(0.72) brightness(0.78);
+		border-radius: 1px;
+		background: #1a1116;
+		filter: saturate(0.76) brightness(0.84) contrast(1.02);
 		transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1), filter 0.6s ease;
 	}
-	:global(html:not(.dark)) .shr-hung-frame img { filter: saturate(0.88) brightness(0.94); }
-	.shr-fillet {
-		position: absolute; inset: 0.28rem;
-		border-radius: 0.2rem;
-		border: 1px solid color-mix(in srgb, var(--c, var(--sa)) 34%, rgba(255, 255, 255, 0.18));
-		pointer-events: none;
-		z-index: 3;
+	/* the name, written on the chin */
+	.shr-scribble {
+		position: absolute;
+		left: 0.5rem;
+		right: 0.5rem;
+		bottom: 0.34rem;
+		font-family: 'Bradley Hand', 'Segoe Print', 'Comic Sans MS', cursive;
+		font-size: 0.74rem;
+		font-weight: 700;
+		line-height: 1.1;
+		text-align: center;
+		color: #3a2a33;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		transform: rotate(-0.8deg);
 	}
-	.shr-mat--reel > .shr-fillet { inset: 0.34rem; border-radius: 0.3rem; }
 	.shr-glass {
-		position: absolute; inset: 0.3rem;
-		border-radius: 0.18rem;
-		background: linear-gradient(118deg, rgba(255, 255, 255, 0.2) 0%, transparent 34%, transparent 66%, rgba(255, 255, 255, 0.08) 100%);
-		opacity: 0.75;
+		position: absolute;
+		inset: 0.42rem 0.42rem 1.5rem;
+		border-radius: 1px;
+		background: linear-gradient(118deg, rgba(255, 255, 255, 0.26) 0%, transparent 34%, transparent 66%, rgba(255, 255, 255, 0.1) 100%);
+		opacity: 0.7;
 		transition: opacity 0.5s ease, transform 0.7s ease;
 		pointer-events: none;
 	}
 
-	/* the lit piece — the one the room is wearing. It moves along on
-	   its own, and follows the pointer when there is one. */
+	/* the lit print — the one the room is wearing. It hangs forward,
+	   comes up to full colour and swings a touch wider. */
 	.shr-hung.is-lit .shr-hung-frame,
 	.shr-hung:hover .shr-hung-frame {
-		transform: translateY(-6px) scale(1.035);
-		border-color: color-mix(in srgb, var(--c) 70%, transparent);
+		transform: translateY(-4px) scale(1.05);
 		box-shadow:
-			0 40px 80px -30px rgba(0, 0, 0, 0.95),
-			0 0 60px -14px color-mix(in srgb, var(--c) 80%, transparent);
+			0 34px 60px -22px rgba(0, 0, 0, 0.85),
+			0 0 44px -10px color-mix(in srgb, var(--c) 85%, transparent);
 	}
 	.shr-hung.is-lit .shr-hung-frame img,
-	.shr-hung:hover .shr-hung-frame img { filter: saturate(1.1) brightness(1.02); transform: scale(1.05); }
+	.shr-hung:hover .shr-hung-frame img { filter: saturate(1.12) brightness(1.04); transform: scale(1.04); }
 	.shr-hung.is-lit .shr-glass,
-	.shr-hung:hover .shr-glass { opacity: 0.22; transform: translateX(14%); }
+	.shr-hung:hover .shr-glass { opacity: 0.2; transform: translateX(12%); }
+	.shr-hung.is-lit .shr-swing { animation-duration: calc(var(--sway, 6s) * 0.72); }
+	.shr-hung.is-lit .shr-scribble { color: color-mix(in srgb, var(--c) 78%, #2a1a22); }
 
 	/* ═══ the ticker ═════════════════════════════════════════════ */
 	.shr-ticker {
@@ -727,10 +795,11 @@ const ticker = [
 	@media (prefers-reduced-motion: reduce) {
 		.shr-orb, .shr-grain, .shr-mote, .shr-plaque,
 		.shr-ticker-track, .shr-ghost-ic,
-		.shr-sub, .shr-cta, .shr-wall, .shr-hung,
+		.shr-sub, .shr-cta, .shr-wall, .shr-hung, .shr-swing,
 		.shr-colophon li, .shr-lit b, .shr-lit em,
 		:global(.hero-studio .btn--accent::after) { animation: none !important; }
 		.shr-mote { display: none; }
 		.shr-hung, .shr-hung-frame, .shr-mat--reel { transition: none; }
+		.shr-swing { transform: rotate(var(--rot, 0deg)); }
 	}
 </style>
