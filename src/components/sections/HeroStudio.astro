@@ -21,6 +21,13 @@ import { projects } from '../../data/projects';
 
 const pick = (slug: string) => projects.find((p) => p.slug === slug)!;
 
+// Where a print sends you: its own case study when there is one, its live
+// site otherwise. They all pointed at the catalogue before, which made six
+// different works lead to the same page.
+const dest = (p: (typeof projects)[number]) =>
+	p.caseStudy ? `/work/${p.slug}` : (p.url ?? '/portfolio#sp-wall');
+const leaves = (p: (typeof projects)[number]) => !p.caseStudy && !!p.url;
+
 // The collection, and the colour the room wears for each piece.
 //
 // A brand's own colour is chosen to behave on its own site — half of them
@@ -185,7 +192,11 @@ const ticker = [
 					works.slice(0, 3).map(({ p, lit, day }, i) => (
 						<a
 							class="shr-hung"
-							href="/portfolio#sp-wall"
+							href={dest(p)}
+							target={leaves(p) ? '_blank' : undefined}
+							rel={leaves(p) ? 'noopener noreferrer' : undefined}
+							data-leaving={leaves(p) ? p.host : undefined}
+							data-leaving-name={leaves(p) ? p.name : undefined}
 							style={`--c:${lit}; --c-day:${day}; --d:${i === 1 ? 3 : 2}; --i:${i}; --rot:${[-3.2, 2.4, -2][i]}deg; --sway:${[6.4, 5.6, 7.1][i]}s`}
 							data-shr-art={i}
 							data-tint={lit}
@@ -241,7 +252,11 @@ const ticker = [
 					works.slice(3, 6).map(({ p, lit, day }, i) => (
 						<a
 							class="shr-hung"
-							href="/portfolio#sp-wall"
+							href={dest(p)}
+							target={leaves(p) ? '_blank' : undefined}
+							rel={leaves(p) ? 'noopener noreferrer' : undefined}
+							data-leaving={leaves(p) ? p.host : undefined}
+							data-leaving-name={leaves(p) ? p.name : undefined}
 							style={`--c:${lit}; --c-day:${day}; --d:${i === 1 ? 3 : 2}; --i:${i + 3}; --rot:${[2.8, -2.2, 2][i]}deg; --sway:${[6.8, 7.4, 6.0][i]}s`}
 							data-shr-art={i + 3}
 							data-tint={lit}

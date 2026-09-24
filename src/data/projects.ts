@@ -500,6 +500,32 @@ export const projects: Project[] = [
 		tags: ['Website', 'Maintenance'],
 		color: '#8b5cf6',
 		year: '2023',
+		caseStudy: {
+			intro:
+				'Estate agents live or die on trust. My Eya Estate needed a home on the web that felt as considered as the properties on it, where a listing could be read, believed and enquired about without a phone call first.',
+			challenge:
+				'Property sites tend to bury the property. Listings sit behind filters, photographs are squeezed into thumbnails, and the enquiry is a form at the bottom that nobody reaches. The brief was to put the homes first and make asking about one feel like a small, easy step.',
+			approach: [
+				{ title: 'Lead with the property', desc: 'Every listing is built around its photographs at the size they deserve, with the facts a buyer actually asks for sitting beside them rather than under a tab.' },
+				{ title: 'A calm, trustworthy shell', desc: 'Generous type, plenty of white space and a restrained palette, so nothing on the page competes with the homes it is selling.' },
+				{ title: 'Enquiry in reach', desc: 'The way to ask about a property follows you down the page, because the moment someone is interested is the moment to make it easy.' },
+			],
+			highlights: [
+				{ title: 'Listings that read well', desc: 'A layout that works whether a property has twenty photographs or three.' },
+				{ title: 'Built to be kept', desc: 'Listings are straightforward to add and edit, so the site stays current without us in the loop.' },
+				{ title: 'Fast on a phone', desc: 'Most buyers arrive on a handset, so the pages are light and the images are sized for the screen they land on.' },
+			],
+			results: [
+				{ stat: 'Live', label: 'in the market since 2023' },
+				{ stat: 'Web', label: 'designed, built and maintained' },
+				{ stat: 'One team', label: 'brand through to hosting' },
+			],
+			gallery: [
+				{ kind: 'image', src: '/images/portfolio/my%20eya%20estate.jpg', label: 'The estate site', caption: 'Listings given the room to sell themselves.' },
+			],
+			services: ['Website', 'Maintenance'],
+			meta: { client: 'My Eya Estate', sector: 'Property · Estate agency', year: '2023', scope: 'Website · Maintenance' },
+		},
 	},
 	{
 		slug: 'appman',
@@ -515,6 +541,32 @@ export const projects: Project[] = [
 		color: '#2bb3c0',
 		year: '2022',
 		kind: 'app',
+		caseStudy: {
+			intro:
+				'AppMan set out to replace the paper that runs a school. Attendance registers, test papers, and the phone calls home all became one platform, on the web and in a pocket.',
+			challenge:
+				'A school runs on records that are easy to lose and hard to check. Registers are taken on paper, results are transcribed by hand, and parents hear about a problem long after it happened. Anything replacing that has to be quicker than the paper it replaces, or nobody uses it.',
+			approach: [
+				{ title: 'Attendance in a second', desc: 'Smart ID cards and a QR scan take a register in the time it takes to walk through a door, with the record written as it happens.' },
+				{ title: 'Testing on the computer', desc: 'Papers are set, sat and marked in the platform, so results exist the moment a test ends rather than a week later.' },
+				{ title: 'A door for parents', desc: 'A portal for students and parents, so attendance and results are something you can look up instead of something you wait to be told.' },
+			],
+			highlights: [
+				{ title: 'QR smart IDs', desc: 'One card per student, scanned at the door, no register to carry or lose.' },
+				{ title: 'Computer-based testing', desc: 'Tests set once, sat on any machine, marked automatically.' },
+				{ title: 'Web and mobile together', desc: 'The same platform in the office and in a pocket, built by one team so the two never drift.' },
+			],
+			results: [
+				{ stat: 'Web + mobile', label: 'one platform, two faces' },
+				{ stat: '3 roles', label: 'staff, students and parents' },
+				{ stat: '2022', label: 'designed, built and shipped' },
+			],
+			gallery: [
+				{ kind: 'image', src: '/images/portfolio/shot-appman.jpg', label: 'AppMan', caption: 'The school, in the palm of a hand.' },
+			],
+			services: ['Mobile app', 'Web app', 'EdTech'],
+			meta: { client: 'AppMan', sector: 'Education · School management', year: '2022', scope: 'Product · Web app · Mobile app' },
+		},
 	},
 	{
 		slug: 'buygas',
@@ -530,6 +582,32 @@ export const projects: Project[] = [
 		color: '#22c55e',
 		year: '2023',
 		kind: 'app',
+		caseStudy: {
+			intro:
+				'Buying cooking gas usually means carrying a cylinder to a merchant and carrying it back. BuyGas put the merchants on a platform and the delivery on a map, so the cylinder comes to you.',
+			challenge:
+				'Two sides had to be served at once. Customers want a price, a time and a way to see where their order is. Merchants want orders they can actually fulfil, without a second job managing an app. Neither side tolerates a slow or confusing flow when the alternative is a short walk.',
+			approach: [
+				{ title: 'Order in a few taps', desc: 'Size, address, time. The ordering path is short enough to finish while the kettle boils.' },
+				{ title: 'Merchants on the platform', desc: 'A dashboard for the people filling the orders, built around what they need to see on a busy afternoon rather than what looks good in a demo.' },
+				{ title: 'Tracked to the doorstep', desc: 'The order has a state you can look at, so nobody has to ring to find out where the gas is.' },
+			],
+			highlights: [
+				{ title: 'Platform as a service', desc: 'Merchants join the platform rather than commissioning software of their own.' },
+				{ title: 'Delivery tracking', desc: 'From tap to doorstep, visible on both sides of the order.' },
+				{ title: 'Built for a handset', desc: 'Designed phone first, because that is where the order is placed.' },
+			],
+			results: [
+				{ stat: 'Two-sided', label: 'customers and merchants' },
+				{ stat: 'Mobile', label: 'ordering and tracking' },
+				{ stat: '2023', label: 'designed and built' },
+			],
+			gallery: [
+				{ kind: 'image', src: '/images/portfolio/shot-buygas.jpg', label: 'BuyGas', caption: 'Cooking gas, ordered and tracked.' },
+			],
+			services: ['Mobile app', 'Delivery', 'PaaS'],
+			meta: { client: 'BuyGas', sector: 'Logistics · Energy', year: '2023', scope: 'Product · Mobile app · Platform' },
+		},
 	},
 	{
 		slug: 'beauty-hive',
@@ -543,6 +621,32 @@ export const projects: Project[] = [
 		tags: ['E-commerce', 'Branding'],
 		color: '#ec4899',
 		year: '2023',
+		caseStudy: {
+			intro:
+				'Beauty is sold on how it looks, and then on how easily you can buy it. Beauty Hive needed both: a brand with presence and a storefront that gets out of the way at checkout.',
+			challenge:
+				'Beauty storefronts are crowded places. Ranges are wide, shades multiply, and a shopper who cannot find the exact product they want leaves. The store had to merchandise a deep catalogue without turning the homepage into a catalogue.',
+			approach: [
+				{ title: 'A brand with a face', desc: 'Identity, palette and type chosen to sit on a product shot without fighting it, so the brand carries across packaging and screen alike.' },
+				{ title: 'Merchandising the range', desc: 'Products grouped the way a shopper thinks about them, with the bestsellers given room and the long tail kept findable.' },
+				{ title: 'A checkout that closes', desc: 'The fewest steps the payment allows, on a phone, with nothing between wanting the product and owning it.' },
+			],
+			highlights: [
+				{ title: 'Brand and store together', desc: 'Designed and built by one team, so the storefront actually looks like the brand.' },
+				{ title: 'Product-first layouts', desc: 'Photography at the size it needs, with the detail underneath rather than in the way.' },
+				{ title: 'Ready to grow', desc: 'New ranges drop into the structure without a redesign.' },
+			],
+			results: [
+				{ stat: 'Brand + store', label: 'one commission' },
+				{ stat: 'E-commerce', label: 'built to sell, not to browse' },
+				{ stat: '2023', label: 'designed and shipped' },
+			],
+			gallery: [
+				{ kind: 'image', src: '/images/portfolio/beauty-hive.webp', label: 'Beauty Hive', caption: 'A storefront built to close the sale.' },
+			],
+			services: ['E-commerce', 'Branding'],
+			meta: { client: 'Beauty Hive', sector: 'Commerce · Beauty', year: '2023', scope: 'Brand · Storefront · E-commerce' },
+		},
 	},
 	{
 		slug: 'purple-panda',
@@ -556,6 +660,32 @@ export const projects: Project[] = [
 		tags: ['Branding', 'SEO', 'Website'],
 		color: '#a855f7',
 		year: '2022',
+		caseStudy: {
+			intro:
+				'Purple Panda is a marketing-led product, which means the brand has to do the selling before anyone reads a word. We built an identity with a pulse and a site tuned to be found.',
+			challenge:
+				'A marketing product is judged on its own marketing. A quiet brand is a bad advert for what you sell, but a loud one that nobody can find is no better. The work had to be distinctive and legible to a search engine at the same time.',
+			approach: [
+				{ title: 'An identity that carries', desc: 'A mark and a palette strong enough to hold their own in a feed, and calm enough to live on a long page.' },
+				{ title: 'Written to be found', desc: 'Structure, headings and copy built around what people actually search for, rather than fitted to the design afterwards.' },
+				{ title: 'Tuned for growth', desc: 'Pages that load fast and read cleanly, because both are ranking factors and both are courtesies.' },
+			],
+			highlights: [
+				{ title: 'Brand and site as one', desc: 'The identity was designed against the layouts it would live in.' },
+				{ title: 'SEO in the foundations', desc: 'Built into the markup and the copy from the first page rather than bolted on.' },
+				{ title: 'Room to campaign', desc: 'Landing pages drop into the system without breaking the look.' },
+			],
+			results: [
+				{ stat: 'Brand + web', label: 'designed together' },
+				{ stat: 'SEO', label: 'built in, not bolted on' },
+				{ stat: '2022', label: 'shipped' },
+			],
+			gallery: [
+				{ kind: 'image', src: '/images/portfolio/purplepanda%20world.jpg', label: 'Purple Panda', caption: 'A brand with a pulse.' },
+			],
+			services: ['Branding', 'SEO', 'Website'],
+			meta: { client: 'Purple Panda', sector: 'Commerce · Marketing', year: '2022', scope: 'Brand · Website · SEO' },
+		},
 	},
 	{
 		slug: 'saros',
@@ -569,6 +699,32 @@ export const projects: Project[] = [
 		tags: ['Website', 'Maintenance'],
 		color: '#f97316',
 		year: '2023',
+		caseStudy: {
+			intro:
+				'Saros teaches, and everything on the platform had to serve that. Not a prospectus with a login, but a place where a learner, a parent and a tutor each find what they came for.',
+			challenge:
+				'Education platforms are built for three audiences who want different things from the same page. Students want the work. Parents want reassurance. Staff want the admin to take less time than it used to. Serve one badly and the platform is not used.',
+			approach: [
+				{ title: 'Clear before clever', desc: 'Plain language, obvious routes and a calm palette, because a learner who is lost is a learner who stops.' },
+				{ title: 'Three audiences, one place', desc: 'Structure that gives each of the three a front door without three separate products to maintain.' },
+				{ title: 'Dependable, then pretty', desc: 'Pages that hold up on a slow connection and an old handset first; the polish sits on top of that, not instead of it.' },
+			],
+			highlights: [
+				{ title: 'Designed around the reader', desc: 'Type sized for long reading, not for a screenshot.' },
+				{ title: 'Maintained, not handed over', desc: 'We stayed on after launch for updates and uptime.' },
+				{ title: 'Built to be added to', desc: 'New programmes and pages fit the system as it stands.' },
+			],
+			results: [
+				{ stat: 'Live', label: 'in the market since 2023' },
+				{ stat: '3 audiences', label: 'students, parents, staff' },
+				{ stat: 'Maintained', label: 'by the team that built it' },
+			],
+			gallery: [
+				{ kind: 'image', src: '/images/portfolio/sarosgp.jpg', label: 'Saros', caption: 'Learning, made simple.' },
+			],
+			services: ['Website', 'Maintenance'],
+			meta: { client: 'Saros', sector: 'Education · Learning platform', year: '2023', scope: 'Website · Maintenance' },
+		},
 	},
 ];
 

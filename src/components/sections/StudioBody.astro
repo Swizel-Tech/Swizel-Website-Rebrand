@@ -213,6 +213,8 @@ const logos = [
 								href={w.url || undefined}
 								target={w.url && w.url.startsWith('http') ? '_blank' : undefined}
 								rel={w.url && w.url.startsWith('http') ? 'noopener noreferrer' : undefined}
+								data-leaving={w.url && w.url.startsWith('http') ? w.name : undefined}
+								data-leaving-name={w.url && w.url.startsWith('http') ? w.name : undefined}
 							>
 								<span class="sd-art-frame">
 									{w.img ? (
@@ -273,6 +275,8 @@ const logos = [
 							href={ex.url || undefined}
 							target={ex.url ? '_blank' : undefined}
 							rel={ex.url ? 'noopener noreferrer' : undefined}
+							data-leaving={ex.url ? ex.name : undefined}
+							data-leaving-name={ex.url ? ex.name : undefined}
 						>
 							<img src={ex.img} alt={`${ex.name} — ${ex.sector}`} loading="lazy" />
 							<span class="sd-exmedia-veil" aria-hidden="true" />
@@ -286,7 +290,7 @@ const logos = [
 								{ex.tags.map((t) => <li>{t}</li>)}
 							</ul>
 							{ex.url && (
-								<a href={ex.url} target="_blank" rel="noopener noreferrer" class="sd-link">
+								<a href={ex.url} target="_blank" rel="noopener noreferrer" data-leaving={ex.name} data-leaving-name={ex.name} class="sd-link">
 									View the live piece
 									<Icon width={15} name="mdi:arrow-top-right" />
 								</a>
