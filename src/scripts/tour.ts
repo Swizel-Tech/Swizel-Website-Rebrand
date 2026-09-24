@@ -9,6 +9,22 @@ export type TourLeg = { path: string; label: string; steps: TourStep[] };
 
 const KEY = 'swizel-tour';
 
+/** The tour walks five different worlds, and it used to narrate all of
+ *  them as a school — "the campus", "the whole school", instructors and
+ *  service years — which reads as a mistake in the gallery, the workshop
+ *  or the boardroom. Each world names its own first leg and its own last
+ *  word; everything between is written so it is true in all five. */
+type Lex = { home: string; endK: string; endH: string };
+const LEX: Record<string, Lex> = {
+	campus: { home: 'The campus', endK: 'That is the whole campus', endH: 'Thanks for walking round with us.' },
+	studio: { home: 'The gallery', endK: 'That is the whole collection', endH: 'Thanks for walking the rooms with us.' },
+	builder: { home: 'The workshop', endK: 'That is the whole workshop', endH: 'Thanks for looking round the build.' },
+	founder: { home: 'The desk', endK: 'That is the whole story', endH: 'Thanks for hearing us out.' },
+	boardroom: { home: 'The floor', endK: 'That is the whole floor', endH: 'Thanks for your time.' },
+};
+const lex = (): Lex =>
+	LEX[document.documentElement.getAttribute('data-view') || 'boardroom'] ?? LEX.boardroom!;
+
 /** The first match that is actually on the screen. Every world's markup
  *  lives in the page at once and only one is displayed, so the first hit in
  *  DOM order is often a hidden one. */
@@ -70,6 +86,7 @@ export function startTour(
 		document.body.style.overflow = '';
 		window.removeEventListener('keydown', key);
 		window.removeEventListener('resize', place);
+		overlay.removeEventListener('click', away);
 		if (done && !finished) {
 			finished = true;
 			opts.onDone?.();
@@ -83,6 +100,17 @@ export function startTour(
 		else if (e.key === 'ArrowLeft') go(idx - 1);
 	};
 	window.addEventListener('keydown', key);
+
+	// Clicking off the card ends the tour. The overlay covers the screen,
+	// so anything that is not the card itself — the dimmed page, the lit
+	// element, the pointer — counts as "outside".
+	const away = (e: MouseEvent) => {
+		const t = e.target as HTMLElement | null;
+		if (t && t.closest('.tour-pop')) return;
+		e.preventDefault();
+		end();
+	};
+	overlay.addEventListener('click', away);
 
 	const place = () => {
 		const s = live[idx]!;
@@ -137,7 +165,7 @@ export function startTour(
 				? `<span class="tour-pop__leg">${opts.legLabel}${opts.legOf ? ` · ${opts.legOf}` : ''}</span>`
 				: '';
 			pop.innerHTML =
-				'<button class="tour-pop__close" data-end aria-label="End tour">×</button>' +
+				'<button type="button" class="tour-pop__close" data-end aria-label="End tour">×</button>' +
 				leg +
 				`<h4>${s.title}</h4><p>${s.body}</p>` +
 				'<div class="tour-pop__row"><span class="tour-pop__count">' +
@@ -155,7 +183,13 @@ export function startTour(
 			hand.classList.add('is-tap');
 			pop.querySelector('[data-next]')?.addEventListener('click', () => go(idx + 1));
 			pop.querySelector('[data-back]')?.addEventListener('click', () => go(idx - 1));
-			pop.querySelector('[data-end]')?.addEventListener('click', () => end());
+			// the card sits inside the overlay, and the overlay's own
+			// click-away handler would otherwise swallow this one first
+			pop.querySelector('[data-end]')?.addEventListener('click', (e) => {
+				e.preventDefault();
+				e.stopPropagation();
+				end();
+			});
 		}, 80);
 	};
 
@@ -180,9 +214,9 @@ export function openTourChooser(pageSteps: TourStep[], legs: TourLeg[]) {
 					<em>A quick walk around the screen you are on. Under a minute.</em>
 				</button>
 				<button class="tour-door" data-door="full">
-					<span class="tour-door-ic" aria-hidden="true">🏫</span>
+					<span class="tour-door-ic" aria-hidden="true">🗺️</span>
 					<strong>The full tour</strong>
-					<em>${legs.length} stops across the site: who we are, what we have shipped, and how to join.</em>
+					<em>${legs.length} stops across the site: who we are, what we have shipped, and how to reach us.</em>
 				</button>
 			</div>
 		</div>`;
@@ -255,11 +289,11 @@ function finale() {
 		<div class="tour-doors-veil" data-close></div>
 		<div class="tour-doors-card" role="dialog" aria-modal="true">
 			<button class="tour-doors-x" data-close aria-label="Close">×</button>
-			<span class="tour-doors-k">That is the whole school</span>
-			<h3 class="tour-doors-h">Thanks for walking round with us.</h3>
+			<span class="tour-doors-k">${lex().endK}</span>
+			<h3 class="tour-doors-h">${lex().endH}</h3>
 			<div class="tour-doors-row tour-doors-row--end">
 				<a class="tour-door" href="/contact"><span class="tour-door-ic" aria-hidden="true">✉️</span><strong>Tell us what you are building</strong><em>Four boxes, and a reply within a business day.</em></a>
-				<a class="tour-door" href="/programs"><span class="tour-door-ic" aria-hidden="true">🎓</span><strong>Apply to join us</strong><em>Industrial training or your service year, on live client work.</em></a>
+				<a class="tour-door" href="/programs"><span class="tour-door-ic" aria-hidden="true">🎓</span><strong>Apply to join us</strong><em>An IT / SIWES internship or your service year, on live client work.</em></a>
 			</div>
 			<a class="tour-doors-home" href="/">
 				<span aria-hidden="true">←</span>
@@ -299,31 +333,31 @@ export function resumeTour() {
  *  same plan works in whichever world the visitor is standing in. */
 export function siteLegs(pageSteps: TourStep[]): TourLeg[] {
 	return [
-		{ path: '/', label: 'The campus', steps: pageSteps.slice(0, 6) },
+		{ path: '/', label: lex().home, steps: pageSteps.slice(0, 6) },
 		{
 			path: '/about',
 			label: 'Who we are',
 			steps: [
-				{ sel: '[data-tour="who"], .ca-open, .fa-open, .bd-about-hero', title: 'Skip the theory', body: 'You are not taught by instructors here. You are mentored by the team behind sixty-five live products.' },
+				{ sel: '[data-tour="who"], .ca-open, .fa-open, .ba-open, .sa-open, .bd-about-hero', title: 'The people, not the pitch', body: 'One team of designers, engineers and marketers, behind sixty-five products that are live right now.' },
 				{ sel: '[data-tour="mission"], .ca-pin--mission', title: 'Our mission', body: 'Why we get up in the morning, in one paragraph and no jargon.' },
 				{ sel: '[data-tour="vision"], .ca-pin--vision', title: 'Our vision', body: 'Where we are taking this, and who we want in the room when we get there.' },
-				{ sel: '[data-tour="story"], .ca-time, .fa-time', title: 'From first bell to today', body: 'Every year since 2019, and what we shipped in it.' },
+				{ sel: '[data-tour="story"], .ca-time, .fa-time, .ba-git, .sa-time', title: 'Every year since 2019', body: 'The whole run, and what we shipped in each of them.' },
 			],
 		},
 		{
 			path: '/portfolio',
 			label: 'What we have shipped',
 			steps: [
-				{ sel: '#cp-show, .pf-deck, .cf-show', title: 'The projector', body: 'Real products, live on the internet. It runs itself, or click a number to jump.' },
-				{ sel: '.cf-fair, .pf-featured, .cs-featured', title: 'The gold-star work', body: 'The full write-ups: the brief, the build, and what happened next.' },
-				{ sel: '#cf-cabinet, .cf-shelf, .pf-grid', title: 'The whole cabinet', body: 'Everything else, filterable by sector. Tap any one to read it.' },
+				{ sel: '#cp-show, .pf-deck, .cf-show, .sp-spot, .pb-console', title: 'The showcase', body: 'Real products, live on the internet. It runs itself, or pick one to jump straight to it.' },
+				{ sel: '.cf-fair, .pf-featured, .cs-featured, .sp-exhibit', title: 'The work worth reading', body: 'The full write-ups: the brief, the build, and what happened next.' },
+				{ sel: '#cf-cabinet, .cf-shelf, .pf-grid, #sp-wall', title: 'Everything else', body: 'The whole catalogue, filterable by sector. Tap any one to read it.' },
 			],
 		},
 		{
 			path: '/programs',
 			label: 'How to join us',
 			steps: [
-				{ sel: '#pg-tracks', title: 'Two ways in', body: 'Industrial training or your service year. Pick one and the cards switch to it.' },
+				{ sel: '#pg-tracks', title: 'Two ways in', body: 'An IT / SIWES internship, or your NYSC service year with us. Pick one and the cards switch to it.' },
 				{ sel: '.pg-plan', title: 'The plan', body: 'We teach you, you learn, we put you on a live project, you grow.' },
 				{ sel: '#apply', title: 'The application', body: 'Read by a person. The last two questions carry the most weight.' },
 			],
@@ -332,8 +366,8 @@ export function siteLegs(pageSteps: TourStep[]): TourLeg[] {
 			path: '/contact',
 			label: 'Say hello',
 			steps: [
-				{ sel: '#ck-form .ck-book, .ct-formcard', title: 'The enquiry sheet', body: 'Four boxes and two minutes. No brief is too rough to send.' },
-				{ sel: '.ck-chatrow, .ct-aside', title: 'Or catch us anywhere', body: 'Live chat, WhatsApp, phone, or the office door in Lokogoma.' },
+				{ sel: '#ck-form .ck-book, .ct-formcard, .cbx-ide, .fct-form', title: 'The enquiry form', body: 'Four boxes and two minutes. No brief is too rough to send.' },
+				{ sel: '.ck-chatrow, .ct-aside, .cbx-sh, .fct-lines', title: 'Or catch us anywhere', body: 'Live chat, WhatsApp, phone, or the office door in Lokogoma.' },
 			],
 		},
 
