@@ -21,15 +21,20 @@ import { projects } from '../../data/projects';
 
 const pick = (slug: string) => projects.find((p) => p.slug === slug)!;
 
-// the reel leads; the rest of the collection follows it round
+// The collection, and the colour the room wears for each piece.
+//
+// A brand's own colour is chosen to behave on its own site — half of them
+// are muted greens and mid blues, which is right there and far too quiet
+// on a gallery wall. These are the exhibition colours: the same six works,
+// lit. projects.ts keeps the real brand colours untouched.
 const works = [
-	pick('brixmarket'),
-	pick('purple-panda'),
-	pick('beauty-hive'),
-	pick('saros'),
-	pick('betslipswitch'),
-	pick('my-eya-estate'),
-].filter(Boolean);
+	{ p: pick('brixmarket'), lit: '#00e5ff' },
+	{ p: pick('purple-panda'), lit: '#9d4bff' },
+	{ p: pick('beauty-hive'), lit: '#ff2d95' },
+	{ p: pick('saros'), lit: '#ff7a18' },
+	{ p: pick('betslipswitch'), lit: '#b6ff2e' },
+	{ p: pick('my-eya-estate'), lit: '#ffd028' },
+].filter((w) => w.p);
 
 // the reel card, described the same way as the works so the plaque and the
 // room tint can treat every card identically
@@ -86,9 +91,9 @@ const ticker = [
 			<RotatingHeadline class="shr-rhead" />
 
 			<p class="shr-sub">
-				A studio of designers, engineers and film-makers. The work on
-				this wall is live in the world — shops you can buy from, apps
-				you can open. Walk the room.
+				Designers, engineers and storytellers under one roof. Every
+				piece on this wall is live in the world: a shop you can buy
+				from, an app you can open. Come in and walk the room.
 			</p>
 
 			<div class="shr-cta">
@@ -154,13 +159,13 @@ const ticker = [
 
 			<div class="shr-side shr-side--l">
 				{
-					works.slice(0, 3).map((p, i) => (
+					works.slice(0, 3).map(({ p, lit }, i) => (
 						<a
 							class="shr-hung"
 							href="/portfolio#sp-wall"
-							style={`--c:${p.color}; --d:${i === 1 ? 3 : 2}; --i:${i}; --rot:${[-3.2, 2.4, -2][i]}deg; --sway:${[6.4, 5.6, 7.1][i]}s`}
+							style={`--c:${lit}; --d:${i === 1 ? 3 : 2}; --i:${i}; --rot:${[-3.2, 2.4, -2][i]}deg; --sway:${[6.4, 5.6, 7.1][i]}s`}
 							data-shr-art={i}
-							data-tint={p.color}
+							data-tint={lit}
 							data-name={p.name}
 							data-meta={`${p.tags[0] ?? 'Work'} · ${p.year}`}
 							data-cursor="repo"
@@ -201,21 +206,21 @@ const ticker = [
 					<span class="shr-lit" data-shr-lit>
 						<i class="shr-lit-dot" aria-hidden="true"></i>
 						lit:
-						<b data-shr-name>{works[0]?.name}</b>
-						<em data-shr-meta>{works[0]?.tags[0]} · {works[0]?.year}</em>
+						<b data-shr-name>{works[0]?.p.name}</b>
+						<em data-shr-meta>{works[0]?.p.tags[0]} · {works[0]?.p.year}</em>
 					</span>
 				</figcaption>
 			</figure>
 
 			<div class="shr-side shr-side--r">
 				{
-					works.slice(3, 6).map((p, i) => (
+					works.slice(3, 6).map(({ p, lit }, i) => (
 						<a
 							class="shr-hung"
 							href="/portfolio#sp-wall"
-							style={`--c:${p.color}; --d:${i === 1 ? 3 : 2}; --i:${i + 3}; --rot:${[2.8, -2.2, 2][i]}deg; --sway:${[6.8, 7.4, 6.0][i]}s`}
+							style={`--c:${lit}; --d:${i === 1 ? 3 : 2}; --i:${i + 3}; --rot:${[2.8, -2.2, 2][i]}deg; --sway:${[6.8, 7.4, 6.0][i]}s`}
 							data-shr-art={i + 3}
-							data-tint={p.color}
+							data-tint={lit}
 							data-name={p.name}
 							data-meta={`${p.tags[0] ?? 'Work'} · ${p.year}`}
 							data-cursor="repo"
@@ -882,30 +887,29 @@ const ticker = [
 
 	/* ═══ smaller rooms ══════════════════════════════════════════ */
 	/* ═══ the phone ══════════════════════════════════════════════
-	   Stacked, the film ended up 700px down the page behind a wall of
-	   words — on the one screen most people actually use, the highlight
-	   was the last thing they reached. The catalogue is dissolved into
-	   the column with `display: contents` so every part can be ordered
-	   independently: headline, lead, calls, THEN the film and the
-	   prints, and the numbers and the credit after. */
+	   Centred, and built from glass. The catalogue is dissolved into the
+	   column with `display: contents` so every part can be ordered on
+	   its own — headline, lead, calls, THEN the film and the prints,
+	   with the numbers and the credit after. */
 	@media (max-width: 1079px) {
 		.shr-wrap {
 			display: flex;
 			flex-direction: column;
-			/* the desktop rule centres the two columns; as a stacked
-			   column that centring shrank every block to its own content
-			   width, which is why the calls would not fill their row */
-			align-items: stretch;
-			gap: clamp(1.2rem, 4vw, 2rem);
+			align-items: center;
+			text-align: center;
+			gap: clamp(1.1rem, 3.6vw, 1.8rem);
 		}
 		.shr-copy { display: contents; }
-		.shr-plaque { order: 1; align-self: flex-start; margin-bottom: 0; }
+		.shr-plaque { order: 1; margin-bottom: 0; }
 		:global(.shr-rhead) { order: 2; margin-bottom: 0; }
-		.shr-sub { order: 3; margin-bottom: 0; }
+		.shr-sub { order: 3; margin: 0 auto; max-width: 34rem; }
 		.shr-cta { order: 4; margin-bottom: 0; }
-		.shr-wall { order: 5; }
+		.shr-wall { order: 5; align-self: stretch; }
 		.shr-colophon { order: 6; margin-bottom: 0; }
-		.shr-crew { order: 7; align-self: flex-start; }
+		.shr-crew { order: 7; }
+
+		/* the signature centres with everything else */
+		:global(.shr-rhead .rhead__l2) { justify-content: center; }
 
 		/* the film first, then both sides as one wall of six under it */
 		.shr-wall {
@@ -919,45 +923,129 @@ const ticker = [
 		}
 		.shr-rail { top: -0.8rem; }
 
-		/* both calls, equal halves, side by side */
-		.shr-cta { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; }
-		/* CustomButton ships its own width utility, so the cell being full
-		   width is not enough — the control has to be told to fill it */
+		/* both calls, side by side and equal, sized to share the row */
+		.shr-cta {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 0.6rem;
+			width: min(100%, 30rem);
+		}
 		.shr-cta > :global(*),
-		.shr-cta :global(.btn),
-		.shr-cta :global(.btn--accent) { width: 100% !important; max-width: none !important; }
-		.shr-ghost { justify-content: center; padding-inline: 0.75rem; }
+		.shr-cta :global(.btn) {
+			width: 100% !important;
+			max-width: none !important;
+			/* the two controls carry different padding of their own; this
+			   makes them the same height so the row reads as a pair */
+			min-height: 3rem;
+			display: inline-flex !important;
+			align-items: center;
+			justify-content: center;
+		}
+		:global(.hero-studio .btn--accent) {
+			padding-left: 0.7rem !important;
+			padding-right: 0.7rem !important;
+			font-size: 0.7rem !important;
+			letter-spacing: 0.01em;
+		}
+		.shr-ghost { justify-content: center; padding: 0.8rem 0.7rem; font-size: 0.76rem; }
+		.shr-ghost-ic { flex: none; }
+
+		/* the numbers, centred and evenly spread */
+		.shr-colophon {
+			justify-content: center;
+			width: min(100%, 30rem);
+			padding-top: 1rem;
+			gap: clamp(0.9rem, 5vw, 2rem);
+		}
+
+		/* ── glass ──────────────────────────────────────────────────
+		   The room is behind glass on a phone: the lead sits on a
+		   frosted sheet, the calls and the credit are polished, and
+		   every panel takes a light rim and a gloss along its top edge. */
+		.shr-sub {
+			position: relative;
+			padding: 1rem 1.1rem;
+			border-radius: 1.2rem;
+			border: 1px solid color-mix(in srgb, var(--sa) 26%, rgba(255, 255, 255, 0.18));
+			background: color-mix(in srgb, var(--sa) 7%, rgba(255, 255, 255, 0.05));
+			backdrop-filter: blur(14px) saturate(1.3);
+			-webkit-backdrop-filter: blur(14px) saturate(1.3);
+			box-shadow:
+				inset 0 1px 0 rgba(255, 255, 255, 0.3),
+				0 18px 40px -26px rgba(0, 0, 0, 0.75);
+			overflow: hidden;
+		}
+		:global(html:not(.dark)) .shr-sub {
+			background: color-mix(in srgb, var(--sa) 6%, rgba(255, 255, 255, 0.55));
+			box-shadow:
+				inset 0 1px 0 rgba(255, 255, 255, 0.85),
+				0 18px 40px -28px rgba(36, 16, 28, 0.4);
+		}
+		/* the gloss: a highlight lying across the top of the sheet */
+		.shr-sub::after {
+			content: '';
+			position: absolute;
+			inset: 0 0 auto;
+			height: 52%;
+			background: linear-gradient(180deg, rgba(255, 255, 255, 0.22), transparent);
+			pointer-events: none;
+		}
+
+		.shr-plaque,
+		.shr-ghost,
+		.shr-crew {
+			backdrop-filter: blur(12px) saturate(1.25);
+			-webkit-backdrop-filter: blur(12px) saturate(1.25);
+			box-shadow:
+				inset 0 1px 0 rgba(255, 255, 255, 0.26),
+				0 14px 32px -22px rgba(0, 0, 0, 0.7);
+		}
+		:global(.hero-studio .btn--accent) {
+			box-shadow:
+				inset 0 1px 0 rgba(255, 255, 255, 0.4),
+				0 16px 36px -14px color-mix(in srgb, var(--sa) 80%, transparent) !important;
+		}
+		/* the film sits under glass too */
+		.shr-mat--reel {
+			backdrop-filter: blur(10px);
+			-webkit-backdrop-filter: blur(10px);
+		}
+		.shr-mat--reel::before {
+			content: '';
+			position: absolute;
+			inset: 0;
+			border-radius: inherit;
+			background: linear-gradient(168deg, rgba(255, 255, 255, 0.2), transparent 38%);
+			pointer-events: none;
+			z-index: 4;
+		}
 	}
 	@media (max-width: 620px) {
-		.shr-sub { font-size: 0.98rem; }
+		.shr-sub { font-size: 0.95rem; }
 		.shr-label-t { font-size: 0.98rem; }
 		.shr-lit { font-size: 0.62rem; }
 		.shr-lit b { font-size: 0.8rem; }
 		/* the plaque's sub-label had nowhere to go and broke the chip
 		   over two ragged lines */
-		.shr-plaque { font-size: 0.64rem; letter-spacing: 0.14em; padding: 0.4rem 0.75rem; }
+		.shr-plaque { font-size: 0.62rem; letter-spacing: 0.12em; padding: 0.4rem 0.8rem; }
 		.shr-plaque i { display: none; }
+		.shr-colophon b { font-size: 1.45rem; }
+		.shr-colophon span { font-size: 0.62rem; letter-spacing: 0.1em; }
 		/* the credit band was squeezed until its name and its call fell
-		   off; it runs full width here, with the words on their own line */
+		   off; it runs full width here, with both on one line */
 		.shr-crew {
 			align-self: stretch;
 			width: 100%;
-			border-radius: 1.1rem;
+			border-radius: 1.2rem;
 			padding: 0.7rem 0.9rem;
+			justify-content: center;
 		}
-		.shr-crew-txt { flex: 1 1 auto; min-width: 0; }
-		/* the name and the call have one line between them here, so they
-		   are set small enough to share it rather than wrap the arrow
-		   onto a line of its own */
+		.shr-crew-txt { flex: 0 1 auto; min-width: 0; text-align: left; }
 		.shr-crew-l { flex-wrap: nowrap; font-size: 0.76rem; gap: 0.35rem; }
 		.shr-crew-l em { display: inline; white-space: nowrap; }
 		.shr-crew-l b { white-space: nowrap; }
 		.shr-crew-face { width: 2.2rem; height: 2.2rem; }
 		.shr-crew-k { font-size: 0.7rem; }
-		/* two half-width calls left 'Enter the gallery' breaking over two
-		   lines; full width each, stacked, reads as deliberate and gives
-		   a thumb something to aim at */
-		.shr-cta { grid-template-columns: 1fr; gap: 0.6rem; }
 		.shr-scribble { font-size: 0.6rem; }
 		.shr-hung-frame { padding: 0.28rem 0.28rem 1.05rem; }
 		.shr-peg { width: 7px; height: 16px; margin-left: -3.5px; top: -0.95rem; }

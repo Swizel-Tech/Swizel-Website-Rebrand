@@ -570,11 +570,121 @@ const isActive = (href: string) => {
 	:global(html[data-view='founder']) .m-nav-link.active > span::before,
 	:global(html[data-view='founder']) .m-nav-link:hover > span::before { opacity: 1; transform: scale(1.7); }
 
+	/* Studio: the drawer is the exhibition programme — polished black
+	   glass, gilt hairlines, and every destination a numbered room. The
+	   other worlds each have a drawer of their own; this one only had
+	   spaced caps, which is a typeface, not a design. */
 	:global(html[data-view='studio']) .m-nav-link {
-		font-size: 0.88rem;
-		font-weight: 600;
-		letter-spacing: 0.16em;
-		text-transform: uppercase;
+		position: relative;
+		font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+		font-size: 1.02rem;
+		font-weight: 500;
+		letter-spacing: 0.01em;
+		text-transform: none;
+		padding-left: 3.4rem;
+		border-radius: 0;
+	}
+	/* the room number, set like a wall label */
+	:global(html[data-view='studio']) .m-nav-links { counter-reset: shroom; }
+	/* the catalogue numeral — a full word per row ran under the name, and
+	   a gallery numbers its rooms anyway */
+	:global(html[data-view='studio']) .m-nav-link::before {
+		counter-increment: shroom;
+		content: counter(shroom, decimal-leading-zero);
+		position: absolute;
+		left: 0;
+		top: 50%;
+		transform: translateY(-50%);
+		width: 2.5rem;
+		text-align: center;
+		font-family: 'Playfair Display', Georgia, serif;
+		font-size: 0.92rem;
+		font-weight: 500;
+		font-style: italic;
+		color: color-mix(in srgb, var(--m-accent) 70%, transparent);
+		opacity: 0.68;
+		transition: opacity 0.25s ease, transform 0.3s cubic-bezier(0.34, 1.35, 0.64, 1);
+	}
+	:global(html[data-view='studio']) .m-nav-link:hover::before,
+	:global(html[data-view='studio']) .m-nav-link.active::before {
+		opacity: 1;
+		transform: translateY(-50%) scale(1.18);
+	}
+	/* a gilt hairline under every row, the way a programme is ruled */
+	:global(html[data-view='studio']) .m-nav-link::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		height: 1px;
+		background: linear-gradient(90deg, color-mix(in srgb, var(--m-accent) 30%, transparent), transparent 78%);
+		opacity: 0.55;
+	}
+	/* the lit room: a spotlight washing in from the left edge */
+	:global(html[data-view='studio']) .m-nav-link.active {
+		background: linear-gradient(90deg, color-mix(in srgb, var(--m-accent) 20%, transparent), transparent 72%);
+		box-shadow: inset 2px 0 0 var(--m-accent);
+		color: var(--m-accent);
+		-webkit-text-fill-color: var(--m-accent);
+		font-style: italic;
+	}
+	:global(html[data-view='studio']) .m-nav-sub a {
+		font-family: 'Playfair Display', Georgia, serif;
+		font-style: italic;
+	}
+
+	/* polished black glass, with the light lying across the top */
+	:global(html[data-view='studio']) #mobile-menu {
+		--m-bg: linear-gradient(196deg, #241322 0%, #170d16 54%, #0c060b 100%);
+		--m-ink: #fdeaf5;
+		--m-muted: rgba(253, 234, 245, 0.62);
+		--m-border: rgba(236, 72, 153, 0.18);
+		--m-hover: rgba(236, 72, 153, 0.12);
+		--m-surface: rgba(255, 255, 255, 0.06);
+		--m-accent: #ff2d95;
+		border-left: 1px solid rgba(236, 72, 153, 0.3);
+		backdrop-filter: blur(18px) saturate(1.3);
+		-webkit-backdrop-filter: blur(18px) saturate(1.3);
+		box-shadow:
+			inset 1px 0 0 rgba(255, 255, 255, 0.1),
+			-30px 0 70px -30px rgba(0, 0, 0, 0.85);
+	}
+	:global(html[data-view='studio']:not(.dark)) #mobile-menu {
+		--m-bg: linear-gradient(196deg, #ffffff 0%, #fdf2f7 52%, #f7e8f0 100%);
+		--m-ink: #24101c;
+		--m-muted: rgba(36, 16, 28, 0.62);
+		--m-border: rgba(160, 16, 80, 0.16);
+		--m-hover: rgba(255, 45, 149, 0.1);
+		--m-surface: rgba(160, 16, 80, 0.05);
+		--m-accent: #c2185b;
+		border-left: 1px solid rgba(160, 16, 80, 0.2);
+		box-shadow:
+			inset 1px 0 0 rgba(255, 255, 255, 0.8),
+			-26px 0 60px -30px rgba(36, 16, 28, 0.35);
+	}
+	/* the gloss: a sheet of light across the top of the glass, and a
+	   gallery-wall grid beneath it */
+	:global(html[data-view='studio']) #mobile-menu::before {
+		content: '';
+		position: absolute;
+		inset: 0 0 auto;
+		height: 38%;
+		background: linear-gradient(180deg, rgba(255, 255, 255, 0.14), transparent);
+		pointer-events: none;
+		z-index: 0;
+	}
+	/* the gallery wall, faint behind the programme */
+	:global(html[data-view='studio']) .m-nav-links {
+		background-image:
+			repeating-linear-gradient(90deg, transparent 0 63px, color-mix(in srgb, var(--m-border) 45%, transparent) 63px 64px),
+			repeating-linear-gradient(180deg, transparent 0 63px, color-mix(in srgb, var(--m-border) 30%, transparent) 63px 64px);
+	}
+	/* the programme's masthead rule */
+	:global(html[data-view='studio']) .m-nav-head {
+		box-shadow:
+			inset 0 -1px 0 var(--m-border),
+			0 1px 0 color-mix(in srgb, var(--m-accent) 34%, transparent);
 	}
 
 	/* Founder: the drawer is a launch console — deep violet, a faint plotting
@@ -774,9 +884,9 @@ const isActive = (href: string) => {
 		--m-border: rgba(24, 222, 190, 0.12);
 	}
 	html.dark[data-view='studio'] #mobile-menu {
-		--m-bg: linear-gradient(195deg, #1c1017 0%, #120a0f 60%, #0b0609 100%);
-		--m-border: rgba(236, 72, 153, 0.13);
-		--m-accent: #ec4899;
+		--m-bg: linear-gradient(196deg, #241322 0%, #170d16 54%, #0c060b 100%);
+		--m-border: rgba(236, 72, 153, 0.18);
+		--m-accent: #ff2d95;
 	}
 	html.dark[data-view='campus'] #mobile-menu {
 		--m-bg: linear-gradient(195deg, #1d1408 0%, #120c04 60%, #0c0803 100%);
