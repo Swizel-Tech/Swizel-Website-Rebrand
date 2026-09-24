@@ -69,52 +69,41 @@ const filterCss = cats
 ---
 
 <div class="sbl sbody view-body view-body-studio">
-	<!-- ── A · the reading room entrance ───────────────────── -->
-	<section class="sb-sec sb-entry">
+	<!-- ── A · the reading room ────────────────────────────────
+	     People come here to read, so the essays are the first thing on
+	     the page. The title keeps its place as a masthead on one line,
+	     and the sheet that used to sit beside it says its piece under
+	     the rule instead of taking a screen of its own.
+
+	     The lectern is a brass reading stand: the sheet lies back a few
+	     degrees under its own lamp, with a rail holding it there. -->
+	<section class="sb-sec sb-entry" id="sb-top" data-cursor="pen">
 		<div class="sb-wrap">
 			<div class="sb-folio sd-rev">
 				<span>The Swizel Gallery — Reading Room</span>
 				<span>Essays &amp; field notes from the house</span>
 				<span>Quiet, please</span>
 			</div>
-			<div class="sb-open">
-				<div class="sb-open-main">
-					<span class="sb-ghost" aria-hidden="true">read</span>
-					<h2 class="sb-display sd-rev">
-						The reading<br />
-						<em>room.</em>
-					</h2>
-				</div>
-				<div class="sb-open-side sd-rev">
-					<figure class="sb-scroll">
-						<span class="sb-scroll-grain" aria-hidden="true"></span>
-						<p class="sb-scroll-lead">
-							Field notes on technology, design, fintech, edtech and
-							growth. What the house is building, learning and seeing
-							across the African digital landscape, written by the
-							people doing the building. Take a seat, take your time.
-						</p>
-					</figure>
-					<a href="#sb-shelf" class="sb-link">
-						Browse the shelf
-						<Icon width={15} name="mdi:arrow-down" />
-					</a>
-				</div>
+
+			<div class="sb-mast sd-rev">
+				<h1 class="sb-display">The reading <em>room.</em></h1>
+				<span class="sb-mast-rule" aria-hidden="true"></span>
+				<p class="sb-mast-lead">
+					Field notes on technology, design, fintech, edtech and growth,
+					written by the people doing the building.
+				</p>
+				<a href="#sb-shelf" class="sb-mast-jump">
+					Browse the shelf
+					<Icon width={14} name="mdi:arrow-down" />
+				</a>
 			</div>
 		</div>
 	</section>
 
-	<!-- ── B · on the lectern (featured essay) ─────────────────
-	     A brass reading stand: the sheet lies back a few degrees under
-	     its own lamp, with a rail along the bottom holding it there. -->
 	{
 		featured && (
-			<section class="sb-sec" data-cursor="pen">
+			<section class="sb-sec sb-sec--lectern" data-cursor="pen">
 				<div class="sb-wrap">
-					<div class="sb-rule sd-rev">
-						<span>On the lectern</span>
-						<span>The essay of the moment</span>
-					</div>
 					<div class="sb-stand sd-rev" style={`--c:${col(featured.data.category)}`}>
 						<span class="sb-lamp" aria-hidden="true">
 							<i class="sb-lamp-arm" />
@@ -345,6 +334,7 @@ const filterCss = cats
 	/* the essays are what people came for: the entrance gives them the room */
 	.sb-entry { padding-top: 0.25rem; padding-bottom: clamp(0.4rem, 1vw, 0.75rem); }
 	.sb-sec--last { padding-bottom: clamp(1.5rem, 3vw, 2.5rem); }
+	.sb-sec--lectern { padding-top: 0; }
 	.sb-wrap { max-width: 80rem; margin: 0 auto; }
 
 	.sb-folio {
@@ -469,90 +459,61 @@ const filterCss = cats
 	}
 	[data-fa-tilt]:hover .sa-glare { opacity: 1; }
 
-	/* ── A · entrance ────────────────────────────────────────── */
-	.sb-open {
-		display: grid;
-		gap: clamp(1.1rem, 2.6vw, 2.2rem);
-		/* top-aligned, not bottom: `end` hung the heading off the bottom
-		   of a row the taller sheet sized, so a wide screen opened a
-		   dead band above it that grew with the viewport */
-		align-items: start;
+	/* ── A · the masthead ─────────────────────────────────────
+	   One band: the title, a rule running out from it, the lead, and the
+	   jump to the shelf. It replaces a two-column entrance that filled a
+	   whole screen before a single essay appeared. */
+	.sb-mast {
+		display: flex;
+		align-items: center;
+		gap: clamp(0.7rem, 1.6vw, 1.2rem);
+		flex-wrap: wrap;
+		margin-bottom: clamp(0.8rem, 1.7vw, 1.2rem);
 	}
-	@media (min-width: 920px) {
-		.sb-open { grid-template-columns: 1.15fr 0.85fr; }
-	}
-	.sb-open-main { position: relative; }
-	.sb-ghost {
-		position: absolute;
-		left: -0.06em;
-		bottom: -0.06em;
-		font-family: var(--sa-serif);
-		font-style: italic;
-		font-size: clamp(6rem, 17vw, 14rem);
-		line-height: 0.74;
-		color: color-mix(in srgb, var(--sa-ink) 3.5%, transparent);
-		pointer-events: none;
-		user-select: none;
-		z-index: 0;
-	}
-	.sb-open-side { max-width: 34rem; }
-
-	/* the lead, on a sheet unrolled across the desk */
-	.sb-scroll {
-		position: relative;
-		margin: 0 0 0.9rem;
-		padding: 1.35rem 1.7rem;
-		color: var(--sb-paper-ink);
-		background:
-			radial-gradient(130% 100% at 14% 0%, rgba(255, 255, 255, 0.6), transparent 62%),
-			linear-gradient(166deg, #fbf4e6 0%, #f4ecda 58%, #ece1c9 100%);
-		box-shadow:
-			inset 0 0 22px rgba(120, 82, 40, 0.11),
-			0 18px 42px -26px rgba(0, 0, 0, 0.5);
-		transform: rotate(-0.5deg);
-		-webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='220' preserveAspectRatio='none'%3E%3Cfilter id='t' x='-6%' y='-12%' width='112%' height='124%'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.016 0.065' numOctaves='4' seed='19' result='n'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='n' scale='10' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3Crect x='10' y='11' width='580' height='198' rx='18' ry='22' fill='%23fff' filter='url(%23t)'/%3E%3C/svg%3E");
-		mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='220' preserveAspectRatio='none'%3E%3Cfilter id='t' x='-6%' y='-12%' width='112%' height='124%'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.016 0.065' numOctaves='4' seed='19' result='n'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='n' scale='10' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3Crect x='10' y='11' width='580' height='198' rx='18' ry='22' fill='%23fff' filter='url(%23t)'/%3E%3C/svg%3E");
-		-webkit-mask-size: 100% 100%;
-		mask-size: 100% 100%;
-		-webkit-mask-repeat: no-repeat;
-		mask-repeat: no-repeat;
-	}
-	.sb-scroll-grain {
-		position: absolute;
-		inset: 0;
-		pointer-events: none;
-		opacity: 0.5;
-		mix-blend-mode: multiply;
-		background-image:
-			repeating-linear-gradient(91deg, rgba(120, 82, 40, 0.055) 0 1px, transparent 1px 5px),
-			url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='150' height='150' filter='url(%23g)' opacity='0.4'/%3E%3C/svg%3E");
-	}
-	.sb-scroll-lead {
-		position: relative;
-		z-index: 1;
+	.sb-display {
 		margin: 0;
-		/* the seal is pressed bottom-right; the last line stops short of it */
-		padding-right: 2.6rem;
-		color: var(--sb-paper-ink);
+		font-size: clamp(1.75rem, 3.2vw, 2.7rem);
+		font-weight: 850;
+		letter-spacing: -0.03em;
+		line-height: 1.04;
+		flex: none;
+	}
+	.sb-display em {
 		font-family: var(--sa-serif);
 		font-style: italic;
-		font-size: clamp(1.06rem, 1.4vw, 1.28rem);
-		line-height: 1.62;
+		font-weight: 500;
+		letter-spacing: -0.01em;
+		color: var(--sa-acc);
 	}
-	/* pressed where the sheet was closed */
-	.sb-scroll::after {
-		content: '';
-		position: absolute;
-		z-index: 2;
-		right: 1.5rem;
-		bottom: 1rem;
-		width: 30px;
-		height: 30px;
-		border-radius: 46% 54% 52% 48% / 50% 46% 54% 50%;
-		background: radial-gradient(circle at 34% 30%, #e0608f, var(--sa-acc) 58%, #7c1039);
-		box-shadow: inset 0 -2px 4px rgba(0, 0, 0, 0.35), 0 4px 10px -4px rgba(0, 0, 0, 0.5);
-		opacity: 0.9;
+	.sb-mast-rule {
+		flex: none;
+		width: clamp(1.5rem, 4vw, 3.5rem);
+		height: 1px;
+		background: linear-gradient(90deg, var(--sa-line), color-mix(in srgb, var(--sa-acc) 35%, transparent));
 	}
+	.sb-mast-lead {
+		flex: 1 1 18rem;
+		margin: 0;
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: clamp(0.92rem, 1.15vw, 1.04rem);
+		line-height: 1.5;
+		color: var(--sa-muted);
+	}
+	.sb-mast-jump {
+		flex: none;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		font-size: 0.8rem;
+		font-weight: 800;
+		letter-spacing: 0.02em;
+		color: var(--sa-acc);
+		border-bottom: 2px solid color-mix(in srgb, var(--sa-acc) 42%, transparent);
+		padding-bottom: 0.1rem;
+		transition: gap 0.25s ease, border-color 0.25s ease;
+	}
+	.sb-mast-jump:hover { gap: 0.62rem; border-color: var(--sa-acc); }
 
 	/* ── B · the lectern ─────────────────────────────────────── */
 	.sb-stand {
@@ -1212,14 +1173,13 @@ const filterCss = cats
 		/* on a phone the entrance was a whole screen of its own; the
 		   heading stays, everything around it gives up its slack so the
 		   thing people came for is reachable in one short scroll */
-		.sb-sec { padding-block: 1.1rem; }
-		.sb-display { font-size: clamp(2.2rem, 11.5vw, 3.1rem); }
-		.sb-open { gap: 0.85rem; }
-		.sb-scroll { padding: 1.1rem 1.3rem; }
-		.sb-scroll-lead { font-size: 1rem; line-height: 1.55; }
+		.sb-sec { padding-block: 1rem; }
+		.sb-display { font-size: clamp(1.65rem, 7.6vw, 2.1rem); }
+		.sb-mast { gap: 0.45rem 0.75rem; margin-bottom: 0.75rem; }
+		.sb-mast-rule { display: none; }
+		.sb-mast-lead { flex: 1 0 100%; font-size: 0.92rem; line-height: 1.5; }
+		.sb-mast-jump { font-size: 0.76rem; }
 
-		/* the outline word crowds the display type at this size */
-		.sb-ghost { display: none; }
 
 		.sb-rule {
 			display: block;

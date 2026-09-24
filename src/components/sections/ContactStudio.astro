@@ -63,8 +63,12 @@ const slipNo = new Date().getFullYear();
 		<span class="sct-grain"></span>
 	</div>
 
-	<!-- ── A · the desk ────────────────────────────────────── -->
-	<section class="sct-sec sct-entry">
+	<!-- ── A · the desk ────────────────────────────────────────
+	     People come to a contact page to write to us, so the slip is the
+	     first thing on it. The title stays, as a masthead on one line
+	     rather than a screen of its own, and the sheet that used to sit
+	     beside it says its piece on the slip instead. -->
+	<section class="sct-sec sct-entry" data-cursor="pen">
 		<div class="sct-wrap">
 			<div class="sct-folio sd-rev">
 				<span>The Swizel Gallery — Commissions Desk</span>
@@ -72,40 +76,13 @@ const slipNo = new Date().getFullYear();
 				<span>The door is open</span>
 			</div>
 
-			<div class="sct-open">
-				<div class="sct-open-main">
-					<span class="sct-ghost" aria-hidden="true">hello</span>
-					<h1 class="sct-display sd-rev">
-						Commission<br />
-						<em>the studio.</em>
-					</h1>
-				</div>
-				<div class="sct-open-side sd-rev">
-					<figure class="sct-scroll">
-						<span class="sct-scroll-grain" aria-hidden="true"></span>
-						<p class="sct-scroll-lead">
-							A finished brief or a rough thought on the back of a
-							napkin, both are welcome at this desk. Tell us what you
-							want made and who it is for. A project manager reads
-							every slip that comes in, and you hear back inside one
-							working day.
-						</p>
-					</figure>
-					<span class="sct-open-cue">
-						<span class="sct-pulse" aria-hidden="true"></span>
-						Someone is at the desk right now
-					</span>
-				</div>
-			</div>
-		</div>
-	</section>
-
-	<!-- ── B · the slip and the plates ─────────────────────── -->
-	<section class="sct-sec" data-cursor="pen">
-		<div class="sct-wrap">
-			<div class="sct-rule sd-rev">
-				<span>The commission</span>
-				<span>Fill in the slip · we do the rest</span>
+			<div class="sct-mast sd-rev">
+				<h1 class="sct-display">Commission <em>the studio.</em></h1>
+				<span class="sct-mast-rule" aria-hidden="true"></span>
+				<span class="sct-open-cue">
+					<span class="sct-pulse" aria-hidden="true"></span>
+					Someone is at the desk right now
+				</span>
 			</div>
 
 			<div class="sct-desk">
@@ -119,6 +96,11 @@ const slipNo = new Date().getFullYear();
 					<span class="sct-slip-sub">
 						The Swizel Gallery · Commissions Desk · Abuja
 					</span>
+					<p class="sct-slip-lead">
+						A finished brief or a rough thought on the back of a napkin,
+						both are welcome. Tell us what you want made and who it is
+						for, and a project manager reads it inside one working day.
+					</p>
 					<div class="sct-form">
 						<ContactForm />
 					</div>
@@ -331,40 +313,22 @@ const slipNo = new Date().getFullYear();
 		font-weight: 400;
 	}
 
-	/* ── A · the entrance ── */
-	.sct-open {
-		display: grid;
-		gap: clamp(1.1rem, 2.6vw, 2.2rem);
-		/* top-aligned, not bottom: `end` hung the heading off the bottom
-		   of a row the taller sheet sized, so a wide screen opened a
-		   dead band above it that grew with the viewport */
-		align-items: start;
-	}
-	@media (min-width: 920px) {
-		.sct-open { grid-template-columns: 1.1fr 0.9fr; }
-	}
-	.sct-open-main { position: relative; }
-	.sct-ghost {
-		position: absolute;
-		left: -0.06em;
-		bottom: -0.08em;
-		font-family: var(--sa-serif);
-		font-style: italic;
-		font-size: clamp(6rem, 16vw, 13rem);
-		line-height: 0.74;
-		color: color-mix(in srgb, var(--sa-ink) 3.5%, transparent);
-		pointer-events: none;
-		user-select: none;
-		z-index: 0;
+	/* ── A · the masthead ─────────────────────────────────────
+	   One band: the title, a rule that runs out to meet the live cue.
+	   It replaces a two-column entrance that filled a whole screen. */
+	.sct-mast {
+		display: flex;
+		align-items: center;
+		gap: clamp(0.8rem, 1.8vw, 1.4rem);
+		flex-wrap: wrap;
+		margin-bottom: clamp(0.9rem, 1.9vw, 1.4rem);
 	}
 	.sct-display {
-		position: relative;
-		z-index: 1;
-		font-size: clamp(2.5rem, 5.6vw, 4.3rem);
+		margin: 0;
+		font-size: clamp(1.75rem, 3.2vw, 2.7rem);
 		font-weight: 850;
 		letter-spacing: -0.03em;
-		line-height: 0.98;
-		margin: 0;
+		line-height: 1.04;
 	}
 	.sct-display em {
 		font-family: var(--sa-serif);
@@ -373,52 +337,18 @@ const slipNo = new Date().getFullYear();
 		letter-spacing: -0.01em;
 		color: var(--sa-acc);
 	}
-	.sct-open-side { max-width: 34rem; }
-
-	.sct-scroll {
-		position: relative;
-		margin: 0 0 0.85rem;
-		padding: 1.35rem 1.7rem;
-		color: var(--sc-ink);
-		background:
-			radial-gradient(130% 100% at 14% 0%, rgba(255, 255, 255, 0.6), transparent 62%),
-			linear-gradient(166deg, #fbf4e6 0%, #f4ecda 58%, #ece1c9 100%);
-		box-shadow:
-			inset 0 0 22px rgba(120, 82, 40, 0.11),
-			0 18px 42px -26px rgba(0, 0, 0, 0.5);
-		transform: rotate(0.45deg);
-		-webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='220' preserveAspectRatio='none'%3E%3Cfilter id='t' x='-6%' y='-12%' width='112%' height='124%'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.017 0.062' numOctaves='4' seed='7' result='n'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='n' scale='10' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3Crect x='10' y='11' width='580' height='198' rx='18' ry='22' fill='%23fff' filter='url(%23t)'/%3E%3C/svg%3E");
-		mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='220' preserveAspectRatio='none'%3E%3Cfilter id='t' x='-6%' y='-12%' width='112%' height='124%'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.017 0.062' numOctaves='4' seed='7' result='n'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='n' scale='10' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3Crect x='10' y='11' width='580' height='198' rx='18' ry='22' fill='%23fff' filter='url(%23t)'/%3E%3C/svg%3E");
-		-webkit-mask-size: 100% 100%;
-		mask-size: 100% 100%;
-		-webkit-mask-repeat: no-repeat;
-		mask-repeat: no-repeat;
-	}
-	.sct-scroll-grain {
-		position: absolute;
-		inset: 0;
-		pointer-events: none;
-		opacity: 0.5;
-		mix-blend-mode: multiply;
-		background-image:
-			repeating-linear-gradient(91deg, rgba(120, 82, 40, 0.055) 0 1px, transparent 1px 5px),
-			url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='150' height='150' filter='url(%23g)' opacity='0.4'/%3E%3C/svg%3E");
-	}
-	.sct-scroll-lead {
-		position: relative;
-		z-index: 1;
-		margin: 0;
-		color: var(--sc-ink);
-		font-family: var(--sa-serif);
-		font-style: italic;
-		font-size: clamp(1.04rem, 1.38vw, 1.24rem);
-		line-height: 1.62;
+	.sct-mast-rule {
+		flex: 1 1 3rem;
+		min-width: 1.5rem;
+		height: 1px;
+		background: linear-gradient(90deg, var(--sa-line), color-mix(in srgb, var(--sa-acc) 35%, transparent));
 	}
 	.sct-open-cue {
 		display: inline-flex;
 		align-items: center;
-		gap: 0.55rem;
-		font-size: 0.82rem;
+		gap: 0.5rem;
+		flex: none;
+		font-size: 0.76rem;
 		font-weight: 700;
 		letter-spacing: 0.02em;
 		color: var(--sa-muted);
@@ -508,6 +438,17 @@ const slipNo = new Date().getFullYear();
 		letter-spacing: 0.16em;
 		text-transform: uppercase;
 		color: var(--sc-faint);
+	}
+	.sct-slip-lead {
+		position: relative;
+		z-index: 1;
+		margin: 0 0 1.2rem;
+		font-family: var(--sa-serif);
+		font-style: italic;
+		font-size: 0.98rem;
+		line-height: 1.6;
+		color: var(--sc-soft);
+		max-width: 40rem;
 	}
 	.sct-slip-foot {
 		position: relative;
@@ -896,14 +837,13 @@ const slipNo = new Date().getFullYear();
 		/* on a phone the entrance was a whole screen of its own; the
 		   heading stays, everything around it gives up its slack so the
 		   thing people came for is reachable in one short scroll */
-		.sct-sec { padding-block: 1.1rem; }
-		.sct-display { font-size: clamp(2.2rem, 11.5vw, 3.1rem); }
-		.sct-open { gap: 0.85rem; }
-		.sct-scroll { padding: 1.1rem 1.3rem; }
-		.sct-scroll-lead { font-size: 1rem; line-height: 1.55; }
+		.sct-sec { padding-block: 1rem; }
+		.sct-display { font-size: clamp(1.65rem, 7.6vw, 2.1rem); }
+		.sct-mast { gap: 0.5rem 0.8rem; margin-bottom: 0.8rem; }
+		.sct-mast-rule { display: none; }
+		.sct-open-cue { font-size: 0.72rem; }
+		.sct-slip-lead { font-size: 0.92rem; margin-bottom: 1rem; }
 
-		/* the outline word crowds the display type at this size */
-		.sct-ghost { display: none; }
 
 		.sct-rule { display: block; padding-bottom: 0.7rem; }
 		.sct-rule span:first-child {
