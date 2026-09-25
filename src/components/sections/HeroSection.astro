@@ -32,7 +32,6 @@ const slides = [
 		title: 'You imagine it.<em>We build it.</em>',
 		// the verb scrolls on this frame only — see .hero--rot
 		rotate: ['build', 'design', 'ship', 'scale', 'grow'],
-		line: 'One senior team. Design, engineering and growth, from launch to legacy.',
 		cta: { href: '/contact', label: 'Start a project' },
 		alt2: { href: '/portfolio', label: 'See the work' },
 		eager: true,
@@ -45,7 +44,6 @@ const slides = [
 		pos: '50% 46%',
 		kicker: 'The collection',
 		title: 'Sixty-five products,<em>live in the market.</em>',
-		line: 'Fintech, health, property, sport and education. Real businesses run on them.',
 		cta: { href: '/portfolio', label: 'See the work' },
 		alt2: { href: '/about', label: 'Meet the team' },
 	},
@@ -60,8 +58,7 @@ const slides = [
 		alt: 'Four Swizel engineers around the table in Abuja, mid build',
 		pos: '50% 38%',
 		kicker: 'Inside the build',
-		title: 'Two minutes,<em>first sketch to launch day.</em>',
-		line: 'How a brief becomes a product, and what happens in the years after.',
+		title: 'Two minutes,<em>sketch to launch.</em>',
 		cta: { href: '/services', label: 'How we work' },
 		alt2: { href: '/contact', label: 'Talk to us' },
 	},
@@ -159,8 +156,6 @@ const sectors = [
 						) : (
 							<p class="hero--display" set:html={s.title.replace('<em>', '<span class="hero--l2">').replace('</em>', '</span>')} />
 						)}
-
-						<p class="hero--line">{s.line}</p>
 
 						<div class="hero--cta">
 							<a href={s.cta.href} class="hero--primary">
@@ -385,24 +380,47 @@ const sectors = [
 		text-transform: uppercase;
 		color: rgba(255, 255, 255, 0.62);
 	}
+	/* ── glass ──────────────────────────────────────────────────
+	   The letterforms are a pane, not paint: a thin translucent body you
+	   read the photograph through, a lit rim where the edge catches the
+	   light, and a soft drop beneath so the pane sits above the picture
+	   rather than in it. `paint-order` puts the rim behind the body, so
+	   the counters stay open and the type keeps its shape at size.
+
+	   It is a real trade: translucent type cannot measure the way solid
+	   white does. The rim carries the legibility, the kicker and the
+	   buttons stay solid, and nothing the page has to say depends on
+	   reading this through the glass alone. */
 	.hero--display {
 		margin: clamp(0.7rem, 1.6vh, 1.1rem) 0 0;
 		font-size: clamp(2.5rem, 6vw, 5.2rem);
 		font-weight: 800;
 		letter-spacing: -0.04em;
 		line-height: 0.96;
-		color: #ffffff;
+		color: rgba(255, 255, 255, 0.11);
+		/* the rim never drops below a hair, however small the type gets */
+		-webkit-text-stroke: max(1px, 0.021em) rgba(255, 255, 255, 0.97);
+		paint-order: stroke fill;
 		text-wrap: balance;
-		text-shadow: 0 2px 40px rgba(0, 0, 0, 0.5);
+		text-shadow:
+			/* the bloom a lit edge throws onto what is behind it */
+			0 0 0.55em rgba(255, 255, 255, 0.14),
+			0 0.13em 0.42em rgba(4, 6, 14, 0.6),
+			0 0.02em 0.1em rgba(4, 6, 14, 0.55);
 	}
-	.hero--l1 { display: block; }
-	/* the answering line is the same white, one step back — a gradient
-	   clipped to text over a photograph reads grey, not metallic */
+	/* never more than two lines: past that the cover stops being a cover */
+	.hero--display :global(.hero--l1),
 	.hero--display :global(.hero--l2),
+	.hero--l1,
 	.hero--l2 {
 		display: block;
-		color: rgba(255, 255, 255, 0.76);
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: clip;
 	}
+	/* the answering line is the same glass, its rim one step softer */
+	.hero--display :global(.hero--l2),
+	.hero--l2 { -webkit-text-stroke-color: rgba(255, 255, 255, 0.78); }
 
 	/* ── the verb, on a reel of its own ──
 	   A fixed window with the words stacked behind it; the track steps
@@ -429,29 +447,22 @@ const sectors = [
 		height: 1.16em;
 		line-height: 1.16em;
 		font-style: normal;
-		/* the changing word is the jewel: lit white through platinum
-		   into the room's own gold */
-		background: linear-gradient(100deg, #ffffff 8%, #dbe8f6 34%, color-mix(in srgb, var(--gold) 55%, #ffffff) 72%, #ffffff 96%);
+		/* The jewel keeps its gold and keeps its body: solid where the
+		   rest is glass, so the word that changes is the one thing your
+		   eye lands on. */
+		-webkit-text-stroke: 0;
+		text-shadow: 0 0.14em 0.4em rgba(4, 6, 14, 0.5);
+		background: linear-gradient(100deg, #ffffff 6%, #f0e0bd 28%, var(--gold) 56%, #ffe9bd 78%, #ffffff 96%);
 		-webkit-background-clip: text;
 		background-clip: text;
 		color: transparent;
 		-webkit-text-fill-color: transparent;
 	}
 
-	.hero--line {
-		margin: clamp(0.75rem, 1.8vh, 1.15rem) 0 0;
-		/* no cap: at the plate's own width every one of these sits on a
-		   single line, which is how a cover reel captions a frame */
-		max-width: none;
-		font-size: clamp(0.98rem, 1.15vw, 1.1rem);
-		line-height: 1.6;
-		color: rgba(255, 255, 255, 0.76);
-	}
 
 	/* each frame brings its own title in, a beat after the image */
 	.hero--slide.is-on .hero--kicker { animation: hero-rise 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.14s both; }
 	.hero--slide.is-on .hero--display { animation: hero-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.24s both; }
-	.hero--slide.is-on .hero--line { animation: hero-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.36s both; }
 	.hero--slide.is-on .hero--cta { animation: hero-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.46s both; }
 	@keyframes hero-rise {
 		from { opacity: 0; transform: translateY(16px); }
@@ -734,7 +745,6 @@ const sectors = [
 		.hero--plate { bottom: clamp(7.5rem, 19vh, 10rem); }
 		.hero--kicker { font-size: 0.66rem; letter-spacing: 0.16em; }
 		.hero--display { font-size: clamp(2.05rem, 9.2vw, 2.9rem); letter-spacing: -0.035em; }
-		.hero--line { font-size: 0.95rem; line-height: 1.5; }
 		.hero--cta { gap: 0.55rem; }
 		.hero--primary,
 		.hero--secondary { flex: 1 1 auto; justify-content: center; padding-inline: 1rem; }
@@ -774,14 +784,12 @@ const sectors = [
 		.hero--slide.is-on .hero--film,
 		.hero--slide.is-on .hero--kicker,
 		.hero--slide.is-on .hero--display,
-		.hero--slide.is-on .hero--line,
 		.hero--slide.is-on .hero--cta,
 		.hero--rot-track,
 		.hero--proof-item--live .hero--proof-num::after,
 		.hero--down { animation: none; transition: none; }
 		.hero--slide.is-on .hero--kicker,
 		.hero--slide.is-on .hero--display,
-		.hero--slide.is-on .hero--line,
 		.hero--slide.is-on .hero--cta { opacity: 1; transform: none; }
 	}
 	:global(html.perf-lite) .hero--slide.is-on .hero--img,
