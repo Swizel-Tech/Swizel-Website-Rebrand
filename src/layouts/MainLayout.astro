@@ -474,7 +474,23 @@ const {
 			window.setInterval(() => {
 				if (hovering || !chips.length) return;
 				chips.forEach((c) => c.classList.remove('is-active'));
-				chips[idx % chips.length].classList.add('is-active');
+				const chip = chips[idx % chips.length]!;
+				chip.classList.add('is-active');
+				// The rail is wider than the screen, so past a point the
+				// highlight was landing on chips nobody could see — it just
+				// looked like it had stopped. Carry the rail along with it,
+				// keeping the live chip centred where there is room to.
+				const room = sectorWrap.scrollWidth - sectorWrap.clientWidth;
+				if (room > 2) {
+					const want = chip.offsetLeft - (sectorWrap.clientWidth - chip.offsetWidth) / 2;
+					sectorWrap.scrollTo({
+						left: Math.max(0, Math.min(room, want)),
+						// stepping along is a glide; going back to the first
+						// chip is a rewind, and a smooth one would still be
+						// travelling when the next chip lights
+						behavior: idx % chips.length === 0 ? 'auto' : 'smooth',
+					});
+				}
 				idx++;
 			}, 1400);
 		}

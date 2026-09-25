@@ -219,6 +219,14 @@ const rates = [0.5, 1, 1.25, 1.5, 2];
 		width: 100%;
 		height: 100%;
 		border: 0;
+		/* YouTube's own chrome is switched off in the player vars, but its
+		   end screen, its wordmark and its full-screen button still paint
+		   over our transport and still take clicks — the iframe is its own
+		   layer. Reaching for "1×" was landing on YouTube's full-screen
+		   button sitting in the same corner. Everything here is driven
+		   through the IFrame API, so the frame itself never needs to be
+		   clicked; the screen below still takes the tap-to-pause. */
+		pointer-events: none;
 	}
 
 	/* ── covering a frame that is not 16/9 ────────────────────────────

@@ -591,6 +591,22 @@ html:not(.dark) .site-header.at-hero-top {
   box-shadow: var(--nav-shadow);
 }
 html:not(.dark) .site-header.at-hero-top::before { content: none; }
+/* …except in Boardroom. That exclusion exists because a light-mode hero
+   with white nav ink over it is unreadable — but the Boardroom cover is a
+   cinema: it keeps its own darkness in both themes, and its own scrim
+   already darkens the top band the nav sits on. So the bar floats there
+   in daylight too, and the photograph runs the full height of the screen
+   instead of stopping at a white strip. */
+html:not(.dark)[data-view='boardroom'] .site-header.at-hero-top {
+  background: transparent;
+  --nav-ink: #ffffff;
+  --nav-cta-border: rgba(255, 255, 255, 0.55);
+  border-bottom-color: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+html:not(.dark)[data-view='boardroom'] .site-header.at-hero-top::before { content: none; }
 /* lift the live hero up so its dark canvas fills behind the floating bar.
    margin/padding cancel for content, so nothing moves — the hero bg just
    extends up under the nav. */

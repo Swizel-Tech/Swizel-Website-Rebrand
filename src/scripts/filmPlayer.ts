@@ -249,6 +249,10 @@ export function initFilmPlayers(root: ParentNode = document) {
 							playsinline: 1,
 							iv_load_policy: 3,
 							disablekb: 1,
+							// no end-screen grid of other people's videos
+							// painted over our own transport
+							fs: 0,
+							showinfo: 0,
 						},
 						events: {
 							onReady: () => resolve(p),
