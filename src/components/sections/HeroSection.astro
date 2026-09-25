@@ -195,7 +195,7 @@ const sectors = [
 
 		<div class="hero--steer" role="tablist" aria-label="Choose a frame">
 			<button class="hero--arrow" type="button" data-bh-prev aria-label="Previous frame">
-				<Icon width={17} name="mdi:chevron-left" />
+				<Icon width={14} name="mdi:chevron-left" />
 			</button>
 			<span class="hero--dots">
 				{
@@ -214,11 +214,11 @@ const sectors = [
 				}
 			</span>
 			<button class="hero--arrow" type="button" data-bh-next aria-label="Next frame">
-				<Icon width={17} name="mdi:chevron-right" />
+				<Icon width={14} name="mdi:chevron-right" />
 			</button>
 			<button class="hero--pause" type="button" data-bh-toggle aria-pressed="false" aria-label="Pause the reel">
-				<Icon width={15} name="mdi:pause" class="hero--pause-a" />
-				<Icon width={15} name="mdi:play" class="hero--pause-b" />
+				<Icon width={12} name="mdi:pause" class="hero--pause-a" />
+				<Icon width={12} name="mdi:play" class="hero--pause-b" />
 			</button>
 		</div>
 	</div>
@@ -369,7 +369,7 @@ const sectors = [
 		z-index: 3;
 		left: var(--pad);
 		right: var(--pad);
-		bottom: clamp(9.5rem, 21vh, 14rem);
+		bottom: clamp(7rem, 15vh, 10rem);
 		max-width: 46rem;
 	}
 	.hero--kicker {
@@ -545,14 +545,14 @@ const sectors = [
 		border-left: 1px solid rgba(255, 255, 255, 0.16);
 	}
 	.hero--proof-num {
-		font-size: clamp(1.15rem, 1.7vw, 1.5rem);
+		font-size: clamp(0.98rem, 1.25vw, 1.18rem);
 		font-weight: 800;
 		letter-spacing: -0.03em;
 		line-height: 1.1;
 		color: #ffffff;
 	}
 	.hero--proof-label {
-		font-size: 0.73rem;
+		font-size: 0.68rem;
 		color: rgba(255, 255, 255, 0.6);
 		white-space: nowrap;
 	}
@@ -579,8 +579,8 @@ const sectors = [
 	.hero--steer {
 		display: flex;
 		align-items: center;
-		gap: 0.45rem;
-		padding: 0.35rem 0.4rem;
+		gap: 0.34rem;
+		padding: 0.26rem 0.32rem;
 		border-radius: 9999px;
 		border: 1px solid rgba(255, 255, 255, 0.16);
 		background: rgba(10, 14, 26, 0.5);
@@ -592,8 +592,8 @@ const sectors = [
 	.hero--pause {
 		display: grid;
 		place-items: center;
-		width: 2rem;
-		height: 2rem;
+		width: 1.75rem;
+		height: 1.75rem;
 		border-radius: 50%;
 		color: rgba(255, 255, 255, 0.8);
 		cursor: pointer;
@@ -601,17 +601,33 @@ const sectors = [
 	}
 	.hero--arrow:hover,
 	.hero--pause:hover { background: rgba(255, 255, 255, 0.16); color: #ffffff; }
-	.hero--pause { margin-left: 0.15rem; border-left: 1px solid rgba(255, 255, 255, 0.14); border-radius: 0 9999px 9999px 0; width: 2.3rem; }
+	/* Small to look at, still big enough to hit: the control keeps its
+	   size and grows an invisible target around itself, so a thumb has
+	   somewhere to land without the cluster getting heavier. */
+	.hero--arrow::before,
+	.hero--pause::before,
+	.hero--dot::before {
+		content: '';
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: 44px;
+		height: 44px;
+		transform: translate(-50%, -50%);
+	}
+	.hero--arrow,
+	.hero--pause { position: relative; }
+	.hero--pause { margin-left: 0.12rem; border-left: 1px solid rgba(255, 255, 255, 0.14); border-radius: 0 9999px 9999px 0; width: 2rem; }
 	.hero--pause-b { display: none; }
 	.hero--reel.is-paused .hero--pause-a { display: none; }
 	.hero--reel.is-paused .hero--pause-b { display: block; }
 
-	.hero--dots { display: flex; align-items: center; gap: 0.3rem; }
+	.hero--dots { display: flex; align-items: center; gap: 0.26rem; }
 	/* a dot is a track; the live one fills as its frame runs down */
 	.hero--dot {
 		position: relative;
-		width: 0.55rem;
-		height: 0.55rem;
+		width: 0.46rem;
+		height: 0.46rem;
 		padding: 0;
 		border-radius: 9999px;
 		background: rgba(255, 255, 255, 0.28);
@@ -620,7 +636,7 @@ const sectors = [
 		transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1), background 0.3s ease;
 	}
 	.hero--dot:hover { background: rgba(255, 255, 255, 0.5); }
-	.hero--dot.is-on { width: 2.6rem; background: rgba(255, 255, 255, 0.26); }
+	.hero--dot.is-on { width: 2.1rem; background: rgba(255, 255, 255, 0.26); }
 	.hero--dot i {
 		position: absolute;
 		inset: 0;
@@ -736,13 +752,13 @@ const sectors = [
 	   and the deck stacks proof over steering.
 	   ══════════════════════════════════════════════════════════════════ */
 	@media (max-width: 900px) {
-		.hero--plate { bottom: clamp(8.5rem, 20vh, 11rem); max-width: none; }
+		.hero--plate { bottom: clamp(6.5rem, 15vh, 9rem); max-width: none; }
 		.hero--display { font-size: clamp(2.2rem, 8.4vw, 3.4rem); }
 		.hero--deck { gap: 0.9rem; }
 	}
 	@media (max-width: 720px) {
 		.hero--reel { min-height: 100svh; }
-		.hero--plate { bottom: clamp(7.5rem, 19vh, 10rem); }
+		.hero--plate { bottom: clamp(6rem, 15vh, 8.5rem); }
 		.hero--kicker { font-size: 0.66rem; letter-spacing: 0.16em; }
 		.hero--display { font-size: clamp(2.05rem, 9.2vw, 2.9rem); letter-spacing: -0.035em; }
 		.hero--cta { gap: 0.55rem; }
@@ -757,7 +773,7 @@ const sectors = [
 		}
 		.hero--proof { gap: 0.65rem; }
 		.hero--proof-item + .hero--proof-item { padding-left: 0.65rem; }
-		.hero--proof-num { font-size: 1.05rem; }
+		.hero--proof-num { font-size: 0.95rem; }
 		.hero--proof-label { font-size: 0.64rem; white-space: normal; line-height: 1.25; }
 		/* uptime is the one figure a phone can spare */
 		.hero--proof-item--live { display: none; }
