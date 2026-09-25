@@ -169,9 +169,64 @@ export function initBoardroomHero() {
 		else play();
 	});
 
+	rotator();
 	paint();
 	if (reduce) {
 		stage.classList.add('is-paused');
 		toggle?.setAttribute('aria-pressed', 'true');
+	}
+
+	// ── the verb on the first frame ─────────────────────────────────────
+	// The window has to be as wide as the word inside it, not as wide as
+	// the longest word in the list: fixed to the widest, "ship" left a
+	// hole before "it." that you could park a car in. So the width is
+	// animated along with the scroll, and the sentence closes up behind
+	// each verb.
+	function rotator() {
+		const rot = stage.querySelector<HTMLElement>('.hero--rot');
+		const track = rot?.querySelector<HTMLElement>('.hero--rot-track');
+		if (!rot || !track) return;
+		const words = Array.from(track.querySelectorAll<HTMLElement>('i'));
+		if (words.length < 3) return;
+		// the last word is a copy of the first, so the loop can run off the
+		// end and be snapped back while nothing is moving
+		const last = words.length - 1;
+		let w = 0;
+
+		const measure = () => words.map((el) => el.getBoundingClientRect().width);
+		let widths = measure();
+		const stepH = () => words[0]!.getBoundingClientRect().height;
+
+		const show = (i: number, animate = true) => {
+			track.style.transition = animate ? '' : 'none';
+			rot.style.transition = animate ? '' : 'none';
+			rot.style.width = `${widths[i]}px`;
+			track.style.transform = `translateY(${-i * stepH()}px)`;
+			if (!animate) {
+				// force the frame so the snap is never seen
+				void track.offsetHeight;
+				track.style.transition = '';
+				rot.style.transition = '';
+			}
+		};
+
+		show(0, false);
+		if (reduce) return;
+
+		window.setInterval(() => {
+			w += 1;
+			show(w);
+			if (w === last) {
+				// landed on the copy: step back to the original silently
+				window.setTimeout(() => { w = 0; show(0, false); }, 700);
+			}
+		}, 2600);
+
+		// the words change size with the viewport
+		let rt = 0;
+		window.addEventListener('resize', () => {
+			window.clearTimeout(rt);
+			rt = window.setTimeout(() => { widths = measure(); show(w, false); }, 150);
+		});
 	}
 }

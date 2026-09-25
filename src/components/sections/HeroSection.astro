@@ -30,6 +30,8 @@ const slides = [
 		pos: '50% 30%',
 		kicker: 'Swizel Technologies · building since 2019',
 		title: 'You imagine it.<em>We build it.</em>',
+		// the verb scrolls on this frame only — see .hero--rot
+		rotate: ['build', 'design', 'ship', 'scale', 'grow'],
 		line: 'One senior team. Design, engineering and growth, from launch to legacy.',
 		cta: { href: '/contact', label: 'Start a project' },
 		alt2: { href: '/portfolio', label: 'See the work' },
@@ -48,12 +50,15 @@ const slides = [
 		alt2: { href: '/about', label: 'Meet the team' },
 	},
 	{
-		id: 'film',
-		kind: 'film' as const,
-		src: '/images/how-we-build-poster.jpg',
-		video: '/videos/how-we-build.mp4',
-		alt: 'A look inside a Swizel build, first sketch to launch day',
-		pos: '50% 42%',
+		id: 'build',
+		// A film slot is ready here: give this frame `kind: 'film'`, a
+		// `video:` path and a `src:` poster and it plays itself. It is a
+		// photograph for now because the only footage on hand was a soft,
+		// dim frame that let the whole cover down.
+		kind: 'photo' as const,
+		src: '/images/builder/the-table.jpg',
+		alt: 'Four Swizel engineers around the table in Abuja, mid build',
+		pos: '50% 38%',
 		kicker: 'Inside the build',
 		title: 'Two minutes,<em>first sketch to launch day.</em>',
 		line: 'How a brief becomes a product, and what happens in the years after.',
@@ -71,6 +76,8 @@ const proof = [
 const sectors = [
 	'Fintech', 'Healthtech', 'Agritech', 'Sports',
 	'Real Estate', 'E-commerce', 'Education', 'Logistics',
+	'Energy', 'Media', 'Hospitality', 'Government',
+	'Travel', 'Manufacturing', 'Nonprofit',
 ];
 ---
 
@@ -81,6 +88,11 @@ const sectors = [
 	aria-label="Swizel — what we build"
 	tabindex="-1"
 >
+	<!-- Everything above the strip. The frames are absolute inside this,
+	     not inside the section, so they stop at the strip's top edge
+	     instead of running behind it. -->
+	<div class="hero--cover">
+
 	<!-- ── the frames ──────────────────────────────────────────── -->
 	<div class="hero--frames hero--photo-card">
 		{
@@ -128,18 +140,38 @@ const sectors = [
 
 					<div class="hero--plate">
 						<span class="hero--kicker">{s.kicker}</span>
-						{i === 0 ? (
-							<h1 class="hero--display rhead" set:html={s.title.replace('<em>', '<span class="hero--l2">').replace('</em>', '</span>')} />
+
+						{s.rotate ? (
+							<h1 class="hero--display rhead">
+								<span class="hero--l1">You imagine it.</span>
+								<span class="hero--l2">
+									We{' '}
+									<span class="hero--rot" aria-hidden="true">
+										<span class="hero--rot-track">
+											{s.rotate.map((wd) => <i>{wd}</i>)}
+											<i>{s.rotate[0]}</i>
+										</span>
+									</span>{' '}
+									it.
+								</span>
+								<span class="sr-only">We build, design, ship, scale and grow it.</span>
+							</h1>
 						) : (
 							<p class="hero--display" set:html={s.title.replace('<em>', '<span class="hero--l2">').replace('</em>', '</span>')} />
 						)}
+
 						<p class="hero--line">{s.line}</p>
+
 						<div class="hero--cta">
 							<a href={s.cta.href} class="hero--primary">
 								{s.cta.label}
 								<Icon width={16} name="mdi:arrow-right" />
 							</a>
 							<a href={s.alt2.href} class="hero--secondary">{s.alt2.label}</a>
+							<button class="hero--tour" type="button" data-tour-start="boardroom">
+								<Icon width={15} name="mdi:compass-outline" />
+								Take the tour
+							</button>
 						</div>
 					</div>
 				</article>
@@ -195,24 +227,25 @@ const sectors = [
 			</button>
 		</div>
 	</div>
+	</div>
 
-	<button class="hero--tour" type="button" data-tour-start="boardroom">
-		<Icon width={15} name="mdi:compass-outline" />
-		Take the two-minute tour
-	</button>
+	<!-- ── the strip on the cover's floor: who we build for ────────
+	     It lives inside the section on purpose. Outside it, none of
+	     global.css's `html[data-view="x"] .hero-boardroom { display:none }`
+	     rules reached it and it showed in all five worlds — and
+	     handleHero, which scopes its lookups to .hero--stage, could not
+	     find #hero-sectors to cycle. -->
+	<div class="hero--rail">
+		<span class="hero--rail-label">Built for</span>
+		<ul class="hero--sectors" id="hero-sectors">
+			{sectors.map((s, i) => <li class="hero--sector" style={`--si:${i}`}>{s}</li>)}
+			<li class="hero--sector hero--sector-more">+ more</li>
+		</ul>
+		<a href="#about" class="hero--down" aria-label="Scroll to learn more">
+			<Icon width={16} name="mdi:arrow-down" />
+		</a>
+	</div>
 </section>
-
-<!-- ── the strip under the cover: who we build for ─────────────── -->
-<div class="hero--rail hero-view-strip">
-	<span class="hero--rail-label">Built for</span>
-	<ul class="hero--sectors" id="hero-sectors">
-		{sectors.map((s, i) => <li class="hero--sector" style={`--si:${i}`}>{s}</li>)}
-		<li class="hero--sector hero--sector-more">+ more</li>
-	</ul>
-	<a href="#about" class="hero--down" aria-label="Scroll to learn more">
-		<Icon width={16} name="mdi:arrow-down" />
-	</a>
-</div>
 
 <style>
 	/* ══════════════════════════════════════════════════════════════════
@@ -239,6 +272,17 @@ const sectors = [
 		background: #04060e;
 	}
 	.hero--reel:focus { outline: none; }
+
+	/* the cover: everything above the strip, and the box the frames are
+	   absolute inside */
+	.hero--cover {
+		position: relative;
+		flex: 1 1 auto;
+		min-height: 0;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+	}
 
 	/* ── the frames ── */
 	.hero--frames {
@@ -337,30 +381,54 @@ const sectors = [
 		text-wrap: balance;
 		text-shadow: 0 2px 40px rgba(0, 0, 0, 0.5);
 	}
-	.hero--display :global(.hero--l2) {
+	.hero--l1 { display: block; }
+	/* the answering line is the same white, one step back — a gradient
+	   clipped to text over a photograph reads grey, not metallic */
+	.hero--display :global(.hero--l2),
+	.hero--l2 {
 		display: block;
-		background: linear-gradient(
-			100deg,
-			#ffffff 6%,
-			#dfeaf6 24%,
-			#ffffff 44%,
-			color-mix(in srgb, var(--gold) 34%, #ffffff) 66%,
-			#ffffff 92%
-		);
-		background-size: 220% 100%;
+		color: rgba(255, 255, 255, 0.76);
+	}
+
+	/* ── the verb, on a reel of its own ──
+	   A fixed window with the words stacked behind it; the track steps
+	   through them and lands back where it started, so the loop never
+	   jumps. The window sizes itself to the longest word, so "it." never
+	   moves while the verb changes. */
+	.hero--rot {
+		display: inline-block;
+		overflow: hidden;
+		height: 1.16em;
+		line-height: 1.16em;
+		vertical-align: -0.2em;
+		/* the script sets the width to the live word; this is the closing
+		   up of the sentence behind it */
+		transition: width 0.62s cubic-bezier(0.76, 0, 0.24, 1);
+	}
+	.hero--rot-track {
+		display: block;
+		transition: transform 0.62s cubic-bezier(0.76, 0, 0.24, 1);
+	}
+	.hero--rot i {
+		display: block;
+		width: max-content;
+		height: 1.16em;
+		line-height: 1.16em;
+		font-style: normal;
+		/* the changing word is the jewel: lit white through platinum
+		   into the room's own gold */
+		background: linear-gradient(100deg, #ffffff 8%, #dbe8f6 34%, color-mix(in srgb, var(--gold) 55%, #ffffff) 72%, #ffffff 96%);
 		-webkit-background-clip: text;
 		background-clip: text;
 		color: transparent;
 		-webkit-text-fill-color: transparent;
-		animation: hero-sheen 12s ease-in-out 1s infinite;
 	}
-	@keyframes hero-sheen {
-		0%, 100% { background-position: 0% 50%; }
-		50% { background-position: 100% 50%; }
-	}
+
 	.hero--line {
 		margin: clamp(0.75rem, 1.8vh, 1.15rem) 0 0;
-		max-width: 34rem;
+		/* no cap: at the plate's own width every one of these sits on a
+		   single line, which is how a cover reel captions a frame */
+		max-width: none;
 		font-size: clamp(0.98rem, 1.15vw, 1.1rem);
 		line-height: 1.6;
 		color: rgba(255, 255, 255, 0.76);
@@ -539,34 +607,27 @@ const sectors = [
 	.hero--dot.is-on i { transform: scaleX(var(--bh-p, 0)); }
 	.hero--reel.is-paused .hero--dot.is-on i { transform: scaleX(1); }
 
-	/* the tour, tucked at the top-right where it is available but never
-	   competing with the frame's own call */
-	/* Under the header, aligned to the plate's own margin. It sat top
-	   right before, which is exactly where the nav keeps CONTACT. */
+	/* The third button. It stands in the row with the other two but a
+	   weight quieter — no fill, no border, so the eye still lands on the
+	   white pill first and the tour is simply there for whoever wants it. */
 	.hero--tour {
-		position: absolute;
-		z-index: 4;
-		top: clamp(5.5rem, 13vh, 7.5rem);
-		left: var(--pad);
 		display: inline-flex;
 		align-items: center;
 		gap: 0.45rem;
-		padding: 0.5rem 0.95rem;
+		padding: 0.82rem 1.1rem;
 		border-radius: 9999px;
-		font-size: 0.78rem;
+		font-size: 0.9rem;
 		font-weight: 600;
-		color: rgba(255, 255, 255, 0.82);
-		border: 1px solid rgba(255, 255, 255, 0.2);
-		background: rgba(10, 14, 26, 0.42);
-		backdrop-filter: blur(14px);
-		-webkit-backdrop-filter: blur(14px);
+		color: rgba(255, 255, 255, 0.66);
+		background: transparent;
+		white-space: nowrap;
 		cursor: pointer;
-		transition: border-color 0.25s ease, background 0.25s ease, color 0.25s ease;
+		transition: color 0.25s ease, gap 0.25s ease, background 0.25s ease;
 	}
 	.hero--tour:hover {
+		gap: 0.6rem;
 		color: #ffffff;
-		border-color: rgba(255, 255, 255, 0.45);
-		background: rgba(10, 14, 26, 0.62);
+		background: rgba(255, 255, 255, 0.08);
 	}
 
 	/* ══════════════════════════════════════════════════════════════════
@@ -577,6 +638,7 @@ const sectors = [
 	.hero--rail {
 		--acc: var(--view-accent, #28a6ec);
 		position: relative;
+		/* shown only in this world — see the class it carries */
 		z-index: 1;
 		display: flex;
 		align-items: center;
@@ -662,7 +724,7 @@ const sectors = [
 		.hero--cta { gap: 0.55rem; }
 		.hero--primary,
 		.hero--secondary { flex: 1 1 auto; justify-content: center; padding-inline: 1rem; }
-		.hero--tour { font-size: 0.72rem; padding: 0.4rem 0.8rem; }
+		.hero--tour { font-size: 0.85rem; padding: 0.7rem 0.8rem; flex: 1 1 100%; justify-content: center; }
 		.hero--deck {
 			flex-direction: column;
 			align-items: flex-start;
@@ -700,7 +762,7 @@ const sectors = [
 		.hero--slide.is-on .hero--display,
 		.hero--slide.is-on .hero--line,
 		.hero--slide.is-on .hero--cta,
-		.hero--display :global(.hero--l2),
+		.hero--rot-track,
 		.hero--proof-item--live .hero--proof-num::after,
 		.hero--down { animation: none; transition: none; }
 		.hero--slide.is-on .hero--kicker,
@@ -709,6 +771,5 @@ const sectors = [
 		.hero--slide.is-on .hero--cta { opacity: 1; transform: none; }
 	}
 	:global(html.perf-lite) .hero--slide.is-on .hero--img,
-	:global(html.perf-lite) .hero--display :global(.hero--l2),
 	:global(html.perf-lite) .hero--down { animation: none; }
 </style>
