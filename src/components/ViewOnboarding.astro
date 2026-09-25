@@ -42,6 +42,24 @@ const orbs = [0, 1, 2, 3, 4];
 		<header class="vo__top">
 			<span class="vo__mark"><Logo /></span>
 			<span class="vo__progress" aria-hidden="true"><span class="vo__bar" id="vo-bar"></span></span>
+			<!-- Picking a world and picking the light belong together, so the
+			     same switch the header carries lives here too. It wears
+			     [data-theme-toggle], which is what the layout binds, so it
+			     shares one behaviour and one source of truth with every
+			     other copy on the page. -->
+			<button
+				class="vo__theme"
+				type="button"
+				role="switch"
+				aria-checked="false"
+				aria-label="Toggle dark mode"
+				data-theme-toggle
+			>
+				<span class="vo__theme-knob" aria-hidden="true">
+					<svg class="vo__theme-ic vo__theme-ic--sun" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="4.2" /><path d="M12 1.8v2.4M12 19.8v2.4M4 4l1.7 1.7M18.3 18.3 20 20M1.8 12h2.4M19.8 12h2.4M4 20l1.7-1.7M18.3 5.7 20 4" /></svg>
+					<svg class="vo__theme-ic vo__theme-ic--moon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14.3A8.6 8.6 0 0 1 9.7 3.5a8.6 8.6 0 1 0 10.8 10.8Z" /></svg>
+				</span>
+			</button>
 			<button class="vo__x" type="button" data-vo-skip aria-label="Close">
 				<Icon width={18} name="mdi:close" />
 			</button>
@@ -381,6 +399,68 @@ const orbs = [0, 1, 2, 3, 4];
 	:global(html:not(.dark)) .vo__top::after {
 		background: linear-gradient(180deg, #e2e8f2, rgba(226, 232, 242, 0));
 	}
+	/* ── the light switch, in the bar ──
+	   The icon rides on the knob, so the state you are in is the state you
+	   can see. Icons parked at the two ends of the track would each be
+	   covered by the knob exactly when they were the live one. */
+	.vo__theme {
+		position: relative;
+		flex: none;
+		display: inline-flex;
+		align-items: center;
+		width: 60px;
+		height: 30px;
+		padding: 0;
+		border-radius: 9999px;
+		cursor: pointer;
+		border: 1px solid rgba(255, 255, 255, 0.16);
+		background: rgba(255, 255, 255, 0.06);
+		transition: border-color 0.25s ease, background 0.25s ease;
+	}
+	.vo__theme:hover { border-color: rgba(247, 198, 107, 0.5); }
+	.vo__theme:focus-visible {
+		outline: 2px solid rgba(247, 198, 107, 0.7);
+		outline-offset: 2px;
+	}
+	.vo__theme-knob {
+		position: absolute;
+		top: 50%;
+		left: 3px;
+		display: grid;
+		place-items: center;
+		width: 22px;
+		height: 22px;
+		margin-top: -11px;
+		border-radius: 50%;
+		background: linear-gradient(160deg, #ffffff, #e8eefb);
+		box-shadow: 0 4px 10px -4px rgba(0, 0, 0, 0.65);
+		transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.vo__theme[aria-checked='true'] .vo__theme-knob { transform: translateX(28px); }
+	.vo__theme-ic {
+		grid-area: 1 / 1;
+		transition: opacity 0.2s ease, transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.vo__theme-ic--sun { color: #c2860f; }
+	.vo__theme-ic--moon { color: #2b3350; }
+	/* only the live one is drawn */
+	.vo__theme[aria-checked='false'] .vo__theme-ic--moon,
+	.vo__theme[aria-checked='true'] .vo__theme-ic--sun { opacity: 0; transform: rotate(-45deg); }
+	:global(html:not(.dark)) .vo__theme {
+		border-color: rgba(20, 22, 40, 0.18);
+		background: rgba(20, 22, 40, 0.07);
+	}
+	:global(html:not(.dark)) .vo__theme-knob {
+		box-shadow: 0 4px 10px -4px rgba(20, 22, 40, 0.4);
+	}
+	@media (max-width: 520px) {
+		/* the bar is tight here; the rule gives way, never the controls */
+		.vo__progress { min-width: 1.5rem; }
+		.vo__theme { width: 52px; height: 27px; }
+		.vo__theme-knob { width: 19px; height: 19px; margin-top: -9.5px; }
+		.vo__theme[aria-checked='true'] .vo__theme-knob { transform: translateX(25px); }
+	}
+
 	.vo__mark { display: block; width: clamp(92px, 12vw, 128px); color: #fff; opacity: 0.9; flex: none; }
 	.vo__mark :global(svg) { width: 100%; height: auto; }
 	.vo__progress {

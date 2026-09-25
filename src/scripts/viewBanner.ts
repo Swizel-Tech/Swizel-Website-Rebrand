@@ -125,14 +125,25 @@ export function initViewBanner() {
 		let startX = 0;
 		let startPos = 0;
 		let moved = 0;
+		// Set only when a press actually turns into a drag, and cleared by
+		// the very next click. It used to be the raw `moved` distance that
+		// decided, and `moved` was only zeroed inside the branch that
+		// suppressed a click — so one flick of the rail left it above the
+		// threshold for good and every later tap on a poster was thrown
+		// away as "that was a drag". The rail looked alive and did nothing.
+		let didDrag = false;
 		rail.addEventListener('pointerdown', (e) => {
 			if (e.pointerType === 'touch') return; // let the OS do native swipe
 			dragging = true;
 			moved = 0;
+			didDrag = false;
 			startX = e.clientX;
 			startPos = pos;
 			target = null;
-			rail.classList.add('is-dragging');
+			// `is-pressing` is the grabbing cursor and nothing else.
+			// `is-dragging` takes the posters out of the hit test, so it must
+			// wait until the press has actually become a drag — see below.
+			rail.classList.add('is-pressing');
 			hold();
 			play();
 		});
@@ -140,26 +151,35 @@ export function initViewBanner() {
 			if (!dragging) return;
 			const dx = e.clientX - startX;
 			moved = Math.abs(dx);
+			// a hand resting on a button wobbles; only a real pull counts
+			if (moved > 9 && !didDrag) {
+				didDrag = true;
+				rail.classList.add('is-dragging');
+			}
 			pos = startPos - dx;
 		});
 		const endDrag = () => {
 			if (!dragging) return;
 			dragging = false;
 			rail.classList.remove('is-dragging');
+			rail.classList.remove('is-pressing');
 			hold();
 		};
 		rail.addEventListener('pointerup', endDrag);
 		rail.addEventListener('pointercancel', endDrag);
 		rail.addEventListener('pointerleave', endDrag);
-		// a drag should never be mistaken for a click on a poster
+		// a drag should never be mistaken for a click on a poster — but the
+		// flag is consumed either way, so it can never outlive the gesture
+		// that set it
 		rail.addEventListener(
 			'click',
 			(e) => {
-				if (moved > 6) {
+				if (didDrag) {
 					e.preventDefault();
 					e.stopPropagation();
-					moved = 0;
 				}
+				didDrag = false;
+				moved = 0;
 			},
 			true
 		);

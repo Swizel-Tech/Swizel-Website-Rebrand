@@ -204,6 +204,14 @@ const promise: Record<string, string> = {
 		mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
 	}
 	.vw-rail::-webkit-scrollbar { display: none; }
+	/* The posters only leave the hit test once a press has become a real
+	   drag. This rule used to ride on `is-dragging`, which the script added
+	   on pointerdown — so the card stopped taking pointer events the
+	   instant you pressed it, mouseup landed on the track behind it, and
+	   the browser fired `click` on their common ancestor. The rail's own
+	   listener looked for a poster in that click, found none, and did
+	   nothing. Every mouse click on this rail was dead. */
+	.vw-rail.is-pressing { scroll-behavior: auto; cursor: grabbing; }
 	.vw-rail.is-dragging { scroll-behavior: auto; cursor: grabbing; }
 	.vw-rail.is-dragging .vw-card { pointer-events: none; }
 	.vw-track {
