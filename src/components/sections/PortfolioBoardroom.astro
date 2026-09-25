@@ -261,7 +261,7 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 	<section class="bd-grid">
 		<div class="bd-tile bd-tile--full bd-tile--cta bd-reveal" data-cursor="phone">
 			<h2 class="bd-display bd-display--cta">Your project, next on this page.</h2>
-			<p class="bd-sub">Tell us what you have in mind, you’ll have a reply within one business day.</p>
+			<p class="bd-sub bd-sub--one">Tell us what you have in mind, you’ll have a reply within one business day.</p>
 			<div class="bd-links bd-links--center">
 				<a href="/contact" class="bd-pill bd-pill--light">Start your project</a>
 				<a href="/services" class="bd-link bd-link--invert">See what we do <Icon width={15} name="mdi:chevron-right" /></a>
@@ -597,6 +597,9 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 	.bd-tile--cta { background: radial-gradient(820px 380px at 50% 130%, color-mix(in srgb, var(--bd-accent) 38%, transparent), transparent 72%), linear-gradient(180deg, rgba(18, 22, 42, 0.92), rgba(5, 6, 13, 0.96)); color: #f5f5f7; border-color: color-mix(in srgb, var(--bd-accent) 26%, rgba(255, 255, 255, 0.1)); padding-block: clamp(3rem, 6vw, 5rem); margin-top: clamp(2.5rem, 6vw, 4rem); }
 	.bd-display--cta { font-size: clamp(2rem, 5vw, 3.6rem); max-width: 18ch; margin-inline: auto; }
 	.bd-tile--cta .bd-sub { color: rgba(245, 245, 247, 0.62); }
+	/* one sentence, one line — the 42rem cap was breaking it in two */
+	.bd-sub--one { max-width: none; }
+	@media (max-width: 720px) { .bd-sub--one { max-width: 30rem; } }
 
 	/* ── Reveal ── */
 	.bd-reveal { opacity: 0; transform: translateY(26px); transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1); }

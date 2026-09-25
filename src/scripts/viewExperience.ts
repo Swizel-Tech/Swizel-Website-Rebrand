@@ -19,6 +19,10 @@ export function applyView(id: string) {
 	try {
 		localStorage.setItem(VIEW_KEY, id);
 		localStorage.setItem(ONBOARDED_KEY, '1');
+		// Choosing a world by hand makes "the world you came from" stale:
+		// Programs would otherwise still offer a door back to somewhere you
+		// left ages ago. See scripts/programsNotice.ts.
+		sessionStorage.removeItem('swizel-came-from');
 	} catch (e) {}
 	// Switching worlds should always land you at the top, so the new view is
 	// seen from its hero rather than wherever you happened to be scrolled.

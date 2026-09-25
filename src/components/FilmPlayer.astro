@@ -394,6 +394,11 @@ const rates = [0.5, 1, 1.25, 1.5, 2];
 	}
 	/* until the film has started the big button owns the frame */
 	.flm:not(.is-started) .flm__bar { opacity: 0; pointer-events: none; }
+	/* A film that started itself is playing, and a playing film hides its
+	   bar until you hover — which left the pulsing mute button where
+	   nobody could see it. While it is asking to be pressed, the bar
+	   stays up. */
+	.flm__bar:has(.is-mutehint) { opacity: 1; transform: none; }
 
 	.flm__row {
 		display: flex;

@@ -26,7 +26,18 @@ export function initProgramsNotice() {
 				if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || link.target === '_blank') return;
 
 				const view = document.documentElement.getAttribute('data-view') || DEFAULT_VIEW;
-				if (view === 'campus') return; // already home, nothing to explain
+				if (view === 'campus') {
+					// Already home, so there is nothing to explain — and the
+					// note about where you came from is now out of date.
+					// Leaving it behind is what made Programs greet a visitor
+					// who was already in Campus with "back to Studio".
+					try {
+						sessionStorage.removeItem(KEY);
+					} catch (err) {
+						/* private mode; nothing to clean up */
+					}
+					return;
+				}
 
 				try {
 					sessionStorage.setItem(KEY, view);

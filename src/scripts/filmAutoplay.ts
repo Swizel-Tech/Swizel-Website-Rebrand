@@ -80,6 +80,6 @@ export function hintUnmute(...btns: (Element | null | undefined)[]) {
 	});
 	// it has had its say after a while either way — a control that pulses
 	// forever stops reading as an invitation and starts reading as a fault
-	window.setTimeout(stop, 12000);
+	window.setTimeout(stop, 8000);
 	return stop;
 }

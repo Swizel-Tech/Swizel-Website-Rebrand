@@ -493,6 +493,13 @@ const sectorCursor: Record<ProjectSector, string> = { agri: 'branch', health: 'p
 
 	.pb-kick { display: block; font-family: var(--bu-mono); font-size: 0.8rem; color: var(--bu-acc); margin-bottom: 0.8rem; }
 	:global(html:not(.dark)) .bpf .pb-kick { color: #0b8a76; }
+	/* "Ready · Production · …" was a bright mint on a pale mint card, which
+	   is barely there in daylight. The ink runs deep; only the live dot
+	   stays bright, because a dot is a light, not a word. */
+	:global(html:not(.dark)) .bpf .pb-card-status,
+	:global(html:not(.dark)) .bpf .pb-status { color: #0a6038; }
+	:global(html:not(.dark)) .bpf .pb-card-status i,
+	:global(html:not(.dark)) .bpf .pb-status i { background: #12a05f; }
 	.pb-h { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 850; letter-spacing: -0.025em; line-height: 1.08; margin: 0 0 1rem; }
 	.pb-h--xl { font-size: clamp(2rem, 4.4vw, 3.2rem); }
 	.pb-acc {
