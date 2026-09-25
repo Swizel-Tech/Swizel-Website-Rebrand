@@ -285,9 +285,15 @@ const sectors = [
 	}
 
 	/* ── the frames ── */
+	/* The cover starts BELOW the section's top padding — global.css pads
+	   .hero-view by the nav height so the bar has somewhere to sit. That
+	   left the section's own near-black filling the strip behind the nav,
+	   so the photograph appeared to stop dead under a black bar. The
+	   frames reach up through that padding instead, and the picture runs
+	   from the very first pixel of the screen. */
 	.hero--frames {
 		position: absolute;
-		inset: 0;
+		inset: calc(-1 * var(--nav-h, 92px)) 0 0 0;
 		z-index: 0;
 	}
 	.hero--slide {
@@ -335,7 +341,15 @@ const sectors = [
 		z-index: 2;
 		pointer-events: none;
 		background:
-			linear-gradient(180deg, rgba(4, 6, 14, 0.62) 0%, rgba(4, 6, 14, 0.12) 26%, rgba(4, 6, 14, 0) 42%),
+			/* The top shade. It is not a bar and must never look like one:
+			   the picture runs underneath it to the very first pixel of the
+			   screen, and this is a long, smooth fall-off over roughly a
+			   quarter of the stage — the way a room darkens toward a
+			   ceiling. It exists because white nav ink on a bright frame
+			   measures 1.4:1 without it, which is unreadable; with it, and
+			   with the shade the nav carries on its own ink, every frame
+			   clears AA. */
+			linear-gradient(180deg, rgba(4, 6, 14, 0.82) 0%, rgba(4, 6, 14, 0.64) 8%, rgba(4, 6, 14, 0.2) 17%, rgba(4, 6, 14, 0) 28%),
 			linear-gradient(0deg, rgba(4, 6, 14, 0.95) 0%, rgba(4, 6, 14, 0.82) 26%, rgba(4, 6, 14, 0.3) 54%, rgba(4, 6, 14, 0) 78%),
 			/* the type lives at the left: this is what it has to stay
 			   legible against, measured off the rendered pixels rather
@@ -347,7 +361,7 @@ const sectors = [
 		inset: 0;
 		z-index: 2;
 		pointer-events: none;
-		background: radial-gradient(130% 100% at 50% 40%, transparent 42%, rgba(4, 6, 14, 0.55) 100%);
+		background: radial-gradient(130% 100% at 50% 46%, transparent 48%, rgba(4, 6, 14, 0.45) 100%);
 	}
 
 	/* ══════════════════════════════════════════════════════════════════
