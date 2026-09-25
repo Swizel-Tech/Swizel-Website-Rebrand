@@ -1,36 +1,67 @@
 ---
 // ══════════════════════════════════════════════════════════════════════
-// Boardroom hero — the cover of the whole site.
+// Boardroom hero — the cinematic cover.
 //
-// This is the view most people land in, so it has one job: in the first
-// screen, without a scroll, say who we are and make the room feel
-// expensive. The rules it is built on, taken from the pages that do this
-// best (Apple, Linear, Stripe):
+// Built to the reference the brief pointed at: Apple TV+. The media is
+// not a card inside a column, it IS the stage — edge to edge, corner to
+// corner, one screen tall. Over it: a short line and two pill buttons,
+// bottom left. Under it: dots, arrows and a pause, the way a cover reel
+// is steered. Nothing else.
 //
-//   · One idea, in sentence case, at size, with tight negative tracking.
-//     Confidence comes from restraint, not from shouting in condensed
-//     caps or rotating a verb every two seconds.
-//   · One primary action. Everything else steps back a weight.
-//   · One hero object, properly lit and given room.
-//   · One light gesture in the background. Not four.
-//   · The empty space is the point.
+// The frames are real work and real rooms, not stock. Frame three is the
+// film itself, which only downloads once it comes up.
 //
-// The previous hero ran 2.4 screens tall and stacked seven competing
-// elements down the middle: rotating headline, badge, uptime ring,
-// brackets, stat rail, industry chips, gold ticker, scroll cue. It now
-// resolves to a single screen, asymmetric, with the proof gathered into
-// one quiet line and the industries pinned along the foot.
-//
-// Script contract kept intact (see handleHero in MainLayout, tour.ts,
-// boardroomView.ts): .hero--stage, [data-count-to], #hero-tilt +
-// .hero--photo-inner + .hero--photo-spot, .hero--spotlight, #hero-sectors
-// + .hero--sector, .hero--photo-card, #boardroom-impact, .rhead, and
-// [data-tour-start].
+// Script contract kept (handleHero in MainLayout, tour.ts,
+// boardroomView.ts): .hero--stage, [data-count-to], #hero-sectors +
+// .hero--sector, .hero--photo-card, #boardroom-impact, .rhead, and
+// [data-tour-start]. The tilt hooks (#hero-tilt, .hero--photo-spot) are
+// deliberately gone — a full-bleed frame should not wobble under the
+// pointer — and handleHero guards every one of its lookups, so their
+// absence is a no-op rather than a break.
 // ══════════════════════════════════════════════════════════════════════
 import { Icon } from 'astro-icon/components';
-import Section from '../HTML/Section.astro';
 
-// The proof, gathered into one line instead of scattered across badges.
+const slides = [
+	{
+		id: 'promise',
+		kind: 'photo' as const,
+		src: '/images/hero-team.jpg',
+		alt: 'The Swizel team — the designers and engineers who build your product with you',
+		pos: '50% 30%',
+		kicker: 'Swizel Technologies · building since 2019',
+		title: 'You imagine it.<em>We build it.</em>',
+		line: 'One senior team. Design, engineering and growth, from launch to legacy.',
+		cta: { href: '/contact', label: 'Start a project' },
+		alt2: { href: '/portfolio', label: 'See the work' },
+		eager: true,
+	},
+	{
+		id: 'work',
+		kind: 'photo' as const,
+		src: '/images/founder/studio.jpg',
+		alt: 'The Swizel studio floor in Abuja, mid build',
+		pos: '50% 46%',
+		kicker: 'The collection',
+		title: 'Sixty-five products,<em>live in the market.</em>',
+		line: 'Fintech, health, property, sport and education. Real businesses run on them.',
+		cta: { href: '/portfolio', label: 'See the work' },
+		alt2: { href: '/about', label: 'Meet the team' },
+	},
+	{
+		id: 'film',
+		kind: 'film' as const,
+		src: '/images/how-we-build-poster.jpg',
+		video: '/videos/how-we-build.mp4',
+		alt: 'A look inside a Swizel build, first sketch to launch day',
+		pos: '50% 42%',
+		kicker: 'Inside the build',
+		title: 'Two minutes,<em>first sketch to launch day.</em>',
+		line: 'How a brief becomes a product, and what happens in the years after.',
+		cta: { href: '/services', label: 'How we work' },
+		alt2: { href: '/contact', label: 'Talk to us' },
+	},
+];
+
 const proof = [
 	{ to: 65, suffix: '+', label: 'products shipped' },
 	{ to: 7, suffix: '+', label: 'years in business' },
@@ -38,714 +69,535 @@ const proof = [
 ];
 
 const sectors = [
-	'Fintech',
-	'Healthtech',
-	'Agritech',
-	'Sports',
-	'Real Estate',
-	'E-commerce',
-	'Education',
-	'Logistics',
+	'Fintech', 'Healthtech', 'Agritech', 'Sports',
+	'Real Estate', 'E-commerce', 'Education', 'Logistics',
 ];
 ---
 
-<Section
-	sectionClass="hero--stage hero-view hero-boardroom relative overflow-hidden"
-	divClass="relative z-10"
+<section
+	class="hero--stage hero-view hero-boardroom hero--reel"
+	data-bh
+	aria-roledescription="carousel"
+	aria-label="Swizel — what we build"
+	tabindex="-1"
 >
-	<!-- ── the room ──────────────────────────────────────────────
-	     A deep field, one soft light behind the headline, fine
-	     panelling for surface, a horizon rule for architecture, and
-	     the pointer light the layout script drives. -->
-	<div class="hero--bgfill" aria-hidden="true"></div>
-	<div class="hero--glow" aria-hidden="true"></div>
-	<div class="hero--panels" aria-hidden="true"></div>
-	<div class="hero--horizon" aria-hidden="true"></div>
-	<div class="hero--spotlight" aria-hidden="true"></div>
-	<span class="hero--goldline" aria-hidden="true">
-		{Array.from({ length: 9 }).map((_, i) => <i style={`--i:${i}`} />)}
-	</span>
+	<!-- ── the frames ──────────────────────────────────────────── -->
+	<div class="hero--frames hero--photo-card">
+		{
+			slides.map((s, i) => (
+				<article
+					class:list={['hero--slide', { 'is-on': i === 0 }]}
+					data-bh-slide={s.id}
+					aria-hidden={i !== 0}
+					aria-roledescription="slide"
+					aria-label={`${i + 1} of ${slides.length}`}
+				>
+					<div class="hero--media">
+						{s.kind === 'film' ? (
+							<video
+								class="hero--film"
+								data-bh-film
+								data-src={s.video}
+								poster={s.src}
+								muted
+								loop
+								playsinline
+								preload="none"
+								aria-label={s.alt}
+							/>
+						) : (
+							<img
+								class="hero--img"
+								src={s.src}
+								alt={s.alt}
+								style={`object-position:${s.pos}`}
+								loading={s.eager ? 'eager' : 'lazy'}
+								fetchpriority={s.eager ? 'high' : undefined}
+								decoding="async"
+							/>
+						)}
+						{s.kind === 'film' && (
+							<img class="hero--img" src={s.src} alt="" style={`object-position:${s.pos}`} loading="lazy" decoding="async" />
+						)}
+					</div>
 
-	<div class="hero--room">
-		<!-- ── the statement ──────────────────────────────────── -->
-		<div class="hero--copy">
-			<span class="hero--status">
-				<i class="hero--status-dot" aria-hidden="true"></i>
-				Building since 2019 · Abuja, shipping to 10 countries
-			</span>
+					<!-- the scrim: enough to read type on, never enough to
+					     flatten the photograph -->
+					<span class="hero--scrim" aria-hidden="true" />
+					<span class="hero--vignette" aria-hidden="true" />
 
-			<h1 class="hero--display rhead">
-				<span class="hero--l1">You imagine it.</span>
-				<span class="hero--l2">We build it.</span>
-			</h1>
+					<div class="hero--plate">
+						<span class="hero--kicker">{s.kicker}</span>
+						{i === 0 ? (
+							<h1 class="hero--display rhead" set:html={s.title.replace('<em>', '<span class="hero--l2">').replace('</em>', '</span>')} />
+						) : (
+							<p class="hero--display" set:html={s.title.replace('<em>', '<span class="hero--l2">').replace('</em>', '</span>')} />
+						)}
+						<p class="hero--line">{s.line}</p>
+						<div class="hero--cta">
+							<a href={s.cta.href} class="hero--primary">
+								{s.cta.label}
+								<Icon width={16} name="mdi:arrow-right" />
+							</a>
+							<a href={s.alt2.href} class="hero--secondary">{s.alt2.label}</a>
+						</div>
+					</div>
+				</article>
+			))
+		}
+	</div>
 
-			<p class="hero--sub">
-				One senior team for design, engineering, marketing and the
-				years after launch. Web and mobile products that businesses
-				actually run on.
-			</p>
+	<!-- ── the fixed furniture: proof, steering, and the way down ── -->
+	<div class="hero--deck">
+		<ul class="hero--proof">
+			{
+				proof.map((s) => (
+					<li class="hero--proof-item">
+						<span class="hero--proof-num" data-count-to={s.to} data-suffix={s.suffix}>
+							{s.to}{s.suffix}
+						</span>
+						<span class="hero--proof-label">{s.label}</span>
+					</li>
+				))
+			}
+			<li class="hero--proof-item hero--proof-item--live" id="boardroom-impact" data-tour="impact">
+				<span class="hero--proof-num">99.9%</span>
+				<span class="hero--proof-label">uptime, 12 months</span>
+			</li>
+		</ul>
 
-			<div class="hero--cta">
-				<a href="/contact" class="hero--primary">
-					<span class="hero--primary-sheen" aria-hidden="true"></span>
-					Start a project
-					<Icon width={17} name="mdi:arrow-right" />
-				</a>
-				<a href="/portfolio" class="hero--secondary">
-					See the work
-					<Icon width={16} name="mdi:arrow-right" />
-				</a>
-			</div>
-
-			<button class="hero--tour" type="button" data-tour-start="boardroom">
-				<Icon width={15} name="mdi:compass-outline" />
-				Take the two-minute tour
+		<div class="hero--steer" role="tablist" aria-label="Choose a frame">
+			<button class="hero--arrow" type="button" data-bh-prev aria-label="Previous frame">
+				<Icon width={17} name="mdi:chevron-left" />
 			</button>
-
-			<ul class="hero--proof">
+			<span class="hero--dots">
 				{
-					proof.map((s, i) => (
-						<li class="hero--proof-item" style={`--i:${i}`}>
-							<span class="hero--proof-num" data-count-to={s.to} data-suffix={s.suffix}>
-								{s.to}{s.suffix}
-							</span>
-							<span class="hero--proof-label">{s.label}</span>
-						</li>
+					slides.map((s, i) => (
+						<button
+							class:list={['hero--dot', { 'is-on': i === 0 }]}
+							type="button"
+							role="tab"
+							data-bh-dot={i}
+							aria-selected={i === 0}
+							aria-label={`Frame ${i + 1}: ${s.kicker}`}
+						>
+							<i aria-hidden="true" />
+						</button>
 					))
 				}
-			</ul>
-		</div>
-
-		<!-- ── the object ─────────────────────────────────────────
-		     One card, lit like a product shot: a glass rim, a
-		     specular that follows the pointer, and a single piece of
-		     proof frosted over the corner. -->
-		<div class="hero--object">
-			<div class="hero--photo-card" id="hero-tilt">
-				<div class="hero--photo-inner">
-					<img
-						class="hero--photo"
-						src="/images/hero-team.jpg"
-						alt="The Swizel team — the designers and engineers who build your product with you"
-						width="856"
-						height="580"
-						fetchpriority="high"
-						decoding="async"
-					/>
-					<span class="hero--photo-grade" aria-hidden="true"></span>
-					<span class="hero--photo-spot" aria-hidden="true"></span>
-					<span class="hero--photo-sheen" aria-hidden="true"></span>
-					<span class="hero--photo-ring" aria-hidden="true"></span>
-				</div>
-
-				<div class="hero--impact" id="boardroom-impact" data-tour="impact">
-					<span class="hero--impact-ring" aria-hidden="true">
-						<svg viewBox="0 0 64 64">
-							<circle class="ring-track" cx="32" cy="32" r="26" />
-							<circle class="ring-arc" cx="32" cy="32" r="26" />
-						</svg>
-					</span>
-					<span class="hero--impact-meta">
-						<span class="hero--impact-num">99.9%</span>
-						<span class="hero--impact-label">uptime, 12 months</span>
-					</span>
-				</div>
-
-			</div>
-
-			<span class="hero--caption">
-				<span class="hero--caption-stars" aria-hidden="true">★★★★★</span>
-				5.0 average client rating
 			</span>
+			<button class="hero--arrow" type="button" data-bh-next aria-label="Next frame">
+				<Icon width={17} name="mdi:chevron-right" />
+			</button>
+			<button class="hero--pause" type="button" data-bh-toggle aria-pressed="false" aria-label="Pause the reel">
+				<Icon width={15} name="mdi:pause" class="hero--pause-a" />
+				<Icon width={15} name="mdi:play" class="hero--pause-b" />
+			</button>
 		</div>
 	</div>
 
-	<!-- ── the foot: who we build for, along the bottom edge ── -->
-	<div class="hero--rail">
-		<span class="hero--rail-label">Built for</span>
-		<ul class="hero--sectors" id="hero-sectors">
-			{sectors.map((s, i) => <li class="hero--sector" style={`--si:${i}`}>{s}</li>)}
-			<li class="hero--sector hero--sector-more">+ more</li>
-		</ul>
-		<a href="#about" class="hero--scroll" aria-label="Scroll to learn more">
-			<span></span>
-		</a>
-	</div>
-</Section>
+	<button class="hero--tour" type="button" data-tour-start="boardroom">
+		<Icon width={15} name="mdi:compass-outline" />
+		Take the two-minute tour
+	</button>
+</section>
+
+<!-- ── the strip under the cover: who we build for ─────────────── -->
+<div class="hero--rail hero-view-strip">
+	<span class="hero--rail-label">Built for</span>
+	<ul class="hero--sectors" id="hero-sectors">
+		{sectors.map((s, i) => <li class="hero--sector" style={`--si:${i}`}>{s}</li>)}
+		<li class="hero--sector hero--sector-more">+ more</li>
+	</ul>
+	<a href="#about" class="hero--down" aria-label="Scroll to learn more">
+		<Icon width={16} name="mdi:arrow-down" />
+	</a>
+</div>
 
 <style>
 	/* ══════════════════════════════════════════════════════════════════
-	   THE ROOM
-	   Every background layer is transform/opacity only, sits behind the
-	   content, and stands still under html.perf-lite.
-
-	   GOTCHA kept from the old file: `.hero--stage` lives on the <Section>
-	   wrapper, which this component's scoped styles cannot reach — a
-	   variable declared there never lands, and every color-mix() using it
-	   silently drops the whole declaration. Stage-level rules go through
-	   :global(.hero-boardroom), which is unique to this hero.
+	   THE STAGE
+	   Full bleed. The global rule
+	   `body:has(.hero-view) .hero-view { margin-top:-nav-h; padding-top:nav-h }`
+	   already slides this under the header and outranks anything set
+	   here, so the top offset is left to it; the reel simply fills what
+	   is left. The section is NOT wrapped in the site container — the
+	   whole point is that the frame reaches the edges of the screen.
 	   ══════════════════════════════════════════════════════════════════ */
-	.hero--bgfill,
-	.hero--glow,
-	.hero--panels,
-	.hero--horizon,
-	.hero--spotlight,
-	.hero--goldline,
-	.hero--goldline i,
-	.hero--room,
-	.hero--rail {
+	.hero--reel {
 		--gold: #f7c66b;
 		--acc: var(--view-accent, #28a6ec);
-	}
-
-	:global(.hero-boardroom) {
-		/* one screen, never more — but never so tall on a short laptop
-		   that the foot rail is pushed under the fold */
-		/* One screen, never more — but never so tall on a short laptop that
-		   the foot rail is pushed under the fold.
-
-		   The top offset is not ours to set: global.css runs
-		   `body:has(.hero-view) .hero-view { margin-top: -nav-h;
-		   padding-top: nav-h }` so the stage slides under the header and
-		   its background runs behind the nav. That selector outranks ours,
-		   so a padding-top here would be silently dropped. Breathing room
-		   above the content goes on .hero--room instead. */
-		min-height: min(100svh, 980px);
+		--pad: clamp(1.25rem, 5vw, 4.5rem);
+		position: relative;
+		isolation: isolate;
+		overflow: hidden;
+		min-height: min(100svh, 1000px);
 		display: flex;
 		flex-direction: column;
-		justify-content: center;
-		padding-bottom: 0;
-		color: #f4f6fb;
-		background: #060913;
+		justify-content: flex-end;
+		color: #ffffff;
+		background: #04060e;
 	}
-	:global(html:not(.dark)) :global(.hero-boardroom) {
-		color: #14162a;
-		background: #f5f8fc;
-	}
+	.hero--reel:focus { outline: none; }
 
-	.hero--bgfill {
+	/* ── the frames ── */
+	.hero--frames {
 		position: absolute;
 		inset: 0;
 		z-index: 0;
+	}
+	.hero--slide {
+		position: absolute;
+		inset: 0;
+		opacity: 0;
+		visibility: hidden;
+		transition: opacity 1.05s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 1.05s;
+	}
+	.hero--slide.is-on {
+		opacity: 1;
+		visibility: visible;
+		transition: opacity 1.05s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s;
+		z-index: 1;
+	}
+
+	.hero--media { position: absolute; inset: 0; overflow: hidden; }
+	.hero--img,
+	.hero--film {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	/* the still sits under the film and shows through until it plays */
+	.hero--film { z-index: 1; background: #04060e; }
+	/* a very slow push in, so the frame is alive without moving anything
+	   the eye has to track */
+	.hero--slide.is-on .hero--img,
+	.hero--slide.is-on .hero--film {
+		animation: hero-push 13s ease-out both;
+	}
+	@keyframes hero-push {
+		from { transform: scale(1.005); }
+		to { transform: scale(1.055); }
+	}
+
+	/* ── the scrim ──
+	   Two layers: a strong foot the type sits on, and a corner wash that
+	   keeps the top-left readable when the photograph is bright there. */
+	.hero--scrim {
+		position: absolute;
+		inset: 0;
+		z-index: 2;
 		pointer-events: none;
 		background:
-			radial-gradient(1100px 620px at 22% 8%, rgba(40, 166, 236, 0.13), transparent 62%),
-			radial-gradient(900px 560px at 88% 78%, rgba(40, 166, 236, 0.08), transparent 64%),
-			linear-gradient(180deg, #080c18 0%, #060913 52%, #04060e 100%);
+			linear-gradient(180deg, rgba(4, 6, 14, 0.62) 0%, rgba(4, 6, 14, 0.12) 26%, rgba(4, 6, 14, 0) 42%),
+			linear-gradient(0deg, rgba(4, 6, 14, 0.95) 0%, rgba(4, 6, 14, 0.82) 26%, rgba(4, 6, 14, 0.3) 54%, rgba(4, 6, 14, 0) 78%),
+			/* the type lives at the left: this is what it has to stay
+			   legible against, measured off the rendered pixels rather
+			   than guessed at */
+			linear-gradient(100deg, rgba(4, 6, 14, 0.86) 0%, rgba(4, 6, 14, 0.52) 30%, rgba(4, 6, 14, 0.12) 54%, rgba(4, 6, 14, 0) 70%);
 	}
-
-	/* the one light gesture: a soft ellipse sitting behind the headline */
-	.hero--glow {
-		position: absolute;
-		z-index: 0;
-		top: 12%;
-		left: -6%;
-		width: 62%;
-		height: 62%;
-		pointer-events: none;
-		background: radial-gradient(
-			closest-side,
-			color-mix(in srgb, var(--acc) 26%, transparent),
-			transparent 72%
-		);
-		filter: blur(64px);
-		opacity: 0.75;
-		animation: hero-breathe 13s ease-in-out infinite;
-	}
-	@keyframes hero-breathe {
-		0%, 100% { transform: scale(1) translate3d(0, 0, 0); opacity: 0.7; }
-		50% { transform: scale(1.09) translate3d(1.5%, -1.5%, 0); opacity: 0.9; }
-	}
-
-	/* fine vertical panelling: surface, not decoration */
-	.hero--panels {
+	.hero--vignette {
 		position: absolute;
 		inset: 0;
-		z-index: 0;
-		pointer-events: none;
-		opacity: 0.5;
-		background-image: repeating-linear-gradient(
-			90deg,
-			transparent 0 132px,
-			rgba(255, 255, 255, 0.045) 132px 133px
-		);
-		mask-image: linear-gradient(180deg, #000 0%, #000 58%, transparent 94%);
-		-webkit-mask-image: linear-gradient(180deg, #000 0%, #000 58%, transparent 94%);
-	}
-
-	/* a single horizon rule — the architecture of a room, drawn once */
-	.hero--horizon {
-		position: absolute;
-		left: 0;
-		right: 0;
-		bottom: 26%;
-		height: 1px;
-		z-index: 0;
-		pointer-events: none;
-		background: linear-gradient(
-			90deg,
-			transparent,
-			rgba(255, 255, 255, 0.09) 18%,
-			rgba(255, 255, 255, 0.09) 82%,
-			transparent
-		);
-	}
-
-	/* the house light, driven by the layout's pointer handler */
-	.hero--spotlight {
-		position: absolute;
-		inset: 0;
-		z-index: 0;
-		pointer-events: none;
-		background: radial-gradient(
-			460px 460px at var(--hx, 50%) var(--hy, 30%),
-			rgba(255, 255, 255, 0.05),
-			transparent 70%
-		);
-		transition: background 0.2s linear;
-	}
-
-	/* the gold hairline across the very top of the stage */
-	.hero--goldline {
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		height: 1px;
 		z-index: 2;
-		background: linear-gradient(90deg, transparent, var(--gold), transparent);
-		opacity: 0.45;
-		transform: scaleX(0);
-		animation: hero-goldline 1.6s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both;
-	}
-	.hero--goldline i {
-		position: absolute;
-		top: 0;
-		left: calc(var(--i) * 12.5%);
-		width: 1px;
-		height: 7px;
-		background: linear-gradient(180deg, var(--gold), transparent);
-		opacity: 0.5;
-	}
-	@keyframes hero-goldline {
-		to { transform: scaleX(1); }
+		pointer-events: none;
+		background: radial-gradient(130% 100% at 50% 40%, transparent 42%, rgba(4, 6, 14, 0.55) 100%);
 	}
 
 	/* ══════════════════════════════════════════════════════════════════
-	   THE COMPOSITION
-	   Asymmetric, not centred. A centred stack of eyebrow, headline, sub
-	   and buttons is the template look; weight on the left with the
-	   object to the right reads considered, and gives the type a margin
-	   to align to.
+	   THE PLATE
+	   Bottom left, the way a cover reel titles a frame. Sentence case,
+	   tight tracking, one line of support, two pills.
 	   ══════════════════════════════════════════════════════════════════ */
-	.hero--room {
-		position: relative;
-		z-index: 1;
-		display: grid;
-		gap: clamp(2rem, 5vw, 4.5rem);
-		align-items: center;
+	.hero--plate {
+		position: absolute;
+		z-index: 3;
+		left: var(--pad);
+		right: var(--pad);
+		bottom: clamp(9.5rem, 21vh, 14rem);
+		max-width: 46rem;
 	}
-	@media (min-width: 1000px) {
-		.hero--room { grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr); }
-	}
-
-	.hero--copy { max-width: 36rem; }
-
-	/* the status line: a fact, told quietly, with a light that says we
-	   are open — not a pill that shouts a statistic */
-	.hero--status {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.6rem;
+	.hero--kicker {
+		display: block;
 		font-size: 0.72rem;
-		font-weight: 600;
-		letter-spacing: 0.14em;
+		font-weight: 700;
+		letter-spacing: 0.2em;
 		text-transform: uppercase;
-		color: rgba(244, 246, 251, 0.52);
-		animation: hero-rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+		color: rgba(255, 255, 255, 0.62);
 	}
-	.hero--status-dot {
-		width: 7px;
-		height: 7px;
-		border-radius: 50%;
-		flex: none;
-		background: #3ddc97;
-		box-shadow: 0 0 0 0 rgba(61, 220, 151, 0.55);
-		animation: hero-ping 2.6s ease-out infinite;
-	}
-	@keyframes hero-ping {
-		0% { box-shadow: 0 0 0 0 rgba(61, 220, 151, 0.5); }
-		70% { box-shadow: 0 0 0 8px rgba(61, 220, 151, 0); }
-		100% { box-shadow: 0 0 0 0 rgba(61, 220, 151, 0); }
-	}
-
-	/* ── the statement ──
-	   Sentence case, not condensed caps. Tight negative tracking is what
-	   makes large type read as deliberate rather than merely big. */
 	.hero--display {
-		margin: clamp(1rem, 2vh, 1.6rem) 0 0;
-		font-size: clamp(2.6rem, 5.6vw, 4.6rem);
+		margin: clamp(0.7rem, 1.6vh, 1.1rem) 0 0;
+		font-size: clamp(2.5rem, 6vw, 5.2rem);
 		font-weight: 800;
-		letter-spacing: -0.038em;
-		line-height: 0.98;
-		text-wrap: balance;
-	}
-	.hero--l1,
-	.hero--l2 { display: block; }
-	.hero--l1 {
+		letter-spacing: -0.04em;
+		line-height: 0.96;
 		color: #ffffff;
-		animation: hero-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.18s both;
+		text-wrap: balance;
+		text-shadow: 0 2px 40px rgba(0, 0, 0, 0.5);
 	}
-	/* the answering line, in polished metal: white through platinum
-	   through the room's own gold, drifting slowly. One accent, not a
-	   rainbow — a cyan-to-teal gradient reads startup, not boardroom. */
-	.hero--l2 {
+	.hero--display :global(.hero--l2) {
+		display: block;
 		background: linear-gradient(
 			100deg,
-			#ffffff 4%,
-			#cfe4f5 26%,
-			color-mix(in srgb, var(--acc) 72%, #ffffff) 46%,
-			var(--gold) 68%,
-			#ffffff 94%
+			#ffffff 6%,
+			#dfeaf6 24%,
+			#ffffff 44%,
+			color-mix(in srgb, var(--gold) 34%, #ffffff) 66%,
+			#ffffff 92%
 		);
 		background-size: 220% 100%;
 		-webkit-background-clip: text;
 		background-clip: text;
 		color: transparent;
 		-webkit-text-fill-color: transparent;
-		animation:
-			hero-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both,
-			hero-sheen 11s ease-in-out 1.2s infinite;
+		animation: hero-sheen 12s ease-in-out 1s infinite;
 	}
 	@keyframes hero-sheen {
 		0%, 100% { background-position: 0% 50%; }
 		50% { background-position: 100% 50%; }
 	}
+	.hero--line {
+		margin: clamp(0.75rem, 1.8vh, 1.15rem) 0 0;
+		max-width: 34rem;
+		font-size: clamp(0.98rem, 1.15vw, 1.1rem);
+		line-height: 1.6;
+		color: rgba(255, 255, 255, 0.76);
+	}
+
+	/* each frame brings its own title in, a beat after the image */
+	.hero--slide.is-on .hero--kicker { animation: hero-rise 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.14s both; }
+	.hero--slide.is-on .hero--display { animation: hero-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.24s both; }
+	.hero--slide.is-on .hero--line { animation: hero-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.36s both; }
+	.hero--slide.is-on .hero--cta { animation: hero-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.46s both; }
 	@keyframes hero-rise {
-		from { opacity: 0; transform: translateY(18px); }
+		from { opacity: 0; transform: translateY(16px); }
 		to { opacity: 1; transform: none; }
 	}
 
-	.hero--sub {
-		margin: clamp(1rem, 2.2vh, 1.5rem) 0 0;
-		max-width: 33rem;
-		font-size: clamp(1rem, 1.15vw, 1.12rem);
-		line-height: 1.62;
-		color: rgba(244, 246, 251, 0.66);
-		animation: hero-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.42s both;
-	}
-
-	/* ── the actions ──
-	   One primary. The second steps back a full weight, and the tour
-	   sits below them both as a quiet third. */
+	/* ── the pills ── */
 	.hero--cta {
 		display: flex;
 		align-items: center;
-		gap: 0.9rem;
+		gap: 0.7rem;
 		flex-wrap: wrap;
-		margin-top: clamp(1.3rem, 2.8vh, 2rem);
-		animation: hero-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.54s both;
+		margin-top: clamp(1.1rem, 2.4vh, 1.7rem);
 	}
-	.hero--primary {
-		position: relative;
-		overflow: hidden;
-		display: inline-flex;
-		align-items: center;
-		gap: 0.55rem;
-		padding: 0.95rem 1.7rem;
-		border-radius: 9999px;
-		font-size: 0.95rem;
-		font-weight: 700;
-		letter-spacing: 0.01em;
-		color: #05121c;
-		background: linear-gradient(180deg, #7fd3ff 0%, var(--acc) 48%, #1585c9 100%);
-		box-shadow:
-			inset 0 1px 0 rgba(255, 255, 255, 0.55),
-			0 1px 0 rgba(255, 255, 255, 0.12),
-			0 18px 40px -16px color-mix(in srgb, var(--acc) 75%, transparent);
-		transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.28s ease;
-	}
-	.hero--primary:hover {
-		transform: translateY(-2px);
-		box-shadow:
-			inset 0 1px 0 rgba(255, 255, 255, 0.6),
-			0 24px 52px -16px color-mix(in srgb, var(--acc) 90%, transparent);
-	}
-	.hero--primary:active { transform: translateY(0); }
-	/* a highlight that travels the button once you reach for it */
-	.hero--primary-sheen {
-		position: absolute;
-		top: 0;
-		bottom: 0;
-		left: -60%;
-		width: 45%;
-		pointer-events: none;
-		background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.5), transparent);
-		transform: skewX(-18deg);
-		transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-	}
-	.hero--primary:hover .hero--primary-sheen { transform: translateX(360%) skewX(-18deg); }
-
+	.hero--primary,
 	.hero--secondary {
 		display: inline-flex;
 		align-items: center;
 		gap: 0.45rem;
-		padding: 0.95rem 1.4rem;
+		padding: 0.82rem 1.55rem;
 		border-radius: 9999px;
-		font-size: 0.95rem;
+		font-size: 0.94rem;
 		font-weight: 650;
-		color: rgba(244, 246, 251, 0.9);
-		border: 1px solid rgba(255, 255, 255, 0.16);
-		background: rgba(255, 255, 255, 0.03);
-		backdrop-filter: blur(10px);
-		transition: border-color 0.28s ease, background 0.28s ease, gap 0.28s ease;
+		letter-spacing: 0.005em;
+		white-space: nowrap;
+		transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), background 0.25s ease,
+			border-color 0.25s ease, box-shadow 0.25s ease;
+	}
+	.hero--primary {
+		color: #06111c;
+		background: #ffffff;
+		box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.6);
+	}
+	.hero--primary:hover { transform: translateY(-1px); background: #ffffff; box-shadow: 0 16px 38px -12px rgba(0, 0, 0, 0.7); }
+	.hero--secondary {
+		color: #ffffff;
+		border: 1px solid rgba(255, 255, 255, 0.34);
+		background: rgba(255, 255, 255, 0.08);
+		backdrop-filter: blur(14px) saturate(140%);
+		-webkit-backdrop-filter: blur(14px) saturate(140%);
 	}
 	.hero--secondary:hover {
-		gap: 0.7rem;
-		border-color: rgba(255, 255, 255, 0.34);
-		background: rgba(255, 255, 255, 0.07);
+		transform: translateY(-1px);
+		border-color: rgba(255, 255, 255, 0.6);
+		background: rgba(255, 255, 255, 0.16);
 	}
 
-	.hero--tour {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.45rem;
-		margin-top: 1rem;
-		font-size: 0.83rem;
-		font-weight: 600;
-		color: rgba(244, 246, 251, 0.5);
-		cursor: pointer;
-		transition: color 0.25s ease, gap 0.25s ease;
-		animation: hero-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.62s both;
+	/* ══════════════════════════════════════════════════════════════════
+	   THE DECK
+	   Proof on the left, steering on the right, both on the floor of the
+	   frame — one row, out of the photograph's way.
+	   ══════════════════════════════════════════════════════════════════ */
+	/* Three columns: proof, steering, and a deliberately empty third —
+	   the floating chat button lives in that bottom-right corner, and a
+	   control parked under it cannot be pressed. */
+	.hero--deck {
+		position: relative;
+		z-index: 4;
+		display: flex;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: clamp(1.5rem, 4vw, 3rem);
+		/* the floating chat button owns the bottom-right corner: the deck
+		   stops short of it, so no control is ever parked underneath */
+		padding: 0 calc(var(--pad) + 4.25rem) clamp(1.5rem, 3.5vh, 2.4rem) var(--pad);
 	}
-	.hero--tour:hover { color: rgba(244, 246, 251, 0.92); gap: 0.62rem; }
+	.hero--steer { flex: none; }
 
-	/* ── the proof ──
-	   Three figures on one line with hairlines between them. The badges
-	   and the stat rail that used to carry this are gone. */
 	.hero--proof {
 		display: flex;
 		align-items: flex-start;
-		gap: clamp(1.1rem, 2.6vw, 2.2rem);
+		gap: clamp(1rem, 2.4vw, 2rem);
 		list-style: none;
-		margin: clamp(1.5rem, 3.2vh, 2.4rem) 0 0;
-		padding: clamp(1.1rem, 2.4vh, 1.6rem) 0 0;
-		border-top: 1px solid rgba(255, 255, 255, 0.1);
-		animation: hero-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.7s both;
+		margin: 0;
+		padding: 0;
 	}
-	.hero--proof-item {
-		display: grid;
-		gap: 0.12rem;
-		min-width: 0;
-	}
+	.hero--proof-item { display: grid; gap: 0.1rem; min-width: 0; }
 	.hero--proof-item + .hero--proof-item {
-		padding-left: clamp(1.1rem, 2.6vw, 2.2rem);
-		border-left: 1px solid rgba(255, 255, 255, 0.1);
+		padding-left: clamp(1rem, 2.4vw, 2rem);
+		border-left: 1px solid rgba(255, 255, 255, 0.16);
 	}
 	.hero--proof-num {
-		font-size: clamp(1.35rem, 2.1vw, 1.75rem);
+		font-size: clamp(1.15rem, 1.7vw, 1.5rem);
 		font-weight: 800;
 		letter-spacing: -0.03em;
 		line-height: 1.1;
 		color: #ffffff;
 	}
 	.hero--proof-label {
-		font-size: 0.76rem;
-		letter-spacing: 0.01em;
-		color: rgba(244, 246, 251, 0.5);
+		font-size: 0.73rem;
+		color: rgba(255, 255, 255, 0.6);
 		white-space: nowrap;
 	}
-
-	/* ══════════════════════════════════════════════════════════════════
-	   THE OBJECT
-	   Lit like a product shot: a glass rim catching light at the top, a
-	   specular that follows the pointer, one frosted proof chip, and a
-	   long soft shadow so it sits above the room rather than on it.
-	   ══════════════════════════════════════════════════════════════════ */
-	.hero--object {
-		position: relative;
-		animation: hero-rise 1s cubic-bezier(0.22, 1, 0.36, 1) 0.34s both;
+	/* the uptime figure keeps a live dot, because it is a live number */
+	.hero--proof-item--live .hero--proof-num::after {
+		content: '';
+		display: inline-block;
+		width: 6px;
+		height: 6px;
+		margin-left: 0.4rem;
+		vertical-align: 0.34em;
+		border-radius: 50%;
+		background: #3ddc97;
+		box-shadow: 0 0 0 0 rgba(61, 220, 151, 0.6);
+		animation: hero-ping 2.6s ease-out infinite;
 	}
-	.hero--photo-card {
-		position: relative;
-		border-radius: clamp(1.1rem, 1.8vw, 1.6rem);
-		padding: 8px;
-		background: linear-gradient(
-			150deg,
-			rgba(255, 255, 255, 0.16),
-			rgba(255, 255, 255, 0.04) 42%,
-			color-mix(in srgb, var(--acc) 22%, transparent)
-		);
-		box-shadow:
-			inset 0 1px 0 rgba(255, 255, 255, 0.28),
-			0 60px 110px -46px rgba(0, 0, 0, 0.92),
-			0 24px 60px -34px color-mix(in srgb, var(--acc) 50%, transparent);
-		transform: perspective(1100px);
-		transform-style: preserve-3d;
-		transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-		will-change: transform;
-	}
-	.hero--photo-inner {
-		position: relative;
-		overflow: hidden;
-		border-radius: calc(clamp(1.1rem, 1.8vw, 1.6rem) - 6px);
-		aspect-ratio: 16 / 11;
-	}
-	.hero--photo {
-		display: block;
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		object-position: 50% 32%;
-	}
-	/* a cinema grade: lift the blacks toward the room's blue so the
-	   photograph belongs to the page rather than sitting on it */
-	.hero--photo-grade {
-		position: absolute;
-		inset: 0;
-		pointer-events: none;
-		background:
-			linear-gradient(180deg, rgba(4, 8, 18, 0) 38%, rgba(4, 8, 18, 0.62) 100%),
-			linear-gradient(120deg, color-mix(in srgb, var(--acc) 20%, transparent), transparent 60%);
-		mix-blend-mode: multiply;
-		opacity: 0.85;
-	}
-	/* the pointer specular, positioned by the layout script */
-	.hero--photo-spot {
-		position: absolute;
-		inset: 0;
-		pointer-events: none;
-		background: radial-gradient(
-			280px 280px at var(--mx, 50%) var(--my, 40%),
-			rgba(255, 255, 255, 0.16),
-			transparent 68%
-		);
-	}
-	/* the glass: one bright edge along the top, the way real glass
-	   catches a ceiling light */
-	.hero--photo-sheen {
-		position: absolute;
-		inset: 0;
-		pointer-events: none;
-		background: linear-gradient(
-			168deg,
-			rgba(255, 255, 255, 0.22) 0%,
-			rgba(255, 255, 255, 0.05) 14%,
-			transparent 34%
-		);
-	}
-	.hero--photo-ring {
-		position: absolute;
-		inset: 0;
-		pointer-events: none;
-		border-radius: inherit;
-		box-shadow:
-			inset 0 0 0 1px rgba(255, 255, 255, 0.14),
-			inset 0 1px 0 rgba(255, 255, 255, 0.3);
+	@keyframes hero-ping {
+		0% { box-shadow: 0 0 0 0 rgba(61, 220, 151, 0.5); }
+		70% { box-shadow: 0 0 0 7px rgba(61, 220, 151, 0); }
+		100% { box-shadow: 0 0 0 0 rgba(61, 220, 151, 0); }
 	}
 
-	/* the one piece of proof allowed to float: frosted, small, precise */
-	.hero--impact {
-		position: absolute;
-		left: clamp(0.85rem, 2vw, 1.35rem);
-		bottom: clamp(0.85rem, 2vw, 1.35rem);
+	/* ── steering ── */
+	.hero--steer {
 		display: flex;
 		align-items: center;
-		gap: 0.7rem;
-		padding: 0.72rem 1.05rem 0.72rem 0.8rem;
-		border-radius: 1rem;
+		gap: 0.45rem;
+		padding: 0.35rem 0.4rem;
+		border-radius: 9999px;
 		border: 1px solid rgba(255, 255, 255, 0.16);
-		background: rgba(10, 16, 30, 0.6);
-		backdrop-filter: blur(22px) saturate(150%);
-		-webkit-backdrop-filter: blur(22px) saturate(150%);
-		box-shadow:
-			inset 0 1px 0 rgba(255, 255, 255, 0.22),
-			0 26px 50px -24px rgba(0, 0, 0, 0.9);
-		transform: translateZ(40px);
+		background: rgba(10, 14, 26, 0.5);
+		backdrop-filter: blur(18px) saturate(150%);
+		-webkit-backdrop-filter: blur(18px) saturate(150%);
+		box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
 	}
-	.hero--impact-ring {
-		position: relative;
-		width: 38px;
-		height: 38px;
-		flex: none;
+	.hero--arrow,
+	.hero--pause {
+		display: grid;
+		place-items: center;
+		width: 2rem;
+		height: 2rem;
+		border-radius: 50%;
+		color: rgba(255, 255, 255, 0.8);
+		cursor: pointer;
+		transition: background 0.22s ease, color 0.22s ease;
 	}
-	.hero--impact-ring svg {
-		width: 100%;
-		height: 100%;
-		transform: rotate(-90deg);
-	}
-	.hero--impact-ring circle {
-		fill: none;
-		stroke-width: 5;
-		stroke-linecap: round;
-	}
-	.hero--impact-ring .ring-track { stroke: rgba(255, 255, 255, 0.12); }
-	.hero--impact-ring .ring-arc {
-		stroke: var(--acc);
-		stroke-dasharray: 163.4;
-		stroke-dashoffset: 163.4;
-		filter: drop-shadow(0 0 5px color-mix(in srgb, var(--acc) 70%, transparent));
-		animation: hero-arc 2.2s cubic-bezier(0.22, 1, 0.36, 1) 1s both;
-	}
-	@keyframes hero-arc {
-		to { stroke-dashoffset: 0.16; }
-	}
-	.hero--impact-meta { display: grid; gap: 0.05rem; }
-	.hero--impact-num {
-		font-size: 1.05rem;
-		font-weight: 800;
-		letter-spacing: -0.02em;
-		color: #ffffff;
-		line-height: 1.15;
-	}
-	.hero--impact-label {
-		font-size: 0.7rem;
-		letter-spacing: 0.02em;
-		color: rgba(244, 246, 251, 0.55);
-		white-space: nowrap;
-	}
+	.hero--arrow:hover,
+	.hero--pause:hover { background: rgba(255, 255, 255, 0.16); color: #ffffff; }
+	.hero--pause { margin-left: 0.15rem; border-left: 1px solid rgba(255, 255, 255, 0.14); border-radius: 0 9999px 9999px 0; width: 2.3rem; }
+	.hero--pause-b { display: none; }
+	.hero--reel.is-paused .hero--pause-a { display: none; }
+	.hero--reel.is-paused .hero--pause-b { display: block; }
 
-	/* the rating, set as a caption under the plate rather than a badge
-	   floating over the faces */
-	.hero--caption {
-		display: flex;
-		align-items: center;
-		justify-content: flex-end;
-		gap: 0.5rem;
-		margin-top: 0.8rem;
-		padding-right: 0.3rem;
-		font-size: 0.78rem;
-		color: rgba(244, 246, 251, 0.5);
+	.hero--dots { display: flex; align-items: center; gap: 0.3rem; }
+	/* a dot is a track; the live one fills as its frame runs down */
+	.hero--dot {
+		position: relative;
+		width: 0.55rem;
+		height: 0.55rem;
+		padding: 0;
+		border-radius: 9999px;
+		background: rgba(255, 255, 255, 0.28);
+		cursor: pointer;
+		overflow: hidden;
+		transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1), background 0.3s ease;
 	}
-	.hero--caption-stars { color: var(--gold); letter-spacing: 0.08em; }
+	.hero--dot:hover { background: rgba(255, 255, 255, 0.5); }
+	.hero--dot.is-on { width: 2.6rem; background: rgba(255, 255, 255, 0.26); }
+	.hero--dot i {
+		position: absolute;
+		inset: 0;
+		display: block;
+		transform-origin: left center;
+		transform: scaleX(0);
+		background: #ffffff;
+	}
+	.hero--dot.is-on i { transform: scaleX(var(--bh-p, 0)); }
+	.hero--reel.is-paused .hero--dot.is-on i { transform: scaleX(1); }
+
+	/* the tour, tucked at the top-right where it is available but never
+	   competing with the frame's own call */
+	/* Under the header, aligned to the plate's own margin. It sat top
+	   right before, which is exactly where the nav keeps CONTACT. */
+	.hero--tour {
+		position: absolute;
+		z-index: 4;
+		top: clamp(5.5rem, 13vh, 7.5rem);
+		left: var(--pad);
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		padding: 0.5rem 0.95rem;
+		border-radius: 9999px;
+		font-size: 0.78rem;
+		font-weight: 600;
+		color: rgba(255, 255, 255, 0.82);
+		border: 1px solid rgba(255, 255, 255, 0.2);
+		background: rgba(10, 14, 26, 0.42);
+		backdrop-filter: blur(14px);
+		-webkit-backdrop-filter: blur(14px);
+		cursor: pointer;
+		transition: border-color 0.25s ease, background 0.25s ease, color 0.25s ease;
+	}
+	.hero--tour:hover {
+		color: #ffffff;
+		border-color: rgba(255, 255, 255, 0.45);
+		background: rgba(10, 14, 26, 0.62);
+	}
 
 	/* ══════════════════════════════════════════════════════════════════
-	   THE FOOT
-	   The industries rail sits on the bottom edge of the first screen —
-	   the space a hero usually wastes — with the scroll cue beside it.
+	   THE STRIP
+	   Directly under the cover, the way a cover reel is followed by a row
+	   of tiles. Dark in both themes so the cover runs into it.
 	   ══════════════════════════════════════════════════════════════════ */
 	.hero--rail {
+		--acc: var(--view-accent, #28a6ec);
 		position: relative;
 		z-index: 1;
 		display: flex;
 		align-items: center;
 		gap: 1rem;
-		margin-top: clamp(1.6rem, 4vh, 3rem);
-		padding: clamp(0.8rem, 1.8vh, 1.1rem) 0 clamp(1rem, 2.2vh, 1.4rem);
-		border-top: 1px solid rgba(255, 255, 255, 0.08);
+		padding: 0.9rem clamp(1.25rem, 5vw, 4.5rem);
+		color: #ffffff;
+		background: #04060e;
+		border-top: 1px solid rgba(255, 255, 255, 0.07);
 	}
 	.hero--rail-label {
 		flex: none;
-		font-size: 0.68rem;
+		font-size: 0.66rem;
 		font-weight: 700;
-		letter-spacing: 0.18em;
+		letter-spacing: 0.2em;
 		text-transform: uppercase;
-		color: rgba(244, 246, 251, 0.34);
+		color: rgba(255, 255, 255, 0.36);
 	}
 	.hero--sectors {
 		display: flex;
 		align-items: center;
-		gap: 0.45rem;
+		gap: 0.4rem;
 		flex: 1 1 auto;
 		min-width: 0;
 		list-style: none;
@@ -758,210 +610,105 @@ const sectors = [
 	.hero--sectors::-webkit-scrollbar { display: none; }
 	.hero--sector {
 		flex: none;
-		padding: 0.34rem 0.75rem;
+		padding: 0.3rem 0.7rem;
 		border-radius: 9999px;
-		border: 1px solid rgba(255, 255, 255, 0.1);
-		background: rgba(255, 255, 255, 0.025);
-		font-size: 0.76rem;
-		color: rgba(244, 246, 251, 0.6);
+		border: 1px solid rgba(255, 255, 255, 0.11);
+		font-size: 0.74rem;
+		color: rgba(255, 255, 255, 0.62);
 		white-space: nowrap;
 		transition: color 0.35s ease, border-color 0.35s ease, background 0.35s ease;
 	}
 	/* the layout script walks this class along the row */
 	.hero--sector.is-active {
 		color: #ffffff;
-		border-color: color-mix(in srgb, var(--acc) 55%, transparent);
-		background: color-mix(in srgb, var(--acc) 14%, transparent);
+		border-color: color-mix(in srgb, var(--acc) 60%, transparent);
+		background: color-mix(in srgb, var(--acc) 16%, transparent);
 	}
 	.hero--sector-more { border-style: dashed; }
-
-	.hero--scroll {
+	.hero--down {
 		flex: none;
 		display: grid;
 		place-items: center;
-		width: 22px;
-		height: 36px;
-		border-radius: 9999px;
-		border: 1px solid rgba(255, 255, 255, 0.22);
-		transition: border-color 0.25s ease;
+		width: 2rem;
+		height: 2rem;
+		border-radius: 50%;
+		color: rgba(255, 255, 255, 0.7);
+		border: 1px solid rgba(255, 255, 255, 0.18);
+		transition: border-color 0.25s ease, color 0.25s ease;
+		animation: hero-nudge 2.4s ease-in-out infinite;
 	}
-	.hero--scroll:hover { border-color: rgba(255, 255, 255, 0.5); }
-	.hero--scroll span {
-		display: block;
-		width: 3px;
-		height: 7px;
-		border-radius: 2px;
-		background: var(--acc);
-		animation: hero-scroll 1.9s ease-in-out infinite;
+	.hero--down:hover { color: #ffffff; border-color: rgba(255, 255, 255, 0.45); }
+	@keyframes hero-nudge {
+		0%, 100% { transform: translateY(0); }
+		50% { transform: translateY(3px); }
 	}
-	@keyframes hero-scroll {
-		0% { transform: translateY(-5px); opacity: 0; }
-		35% { opacity: 1; }
-		100% { transform: translateY(6px); opacity: 0; }
+
+	/* ══════════════════════════════════════════════════════════════════
+	   NARROWER ROOMS
+	   The cover stays full bleed; the plate simply gets the whole width
+	   and the deck stacks proof over steering.
+	   ══════════════════════════════════════════════════════════════════ */
+	@media (max-width: 900px) {
+		.hero--plate { bottom: clamp(8.5rem, 20vh, 11rem); max-width: none; }
+		.hero--display { font-size: clamp(2.2rem, 8.4vw, 3.4rem); }
+		.hero--deck { gap: 0.9rem; }
+	}
+	@media (max-width: 720px) {
+		.hero--reel { min-height: 100svh; }
+		.hero--plate { bottom: clamp(7.5rem, 19vh, 10rem); }
+		.hero--kicker { font-size: 0.66rem; letter-spacing: 0.16em; }
+		.hero--display { font-size: clamp(2.05rem, 9.2vw, 2.9rem); letter-spacing: -0.035em; }
+		.hero--line { font-size: 0.95rem; line-height: 1.5; }
+		.hero--cta { gap: 0.55rem; }
+		.hero--primary,
+		.hero--secondary { flex: 1 1 auto; justify-content: center; padding-inline: 1rem; }
+		.hero--tour { font-size: 0.72rem; padding: 0.4rem 0.8rem; }
+		.hero--deck {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 0.85rem;
+			padding: 0 var(--pad) 1.1rem;
+		}
+		.hero--proof { gap: 0.65rem; }
+		.hero--proof-item + .hero--proof-item { padding-left: 0.65rem; }
+		.hero--proof-num { font-size: 1.05rem; }
+		.hero--proof-label { font-size: 0.64rem; white-space: normal; line-height: 1.25; }
+		/* uptime is the one figure a phone can spare */
+		.hero--proof-item--live { display: none; }
+		.hero--rail-label { display: none; }
+		.hero--down { display: none; }
 	}
 
 	/* ══════════════════════════════════════════════════════════════════
 	   DAYLIGHT
+	   A cinema is a cinema. The cover keeps its own darkness in both
+	   themes — inverting it would bleach the photographs — and only the
+	   furniture around it is re-lit.
 	   ══════════════════════════════════════════════════════════════════ */
-	:global(html:not(.dark)) .hero--bgfill,
-	:global(html:not(.dark)) .hero--glow,
-	:global(html:not(.dark)) .hero--panels,
-	:global(html:not(.dark)) .hero--horizon,
-	:global(html:not(.dark)) .hero--spotlight,
-	:global(html:not(.dark)) .hero--goldline,
-	:global(html:not(.dark)) .hero--goldline i,
-	:global(html:not(.dark)) .hero--room,
-	:global(html:not(.dark)) .hero--rail { --gold: #b8862f; }
-
-	:global(html:not(.dark)) .hero--bgfill {
-		background:
-			radial-gradient(1100px 620px at 22% 8%, rgba(40, 166, 236, 0.16), transparent 62%),
-			radial-gradient(900px 560px at 88% 78%, rgba(40, 166, 236, 0.09), transparent 64%),
-			linear-gradient(180deg, #fbfcff 0%, #f2f6fc 52%, #eaf0f8 100%);
-	}
-	:global(html:not(.dark)) .hero--glow { opacity: 0.5; }
-	:global(html:not(.dark)) .hero--panels {
-		background-image: repeating-linear-gradient(
-			90deg,
-			transparent 0 132px,
-			rgba(20, 22, 42, 0.055) 132px 133px
-		);
-	}
-	:global(html:not(.dark)) .hero--horizon {
-		background: linear-gradient(90deg, transparent, rgba(20, 22, 42, 0.1) 18%, rgba(20, 22, 42, 0.1) 82%, transparent);
-	}
-	:global(html:not(.dark)) .hero--spotlight {
-		background: radial-gradient(460px 460px at var(--hx, 50%) var(--hy, 30%), rgba(255, 255, 255, 0.5), transparent 70%);
-	}
-	:global(html:not(.dark)) .hero--goldline { opacity: 0.4; }
-	:global(html:not(.dark)) .hero--status { color: rgba(20, 22, 42, 0.56); }
-	:global(html:not(.dark)) .hero--l1 { color: #0d1020; }
-	:global(html:not(.dark)) .hero--l2 {
-		background: linear-gradient(
-			100deg,
-			#0d1020 4%,
-			#1f4d75 26%,
-			color-mix(in srgb, var(--acc) 82%, #000000) 48%,
-			#8a6520 70%,
-			#0d1020 94%
-		);
-		background-size: 220% 100%;
-		-webkit-background-clip: text;
-		background-clip: text;
-		color: transparent;
-		-webkit-text-fill-color: transparent;
-	}
-	:global(html:not(.dark)) .hero--sub { color: rgba(20, 22, 42, 0.68); }
-	:global(html:not(.dark)) .hero--secondary {
-		color: rgba(20, 22, 42, 0.86);
-		border-color: rgba(20, 22, 42, 0.16);
-		background: rgba(255, 255, 255, 0.7);
-	}
-	:global(html:not(.dark)) .hero--secondary:hover {
-		border-color: rgba(20, 22, 42, 0.32);
-		background: #ffffff;
-	}
-	:global(html:not(.dark)) .hero--tour { color: rgba(20, 22, 42, 0.58); }
-	:global(html:not(.dark)) .hero--tour:hover { color: #0d1020; }
-	:global(html:not(.dark)) .hero--proof { border-top-color: rgba(20, 22, 42, 0.12); }
-	:global(html:not(.dark)) .hero--proof-item + .hero--proof-item { border-left-color: rgba(20, 22, 42, 0.12); }
-	:global(html:not(.dark)) .hero--proof-num { color: #0d1020; }
-	:global(html:not(.dark)) .hero--proof-label { color: rgba(20, 22, 42, 0.55); }
-	:global(html:not(.dark)) .hero--photo-card {
-		background: linear-gradient(
-			150deg,
-			rgba(20, 22, 42, 0.1),
-			rgba(20, 22, 42, 0.03) 42%,
-			color-mix(in srgb, var(--acc) 20%, transparent)
-		);
-		box-shadow:
-			inset 0 1px 0 rgba(255, 255, 255, 0.7),
-			0 54px 100px -44px rgba(20, 22, 42, 0.42),
-			0 20px 52px -32px color-mix(in srgb, var(--acc) 34%, transparent);
-	}
-	:global(html:not(.dark)) .hero--photo-grade { opacity: 0.4; }
-	:global(html:not(.dark)) .hero--photo-ring {
-		box-shadow: inset 0 0 0 1px rgba(20, 22, 42, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.6);
-	}
-	:global(html:not(.dark)) .hero--impact {
-		border-color: rgba(20, 22, 42, 0.1);
-		background: rgba(255, 255, 255, 0.82);
-		box-shadow:
-			inset 0 1px 0 rgba(255, 255, 255, 0.9),
-			0 24px 46px -22px rgba(20, 22, 42, 0.3);
-	}
-	:global(html:not(.dark)) .hero--impact-ring .ring-track { stroke: rgba(20, 22, 42, 0.12); }
-	:global(html:not(.dark)) .hero--impact-num { color: #0d1020; }
-	:global(html:not(.dark)) .hero--impact-label { color: rgba(20, 22, 42, 0.55); }
-	:global(html:not(.dark)) .hero--caption { color: rgba(20, 22, 42, 0.55); }
-	:global(html:not(.dark)) .hero--rail { border-top-color: rgba(20, 22, 42, 0.1); }
-	:global(html:not(.dark)) .hero--rail-label { color: rgba(20, 22, 42, 0.42); }
-	:global(html:not(.dark)) .hero--sector {
-		border-color: rgba(20, 22, 42, 0.14);
-		background: rgba(255, 255, 255, 0.7);
-		color: rgba(20, 22, 42, 0.68);
-	}
-	:global(html:not(.dark)) .hero--sector.is-active { color: #0d1020; }
-	:global(html:not(.dark)) .hero--scroll { border-color: rgba(20, 22, 42, 0.26); }
-
-	/* ══════════════════════════════════════════════════════════════════
-	   NARROWER ROOMS
-	   ══════════════════════════════════════════════════════════════════ */
-	@media (max-width: 999px) {
-		/* the object leads, the statement follows — a photograph is the
-		   faster read on a phone, and it stops the fold being all type */
-		.hero--room { gap: clamp(1.6rem, 5vw, 2.4rem); }
-		.hero--copy { max-width: none; }
-		.hero--object { order: -1; max-width: 34rem; }
-		.hero--sub { font-size: 1rem; }
-	}
-	@media (max-width: 720px) {
-		:global(.hero-boardroom) { min-height: 0; }
-		/* the plate wants air under the header, and the stage's own top
-		   padding belongs to the global nav offset (see above) */
-		.hero--room { padding-top: 1.6rem; }
-		.hero--display { font-size: clamp(2.05rem, 9.4vw, 2.8rem); letter-spacing: -0.032em; }
-		.hero--photo-inner { aspect-ratio: 16 / 10; }
-		.hero--room { gap: 1.25rem; }
-		.hero--sub { margin-top: 0.85rem; line-height: 1.55; }
-		.hero--cta { margin-top: 1.05rem; }
-		.hero--caption { margin-top: 0.6rem; font-size: 0.72rem; white-space: nowrap; }
-		.hero--impact { left: 0.6rem; bottom: 0.7rem; padding: 0.58rem 0.85rem 0.58rem 0.65rem; }
-		.hero--impact-ring { width: 32px; height: 32px; }
-		.hero--impact-num { font-size: 0.95rem; }
-		.hero--cta { gap: 0.6rem; }
-		.hero--primary,
-		.hero--secondary { flex: 1 1 auto; justify-content: center; }
-		/* three figures, one line, at any width */
-		.hero--proof { gap: 0.7rem; }
-		.hero--proof-item + .hero--proof-item { padding-left: 0.7rem; }
-		.hero--proof-num { font-size: 1.22rem; }
-		.hero--proof-label { font-size: 0.68rem; white-space: normal; line-height: 1.25; }
-		/* the rail keeps one line and says it scrolls */
-		.hero--rail { gap: 0.7rem; }
-		.hero--rail-label { display: none; }
-		.hero--scroll { display: none; }
-	}
+	:global(html:not(.dark)) .hero--reel,
+	:global(html:not(.dark)) .hero--rail { color: #ffffff; }
+	:global(html:not(.dark)) .hero--rail { border-top-color: rgba(255, 255, 255, 0.08); }
 
 	/* ══════════════════════════════════════════════════════════════════
 	   STILLNESS
 	   ══════════════════════════════════════════════════════════════════ */
 	@media (prefers-reduced-motion: reduce) {
-		.hero--glow,
-		.hero--status-dot,
-		.hero--l2,
-		.hero--scroll span,
-		.hero--impact-ring .ring-arc { animation: none; }
-		.hero--status,
-		.hero--l1,
-		.hero--l2,
-		.hero--sub,
-		.hero--cta,
-		.hero--tour,
-		.hero--proof,
-		.hero--object { animation: none; opacity: 1; transform: none; }
-		.hero--impact-ring .ring-arc { stroke-dashoffset: 0.16; }
+		.hero--slide,
+		.hero--slide.is-on .hero--img,
+		.hero--slide.is-on .hero--film,
+		.hero--slide.is-on .hero--kicker,
+		.hero--slide.is-on .hero--display,
+		.hero--slide.is-on .hero--line,
+		.hero--slide.is-on .hero--cta,
+		.hero--display :global(.hero--l2),
+		.hero--proof-item--live .hero--proof-num::after,
+		.hero--down { animation: none; transition: none; }
+		.hero--slide.is-on .hero--kicker,
+		.hero--slide.is-on .hero--display,
+		.hero--slide.is-on .hero--line,
+		.hero--slide.is-on .hero--cta { opacity: 1; transform: none; }
 	}
-	:global(html.perf-lite) .hero--glow,
-	:global(html.perf-lite) .hero--l2 { animation: none; }
+	:global(html.perf-lite) .hero--slide.is-on .hero--img,
+	:global(html.perf-lite) .hero--display :global(.hero--l2),
+	:global(html.perf-lite) .hero--down { animation: none; }
 </style>
