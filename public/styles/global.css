@@ -1737,16 +1737,25 @@ html[data-view='studio'] .tour-hole {
   transition: opacity 0.25s ease;
 }
 .tour-doors.is-on { opacity: 1; }
-.tour-doors-veil { position: absolute; inset: 0; background: rgba(6, 8, 14, 0.72); backdrop-filter: blur(6px); }
+.tour-doors-veil { position: absolute; inset: 0; background: rgba(6, 8, 14, 0.55); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
 .tour-doors-card {
   position: relative;
   width: min(40rem, 100%);
   padding: clamp(1.5rem, 3.5vw, 2.2rem);
   border-radius: 1rem;
-  background: #12151f;
+  /* glass, like the cover it is called from: the room shows through it,
+     a lit rim runs the edge, and the light falls off toward the bottom */
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.05) 46%, rgba(255, 255, 255, 0.02)),
+    rgba(14, 18, 28, 0.42);
+  -webkit-backdrop-filter: blur(30px) saturate(170%);
+  backdrop-filter: blur(30px) saturate(170%);
   color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 40px 90px -34px rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.34),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.08),
+    0 40px 90px -30px rgba(0, 0, 0, 0.85);
   transform: translateY(12px) scale(0.98);
   transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -1802,8 +1811,11 @@ html[data-view='studio'] .tour-hole {
   text-align: left;
   padding: 1rem 1.1rem;
   border-radius: 0.8rem;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.07);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
   color: inherit;
   cursor: pointer;
   transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
@@ -1831,8 +1843,24 @@ html[data-view='campus'] .tour-door { border-style: dashed; border-color: rgba(1
 html[data-view='campus'] .tour-door em { color: rgba(43, 28, 8, 0.68); }
 html[data-view='campus'] .tour-door strong { font-family: 'Bradley Hand', 'Segoe Print', 'Comic Sans MS', cursive; font-size: 1.15rem; }
 
-html:not(.dark) .tour-doors-card { background: #fff; color: #14162a; border-color: rgba(20, 22, 42, 0.12); }
-html:not(.dark) .tour-door { border-color: rgba(20, 22, 42, 0.14); background: rgba(20, 22, 42, 0.03); }
+/* Daylight glass: lighter panes, same material. A flat white card here
+   would put a solid rectangle back over the picture it was asked to let
+   through. */
+html:not(.dark) .tour-doors-card {
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.58) 48%, rgba(255, 255, 255, 0.5)),
+    rgba(244, 248, 255, 0.34);
+  color: #14162a;
+  border-color: rgba(255, 255, 255, 0.85);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 40px 90px -30px rgba(20, 22, 42, 0.45);
+}
+html:not(.dark) .tour-door {
+  border-color: rgba(20, 22, 42, 0.12);
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
 html:not(.dark) .tour-door em { color: rgba(20, 22, 42, 0.66); }
 html:not(.dark) .tour-doors-x {
   color: rgba(20, 22, 42, 0.62);

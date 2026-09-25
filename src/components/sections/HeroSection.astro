@@ -21,48 +21,37 @@
 // ══════════════════════════════════════════════════════════════════════
 import { Icon } from 'astro-icon/components';
 
+// The frames are pictures, nothing more. The cover says one thing and
+// keeps saying it; what changes behind it is the room. A film slot is
+// still here: give a frame `kind: 'film'`, a `video:` path and a `src:`
+// poster and it plays itself.
 const slides = [
 	{
-		id: 'promise',
+		id: 'team',
 		kind: 'photo' as const,
 		src: '/images/hero-team.jpg',
 		alt: 'The Swizel team — the designers and engineers who build your product with you',
 		pos: '50% 30%',
-		kicker: 'Swizel Technologies · building since 2019',
-		title: 'You imagine it.<em>We build it.</em>',
-		// the verb scrolls on this frame only — see .hero--rot
-		rotate: ['build', 'design', 'ship', 'scale', 'grow'],
-		cta: { href: '/contact', label: 'Start a project' },
-		alt2: { href: '/portfolio', label: 'See the work' },
 		eager: true,
 	},
 	{
-		id: 'work',
+		id: 'studio',
 		kind: 'photo' as const,
 		src: '/images/founder/studio.jpg',
 		alt: 'The Swizel studio floor in Abuja, mid build',
 		pos: '50% 46%',
-		kicker: 'The collection',
-		title: 'Sixty-five products,<em>live in the market.</em>',
-		cta: { href: '/portfolio', label: 'See the work' },
-		alt2: { href: '/about', label: 'Meet the team' },
 	},
 	{
-		id: 'build',
-		// A film slot is ready here: give this frame `kind: 'film'`, a
-		// `video:` path and a `src:` poster and it plays itself. It is a
-		// photograph for now because the only footage on hand was a soft,
-		// dim frame that let the whole cover down.
+		id: 'table',
 		kind: 'photo' as const,
 		src: '/images/builder/the-table.jpg',
 		alt: 'Four Swizel engineers around the table in Abuja, mid build',
 		pos: '50% 38%',
-		kicker: 'Inside the build',
-		title: 'Two minutes,<em>sketch to launch.</em>',
-		cta: { href: '/services', label: 'How we work' },
-		alt2: { href: '/contact', label: 'Talk to us' },
 	},
 ];
+
+// the one thing the cover says, and the verb that turns inside it
+const VERBS = ['build', 'design', 'ship', 'scale', 'grow'];
 
 const proof = [
 	{ to: 65, suffix: '+', label: 'products shipped' },
@@ -90,30 +79,31 @@ const sectors = [
 	     instead of running behind it. -->
 	<div class="hero--cover">
 
-	<!-- ── the frames ──────────────────────────────────────────── -->
+	<!-- ── the frames: the room changes, the message does not ── -->
 	<div class="hero--frames hero--photo-card">
 		{
 			slides.map((s, i) => (
 				<article
 					class:list={['hero--slide', { 'is-on': i === 0 }]}
 					data-bh-slide={s.id}
-					aria-hidden={i !== 0}
-					aria-roledescription="slide"
-					aria-label={`${i + 1} of ${slides.length}`}
+					aria-hidden="true"
 				>
 					<div class="hero--media">
 						{s.kind === 'film' ? (
-							<video
-								class="hero--film"
-								data-bh-film
-								data-src={s.video}
-								poster={s.src}
-								muted
-								loop
-								playsinline
-								preload="none"
-								aria-label={s.alt}
-							/>
+							<>
+								<video
+									class="hero--film"
+									data-bh-film
+									data-src={s.video}
+									poster={s.src}
+									muted
+									loop
+									playsinline
+									preload="none"
+									aria-label={s.alt}
+								/>
+								<img class="hero--img" src={s.src} alt="" style={`object-position:${s.pos}`} loading="lazy" decoding="async" />
+							</>
 						) : (
 							<img
 								class="hero--img"
@@ -125,53 +115,45 @@ const sectors = [
 								decoding="async"
 							/>
 						)}
-						{s.kind === 'film' && (
-							<img class="hero--img" src={s.src} alt="" style={`object-position:${s.pos}`} loading="lazy" decoding="async" />
-						)}
-					</div>
-
-					<!-- the scrim: enough to read type on, never enough to
-					     flatten the photograph -->
-					<span class="hero--scrim" aria-hidden="true" />
-					<span class="hero--vignette" aria-hidden="true" />
-
-					<div class="hero--plate">
-						<span class="hero--kicker">{s.kicker}</span>
-
-						{s.rotate ? (
-							<h1 class="hero--display rhead">
-								<span class="hero--l1">You imagine it.</span>
-								<span class="hero--l2">
-									We{' '}
-									<span class="hero--rot" aria-hidden="true">
-										<span class="hero--rot-track">
-											{s.rotate.map((wd) => <i>{wd}</i>)}
-											<i>{s.rotate[0]}</i>
-										</span>
-									</span>{' '}
-									it.
-								</span>
-								<span class="sr-only">We build, design, ship, scale and grow it.</span>
-							</h1>
-						) : (
-							<p class="hero--display" set:html={s.title.replace('<em>', '<span class="hero--l2">').replace('</em>', '</span>')} />
-						)}
-
-						<div class="hero--cta">
-							<a href={s.cta.href} class="hero--primary">
-								{s.cta.label}
-								<Icon width={16} name="mdi:arrow-right" />
-							</a>
-							<a href={s.alt2.href} class="hero--secondary">{s.alt2.label}</a>
-							<button class="hero--tour" type="button" data-tour-start="boardroom">
-								<Icon width={15} name="mdi:compass-outline" />
-								Take the tour
-							</button>
-						</div>
 					</div>
 				</article>
 			))
 		}
+		<!-- one scrim for the whole reel, not one per frame -->
+		<span class="hero--scrim" aria-hidden="true" />
+		<span class="hero--vignette" aria-hidden="true" />
+	</div>
+
+	<!-- ── the plate: said once, and left alone ── -->
+	<div class="hero--plate">
+		<span class="hero--kicker">Swizel Technologies Ltd · Est. 2019</span>
+
+		<h1 class="hero--display rhead">
+			<span class="hero--l1">You imagine it.</span>
+			<span class="hero--l2">
+				We{' '}
+				<span class="hero--rot" aria-hidden="true">
+					<span class="hero--rot-track">
+						{VERBS.map((wd) => <i>{wd}</i>)}
+						<i>{VERBS[0]}</i>
+					</span>
+				</span>{' '}
+				it.
+			</span>
+			<span class="sr-only">We build, design, ship, scale and grow it.</span>
+		</h1>
+
+		<div class="hero--cta">
+			<a href="/contact" class="hero--primary">
+				Start a project
+				<Icon width={16} name="mdi:arrow-right" />
+			</a>
+			<a href="/portfolio" class="hero--secondary">See the work</a>
+			<button class="hero--tour" type="button" data-tour-start="boardroom">
+				<Icon width={15} name="mdi:compass-outline" />
+				Take the tour
+			</button>
+		</div>
 	</div>
 
 	<!-- ── the fixed furniture: proof, steering, and the way down ── -->
@@ -333,7 +315,7 @@ const sectors = [
 	.hero--scrim {
 		position: absolute;
 		inset: 0;
-		z-index: 2;
+		z-index: 3;
 		pointer-events: none;
 		background:
 			/* The top shade. It is not a bar and must never look like one:
@@ -354,7 +336,7 @@ const sectors = [
 	.hero--vignette {
 		position: absolute;
 		inset: 0;
-		z-index: 2;
+		z-index: 3;
 		pointer-events: none;
 		background: radial-gradient(130% 100% at 50% 46%, transparent 48%, rgba(4, 6, 14, 0.45) 100%);
 	}
@@ -367,6 +349,8 @@ const sectors = [
 	.hero--plate {
 		position: absolute;
 		z-index: 3;
+		/* it belongs to the cover, not to any one frame — the pictures
+		   change behind it and it never moves or re-animates */
 		left: var(--pad);
 		right: var(--pad);
 		bottom: clamp(7rem, 15vh, 10rem);
@@ -460,10 +444,10 @@ const sectors = [
 	}
 
 
-	/* each frame brings its own title in, a beat after the image */
-	.hero--slide.is-on .hero--kicker { animation: hero-rise 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.14s both; }
-	.hero--slide.is-on .hero--display { animation: hero-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.24s both; }
-	.hero--slide.is-on .hero--cta { animation: hero-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.46s both; }
+	/* the cover introduces itself once, then stays put */
+	.hero--kicker { animation: hero-rise 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.14s both; }
+	.hero--display { animation: hero-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.24s both; }
+	.hero--cta { animation: hero-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.46s both; }
 	@keyframes hero-rise {
 		from { opacity: 0; transform: translateY(16px); }
 		to { opacity: 1; transform: none; }
@@ -761,22 +745,63 @@ const sectors = [
 		.hero--plate { bottom: clamp(6rem, 15vh, 8.5rem); }
 		.hero--kicker { font-size: 0.66rem; letter-spacing: 0.16em; }
 		.hero--display { font-size: clamp(2.05rem, 9.2vw, 2.9rem); letter-spacing: -0.035em; }
-		.hero--cta { gap: 0.55rem; }
+		/* all three actions on one line, sized to fit rather than to
+		   fill — a stack of fat pills was eating the photograph */
+		.hero--cta { gap: 0.4rem; flex-wrap: nowrap; }
 		.hero--primary,
-		.hero--secondary { flex: 1 1 auto; justify-content: center; padding-inline: 1rem; }
-		.hero--tour { font-size: 0.85rem; padding: 0.7rem 0.8rem; flex: 1 1 100%; justify-content: center; }
+		.hero--secondary,
+		.hero--tour {
+			flex: 0 1 auto;
+			min-width: 0;
+			justify-content: center;
+			white-space: nowrap;
+			font-size: 0.76rem;
+			font-weight: 650;
+			padding: 0.5rem 0.7rem;
+			gap: 0.3rem;
+		}
+		.hero--tour { padding-inline: 0.55rem; }
+		.hero--primary :global(svg),
+		.hero--tour :global(svg) { width: 13px; height: 13px; }
+
+		/* the deck keeps one row: the figures, then the two arrows tucked
+		   against the right edge after the last of them */
 		.hero--deck {
-			flex-direction: column;
-			align-items: flex-start;
-			gap: 0.85rem;
+			flex-direction: row;
+			align-items: flex-end;
+			justify-content: space-between;
+			gap: 0.5rem;
 			padding: 0 var(--pad) 1.1rem;
 		}
-		.hero--proof { gap: 0.65rem; }
-		.hero--proof-item + .hero--proof-item { padding-left: 0.65rem; }
+		.hero--proof { gap: 0.55rem; flex: 1 1 auto; min-width: 0; }
+		.hero--proof-item + .hero--proof-item { padding-left: 0.55rem; }
 		.hero--proof-num { font-size: 0.95rem; }
-		.hero--proof-label { font-size: 0.64rem; white-space: normal; line-height: 1.25; }
+		.hero--proof-label { font-size: 0.62rem; white-space: normal; line-height: 1.22; }
 		/* uptime is the one figure a phone can spare */
 		.hero--proof-item--live { display: none; }
+
+		/* just the two arrows down here — no dots, no pause, no shell */
+		.hero--steer {
+			gap: 0.1rem;
+			padding: 0;
+			border: 0;
+			background: none;
+			-webkit-backdrop-filter: none;
+			backdrop-filter: none;
+			box-shadow: none;
+			align-self: flex-end;
+			margin-bottom: -0.15rem;
+		}
+		.hero--dots,
+		.hero--pause { display: none; }
+		.hero--arrow {
+			width: 1.55rem;
+			height: 1.55rem;
+			color: rgba(255, 255, 255, 0.72);
+			border: 1px solid rgba(255, 255, 255, 0.22);
+		}
+		.hero--arrow :global(svg) { width: 12px; height: 12px; }
+
 		.hero--rail-label { display: none; }
 		.hero--down { display: none; }
 	}
@@ -798,15 +823,15 @@ const sectors = [
 		.hero--slide,
 		.hero--slide.is-on .hero--img,
 		.hero--slide.is-on .hero--film,
-		.hero--slide.is-on .hero--kicker,
-		.hero--slide.is-on .hero--display,
-		.hero--slide.is-on .hero--cta,
+		.hero--kicker,
+		.hero--display,
+		.hero--cta,
 		.hero--rot-track,
 		.hero--proof-item--live .hero--proof-num::after,
 		.hero--down { animation: none; transition: none; }
-		.hero--slide.is-on .hero--kicker,
-		.hero--slide.is-on .hero--display,
-		.hero--slide.is-on .hero--cta { opacity: 1; transform: none; }
+		.hero--kicker,
+		.hero--display,
+		.hero--cta { opacity: 1; transform: none; }
 	}
 	:global(html.perf-lite) .hero--slide.is-on .hero--img,
 	:global(html.perf-lite) .hero--down { animation: none; }

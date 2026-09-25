@@ -29,7 +29,7 @@ export function initBoardroomHero() {
 	const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 	const lite = () => document.documentElement.classList.contains('perf-lite');
 
-	const HOLD = 7000; // how long a frame stays up
+	const HOLD = 5200; // how long a frame stays up
 	let at = 0;
 	let timer = 0;
 	let started = 0;
