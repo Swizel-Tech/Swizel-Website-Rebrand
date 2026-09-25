@@ -2068,3 +2068,37 @@ html.perf-lite .shuf__ring-f {
     transition: none !important;
   }
 }
+
+/* ── "there is sound in here" ──────────────────────────────────────────
+   Every film on the site starts itself a beat and a half after its
+   section arrives, and every browser insists that start be silent. So
+   the mute control breathes until the visitor unmutes it or presses it.
+   One rule, so the invitation looks the same in all five worlds; the
+   halo is drawn on a pseudo-element so it never disturbs the button's
+   own layout or its hit area. See src/scripts/filmAutoplay.ts. */
+.is-mutehint {
+  position: relative;
+  animation: swz-mutehint 2.2s ease-in-out infinite;
+}
+.is-mutehint::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: 0 0 0 0 var(--view-accent, #28a6ec);
+  animation: swz-mutering 2.2s ease-out infinite;
+}
+@keyframes swz-mutehint {
+  0%, 100% { transform: scale(1); }
+  42% { transform: scale(1.12); }
+}
+@keyframes swz-mutering {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--view-accent, #28a6ec) 62%, transparent); opacity: 1; }
+  70% { box-shadow: 0 0 0 11px color-mix(in srgb, var(--view-accent, #28a6ec) 0%, transparent); opacity: 0; }
+  100% { box-shadow: 0 0 0 0 transparent; opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .is-mutehint,
+  .is-mutehint::after { animation: none; }
+}

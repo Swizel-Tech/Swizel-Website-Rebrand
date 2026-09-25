@@ -6,6 +6,7 @@
 // starts muted, because a footer that ambushes you with sound is worse
 // than no footer at all. Tapping the poster counts as a gesture, so that
 // route starts with the sound on.
+import { FILM_DELAY, hintUnmute, startWhenSeen } from './filmAutoplay';
 export function initFooterTv() {
 	document.querySelectorAll<HTMLElement>('[data-ft-tv]').forEach((tv) => {
 		if (tv.dataset.tvBound === '1') return;
@@ -78,20 +79,14 @@ export function initFooterTv() {
 		poster?.addEventListener('click', () => load(false));
 		sound?.addEventListener('click', () => load(false));
 
-		if ('IntersectionObserver' in window) {
-			const io = new IntersectionObserver(
-				(entries) => {
-					entries.forEach((e) => {
-						if (!e.isIntersecting) return;
-						io.disconnect();
-						if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-							load(true);
-						}
-					});
-				},
-				{ threshold: 0.4 }
-			);
-			io.observe(tv);
-		}
+		// the same beat every film on the site waits, then the same hint
+		startWhenSeen(
+			tv,
+			() => {
+				load(true);
+				hintUnmute(tv.querySelector('[data-ft-tv-sound]'));
+			},
+			{ delay: FILM_DELAY, threshold: 0.4 }
+		);
 	});
 }

@@ -25,8 +25,10 @@ interface Props {
 	cover?: boolean;
 	/** a local still to fall back to if YouTube's thumbnail will not load */
 	fallback?: string;
-	/** start on its own once on screen — muted, because every browser
-	    refuses autoplay with sound, and the visitor can unmute */
+	/** Start on its own once on screen — muted, because every browser
+	    refuses autoplay with sound, and the visitor can unmute. On by
+	    default: every film on the site behaves this way. Pass
+	    `autoplay={false}` for one that should wait to be asked. */
 	autoplay?: boolean;
 	ratio?: string;
 	class?: string;
@@ -42,7 +44,7 @@ const {
 	ambient = false,
 	cover = false,
 	fallback,
-	autoplay = false,
+	autoplay = true,
 	ratio = '16 / 9',
 	class: klass = '',
 } = Astro.props;

@@ -6,6 +6,7 @@
 // YouTube loads until the frame is close to the viewport, so the hero is
 // never held up by it.
 import { loadApi } from './whiteboardVideo';
+import { FILM_DELAY, hintUnmute, startWhenSeen } from './filmAutoplay';
 
 interface Reel {
 	playVideo(): void;
@@ -197,22 +198,15 @@ function setupReel(root: HTMLElement) {
 	}, 6000);
 
 	// nothing from YouTube until the frame is nearly on screen
-	if ('IntersectionObserver' in window) {
-		const io = new IntersectionObserver(
-			(entries) => {
-				entries.forEach((en) => {
-					if (en.isIntersecting) {
-						boot();
-						io.disconnect();
-					}
-				});
-			},
-			{ rootMargin: '240px' }
-		);
-		io.observe(root);
-	} else {
-		boot();
-	}
+	// the same beat every film on the site waits, then the same hint
+	startWhenSeen(
+		root,
+		() => {
+			boot();
+			hintUnmute(muteBtn, muteBtn2);
+		},
+		{ delay: FILM_DELAY, threshold: 0.35 }
+	);
 
 	// pause when it leaves the screen entirely — a reel playing to nobody is
 	// just a battery bill

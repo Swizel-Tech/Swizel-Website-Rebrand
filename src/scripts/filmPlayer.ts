@@ -2,6 +2,7 @@
 // sources, so everything below talks to a tiny adapter rather than to a
 // <video> or a YouTube player directly. Adding a third source later means
 // writing one more adapter, not touching the bar.
+import { FILM_DELAY, MUTE_HINT, hintUnmute, startWhenSeen } from './filmAutoplay';
 
 type Adapter = {
 	play: () => void;
@@ -296,16 +297,14 @@ export function initFilmPlayers(root: ParentNode = document) {
 		// Muted, because every browser refuses autoplay with sound, and only
 		// once the film is actually on screen — a video playing in a pane
 		// nobody has scrolled to is wasted bandwidth.
-		if (film.dataset.autoplay === '1' && 'IntersectionObserver' in window) {
-			const auto = new IntersectionObserver(
-				(entries) => {
-					const en = entries[0];
-					if (!en?.isIntersecting || started) return;
-					auto.disconnect();
-					// a beat first — a film that starts the instant the section
-					// arrives reads as an ad, not as the studio
-					window.setTimeout(() => {
-						void (async () => {
+		if (film.dataset.autoplay === '1') {
+			// the beat and the hint are shared with every other player on
+			// the site — see scripts/filmAutoplay.ts
+			startWhenSeen(
+				film,
+				() => {
+					if (started) return;
+					void (async () => {
 						const a = await build();
 						if (!a) return;
 						a.muted(true);
@@ -313,12 +312,12 @@ export function initFilmPlayers(root: ParentNode = document) {
 						film.classList.add('is-started');
 						a.play();
 						paint();
-						})();
-					}, 1400);
+						// it is playing and it is silent: say so
+						hintUnmute(muteBtn);
+					})();
 				},
-				{ threshold: 0.4 }
+				{ delay: FILM_DELAY, threshold: 0.4 }
 			);
-			auto.observe(film);
 		}
 
 		bigBtn?.addEventListener('click', start);
@@ -430,6 +429,8 @@ export function initFilmPlayers(root: ParentNode = document) {
 			const v = Number(volEl.value) / 100;
 			a.volume(v);
 			a.muted(v === 0);
+			// reaching for the slider is understanding the hint
+			muteBtn?.classList.remove(MUTE_HINT);
 			paint();
 		});
 

@@ -11,6 +11,8 @@
 //   · Autoplay parks the moment a pointer is over the stage, and the
 //     progress ring parks with it, so you are never clicking a moving
 //     target.
+import { FILM_DELAY } from './filmAutoplay';
+
 export function initBoardroomHero() {
 	const stage = document.querySelector<HTMLElement>('[data-bh]');
 	if (!stage) return;
@@ -39,16 +41,22 @@ export function initBoardroomHero() {
 	// visitor who never reaches frame three never downloads it.
 	const film = (el: HTMLElement) => el.querySelector<HTMLVideoElement>('video[data-bh-film]');
 
+	// the same beat every other film on the site waits before it speaks up
+	let filmTimer = 0;
 	const playFilm = (el: HTMLElement) => {
 		const v = film(el);
 		if (!v || reduce || lite()) return;
-		const src = v.dataset.src;
-		if (src && !v.src) v.src = src;
-		v.play().catch(() => {
-			/* a browser that refuses autoplay just shows the poster */
-		});
+		window.clearTimeout(filmTimer);
+		filmTimer = window.setTimeout(() => {
+			const src = v.dataset.src;
+			if (src && !v.src) v.src = src;
+			v.play().catch(() => {
+				/* a browser that refuses autoplay just shows the poster */
+			});
+		}, FILM_DELAY);
 	};
 	const stopFilm = (el: HTMLElement) => {
+		window.clearTimeout(filmTimer);
 		const v = film(el);
 		if (v && !v.paused) v.pause();
 	};

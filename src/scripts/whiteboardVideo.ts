@@ -6,6 +6,7 @@
 // so YouTube never gets the chance to paper the screen with other
 // people's videos — our own end card is already covering it.
 
+import { hintUnmute } from './filmAutoplay';
 interface YTPlayer {
 	playVideo(): void;
 	pauseVideo(): void;
@@ -249,7 +250,10 @@ function setupBoard(root: HTMLElement) {
 	// The board rolls itself a few seconds after it comes into view, and
 	// says so while it waits: a ticking number and a button that will not
 	// sit still. Anyone who would rather not wait just presses it.
-	const AUTO_SECONDS = 4;
+	// This one shows its wait on a dial rather than hiding it, so it counts
+	// in whole seconds: two is the closest it can read to the beat and a
+	// half every other film on the site waits.
+	const AUTO_SECONDS = 2;
 	let countTimer = 0;
 	let counting = false;
 
@@ -276,6 +280,8 @@ function setupBoard(root: HTMLElement) {
 			if (left <= 0) {
 				stopCountdown();
 				void start();
+				// it started itself, and it started silent
+				hintUnmute(muteBtn);
 			}
 		}, 1000);
 	};
