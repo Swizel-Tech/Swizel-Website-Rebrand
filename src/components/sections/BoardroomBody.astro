@@ -3,6 +3,7 @@
 // scrolling sectors + client logos, rotating client words, cinematic CTA.
 import { Icon } from 'astro-icon/components';
 import { projects } from '../../data/projects';
+import FilmPlayer from '../FilmPlayer.astro';
 
 const numbers = [
 	{ to: 65, suffix: '+', label: 'Products shipped' },
@@ -41,6 +42,48 @@ const disciplines = [
 		desc: 'Improving existing products and keeping complex systems healthy, year after year.',
 		tag: 'support · DevOps · uptime',
 		span: 'bd-w5',
+	},
+];
+
+// The four claims, as tiles. Each carries its own picture, a label and a
+// way in — the row of cards that sits under a cover on Apple TV, not four
+// boxes of body copy.
+const businessTiles = [
+	{
+		kicker: 'Delivery',
+		title: 'On time. On budget.',
+		line: '98% on-time across 65+ launches.',
+		cta: 'Plan your launch',
+		href: '/contact',
+		img: '/images/builder/the-table.jpg',
+		pos: '50% 40%',
+	},
+	{
+		kicker: 'Uptime',
+		title: 'Runs while you sleep.',
+		line: '99.9%, watched around the clock.',
+		cta: 'About maintenance',
+		href: '/services',
+		img: '/images/builder/at-the-keys.jpg',
+		pos: '50% 45%',
+	},
+	{
+		kicker: 'One team',
+		title: 'Every discipline.',
+		line: 'One contract, one team to call.',
+		cta: 'Meet the leadership',
+		href: '/about',
+		img: '/images/hero-team.jpg',
+		pos: '50% 26%',
+	},
+	{
+		kicker: 'Security',
+		title: 'Your data, guarded.',
+		line: 'Security-first builds and clean audits.',
+		cta: 'Ask about security',
+		href: '/contact',
+		img: '/images/builder/studio-grid.jpg',
+		pos: '50% 46%',
 	},
 ];
 
@@ -141,117 +184,76 @@ const logos = [
 ---
 
 <div class="bdbody view-body view-body-boardroom">
-	<!-- Opening statement -->
-	<section class="bd-intro bd-reveal" data-cursor="chart">
-		<span class="bd-kicker">Swizel for business</span>
-		<h2 class="bd-display">Software that pays for itself.</h2>
-		<p class="bd-sub">
-			We design, build and run the systems that grow revenue, cut cost
-			and keep your customers coming back.
-		</p>
-		<div class="bd-links">
-			<a href="/contact" class="bd-pill">Start a project</a>
-			<a href="#bd-work" class="bd-link">
-				See the proof
-				<Icon width={15} name="mdi:chevron-down" />
-			</a>
+	<!-- ═══ Swizel for business ═══════════════════════════════════════
+	     Built to the reference: a cover that fills its frame with the
+	     film and carries its own line and pill, and a row of cards
+	     beneath it that you can push through — the way Apple TV sets a
+	     feature above its shelf. No boxed mosaic, no body copy standing
+	     in for pictures.
+	     ══════════════════════════════════════════════════════════════ -->
+	<section class="bd-biz" id="bd-business" data-cursor="chart">
+		<!-- ── the cover ── -->
+		<article class="bd-cover bd-reveal">
+			<FilmPlayer
+				videoId="nFbBpQvT5fQ"
+				label="Swizel for business — what the work is worth"
+				fallback="/images/builder/over-the-shoulder.jpg"
+				cover
+				class="bd-cover-film"
+			/>
+			<span class="bd-cover-veil" aria-hidden="true" />
+			<div class="bd-cover-plate">
+				<span class="bd-cover-kick">Swizel for business</span>
+				<h2 class="bd-cover-h">Software that pays for itself.</h2>
+				<a href="/contact" class="bd-cover-pill">Start a project</a>
+			</div>
+		</article>
+
+		<!-- ── the shelf ── -->
+		<div class="bd-shelf-wrap">
+			<ul class="bd-shelf" data-bd-shelf>
+				{
+					businessTiles.map((t, i) => (
+						<li class="bd-card" data-bd-card={i}>
+							<a class="bd-card-link" href={t.href}>
+								<img
+									class="bd-card-img"
+									src={t.img}
+									alt=""
+									style={`object-position:${t.pos}`}
+									loading="lazy"
+									decoding="async"
+								/>
+								<span class="bd-card-veil" aria-hidden="true" />
+								<span class="bd-card-kick">{t.kicker}</span>
+								<span class="bd-card-body">
+									<span class="bd-card-txt">
+										<strong>{t.title}</strong>
+										<em>{t.line}</em>
+									</span>
+									<span class="bd-card-pill">{t.cta}</span>
+								</span>
+							</a>
+						</li>
+					))
+				}
+			</ul>
+			<div class="bd-shelf-dots" role="tablist" aria-label="Choose a card">
+				{
+					businessTiles.map((t, i) => (
+						<button
+							class:list={['bd-shelf-dot', { 'is-on': i === 0 }]}
+							type="button"
+							role="tab"
+							data-bd-dot={i}
+							aria-selected={i === 0}
+							aria-label={t.title}
+						/>
+					))
+				}
+			</div>
 		</div>
 	</section>
-
-	<!-- Cinematic stage — your film, full width -->
-	<div class="bd-grid">
-		<section class="bd-tile bd-tile--full bd-tile--stage bd-reveal" data-cursor="play">
-			<div class="bd-media bd-media--wide">
-				<span class="bd-media-sheen" aria-hidden="true"></span>
-				<Icon width={34} name="mdi:play-circle-outline" />
-				<span class="bd-media-label">Video placeholder</span>
-				<span class="bd-media-sub">Boardroom cut — your film lands here</span>
-			</div>
-		</section>
-	</div>
-
-	<!-- Asymmetric mosaic -->
-	<div class="bd-mosaic">
-		<section class="bd-tile bd-tile--row bd-w7 bd-reveal" data-cursor="clock">
-			<div class="bd-tile-copy">
-				<h3 class="bd-h">On time. On budget.</h3>
-				<p class="bd-p">
-					98% on-time delivery across 65+ launches. You always know
-					what ships next, and when.
-				</p>
-				<a href="/contact" class="bd-link">
-					Plan your launch
-					<Icon width={15} name="mdi:chevron-right" />
-				</a>
-			</div>
-			<div class="bd-media bd-media--tall">
-				<span class="bd-media-sheen" aria-hidden="true"></span>
-				<Icon width={26} name="mdi:image-outline" />
-				<span class="bd-media-label">Image placeholder</span>
-				<span class="bd-media-sub">Delivery dashboard</span>
-			</div>
-		</section>
-
-		<section class="bd-tile bd-w5 bd-reveal" data-cursor="pulse">
-			<div class="bd-tile-copy">
-				<h3 class="bd-h">Runs while you sleep.</h3>
-				<p class="bd-p">
-					99.9% uptime, monitored around the clock, with same-day
-					response when it matters.
-				</p>
-				<a href="/services" class="bd-link">
-					About maintenance
-					<Icon width={15} name="mdi:chevron-right" />
-				</a>
-			</div>
-			<div class="bd-media">
-				<span class="bd-media-sheen" aria-hidden="true"></span>
-				<Icon width={26} name="mdi:image-outline" />
-				<span class="bd-media-label">Image placeholder</span>
-				<span class="bd-media-sub">Uptime monitor</span>
-			</div>
-		</section>
-
-		<section class="bd-tile bd-w5 bd-reveal" data-cursor="layers">
-			<div class="bd-tile-copy">
-				<h3 class="bd-h">One partner. Every discipline.</h3>
-				<p class="bd-p">
-					Strategy, design, engineering, marketing and maintenance —
-					one contract, one team to call.
-				</p>
-				<a href="/about" class="bd-link">
-					Meet the leadership
-					<Icon width={15} name="mdi:chevron-right" />
-				</a>
-			</div>
-			<div class="bd-media">
-				<span class="bd-media-sheen" aria-hidden="true"></span>
-				<Icon width={26} name="mdi:image-outline" />
-				<span class="bd-media-label">Image placeholder</span>
-				<span class="bd-media-sub">The team, at work</span>
-			</div>
-		</section>
-
-		<section class="bd-tile bd-tile--row bd-tile--row-rev bd-w7 bd-reveal" data-cursor="shield">
-			<div class="bd-tile-copy">
-				<h3 class="bd-h">Your data, guarded.</h3>
-				<p class="bd-p">
-					Security-first builds, automated backups and clean audits, so
-					the board never has to ask twice.
-				</p>
-				<a href="/contact" class="bd-link">
-					Ask about security
-					<Icon width={15} name="mdi:chevron-right" />
-				</a>
-			</div>
-			<div class="bd-media bd-media--tall">
-				<span class="bd-media-sheen" aria-hidden="true"></span>
-				<Icon width={26} name="mdi:image-outline" />
-				<span class="bd-media-label">Image placeholder</span>
-				<span class="bd-media-sub">Security visual</span>
-			</div>
-		</section>
-	</div>
 
 	<!-- What we do — the four disciplines -->
 	<section class="bd-head bd-reveal" id="bd-services">
@@ -1429,5 +1431,290 @@ const logos = [
 		.bd-tile:hover {
 			transform: none;
 		}
+	}
+
+	/* ═══ Swizel for business ══════════════════════════════════════════
+	   Built like the front page of a streaming service: a cover that is
+	   all picture and carries its own line and its own way in, then a
+	   shelf of cards below that you push through. Nothing is boxed,
+	   nothing is centred, and no paragraph stands in for a photograph —
+	   which is exactly what made the old mosaic feel cramped.
+	   ══════════════════════════════════════════════════════════════════ */
+	.bd-biz {
+		--biz-gutter: clamp(1rem, 4vw, 2.5rem);
+		max-width: 92rem;
+		margin: 0 auto clamp(3rem, 8vw, 6rem);
+		padding-inline: var(--biz-gutter);
+	}
+
+	/* ── the cover ────────────────────────────────────────────────────── */
+	.bd-cover {
+		position: relative;
+		margin: 0;
+		border-radius: clamp(1rem, 2vw, 1.7rem);
+		overflow: hidden;
+		background: #04060c;
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.12),
+			var(--bd-shadow);
+	}
+	/* the player keeps its own seven layers to itself, so the veil and the
+	   words can sit cleanly on top of all of them */
+	.bd-cover-film :global(.flm) {
+		isolation: isolate;
+		border-radius: inherit;
+	}
+	.bd-cover-veil {
+		position: absolute;
+		inset: 34% 0 0;
+		z-index: 2;
+		pointer-events: none;
+		background: linear-gradient(
+			to top,
+			rgba(3, 5, 11, 0.9) 0%,
+			rgba(3, 5, 11, 0.62) 34%,
+			rgba(3, 5, 11, 0.18) 68%,
+			transparent 100%
+		);
+	}
+	.bd-cover-plate {
+		position: absolute;
+		z-index: 3;
+		left: clamp(1.2rem, 3.4vw, 3.2rem);
+		right: clamp(1.2rem, 3.4vw, 3.2rem);
+		/* clear of the player's control row, which starts 67px off the floor
+		   of the frame — the 41px above it is only the bar's own gradient,
+		   which the words may sit over. Measured, not guessed. */
+		bottom: clamp(4.8rem, 6vw, 6.4rem);
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: clamp(0.55rem, 1.2vw, 0.9rem);
+		pointer-events: none;
+	}
+	/* the pill: the only thing on the cover you can press */
+	.bd-cover-pill {
+		pointer-events: auto;
+		display: inline-flex;
+		align-items: center;
+		min-height: 2.6rem;
+		padding: 0 1.45rem;
+		border-radius: 999px;
+		/* white, not the accent: this pill has to stay legible over whatever
+		   frame the film happens to be showing behind it */
+		background: #fff;
+		color: #06080f;
+		font-size: 0.92rem;
+		font-weight: 650;
+		letter-spacing: -0.005em;
+		white-space: nowrap;
+		transition: transform 0.25s ease, filter 0.25s ease;
+	}
+	.bd-cover-pill:hover { transform: translateY(-2px); filter: brightness(1.08); }
+	.bd-cover-plate .bd-cover-pill { margin-top: clamp(0.4rem, 1vw, 0.75rem); }
+	.bd-cover-kick {
+		font-size: 0.66rem;
+		font-weight: 800;
+		letter-spacing: 0.24em;
+		text-transform: uppercase;
+		color: rgba(255, 255, 255, 0.72);
+	}
+	.bd-cover-h {
+		margin: 0;
+		max-width: 22ch;
+		color: #fff;
+		font-size: clamp(1.6rem, 3.1vw, 2.9rem);
+		font-weight: 800;
+		line-height: 1.04;
+		letter-spacing: -0.035em;
+		text-wrap: balance;
+		text-shadow: 0 2px 24px rgba(0, 0, 0, 0.62);
+	}
+
+	/* ── the shelf ────────────────────────────────────────────────────── */
+	.bd-shelf-wrap { margin-top: clamp(0.9rem, 2.2vw, 1.6rem); }
+	.bd-shelf {
+		display: flex;
+		gap: clamp(0.6rem, 1.4vw, 1.1rem);
+		list-style: none;
+		margin: 0;
+		/* the row bleeds past the gutter so the last card runs off the edge
+		   and the shelf reads as longer than the screen */
+		padding: 0 var(--biz-gutter) 0 0;
+		margin-inline: 0 calc(-1 * var(--biz-gutter));
+		overflow-x: auto;
+		overscroll-behavior-x: contain;
+		scroll-snap-type: x mandatory;
+		scrollbar-width: none;
+	}
+	.bd-shelf::-webkit-scrollbar { display: none; }
+	.bd-card {
+		flex: 0 0 min(26rem, 31vw);
+		scroll-snap-align: start;
+	}
+	.bd-card-link {
+		position: relative;
+		display: block;
+		aspect-ratio: 4 / 3;
+		border-radius: clamp(0.8rem, 1.4vw, 1.2rem);
+		overflow: hidden;
+		background: #04060c;
+		border: 1px solid var(--bd-glass-border);
+		text-decoration: none;
+	}
+	.bd-card-img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.bd-card-link:hover .bd-card-img { transform: scale(1.05); }
+	.bd-card-veil {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(
+			to top,
+			rgba(3, 5, 11, 0.9) 0%,
+			rgba(3, 5, 11, 0.55) 40%,
+			rgba(3, 5, 11, 0.1) 74%,
+			rgba(3, 5, 11, 0.32) 100%
+		);
+	}
+	.bd-card-kick {
+		position: absolute;
+		top: clamp(0.9rem, 1.6vw, 1.2rem);
+		left: clamp(1rem, 1.8vw, 1.35rem);
+		font-size: 0.62rem;
+		font-weight: 800;
+		letter-spacing: 0.22em;
+		text-transform: uppercase;
+		color: rgba(255, 255, 255, 0.78);
+	}
+	.bd-card-body {
+		position: absolute;
+		inset: auto clamp(1rem, 1.8vw, 1.35rem) clamp(1rem, 1.8vw, 1.35rem);
+		display: flex;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: 0.9rem;
+	}
+	.bd-card-txt { display: block; min-width: 0; }
+	.bd-card-txt strong {
+		display: block;
+		color: #fff;
+		font-size: clamp(1.02rem, 1.3vw, 1.18rem);
+		font-weight: 700;
+		letter-spacing: -0.015em;
+		line-height: 1.22;
+		text-shadow: 0 1px 14px rgba(0, 0, 0, 0.6);
+	}
+	.bd-card-txt em {
+		display: block;
+		margin-top: 0.3rem;
+		font-style: normal;
+		font-size: 0.8rem;
+		line-height: 1.45;
+		color: rgba(255, 255, 255, 0.7);
+	}
+	.bd-card-pill {
+		flex: none;
+		display: inline-flex;
+		align-items: center;
+		min-height: 2.05rem;
+		padding: 0 0.95rem;
+		border-radius: 999px;
+		border: 1px solid rgba(255, 255, 255, 0.28);
+		background: rgba(255, 255, 255, 0.12);
+		color: #fff;
+		font-size: 0.76rem;
+		font-weight: 600;
+		white-space: nowrap;
+		transition: background 0.25s ease, border-color 0.25s ease;
+	}
+	.bd-card-link:hover .bd-card-pill {
+		background: var(--bd-accent);
+		border-color: var(--bd-accent);
+		color: #04060c;
+	}
+
+	/* ── the pager ── */
+	.bd-shelf-dots {
+		display: flex;
+		justify-content: center;
+		gap: 0.55rem;
+		margin-top: clamp(1.1rem, 2.4vw, 1.7rem);
+	}
+	.bd-shelf-dots[hidden] { display: none; }
+	.bd-shelf-dot {
+		width: 7px;
+		height: 7px;
+		padding: 0;
+		border: 0;
+		border-radius: 50%;
+		background: var(--bd-glass-border);
+		cursor: pointer;
+		transition: background 0.25s ease, transform 0.25s ease;
+	}
+	.bd-shelf-dot:hover { background: var(--bd-muted); }
+	.bd-shelf-dot.is-on {
+		background: var(--bd-accent);
+		transform: scale(1.25);
+	}
+
+	@media (max-width: 1100px) {
+		.bd-card { flex: 0 0 min(23rem, 62vw); }
+		/* below this the card is too narrow to carry its line and its pill
+		   on the same row without the title breaking, so they stack */
+		.bd-card-body {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 0.7rem;
+		}
+	}
+	@media (max-width: 700px) {
+		/* On a phone a 16/9 cover is too shallow to hold a headline above
+		   the player's own bar, so the words step out from under the
+		   picture and stand on their own. */
+		.bd-cover { background: transparent; box-shadow: none; overflow: visible; }
+		.bd-cover-film :global(.flm) {
+			border-radius: clamp(0.8rem, 3vw, 1.1rem);
+			box-shadow: var(--bd-shadow);
+		}
+		.bd-cover-veil { display: none; }
+		.bd-cover-plate {
+			position: static;
+			inset: auto;
+			margin-top: clamp(1.1rem, 4vw, 1.5rem);
+			gap: 1rem;
+		}
+		.bd-cover-kick { color: var(--bd-accent); }
+		/* off the picture the pill has the page behind it, and a white pill
+		   on a white page is no pill at all */
+		.bd-cover-pill {
+			background: var(--bd-accent);
+			color: #04101a;
+		}
+		.bd-cover-h {
+			max-width: none;
+			color: var(--bd-ink);
+			text-shadow: none;
+		}
+		/* a phone card is square, and its words stack: side by side the
+		   title wraps to two lines and the pill sits on top of it */
+		.bd-card { flex: 0 0 78vw; }
+		.bd-card-link { aspect-ratio: 1 / 1; }
+		.bd-card-body {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 0.75rem;
+		}
+		.bd-card-txt em { font-size: 0.82rem; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.bd-card-img,
+		.bd-card-link:hover .bd-card-img,
+		.bd-cover-pill:hover { transition: none; transform: none; }
 	}
 </style>
