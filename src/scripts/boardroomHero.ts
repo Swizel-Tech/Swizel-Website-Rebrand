@@ -1,17 +1,29 @@
-// Boardroom hero — the cinematic stage.
+// Boardroom hero — the film behind the words, and the two small things
+// that sit on top of it.
 //
-// One full-bleed frame at a time, the way Apple TV+ runs its cover: the
-// media fills the screen, a short line sits over it, and the reel moves
-// on by itself until you touch it.
+// The backdrop is a single YouTube film mounted through the IFrame API
+// rather than as a bare autoplay iframe, because the transport on the
+// floor of the cover has to actually drive it: back ten, play, on ten,
+// sound. A raw iframe can only be started, never steered.
 //
-// Two lessons from the world rail are built in from the start:
-//   · A poster never leaves the hit test on pointerdown. Nothing here
-//     changes pointer-events at all, so a press can never be retargeted
-//     onto the layer behind it.
-//   · Autoplay parks the moment a pointer is over the stage, and the
-//     progress ring parks with it, so you are never clicking a moving
-//     target.
-import { FILM_DELAY } from './filmAutoplay';
+// It starts muted, like every film on the site, and the sound control
+// breathes until it has been understood — the same beat and the same hint
+// the rest of the site uses.
+import { loadApi } from './whiteboardVideo';
+import { FILM_DELAY, hintUnmute } from './filmAutoplay';
+
+interface Film {
+	playVideo(): void;
+	pauseVideo(): void;
+	seekTo(seconds: number, allowSeekAhead: boolean): void;
+	getCurrentTime(): number;
+	getDuration(): number;
+	getPlayerState(): number;
+	mute(): void;
+	unMute(): void;
+	isMuted(): boolean;
+	destroy(): void;
+}
 
 export function initBoardroomHero() {
 	const stage = document.querySelector<HTMLElement>('[data-bh]');
@@ -19,224 +31,220 @@ export function initBoardroomHero() {
 	if (stage.dataset.bhReady === '1') return;
 	stage.dataset.bhReady = '1';
 
-	const slides = Array.from(stage.querySelectorAll<HTMLElement>('[data-bh-slide]'));
-	const dots = Array.from(stage.querySelectorAll<HTMLButtonElement>('[data-bh-dot]'));
-	const prev = stage.querySelector<HTMLButtonElement>('[data-bh-prev]');
-	const next = stage.querySelector<HTMLButtonElement>('[data-bh-next]');
-	const toggle = stage.querySelector<HTMLButtonElement>('[data-bh-toggle]');
-	if (slides.length < 2) return;
+	const host = stage.querySelector<HTMLElement>('[data-bh-yt]');
+	const backBtn = stage.querySelector<HTMLButtonElement>('[data-bh-back]');
+	const playBtn = stage.querySelector<HTMLButtonElement>('[data-bh-play]');
+	const fwdBtn = stage.querySelector<HTMLButtonElement>('[data-bh-fwd]');
+	const muteBtn = stage.querySelector<HTMLButtonElement>('[data-bh-mute]');
+	const transport = stage.querySelector<HTMLElement>('[data-bh-transport]');
 
 	const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-	const lite = () => document.documentElement.classList.contains('perf-lite');
 
-	const HOLD = 5200; // how long a frame stays up
-	let at = 0;
-	let timer = 0;
-	let started = 0;
-	let paused = reduce;
-	let hovering = false;
-
-	// ── the film on a slide, if it has one ──────────────────────────────
-	// The source is only attached when the slide first comes up, so a
-	// visitor who never reaches frame three never downloads it.
-	const film = (el: HTMLElement) => el.querySelector<HTMLVideoElement>('video[data-bh-film]');
-
-	// the same beat every other film on the site waits before it speaks up
-	let filmTimer = 0;
-	// ── a YouTube backdrop ──────────────────────────────────────────────
-	// Mounted the first time its frame comes up and not one moment before,
-	// so a visitor who never reaches it never loads it. Muted and looping,
-	// with YouTube's own chrome off and the frame itself out of the hit
-	// test — it is scenery, not a player.
-	const mountYt = (el: HTMLElement) => {
-		const box = el.querySelector<HTMLElement>('[data-bh-yt]');
-		// Only a stated preference for less motion stops this. It used to
-		// stand down on `perf-lite` too, which is set on any machine with
-		// four cores or less — so on a good number of laptops the film
-		// simply never appeared.
-		if (!box || reduce) return;
-		const id = box.dataset.bhYt;
-		if (!id) return;
-		if (!box.querySelector('iframe')) {
-			const f = document.createElement('iframe');
-			f.src =
-				`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=1&loop=1` +
-				`&playlist=${id}&controls=0&modestbranding=1&playsinline=1&rel=0` +
-				`&iv_load_policy=3&disablekb=1&fs=0&showinfo=0`;
-			f.allow = 'autoplay; encrypted-media';
-			f.setAttribute('tabindex', '-1');
-			f.setAttribute('aria-hidden', 'true');
-			f.title = 'Background film';
-			box.appendChild(f);
-		}
-		// a beat to let it start before it is faded up, so the cut from the
-		// still is never a black flash
-		window.setTimeout(() => box.classList.add('is-live'), 900);
-	};
-	const stopYt = (el: HTMLElement) => {
-		el.querySelector<HTMLElement>('[data-bh-yt]')?.classList.remove('is-live');
-	};
-
-	const playFilm = (el: HTMLElement) => {
-		const v = film(el);
-		if (!v || reduce || lite()) return;
-		window.clearTimeout(filmTimer);
-		filmTimer = window.setTimeout(() => {
-			const src = v.dataset.src;
-			if (src && !v.src) v.src = src;
-			v.play().catch(() => {
-				/* a browser that refuses autoplay just shows the poster */
-			});
-		}, FILM_DELAY);
-	};
-	const stopFilm = (el: HTMLElement) => {
-		window.clearTimeout(filmTimer);
-		const v = film(el);
-		if (v && !v.paused) v.pause();
-	};
+	let film: Film | null = null;
+	// what the visitor asked for, kept apart from whatever YouTube reports:
+	// a play() issued while the iframe is warming can land after a pause()
+	// pressed a moment later, and the film carries on as if the button did
+	// nothing. This is the instruction; onStateChange re-asserts it.
+	let want = false;
+	let muted = true;
 
 	const paint = () => {
-		slides.forEach((s, i) => {
-			const on = i === at;
-			s.classList.toggle('is-on', on);
-			s.setAttribute('aria-hidden', String(!on));
-			// keep the frame out of the tab order while it is off screen
-			s.querySelectorAll<HTMLElement>('a, button').forEach((el) => {
-				if (on) el.removeAttribute('tabindex');
-				else el.setAttribute('tabindex', '-1');
-			});
-			if (on) {
-				playFilm(s);
-				mountYt(s);
-			} else {
-				stopFilm(s);
-				stopYt(s);
-			}
-		});
-		dots.forEach((d, i) => {
-			d.classList.toggle('is-on', i === at);
-			d.setAttribute('aria-selected', String(i === at));
-		});
+		stage.classList.toggle('is-filmplaying', !!film && film.getPlayerState() === 1);
+		stage.classList.toggle('is-filmmuted', muted);
+		playBtn?.setAttribute('aria-label', want ? 'Pause the film' : 'Play the film');
+		muteBtn?.setAttribute('aria-pressed', String(muted));
+		muteBtn?.setAttribute('aria-label', muted ? 'Unmute the film' : 'Mute the film');
 	};
 
-	const restart = () => {
-		started = performance.now();
-		stage.style.setProperty('--bh-p', '0');
+	// ── the backdrop ────────────────────────────────────────────────────
+	const mount = async () => {
+		if (!host || film) return;
+		const id = host.dataset.bhYt;
+		if (!id) return;
+		const YT = await loadApi().catch(() => null);
+		if (!YT?.Player) return;
+		const seat = document.createElement('div');
+		host.appendChild(seat);
+		film = new YT.Player(seat, {
+			videoId: id,
+			playerVars: {
+				autoplay: 1,
+				mute: 1,
+				loop: 1,
+				playlist: id, // the only way a single video loops
+				controls: 0,
+				modestbranding: 1,
+				rel: 0,
+				playsinline: 1,
+				iv_load_policy: 3,
+				disablekb: 1,
+				fs: 0,
+				showinfo: 0,
+			},
+			events: {
+				onReady: () => {
+					film?.mute();
+					muted = true;
+					want = true;
+					film?.playVideo();
+					// let it get going before it is faded up, so the cut from
+					// the still is never a black flash
+					window.setTimeout(() => host.classList.add('is-live'), 700);
+					// it is playing, and it is silent: say so, the same way
+					// every other player on the site does
+					if (muteBtn) hintUnmute(muteBtn);
+					paint();
+				},
+				onStateChange: (e: { data: number }) => {
+					// 1 is PLAYING. Running without being asked means a queued
+					// call landed late — the last instruction wins.
+					if (e?.data === 1 && !want) film?.pauseVideo();
+					paint();
+				},
+			},
+		}) as unknown as Film;
 	};
 
-	const go = (i: number) => {
-		at = ((i % slides.length) + slides.length) % slides.length;
-		paint();
-		restart();
-	};
-	const step = (d: number) => go(at + d);
+	// nothing loads until the cover is actually on screen, and it waits the
+	// same beat every film on the site waits
+	if (!reduce && 'IntersectionObserver' in window) {
+		let timer = 0;
+		const io = new IntersectionObserver(
+			(entries) => {
+				const en = entries[0];
+				if (!en) return;
+				if (en.isIntersecting) {
+					if (!timer) timer = window.setTimeout(() => { io.disconnect(); void mount(); }, FILM_DELAY);
+				} else if (timer) {
+					window.clearTimeout(timer);
+					timer = 0;
+				}
+			},
+			{ threshold: 0.2 }
+		);
+		io.observe(stage);
+	}
 
-	// ── the clock ───────────────────────────────────────────────────────
-	// One rAF drives both the advance and the ring, so they can never
-	// disagree about how much of the frame is left.
-	const frame = (now: number) => {
-		timer = requestAnimationFrame(frame);
-		if (paused || hovering) {
-			// hold the ring where it is rather than letting it race on
-			started = now - (Number(stage.style.getPropertyValue('--bh-p') || 0) * HOLD);
-			return;
+	// ── the transport ───────────────────────────────────────────────────
+	const seek = (by: number) => {
+		if (!film) return;
+		const d = film.getDuration() || 0;
+		let to = film.getCurrentTime() + by;
+		if (to < 0) to = 0;
+		if (d > 0 && to > d) to = d;
+		film.seekTo(to, true);
+	};
+	backBtn?.addEventListener('click', () => seek(-10));
+	fwdBtn?.addEventListener('click', () => seek(10));
+	playBtn?.addEventListener('click', () => {
+		if (!film) return;
+		if (film.getPlayerState() === 1) {
+			want = false;
+			film.pauseVideo();
+		} else {
+			want = true;
+			film.playVideo();
 		}
-		const p = Math.min(1, (now - started) / HOLD);
-		stage.style.setProperty('--bh-p', String(p));
-		if (p >= 1) step(1);
-	};
-
-	const play = () => {
-		if (timer) return;
-		started = performance.now();
-		timer = requestAnimationFrame(frame);
-	};
-	const stop = () => {
-		if (!timer) return;
-		cancelAnimationFrame(timer);
-		timer = 0;
-	};
-
-	// ── controls ────────────────────────────────────────────────────────
-	prev?.addEventListener('click', () => step(-1));
-	next?.addEventListener('click', () => step(1));
-	dots.forEach((d, i) => d.addEventListener('click', () => go(i)));
-
-	toggle?.addEventListener('click', () => {
-		paused = !paused;
-		toggle.setAttribute('aria-pressed', String(paused));
-		toggle.setAttribute('aria-label', paused ? 'Play the reel' : 'Pause the reel');
-		stage.classList.toggle('is-paused', paused);
-		if (!paused) restart();
+		paint();
+	});
+	muteBtn?.addEventListener('click', () => {
+		if (!film) return;
+		muted = !muted;
+		muted ? film.mute() : film.unMute();
+		paint();
 	});
 
-	// a pointer over the stage parks the reel; taking it away lets it run
-	stage.addEventListener('pointerenter', () => { hovering = true; });
-	stage.addEventListener('pointerleave', () => { hovering = false; });
-	stage.addEventListener('focusin', () => { hovering = true; });
-	stage.addEventListener('focusout', () => { hovering = false; });
-
-	// arrow keys, once the reel has focus
-	stage.addEventListener('keydown', (e) => {
-		if (e.key === 'ArrowRight') { e.preventDefault(); step(1); }
-		if (e.key === 'ArrowLeft') { e.preventDefault(); step(-1); }
-	});
-
-	// swipe, on a touch screen
-	let sx = 0;
-	let sy = 0;
-	let swiping = false;
-	stage.addEventListener('touchstart', (e) => {
-		const t = e.touches[0];
-		if (!t) return;
-		sx = t.clientX;
-		sy = t.clientY;
-		swiping = true;
-	}, { passive: true });
-	stage.addEventListener('touchend', (e) => {
-		if (!swiping) return;
-		swiping = false;
-		const t = e.changedTouches[0];
-		if (!t) return;
-		const dx = t.clientX - sx;
-		const dy = t.clientY - sy;
-		// only a decisively horizontal flick counts, or scrolling the page
-		// past the hero would keep changing the frame under the reader
-		if (Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy) * 1.6) step(dx < 0 ? 1 : -1);
-	}, { passive: true });
-
-	// nothing runs while the hero is off screen or the tab is in the back
-	const io = new IntersectionObserver(
-		(entries) => entries.forEach((e) => (e.isIntersecting ? play() : stop())),
-		{ threshold: 0.15 }
-	);
-	io.observe(stage);
+	// the film has no business running while nobody is looking at it
+	if ('IntersectionObserver' in window) {
+		new IntersectionObserver(
+			(entries) => {
+				const en = entries[0];
+				if (!en || !film) return;
+				if (!en.isIntersecting && film.getPlayerState() === 1) {
+					want = false;
+					film.pauseVideo();
+					paint();
+				}
+			},
+			{ threshold: 0.15 }
+		).observe(stage);
+	}
 	document.addEventListener('visibilitychange', () => {
-		if (document.hidden) stop();
-		else play();
+		if (document.hidden && film && film.getPlayerState() === 1) {
+			want = false;
+			film.pauseVideo();
+			paint();
+		}
 	});
 
 	rotator();
+	placeDrop();
 	paint();
-	if (reduce) {
-		stage.classList.add('is-paused');
-		toggle?.setAttribute('aria-pressed', 'true');
+	if (transport) transport.dataset.ready = '1';
+
+	// ── the drop ────────────────────────────────────────────────────────
+	// It hangs directly under the bar's right-hand control — Contact on a
+	// desktop, the hamburger on a phone — and there is no honest way to
+	// work out where that is from CSS: the bar is a percentage pad inside a
+	// centred container. So it is measured, and re-measured when the window
+	// changes.
+	function placeDrop() {
+		const drop = stage!.querySelector<HTMLElement>('[data-bh-drop]');
+		if (!drop) return;
+		const header = document.querySelector<HTMLElement>('.site-header');
+		if (!header) return;
+
+		const anchor = () => {
+			const seen = (el: Element | null) => !!el && !!(el as HTMLElement).offsetParent;
+			const cta = header.querySelector<HTMLElement>('.nav-cta');
+			if (seen(cta)) return cta;
+			const burger = header.querySelector<HTMLElement>('#toggler-show');
+			if (seen(burger)) return burger;
+			return null;
+		};
+
+		const put = () => {
+			const a = anchor();
+			if (!a) { drop.classList.remove('is-ready'); return; }
+			const r = a.getBoundingClientRect();
+			const w = drop.offsetWidth || 38;
+			drop.style.left = `${Math.round(r.left + r.width / 2 - w / 2)}px`;
+			drop.style.top = `${Math.round(r.bottom + 14)}px`;
+			drop.classList.add('is-ready');
+		};
+
+		put();
+		window.setTimeout(put, 400); // after webfonts settle the bar's height
+		let rt = 0;
+		window.addEventListener('resize', () => {
+			window.clearTimeout(rt);
+			rt = window.setTimeout(put, 120);
+		});
+		// it belongs to the cover: once the cover is gone, so is it
+		if ('IntersectionObserver' in window) {
+			new IntersectionObserver(
+				(entries) => {
+					const en = entries[0];
+					if (!en) return;
+					drop.classList.toggle('is-gone', !en.isIntersecting);
+					if (en.isIntersecting) put();
+				},
+				{ threshold: 0.1 }
+			).observe(stage!);
+		}
 	}
 
-	// ── the verb on the first frame ─────────────────────────────────────
+	// ── the verb on the headline ────────────────────────────────────────
 	// The window has to be as wide as the word inside it, not as wide as
-	// the longest word in the list: fixed to the widest, "ship" left a
-	// hole before "it." that you could park a car in. So the width is
-	// animated along with the scroll, and the sentence closes up behind
-	// each verb.
+	// the longest word in the list: fixed to the widest, "ship" left a hole
+	// before the next word you could park a car in. So the width is
+	// animated along with the scroll.
 	function rotator() {
-		const rot = stage.querySelector<HTMLElement>('.hero--rot');
+		const rot = stage!.querySelector<HTMLElement>('.hero--rot');
 		const track = rot?.querySelector<HTMLElement>('.hero--rot-track');
 		if (!rot || !track) return;
 		const words = Array.from(track.querySelectorAll<HTMLElement>('i'));
 		if (words.length < 3) return;
-		// the last word is a copy of the first, so the loop can run off the
-		// end and be snapped back while nothing is moving
 		const last = words.length - 1;
 		let w = 0;
 
@@ -250,7 +258,6 @@ export function initBoardroomHero() {
 			rot.style.width = `${widths[i]}px`;
 			track.style.transform = `translateY(${-i * stepH()}px)`;
 			if (!animate) {
-				// force the frame so the snap is never seen
 				void track.offsetHeight;
 				track.style.transition = '';
 				rot.style.transition = '';
@@ -264,12 +271,10 @@ export function initBoardroomHero() {
 			w += 1;
 			show(w);
 			if (w === last) {
-				// landed on the copy: step back to the original silently
 				window.setTimeout(() => { w = 0; show(0, false); }, 700);
 			}
 		}, 2600);
 
-		// the words change size with the viewport
 		let rt = 0;
 		window.addEventListener('resize', () => {
 			window.clearTimeout(rt);

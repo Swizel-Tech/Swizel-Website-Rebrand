@@ -25,44 +25,15 @@ import { Icon } from 'astro-icon/components';
 // keeps saying it; what changes behind it is the room. A film slot is
 // still here: give a frame `kind: 'film'`, a `video:` path and a `src:`
 // poster and it plays itself.
-const slides = [
-	{
-		// The builder world's hero film, running as a backdrop. It is a
-		// YouTube id, so it mounts as an iframe the first time this frame
-		// comes up and never before — see boardroomHero.ts. The still
-		// underneath carries the frame until it does, and carries it
-		// permanently where autoplay or motion is unwelcome.
-		id: 'film',
-		kind: 'yt' as const,
-		ytId: 'R2jdjZwv-ZE',
-		src: '/images/builder/at-the-keys.jpg',
-		alt: 'Inside a Swizel build — the engineers, the stack and the ship',
-		pos: '50% 42%',
-		eager: true,
-	},
-
-	{
-		id: 'team',
-		kind: 'photo' as const,
-		src: '/images/hero-team.jpg',
-		alt: 'The Swizel team — the designers and engineers who build your product with you',
-		pos: '50% 30%',
-	},
-	{
-		id: 'studio',
-		kind: 'photo' as const,
-		src: '/images/founder/studio.jpg',
-		alt: 'The Swizel studio floor in Abuja, mid build',
-		pos: '50% 46%',
-	},
-	{
-		id: 'table',
-		kind: 'photo' as const,
-		src: '/images/builder/the-table.jpg',
-		alt: 'Four Swizel engineers around the table in Abuja, mid build',
-		pos: '50% 38%',
-	},
-];
+// One backdrop, and it is the film. A YouTube id, mounted through the
+// IFrame API — which is also what lets the transport below actually drive
+// it rather than just decorate it.
+const FILM = {
+	ytId: 'R2jdjZwv-ZE',
+	poster: '/images/builder/at-the-keys.jpg',
+	alt: 'Inside a Swizel build — the engineers, the stack and the ship',
+	pos: '50% 42%',
+};
 
 // the one thing the cover says, and the verb that turns inside it
 const VERBS = ['build', 'design', 'ship', 'scale', 'grow'];
@@ -93,55 +64,41 @@ const sectors = [
 	     instead of running behind it. -->
 	<div class="hero--cover">
 
-	<!-- ── the frames: the room changes, the message does not ── -->
+	<!-- ── the backdrop ── -->
 	<div class="hero--frames hero--photo-card">
-		{
-			slides.map((s, i) => (
-				<article
-					class:list={['hero--slide', { 'is-on': i === 0 }]}
-					data-bh-slide={s.id}
-					aria-hidden="true"
-				>
-					<div class="hero--media">
-						{s.kind === 'yt' ? (
-							<>
-								<img class="hero--img" src={s.src} alt={s.alt} style={`object-position:${s.pos}`} loading="lazy" decoding="async" />
-								<div class="hero--yt" data-bh-yt={s.ytId} aria-hidden="true" />
-							</>
-						) : s.kind === 'film' ? (
-							<>
-								<video
-									class="hero--film"
-									data-bh-film
-									data-src={s.video}
-									poster={s.src}
-									muted
-									loop
-									playsinline
-									preload="none"
-									aria-label={s.alt}
-								/>
-								<img class="hero--img" src={s.src} alt="" style={`object-position:${s.pos}`} loading="lazy" decoding="async" />
-							</>
-						) : (
-							<img
-								class="hero--img"
-								src={s.src}
-								alt={s.alt}
-								style={`object-position:${s.pos}`}
-								loading={s.eager ? 'eager' : 'lazy'}
-								fetchpriority={s.eager ? 'high' : undefined}
-								decoding="async"
-							/>
-						)}
-					</div>
-				</article>
-			))
-		}
-		<!-- one scrim for the whole reel, not one per frame -->
+		<div class="hero--media">
+			<img
+				class="hero--img"
+				src={FILM.poster}
+				alt={FILM.alt}
+				style={`object-position:${FILM.pos}`}
+				fetchpriority="high"
+				decoding="async"
+			/>
+			<div class="hero--yt" data-bh-yt={FILM.ytId} aria-hidden="true"></div>
+		</div>
 		<span class="hero--scrim" aria-hidden="true" />
 		<span class="hero--vignette" aria-hidden="true" />
 	</div>
+
+	<!-- Hung under the nav's corner: below Contact on a desktop, below the
+	     hamburger on a phone. Placed by measurement rather than CSS,
+	     because the bar is a percentage pad inside a centred container and
+	     there is no honest way to guess that from here. -->
+	<button
+		class="hero--drop"
+		type="button"
+		data-bh-drop
+		data-tour-start="boardroom"
+		aria-label="Take the tour"
+		title="Take the tour"
+	>
+		<span class="hero--drop-body" aria-hidden="true"></span>
+		<span class="hero--drop-ic" aria-hidden="true">
+			<Icon width={15} name="mdi:map-marker-path" />
+		</span>
+		<span class="hero--drop-label">Tour</span>
+	</button>
 
 	<!-- ── the plate: said once, and left alone ── -->
 	<div class="hero--plate">
@@ -167,10 +124,6 @@ const sectors = [
 				<Icon width={16} name="mdi:arrow-right" />
 			</a>
 			<a href="/portfolio" class="hero--secondary">See the work</a>
-			<button class="hero--tour" type="button" data-tour-start="boardroom" aria-label="Take the tour">
-				<Icon width={14} name="mdi:map-marker-path" />
-				Tour
-			</button>
 		</div>
 	</div>
 
@@ -193,32 +146,23 @@ const sectors = [
 			</li>
 		</ul>
 
-		<div class="hero--steer" role="tablist" aria-label="Choose a frame">
-			<button class="hero--arrow" type="button" data-bh-prev aria-label="Previous frame">
-				<Icon width={14} name="mdi:chevron-left" />
+		<!-- The film's transport. Four marks, no shell, no labels: back
+		     ten, play, on ten, sound. It is the only furniture the
+		     backdrop needs now that there is nothing to steer between. -->
+		<div class="hero--transport" data-bh-transport>
+			<button class="hero--tbtn" type="button" data-bh-back aria-label="Back ten seconds">
+				<Icon width={15} name="mdi:rewind-10" />
 			</button>
-			<span class="hero--dots">
-				{
-					slides.map((s, i) => (
-						<button
-							class:list={['hero--dot', { 'is-on': i === 0 }]}
-							type="button"
-							role="tab"
-							data-bh-dot={i}
-							aria-selected={i === 0}
-							aria-label={`Frame ${i + 1}: ${s.kicker}`}
-						>
-							<i aria-hidden="true" />
-						</button>
-					))
-				}
-			</span>
-			<button class="hero--arrow" type="button" data-bh-next aria-label="Next frame">
-				<Icon width={14} name="mdi:chevron-right" />
+			<button class="hero--tbtn hero--tbtn--play" type="button" data-bh-play aria-label="Pause the film">
+				<Icon width={14} name="mdi:pause" class="hero--t-a" />
+				<Icon width={14} name="mdi:play" class="hero--t-b" />
 			</button>
-			<button class="hero--pause" type="button" data-bh-toggle aria-pressed="false" aria-label="Pause the reel">
-				<Icon width={12} name="mdi:pause" class="hero--pause-a" />
-				<Icon width={12} name="mdi:play" class="hero--pause-b" />
+			<button class="hero--tbtn" type="button" data-bh-fwd aria-label="Forward ten seconds">
+				<Icon width={15} name="mdi:fast-forward-10" />
+			</button>
+			<button class="hero--tbtn hero--tbtn--sound" type="button" data-bh-mute aria-pressed="true" aria-label="Unmute the film">
+				<Icon width={15} name="mdi:volume-off" class="hero--t-a" />
+				<Icon width={15} name="mdi:volume-high" class="hero--t-b" />
 			</button>
 		</div>
 	</div>
@@ -291,31 +235,15 @@ const sectors = [
 		inset: calc(-1 * var(--nav-h, 92px)) 0 0 0;
 		z-index: 0;
 	}
-	.hero--slide {
-		position: absolute;
-		inset: 0;
-		opacity: 0;
-		visibility: hidden;
-		transition: opacity 1.05s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 1.05s;
-	}
-	.hero--slide.is-on {
-		opacity: 1;
-		visibility: visible;
-		transition: opacity 1.05s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s;
-		z-index: 1;
-	}
-
 	.hero--media { position: absolute; inset: 0; overflow: hidden; }
-	.hero--img,
-	.hero--film {
+	.hero--img {
 		position: absolute;
 		inset: 0;
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
 	}
-	/* the still sits under the film and shows through until it plays */
-	.hero--film { z-index: 1; background: #04060e; }
+	/* the still shows through until the film is up and running */
 	/* A YouTube backdrop. The iframe cannot be object-fit, so it is given
 	   the smallest 16/9 box that still covers the frame and centred, with
 	   the overflow clipped by .hero--media. It never takes a click:
@@ -342,12 +270,9 @@ const sectors = [
 		border: 0;
 		pointer-events: none;
 	}
-	/* a very slow push in, so the frame is alive without moving anything
-	   the eye has to track */
-	.hero--slide.is-on .hero--img,
-	.hero--slide.is-on .hero--film {
-		animation: hero-push 13s ease-out both;
-	}
+	/* a very slow push in on the still, so the cover is alive even before
+	   the film has arrived */
+	.hero--img { animation: hero-push 16s ease-out both; }
 	@keyframes hero-push {
 		from { transform: scale(1.005); }
 		to { transform: scale(1.055); }
@@ -539,8 +464,9 @@ const sectors = [
 		   stops short of it, so no control is ever parked underneath */
 		padding: 0 calc(var(--pad) + 4.25rem) clamp(1.5rem, 3.5vh, 2.4rem) var(--pad);
 	}
-	.hero--steer { flex: none; }
-
+	/* ── the proof ──
+	   Three figures and the live one, on a single line with hairlines
+	   between them. */
 	.hero--proof {
 		display: flex;
 		align-items: flex-start;
@@ -585,38 +511,31 @@ const sectors = [
 		100% { box-shadow: 0 0 0 0 rgba(61, 220, 151, 0); }
 	}
 
-	/* ── steering ── */
-	.hero--steer {
+	/* ── the transport ─────────────────────────────────────────
+	   Four marks on the floor of the cover. No shell, no labels, no
+	   fill — the film is the thing; this is only how you hold it. */
+	.hero--transport {
 		display: flex;
 		align-items: center;
-		gap: 0.34rem;
-		padding: 0.26rem 0.32rem;
-		border-radius: 9999px;
-		border: 1px solid rgba(255, 255, 255, 0.16);
-		background: rgba(10, 14, 26, 0.5);
-		backdrop-filter: blur(18px) saturate(150%);
-		-webkit-backdrop-filter: blur(18px) saturate(150%);
-		box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+		gap: 0.15rem;
+		flex: none;
 	}
-	.hero--arrow,
-	.hero--pause {
+	.hero--tbtn {
+		position: relative;
 		display: grid;
 		place-items: center;
-		width: 1.75rem;
-		height: 1.75rem;
+		width: 2rem;
+		height: 2rem;
+		border: 0;
 		border-radius: 50%;
-		color: rgba(255, 255, 255, 0.8);
+		background: transparent;
+		color: rgba(255, 255, 255, 0.62);
 		cursor: pointer;
-		transition: background 0.22s ease, color 0.22s ease;
+		transition: color 0.22s ease, background 0.22s ease;
 	}
-	.hero--arrow:hover,
-	.hero--pause:hover { background: rgba(255, 255, 255, 0.16); color: #ffffff; }
-	/* Small to look at, still big enough to hit: the control keeps its
-	   size and grows an invisible target around itself, so a thumb has
-	   somewhere to land without the cluster getting heavier. */
-	.hero--arrow::before,
-	.hero--pause::before,
-	.hero--dot::before {
+	.hero--tbtn:hover { color: #ffffff; background: rgba(255, 255, 255, 0.1); }
+	/* small to look at, still big enough for a thumb */
+	.hero--tbtn::before {
 		content: '';
 		position: absolute;
 		top: 50%;
@@ -625,62 +544,104 @@ const sectors = [
 		height: 44px;
 		transform: translate(-50%, -50%);
 	}
-	.hero--arrow,
-	.hero--pause { position: relative; }
-	.hero--pause { margin-left: 0.12rem; border-left: 1px solid rgba(255, 255, 255, 0.14); border-radius: 0 9999px 9999px 0; width: 2rem; }
-	.hero--pause-b { display: none; }
-	.hero--reel.is-paused .hero--pause-a { display: none; }
-	.hero--reel.is-paused .hero--pause-b { display: block; }
+	/* one mark at a time: pause while it runs, play while it does not */
+	.hero--t-b { display: none; }
+	:global(.hero--reel:not(.is-filmplaying)) .hero--t-a { display: none; }
+	:global(.hero--reel:not(.is-filmplaying)) .hero--t-b { display: block; }
+	/* and the sound mark flips on its own state, not the film's */
+	.hero--tbtn--sound .hero--t-b { display: none; }
+	:global(.hero--reel:not(.is-filmmuted)) .hero--tbtn--sound .hero--t-a { display: none; }
+	:global(.hero--reel:not(.is-filmmuted)) .hero--tbtn--sound .hero--t-b { display: block; }
+	:global(.hero--reel:not(.is-filmmuted)) .hero--tbtn--sound { color: #ffffff; }
 
-	.hero--dots { display: flex; align-items: center; gap: 0.26rem; }
-	/* a dot is a track; the live one fills as its frame runs down */
-	.hero--dot {
-		position: relative;
-		width: 0.46rem;
-		height: 0.46rem;
+	/* ── the drop ──────────────────────────────────────────────
+	   A bead hanging off the bar's right-hand control. Small, glassy and
+	   breathing slowly — easy to find, easy to ignore. The body is a
+	   square with three rounded corners, turned so its point is at the
+	   top, toward the button it hangs from. */
+	.hero--drop {
+		position: fixed;
+		z-index: 30;
+		display: grid;
+		place-items: center;
+		width: 2.3rem;
+		height: 2.3rem;
 		padding: 0;
-		border-radius: 9999px;
-		background: rgba(255, 255, 255, 0.28);
+		border: 0;
+		background: none;
 		cursor: pointer;
-		overflow: hidden;
-		transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1), background 0.3s ease;
+		opacity: 0;
+		transform: translateY(-6px);
+		transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+		pointer-events: none;
 	}
-	.hero--dot:hover { background: rgba(255, 255, 255, 0.5); }
-	.hero--dot.is-on { width: 2.1rem; background: rgba(255, 255, 255, 0.26); }
-	.hero--dot i {
+	.hero--drop.is-ready { opacity: 1; transform: none; pointer-events: auto; }
+	.hero--drop.is-gone { opacity: 0; transform: translateY(-6px); pointer-events: none; }
+	.hero--drop-body {
 		position: absolute;
 		inset: 0;
-		display: block;
-		transform-origin: left center;
-		transform: scaleX(0);
-		background: #ffffff;
+		border-radius: 50% 50% 50% 0;
+		transform: rotate(135deg);
+		border: 1px solid rgba(255, 255, 255, 0.3);
+		background: linear-gradient(150deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.07) 55%, rgba(255, 255, 255, 0.03));
+		-webkit-backdrop-filter: blur(14px) saturate(150%);
+		backdrop-filter: blur(14px) saturate(150%);
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.45),
+			0 10px 22px -12px rgba(4, 6, 14, 0.85);
+		animation: hero-drop-breathe 3.8s ease-in-out infinite;
+		transition: border-color 0.25s ease, background 0.25s ease;
 	}
-	.hero--dot.is-on i { transform: scaleX(var(--bh-p, 0)); }
-	.hero--reel.is-paused .hero--dot.is-on i { transform: scaleX(1); }
-
-	/* The third button. It stands in the row with the other two but a
-	   weight quieter — no fill, no border, so the eye still lands on the
-	   white pill first and the tour is simply there for whoever wants it. */
-	/* One word and a mark. It is the third choice, so it takes none of
-	   the weight of the other two: no ring, no fill, just the words —
-	   which is as quiet as an action can be and still be one. */
-	.hero--tour {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.42rem;
-		padding: 0.62rem 1.15rem;
-		border-radius: 9999px;
-		font-size: 0.82rem;
-		font-weight: 550;
-		letter-spacing: 0.06em;
-		color: rgba(255, 255, 255, 0.72);
-		border: 0;
-		background: transparent;
+	@keyframes hero-drop-breathe {
+		0%, 100% { transform: rotate(135deg) scale(1); }
+		46% { transform: rotate(135deg) scale(1.07); }
+	}
+	/* the ring it sheds, the way a drop lets go */
+	.hero--drop::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		border-radius: 50% 50% 50% 0;
+		transform: rotate(135deg);
+		animation: hero-drop-ring 3.8s ease-out infinite;
+		pointer-events: none;
+	}
+	@keyframes hero-drop-ring {
+		0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.28); opacity: 0.9; }
+		64% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); opacity: 0; }
+		100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); opacity: 0; }
+	}
+	.hero--drop-ic {
+		position: relative;
+		display: grid;
+		place-items: center;
+		color: rgba(255, 255, 255, 0.88);
+		transition: color 0.25s ease;
+	}
+	.hero--drop:hover .hero--drop-body {
+		border-color: rgba(255, 255, 255, 0.6);
+		background: linear-gradient(150deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.12) 55%, rgba(255, 255, 255, 0.05));
+	}
+	.hero--drop:hover .hero--drop-ic { color: #ffffff; }
+	/* the word, only when asked for */
+	.hero--drop-label {
+		position: absolute;
+		top: 50%;
+		right: calc(100% + 0.5rem);
+		transform: translateY(-50%);
+		font-size: 0.66rem;
+		font-weight: 600;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
 		white-space: nowrap;
-		cursor: pointer;
-		transition: color 0.25s ease, gap 0.25s ease;
+		color: rgba(255, 255, 255, 0.92);
+		text-shadow: 0 1px 10px rgba(4, 6, 14, 0.9);
+		opacity: 0;
+		transition: opacity 0.25s ease;
+		pointer-events: none;
 	}
-	.hero--tour:hover { color: #ffffff; gap: 0.56rem; }
+	.hero--drop:hover .hero--drop-label,
+	.hero--drop:focus-visible .hero--drop-label { opacity: 1; }
 
 	/* ══════════════════════════════════════════════════════════════════
 	   THE STRIP
@@ -812,27 +773,12 @@ const sectors = [
 		/* uptime is the one figure a phone can spare */
 		.hero--proof-item--live { display: none; }
 
-		/* just the two arrows down here — no dots, no pause, no shell */
-		.hero--steer {
-			gap: 0.1rem;
-			padding: 0;
-			border: 0;
-			background: none;
-			-webkit-backdrop-filter: none;
-			backdrop-filter: none;
-			box-shadow: none;
-			align-self: flex-end;
-			margin-bottom: -0.15rem;
-		}
-		.hero--dots,
-		.hero--pause { display: none; }
-		.hero--arrow {
-			width: 1.55rem;
-			height: 1.55rem;
-			color: rgba(255, 255, 255, 0.72);
-			border: 1px solid rgba(255, 255, 255, 0.22);
-		}
-		.hero--arrow :global(svg) { width: 12px; height: 12px; }
+		/* the transport tightens rather than disappears: it is the only
+		   way to reach the film's sound on a phone */
+		.hero--transport { align-self: flex-end; margin-bottom: -0.1rem; gap: 0; }
+		.hero--tbtn { width: 1.8rem; height: 1.8rem; }
+		.hero--tbtn :global(svg) { width: 13px; height: 13px; }
+		.hero--drop { width: 2.05rem; height: 2.05rem; }
 
 		.hero--rail-label { display: none; }
 		.hero--down { display: none; }
@@ -852,9 +798,9 @@ const sectors = [
 	   STILLNESS
 	   ══════════════════════════════════════════════════════════════════ */
 	@media (prefers-reduced-motion: reduce) {
-		.hero--slide,
-		.hero--slide.is-on .hero--img,
-		.hero--slide.is-on .hero--film,
+		.hero--img,
+		.hero--drop-body,
+		.hero--drop::after,
 		.hero--kicker,
 		.hero--display,
 		.hero--cta,
@@ -865,6 +811,6 @@ const sectors = [
 		.hero--display,
 		.hero--cta { opacity: 1; transform: none; }
 	}
-	:global(html.perf-lite) .hero--slide.is-on .hero--img,
+	:global(html.perf-lite) .hero--img,
 	:global(html.perf-lite) .hero--down { animation: none; }
 </style>
