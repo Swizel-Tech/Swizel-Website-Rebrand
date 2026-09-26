@@ -81,25 +81,6 @@ const sectors = [
 		<span class="hero--vignette" aria-hidden="true" />
 	</div>
 
-	<!-- Hung under the nav's corner: below Contact on a desktop, below the
-	     hamburger on a phone. Placed by measurement rather than CSS,
-	     because the bar is a percentage pad inside a centred container and
-	     there is no honest way to guess that from here. -->
-	<button
-		class="hero--drop"
-		type="button"
-		data-bh-drop
-		data-tour-start="boardroom"
-		aria-label="Take the tour"
-		title="Take the tour"
-	>
-		<span class="hero--drop-body" aria-hidden="true"></span>
-		<span class="hero--drop-ic" aria-hidden="true">
-			<Icon width={15} name="mdi:map-marker-path" />
-		</span>
-		<span class="hero--drop-label">Tour</span>
-	</button>
-
 	<!-- ── the plate: said once, and left alone ── -->
 	<div class="hero--plate">
 		<span class="hero--kicker">Swizel Tech Ltd · Est. 2019</span>
@@ -124,6 +105,10 @@ const sectors = [
 				<Icon width={16} name="mdi:arrow-right" />
 			</a>
 			<a href="/portfolio" class="hero--secondary">See the work</a>
+			<button class="hero--tour" type="button" data-tour-start="boardroom" aria-label="Take the tour">
+				<Icon width={14} name="mdi:map-marker-path" />
+				Tour
+			</button>
 		</div>
 	</div>
 
@@ -257,6 +242,9 @@ const sectors = [
 		transition: opacity 0.8s ease;
 	}
 	.hero--yt.is-live { opacity: 1; }
+	/* Once it is up it stays up. Fading the film out on a state change
+	   would show the still underneath as a flash — the backdrop is meant
+	   to be continuous. */
 	.hero--yt :global(iframe) {
 		position: absolute;
 		top: 50%;
@@ -416,10 +404,10 @@ const sectors = [
 	.hero--secondary {
 		display: inline-flex;
 		align-items: center;
-		gap: 0.45rem;
-		padding: 0.82rem 1.55rem;
+		gap: 0.42rem;
+		padding: 0.66rem 1.3rem;
 		border-radius: 9999px;
-		font-size: 0.94rem;
+		font-size: 0.86rem;
 		font-weight: 650;
 		letter-spacing: 0.005em;
 		white-space: nowrap;
@@ -544,104 +532,40 @@ const sectors = [
 		height: 44px;
 		transform: translate(-50%, -50%);
 	}
-	/* one mark at a time: pause while it runs, play while it does not */
-	.hero--t-b { display: none; }
-	:global(.hero--reel:not(.is-filmplaying)) .hero--t-a { display: none; }
-	:global(.hero--reel:not(.is-filmplaying)) .hero--t-b { display: block; }
-	/* and the sound mark flips on its own state, not the film's */
+	/* One mark at a time, and each button reads its OWN state. These used
+	   to be written unscoped, so the play rule reached into the sound
+	   button too: with the film not running it hid that button's first
+	   mark, the sound rule hid its second, and the control rendered as an
+	   empty circle. */
+	.hero--tbtn--play .hero--t-b { display: none; }
+	:global(.hero--reel:not(.is-filmplaying)) .hero--tbtn--play .hero--t-a { display: none; }
+	:global(.hero--reel:not(.is-filmplaying)) .hero--tbtn--play .hero--t-b { display: block; }
+
 	.hero--tbtn--sound .hero--t-b { display: none; }
 	:global(.hero--reel:not(.is-filmmuted)) .hero--tbtn--sound .hero--t-a { display: none; }
 	:global(.hero--reel:not(.is-filmmuted)) .hero--tbtn--sound .hero--t-b { display: block; }
 	:global(.hero--reel:not(.is-filmmuted)) .hero--tbtn--sound { color: #ffffff; }
 
-	/* ── the drop ──────────────────────────────────────────────
-	   A bead hanging off the bar's right-hand control. Small, glassy and
-	   breathing slowly — easy to find, easy to ignore. The body is a
-	   square with three rounded corners, turned so its point is at the
-	   top, toward the button it hangs from. */
-	.hero--drop {
-		position: fixed;
-		z-index: 30;
-		display: grid;
-		place-items: center;
-		width: 2.3rem;
-		height: 2.3rem;
-		padding: 0;
+	/* ── the tour ──
+	   The third choice: same pill shape as the other two, none of their
+	   weight — no ring, no fill, just the word and its mark. */
+	.hero--tour {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.42rem;
+		padding: 0.55rem 0.9rem;
+		border-radius: 9999px;
+		font-size: 0.8rem;
+		font-weight: 550;
+		letter-spacing: 0.05em;
+		color: rgba(255, 255, 255, 0.72);
 		border: 0;
-		background: none;
-		cursor: pointer;
-		opacity: 0;
-		transform: translateY(-6px);
-		transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-		pointer-events: none;
-	}
-	.hero--drop.is-ready { opacity: 1; transform: none; pointer-events: auto; }
-	.hero--drop.is-gone { opacity: 0; transform: translateY(-6px); pointer-events: none; }
-	.hero--drop-body {
-		position: absolute;
-		inset: 0;
-		border-radius: 50% 50% 50% 0;
-		transform: rotate(135deg);
-		border: 1px solid rgba(255, 255, 255, 0.3);
-		background: linear-gradient(150deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.07) 55%, rgba(255, 255, 255, 0.03));
-		-webkit-backdrop-filter: blur(14px) saturate(150%);
-		backdrop-filter: blur(14px) saturate(150%);
-		box-shadow:
-			inset 0 1px 0 rgba(255, 255, 255, 0.45),
-			0 10px 22px -12px rgba(4, 6, 14, 0.85);
-		animation: hero-drop-breathe 3.8s ease-in-out infinite;
-		transition: border-color 0.25s ease, background 0.25s ease;
-	}
-	@keyframes hero-drop-breathe {
-		0%, 100% { transform: rotate(135deg) scale(1); }
-		46% { transform: rotate(135deg) scale(1.07); }
-	}
-	/* the ring it sheds, the way a drop lets go */
-	.hero--drop::after {
-		content: '';
-		position: absolute;
-		inset: 0;
-		border-radius: 50% 50% 50% 0;
-		transform: rotate(135deg);
-		animation: hero-drop-ring 3.8s ease-out infinite;
-		pointer-events: none;
-	}
-	@keyframes hero-drop-ring {
-		0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.28); opacity: 0.9; }
-		64% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); opacity: 0; }
-		100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); opacity: 0; }
-	}
-	.hero--drop-ic {
-		position: relative;
-		display: grid;
-		place-items: center;
-		color: rgba(255, 255, 255, 0.88);
-		transition: color 0.25s ease;
-	}
-	.hero--drop:hover .hero--drop-body {
-		border-color: rgba(255, 255, 255, 0.6);
-		background: linear-gradient(150deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.12) 55%, rgba(255, 255, 255, 0.05));
-	}
-	.hero--drop:hover .hero--drop-ic { color: #ffffff; }
-	/* the word, only when asked for */
-	.hero--drop-label {
-		position: absolute;
-		top: 50%;
-		right: calc(100% + 0.5rem);
-		transform: translateY(-50%);
-		font-size: 0.66rem;
-		font-weight: 600;
-		letter-spacing: 0.16em;
-		text-transform: uppercase;
+		background: transparent;
 		white-space: nowrap;
-		color: rgba(255, 255, 255, 0.92);
-		text-shadow: 0 1px 10px rgba(4, 6, 14, 0.9);
-		opacity: 0;
-		transition: opacity 0.25s ease;
-		pointer-events: none;
+		cursor: pointer;
+		transition: color 0.25s ease, gap 0.25s ease;
 	}
-	.hero--drop:hover .hero--drop-label,
-	.hero--drop:focus-visible .hero--drop-label { opacity: 1; }
+	.hero--tour:hover { color: #ffffff; gap: 0.56rem; }
 
 	/* ══════════════════════════════════════════════════════════════════
 	   THE STRIP
@@ -655,15 +579,15 @@ const sectors = [
 		z-index: 1;
 		display: flex;
 		align-items: center;
-		gap: 1rem;
-		padding: 0.9rem clamp(1.25rem, 5vw, 4.5rem);
+		gap: 0.85rem;
+		padding: 0.62rem clamp(1.25rem, 5vw, 4.5rem);
 		color: #ffffff;
 		background: #04060e;
 		border-top: 1px solid rgba(255, 255, 255, 0.07);
 	}
 	.hero--rail-label {
 		flex: none;
-		font-size: 0.66rem;
+		font-size: 0.6rem;
 		font-weight: 700;
 		letter-spacing: 0.2em;
 		text-transform: uppercase;
@@ -685,10 +609,10 @@ const sectors = [
 	.hero--sectors::-webkit-scrollbar { display: none; }
 	.hero--sector {
 		flex: none;
-		padding: 0.3rem 0.7rem;
+		padding: 0.24rem 0.62rem;
 		border-radius: 9999px;
 		border: 1px solid rgba(255, 255, 255, 0.11);
-		font-size: 0.74rem;
+		font-size: 0.68rem;
 		color: rgba(255, 255, 255, 0.62);
 		white-space: nowrap;
 		transition: color 0.35s ease, border-color 0.35s ease, background 0.35s ease;
@@ -704,8 +628,8 @@ const sectors = [
 		flex: none;
 		display: grid;
 		place-items: center;
-		width: 2rem;
-		height: 2rem;
+		width: 1.75rem;
+		height: 1.75rem;
 		border-radius: 50%;
 		color: rgba(255, 255, 255, 0.7);
 		border: 1px solid rgba(255, 255, 255, 0.18);
@@ -778,7 +702,6 @@ const sectors = [
 		.hero--transport { align-self: flex-end; margin-bottom: -0.1rem; gap: 0; }
 		.hero--tbtn { width: 1.8rem; height: 1.8rem; }
 		.hero--tbtn :global(svg) { width: 13px; height: 13px; }
-		.hero--drop { width: 2.05rem; height: 2.05rem; }
 
 		.hero--rail-label { display: none; }
 		.hero--down { display: none; }
@@ -799,8 +722,6 @@ const sectors = [
 	   ══════════════════════════════════════════════════════════════════ */
 	@media (prefers-reduced-motion: reduce) {
 		.hero--img,
-		.hero--drop-body,
-		.hero--drop::after,
 		.hero--kicker,
 		.hero--display,
 		.hero--cta,

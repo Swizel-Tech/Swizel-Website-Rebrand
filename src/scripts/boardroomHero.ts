@@ -96,9 +96,24 @@ export function initBoardroomHero() {
 					paint();
 				},
 				onStateChange: (e: { data: number }) => {
-					// 1 is PLAYING. Running without being asked means a queued
-					// call landed late — the last instruction wins.
-					if (e?.data === 1 && !want) film?.pauseVideo();
+					// 0 ENDED · 1 PLAYING · 2 PAUSED.
+					//
+					// The backdrop must never stop and never go blank: an
+					// ended film shows YouTube's own end card, and a paused
+					// one shows its big centre play button — both of which
+					// put a control in the middle of a cover that already
+					// has its transport on the floor. So it is put straight
+					// back to work unless the visitor was the one who
+					// stopped it.
+					if (e?.data === 0) {
+						film?.seekTo(0, true);
+						if (want) film?.playVideo();
+					} else if (e?.data === 2 && want) {
+						film?.playVideo();
+					} else if (e?.data === 1 && !want) {
+						// a queued play landing late — the last instruction wins
+						film?.pauseVideo();
+					}
 					paint();
 				},
 			},
@@ -178,61 +193,8 @@ export function initBoardroomHero() {
 	});
 
 	rotator();
-	placeDrop();
 	paint();
 	if (transport) transport.dataset.ready = '1';
-
-	// ── the drop ────────────────────────────────────────────────────────
-	// It hangs directly under the bar's right-hand control — Contact on a
-	// desktop, the hamburger on a phone — and there is no honest way to
-	// work out where that is from CSS: the bar is a percentage pad inside a
-	// centred container. So it is measured, and re-measured when the window
-	// changes.
-	function placeDrop() {
-		const drop = stage!.querySelector<HTMLElement>('[data-bh-drop]');
-		if (!drop) return;
-		const header = document.querySelector<HTMLElement>('.site-header');
-		if (!header) return;
-
-		const anchor = () => {
-			const seen = (el: Element | null) => !!el && !!(el as HTMLElement).offsetParent;
-			const cta = header.querySelector<HTMLElement>('.nav-cta');
-			if (seen(cta)) return cta;
-			const burger = header.querySelector<HTMLElement>('#toggler-show');
-			if (seen(burger)) return burger;
-			return null;
-		};
-
-		const put = () => {
-			const a = anchor();
-			if (!a) { drop.classList.remove('is-ready'); return; }
-			const r = a.getBoundingClientRect();
-			const w = drop.offsetWidth || 38;
-			drop.style.left = `${Math.round(r.left + r.width / 2 - w / 2)}px`;
-			drop.style.top = `${Math.round(r.bottom + 14)}px`;
-			drop.classList.add('is-ready');
-		};
-
-		put();
-		window.setTimeout(put, 400); // after webfonts settle the bar's height
-		let rt = 0;
-		window.addEventListener('resize', () => {
-			window.clearTimeout(rt);
-			rt = window.setTimeout(put, 120);
-		});
-		// it belongs to the cover: once the cover is gone, so is it
-		if ('IntersectionObserver' in window) {
-			new IntersectionObserver(
-				(entries) => {
-					const en = entries[0];
-					if (!en) return;
-					drop.classList.toggle('is-gone', !en.isIntersecting);
-					if (en.isIntersecting) put();
-				},
-				{ threshold: 0.1 }
-			).observe(stage!);
-		}
-	}
 
 	// ── the verb on the headline ────────────────────────────────────────
 	// The window has to be as wide as the word inside it, not as wide as
