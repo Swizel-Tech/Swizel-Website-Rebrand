@@ -2,7 +2,7 @@
 // Boardroom view body — deep, glossy, glassy. Asymmetric mosaic tiles,
 // scrolling sectors + client logos, rotating client words, cinematic CTA.
 import { Icon } from 'astro-icon/components';
-import { projects } from '../../data/projects';
+import { projects, sectorLabels } from '../../data/projects';
 import FilmPlayer from '../FilmPlayer.astro';
 
 const numbers = [
@@ -45,47 +45,54 @@ const disciplines = [
 	},
 ];
 
-// The four claims, as tiles. Each carries its own picture, a label and a
-// way in — the row of cards that sits under a cover on Apple TV, not four
-// boxes of body copy.
-const businessTiles = [
+// ── Swizel for business ───────────────────────────────────────────────
+// Two rows. The top one is films: the middle one plays, its neighbours
+// wait either side, and the row walks on by itself. The bottom one is the
+// work itself, a band of client screens running edge to edge without
+// stopping. Titles are the real YouTube titles, shortened to fit a card.
+const businessFilms = [
 	{
-		kicker: 'Delivery',
-		title: 'On time. On budget.',
-		line: '98% on-time across 65+ launches.',
-		cta: 'Plan your launch',
-		href: '/contact',
-		img: '/images/builder/the-table.jpg',
-		pos: '50% 40%',
+		id: 'R2jdjZwv-ZE',
+		kicker: 'How we work',
+		title: 'Behind the code',
+		line: 'How a Swizel product gets designed, built and shipped.',
 	},
 	{
-		kicker: 'Uptime',
-		title: 'Runs while you sleep.',
-		line: '99.9%, watched around the clock.',
-		cta: 'About maintenance',
-		href: '/services',
-		img: '/images/builder/at-the-keys.jpg',
-		pos: '50% 45%',
+		id: 'nFbBpQvT5fQ',
+		kicker: 'The proof',
+		title: 'Live websites built by Swizel',
+		line: 'Real products, running in the world right now.',
 	},
 	{
-		kicker: 'One team',
-		title: 'Every discipline.',
-		line: 'One contract, one team to call.',
-		cta: 'Meet the leadership',
-		href: '/about',
-		img: '/images/hero-team.jpg',
-		pos: '50% 26%',
+		id: 'noEhs-8ywag',
+		kicker: 'The bench',
+		title: 'When students step into Swizel',
+		line: 'Where the next engineers on your account come from.',
 	},
 	{
-		kicker: 'Security',
-		title: 'Your data, guarded.',
-		line: 'Security-first builds and clean audits.',
-		cta: 'Ask about security',
-		href: '/contact',
-		img: '/images/builder/studio-grid.jpg',
-		pos: '50% 46%',
+		id: 'EHi0Z2yqAr8',
+		kicker: 'The studio',
+		title: 'Where ideas become digital experiences',
+		line: 'Brand, film and design under the same roof as the code.',
 	},
 ];
+
+// The reel opens on the second film, not the first. A row that starts on
+// its own first card has nothing to the left of it, and half the point of
+// this shape is that you can see there is more in both directions.
+const FIRST = 1;
+
+// The belt below is the portfolio itself — every project that has a
+// picture, in the order the portfolio lists them, so the band stays true
+// as the work grows rather than being a hand-kept copy of it.
+const beltWork = projects
+	.filter((pr) => pr.img)
+	.map((pr) => ({
+		name: pr.name,
+		img: pr.img,
+		sector: sectorLabels[pr.sector],
+		href: pr.caseStudy ? `/work/${pr.slug}` : '/portfolio',
+	}));
 
 const process = [
 	{ n: '01', title: 'Discover', desc: 'Research, define and lock the goal, together.' },
@@ -185,73 +192,121 @@ const logos = [
 
 <div class="bdbody view-body view-body-boardroom">
 	<!-- ═══ Swizel for business ═══════════════════════════════════════
-	     Built to the reference: a cover that fills its frame with the
-	     film and carries its own line and pill, and a row of cards
-	     beneath it that you can push through — the way Apple TV sets a
-	     feature above its shelf. No boxed mosaic, no body copy standing
-	     in for pictures.
+	     A title, then two rows that move.
+
+	     The reel is a real scroller with centre snapping, so a phone gets
+	     native momentum and a mouse gets the same geometry: one film in
+	     the middle, its neighbours held back at either edge. It walks on
+	     by itself; rest a pointer on any card and it stops there and
+	     plays that one instead.
+
+	     The belt underneath runs edge to edge and never stops — the work
+	     itself, labelled, sliding past the whole width of the screen.
 	     ══════════════════════════════════════════════════════════════ -->
 	<section class="bd-biz" id="bd-business" data-cursor="chart">
-		<!-- ── the cover ── -->
-		<article class="bd-cover bd-reveal">
-			<FilmPlayer
-				videoId="nFbBpQvT5fQ"
-				label="Swizel for business — what the work is worth"
-				fallback="/images/builder/over-the-shoulder.jpg"
-				cover
-				class="bd-cover-film"
-			/>
-			<span class="bd-cover-veil" aria-hidden="true" />
-			<div class="bd-cover-plate">
-				<span class="bd-cover-kick">Swizel for business</span>
-				<h2 class="bd-cover-h">Software that pays for itself.</h2>
-				<a href="/contact" class="bd-cover-pill">Start a project</a>
-			</div>
-		</article>
+		<header class="bd-biz-top bd-reveal">
+			<span class="bd-kicker">Swizel for business</span>
+			<h2 class="bd-biz-title">Software that pays for itself.</h2>
+			<p class="bd-biz-sub">
+				One senior team designs it, builds it, ships it and keeps it
+				running — so it earns its place on your balance sheet.
+			</p>
+		</header>
 
-		<!-- ── the shelf ── -->
-		<div class="bd-shelf-wrap">
-			<ul class="bd-shelf" data-bd-shelf>
+		<!-- ── the reel ── -->
+		<div class="bz-reel bd-reveal" data-bz-reel>
+			<ul class="bz-track" data-bz-track>
 				{
-					businessTiles.map((t, i) => (
-						<li class="bd-card" data-bd-card={i}>
-							<a class="bd-card-link" href={t.href}>
+					businessFilms.map((f, i) => (
+						<li class:list={['bz-slide', { 'is-live': i === FIRST }]} data-bz-slide={i}>
+							<div class="bz-frame">
 								<img
-									class="bd-card-img"
-									src={t.img}
+									class="bz-poster"
+									src={`https://i.ytimg.com/vi/${f.id}/maxresdefault.jpg`}
+									data-bz-fallback={`https://i.ytimg.com/vi/${f.id}/hqdefault.jpg`}
 									alt=""
-									style={`object-position:${t.pos}`}
 									loading="lazy"
 									decoding="async"
 								/>
-								<span class="bd-card-veil" aria-hidden="true" />
-								<span class="bd-card-kick">{t.kicker}</span>
-								<span class="bd-card-body">
-									<span class="bd-card-txt">
-										<strong>{t.title}</strong>
-										<em>{t.line}</em>
+								<span class="bz-yt" data-bz-yt={f.id} />
+								<span class="bz-veil" aria-hidden="true" />
+								<button
+									class="bz-hit"
+									type="button"
+									data-bz-pick={i}
+									aria-label={`Watch now: ${f.title}`}
+								/>
+								<span class="bz-meta">
+									<span class="bz-pill">Watch now</span>
+									<span class="bz-line">
+										<strong>{f.kicker}</strong>
+										<span class="bz-sep" aria-hidden="true">•</span>
+										{f.title}
 									</span>
-									<span class="bd-card-pill">{t.cta}</span>
 								</span>
-							</a>
+								<button
+									class="bz-sound"
+									type="button"
+									data-bz-sound={i}
+									aria-pressed="true"
+									aria-label={`Unmute: ${f.title}`}
+								>
+									<Icon name="mdi:volume-off" class="bz-s-a" />
+									<Icon name="mdi:volume-high" class="bz-s-b" />
+								</button>
+							</div>
 						</li>
 					))
 				}
 			</ul>
-			<div class="bd-shelf-dots" role="tablist" aria-label="Choose a card">
+		</div>
+
+		<!-- ── the belt ── -->
+		<div class="bz-belt" data-bz-belt aria-label="Work we have shipped">
+			<div class="bz-belt-track" data-bz-belt-track>
 				{
-					businessTiles.map((t, i) => (
-						<button
-							class:list={['bd-shelf-dot', { 'is-on': i === 0 }]}
-							type="button"
-							role="tab"
-							data-bd-dot={i}
-							aria-selected={i === 0}
-							aria-label={t.title}
-						/>
+					[0, 1].map((pass) => (
+						<Fragment>
+							{beltWork.map((w) => (
+								<a
+									class="bz-tile"
+									href={w.href}
+									aria-hidden={pass === 1 ? 'true' : undefined}
+									tabindex={pass === 1 ? -1 : undefined}
+								>
+									<img
+										class="bz-tile-img"
+										src={w.img}
+										alt={pass === 1 ? '' : `${w.name} — ${w.sector}`}
+										loading="lazy"
+										decoding="async"
+									/>
+									<span class="bz-tile-veil" aria-hidden="true" />
+									<span class="bz-tile-cap">
+										<strong>{w.name}</strong>
+										<em>{w.sector}</em>
+									</span>
+								</a>
+							))}
+						</Fragment>
 					))
 				}
 			</div>
+		</div>
+
+		<div class="bz-dots" role="tablist" aria-label="Choose a film">
+			{
+				businessFilms.map((f, i) => (
+					<button
+						class:list={['bz-dot', { 'is-on': i === FIRST }]}
+						type="button"
+						role="tab"
+						data-bz-dot={i}
+						aria-selected={i === FIRST}
+						aria-label={f.title}
+					/>
+				))
+			}
 		</div>
 	</section>
 
@@ -1434,220 +1489,215 @@ const logos = [
 	}
 
 	/* ═══ Swizel for business ══════════════════════════════════════════
-	   Built like the front page of a streaming service: a cover that is
-	   all picture and carries its own line and its own way in, then a
-	   shelf of cards below that you push through. Nothing is boxed,
-	   nothing is centred, and no paragraph stands in for a photograph —
-	   which is exactly what made the old mosaic feel cramped.
+	   Set to the reference, measured off it rather than guessed.
+
+	   Both rows run edge to edge: the body's own side padding is given
+	   back with a negative margin, which is exact and, unlike 100vw,
+	   cannot open a horizontal scrollbar of its own.
+
+	   Reference geometry, as fractions of the full width:
+	     live card   68.6%, 1.875 : 1
+	     gap             8px, everywhere — between cards, between rows
+	     belt tile   25.7%, 16 : 9  (≈ 40% of the card's height)
+	   The neighbours are the same height as the live card and simply sit
+	   back; nothing is scaled down.
 	   ══════════════════════════════════════════════════════════════════ */
 	.bd-biz {
-		--biz-gutter: clamp(1rem, 4vw, 2.5rem);
-		max-width: 92rem;
-		margin: 0 auto clamp(3rem, 8vw, 6rem);
-		padding-inline: var(--biz-gutter);
+		--bz-pad: clamp(1rem, 3vw, 2rem); /* == .bdbody's own side padding */
+		--bz-gap: 8px;
+		/* A viewport length, not a percentage. The scroller's own side
+		   padding is (100% - --bz-w) / 2, so a percentage here would be
+		   resolved against a content box that percentage had just shrunk
+		   — the card came out at 0.686² of the row instead of 0.686. */
+		--bz-w: 68.6vw;
+		--bz-tile: 25.7vw;
+		margin: 0 auto clamp(3.4rem, 8vw, 6rem);
 	}
+	.bz-reel,
+	.bz-belt { margin-inline: calc(-1 * var(--bz-pad)); }
 
-	/* ── the cover ────────────────────────────────────────────────────── */
-	.bd-cover {
-		position: relative;
-		margin: 0;
-		border-radius: clamp(1rem, 2vw, 1.7rem);
-		overflow: hidden;
-		background: #04060c;
-		box-shadow:
-			inset 0 1px 0 rgba(255, 255, 255, 0.12),
-			var(--bd-shadow);
+	/* ── the title ── */
+	.bd-biz-top {
+		max-width: 46rem;
+		margin: 0 auto clamp(1.6rem, 4vw, 2.6rem);
+		text-align: center;
 	}
-	/* the player keeps its own seven layers to itself, so the veil and the
-	   words can sit cleanly on top of all of them */
-	.bd-cover-film :global(.flm) {
-		isolation: isolate;
-		border-radius: inherit;
-	}
-	.bd-cover-veil {
-		position: absolute;
-		inset: 34% 0 0;
-		z-index: 2;
-		pointer-events: none;
-		background: linear-gradient(
-			to top,
-			rgba(3, 5, 11, 0.9) 0%,
-			rgba(3, 5, 11, 0.62) 34%,
-			rgba(3, 5, 11, 0.18) 68%,
-			transparent 100%
-		);
-	}
-	.bd-cover-plate {
-		position: absolute;
-		z-index: 3;
-		left: clamp(1.2rem, 3.4vw, 3.2rem);
-		right: clamp(1.2rem, 3.4vw, 3.2rem);
-		/* clear of the player's control row, which starts 67px off the floor
-		   of the frame — the 41px above it is only the bar's own gradient,
-		   which the words may sit over. Measured, not guessed. */
-		bottom: clamp(4.8rem, 6vw, 6.4rem);
-		display: flex;
-		flex-direction: column;
-		align-items: flex-start;
-		gap: clamp(0.55rem, 1.2vw, 0.9rem);
-		pointer-events: none;
-	}
-	/* the pill: the only thing on the cover you can press */
-	.bd-cover-pill {
-		pointer-events: auto;
-		display: inline-flex;
-		align-items: center;
-		min-height: 2.6rem;
-		padding: 0 1.45rem;
-		border-radius: 999px;
-		/* white, not the accent: this pill has to stay legible over whatever
-		   frame the film happens to be showing behind it */
-		background: #fff;
-		color: #06080f;
-		font-size: 0.92rem;
-		font-weight: 650;
-		letter-spacing: -0.005em;
-		white-space: nowrap;
-		transition: transform 0.25s ease, filter 0.25s ease;
-	}
-	.bd-cover-pill:hover { transform: translateY(-2px); filter: brightness(1.08); }
-	.bd-cover-plate .bd-cover-pill { margin-top: clamp(0.4rem, 1vw, 0.75rem); }
-	.bd-cover-kick {
-		font-size: 0.66rem;
+	.bd-biz-title {
+		margin: 0.7rem 0 0;
+		font-size: clamp(2.1rem, 5vw, 3.9rem);
 		font-weight: 800;
-		letter-spacing: 0.24em;
-		text-transform: uppercase;
-		color: rgba(255, 255, 255, 0.72);
-	}
-	.bd-cover-h {
-		margin: 0;
-		max-width: 22ch;
-		color: #fff;
-		font-size: clamp(1.6rem, 3.1vw, 2.9rem);
-		font-weight: 800;
-		line-height: 1.04;
-		letter-spacing: -0.035em;
+		letter-spacing: -0.04em;
+		line-height: 1;
 		text-wrap: balance;
-		text-shadow: 0 2px 24px rgba(0, 0, 0, 0.62);
+		background: linear-gradient(
+			180deg,
+			var(--bd-ink) 0%,
+			color-mix(in srgb, var(--bd-ink) 66%, transparent) 130%
+		);
+		-webkit-background-clip: text;
+		background-clip: text;
+		color: transparent;
+	}
+	.bd-biz-sub {
+		margin: clamp(0.8rem, 1.8vw, 1.05rem) auto 0;
+		max-width: 38rem;
+		font-size: clamp(0.98rem, 1.2vw, 1.08rem);
+		line-height: 1.62;
+		color: var(--bd-muted);
 	}
 
-	/* ── the shelf ────────────────────────────────────────────────────── */
-	.bd-shelf-wrap { margin-top: clamp(0.9rem, 2.2vw, 1.6rem); }
-	.bd-shelf {
+	/* ── the reel ──────────────────────────────────────────────────────
+	   A native scroller with centre snapping, so a phone gets its own
+	   momentum and its own snap for free and the geometry is the same on
+	   every screen: the live card in the middle, its neighbours held at
+	   either edge by the scroller's own padding. */
+	.bz-reel { position: relative; }
+	.bz-track {
 		display: flex;
-		gap: clamp(0.6rem, 1.4vw, 1.1rem);
+		gap: var(--bz-gap);
 		list-style: none;
 		margin: 0;
-		/* the row bleeds past the gutter so the last card runs off the edge
-		   and the shelf reads as longer than the screen */
-		padding: 0 var(--biz-gutter) 0 0;
-		margin-inline: 0 calc(-1 * var(--biz-gutter));
+		padding: 0 calc((100% - var(--bz-w)) / 2);
+		scroll-padding-inline: calc((100% - var(--bz-w)) / 2);
 		overflow-x: auto;
 		overscroll-behavior-x: contain;
 		scroll-snap-type: x mandatory;
 		scrollbar-width: none;
 	}
-	.bd-shelf::-webkit-scrollbar { display: none; }
-	.bd-card {
-		flex: 0 0 min(26rem, 31vw);
-		scroll-snap-align: start;
-	}
-	.bd-card-link {
+	.bz-track::-webkit-scrollbar { display: none; }
+
+	.bz-slide {
 		position: relative;
-		display: block;
-		aspect-ratio: 4 / 3;
-		border-radius: clamp(0.8rem, 1.4vw, 1.2rem);
+		flex: 0 0 var(--bz-w);
+		scroll-snap-align: center;
+		/* the neighbours are full height and simply sit back — no scale,
+		   which is what keeps the three cards reading as one row */
+		opacity: 0.4;
+		transition: opacity 0.55s ease;
+	}
+	.bz-slide.is-live { opacity: 1; }
+
+	.bz-frame {
+		position: relative;
+		aspect-ratio: 1.875;
 		overflow: hidden;
 		background: #04060c;
-		border: 1px solid var(--bd-glass-border);
-		text-decoration: none;
+		border-radius: clamp(0.5rem, 0.9vw, 0.8rem);
 	}
-	.bd-card-img {
+	.bz-poster {
 		position: absolute;
 		inset: 0;
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
-		transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+		transition: opacity 0.6s ease;
 	}
-	.bd-card-link:hover .bd-card-img { transform: scale(1.05); }
-	.bd-card-veil {
+	.bz-slide.is-playing .bz-poster { opacity: 0; }
+
+	/* the player lands here, under the veil and the words */
+	.bz-yt {
+		position: absolute;
+		inset: 0;
+		opacity: 0;
+		transition: opacity 0.7s ease;
+	}
+	.bz-slide.is-playing .bz-yt { opacity: 1; }
+	.bz-yt :global(iframe) {
+		width: 100%;
+		height: 100%;
+		border: 0;
+		/* the film is scenery; every control on this card is ours */
+		pointer-events: none;
+	}
+	.bz-veil {
 		position: absolute;
 		inset: 0;
 		background: linear-gradient(
 			to top,
-			rgba(3, 5, 11, 0.9) 0%,
-			rgba(3, 5, 11, 0.55) 40%,
-			rgba(3, 5, 11, 0.1) 74%,
-			rgba(3, 5, 11, 0.32) 100%
+			rgba(3, 5, 11, 0.86) 0%,
+			rgba(3, 5, 11, 0.4) 26%,
+			rgba(3, 5, 11, 0) 52%
 		);
 	}
-	.bd-card-kick {
+	/* the whole card is the button; the pill is just how it is drawn */
+	.bz-hit {
 		position: absolute;
-		top: clamp(0.9rem, 1.6vw, 1.2rem);
-		left: clamp(1rem, 1.8vw, 1.35rem);
-		font-size: 0.62rem;
-		font-weight: 800;
-		letter-spacing: 0.22em;
-		text-transform: uppercase;
-		color: rgba(255, 255, 255, 0.78);
+		inset: 0;
+		width: 100%;
+		border: 0;
+		background: none;
+		padding: 0;
+		cursor: pointer;
 	}
-	.bd-card-body {
+
+	.bz-meta {
 		position: absolute;
-		inset: auto clamp(1rem, 1.8vw, 1.35rem) clamp(1rem, 1.8vw, 1.35rem);
+		inset: auto var(--bz-edge, clamp(0.8rem, 1.9vw, 1.9rem)) var(--bz-edge, clamp(0.8rem, 1.9vw, 1.9rem));
 		display: flex;
-		align-items: flex-end;
-		justify-content: space-between;
-		gap: 0.9rem;
+		align-items: center;
+		gap: clamp(0.6rem, 1.1vw, 1rem);
+		pointer-events: none;
 	}
-	.bd-card-txt { display: block; min-width: 0; }
-	.bd-card-txt strong {
-		display: block;
-		color: #fff;
-		font-size: clamp(1.02rem, 1.3vw, 1.18rem);
-		font-weight: 700;
-		letter-spacing: -0.015em;
-		line-height: 1.22;
-		text-shadow: 0 1px 14px rgba(0, 0, 0, 0.6);
-	}
-	.bd-card-txt em {
-		display: block;
-		margin-top: 0.3rem;
-		font-style: normal;
-		font-size: 0.8rem;
-		line-height: 1.45;
-		color: rgba(255, 255, 255, 0.7);
-	}
-	.bd-card-pill {
+	.bz-pill {
 		flex: none;
 		display: inline-flex;
 		align-items: center;
-		min-height: 2.05rem;
-		padding: 0 0.95rem;
+		min-height: clamp(2rem, 2.6vw, 2.55rem);
+		padding: 0 clamp(0.9rem, 1.3vw, 1.35rem);
 		border-radius: 999px;
-		border: 1px solid rgba(255, 255, 255, 0.28);
-		background: rgba(255, 255, 255, 0.12);
-		color: #fff;
-		font-size: 0.76rem;
+		background: #fff;
+		color: #06080f;
+		font-size: clamp(0.78rem, 0.95vw, 0.95rem);
 		font-weight: 600;
 		white-space: nowrap;
-		transition: background 0.25s ease, border-color 0.25s ease;
+		transition: transform 0.25s ease;
 	}
-	.bd-card-link:hover .bd-card-pill {
-		background: var(--bd-accent);
-		border-color: var(--bd-accent);
-		color: #04060c;
+	.bz-hit:hover ~ .bz-meta .bz-pill { transform: scale(1.04); }
+	.bz-line {
+		min-width: 0;
+		color: rgba(255, 255, 255, 0.82);
+		font-size: clamp(0.82rem, 1.05vw, 1.05rem);
+		line-height: 1.25;
+		letter-spacing: -0.008em;
+		text-shadow: 0 1px 14px rgba(0, 0, 0, 0.7);
 	}
+	.bz-line strong { color: #fff; font-weight: 700; }
+	.bz-sep { margin: 0 0.15rem; opacity: 0.6; }
+
+	/* sound sits on the card, out of the picture's way */
+	.bz-sound {
+		position: absolute;
+		top: clamp(0.7rem, 1.5vw, 1.3rem);
+		right: clamp(0.7rem, 1.5vw, 1.3rem);
+		display: grid;
+		place-items: center;
+		width: 2.2rem;
+		aspect-ratio: 1;
+		padding: 0;
+		border-radius: 50%;
+		border: 1px solid rgba(255, 255, 255, 0.3);
+		background: rgba(6, 9, 16, 0.5);
+		color: #fff;
+		font-size: 0.95rem;
+		cursor: pointer;
+		opacity: 0;
+		transition: opacity 0.4s ease, background 0.3s ease;
+	}
+	.bz-slide.is-live.is-playing .bz-sound { opacity: 1; }
+	.bz-sound:hover { background: rgba(6, 9, 16, 0.8); }
+	.bz-sound .bz-s-b { display: none; }
+	.bz-slide.is-loud .bz-sound .bz-s-a { display: none; }
+	.bz-slide.is-loud .bz-sound .bz-s-b { display: block; }
 
 	/* ── the pager ── */
-	.bd-shelf-dots {
+	.bz-dots {
 		display: flex;
 		justify-content: center;
-		gap: 0.55rem;
-		margin-top: clamp(1.1rem, 2.4vw, 1.7rem);
+		align-items: center;
+		gap: 0.5rem;
+		margin-top: clamp(0.9rem, 1.6vw, 1.3rem);
 	}
-	.bd-shelf-dots[hidden] { display: none; }
-	.bd-shelf-dot {
+	.bz-dot {
 		width: 7px;
 		height: 7px;
 		padding: 0;
@@ -1655,66 +1705,110 @@ const logos = [
 		border-radius: 50%;
 		background: var(--bd-glass-border);
 		cursor: pointer;
-		transition: background 0.25s ease, transform 0.25s ease;
+		transition: background 0.25s ease, width 0.35s ease;
 	}
-	.bd-shelf-dot:hover { background: var(--bd-muted); }
-	.bd-shelf-dot.is-on {
+	.bz-dot:hover { background: var(--bd-muted); }
+	.bz-dot.is-on {
+		width: 22px;
+		border-radius: 999px;
 		background: var(--bd-accent);
-		transform: scale(1.25);
 	}
 
+	/* ── the belt ──────────────────────────────────────────────────────
+	   Edge to edge and continuous. The list is laid twice and the track
+	   walks exactly half its own width, so the seam never shows. */
+	.bz-belt {
+		margin-top: var(--bz-gap);
+		overflow: hidden;
+	}
+	.bz-belt-track {
+		display: flex;
+		width: max-content;
+		gap: var(--bz-gap);
+		animation: bz-belt 72s linear infinite;
+	}
+	.bz-belt:hover .bz-belt-track,
+	.bz-belt:focus-within .bz-belt-track { animation-play-state: paused; }
+	@keyframes bz-belt {
+		to { transform: translateX(calc(-50% - var(--bz-gap) / 2)); }
+	}
+	.bz-tile {
+		position: relative;
+		flex: none;
+		width: var(--bz-tile);
+		aspect-ratio: 16 / 9;
+		overflow: hidden;
+		border-radius: clamp(0.5rem, 0.9vw, 0.8rem);
+		background: #04060c;
+		text-decoration: none;
+	}
+	.bz-tile-img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: 50% 0;
+		transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.bz-tile:hover .bz-tile-img { transform: scale(1.06); }
+	.bz-tile-veil {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(
+			to top,
+			rgba(3, 5, 11, 0.88) 0%,
+			rgba(3, 5, 11, 0.4) 32%,
+			transparent 62%
+		);
+	}
+	.bz-tile-cap {
+		position: absolute;
+		inset: auto 0 0;
+		padding: clamp(0.6rem, 1.1vw, 0.95rem) clamp(0.7rem, 1.2vw, 1.1rem);
+	}
+	.bz-tile-cap strong {
+		display: block;
+		color: #fff;
+		font-size: clamp(0.8rem, 0.95vw, 0.95rem);
+		font-weight: 650;
+		letter-spacing: -0.012em;
+		line-height: 1.2;
+	}
+	.bz-tile-cap em {
+		display: block;
+		margin-top: 0.15rem;
+		font-style: normal;
+		font-size: clamp(0.66rem, 0.75vw, 0.74rem);
+		letter-spacing: 0.02em;
+		color: rgba(255, 255, 255, 0.66);
+	}
+
+	/* The belt is measured against the width of the row, so at narrow
+	   widths a percentage tile would shrink to a stamp. Below these
+	   points it is pinned to the viewport instead, which is what the
+	   reference does on a phone: a little over two tiles across. */
 	@media (max-width: 1100px) {
-		.bd-card { flex: 0 0 min(23rem, 62vw); }
-		/* below this the card is too narrow to carry its line and its pill
-		   on the same row without the title breaking, so they stack */
-		.bd-card-body {
-			flex-direction: column;
-			align-items: flex-start;
-			gap: 0.7rem;
-		}
+		.bd-biz { --bz-w: 74vw; --bz-tile: 33vw; }
 	}
 	@media (max-width: 700px) {
-		/* On a phone a 16/9 cover is too shallow to hold a headline above
-		   the player's own bar, so the words step out from under the
-		   picture and stand on their own. */
-		.bd-cover { background: transparent; box-shadow: none; overflow: visible; }
-		.bd-cover-film :global(.flm) {
-			border-radius: clamp(0.8rem, 3vw, 1.1rem);
-			box-shadow: var(--bd-shadow);
+		.bd-biz { --bz-w: 82vw; --bz-tile: 62vw; }
+		.bz-belt-track { animation-duration: 52s; }
+		.bz-meta {
+			--bz-edge: 0.7rem;
+			gap: 0.55rem;
 		}
-		.bd-cover-veil { display: none; }
-		.bd-cover-plate {
-			position: static;
-			inset: auto;
-			margin-top: clamp(1.1rem, 4vw, 1.5rem);
-			gap: 1rem;
+		.bz-line {
+			display: -webkit-box;
+			-webkit-line-clamp: 2;
+			-webkit-box-orient: vertical;
+			overflow: hidden;
 		}
-		.bd-cover-kick { color: var(--bd-accent); }
-		/* off the picture the pill has the page behind it, and a white pill
-		   on a white page is no pill at all */
-		.bd-cover-pill {
-			background: var(--bd-accent);
-			color: #04101a;
-		}
-		.bd-cover-h {
-			max-width: none;
-			color: var(--bd-ink);
-			text-shadow: none;
-		}
-		/* a phone card is square, and its words stack: side by side the
-		   title wraps to two lines and the pill sits on top of it */
-		.bd-card { flex: 0 0 78vw; }
-		.bd-card-link { aspect-ratio: 1 / 1; }
-		.bd-card-body {
-			flex-direction: column;
-			align-items: flex-start;
-			gap: 0.75rem;
-		}
-		.bd-card-txt em { font-size: 0.82rem; }
 	}
 	@media (prefers-reduced-motion: reduce) {
-		.bd-card-img,
-		.bd-card-link:hover .bd-card-img,
-		.bd-cover-pill:hover { transition: none; transform: none; }
+		.bz-belt-track { animation: none; }
+		.bz-slide,
+		.bz-tile-img,
+		.bz-poster { transition: none; }
 	}
 </style>
