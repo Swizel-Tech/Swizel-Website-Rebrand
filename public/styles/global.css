@@ -635,15 +635,18 @@ body:has(.hero-view) .hero-view {
 .site-header nav:not(.m-nav-links) a { position: relative; transition: color 0.25s ease; }
 .site-header nav:not(.m-nav-links) a:hover,
 .site-header nav:not(.m-nav-links) a.active { color: var(--nav-active); }
+/* colour alone leaves it to the eye to notice a hue shift; weight says it
+   outright, and works in every world whatever the accent happens to be */
+.site-header nav:not(.m-nav-links) a.active { font-weight: 700; }
 .site-header nav:not(.m-nav-links) a::after {
   content: '';
   position: absolute;
   left: 0;
   bottom: -6px;
   width: 0;
-  height: 2px;
+  height: 3px;
   border-radius: 2px;
-  background: linear-gradient(90deg, #18debe, #28a6ec);
+  background: var(--nav-active-grad, linear-gradient(90deg, #18debe, #28a6ec));
   transition: width 0.3s ease;
 }
 .site-header nav:not(.m-nav-links) a:hover::after,
@@ -936,13 +939,20 @@ html[data-view="studio"] .hero-studio .btn--accent {
    Refinements: nav active deep-blue, per-view cursors, back-to-top
    ========================================================= */
 /* The nav highlight is the world's own colour, not one house blue.
-   Deep enough to read on the white bar, bright enough on the dark one. */
-:root { --nav-active: #14589b; }
+   Deep enough to read on the white bar, bright enough on the dark one.
+
+   These used to be dark, saturated versions — which read beautifully
+   against white but sat only 2.6:1 away from the near-black the other
+   links wear, so the selected page did not look selected. They are
+   brighter now: still 4.7:1 or better on the bar, but 4:1 clear of the
+   ordinary ink, which is the number that decides whether you can see
+   which page you are on. */
+:root { --nav-active: #0b78c4; }
 html.dark { --nav-active: #86e2ef; }
-html[data-view='boardroom'] { --nav-active: #14589b; }
+html[data-view='boardroom'] { --nav-active: #0b78c4; }
 html[data-view='builder'] { --nav-active: #0b8e7c; }
-html[data-view='founder'] { --nav-active: #6d3fd6; }
-html[data-view='studio'] { --nav-active: #be1862; }
+html[data-view='founder'] { --nav-active: #8245f5; }
+html[data-view='studio'] { --nav-active: #d81b6a; }
 html[data-view='campus'] { --nav-active: #b45309; }
 /* The campus page is cream, so a pure-white bar sat off it like a sticker.
    A breath of warmth in the daylight bar only — the other four worlds keep
@@ -970,12 +980,19 @@ html.dark[data-view='campus'] { --nav-active: #fbbf24; }
 .site-header nav:not(.m-nav-links) a.active::after { background: var(--nav-active-grad); }
 
 /* The daylight bar needs its own set: without these, every world fell back
-   to the root teal-to-blue, which is the blue that kept showing up. */
-html[data-view='boardroom'] { --nav-active-grad: linear-gradient(95deg, #14589b, #0b8e7c); }
-html[data-view='builder'] { --nav-active-grad: linear-gradient(95deg, #0b8e7c, #14589b); }
-html[data-view='founder'] { --nav-active-grad: linear-gradient(95deg, #6d3fd6, #b32a86); }
-html[data-view='studio'] { --nav-active-grad: linear-gradient(95deg, #be1862, #7c3aed); }
-html[data-view='campus'] { --nav-active-grad: linear-gradient(95deg, #b45309, #d9534f); }
+   to the root teal-to-blue, which is the blue that kept showing up.
+
+   These are the colours the selected page actually wears — the link is a
+   gradient clipped to its own letterforms, so --nav-active barely shows.
+   They used to be deep and desaturated, which reads well on white but
+   sits close to the near-black the other links wear, and the page you
+   were on did not announce itself. Brighter and more saturated now, and
+   still comfortably legible on a pale bar. */
+html[data-view='boardroom'] { --nav-active-grad: linear-gradient(95deg, #0b78c4, #0f8f7c); }
+html[data-view='builder'] { --nav-active-grad: linear-gradient(95deg, #0b8e7c, #0b78c4); }
+html[data-view='founder'] { --nav-active-grad: linear-gradient(95deg, #8245f5, #c22a8c); }
+html[data-view='studio'] { --nav-active-grad: linear-gradient(95deg, #e01d70, #9350f7); }
+html[data-view='campus'] { --nav-active-grad: linear-gradient(95deg, #b85608, #c9504a); }
 
 /* Same law as the links above, applied to the CTA, which was the one thing
    left in the bar still wearing the house teal in every world. Only campus
