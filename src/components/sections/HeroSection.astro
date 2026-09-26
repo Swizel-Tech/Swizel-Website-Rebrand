@@ -48,6 +48,19 @@ const slides = [
 		alt: 'Four Swizel engineers around the table in Abuja, mid build',
 		pos: '50% 38%',
 	},
+	{
+		// The builder world's hero film, running as a backdrop. It is a
+		// YouTube id, so it mounts as an iframe the first time this frame
+		// comes up and never before — see boardroomHero.ts. The still
+		// underneath carries the frame until it does, and carries it
+		// permanently where autoplay or motion is unwelcome.
+		id: 'film',
+		kind: 'yt' as const,
+		ytId: 'R2jdjZwv-ZE',
+		src: '/images/builder/at-the-keys.jpg',
+		alt: 'Inside a Swizel build — the engineers, the stack and the ship',
+		pos: '50% 42%',
+	},
 ];
 
 // the one thing the cover says, and the verb that turns inside it
@@ -89,7 +102,12 @@ const sectors = [
 					aria-hidden="true"
 				>
 					<div class="hero--media">
-						{s.kind === 'film' ? (
+						{s.kind === 'yt' ? (
+							<>
+								<img class="hero--img" src={s.src} alt={s.alt} style={`object-position:${s.pos}`} loading="lazy" decoding="async" />
+								<div class="hero--yt" data-bh-yt={s.ytId} aria-hidden="true" />
+							</>
+						) : s.kind === 'film' ? (
 							<>
 								<video
 									class="hero--film"
@@ -126,10 +144,10 @@ const sectors = [
 
 	<!-- ── the plate: said once, and left alone ── -->
 	<div class="hero--plate">
-		<span class="hero--kicker">Swizel Technologies Ltd · Est. 2019</span>
+		<span class="hero--kicker">Swizel Tech Ltd · Est. 2019</span>
 
 		<h1 class="hero--display rhead">
-			<span class="hero--l1">You imagine it.</span>
+			<span class="hero--l1">You imagine.</span>
 			<span class="hero--l2">
 				We{' '}
 				<span class="hero--rot" aria-hidden="true">
@@ -137,10 +155,9 @@ const sectors = [
 						{VERBS.map((wd) => <i>{wd}</i>)}
 						<i>{VERBS[0]}</i>
 					</span>
-				</span>{' '}
-				it.
+				</span>
 			</span>
-			<span class="sr-only">We build, design, ship, scale and grow it.</span>
+			<span class="sr-only">We build, design, ship, scale and grow.</span>
 		</h1>
 
 		<div class="hero--cta">
@@ -149,9 +166,9 @@ const sectors = [
 				<Icon width={16} name="mdi:arrow-right" />
 			</a>
 			<a href="/portfolio" class="hero--secondary">See the work</a>
-			<button class="hero--tour" type="button" data-tour-start="boardroom">
-				<Icon width={15} name="mdi:compass-outline" />
-				Take the tour
+			<button class="hero--tour" type="button" data-tour-start="boardroom" aria-label="Take the tour">
+				<Icon width={14} name="mdi:map-marker-path" />
+				Tour
 			</button>
 		</div>
 	</div>
@@ -298,6 +315,32 @@ const sectors = [
 	}
 	/* the still sits under the film and shows through until it plays */
 	.hero--film { z-index: 1; background: #04060e; }
+	/* A YouTube backdrop. The iframe cannot be object-fit, so it is given
+	   the smallest 16/9 box that still covers the frame and centred, with
+	   the overflow clipped by .hero--media. It never takes a click:
+	   everything here is scenery. */
+	.hero--yt {
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+		overflow: hidden;
+		opacity: 0;
+		transition: opacity 0.8s ease;
+	}
+	.hero--yt.is-live { opacity: 1; }
+	.hero--yt :global(iframe) {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: max(100%, 177.78vh);
+		height: max(100%, 56.25vw);
+		min-width: 100%;
+		min-height: 100%;
+		max-width: none;
+		transform: translate(-50%, -50%);
+		border: 0;
+		pointer-events: none;
+	}
 	/* a very slow push in, so the frame is alive without moving anything
 	   the eye has to track */
 	.hero--slide.is-on .hero--img,
@@ -364,33 +407,17 @@ const sectors = [
 		text-transform: uppercase;
 		color: rgba(255, 255, 255, 0.62);
 	}
-	/* ── glass ──────────────────────────────────────────────────
-	   The letterforms are a pane, not paint: a thin translucent body you
-	   read the photograph through, a lit rim where the edge catches the
-	   light, and a soft drop beneath so the pane sits above the picture
-	   rather than in it. `paint-order` puts the rim behind the body, so
-	   the counters stay open and the type keeps its shape at size.
-
-	   It is a real trade: translucent type cannot measure the way solid
-	   white does. The rim carries the legibility, the kicker and the
-	   buttons stay solid, and nothing the page has to say depends on
-	   reading this through the glass alone. */
+	/* Solid again. The pane was handsome up close and too faint at a
+	   glance — a cover has to land from across the room. */
 	.hero--display {
 		margin: clamp(0.7rem, 1.6vh, 1.1rem) 0 0;
 		font-size: clamp(2.5rem, 6vw, 5.2rem);
 		font-weight: 800;
 		letter-spacing: -0.04em;
 		line-height: 0.96;
-		color: rgba(255, 255, 255, 0.11);
-		/* the rim never drops below a hair, however small the type gets */
-		-webkit-text-stroke: max(1px, 0.021em) rgba(255, 255, 255, 0.97);
-		paint-order: stroke fill;
+		color: #ffffff;
 		text-wrap: balance;
-		text-shadow:
-			/* the bloom a lit edge throws onto what is behind it */
-			0 0 0.55em rgba(255, 255, 255, 0.14),
-			0 0.13em 0.42em rgba(4, 6, 14, 0.6),
-			0 0.02em 0.1em rgba(4, 6, 14, 0.55);
+		text-shadow: 0 0.04em 0.5em rgba(4, 6, 14, 0.55), 0 0.01em 0.08em rgba(4, 6, 14, 0.45);
 	}
 	/* never more than two lines: past that the cover stops being a cover */
 	.hero--display :global(.hero--l1),
@@ -402,9 +429,9 @@ const sectors = [
 		white-space: nowrap;
 		text-overflow: clip;
 	}
-	/* the answering line is the same glass, its rim one step softer */
+	/* the answering line, one step back from the first */
 	.hero--display :global(.hero--l2),
-	.hero--l2 { -webkit-text-stroke-color: rgba(255, 255, 255, 0.78); }
+	.hero--l2 { color: rgba(255, 255, 255, 0.82); }
 
 	/* ── the verb, on a reel of its own ──
 	   A fixed window with the words stacked behind it; the track steps
@@ -431,12 +458,10 @@ const sectors = [
 		height: 1.16em;
 		line-height: 1.16em;
 		font-style: normal;
-		/* The jewel keeps its gold and keeps its body: solid where the
-		   rest is glass, so the word that changes is the one thing your
-		   eye lands on. */
-		-webkit-text-stroke: 0;
-		text-shadow: 0 0.14em 0.4em rgba(4, 6, 14, 0.5);
-		background: linear-gradient(100deg, #ffffff 6%, #f0e0bd 28%, var(--gold) 56%, #ffe9bd 78%, #ffffff 96%);
+		/* The word that changes is the one thing the eye lands on, and it
+		   wears the house colour: Swizel's sky blue, lit through white. */
+		text-shadow: 0 0.04em 0.5em rgba(4, 6, 14, 0.5);
+		background: linear-gradient(100deg, #ffffff 4%, #cfeaff 24%, var(--acc) 54%, #8fd4ff 76%, #ffffff 96%);
 		-webkit-background-clip: text;
 		background-clip: text;
 		color: transparent;
@@ -635,24 +660,29 @@ const sectors = [
 	/* The third button. It stands in the row with the other two but a
 	   weight quieter — no fill, no border, so the eye still lands on the
 	   white pill first and the tour is simply there for whoever wants it. */
+	/* One word and a mark. It is the third choice, so it keeps the shape
+	   of the other two and none of their weight: a hairline ring, no
+	   fill, and a little more air around the letters than inside them. */
 	.hero--tour {
 		display: inline-flex;
 		align-items: center;
-		gap: 0.45rem;
-		padding: 0.82rem 1.1rem;
+		gap: 0.42rem;
+		padding: 0.62rem 1.15rem;
 		border-radius: 9999px;
-		font-size: 0.9rem;
-		font-weight: 600;
-		color: rgba(255, 255, 255, 0.66);
+		font-size: 0.82rem;
+		font-weight: 550;
+		letter-spacing: 0.06em;
+		color: rgba(255, 255, 255, 0.72);
+		border: 1px solid rgba(255, 255, 255, 0.22);
 		background: transparent;
 		white-space: nowrap;
 		cursor: pointer;
-		transition: color 0.25s ease, gap 0.25s ease, background 0.25s ease;
+		transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease;
 	}
 	.hero--tour:hover {
-		gap: 0.6rem;
 		color: #ffffff;
-		background: rgba(255, 255, 255, 0.08);
+		border-color: rgba(255, 255, 255, 0.5);
+		background: rgba(255, 255, 255, 0.07);
 	}
 
 	/* ══════════════════════════════════════════════════════════════════
@@ -760,9 +790,14 @@ const sectors = [
 			padding: 0.5rem 0.7rem;
 			gap: 0.3rem;
 		}
-		.hero--tour { padding-inline: 0.55rem; }
+		.hero--tour { padding: 0.44rem 0.7rem; letter-spacing: 0.05em; }
 		.hero--primary :global(svg),
 		.hero--tour :global(svg) { width: 13px; height: 13px; }
+		/* the plate sat a long way above the figures; half that gap, but
+		   leave enough that the two never read as one block */
+		/* half the gap it used to keep, with a floor so the shortest
+		   screens never let the type sit on top of the figures */
+		.hero--plate { bottom: max(5.4rem, 10vh); }
 
 		/* the deck keeps one row: the figures, then the two arrows tucked
 		   against the right edge after the last of them */

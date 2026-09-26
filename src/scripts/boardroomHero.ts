@@ -43,6 +43,36 @@ export function initBoardroomHero() {
 
 	// the same beat every other film on the site waits before it speaks up
 	let filmTimer = 0;
+	// ── a YouTube backdrop ──────────────────────────────────────────────
+	// Mounted the first time its frame comes up and not one moment before,
+	// so a visitor who never reaches it never loads it. Muted and looping,
+	// with YouTube's own chrome off and the frame itself out of the hit
+	// test — it is scenery, not a player.
+	const mountYt = (el: HTMLElement) => {
+		const box = el.querySelector<HTMLElement>('[data-bh-yt]');
+		if (!box || reduce || lite()) return;
+		const id = box.dataset.bhYt;
+		if (!id) return;
+		if (!box.querySelector('iframe')) {
+			const f = document.createElement('iframe');
+			f.src =
+				`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=1&loop=1` +
+				`&playlist=${id}&controls=0&modestbranding=1&playsinline=1&rel=0` +
+				`&iv_load_policy=3&disablekb=1&fs=0&showinfo=0`;
+			f.allow = 'autoplay; encrypted-media';
+			f.setAttribute('tabindex', '-1');
+			f.setAttribute('aria-hidden', 'true');
+			f.title = 'Background film';
+			box.appendChild(f);
+		}
+		// a beat to let it start before it is faded up, so the cut from the
+		// still is never a black flash
+		window.setTimeout(() => box.classList.add('is-live'), 900);
+	};
+	const stopYt = (el: HTMLElement) => {
+		el.querySelector<HTMLElement>('[data-bh-yt]')?.classList.remove('is-live');
+	};
+
 	const playFilm = (el: HTMLElement) => {
 		const v = film(el);
 		if (!v || reduce || lite()) return;
@@ -71,8 +101,13 @@ export function initBoardroomHero() {
 				if (on) el.removeAttribute('tabindex');
 				else el.setAttribute('tabindex', '-1');
 			});
-			if (on) playFilm(s);
-			else stopFilm(s);
+			if (on) {
+				playFilm(s);
+				mountYt(s);
+			} else {
+				stopFilm(s);
+				stopYt(s);
+			}
 		});
 		dots.forEach((d, i) => {
 			d.classList.toggle('is-on', i === at);
