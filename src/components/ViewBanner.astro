@@ -14,7 +14,7 @@ const promise: Record<string, string> = {
 	builder: 'Code, live',
 	boardroom: 'ROI & proof',
 	founder: 'Zero → MVP',
-	campus: 'Learn, build, get hired',
+	campus: 'Get hired',
 	studio: 'Bold & visual',
 };
 ---
@@ -115,7 +115,7 @@ const promise: Record<string, string> = {
 		--vw-muted: rgba(20, 22, 40, 0.62);
 		position: relative;
 		overflow: hidden;
-		padding: clamp(2.5rem, 6vw, 4rem) 0 clamp(2rem, 4vw, 3rem);
+		padding: clamp(1.6rem, 3.6vw, 2.5rem) 0 clamp(1.1rem, 2.4vw, 1.7rem);
 		color: var(--vw-ink);
 		/* tint the strip with the active world's accent so it bridges the
 		   hero and the body instead of sitting on cold navy */
@@ -135,8 +135,11 @@ const promise: Record<string, string> = {
 	}
 	.vw-head {
 		text-align: center;
-		max-width: 46rem;
-		margin: 0 auto clamp(1.6rem, 4vw, 2.4rem);
+		/* wide enough that the headline holds one line on a laptop; at
+		   46rem it broke after "THE" and gave back the height this strip
+		   had just been tightened to save */
+		max-width: 72rem;
+		margin: 0 auto clamp(1.05rem, 2.4vw, 1.5rem);
 	}
 	.vw-title {
 		font-family: 'Bebas Neue', sans-serif;
@@ -144,7 +147,7 @@ const promise: Record<string, string> = {
 		line-height: 1;
 		letter-spacing: 1px;
 		text-transform: uppercase;
-		margin: 0 0 0.8rem;
+		margin: 0 0 0.5rem;
 	}
 	.vw-title-accent {
 		position: relative;
@@ -256,7 +259,7 @@ const promise: Record<string, string> = {
 		display: block;
 		width: min(220px, 40%);
 		height: 3px;
-		margin: clamp(0.9rem, 2vw, 1.3rem) auto 0;
+		margin: clamp(0.65rem, 1.3vw, 0.9rem) auto 0;
 		border-radius: 9999px;
 		background: var(--vw-line, rgba(20, 22, 40, 0.12));
 		overflow: hidden;
@@ -530,7 +533,7 @@ const promise: Record<string, string> = {
 
 	.vw-foot {
 		text-align: center;
-		margin: clamp(1.4rem, 3vw, 2rem) 0 0;
+		margin: clamp(0.85rem, 1.7vw, 1.2rem) 0 0;
 		font-size: 0.92rem;
 		color: var(--vw-muted);
 	}

@@ -2129,11 +2129,15 @@ html.perf-lite [class*='orb'] {
 html.perf-lite * {
   will-change: auto !important;
 }
+/* Slow the long-running marquees down on weak hardware. This is a floor,
+   not a fixed speed: a belt that already asks to run slower than 60s keeps
+   its own pace by declaring --marquee-run, or this would quietly speed it
+   up — the exact opposite of what the rule is for. */
 html.perf-lite [class*='parallax'],
 html.perf-lite [class*='marquee'],
 html.perf-lite [class*='belt-track'],
 html.perf-lite [class*='ticker'] {
-  animation-duration: 60s !important;
+  animation-duration: max(60s, var(--marquee-run, 0s)) !important;
 }
 /* the wheels, decks and rails stop turning themselves; they still respond
    to a click, an arrow key or a flick */

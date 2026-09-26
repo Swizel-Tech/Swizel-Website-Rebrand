@@ -77,10 +77,18 @@ const businessFilms = [
 	},
 ];
 
-// The reel opens on the second film, not the first. A row that starts on
-// its own first card has nothing to the left of it, and half the point of
-// this shape is that you can see there is more in both directions.
+// The reel opens on the second film, not the first.
 const FIRST = 1;
+
+// The list is laid three times and the scroll is kept in the middle copy,
+// jumping back by exactly one copy whenever it leaves. That is what makes
+// the row endless: there is no first card and no last one, so a neighbour
+// is always showing at both edges. Only the middle copy is real — the
+// outer two are scenery and carry no player, no button and no label for a
+// screen reader.
+const reelRun = [0, 1, 2].flatMap((copy) =>
+	businessFilms.map((f, real) => ({ ...f, real, copy, ghost: copy !== 1 }))
+);
 
 // The belt below is the portfolio itself — every project that has a
 // picture, in the order the portfolio lists them, so the band stays true
@@ -209,7 +217,7 @@ const logos = [
 			<h2 class="bd-biz-title">Software that pays for itself.</h2>
 			<p class="bd-biz-sub">
 				One senior team designs it, builds it, ships it and keeps it
-				running — so it earns its place on your balance sheet.
+				running, so it keeps paying you back.
 			</p>
 		</header>
 
@@ -217,8 +225,16 @@ const logos = [
 		<div class="bz-reel bd-reveal" data-bz-reel>
 			<ul class="bz-track" data-bz-track>
 				{
-					businessFilms.map((f, i) => (
-						<li class:list={['bz-slide', { 'is-live': i === FIRST }]} data-bz-slide={i}>
+					reelRun.map((f, dom) => (
+						<li
+							class:list={[
+								'bz-slide',
+								{ 'is-live': f.real === FIRST, 'bz-ghost': f.ghost },
+							]}
+							data-bz-dom={dom}
+							data-bz-real={f.real}
+							aria-hidden={f.ghost ? 'true' : undefined}
+						>
 							<div class="bz-frame">
 								<img
 									class="bz-poster"
@@ -228,14 +244,16 @@ const logos = [
 									loading="lazy"
 									decoding="async"
 								/>
-								<span class="bz-yt" data-bz-yt={f.id} />
+								{!f.ghost && <span class="bz-yt" data-bz-yt={f.id} />}
 								<span class="bz-veil" aria-hidden="true" />
-								<button
-									class="bz-hit"
-									type="button"
-									data-bz-pick={i}
-									aria-label={`Watch now: ${f.title}`}
-								/>
+								{!f.ghost && (
+									<button
+										class="bz-hit"
+										type="button"
+										data-bz-pick={f.real}
+										aria-label={`Watch now: ${f.title}`}
+									/>
+								)}
 								<span class="bz-meta">
 									<span class="bz-pill">Watch now</span>
 									<span class="bz-line">
@@ -244,16 +262,18 @@ const logos = [
 										{f.title}
 									</span>
 								</span>
-								<button
-									class="bz-sound"
-									type="button"
-									data-bz-sound={i}
-									aria-pressed="true"
-									aria-label={`Unmute: ${f.title}`}
-								>
-									<Icon name="mdi:volume-off" class="bz-s-a" />
-									<Icon name="mdi:volume-high" class="bz-s-b" />
-								</button>
+								{!f.ghost && (
+									<button
+										class="bz-sound"
+										type="button"
+										data-bz-sound={f.real}
+										aria-pressed="true"
+										aria-label={`Unmute: ${f.title}`}
+									>
+										<Icon name="mdi:volume-off" class="bz-s-a" />
+										<Icon name="mdi:volume-high" class="bz-s-b" />
+									</button>
+								)}
 							</div>
 						</li>
 					))
@@ -537,7 +557,7 @@ const logos = [
 			radial-gradient(800px 460px at 92% 78%, color-mix(in srgb, var(--bd-accent) 9%, transparent), transparent 65%),
 			linear-gradient(180deg, #070910 0%, #0a0d1c 45%, #05060d 100%);
 		color: var(--bd-ink);
-		padding: clamp(3.5rem, 8vw, 6.5rem) clamp(1rem, 3vw, 2rem)
+		padding: clamp(1.9rem, 4.2vw, 3.2rem) clamp(1rem, 3vw, 2rem)
 			clamp(2.5rem, 5vw, 4rem);
 		transition: background 0.4s ease, color 0.4s ease;
 	}
@@ -1509,8 +1529,9 @@ const logos = [
 		   padding is (100% - --bz-w) / 2, so a percentage here would be
 		   resolved against a content box that percentage had just shrunk
 		   — the card came out at 0.686² of the row instead of 0.686. */
-		--bz-w: 68.6vw;
-		--bz-tile: 25.7vw;
+		--bz-w: 74vw;
+		--bz-tile: 32vw;
+		--marquee-run: 110s;
 		margin: 0 auto clamp(3.4rem, 8vw, 6rem);
 	}
 	.bz-reel,
@@ -1518,13 +1539,17 @@ const logos = [
 
 	/* ── the title ── */
 	.bd-biz-top {
-		max-width: 46rem;
-		margin: 0 auto clamp(1.6rem, 4vw, 2.6rem);
+		max-width: min(66rem, 94vw);
+		margin: 0 auto clamp(1.3rem, 3vw, 2.1rem);
 		text-align: center;
 	}
 	.bd-biz-title {
-		margin: 0.7rem 0 0;
-		font-size: clamp(2.1rem, 5vw, 3.9rem);
+		margin: 0.55rem 0 0;
+		/* one line on every screen: the size is tied to the width rather
+		   than allowed to wrap, and 6.1vw is what this face needs to set
+		   these twenty-nine characters inside 94% of the viewport */
+		white-space: nowrap;
+		font-size: min(3.9rem, 6.1vw);
 		font-weight: 800;
 		letter-spacing: -0.04em;
 		line-height: 1;
@@ -1570,12 +1595,17 @@ const logos = [
 		position: relative;
 		flex: 0 0 var(--bz-w);
 		scroll-snap-align: center;
-		/* the neighbours are full height and simply sit back — no scale,
-		   which is what keeps the three cards reading as one row */
-		opacity: 0.4;
+		/* The neighbours are full height and simply sit back; nothing is
+		   scaled, which is what keeps the three cards reading as one row.
+		   0.4 was right over the dark body and all but erased a bright
+		   frame over the light one, so they sit back rather than vanish. */
+		opacity: 0.6;
 		transition: opacity 0.55s ease;
 	}
 	.bz-slide.is-live { opacity: 1; }
+	/* the outer two copies exist so the row has no ends; they light with
+	   their twin so the moment the scroll crosses into one, nothing dims */
+	.bz-ghost { pointer-events: none; }
 
 	.bz-frame {
 		position: relative;
@@ -1725,7 +1755,13 @@ const logos = [
 		display: flex;
 		width: max-content;
 		gap: var(--bz-gap);
-		animation: bz-belt 72s linear infinite;
+		/* longhand, not the shorthand: a var() standing in for the duration
+		   inside `animation:` does not survive every engine, and the belt
+		   silently ran at a duration nobody had written */
+		animation-name: bz-belt;
+		animation-duration: var(--marquee-run);
+		animation-timing-function: linear;
+		animation-iteration-count: infinite;
 	}
 	.bz-belt:hover .bz-belt-track,
 	.bz-belt:focus-within .bz-belt-track { animation-play-state: paused; }
@@ -1789,11 +1825,10 @@ const logos = [
 	   points it is pinned to the viewport instead, which is what the
 	   reference does on a phone: a little over two tiles across. */
 	@media (max-width: 1100px) {
-		.bd-biz { --bz-w: 74vw; --bz-tile: 33vw; }
+		.bd-biz { --bz-w: 79vw; --bz-tile: 40vw; }
 	}
 	@media (max-width: 700px) {
-		.bd-biz { --bz-w: 82vw; --bz-tile: 62vw; }
-		.bz-belt-track { animation-duration: 52s; }
+		.bd-biz { --bz-w: 84vw; --bz-tile: 70vw; --marquee-run: 78s; }
 		.bz-meta {
 			--bz-edge: 0.7rem;
 			gap: 0.55rem;
@@ -1806,7 +1841,7 @@ const logos = [
 		}
 	}
 	@media (prefers-reduced-motion: reduce) {
-		.bz-belt-track { animation: none; }
+		.bz-belt-track { animation-name: none; }
 		.bz-slide,
 		.bz-tile-img,
 		.bz-poster { transition: none; }
