@@ -256,7 +256,14 @@ export function initFilmPlayers(root: ParentNode = document) {
 						},
 						events: {
 							onReady: () => resolve(p),
-							onStateChange: () => paint(),
+							onStateChange: (e: { data: number }) => {
+								// 1 is PLAYING. If it is running and nobody
+								// asked it to, it was a queued call landing
+								// late — or YouTube's own chrome. Either way
+								// the visitor's last instruction wins.
+								if (e?.data === 1 && !want) p.pauseVideo?.();
+								paint();
+							},
 						},
 					});
 				});
@@ -281,10 +288,19 @@ export function initFilmPlayers(root: ParentNode = document) {
 			return api;
 		};
 
+		// What the visitor has asked for, as opposed to what the player
+		// currently happens to be doing. YouTube's API is asynchronous and
+		// queues: a playVideo() issued while the iframe was still coming up
+		// can land AFTER a pauseVideo() the visitor pressed a moment later,
+		// and the film carries on as though the button did nothing. This is
+		// the intent, and onStateChange below re-asserts it.
+		let want = false;
+
 		const start = async () => {
 			const a = await build();
 			if (!a) return;
 			started = true;
+			want = true;
 			film.classList.add('is-started');
 			a.play();
 			paint();
@@ -293,7 +309,13 @@ export function initFilmPlayers(root: ParentNode = document) {
 		const toggle = async () => {
 			if (!started) return start();
 			if (!api) return;
-			api.playing() ? api.pause() : api.play();
+			if (api.playing()) {
+				want = false;
+				api.pause();
+			} else {
+				want = true;
+				api.play();
+			}
 			paint();
 		};
 
@@ -313,6 +335,7 @@ export function initFilmPlayers(root: ParentNode = document) {
 						if (!a) return;
 						a.muted(true);
 						started = true;
+						want = true;
 						film.classList.add('is-started');
 						a.play();
 						paint();
@@ -454,7 +477,10 @@ export function initFilmPlayers(root: ParentNode = document) {
 						if (started) runLoop();
 					} else {
 						stopLoop();
-						if (api?.playing()) api.pause();
+						if (api?.playing()) {
+							want = false;
+							api.pause();
+						}
 						paint();
 					}
 				},

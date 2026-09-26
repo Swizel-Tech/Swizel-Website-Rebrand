@@ -27,12 +27,26 @@ import { Icon } from 'astro-icon/components';
 // poster and it plays itself.
 const slides = [
 	{
+		// The builder world's hero film, running as a backdrop. It is a
+		// YouTube id, so it mounts as an iframe the first time this frame
+		// comes up and never before — see boardroomHero.ts. The still
+		// underneath carries the frame until it does, and carries it
+		// permanently where autoplay or motion is unwelcome.
+		id: 'film',
+		kind: 'yt' as const,
+		ytId: 'R2jdjZwv-ZE',
+		src: '/images/builder/at-the-keys.jpg',
+		alt: 'Inside a Swizel build — the engineers, the stack and the ship',
+		pos: '50% 42%',
+		eager: true,
+	},
+
+	{
 		id: 'team',
 		kind: 'photo' as const,
 		src: '/images/hero-team.jpg',
 		alt: 'The Swizel team — the designers and engineers who build your product with you',
 		pos: '50% 30%',
-		eager: true,
 	},
 	{
 		id: 'studio',
@@ -47,19 +61,6 @@ const slides = [
 		src: '/images/builder/the-table.jpg',
 		alt: 'Four Swizel engineers around the table in Abuja, mid build',
 		pos: '50% 38%',
-	},
-	{
-		// The builder world's hero film, running as a backdrop. It is a
-		// YouTube id, so it mounts as an iframe the first time this frame
-		// comes up and never before — see boardroomHero.ts. The still
-		// underneath carries the frame until it does, and carries it
-		// permanently where autoplay or motion is unwelcome.
-		id: 'film',
-		kind: 'yt' as const,
-		ytId: 'R2jdjZwv-ZE',
-		src: '/images/builder/at-the-keys.jpg',
-		alt: 'Inside a Swizel build — the engineers, the stack and the ship',
-		pos: '50% 42%',
 	},
 ];
 
@@ -660,9 +661,9 @@ const sectors = [
 	/* The third button. It stands in the row with the other two but a
 	   weight quieter — no fill, no border, so the eye still lands on the
 	   white pill first and the tour is simply there for whoever wants it. */
-	/* One word and a mark. It is the third choice, so it keeps the shape
-	   of the other two and none of their weight: a hairline ring, no
-	   fill, and a little more air around the letters than inside them. */
+	/* One word and a mark. It is the third choice, so it takes none of
+	   the weight of the other two: no ring, no fill, just the words —
+	   which is as quiet as an action can be and still be one. */
 	.hero--tour {
 		display: inline-flex;
 		align-items: center;
@@ -673,17 +674,13 @@ const sectors = [
 		font-weight: 550;
 		letter-spacing: 0.06em;
 		color: rgba(255, 255, 255, 0.72);
-		border: 1px solid rgba(255, 255, 255, 0.22);
+		border: 0;
 		background: transparent;
 		white-space: nowrap;
 		cursor: pointer;
-		transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+		transition: color 0.25s ease, gap 0.25s ease;
 	}
-	.hero--tour:hover {
-		color: #ffffff;
-		border-color: rgba(255, 255, 255, 0.5);
-		background: rgba(255, 255, 255, 0.07);
-	}
+	.hero--tour:hover { color: #ffffff; gap: 0.56rem; }
 
 	/* ══════════════════════════════════════════════════════════════════
 	   THE STRIP

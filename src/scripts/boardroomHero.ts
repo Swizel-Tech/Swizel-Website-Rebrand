@@ -50,7 +50,11 @@ export function initBoardroomHero() {
 	// test — it is scenery, not a player.
 	const mountYt = (el: HTMLElement) => {
 		const box = el.querySelector<HTMLElement>('[data-bh-yt]');
-		if (!box || reduce || lite()) return;
+		// Only a stated preference for less motion stops this. It used to
+		// stand down on `perf-lite` too, which is set on any machine with
+		// four cores or less — so on a good number of laptops the film
+		// simply never appeared.
+		if (!box || reduce) return;
 		const id = box.dataset.bhYt;
 		if (!id) return;
 		if (!box.querySelector('iframe')) {

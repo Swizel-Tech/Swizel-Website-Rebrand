@@ -407,6 +407,11 @@ const rates = [0.5, 1, 1.25, 1.5, 2];
 	   nobody could see it. While it is asking to be pressed, the bar
 	   stays up. */
 	.flm__bar:has(.is-mutehint) { opacity: 1; transform: none; }
+	/* Full screen: the transport stays up. YouTube's own chrome is out of
+	   the hit test, so ours is the only way to stop the film — it must
+	   never be the thing that is hidden. */
+	.flm__screen:fullscreen .flm__bar,
+	.flm__screen:-webkit-full-screen .flm__bar { opacity: 1; transform: none; }
 
 	.flm__row {
 		display: flex;
