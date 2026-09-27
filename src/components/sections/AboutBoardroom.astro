@@ -5,6 +5,7 @@
 // always reads as "Swizel for business", whatever view the visitor last chose.
 import { Icon } from 'astro-icon/components';
 import { teamDetails, CORE_VALUES, MISSION, MISSION_SUPPORT, VISION } from '../../consts';
+import FilmPlayer from '../FilmPlayer.astro';
 
 // Years in business, computed from the founding year so it self-increments
 // every year (build-time value; a tiny runtime script below also corrects it).
@@ -236,211 +237,154 @@ const currentYear = new Date().getFullYear();
 ---
 
 <div class="bdbody bd-about view-body view-body-boardroom">
-	<!-- ── Hero — immersive, two-column, alive ─────────────── -->
-	<header class="bd-about-hero bd-reveal">
-		<span class="bd-hero-aurora" aria-hidden="true"></span>
-		<span class="bd-hero-orbs" aria-hidden="true">
-			<i style="--x:8%; --d:0s; --s:1.1"></i>
-			<i style="--x:24%; --d:-3s; --s:0.7"></i>
-			<i style="--x:62%; --d:-6s; --s:1.3"></i>
-			<i style="--x:82%; --d:-2s; --s:0.85"></i>
-			<i style="--x:92%; --d:-8s; --s:1"></i>
-		</span>
+	<!-- ═══ About, told the way Apple tells a product ══════════════════
+	     Studied off apple.com/tv-home rather than guessed at. The rhythm
+	     there is always the same four beats: a small label, a short
+	     headline with a full stop, one line of support, then a solid pill
+	     beside a plain text link — and the picture underneath, carrying
+	     the panel. Panels alternate deep and pale. Nothing is decorated
+	     that a photograph could say instead.
+	     ══════════════════════════════════════════════════════════════ -->
 
-		<div class="bd-hero-grid">
-			<div class="bd-hero-text">
-				<span class="bd-hero-overline"><i></i>About Swizel</span>
-				<h1 class="bd-display bd-about-h1">
-					<span data-years-since={FOUNDED_YEAR}>{yearsWord}</span> years building the software
-					<span class="bd-grad">Africa runs on.</span>
-				</h1>
-				<p class="bd-sub">
-					Swizel is one product team, designers, engineers, analysts
-					and marketers, turning ambitious ideas into software that
-					ships, scales and keeps earning long after launch.
-				</p>
-				<div class="bd-links">
-					<a href="/contact" class="bd-pill">Start a project</a>
-					<a href="#bd-team" class="bd-link">
-						Meet the team
-						<Icon width={15} name="mdi:chevron-down" />
-					</a>
-				</div>
-			</div>
-
-			<div class="bd-hero-stage">
-				<div class="bd-hero-chip bd-hero-chip--tr">
-					<strong>65+</strong>
-					<span>products shipped</span>
-				</div>
-				<div class="bd-hero-team-card">
-					<div class="bd-hero-faces">
-						{
-							team.slice(0, 6).map((t) => (
-								<span class="bd-hero-face">
-									<img src={`/teammates/${t.name}.jpg`} alt="" loading="lazy" />
-								</span>
-							))
-						}
-						<span class="bd-hero-face bd-hero-face--more">
-							<Icon width={20} name="mdi:plus" />
-						</span>
-					</div>
-					<strong class="bd-hero-team-n">Outstanding specialists</strong>
-					<span class="bd-hero-team-s">around the globe · since 2019</span>
-					<a href="#bd-team" class="bd-link bd-hero-team-go">
-						Meet a few
-						<Icon width={14} name="mdi:arrow-down" />
-					</a>
-				</div>
-				<div class="bd-hero-chip bd-hero-chip--bl">
-					<strong>Global</strong>
-					<span>clients worldwide</span>
-				</div>
-			</div>
+	<!-- ── the opening: centred, sparse, one thing to read ── -->
+	<header class="ab-hero bd-reveal">
+		<span class="ab-kick">About Swizel</span>
+		<h1 class="ab-h1">
+			<span data-years-since={FOUNDED_YEAR}>{yearsWord}</span> years building
+			<em>the software Africa runs on.</em>
+		</h1>
+		<p class="ab-lede">
+			One product team. Designers, engineers, analysts and marketers,
+			turning ambitious ideas into software that ships, scales and keeps
+			earning long after launch.
+		</p>
+		<div class="ab-acts">
+			<a href="/contact" class="ab-pill">Start a project</a>
+			<a href="#bd-team" class="ab-more">
+				Meet the team
+				<Icon width={14} name="mdi:chevron-right" />
+			</a>
 		</div>
-
-		<span class="bd-scroll-cue" aria-hidden="true">
-			<Icon width={20} name="mdi:chevron-down" />
-		</span>
+		<ul class="ab-glance" aria-label="Swizel at a glance">
+			{
+				glance.map((g) => (
+					<li>
+						<strong>{g.v}</strong>
+						<span>{g.k}</span>
+					</li>
+				))
+			}
+		</ul>
 	</header>
 
-	<!-- ── Origin story — split, editorial ─────────────────── -->
-	<div class="bd-grid">
-		<section class="bd-tile bd-tile--row bd-about-story bd-reveal" data-cursor="clock">
-			<div class="bd-tile-copy">
-				<span class="bd-eyebrow">Our story</span>
-				<h2 class="bd-h">It started with a stubborn belief.</h2>
-				<p class="bd-p">
-					That businesses across Africa deserved software as good as
-					anything built anywhere else, fast, beautiful and built to
-					last. So in 2019 a small team set out to prove it, one product
-					at a time.
-				</p>
-				<p class="bd-p">
-					We never wanted to be a vendor you hire and forget. We wanted
-					to be the team you call first, the one that designs the idea,
-					builds it, takes it to market, and stays to grow it. Sixty-five
-					products later, that is still exactly what we do.
-				</p>
-				<a href="#bd-timeline" class="bd-link">
-					How we got here
-					<Icon width={15} name="mdi:chevron-right" />
+	<!-- ── the film, on the big screen ── -->
+	<section class="ab-film bd-reveal" data-cursor="video">
+		<h2 class="ab-h2">
+			You have an idea.
+			<span>We have the technology.</span>
+		</h2>
+		<figure class="ab-screen">
+			<FilmPlayer
+				videoId="p563SFG9Nwg"
+				label="You have an idea? We have the technology to help you build it"
+				fallback="/images/builder/the-table.jpg"
+				class="ab-screen-film"
+			/>
+			<figcaption class="ab-screen-badge">
+				<Icon width={15} name="mdi:play-circle-outline" />
+				<span>Swizel</span>
+				<em>the film</em>
+			</figcaption>
+		</figure>
+	</section>
+
+	<!-- ── our story: one wide panel, the picture doing the talking ── -->
+	<section class="ab-wide is-deep bd-reveal" data-cursor="clock">
+		<div class="ab-wide-copy">
+			<span class="ab-kick">Our story</span>
+			<h2 class="ab-h2">It started with a stubborn belief.</h2>
+			<p class="ab-line">
+				That businesses across Africa deserved software as good as anything
+				built anywhere else. In 2019 a small team set out to prove it, one
+				product at a time, and never wanted to be the vendor you hire and
+				forget.
+			</p>
+			<div class="ab-acts">
+				<a href="#bd-timeline" class="ab-pill">How we got here</a>
+				<a href="/portfolio" class="ab-more">
+					See the work
+					<Icon width={14} name="mdi:chevron-right" />
 				</a>
 			</div>
-			<div class="bd-media bd-media--tall">
-				<span class="bd-media-sheen" aria-hidden="true"></span>
-				<Icon width={26} name="mdi:image-outline" />
-				<span class="bd-media-label">Image placeholder</span>
-				<span class="bd-media-sub">The founding team, 2019</span>
+		</div>
+		<div class="ab-wide-shot">
+			<img
+				src="/images/hero-team.jpg"
+				alt="The Swizel team"
+				loading="lazy"
+				decoding="async"
+			/>
+		</div>
+	</section>
+
+	<!-- ── mission and vision, the two-up ── -->
+	<div class="ab-pair">
+		<article class="ab-panel is-pale bd-reveal">
+			<div class="ab-panel-copy">
+				<span class="ab-kick">Mission</span>
+				<h3 class="ab-h3">From launch to legacy.</h3>
+				<p class="ab-line">{MISSION}</p>
+				<p class="ab-line ab-line--sm">Bold ideas into products people love.</p>
+				<div class="ab-acts">
+					<a href="/services" class="ab-pill">What we do</a>
+					<a href="/contact" class="ab-more">
+						Talk to us
+						<Icon width={14} name="mdi:chevron-right" />
+					</a>
+				</div>
 			</div>
-		</section>
+			<div class="ab-panel-shot">
+				<img src="/images/builder/the-table.jpg" alt="" style="object-position:50% 40%" loading="lazy" decoding="async" />
+			</div>
+		</article>
+
+		<article class="ab-panel is-deep bd-reveal">
+			<div class="ab-panel-copy">
+				<span class="ab-kick">Vision</span>
+				<h3 class="ab-h3">Great products, from anywhere.</h3>
+				<p class="ab-line">{VISION} Six bases, ten countries and counting.</p>
+				<p class="ab-line ab-line--sm">Great products can come from anywhere.</p>
+				<div class="ab-acts">
+					<a href="#bd-numbers" class="ab-pill">The numbers</a>
+					<a href="/portfolio" class="ab-more">
+						Where we work
+						<Icon width={14} name="mdi:chevron-right" />
+					</a>
+				</div>
+			</div>
+			<div class="ab-panel-shot">
+				<img src="/images/campus/demo-day.jpg" alt="" style="object-position:50% 34%" loading="lazy" decoding="async" />
+			</div>
+		</article>
 	</div>
 
-	<!-- ══ THE MANIFESTO ══════════════════════════════════════════════
-	     Mission, vision and values as the centrepiece of the page rather
-	     than three lines of text. The mission sits in a gravity field that
-	     pulls everything toward it; the vision opens onto a horizon whose
-	     signal spreads outward; the values are four full cards you cannot
-	     scroll past. All of it stands still under html.perf-lite.
-	     ═════════════════════════════════════════════════════════════ -->
-	<section class="bd-manifesto" data-cursor="chart">
-		<span class="bd-mf-veil" aria-hidden="true"></span>
-
-		<div class="bd-mf-head bd-reveal">
-			<span class="bd-eyebrow bd-eyebrow--center">Why we exist</span>
-			<h2 class="bd-h bd-h--center">Read this bit, if nothing else.</h2>
-		</div>
-
-		<div class="bd-mf-pair">
-			<!-- ── mission: everything falls toward it ── -->
-			<article class="bd-mf-panel bd-mf-panel--mission bd-reveal">
-				<span class="bd-gravity" aria-hidden="true">
-					<i class="bd-gravity-core"></i>
-					{[0, 1, 2, 3].map((r) => <i class={`bd-gravity-ring bd-gravity-ring--${r}`} />)}
-					{Array.from({ length: 14 }).map((_, i) => (
-						<i class="bd-gravity-dot" style={`--i:${i}; --a:${i * 25.7}deg; --d:${34 + ((i * 13) % 46)}%`} />
-					))}
-				</span>
-
-				<span class="bd-mf-tag">Mission</span>
-				<p class="bd-mf-statement">
-					{
-						MISSION.split(' ').map((w, i) => (
-							<span class="bd-mf-word" style={`--i:${i}`}>
-								{w === 'love,' || w === 'legacy.' ? <em>{w}</em> : w}{' '}
-							</span>
-						))
-					}
-				</p>
-				<p class="bd-mf-support">{MISSION_SUPPORT}</p>
-
-				<span class="bd-mf-arc" aria-hidden="true">
-					<span class="bd-mf-arc-line"></span>
-					<span class="bd-mf-arc-step"><i></i>Imagine</span>
-					<span class="bd-mf-arc-step"><i></i>Build</span>
-					<span class="bd-mf-arc-step"><i></i>Launch</span>
-					<span class="bd-mf-arc-step bd-mf-arc-step--last"><i></i>Legacy</span>
-				</span>
-			</article>
-
-			<!-- ── vision: a horizon, and a signal going out from it ── -->
-			<article class="bd-mf-panel bd-mf-panel--vision bd-reveal">
-				<span class="bd-horizon" aria-hidden="true">
-					<i class="bd-horizon-sky"></i>
-					<i class="bd-horizon-globe"></i>
-					{[0, 1, 2].map((r) => <i class={`bd-horizon-pulse bd-horizon-pulse--${r}`} />)}
-					{[
-						['18%', '38%'], ['32%', '24%'], ['52%', '31%'],
-						['68%', '21%'], ['80%', '40%'], ['44%', '15%'],
-					].map(([x, y], i) => (
-						<i class="bd-horizon-star" style={`--x:${x}; --y:${y}; --i:${i}`} />
-					))}
-				</span>
-
-				<span class="bd-mf-tag">Vision</span>
-				<p class="bd-mf-statement">
-					{
-						VISION.split(' ').map((w, i) => (
-							<span class="bd-mf-word" style={`--i:${i}`}>
-								{w === 'anywhere,' || w === 'everywhere.' ? <em>{w}</em> : w}{' '}
-							</span>
-						))
-					}
-				</p>
-				<p class="bd-mf-support">
-					Six bases, ten countries and counting. Where a product is born
-					has never decided how far it can go.
-				</p>
-			</article>
-		</div>
-
-		<!-- ── the four values, impossible to scroll past ── -->
-		<div class="bd-mf-values">
-			<div class="bd-mf-vhead bd-reveal">
-				<span class="bd-eyebrow bd-eyebrow--center">Core values</span>
-				<p class="bd-mf-vsub">
-					In the order the work actually happens. Four promises, and we
-					are held to every one.
-				</p>
-			</div>
-			<div class="bd-mf-vgrid">
-				{
-					CORE_VALUES.map((v, i) => (
-						<article class="bd-mf-card bd-reveal" style={`--i:${i}`}>
-							<span class="bd-mf-card-sheen" aria-hidden="true" />
-							<span class="bd-mf-card-no">{String(i + 1).padStart(2, '0')}</span>
-							<span class="bd-mf-card-ic">
-								<Icon width={26} name={v.icon} />
-							</span>
-							<h3 class="bd-mf-card-t">{v.name}</h3>
-							<p class="bd-mf-card-d">{v.desc}</p>
-							<span class="bd-mf-card-rule" aria-hidden="true" />
-						</article>
-					))
-				}
-			</div>
-		</div>
+	<!-- ── the promises, as a row ── -->
+	<section class="ab-vals bd-reveal">
+		<h2 class="ab-h2">Four promises, and we are held to every one.</h2>
+		<p class="ab-vals-sub">{MISSION_SUPPORT}</p>
+		<ul class="ab-vrow">
+			{
+				CORE_VALUES.map((v, i) => (
+					<li class="ab-val" style={`--i:${i}`}>
+						<span class="ab-val-ic">
+							<Icon width={24} name={v.icon} />
+						</span>
+						<h3 class="ab-val-t">{v.name}</h3>
+						<p class="ab-val-d">{v.desc}</p>
+					</li>
+				))
+			}
+		</ul>
 	</section>
 
 	<!-- ── Mantra — shock and awe, full-bleed electric band ──── -->
@@ -2918,5 +2862,330 @@ const currentYear = new Date().getFullYear();
 		.bd-tile:hover,
 		.bd-member,
 		.bd-member:hover { transform: none; }
+	}
+
+	/* ═══ About, in the Apple grammar ══════════════════════════════════
+	   Four beats per panel, every time: a small label, a short headline
+	   with a full stop, one line of support, then a solid pill beside a
+	   plain text link. The picture carries the rest. Panels alternate
+	   pale and deep; nothing is decorated that a photograph could say.
+	   Kept at the end of the sheet so it settles against the .bd- rules
+	   above it — a media query carries no extra specificity, and source
+	   order is the only thing that does.
+	   ══════════════════════════════════════════════════════════════════ */
+	.ab-hero,
+	.ab-film,
+	.ab-vals {
+		max-width: 62rem;
+		margin-inline: auto;
+		text-align: center;
+	}
+	.ab-hero {
+		padding: clamp(3rem, 8vw, 6.5rem) clamp(1rem, 3vw, 2rem) clamp(2rem, 5vw, 3.5rem);
+	}
+	.ab-kick {
+		display: inline-block;
+		font-size: 0.74rem;
+		font-weight: 700;
+		letter-spacing: 0.22em;
+		text-transform: uppercase;
+		color: var(--bd-accent);
+	}
+	.ab-h1 {
+		margin: clamp(0.8rem, 2vw, 1.2rem) 0 0;
+		font-size: clamp(2.2rem, 6vw, 4.6rem);
+		font-weight: 800;
+		letter-spacing: -0.045em;
+		line-height: 1.02;
+		text-wrap: balance;
+	}
+	.ab-h1 em {
+		display: block;
+		font-style: normal;
+		background: linear-gradient(100deg, #cfeaff 8%, var(--bd-accent) 78%);
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	:global(html:not(.dark)) .bdbody .ab-h1 em {
+		background: linear-gradient(100deg, #1e40af 5%, var(--bd-accent) 80%);
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	.ab-lede {
+		margin: clamp(1rem, 2.2vw, 1.5rem) auto 0;
+		max-width: 46rem;
+		font-size: clamp(1rem, 1.4vw, 1.2rem);
+		line-height: 1.6;
+		color: var(--bd-muted);
+	}
+
+	/* the pair of ways in: one solid, one plain, always together */
+	.ab-acts {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: clamp(0.8rem, 1.8vw, 1.6rem);
+		margin-top: clamp(1.3rem, 2.8vw, 2rem);
+	}
+	.ab-hero .ab-acts,
+	.ab-film .ab-acts { justify-content: center; }
+	.ab-pill {
+		display: inline-flex;
+		align-items: center;
+		min-height: 2.9rem;
+		padding: 0 1.5rem;
+		border-radius: 999px;
+		background: var(--bd-accent);
+		color: #04101a;
+		font-size: 0.95rem;
+		font-weight: 650;
+		white-space: nowrap;
+		transition: transform 0.25s ease, filter 0.25s ease;
+	}
+	.ab-pill:hover { transform: translateY(-2px); filter: brightness(1.08); }
+	.ab-more {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.15rem;
+		font-size: 0.95rem;
+		font-weight: 600;
+		color: var(--bd-accent);
+		transition: gap 0.25s ease;
+	}
+	.ab-more:hover { gap: 0.4rem; }
+
+	.ab-glance {
+		display: flex;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: clamp(1.4rem, 4vw, 3.6rem);
+		list-style: none;
+		margin: clamp(2rem, 4.5vw, 3.2rem) 0 0;
+		padding: 0;
+	}
+	.ab-glance strong {
+		display: block;
+		font-size: clamp(1.4rem, 2.6vw, 2rem);
+		font-weight: 800;
+		letter-spacing: -0.03em;
+		color: var(--bd-ink);
+	}
+	.ab-glance span {
+		font-size: 0.78rem;
+		letter-spacing: 0.02em;
+		color: var(--bd-muted);
+	}
+
+	/* ── the film, on the big screen ── */
+	.ab-film { padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 3vw, 2rem); }
+	.ab-h2 {
+		margin: 0;
+		font-size: clamp(1.8rem, 4.4vw, 3.4rem);
+		font-weight: 800;
+		letter-spacing: -0.04em;
+		line-height: 1.04;
+		text-wrap: balance;
+	}
+	.ab-h2 span { display: block; color: var(--bd-muted); }
+	.ab-screen {
+		position: relative;
+		margin: clamp(1.6rem, 3.6vw, 2.8rem) 0 0;
+		border-radius: clamp(0.8rem, 1.6vw, 1.3rem);
+		overflow: hidden;
+		/* the bezel: a dark rim and a long shadow, the way a screen sits in
+		   a room rather than on a page */
+		border: clamp(6px, 0.9vw, 11px) solid #0b0d15;
+		box-shadow:
+			0 2px 0 rgba(255, 255, 255, 0.06) inset,
+			0 48px 90px -40px rgba(0, 0, 0, 0.75);
+		background: #05070f;
+	}
+	.ab-screen :global(.flm) { border-radius: 0; }
+	.ab-screen-badge {
+		position: absolute;
+		left: clamp(0.7rem, 1.6vw, 1.2rem);
+		bottom: clamp(0.7rem, 1.6vw, 1.2rem);
+		z-index: 4;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		padding: 0.3rem 0.7rem 0.3rem 0.55rem;
+		border-radius: 999px;
+		background: rgba(6, 9, 16, 0.55);
+		border: 1px solid rgba(255, 255, 255, 0.16);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		color: #fff;
+		font-size: 0.72rem;
+		pointer-events: none;
+	}
+	.ab-screen-badge span { font-weight: 700; }
+	.ab-screen-badge em {
+		font-style: normal;
+		opacity: 0.7;
+		padding-left: 0.4rem;
+		border-left: 1px solid rgba(255, 255, 255, 0.28);
+	}
+
+	/* ── a wide panel: copy on the left, picture filling the right ── */
+	.ab-wide {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+		align-items: stretch;
+		max-width: 88rem;
+		margin: clamp(2.5rem, 6vw, 4.5rem) auto;
+		border-radius: clamp(1rem, 2vw, 1.7rem);
+		overflow: hidden;
+	}
+	.ab-wide.is-deep { background: #05070f; color: #f3f6fc; }
+	.ab-wide.is-pale { background: #f2f4f9; color: #10121f; }
+	.ab-wide-copy {
+		align-self: center;
+		padding: clamp(2rem, 4.4vw, 3.6rem) clamp(1.4rem, 3vw, 3rem);
+		text-align: left;
+	}
+	.ab-line {
+		margin: clamp(0.8rem, 1.8vw, 1.1rem) 0 0;
+		max-width: 42ch;
+		/* at a third of a phone one long word was pushing the line four
+		   pixels past its own box */
+		overflow-wrap: break-word;
+		font-size: clamp(0.95rem, 1.2vw, 1.05rem);
+		line-height: 1.6;
+		opacity: 0.74;
+	}
+	.ab-wide-shot { position: relative; min-height: clamp(16rem, 28vw, 26rem); }
+	.ab-wide-shot img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: 50% 26%;
+	}
+
+	/* ── the two-up ── */
+	.ab-pair {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: clamp(0.9rem, 1.8vw, 1.4rem);
+		max-width: 88rem;
+		margin: 0 auto clamp(2.5rem, 6vw, 4.5rem);
+	}
+	.ab-panel {
+		display: flex;
+		flex-direction: column;
+		border-radius: clamp(1rem, 2vw, 1.7rem);
+		overflow: hidden;
+		min-height: clamp(24rem, 40vw, 34rem);
+	}
+	.ab-panel.is-pale { background: #f2f4f9; color: #10121f; }
+	.ab-panel.is-deep { background: #05070f; color: #f3f6fc; }
+	.ab-panel-copy {
+		padding: clamp(1.6rem, 3.2vw, 2.6rem) clamp(1.3rem, 2.6vw, 2.2rem) 0;
+		text-align: center;
+	}
+	.ab-panel .ab-acts { justify-content: center; }
+	.ab-panel .ab-line { margin-inline: auto; max-width: 38ch; }
+	.ab-line--sm { display: none; }
+	.ab-h3 {
+		margin: 0.55rem 0 0;
+		font-size: clamp(1.5rem, 2.8vw, 2.2rem);
+		font-weight: 800;
+		letter-spacing: -0.035em;
+		line-height: 1.06;
+		text-wrap: balance;
+	}
+	.ab-panel-shot {
+		position: relative;
+		flex: 1;
+		min-height: clamp(9rem, 15vw, 14rem);
+		margin-top: clamp(1.4rem, 2.6vw, 2rem);
+	}
+	.ab-panel-shot img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	/* ── the four promises, as a row ── */
+	.ab-vals { padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 6vw, 4rem); max-width: 76rem; }
+	.ab-vals-sub {
+		margin: clamp(0.8rem, 1.8vw, 1.1rem) auto 0;
+		max-width: 44rem;
+		font-size: clamp(0.92rem, 1.15vw, 1.02rem);
+		line-height: 1.6;
+		color: var(--bd-muted);
+	}
+	.ab-vrow {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: clamp(1.2rem, 2.6vw, 2.4rem);
+		list-style: none;
+		margin: clamp(1.8rem, 4vw, 3rem) 0 0;
+		padding: 0;
+	}
+	.ab-val { text-align: center; }
+	.ab-val-ic {
+		display: grid;
+		place-items: center;
+		width: 2.9rem;
+		height: 2.9rem;
+		margin: 0 auto;
+		border-radius: 0.9rem;
+		border: 1px solid var(--bd-glass-border);
+		background: color-mix(in srgb, var(--bd-accent) 10%, transparent);
+		color: var(--bd-accent);
+	}
+	.ab-val-t {
+		margin: 0.85rem 0 0;
+		font-size: clamp(0.98rem, 1.3vw, 1.12rem);
+		font-weight: 700;
+		letter-spacing: -0.015em;
+		line-height: 1.25;
+	}
+	.ab-val-d {
+		margin: 0.45rem 0 0;
+		font-size: 0.86rem;
+		line-height: 1.55;
+		color: var(--bd-muted);
+	}
+
+	@media (max-width: 860px) {
+		.ab-wide { grid-template-columns: 1fr; }
+		.ab-wide-shot { order: -1; min-height: clamp(12rem, 44vw, 18rem); }
+		.ab-wide-copy { text-align: center; }
+		.ab-wide-copy .ab-acts { justify-content: center; }
+		.ab-wide .ab-line { margin-inline: auto; }
+		.ab-vrow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	}
+	@media (max-width: 620px) {
+		/* the two-up stays two across — it is the shape of the idea, and
+		   one panel per screen turns a pair into a scroll */
+		.ab-pair { gap: 0.5rem; }
+		.ab-panel { min-height: clamp(15rem, 54vw, 20rem); }
+		.ab-panel-copy { padding: 0.9rem 0.6rem 0; }
+		.ab-h3 { font-size: 1.05rem; }
+		/* the short line takes over rather than the long one being cut:
+		   a clamp ends a sentence on an ellipsis, which reads as broken */
+		.ab-panel .ab-line { display: none; }
+		.ab-panel .ab-line--sm {
+			display: block;
+			font-size: 0.7rem;
+			margin-top: 0.3rem;
+		}
+		.ab-panel .ab-acts { margin-top: 0.6rem; gap: 0.4rem; }
+		.ab-panel .ab-pill { min-height: 1.9rem; padding: 0 0.75rem; font-size: 0.68rem; }
+		.ab-panel .ab-more { display: none; }
+		.ab-panel-shot { min-height: 5rem; margin-top: 0.8rem; }
+		.ab-glance { gap: 1.1rem 1.6rem; }
+		.ab-val-d { font-size: 0.76rem; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.ab-pill:hover { transform: none; }
 	}
 </style>
