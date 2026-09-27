@@ -316,6 +316,20 @@ const currentYear = new Date().getFullYear();
 		</article>
 	</div>
 
+	<!-- ── Mantra — shock and awe, full-bleed electric band ──── -->
+	<section class="bd-mantra bd-reveal" data-cursor="pulse">
+		<span class="bd-mantra-glow" aria-hidden="true"></span>
+		<span class="bd-mantra-kicker">The Swizel mantra</span>
+		<h2 class="bd-mantra-words">
+			<span>You imagine.</span>
+			<span class="bd-mantra-build">We build.</span>
+		</h2>
+		<p class="bd-mantra-sub">
+			Three words we have lived by since 2019. You bring the ambition,
+			we turn it into something real, shipped and loved.
+		</p>
+	</section>
+
 	<!-- ── our story: one wide panel, the picture doing the talking ── -->
 	<section class="ab-wide is-deep bd-reveal" data-cursor="clock">
 		<div class="ab-wide-copy">
@@ -403,20 +417,6 @@ const currentYear = new Date().getFullYear();
 				))
 			}
 		</ul>
-	</section>
-
-	<!-- ── Mantra — shock and awe, full-bleed electric band ──── -->
-	<section class="bd-mantra bd-reveal" data-cursor="pulse">
-		<span class="bd-mantra-glow" aria-hidden="true"></span>
-		<span class="bd-mantra-kicker">The Swizel mantra</span>
-		<h2 class="bd-mantra-words">
-			<span>You imagine.</span>
-			<span class="bd-mantra-build">We build.</span>
-		</h2>
-		<p class="bd-mantra-sub">
-			Three words we have lived by since 2019. You bring the ambition,
-			we turn it into something real, shipped and loved.
-		</p>
 	</section>
 
 	<!-- ── By the numbers ──────────────────────────────────── -->
@@ -2912,7 +2912,7 @@ const currentYear = new Date().getFullYear();
 		flex-direction: column;
 		border-radius: clamp(1rem, 2vw, 1.7rem);
 		overflow: hidden;
-		min-height: clamp(26rem, 46vw, 40rem);
+		min-height: clamp(24rem, 40vw, 34rem);
 	}
 	.ab-open-panel.is-pale { background: #f2f4f9; color: #10121f; }
 	.ab-open-panel.is-deep { background: #05070f; color: #f3f6fc; }
@@ -2937,19 +2937,25 @@ const currentYear = new Date().getFullYear();
 		line-height: 1.02;
 		text-wrap: balance;
 	}
-	.ab-h1 em {
+	/* The panels are pale and deep whatever the theme is, so the headline
+	   gradient has to key off the panel rather than off html.dark. Keyed
+	   off the theme it went pale-on-pale in dark mode and all but
+	   disappeared. */
+	.ab-h1 em,
+	.ab-h2 em {
 		display: block;
 		font-style: normal;
-		background: linear-gradient(100deg, #cfeaff 8%, var(--bd-accent) 78%);
 		-webkit-background-clip: text;
 		background-clip: text;
 		-webkit-text-fill-color: transparent;
 	}
-	:global(html:not(.dark)) .bdbody .ab-h1 em {
-		background: linear-gradient(100deg, #1e40af 5%, var(--bd-accent) 80%);
-		-webkit-background-clip: text;
-		background-clip: text;
-		-webkit-text-fill-color: transparent;
+	.is-pale .ab-h1 em,
+	.is-pale .ab-h2 em {
+		background-image: linear-gradient(100deg, #1e3a8a 4%, #2f86d6 84%);
+	}
+	.is-deep .ab-h1 em,
+	.is-deep .ab-h2 em {
+		background-image: linear-gradient(100deg, #d9edff 6%, var(--bd-accent) 80%);
 	}
 	.ab-lede {
 		margin: clamp(0.8rem, 1.8vw, 1.15rem) auto 0;
@@ -2997,16 +3003,24 @@ const currentYear = new Date().getFullYear();
 
 	/* the figures sit on the floor of the panel, where the product
 	   photograph sits on the reference */
+	/* An even three, ruled off from the copy, so the floor of the panel
+	   reads as structure rather than as the hole left by a short column
+	   of text. */
 	.ab-glance {
-		display: flex;
-		justify-content: center;
-		flex-wrap: wrap;
-		gap: clamp(1rem, 3vw, 3rem);
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
 		list-style: none;
-		margin: auto 0 0;
-		padding: clamp(1.6rem, 3.4vw, 2.6rem) clamp(1rem, 2.4vw, 2rem)
-			clamp(1.8rem, 3.6vw, 2.8rem);
+		margin: auto clamp(1rem, 2.4vw, 2.2rem) 0;
+		padding: clamp(1.1rem, 2.4vw, 1.7rem) 0 clamp(1.2rem, 2.6vw, 1.9rem);
+		border-top: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+		text-align: center;
 	}
+	.ab-glance li {
+		min-width: 0;
+		padding-inline: 0.4rem;
+		border-left: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+	}
+	.ab-glance li:first-child { border-left: 0; }
 	.ab-glance strong {
 		display: block;
 		font-size: clamp(1.25rem, 2.3vw, 1.85rem);
@@ -3246,11 +3260,10 @@ const currentYear = new Date().getFullYear();
 		/* three figures, one row: the long labels wrapped it into two and
 		   left "10+" stranded on its own line */
 		.ab-glance {
-			flex-wrap: nowrap;
-			gap: 0.3rem;
-			padding: 0.8rem 0.3rem 0.95rem;
+			margin-inline: 0.5rem;
+			padding: 0.65rem 0 0.8rem;
 		}
-		.ab-glance li { min-width: 0; }
+		.ab-glance li { padding-inline: 0.15rem; }
 		.ab-glance strong { font-size: 0.88rem; }
 		.ab-glance span { display: none; }
 		.ab-glance .ab-glance-s { display: block; font-size: 0.54rem; white-space: nowrap; }
