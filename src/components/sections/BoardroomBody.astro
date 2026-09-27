@@ -903,7 +903,17 @@ const logos = [
 	.bd-w5 {
 		grid-column: span 5;
 	}
+	/* Below the width that carries a 7/5 split, the tiles go two across
+	   rather than one per row: four full-width photographs in a column is
+	   a very long way to say four things. They only stack once half the
+	   screen is too narrow to set a line in. */
 	@media (max-width: 940px) {
+		.bd-w7,
+		.bd-w5 {
+			grid-column: span 6;
+		}
+	}
+	@media (max-width: 540px) {
 		.bd-w7,
 		.bd-w5 {
 			grid-column: span 12;
@@ -1218,20 +1228,19 @@ const logos = [
 		.bd-number,
 		.bd-number:hover { transform: none; transition: none; }
 	}
-	@media (max-width: 620px) {
-		.bd-numbers { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-		.bd-number:last-child { grid-column: 1 / -1; }
+	/* three then two, each row filling the band, instead of two columns
+	   with one odd card stretched across the bottom */
+	@media (max-width: 880px) {
+		.bd-numbers { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+		.bd-number { grid-column: span 2; }
+		.bd-number:nth-child(4),
+		.bd-number:nth-child(5) { grid-column: span 3; }
+		.bd-number strong { font-size: clamp(1.5rem, 5.2vw, 2rem); }
+		.bd-number-l { font-size: 0.68rem; }
 	}
 
 	@media (max-width: 880px) {
-		.bd-numbers {
-			grid-template-columns: repeat(2, minmax(0, 1fr));
-		}
 		.bd-band { padding-inline: clamp(1.2rem, 5vw, 2rem); }
-		/* odd one out sits centered on its own row */
-		.bd-number:last-child {
-			grid-column: 1 / -1;
-		}
 	}
 	.bd-number strong {
 		display: block;
@@ -1455,11 +1464,33 @@ const logos = [
 		border-color: rgba(255, 255, 255, 0.45);
 		color: rgba(255, 255, 255, 0.9);
 	}
-	@media (max-width: 720px) {
+	/* Two across means half the room for the words, so the whole card
+	   comes down a size rather than the text spilling out of it. The
+	   min-height goes as well: a card that is as tall as it was at full
+	   width, at half the width, is a tower. */
+	@media (max-width: 940px) {
 		.bd-tile--svc {
+			min-height: 0;
+			aspect-ratio: 5 / 6;
+			padding: clamp(0.9rem, 2.6vw, 1.3rem);
+		}
+		.bd-tile--svc .bd-h--sm { font-size: 1.02rem; margin: 0.55rem 0 0.25rem; }
+		.bd-tile--svc .bd-svc-p { font-size: 0.76rem; margin-bottom: 0.6rem; }
+		.bd-tile--svc .bd-svc-ic { width: 34px; height: 34px; border-radius: 0.6rem; }
+		.bd-tile--svc .bd-svc-ic :global(svg) { width: 17px; height: 17px; }
+		.bd-tile--svc .bd-chip { font-size: 0.6rem; padding: 0.22rem 0.5rem; }
+		.bd-tile--svc .bd-chips { gap: 0.28rem; }
+	}
+	@media (max-width: 540px) {
+		/* stacked at last, and wide rather than tall */
+		.bd-tile--svc {
+			aspect-ratio: 16 / 11;
 			text-align: center;
 			align-items: center;
 		}
+		.bd-tile--svc .bd-h--sm { font-size: 1.15rem; }
+		.bd-tile--svc .bd-svc-p { font-size: 0.82rem; }
+		.bd-tile--svc .bd-chip { font-size: 0.66rem; }
 		/* the icon used to be centred by the tile's own align-items; it
 		   sits inside the body block now, so it centres itself */
 		.bd-tile--svc .bd-svc-ic { margin-inline: auto; }
@@ -1759,9 +1790,14 @@ const logos = [
 		padding: 0;
 	}
 	@media (max-width: 720px) {
-		.bd-steps {
-			grid-template-columns: 1fr;
-		}
+		.bd-steps { gap: 0.6rem; }
+		.bd-step { padding: 1rem 0.6rem 0.85rem; border-radius: 0.9rem; }
+		.bd-step-n { font-size: 1.7rem; }
+		.bd-step-t { font-size: 0.86rem; }
+		.bd-step-d { font-size: 0.74rem; }
+	}
+	@media (max-width: 430px) {
+		.bd-steps { grid-template-columns: 1fr; }
 	}
 	.bd-step {
 		position: relative;
