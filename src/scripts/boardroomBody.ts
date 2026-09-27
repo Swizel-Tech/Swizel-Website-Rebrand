@@ -95,6 +95,36 @@ export function initBoardroomBody() {
 			window.clearInterval(timer);
 			timer = 0;
 		};
+		/** Show a chosen quote at once, without waiting a beat for it. */
+		const goTo = (to: number) => {
+			if (to === i) return;
+			const cur = quotes[i]!;
+			i = ((to % quotes.length) + quotes.length) % quotes.length;
+			const nxt = quotes[i]!;
+			cur.classList.add('is-leaving');
+			cur.classList.remove('is-live');
+			window.setTimeout(
+				() => {
+					cur.classList.remove('is-leaving');
+					nxt.classList.add('is-live');
+				},
+				reduce ? 0 : 450
+			);
+			dots.forEach((d, di) => {
+				d.classList.toggle('is-on', di === i);
+				d.setAttribute('aria-selected', String(di === i));
+			});
+		};
+
+		// the dots are controls, not decoration: pressing one picks that
+		// client and hands the rotation back to the visitor
+		dots.forEach((d, di) =>
+			d.addEventListener('click', () => {
+				stop();
+				goTo(di);
+			})
+		);
+
 		// only rotate while the tile is on screen
 		const io = new IntersectionObserver(
 			(entries) =>

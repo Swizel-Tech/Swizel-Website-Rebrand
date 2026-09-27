@@ -37,6 +37,7 @@ const disciplines = [
 		cur: 'palette',
 		title: 'Design',
 		desc: ['Brand, interface and product design', 'your customers never have to think about.'],
+		short: ['Brand and product', 'design that works.'],
 		tag: 'brand · UI/UX · motion',
 		span: 'bd-w5',
 		img: 'https://i.ytimg.com/vi/EHi0Z2yqAr8/maxresdefault.jpg',
@@ -49,6 +50,7 @@ const disciplines = [
 		cur: 'term',
 		title: 'Development',
 		desc: ['Web and mobile engineering,', 'built to scale, shipped fast and kept standing.'],
+		short: ['Web and mobile,', 'built to scale.'],
 		tag: 'web · iOS · Android · APIs',
 		span: 'bd-w7',
 		loud: true,
@@ -60,6 +62,7 @@ const disciplines = [
 		cur: 'pulse',
 		title: 'Marketing',
 		desc: ['Search, paid, social and content,', 'run as one campaign instead of four.'],
+		short: ['Search, social,', 'content, as one.'],
 		tag: 'SEO · ads · social · content',
 		span: 'bd-w7',
 		img: '/images/marketing/the-floor.jpg',
@@ -71,6 +74,7 @@ const disciplines = [
 		cur: 'shield',
 		title: 'Maintenance',
 		desc: ['Products already live, kept healthy', 'year after year, long after launch day.'],
+		short: ['Kept healthy,', 'long after launch.'],
 		tag: 'support · DevOps · uptime',
 		span: 'bd-w5',
 		img: '/images/builder/over-the-shoulder.jpg',
@@ -140,6 +144,10 @@ const beltWork = projects
 // sentence to a screen reader through the aria-label on the heading.
 const lifeLine = 'Bring your project to life.';
 const lifeLetters = [...lifeLine];
+
+// Short names for the narrow row: at a third of a phone "Design & build"
+// breaks across two lines and the three beats stop reading as three.
+const processShort = ['Discover', 'Design', 'Launch'];
 
 const process = [
 	{ n: '01', title: 'Discover', desc: 'Research, define and lock the goal, together.' },
@@ -417,6 +425,11 @@ const logos = [
 							<br />
 							{d.desc[1]}
 						</p>
+						<p class="bd-p bd-svc-p bd-svc-p--sm">
+							{d.short[0]}
+							<br />
+							{d.short[1]}
+						</p>
 						<span class="bd-chips">
 							{d.tag.split('·').map((t) => (
 								<span class="bd-chip">{t.trim()}</span>
@@ -506,6 +519,7 @@ const logos = [
 							<span class="bd-step-weather" aria-hidden="true" />
 							<span class="bd-step-n">{p.n}</span>
 							<h4 class="bd-step-t">{p.title}</h4>
+							<h4 class="bd-step-t bd-step-t--sm">{processShort[i]}</h4>
 							<p class="bd-step-d">{p.desc}</p>
 						</li>
 					))
@@ -571,8 +585,21 @@ const logos = [
 					</blockquote>
 				))
 			}
-			<div class="bd-quote-dots" aria-hidden="true">
-				{quotes.map((_, i) => <span class:list={['bd-qdot', { 'is-on': i === 0 }]} data-qdot={i} />)}
+			{/* the dots were decoration; they are the control now, so the
+			    visitor can pick a client rather than wait for one */}
+			<div class="bd-quote-dots" role="tablist" aria-label="Choose a client">
+				{
+					quotes.map((q, i) => (
+						<button
+							class:list={['bd-qdot', { 'is-on': i === 0 }]}
+							type="button"
+							role="tab"
+							data-qdot={i}
+							aria-selected={i === 0}
+							aria-label={`What ${q.name} said`}
+						/>
+					))
+				}
 			</div>
 		</section>
 	</div>
@@ -673,7 +700,8 @@ const logos = [
 				<div class="bd-cta-act">
 					<a href="/contact" class="bd-cta-go">
 						<Icon width={18} name="mdi:arrow-right" />
-						Start your project
+						<span class="bd-cta-go-l">Start your project</span>
+						<span class="bd-cta-go-s">Start a project</span>
 					</a>
 					<a href="tel:+2348100204570" class="bd-call">
 						<span class="bd-call-hint">or call us now</span>
@@ -904,16 +932,11 @@ const logos = [
 	.bd-w5 {
 		grid-column: span 5;
 	}
-	/* Below the width that carries a 7/5 split, the tiles go two across
-	   rather than one per row: four full-width photographs in a column is
-	   a very long way to say four things. They only stack once half the
-	   screen is too narrow to set a line in. */
-	@media (max-width: 940px) {
-		.bd-w7,
-		.bd-w5 {
-			grid-column: span 6;
-		}
-	}
+	/* The tiles never stack and never go equal: the 7/5 split the desktop
+	   uses is kept all the way down, so one card in each row is wider than
+	   the other and the block reads as a composition rather than a table
+	   of four squares. Both cards in a row share a height, set against the
+	   viewport so it scales with the screen. */
 
 	.bd-tile--full {
 		grid-column: 1 / -1;
@@ -1390,6 +1413,13 @@ const logos = [
 	}
 
 	.bd-svc-body { display: block; width: 100%; }
+	/* one line of copy at a time: the long pair above 620, the short pair
+	   below it, so a card a third narrower still reads in two lines */
+	.bd-svc-p--sm { display: none; }
+	@media (max-width: 620px) {
+		.bd-tile--svc .bd-svc-p { display: none; }
+		.bd-tile--svc .bd-svc-p--sm { display: block; }
+	}
 	/* every card is a dark frame now, so the type is white in both themes
 	   rather than following the body's ink */
 	.bd-tile--svc .bd-h--sm { color: #fff; }
@@ -1492,10 +1522,15 @@ const logos = [
 	   width, at half the width, is a tower. */
 	@media (max-width: 940px) {
 		.bd-tile--svc {
+			/* the two in a row share a height, so the 7/5 difference is
+			   read as width — the shape of the composition, not a ragged
+			   bottom edge */
 			min-height: 0;
-			aspect-ratio: 5 / 6;
+			aspect-ratio: auto;
+			height: 100%;
 			padding: clamp(0.9rem, 2.6vw, 1.3rem);
 		}
+		.bd-mosaic--svc { grid-auto-rows: clamp(11rem, 30vw, 15rem); }
 		.bd-tile--svc .bd-h--sm { font-size: 1.02rem; margin: 0.55rem 0 0.25rem; }
 		.bd-tile--svc .bd-svc-p { font-size: 0.76rem; margin-bottom: 0.6rem; }
 		.bd-tile--svc .bd-svc-ic { width: 34px; height: 34px; border-radius: 0.6rem; }
@@ -1508,11 +1543,8 @@ const logos = [
 	   photographs in a single column is the shape this was trying to
 	   avoid in the first place. */
 	@media (max-width: 620px) {
-		.bd-mosaic--svc { gap: 0.5rem; }
-		.bd-tile--svc {
-			aspect-ratio: 4 / 5;
-			padding: 0.7rem 0.6rem 0.75rem;
-		}
+		.bd-mosaic--svc { gap: 0.5rem; grid-auto-rows: clamp(9.5rem, 40vw, 13rem); }
+		.bd-tile--svc { padding: 0.7rem 0.6rem 0.75rem; }
 		.bd-tile--svc .bd-h--sm { font-size: 0.92rem; margin: 0.4rem 0 0.2rem; }
 		.bd-tile--svc .bd-svc-p { font-size: 0.66rem; line-height: 1.35; margin-bottom: 0; }
 		.bd-tile--svc .bd-svc-ic { width: 28px; height: 28px; border-radius: 0.5rem; }
@@ -1828,15 +1860,21 @@ const logos = [
 		.bd-steps { gap: 0.4rem; }
 		.bd-step { padding: 0.8rem 0.35rem 0.85rem; border-radius: 0.7rem; }
 		.bd-step-n { font-size: 1.25rem; margin-bottom: 0.25rem; }
-		.bd-step-t { font-size: 0.74rem; margin-bottom: 0; }
+		.bd-step-t { font-size: 0.78rem; margin-bottom: 0; }
+		.bd-step .bd-step-t:not(.bd-step-t--sm) { display: none; }
+		.bd-step .bd-step-t--sm { display: block; }
 		/* the sentence goes: at a third of a phone it wraps six lines deep
 		   and turns a three-beat process back into the column this was
 		   meant to fix. The number and the name carry it. */
 		.bd-step-d { display: none; }
-		.bd-life { padding-inline: clamp(0.8rem, 3.5vw, 1.4rem); }
-		.bd-life .bd-h { font-size: clamp(1.25rem, 5.6vw, 1.7rem); }
-		.bd-life .bd-p { font-size: 0.78rem; }
-		.bd-lamp { width: 58px; }
+		.bd-life {
+			padding-inline: clamp(0.8rem, 3.5vw, 1.4rem);
+			padding-block: clamp(1.2rem, 5vw, 1.8rem);
+		}
+		.bd-life .bd-h { font-size: clamp(1.2rem, 5.2vw, 1.55rem); }
+		.bd-life .bd-p { font-size: 0.74rem; margin-top: 0.4rem; }
+		.bd-life .bd-steps { margin-top: 0.9rem; }
+		.bd-lamp { width: 54px; }
 	}
 	.bd-step {
 		position: relative;
@@ -1879,6 +1917,7 @@ const logos = [
 		-webkit-text-fill-color: transparent;
 		margin-bottom: 0.5rem;
 	}
+	.bd-step-t--sm { display: none; }
 	.bd-step-t {
 		font-size: 1.08rem;
 		font-weight: 700;
@@ -2037,6 +2076,9 @@ const logos = [
 	.bd-qdot {
 		width: 7px;
 		height: 7px;
+		padding: 0;
+		border: 0;
+		cursor: pointer;
 		border-radius: 9999px;
 		background: color-mix(in srgb, var(--bd-ink) 20%, transparent);
 		transition: background 0.3s ease, transform 0.3s ease;
@@ -2198,6 +2240,10 @@ const logos = [
 	.bd-cta-copy {
 		padding: clamp(2.2rem, 5vw, 4.2rem) clamp(1.4rem, 3.4vw, 3.4rem);
 		align-self: center;
+		/* a grid item's automatic minimum is its content, and a phone
+		   number set nowrap is wide content: without this the column grows
+		   past the tile and the tile quietly clips it */
+		min-width: 0;
 	}
 	.bd-cta-kick {
 		display: inline-flex;
@@ -2274,6 +2320,7 @@ const logos = [
 		100% { transform: scale(1.16); opacity: 0; }
 	}
 	.bd-cta-go:hover { transform: translateY(-2px); filter: brightness(1.06); }
+	.bd-cta-go-s { display: none; }
 	.bd-cta-go:hover::after { animation-play-state: paused; opacity: 0; }
 
 	/* the photograph, with the promise stamped in its corner */
@@ -2389,11 +2436,6 @@ const logos = [
 	.bd-call-num :global(svg) {
 		color: var(--bd-accent);
 		-webkit-text-fill-color: initial;
-	}
-	/* phones: keep the number on one line at a calmer size, icon snug beside it */
-	@media (max-width: 600px) {
-		.bd-call-num { font-size: 1.35rem; gap: 0.45rem; white-space: nowrap; }
-		.bd-call-num :global(svg) { width: 20px; height: 20px; }
 	}
 	.bd-call:hover .bd-call-num {
 		transform: scale(1.03);
@@ -2762,5 +2804,60 @@ const logos = [
 		.bz-slide,
 		.bz-tile-img,
 		.bz-poster { transition: none; }
+	}
+
+	/* ═══ the closing tile on a phone ═════════════════════════════════
+	   Kept at the end of the sheet on purpose: these override plain-class
+	   rules written further down, and a media query carries no extra
+	   specificity — only source order was ever going to settle it.
+	   ══════════════════════════════════════════════════════════════════ */
+	/* On a phone these two were stacking, which put the number below the
+	   fold of the tile. They stay on one line: the button gives up its
+	   padding, the number keeps its weight, and "or call us now" goes,
+	   since a phone number beside a button needs no caption. */
+	@media (max-width: 620px) {
+		/* the two together need every pixel of the tile, so the copy gives
+		   back its outer padding, the label shortens, and the arrow goes */
+		.bd-cta-copy { padding-inline: 1rem; }
+		.bd-cta-act {
+			flex-wrap: nowrap;
+			gap: 0.55rem;
+			margin-top: 1.2rem;
+		}
+		.bd-cta-go {
+			min-height: 2.9rem;
+			padding: 0 0.95rem;
+			font-size: 0.86rem;
+			gap: 0;
+			flex: 0 1 auto;
+			min-width: 0;
+		}
+		.bd-cta-go :global(svg) { display: none; }
+		/* scoped to the button, because the plain-class default for these
+		   two is written further down the sheet and would otherwise win */
+		.bd-cta-go .bd-cta-go-l { display: none; }
+		.bd-cta-go .bd-cta-go-s { display: inline; }
+		/* the stamp sits off the edge of a one-column tile, and the tile
+		   clips it; the promise is already in the headline */
+		.bd-cta-stamp { display: none; }
+		.bd-call { flex: 0 1 auto; min-width: 0; }
+		.bd-call-hint { display: none; }
+		.bd-call-num {
+			font-size: 0.85rem;
+			font-weight: 800;
+			gap: 0.3rem;
+			white-space: nowrap;
+		}
+		.bd-call-num :global(svg) { width: 16px; height: 16px; }
+	}
+	/* On the narrowest phones the pair still ran past the edge of the
+	   tile, which quietly clipped the last four digits. The handset icon
+	   goes — beside a button that says "start a project", a number needs
+	   no explaining — and both come down one more step. Measured to clear
+	   the tile by 30px at 360 rather than sitting on the edge. */
+	@media (max-width: 460px) {
+		.bd-cta-go { font-size: 0.8rem; padding: 0 0.85rem; min-height: 2.75rem; }
+		.bd-call-num { font-size: 0.82rem; }
+		.bd-call-num :global(svg) { display: none; }
 	}
 </style>
