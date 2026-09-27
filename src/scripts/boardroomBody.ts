@@ -106,6 +106,48 @@ export function initBoardroomBody() {
 		stage.addEventListener('pointerleave', start);
 	}
 
+	// A remote still that will not load must not leave a black card: each
+	// one may name a local frame to fall back to.
+	body.querySelectorAll<HTMLImageElement>('img[data-fallback]').forEach((img) => {
+		const drop = () => {
+			const next = img.dataset.fallback;
+			if (!next || img.src.endsWith(next)) return;
+			img.src = next;
+			delete img.dataset.fallback;
+		};
+		img.addEventListener('error', drop);
+		// a host that is unreachable rather than refusing hangs instead of
+		// erroring, and the card would sit black for as long as it took, so
+		// the still is given a deadline as well as an error handler
+		window.setTimeout(() => {
+			if (!img.complete || img.naturalWidth === 0) drop();
+		}, 3500);
+	});
+
+	// ── the pull switch on the process card ──
+	// The whole sequence is CSS; all script does is decide when it starts,
+	// and only once. It waits for the card to be properly on screen rather
+	// than firing at the first pixel, so the hand is never already gone by
+	// the time the visitor is looking at it.
+	const life = body.querySelector<HTMLElement>('[data-bd-life]');
+	if (life) {
+		if (reduce) {
+			life.classList.add('is-lit');
+		} else if ('IntersectionObserver' in window) {
+			const io = new IntersectionObserver(
+				(entries) => {
+					if (!entries[0]?.isIntersecting) return;
+					life.classList.add('is-lit');
+					io.disconnect();
+				},
+				{ threshold: 0.35 }
+			);
+			io.observe(life);
+		} else {
+			life.classList.add('is-lit');
+		}
+	}
+
 	// the discipline card's film runs only while the card is on screen —
 	// autoplay on a muted, controlless <video> is allowed, but a reel
 	// decoding behind the fold is work nobody asked for

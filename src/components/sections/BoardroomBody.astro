@@ -22,17 +22,18 @@ const disciplines = [
 	{
 		icon: 'mdi:palette-outline',
 		title: 'Design',
-		desc: 'Brand, interface and product design your customers never have to think about.',
+		desc: ['Brand, interface and product design', 'your customers never have to think about.'],
 		tag: 'brand · UI/UX · motion',
 		span: 'bd-w5',
-		img: '/images/film/room.jpg',
-		pos: '50% 64%',
-		alt: 'Layouts open across the studio table during a design review',
+		img: 'https://i.ytimg.com/vi/EHi0Z2yqAr8/maxresdefault.jpg',
+		fallback: '/images/film/room.jpg',
+		pos: '50% 50%',
+		alt: 'A frame from the Swizel Studio film',
 	},
 	{
 		icon: 'mdi:code-tags',
 		title: 'Development',
-		desc: 'Web and mobile engineering, built to scale, shipped fast and kept standing.',
+		desc: ['Web and mobile engineering,', 'built to scale, shipped fast and kept standing.'],
 		tag: 'web · iOS · Android · APIs',
 		span: 'bd-w7',
 		loud: true,
@@ -42,7 +43,7 @@ const disciplines = [
 	{
 		icon: 'mdi:bullhorn-outline',
 		title: 'Marketing',
-		desc: 'Search, paid, social and content, run as one campaign, not four.',
+		desc: ['Search, paid, social and content,', 'run as one campaign instead of four.'],
 		tag: 'SEO · ads · social · content',
 		span: 'bd-w7',
 		img: '/images/marketing/the-floor.jpg',
@@ -52,7 +53,7 @@ const disciplines = [
 	{
 		icon: 'mdi:wrench-outline',
 		title: 'Maintenance',
-		desc: 'Products already live, kept healthy year after year, long after launch day.',
+		desc: ['Products already live, kept healthy', 'year after year, long after launch day.'],
 		tag: 'support · DevOps · uptime',
 		span: 'bd-w5',
 		img: '/images/builder/over-the-shoulder.jpg',
@@ -115,6 +116,13 @@ const beltWork = projects
 		sector: sectorLabels[pr.sector],
 		href: pr.caseStudy ? `/work/${pr.slug}` : '/portfolio',
 	}));
+
+// The headline on the process card is lit a letter at a time once the
+// lamp above it is switched on, so it is split here rather than in the
+// browser: the markup ships ready, and the whole line still reads as one
+// sentence to a screen reader through the aria-label on the heading.
+const lifeLine = 'Bring your project to life.';
+const lifeLetters = [...lifeLine];
 
 const process = [
 	{ n: '01', title: 'Discover', desc: 'Research, define and lock the goal, together.' },
@@ -373,6 +381,7 @@ const logos = [
 							<img
 								class="bd-svc-media"
 								src={d.img}
+								data-fallback={d.fallback}
 								alt={d.alt}
 								style={`object-position:${d.pos}`}
 								loading="lazy"
@@ -386,7 +395,11 @@ const logos = [
 							<Icon width={28} name={d.icon} />
 						</span>
 						<h4 class="bd-h bd-h--sm">{d.title}</h4>
-						<p class="bd-p bd-svc-p">{d.desc}</p>
+						<p class="bd-p bd-svc-p">
+							{d.desc[0]}
+							<br />
+							{d.desc[1]}
+						</p>
 						<span class="bd-chips">
 							{d.tag.split('·').map((t) => (
 								<span class="bd-chip">{t.trim()}</span>
@@ -398,20 +411,82 @@ const logos = [
 		}
 	</div>
 
-	<!-- How we work — three steps, carried by a quiet crimson heat -->
+	<!-- How we work — three steps, carried by a quiet crimson heat.
+	     The lamp in the corner is switched on when the card arrives; the
+	     headline then lights a letter at a time, breathes, and the rest of
+	     the card wakes behind it. -->
 	<div class="bd-grid bd-grid--narrow">
-		<section class="bd-tile bd-tile--full bd-tile--heat bd-reveal" data-cursor="branch">
+		<section
+			class="bd-tile bd-tile--full bd-tile--heat bd-life bd-reveal"
+			data-cursor="branch"
+			data-bd-life
+		>
+			<span class="bd-life-dusk" aria-hidden="true" />
+			<div class="bd-lamp" aria-hidden="true">
+				<svg class="bd-lamp-svg" viewBox="0 0 150 210" fill="none">
+					<defs>
+						<radialGradient id="bdLampFlare" cx="50%" cy="50%" r="50%">
+							<stop offset="0%" stop-color="#ffffff" stop-opacity="1" />
+							<stop offset="22%" stop-color="#9adcff" stop-opacity="0.9" />
+							<stop offset="55%" stop-color="#28a6ec" stop-opacity="0.38" />
+							<stop offset="100%" stop-color="#28a6ec" stop-opacity="0" />
+						</radialGradient>
+					</defs>
+
+					<!-- the flare the bulb throws once it catches -->
+					<circle class="lamp-flare" cx="66" cy="126" r="82" fill="url(#bdLampFlare)" />
+
+					<!-- flex and ceiling rose -->
+					<path class="lamp-wire" d="M66 0 V 88" stroke-width="2.4" />
+					<rect class="lamp-cap" x="56" y="86" width="20" height="18" rx="5" />
+
+					<!-- the bulb -->
+					<circle class="lamp-bulb" cx="66" cy="126" r="21" />
+					<path class="lamp-filament" d="M58 127 q4 -9 8 0 q4 9 8 0" stroke-width="2.2" fill="none" />
+					<g class="lamp-rays" stroke-width="2.4" stroke-linecap="round">
+						<path d="M66 92 V 82" /><path d="M66 160 V 170" />
+						<path d="M32 126 H 22" /><path d="M100 126 H 110" />
+						<path d="M42 102 L 35 95" /><path d="M90 150 L 97 157" />
+						<path d="M90 102 L 97 95" /><path d="M42 150 L 35 157" />
+					</g>
+
+					<!-- the pull cord, and the ring you take hold of -->
+					<path class="lamp-cord" d="M96 104 V 150" stroke-width="2.2" stroke-dasharray="3 4" />
+					<circle class="lamp-ring" cx="96" cy="157" r="7.5" stroke-width="2.4" fill="none" />
+
+					<!-- and the hand that takes it -->
+					<g class="lamp-hand">
+						<rect class="lamp-cuff" x="26" y="20" width="13" height="19" rx="5" />
+						<rect class="lamp-fist" x="0" y="14" width="32" height="27" rx="13" />
+						<rect class="lamp-thumb" x="19" y="6" width="13" height="17" rx="6.5" />
+					</g>
+				</svg>
+			</div>
+
 			<div class="bd-tile-copy">
-				<h3 class="bd-h">Bring your project to life.</h3>
-				<p class="bd-p">
+				<h3 class="bd-h bd-life-h" aria-label={lifeLine}>
+					{
+						lifeLetters.map((ch, i) =>
+							ch === ' ' ? (
+								<span class="bd-life-sp" aria-hidden="true" />
+							) : (
+								<span class="bd-life-l" aria-hidden="true" style={`--i:${i}`}>
+									{ch}
+								</span>
+							)
+						)
+					}
+				</h3>
+				<p class="bd-p bd-wake" style="--w:0">
 					Cost-effective, innovative and quick to MVP, here's how we
 					take you from idea to the next level.
 				</p>
 			</div>
 			<ol class="bd-steps">
 				{
-					process.map((p) => (
-						<li class="bd-step">
+					process.map((p, i) => (
+						<li class="bd-step bd-wake" style={`--w:${i + 1}`}>
+							<span class="bd-step-weather" aria-hidden="true" />
 							<span class="bd-step-n">{p.n}</span>
 							<h4 class="bd-step-t">{p.title}</h4>
 							<p class="bd-step-d">{p.desc}</p>
@@ -1153,8 +1228,8 @@ const logos = [
 	.bd-tile--loud .bd-svc-scrim {
 		background:
 			radial-gradient(480px 260px at 85% -10%, rgba(255, 255, 255, 0.24), transparent 60%),
-			linear-gradient(135deg, rgba(14, 165, 233, 0.34) 0%, rgba(37, 99, 235, 0.4) 60%, rgba(34, 211, 238, 0.3) 130%),
-			linear-gradient(to top, rgba(4, 6, 12, 0.62), rgba(4, 6, 12, 0.12) 62%);
+			linear-gradient(135deg, rgba(3, 105, 161, 0.44) 0%, rgba(30, 64, 175, 0.5) 60%, rgba(13, 148, 179, 0.36) 130%),
+			linear-gradient(to top, rgba(3, 5, 11, 0.72), rgba(3, 5, 11, 0.18) 62%);
 	}
 	.bd-tile--loud {
 		border-color: rgba(255, 255, 255, 0.45);
@@ -1217,6 +1292,265 @@ const logos = [
 		-webkit-background-clip: text;
 		background-clip: text;
 		-webkit-text-fill-color: transparent;
+	}
+
+	/* ═══ Bring your project to life ═══════════════════════════════════
+	   One sequence, one clock. Everything below is timed off --t, the
+	   length of the pull, so the letters cannot start before the bulb
+	   catches and the card cannot wake before the line is read.
+
+	     0     → 0.38t   the hand comes up and takes the ring
+	     0.46t → 0.58t   it pulls, and the bulb catches
+	     0.64t → out     the hand lets go and leaves
+	     t     → +1.6s   the headline lights, a letter at a time
+	     then            the headline breathes, and the card wakes
+	   ══════════════════════════════════════════════════════════════════ */
+	.bd-life {
+		--t: 2.1s;          /* the pull */
+		--lag: 0.055s;      /* one letter to the next */
+		position: relative;
+		overflow: hidden;
+	}
+
+	/* ── the lamp, in the corner of the card ── */
+	.bd-lamp {
+		position: absolute;
+		top: 0;
+		right: clamp(0.75rem, 3vw, 2.6rem);
+		width: clamp(96px, 11vw, 148px);
+		pointer-events: none;
+		z-index: 1;
+	}
+	.bd-lamp-svg { display: block; width: 100%; height: auto; overflow: visible; }
+
+	/* off: everything is cold, and the flare is not there at all */
+	.lamp-wire,
+	.lamp-cord { stroke: color-mix(in srgb, var(--bd-ink) 34%, transparent); }
+	.lamp-cap { fill: color-mix(in srgb, var(--bd-ink) 30%, transparent); }
+	.lamp-ring { stroke: color-mix(in srgb, var(--bd-ink) 40%, transparent); }
+	.lamp-bulb {
+		fill: color-mix(in srgb, var(--bd-ink) 9%, transparent);
+		stroke: color-mix(in srgb, var(--bd-ink) 26%, transparent);
+		stroke-width: 2;
+		transition: fill 0.25s ease, stroke 0.25s ease;
+	}
+	.lamp-filament { stroke: color-mix(in srgb, var(--bd-ink) 34%, transparent); }
+	.lamp-rays { stroke: #7cd4ff; opacity: 0; }
+	.lamp-flare { opacity: 0; }
+	.lamp-cuff { fill: #e11d48; }
+	.lamp-fist,
+	.lamp-thumb { fill: #fda4af; }
+	/* The fist is 32 wide and sits at 0,14 in its own group, so its centre
+	   is (16, 27); the ring's centre is (96, 157). Putting one on the other
+	   is therefore a translate of (80, 130) — worked out rather than
+	   nudged, which is why it lands on the ring instead of beside it. */
+	.lamp-hand { opacity: 0; transform: translate(104px, 214px); }
+	.lamp-cord { transform-origin: 96px 104px; }
+
+	/* on */
+	.bd-life.is-lit .lamp-hand { animation: bd-hand var(--t) cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+	.bd-life.is-lit .lamp-cord { animation: bd-cord var(--t) cubic-bezier(0.34, 1.4, 0.5, 1) forwards; }
+	.bd-life.is-lit .lamp-ring { animation: bd-ring var(--t) cubic-bezier(0.34, 1.4, 0.5, 1) forwards; }
+	.bd-life.is-lit .lamp-flare { animation: bd-catch var(--t) linear forwards; }
+	.bd-life.is-lit .lamp-rays { animation: bd-rays var(--t) linear forwards; }
+	.bd-life.is-lit .lamp-bulb {
+		animation: bd-bulb var(--t) linear forwards;
+	}
+	.bd-life.is-lit .lamp-filament { animation: bd-filament var(--t) linear forwards; }
+
+	@keyframes bd-hand {
+		0%   { transform: translate(104px, 214px); opacity: 0; }
+		12%  { opacity: 1; }
+		38%  { transform: translate(80px, 130px); opacity: 1; }  /* on the ring */
+		46%  { transform: translate(80px, 130px); opacity: 1; }
+		58%  { transform: translate(80px, 164px); opacity: 1; }  /* pulled down */
+		68%  { transform: translate(80px, 126px); opacity: 1; }  /* let go */
+		82%  { opacity: 0.7; }
+		100% { transform: translate(110px, 210px); opacity: 0; }
+	}
+	/* the cord stretches from the socket rather than sliding away from it */
+	@keyframes bd-cord {
+		0%, 46%  { transform: scaleY(1); }
+		58%      { transform: scaleY(1.74); }
+		68%      { transform: scaleY(0.93); }
+		76%      { transform: scaleY(1.04); }
+		100%     { transform: scaleY(1); }
+	}
+	@keyframes bd-ring {
+		0%, 46%  { transform: translateY(0); }
+		58%      { transform: translateY(34px); }
+		68%      { transform: translateY(-4px); }
+		76%      { transform: translateY(2px); }
+		100%     { transform: translateY(0); }
+	}
+	/* the catch is not clean — it stutters once before it holds */
+	@keyframes bd-catch {
+		0%, 55%  { opacity: 0; transform: scale(0.5); }
+		58%      { opacity: 1; transform: scale(1.35); }
+		61%      { opacity: 0.3; transform: scale(1.05); }
+		64%      { opacity: 1; transform: scale(1.18); }
+		78%      { opacity: 1; transform: scale(1); }
+		100%     { opacity: 1; transform: scale(1); }
+	}
+	@keyframes bd-rays {
+		0%, 55%  { opacity: 0; transform: scale(0.82); }
+		60%      { opacity: 1; transform: scale(1.12); }
+		70%      { opacity: 0.7; transform: scale(1); }
+		100%     { opacity: 0.7; transform: scale(1); }
+	}
+	@keyframes bd-bulb {
+		0%, 55%  { fill: color-mix(in srgb, var(--bd-ink) 9%, transparent); stroke: color-mix(in srgb, var(--bd-ink) 26%, transparent); }
+		58%, 100% { fill: #e6f6ff; stroke: #28a6ec; }
+	}
+	@keyframes bd-filament {
+		0%, 55%  { stroke: color-mix(in srgb, var(--bd-ink) 34%, transparent); }
+		58%, 100% { stroke: #0b6fa4; }
+	}
+
+	/* ── the room, before the light ──
+	   The card dims as the hand takes the cord and clears the moment the
+	   bulb catches, so the light reads as the thing that brought it into
+	   focus rather than a lamp drawn on an already-lit card. It is a
+	   little deeper in the light theme, which has further to fall. */
+	.bd-life-dusk {
+		position: absolute;
+		inset: 0;
+		z-index: 2;
+		pointer-events: none;
+		opacity: 0;
+		background: radial-gradient(
+			130% 130% at 82% 4%,
+			rgba(4, 10, 20, 0.08),
+			rgba(4, 10, 20, 0.62) 72%
+		);
+		backdrop-filter: saturate(0.72) brightness(0.88);
+		-webkit-backdrop-filter: saturate(0.72) brightness(0.88);
+	}
+	:global(html.dark) .bd-life-dusk {
+		background: radial-gradient(
+			130% 130% at 82% 4%,
+			rgba(0, 3, 9, 0.1),
+			rgba(0, 3, 9, 0.5) 72%
+		);
+	}
+	.bd-life.is-lit .bd-life-dusk { animation: bd-dusk var(--t) ease-out forwards; }
+	@keyframes bd-dusk {
+		0%   { opacity: 0; }
+		30%  { opacity: 0.55; }
+		52%  { opacity: 1; }
+		58%  { opacity: 0.18; }   /* the catch */
+		61%  { opacity: 0.6; }    /* the stutter */
+		66%  { opacity: 0; }
+		100% { opacity: 0; }
+	}
+	.lamp-rays,
+	.lamp-flare { transform-origin: 66px 126px; }
+
+	/* ── the headline, lit a letter at a time ── */
+	.bd-life-h {
+		/* the gradient the heat tile paints on every heading would fight
+		   the per-letter light, so this one keeps its own colour */
+		background: none !important;
+		-webkit-text-fill-color: currentColor !important;
+		color: var(--bd-ink);
+	}
+	/* an empty box of exactly one word space: a real space character
+	   between inline-block letters came out at nearly double width */
+	.bd-life-sp { display: inline-block; width: 0.26em; }
+	.bd-life-l {
+		display: inline-block;
+		color: color-mix(in srgb, var(--bd-ink) 34%, transparent);
+		text-shadow: none;
+	}
+	.bd-life.is-lit .bd-life-l {
+		animation: bd-letter 0.5s ease forwards;
+		animation-delay: calc(var(--t) + var(--i) * var(--lag));
+	}
+	@keyframes bd-letter {
+		0%   { color: color-mix(in srgb, var(--bd-ink) 34%, transparent); text-shadow: none; }
+		55%  { color: #eaf7ff; text-shadow: 0 0 24px rgba(40, 166, 236, 0.95), 0 0 52px rgba(154, 220, 255, 0.55); }
+		100% { color: var(--bd-ink); text-shadow: 0 0 18px rgba(40, 166, 236, 0.45); }
+	}
+	/* and then it breathes, three times, and settles */
+	.bd-life.is-lit .bd-life-h {
+		animation: bd-breathe 1.15s ease-in-out 3;
+		/* every letter's delay plus the last letter's own run */
+		animation-delay: calc(var(--t) + 27 * var(--lag) + 0.5s);
+	}
+	@keyframes bd-breathe {
+		0%, 100% { filter: drop-shadow(0 0 0 rgba(40, 166, 236, 0)); }
+		50%      { filter: drop-shadow(0 0 18px rgba(40, 166, 236, 0.6)); }
+	}
+
+	/* ── then the rest of the card comes up behind it ── */
+	.bd-wake { opacity: 0; transform: translateY(14px); }
+	.bd-life.is-lit .bd-wake {
+		animation: bd-wake 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+		animation-delay: calc(var(--t) + 27 * var(--lag) + 0.35s + var(--w) * 0.12s);
+	}
+	@keyframes bd-wake {
+		to { opacity: 1; transform: none; }
+	}
+
+	/* ── the three boxes get a slow light of their own ── */
+	/* named "weather", not "aura": global.css stops anything whose class
+	   carries glow/aura/shimmer from animating on weak hardware, which is
+	   right for decoration that never stops and wrong for a card's own
+	   background coming up once. The perpetual drift is still dropped for
+	   those machines, just below. */
+	.bd-step-weather {
+		position: absolute;
+		inset: 0;
+		border-radius: inherit;
+		opacity: 0;
+		pointer-events: none;
+		background:
+			radial-gradient(120px 90px at 18% 12%, rgba(253, 164, 175, 0.5), transparent 68%),
+			radial-gradient(150px 110px at 86% 84%, rgba(251, 191, 36, 0.34), transparent 70%),
+			radial-gradient(130px 100px at 62% 18%, rgba(225, 29, 72, 0.4), transparent 72%);
+		background-size: 220% 220%;
+		background-position: 0% 50%;
+		filter: blur(6px);
+	}
+	.bd-life.is-lit .bd-step-weather {
+		animation:
+			bd-weather-in 1s ease forwards,
+			bd-weather 16s linear infinite;
+		animation-delay:
+			calc(var(--t) + 27 * var(--lag) + 0.45s + var(--w) * 0.12s),
+			calc(var(--t) + 27 * var(--lag) + 0.45s + var(--w) * 1.9s);
+	}
+	@keyframes bd-weather-in { to { opacity: 0.5; } }
+	@keyframes bd-weather {
+		0%   { background-position: 0% 50%; }
+		50%  { background-position: 100% 50%; }
+		100% { background-position: 0% 50%; }
+	}
+	/* the words sit above their own weather */
+	.bd-step > *:not(.bd-step-weather) { position: relative; z-index: 1; }
+	.bd-step { overflow: hidden; }
+
+	/* Nothing here is load-bearing: a visitor who asks for less motion, or
+	   a machine that cannot spare the frames, gets the lit card at once. */
+	@media (prefers-reduced-motion: reduce) {
+		.bd-life .lamp-hand { display: none; }
+		.bd-life .lamp-flare { opacity: 1; }
+		.bd-life .lamp-rays { opacity: 0.7; }
+		.bd-life .lamp-bulb { fill: #e6f6ff; stroke: #28a6ec; }
+		.bd-life .lamp-filament { stroke: #0b6fa4; }
+		.bd-life .bd-life-dusk { display: none; }
+		.bd-life .bd-life-l { color: var(--bd-ink); }
+		.bd-life .bd-wake { opacity: 1; transform: none; }
+		.bd-life .bd-step-weather { opacity: 0.4; animation: none; }
+		.bd-life.is-lit .bd-life-l,
+		.bd-life.is-lit .bd-life-h,
+		.bd-life.is-lit .bd-wake,
+		.bd-life.is-lit .bd-step-weather { animation: none; }
+	}
+	:global(html.perf-lite) .bd-life .bd-step-weather { filter: none; animation-name: bd-weather-in !important; }
+
+	@media (max-width: 720px) {
+		.bd-lamp { right: 0.4rem; width: 82px; }
 	}
 
 	/* ── Process steps ── */
