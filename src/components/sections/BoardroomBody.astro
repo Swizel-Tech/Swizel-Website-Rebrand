@@ -13,38 +13,55 @@ const numbers = [
 	{ to: 5, decimals: 1, suffix: '', label: 'Average client rating' },
 ];
 
+// The four disciplines. Each one carries a photograph of that discipline
+// actually happening in the studio rather than an icon on an empty card:
+// a code editor for engineering, a bench of layouts for design, a channel
+// we run for marketing, and one person reading another's screen for the
+// work that never ends.
 const disciplines = [
 	{
 		icon: 'mdi:palette-outline',
 		title: 'Design',
-		desc: 'Brand identity, graphics and product design, interfaces your customers find effortless.',
+		desc: 'Brand identity, graphics and product design. We draw the thing before we build it, so your customers never have to think about how it works.',
 		tag: 'brand · UI/UX · motion',
 		span: 'bd-w5',
+		img: '/images/film/room.jpg',
+		pos: '50% 64%',
+		alt: 'Layouts open across the studio table during a design review',
 	},
 	{
 		icon: 'mdi:code-tags',
 		title: 'Development',
-		desc: 'Web and mobile engineering, built to scale. We build, test and ship fast, without breaking things.',
+		desc: 'Web and mobile engineering, built to scale. We build, test and ship fast, and we keep the thing standing once the launch post is written.',
 		tag: 'web · iOS · Android · APIs',
 		span: 'bd-w7',
 		loud: true,
+		img: '/images/builder/at-the-keys.jpg',
+		pos: '58% 42%',
+		alt: 'A Swizel engineer at work in the editor',
 	},
 	{
 		icon: 'mdi:bullhorn-outline',
 		title: 'Marketing',
-		desc: 'We go beyond development to grow your audience across every platform that matters.',
+		desc: 'We go beyond development to grow your audience. Search, paid, social and content, run as one campaign rather than four disconnected ones.',
 		tag: 'SEO · ads · social · content',
 		span: 'bd-w7',
+		img: '/images/spotlight/portrait.jpg',
+		/* the subject sits to the right, clear of the left-set copy */
+		pos: '72% 18%',
+		alt: 'A client whose audience Swizel grows',
 	},
 	{
 		icon: 'mdi:wrench-outline',
 		title: 'Maintenance',
-		desc: 'Improving existing products and keeping complex systems healthy, year after year.',
+		desc: 'Improving products already in the world and keeping complex systems healthy, year after year, long after the people who built them have moved on.',
 		tag: 'support · DevOps · uptime',
 		span: 'bd-w5',
+		img: '/images/builder/over-the-shoulder.jpg',
+		pos: '46% 40%',
+		alt: 'One engineer reading another\'s screen',
 	},
 ];
-
 // ── Swizel for business ───────────────────────────────────────────────
 // Two rows. The top one is films: the middle one plays, its neighbours
 // wait either side, and the row walks on by itself. The bottom one is the
@@ -52,31 +69,31 @@ const disciplines = [
 // stopping. Titles are the real YouTube titles, shortened to fit a card.
 const businessFilms = [
 	{
+		id: 'IPFBUQ-pZRY',
+		kicker: 'Where it starts',
+		title: 'You have an idea. We build it.',
+	},
+	{
 		id: 'R2jdjZwv-ZE',
 		kicker: 'How we work',
 		title: 'Behind the code',
-		line: 'How a Swizel product gets designed, built and shipped.',
 	},
 	{
 		id: 'nFbBpQvT5fQ',
 		kicker: 'The proof',
 		title: 'Live websites built by Swizel',
-		line: 'Real products, running in the world right now.',
 	},
 	{
 		id: 'noEhs-8ywag',
 		kicker: 'The bench',
 		title: 'When students step into Swizel',
-		line: 'Where the next engineers on your account come from.',
 	},
 	{
 		id: 'EHi0Z2yqAr8',
 		kicker: 'The studio',
 		title: 'Where ideas become digital experiences',
-		line: 'Brand, film and design under the same roof as the code.',
 	},
 ];
-
 // The reel opens on the second film, not the first.
 const FIRST = 1;
 
@@ -214,7 +231,7 @@ const logos = [
 	<section class="bd-biz" id="bd-business" data-cursor="chart">
 		<header class="bd-biz-top bd-reveal">
 			<span class="bd-kicker">Swizel for business</span>
-			<h2 class="bd-biz-title">Software that pays for itself.</h2>
+			<h2 class="bd-biz-title">See how the work gets done.</h2>
 		</header>
 
 		<!-- ── the reel ── -->
@@ -341,15 +358,26 @@ const logos = [
 					class:list={['bd-tile', 'bd-tile--svc', d.span, 'bd-reveal', { 'bd-tile--loud': d.loud }]}
 					data-cursor="layers"
 				>
-					<span class="bd-svc-ic">
-						<Icon width={28} name={d.icon} />
-					</span>
-					<h4 class="bd-h bd-h--sm">{d.title}</h4>
-					<p class="bd-p bd-svc-p">{d.desc}</p>
-					<span class="bd-chips">
-						{d.tag.split('·').map((t) => (
-							<span class="bd-chip">{t.trim()}</span>
-						))}
+					<img
+						class="bd-svc-img"
+						src={d.img}
+						alt={d.alt}
+						style={`object-position:${d.pos}`}
+						loading="lazy"
+						decoding="async"
+					/>
+					<span class="bd-svc-scrim" aria-hidden="true" />
+					<span class="bd-svc-body">
+						<span class="bd-svc-ic">
+							<Icon width={28} name={d.icon} />
+						</span>
+						<h4 class="bd-h bd-h--sm">{d.title}</h4>
+						<p class="bd-p bd-svc-p">{d.desc}</p>
+						<span class="bd-chips">
+							{d.tag.split('·').map((t) => (
+								<span class="bd-chip">{t.trim()}</span>
+							))}
+						</span>
 					</span>
 				</section>
 			))
@@ -577,7 +605,7 @@ const logos = [
 	:global(html:not(.dark)) .bdbody .bd-tile::before {
 		opacity: 0.9;
 	}
-	:global(html:not(.dark)) .bdbody .bd-svc-ic {
+	:global(html:not(.dark)) .bdbody .bd-tile:not(.bd-tile--svc) .bd-svc-ic {
 		color: var(--bd-accent);
 	}
 	/* keep the dark stage tile cinematic in light mode */
@@ -1000,14 +1028,62 @@ const logos = [
 	.bd-mosaic--svc {
 		gap: clamp(1.25rem, 2.5vw, 2rem);
 	}
+	/* ── the four disciplines ──
+	   Each card is a photograph of that discipline happening, with the
+	   words set on it. The picture is the card; the padding just keeps
+	   the type off the edge. Because every tile now sits on a dark frame,
+	   the type is white in both themes rather than following the body. */
 	.bd-tile--svc {
+		position: relative;
+		isolation: isolate;
+		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
 		text-align: left;
 		align-items: flex-start;
 		gap: 0;
-		padding: clamp(2rem, 4vw, 3rem);
+		min-height: clamp(18rem, 25vw, 23rem);
+		padding: clamp(1.6rem, 3.2vw, 2.4rem);
+		background: #05070d;
+	}
+	.bd-svc-img {
+		position: absolute;
+		inset: 0;
+		z-index: -2;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.bd-tile--svc:hover .bd-svc-img { transform: scale(1.05); }
+	.bd-svc-scrim {
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		background: linear-gradient(
+			to top,
+			rgba(4, 6, 12, 0.94) 0%,
+			rgba(4, 6, 12, 0.78) 38%,
+			rgba(4, 6, 12, 0.42) 68%,
+			rgba(4, 6, 12, 0.3) 100%
+		);
+	}
+	.bd-svc-body { display: block; width: 100%; }
+	.bd-tile--svc .bd-h--sm,
+	.bd-tile--svc .bd-svc-p { color: #fff; }
+	.bd-tile--svc .bd-svc-p { color: rgba(255, 255, 255, 0.82); }
+	.bd-tile--svc .bd-chip {
+		border-color: rgba(255, 255, 255, 0.34);
+		color: rgba(255, 255, 255, 0.9);
+	}
+	.bd-tile--svc .bd-svc-ic {
+		background: rgba(255, 255, 255, 0.14);
+		border-color: rgba(255, 255, 255, 0.36);
+		color: #fff;
 	}
 	.bd-tile--svc .bd-h--sm {
-		margin: 1.2rem 0 0.5rem;
+		margin: 1rem 0 0.45rem;
 	}
 	.bd-svc-p {
 		margin: 0 0 1.4rem;
@@ -1047,10 +1123,15 @@ const logos = [
 	}
 
 	/* the loud one — shock and awe */
-	.bd-tile--loud {
+	/* the featured card still runs blue — the colour sits on the picture
+	   now instead of replacing it, so it leads the row without going flat */
+	.bd-tile--loud .bd-svc-scrim {
 		background:
-			radial-gradient(480px 260px at 85% -10%, rgba(255, 255, 255, 0.28), transparent 60%),
-			linear-gradient(135deg, #0ea5e9 0%, #2563eb 60%, #22d3ee 130%);
+			radial-gradient(480px 260px at 85% -10%, rgba(255, 255, 255, 0.24), transparent 60%),
+			linear-gradient(135deg, rgba(14, 165, 233, 0.76) 0%, rgba(37, 99, 235, 0.8) 60%, rgba(34, 211, 238, 0.68) 130%),
+			linear-gradient(to top, rgba(4, 6, 12, 0.5), transparent 60%);
+	}
+	.bd-tile--loud {
 		border-color: rgba(255, 255, 255, 0.45);
 		box-shadow:
 			inset 0 1px 0 rgba(255, 255, 255, 0.45),
@@ -1083,6 +1164,9 @@ const logos = [
 			text-align: center;
 			align-items: center;
 		}
+		/* the icon used to be centred by the tile's own align-items; it
+		   sits inside the body block now, so it centres itself */
+		.bd-tile--svc .bd-svc-ic { margin-inline: auto; }
 		.bd-svc-p {
 			margin-inline: auto;
 		}
@@ -1525,8 +1609,10 @@ const logos = [
 		   padding is (100% - --bz-w) / 2, so a percentage here would be
 		   resolved against a content box that percentage had just shrunk
 		   — the card came out at 0.686² of the row instead of 0.686. */
-		--bz-w: 74vw;
-		--bz-tile: 32vw;
+		/* capped as well as proportional: past about 1700px a card at 68vw
+		   stops being a film and starts being a wall */
+		--bz-w: min(68vw, 68rem);
+		--bz-tile: 30vw;
 		--marquee-run: 110s;
 		margin: 0 auto clamp(3.4rem, 8vw, 6rem);
 	}
@@ -1814,10 +1900,10 @@ const logos = [
 	   points it is pinned to the viewport instead, which is what the
 	   reference does on a phone: a little over two tiles across. */
 	@media (max-width: 1100px) {
-		.bd-biz { --bz-w: 79vw; --bz-tile: 40vw; }
+		.bd-biz { --bz-w: 74vw; --bz-tile: 38vw; }
 	}
 	@media (max-width: 700px) {
-		.bd-biz { --bz-w: 84vw; --bz-tile: 70vw; --marquee-run: 78s; }
+		.bd-biz { --bz-w: 82vw; --bz-tile: 68vw; --marquee-run: 78s; }
 		.bz-meta {
 			--bz-edge: 0.7rem;
 			gap: 0.55rem;
