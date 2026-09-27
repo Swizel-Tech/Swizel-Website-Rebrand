@@ -20,6 +20,30 @@ export function initViewBanner() {
 	const rail = banner.querySelector<HTMLElement>('#vw-rail');
 	const track = banner.querySelector<HTMLElement>('.vw-track');
 
+	// ── the arrows only turn up when a finger is on the rail ───────────
+	// On a touch screen they are furniture nobody needs: the rail glides
+	// by itself and it takes a swipe. They appear while the rail is being
+	// touched and for a couple of seconds after, in case the swipe was a
+	// visitor looking for a control.
+	const wrap = rail?.closest<HTMLElement>('.vw-railwrap');
+	if (rail && wrap) {
+		let hide = 0;
+		const show = () => {
+			wrap.classList.add('is-touched');
+			window.clearTimeout(hide);
+			hide = window.setTimeout(() => wrap.classList.remove('is-touched'), 2600);
+		};
+		rail.addEventListener('touchstart', show, { passive: true });
+		rail.addEventListener('pointerdown', (e) => {
+			if ((e as PointerEvent).pointerType !== 'mouse') show();
+		});
+		// keep them up while they are being used
+		wrap.querySelectorAll('.vw-nav').forEach((b) => {
+			b.addEventListener('pointerdown', show);
+			b.addEventListener('focus', show);
+		});
+	}
+
 	// ── duplicate the posters so the rail has somewhere to wrap to ──────
 	// Done before anything is wired up, and every card is reached by
 	// delegation afterwards, so the copies behave exactly like the originals.

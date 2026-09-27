@@ -562,4 +562,33 @@ const promise: Record<string, string> = {
 			animation: none;
 		}
 	}
+
+	/* ═══ the rail on a touch screen ═══════════════════════════════════
+	   The arrows are furniture a finger does not need: the rail glides on
+	   its own and it takes a swipe. They sit out of the way until the
+	   rail is actually touched, and then fade back out. The edge fade
+	   goes with them — at phone width it was eating a third of the card
+	   either side rather than hinting at more.
+	   ══════════════════════════════════════════════════════════════════ */
+	@media (hover: none), (max-width: 760px) {
+		.vw-rail {
+			-webkit-mask-image: none;
+			mask-image: none;
+		}
+		.vw-nav {
+			opacity: 0;
+			pointer-events: none;
+			transform: scale(0.9);
+			transition: opacity 0.3s ease, transform 0.3s ease;
+		}
+		/* while a finger is on the rail, and for a moment after */
+		.vw-railwrap.is-touched .vw-nav {
+			opacity: 1;
+			pointer-events: auto;
+			transform: none;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.vw-nav { transition: none; }
+	}
 </style>
