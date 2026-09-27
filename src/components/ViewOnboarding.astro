@@ -147,6 +147,13 @@ const orbs = [0, 1, 2, 3, 4];
 				Every world carries the same team, the same work and the same numbers.
 				Only the telling changes. Pick one to walk in.
 			</p>
+			{/* Which door you came in by. Written by script from the live
+			    data-view, because the modal is in the markup of every page
+			    and the world can change under it without a reload. */}
+			<p class="vo__here" id="vo-here" hidden>
+				<i aria-hidden="true" />
+				You are standing in <b id="vo-here-name">Boardroom</b> right now.
+			</p>
 
 			<div class="vo__grid">
 				{
@@ -170,8 +177,11 @@ const orbs = [0, 1, 2, 3, 4];
 								Enter view
 								<Icon width={15} name="mdi:arrow-right" />
 							</span>
+							<span class="vo__card-now">
+								<i aria-hidden="true" />
+								You're here now
+							</span>
 							<span class="vo__card-badge">Best fit</span>
-							<span class="vo__card-now">You're here now</span>
 						</button>
 					))
 				}
@@ -227,14 +237,14 @@ const orbs = [0, 1, 2, 3, 4];
 		border-color: color-mix(in srgb, var(--acc) 30%, transparent);
 		box-shadow: 0 20px 44px -30px rgba(20, 28, 60, 0.5);
 	}
+	/* The badge used to float in the corner, where it landed on top of the
+	   "Enter view" line. It stands in that line's place instead: on the
+	   card you are already inside, there is nothing to enter. */
 	.vo__card-now {
-		position: absolute;
-		/* under the mark, not over it — the badge used to sit on the object
-		   that identifies the world */
-		bottom: 0.7rem;
-		right: 0.8rem;
 		display: none;
-		padding: 0.2rem 0.55rem;
+		align-items: center;
+		gap: 0.45rem;
+		padding: 0.24rem 0.6rem 0.24rem 0.45rem;
 		border-radius: 9999px;
 		font-size: 0.7rem;
 		font-weight: 800;
@@ -242,7 +252,55 @@ const orbs = [0, 1, 2, 3, 4];
 		text-transform: uppercase;
 		color: #fff;
 		background: color-mix(in srgb, var(--acc, #18debe) 85%, #000);
+		align-self: flex-start;
 	}
+	.vo__card-now i {
+		width: 6px;
+		height: 6px;
+		border-radius: 50%;
+		background: #fff;
+		box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+		animation: vo-here-beat 2.4s ease-out infinite;
+	}
+	@keyframes vo-here-beat {
+		0%   { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.65); }
+		70%  { box-shadow: 0 0 0 7px rgba(255, 255, 255, 0); }
+		100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+	}
+	/* the line above the cards */
+	.vo__here {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+		margin: 0.2rem 0 0;
+		padding: 0.34rem 0.85rem 0.34rem 0.7rem;
+		border-radius: 9999px;
+		border: 1px solid color-mix(in srgb, var(--view-accent, #18debe) 40%, transparent);
+		background: color-mix(in srgb, var(--view-accent, #18debe) 12%, transparent);
+		font-size: 0.85rem;
+		color: var(--vo-dim);
+	}
+	.vo__here[hidden] { display: none; }
+	.vo__here b { color: var(--view-accent, #18debe); font-weight: 800; }
+	.vo__here i {
+		width: 7px;
+		height: 7px;
+		border-radius: 50%;
+		background: var(--view-accent, #18debe);
+		animation: vo-here-beat 2.4s ease-out infinite;
+	}
+	:global(html:not(.dark)) .vo__here { color: rgba(20, 22, 42, 0.8); }
+	@media (prefers-reduced-motion: reduce) {
+		.vo__here i,
+		.vo__card-now i { animation: none; }
+	}
+	:global(html:not([data-view])) .vo__card[data-view-id='boardroom'] .vo__card-go,
+	:global(html[data-view='builder']) .vo__card[data-view-id='builder'] .vo__card-go,
+	:global(html[data-view='boardroom']) .vo__card[data-view-id='boardroom'] .vo__card-go,
+	:global(html[data-view='founder']) .vo__card[data-view-id='founder'] .vo__card-go,
+	:global(html[data-view='campus']) .vo__card[data-view-id='campus'] .vo__card-go,
+	:global(html[data-view='studio']) .vo__card[data-view-id='studio'] .vo__card-go { display: none; }
+	:global(html:not([data-view])) .vo__card[data-view-id='boardroom'] .vo__card-now,
 	:global(html[data-view='builder']) .vo__card[data-view-id='builder'] .vo__card-now,
 	:global(html[data-view='boardroom']) .vo__card[data-view-id='boardroom'] .vo__card-now,
 	:global(html[data-view='founder']) .vo__card[data-view-id='founder'] .vo__card-now,
@@ -251,6 +309,7 @@ const orbs = [0, 1, 2, 3, 4];
 		display: inline-flex;
 	}
 	/* the card you are standing in wears its own accent as a rim */
+	:global(html:not([data-view])) .vo__card[data-view-id='boardroom'],
 	:global(html[data-view='builder']) .vo__card[data-view-id='builder'],
 	:global(html[data-view='boardroom']) .vo__card[data-view-id='boardroom'],
 	:global(html[data-view='founder']) .vo__card[data-view-id='founder'],

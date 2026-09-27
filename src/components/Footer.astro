@@ -592,11 +592,56 @@ const phones = [
 		background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--view-accent, #18debe) 85%, transparent), transparent);
 	}
 
-	/* Boardroom: a calm, wide grid, almost architectural. */
+	/* ── Boardroom: a glass wall at night ─────────────────────────────
+	   The house weave is an even mesh, which reads as graph paper in
+	   every world. A boardroom's ground is architectural: tall mullions
+	   with a floor line every few storeys, lit from the top edge and
+	   falling away to nothing at the bottom, and a pool of accent
+	   standing off the corner like a city outside the glass. */
+	:global(html[data-view='boardroom']) .site-footer {
+		--ft-bg: linear-gradient(180deg, #eef2f9 0%, #dfe6f2 100%);
+	}
+	:global(html[data-view='boardroom'].dark) .site-footer {
+		--ft-bg: linear-gradient(180deg, #0b1020 0%, #05070f 62%, #03040a 100%);
+	}
 	:global(html[data-view='boardroom']) .ft-weave {
+		opacity: 0.55;
 		background-image:
-			repeating-linear-gradient(90deg, transparent 0 95px, color-mix(in srgb, var(--view-accent) 11%, transparent) 95px 96px),
-			repeating-linear-gradient(180deg, transparent 0 95px, color-mix(in srgb, var(--view-accent) 7%, transparent) 95px 96px);
+			/* the mullions */
+			repeating-linear-gradient(
+				90deg,
+				color-mix(in srgb, var(--view-accent) 15%, transparent) 0 1px,
+				transparent 1px 108px
+			),
+			/* a floor line every three bays */
+			repeating-linear-gradient(
+				180deg,
+				color-mix(in srgb, var(--view-accent) 9%, transparent) 0 1px,
+				transparent 1px 172px
+			);
+		-webkit-mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.35) 52%, transparent 88%);
+		mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.35) 52%, transparent 88%);
+	}
+	:global(html[data-view='boardroom']:not(.dark)) .ft-weave { opacity: 0.4; }
+	/* the city outside, and the light along the sill */
+	:global(html[data-view='boardroom']) .ft-horizon {
+		height: 340px;
+		background:
+			radial-gradient(760px 300px at 82% 0%, color-mix(in srgb, var(--view-accent) 22%, transparent), transparent 68%),
+			radial-gradient(620px 280px at 12% 8%, rgba(59, 125, 253, 0.14), transparent 70%),
+			linear-gradient(180deg, color-mix(in srgb, var(--view-accent) 13%, transparent), transparent 72%);
+	}
+	:global(html[data-view='boardroom']) .ft-horizon::after {
+		left: 0;
+		right: 0;
+		background: linear-gradient(
+			90deg,
+			transparent,
+			color-mix(in srgb, var(--view-accent) 70%, transparent) 26%,
+			color-mix(in srgb, var(--view-accent) 95%, transparent) 50%,
+			color-mix(in srgb, var(--view-accent) 70%, transparent) 74%,
+			transparent
+		);
 	}
 	/* Builder: terminal rules, tight and horizontal. */
 	:global(html[data-view='builder']) .ft-weave {

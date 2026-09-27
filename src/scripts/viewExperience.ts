@@ -39,6 +39,22 @@ export function initViewExperience() {
 	const bar = root.querySelector<HTMLElement>('#vo-bar');
 	const recName = root.querySelector<HTMLElement>('#vo-rec-name');
 	const recKicker = root.querySelector<HTMLElement>('#vo-rec-kicker');
+	const hereLine = root.querySelector<HTMLElement>('#vo-here');
+	const hereName = root.querySelector<HTMLElement>('#vo-here-name');
+
+	/** Name the world the visitor is standing in, from the live attribute. */
+	const markHere = () => {
+		if (!hereLine || !hereName) return;
+		const id = document.documentElement.getAttribute('data-view') || 'boardroom';
+		const card = root.querySelector<HTMLElement>(`.vo__card[data-view-id="${id}"]`);
+		const name = card?.querySelector('.vo__card-name')?.textContent?.trim();
+		if (!name) {
+			hereLine.hidden = true;
+			return;
+		}
+		hereName.textContent = name;
+		hereLine.hidden = false;
+	};
 	const recTitle = recName?.closest('.vo__title') as HTMLElement | null;
 	const cards = Array.from(
 		root.querySelectorAll<HTMLButtonElement>('.vo__card')
@@ -130,6 +146,7 @@ export function initViewExperience() {
 		// same house rules as the film: park the floating furniture and wear
 		// the Swizel mark as the pointer
 		document.documentElement.classList.add('wf-open');
+		markHere();
 		if (atResults) {
 			recommend();
 			show('results');
