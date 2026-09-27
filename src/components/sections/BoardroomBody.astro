@@ -437,6 +437,49 @@ const logos = [
 		</div>
 	</section>
 
+	<!-- ═══ What we actually do ═══════════════════════════════════════
+	     Edge to edge, one panel a discipline, alternating light and deep
+	     so the grid reads as a wall of work rather than a list of cards.
+	     Each panel says the thing, says it in one line, gives you the
+	     page and the way in, and then gets out of the way for the
+	     photograph.
+	     ══════════════════════════════════════════════════════════════ -->
+	<section class="bd-do" id="bd-do" data-cursor="layers">
+		<header class="bd-do-top bd-reveal">
+			<span class="bd-kicker">Six disciplines, one team</span>
+			<h3 class="bd-do-h">What we actually do.</h3>
+		</header>
+		<div class="bd-do-wall">
+			{
+				doPanels.map((d) => (
+					<article
+						class:list={['bd-do-panel', d.deep ? 'is-deep' : 'is-pale']}
+						style={`--c:${d.color}`}
+					>
+						<div class="bd-do-copy">
+							<h4 class="bd-do-t">{d.title}</h4>
+							<p class="bd-do-s">{d.line[0]}</p>
+							<p class="bd-do-s bd-do-s--sm">{d.line[1]}</p>
+							<div class="bd-do-acts">
+								<a class="bd-do-pill" href={`/services/${d.slug}`}>See the work</a>
+								<a class="bd-do-pill bd-do-pill--ghost" href="/contact">Start</a>
+							</div>
+						</div>
+						<div class="bd-do-shot">
+							<img
+								src={d.img}
+								alt={`${d.title} at Swizel`}
+								style={`object-position:${d.pos}`}
+								loading="lazy"
+								decoding="async"
+							/>
+						</div>
+					</article>
+				))
+			}
+		</div>
+	</section>
+
 	<!-- What we do — the four disciplines -->
 	<section class="bd-head bd-reveal" id="bd-services">
 		<h3 class="bd-h bd-h--center">Everything under one roof.</h3>
@@ -667,49 +710,6 @@ const logos = [
 			</div>
 		</section>
 	</div>
-
-	<!-- ═══ What we actually do ═══════════════════════════════════════
-	     Edge to edge, one panel a discipline, alternating light and deep
-	     so the grid reads as a wall of work rather than a list of cards.
-	     Each panel says the thing, says it in one line, gives you the
-	     page and the way in, and then gets out of the way for the
-	     photograph.
-	     ══════════════════════════════════════════════════════════════ -->
-	<section class="bd-do" id="bd-do" data-cursor="layers">
-		<header class="bd-do-top bd-reveal">
-			<span class="bd-kicker">Six disciplines, one team</span>
-			<h3 class="bd-do-h">What we actually do.</h3>
-		</header>
-		<div class="bd-do-wall">
-			{
-				doPanels.map((d) => (
-					<article
-						class:list={['bd-do-panel', d.deep ? 'is-deep' : 'is-pale']}
-						style={`--c:${d.color}`}
-					>
-						<div class="bd-do-copy">
-							<h4 class="bd-do-t">{d.title}</h4>
-							<p class="bd-do-s">{d.line[0]}</p>
-							<p class="bd-do-s bd-do-s--sm">{d.line[1]}</p>
-							<div class="bd-do-acts">
-								<a class="bd-do-pill" href={`/services/${d.slug}`}>See the work</a>
-								<a class="bd-do-pill bd-do-pill--ghost" href="/contact">Start</a>
-							</div>
-						</div>
-						<div class="bd-do-shot">
-							<img
-								src={d.img}
-								alt={`${d.title} at Swizel`}
-								style={`object-position:${d.pos}`}
-								loading="lazy"
-								decoding="async"
-							/>
-						</div>
-					</article>
-				))
-			}
-		</div>
-	</section>
 
 	<!-- The proof — latest work -->
 	<section class="bd-work" id="bd-work" data-cursor="repo">
