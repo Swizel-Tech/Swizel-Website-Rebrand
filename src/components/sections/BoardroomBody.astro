@@ -14,15 +14,15 @@ import FilmPlayer from '../FilmPlayer.astro';
 // band arrives. The shapes are the honest ones — work compounding, a
 // team growing in steps, a rating that has simply held.
 const numbers = [
-	{ to: 65, suffix: '+', label: 'Products shipped', icon: 'mdi:cube-outline',
+	{ to: 65, suffix: '+', label: 'Products shipped', short: 'Shipped', icon: 'mdi:cube-outline',
 	  spark: 'M0 6.4 L17 5.6 L33 4.9 L50 3.7 L67 2.7 L83 1.4 L100 0.6' },
-	{ to: 7, suffix: '+', label: 'Years in business', icon: 'mdi:calendar-blank-outline',
+	{ to: 7, suffix: '+', label: 'Years in business', short: 'Years', icon: 'mdi:calendar-blank-outline',
 	  spark: 'M0 6.4 L17 5.6 L33 4.7 L50 3.9 L67 3.1 L83 2.3 L100 1.4' },
-	{ to: 25, suffix: '+', label: 'Specialists on the team', icon: 'mdi:account-group-outline',
+	{ to: 25, suffix: '+', label: 'Specialists on the team', short: 'Specialists', icon: 'mdi:account-group-outline',
 	  spark: 'M0 6.4 L17 6.4 L17 4.9 L42 4.9 L42 3.3 L71 3.3 L71 1.6 L100 1.6' },
-	{ to: 10, suffix: '+', label: 'Countries served', icon: 'mdi:web',
+	{ to: 10, suffix: '+', label: 'Countries served', short: 'Countries', icon: 'mdi:web',
 	  spark: 'M0 6.2 L17 5.8 L33 6 L50 4.3 L67 3.7 L83 2.1 L100 1.2' },
-	{ to: 5, decimals: 1, suffix: '', label: 'Average client rating', icon: 'mdi:star-outline',
+	{ to: 5, decimals: 1, suffix: '', label: 'Average client rating', short: 'Rating', icon: 'mdi:star-outline',
 	  spark: 'M0 1.4 L17 1.2 L33 1.4 L50 1 L67 1.4 L83 1.2 L100 1.2' },
 ];
 
@@ -544,6 +544,7 @@ const logos = [
 							0{n.suffix}
 						</strong>
 						<span class="bd-number-l">{n.label}</span>
+						<span class="bd-number-s">{n.short}</span>
 						<svg class="bd-trend" viewBox="0 0 100 7" preserveAspectRatio="none" aria-hidden="true">
 							<path class="bd-trend-line" d={n.spark} />
 						</svg>
@@ -913,12 +914,7 @@ const logos = [
 			grid-column: span 6;
 		}
 	}
-	@media (max-width: 540px) {
-		.bd-w7,
-		.bd-w5 {
-			grid-column: span 12;
-		}
-	}
+
 	.bd-tile--full {
 		grid-column: 1 / -1;
 	}
@@ -1228,15 +1224,41 @@ const logos = [
 		.bd-number,
 		.bd-number:hover { transform: none; transition: none; }
 	}
-	/* three then two, each row filling the band, instead of two columns
-	   with one odd card stretched across the bottom */
+	/* The band stays one row of five on every screen — it is a line of
+	   figures, and a line of figures wrapped over two rows is a table.
+	   What gives instead is the weight: the icon goes, the label shortens
+	   to a single word, and the card loses its frame until only the
+	   numbers and their lines are left. */
+	.bd-number-s { display: none; }
 	@media (max-width: 880px) {
-		.bd-numbers { grid-template-columns: repeat(6, minmax(0, 1fr)); }
-		.bd-number { grid-column: span 2; }
-		.bd-number:nth-child(4),
-		.bd-number:nth-child(5) { grid-column: span 3; }
-		.bd-number strong { font-size: clamp(1.5rem, 5.2vw, 2rem); }
-		.bd-number-l { font-size: 0.68rem; }
+		.bd-numbers { gap: clamp(0.25rem, 1.2vw, 0.6rem); }
+		.bd-number { padding: 0.75rem 0.3rem 0.5rem; }
+		.bd-number-ic { width: 1.5rem; height: 1.5rem; border-radius: 0.45rem; margin-bottom: 0.35rem; }
+		.bd-number-ic :global(svg) { width: 12px; height: 12px; }
+		.bd-number strong { font-size: clamp(1.05rem, 3.2vw, 1.6rem); }
+		.bd-number-l { font-size: 0.62rem; }
+	}
+	@media (max-width: 620px) {
+		.bd-number {
+			padding: 0.55rem 0.15rem 0.4rem;
+			border-color: transparent;
+			background: none;
+		}
+		.bd-number-ic { display: none; }
+		.bd-number strong { font-size: clamp(0.95rem, 4.4vw, 1.35rem); }
+		.bd-number-l { display: none; }
+		.bd-number-s {
+			display: block;
+			margin-top: 0.15rem;
+			font-size: clamp(0.54rem, 2.1vw, 0.66rem);
+			line-height: 1.2;
+			letter-spacing: 0.01em;
+			color: rgba(245, 245, 247, 0.5);
+		}
+		.bd-trend { height: 10px; margin-top: 0.4rem; }
+		.bd-band { padding-inline: clamp(0.7rem, 3vw, 1.2rem); }
+		.bd-band .bd-h { font-size: clamp(1.15rem, 5vw, 1.5rem); }
+		.bd-band .bd-p { font-size: 0.76rem; }
 	}
 
 	@media (max-width: 880px) {
@@ -1481,19 +1503,23 @@ const logos = [
 		.bd-tile--svc .bd-chip { font-size: 0.6rem; padding: 0.22rem 0.5rem; }
 		.bd-tile--svc .bd-chips { gap: 0.28rem; }
 	}
-	@media (max-width: 540px) {
-		/* stacked at last, and wide rather than tall */
+	/* Two across on a phone as well. What gives is weight, not layout:
+	   the type comes down again and the chips fall away, because four
+	   photographs in a single column is the shape this was trying to
+	   avoid in the first place. */
+	@media (max-width: 620px) {
+		.bd-mosaic--svc { gap: 0.5rem; }
 		.bd-tile--svc {
-			aspect-ratio: 16 / 11;
-			text-align: center;
-			align-items: center;
+			aspect-ratio: 4 / 5;
+			padding: 0.7rem 0.6rem 0.75rem;
 		}
-		.bd-tile--svc .bd-h--sm { font-size: 1.15rem; }
-		.bd-tile--svc .bd-svc-p { font-size: 0.82rem; }
-		.bd-tile--svc .bd-chip { font-size: 0.66rem; }
-		/* the icon used to be centred by the tile's own align-items; it
-		   sits inside the body block now, so it centres itself */
-		.bd-tile--svc .bd-svc-ic { margin-inline: auto; }
+		.bd-tile--svc .bd-h--sm { font-size: 0.92rem; margin: 0.4rem 0 0.2rem; }
+		.bd-tile--svc .bd-svc-p { font-size: 0.66rem; line-height: 1.35; margin-bottom: 0; }
+		.bd-tile--svc .bd-svc-ic { width: 28px; height: 28px; border-radius: 0.5rem; }
+		.bd-tile--svc .bd-svc-ic :global(svg) { width: 14px; height: 14px; }
+		/* the chips are the first thing to go: at this width they are four
+		   grey pills and no information */
+		.bd-tile--svc .bd-chips { display: none; }
 		.bd-svc-p {
 			margin-inline: auto;
 		}
@@ -1796,8 +1822,21 @@ const logos = [
 		.bd-step-t { font-size: 0.86rem; }
 		.bd-step-d { font-size: 0.74rem; }
 	}
-	@media (max-width: 430px) {
-		.bd-steps { grid-template-columns: 1fr; }
+	/* three across on a phone as well: stacked, one short sentence each,
+	   they turned a three-beat process into a page of scrolling */
+	@media (max-width: 480px) {
+		.bd-steps { gap: 0.4rem; }
+		.bd-step { padding: 0.8rem 0.35rem 0.85rem; border-radius: 0.7rem; }
+		.bd-step-n { font-size: 1.25rem; margin-bottom: 0.25rem; }
+		.bd-step-t { font-size: 0.74rem; margin-bottom: 0; }
+		/* the sentence goes: at a third of a phone it wraps six lines deep
+		   and turns a three-beat process back into the column this was
+		   meant to fix. The number and the name carry it. */
+		.bd-step-d { display: none; }
+		.bd-life { padding-inline: clamp(0.8rem, 3.5vw, 1.4rem); }
+		.bd-life .bd-h { font-size: clamp(1.25rem, 5.6vw, 1.7rem); }
+		.bd-life .bd-p { font-size: 0.78rem; }
+		.bd-lamp { width: 58px; }
 	}
 	.bd-step {
 		position: relative;
