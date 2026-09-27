@@ -124,6 +124,27 @@ export function initBoardroomBody() {
 		}, 3500);
 	});
 
+	// ── the numbers band ──
+	// The lines are drawn, the bars filled and the sweep started only once
+	// the band is actually on screen, so a visitor never scrolls down to
+	// find the drawing already over.
+	const band = document.getElementById('bd-numbers');
+	if (band) {
+		if (reduce || !('IntersectionObserver' in window)) {
+			band.classList.add('is-on');
+		} else {
+			const io = new IntersectionObserver(
+				(entries) => {
+					if (!entries[0]?.isIntersecting) return;
+					band.classList.add('is-on');
+					io.disconnect();
+				},
+				{ threshold: 0.25 }
+			);
+			io.observe(band);
+		}
+	}
+
 	// ── the pull switch on the process card ──
 	// The whole sequence is CSS; all script does is decide when it starts,
 	// and only once. It waits for the card to be properly on screen rather

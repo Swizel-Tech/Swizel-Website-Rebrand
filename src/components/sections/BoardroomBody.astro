@@ -5,12 +5,21 @@ import { Icon } from 'astro-icon/components';
 import { projects, sectorLabels } from '../../data/projects';
 import FilmPlayer from '../FilmPlayer.astro';
 
+// Each figure gets a shape as well as a number: a seven-point line drawn
+// on a 100×34 box, which the browser draws in stroke by stroke once the
+// band arrives. The shapes are the honest ones — work compounding, a
+// team growing in steps, a rating that has simply held.
 const numbers = [
-	{ to: 65, suffix: '+', label: 'Products shipped' },
-	{ to: 7, suffix: '+', label: 'Years in business' },
-	{ to: 25, suffix: '+', label: 'Specialists on the team' },
-	{ to: 10, suffix: '+', label: 'Countries served' },
-	{ to: 5, decimals: 1, suffix: '', label: 'Average client rating' },
+	{ to: 65, suffix: '+', label: 'Products shipped', fill: 92,
+	  spark: 'M0 31 L17 27 L33 24 L50 18 L67 13 L83 7 L100 3' },
+	{ to: 7, suffix: '+', label: 'Years in business', fill: 70,
+	  spark: 'M0 31 L17 27 L33 23 L50 19 L67 15 L83 11 L100 7' },
+	{ to: 25, suffix: '+', label: 'Specialists on the team', fill: 62,
+	  spark: 'M0 31 L17 31 L17 24 L42 24 L42 16 L71 16 L71 8 L100 8' },
+	{ to: 10, suffix: '+', label: 'Countries served', fill: 48,
+	  spark: 'M0 30 L17 28 L33 29 L50 21 L67 18 L83 10 L100 6' },
+	{ to: 5, decimals: 1, suffix: '', label: 'Average client rating', fill: 100,
+	  spark: 'M0 7 L17 6 L33 7 L50 5 L67 7 L83 6 L100 6' },
 ];
 
 // The four disciplines. Each card is a piece of the studio actually
@@ -21,6 +30,7 @@ const numbers = [
 const disciplines = [
 	{
 		icon: 'mdi:palette-outline',
+		cur: 'palette',
 		title: 'Design',
 		desc: ['Brand, interface and product design', 'your customers never have to think about.'],
 		tag: 'brand · UI/UX · motion',
@@ -32,6 +42,7 @@ const disciplines = [
 	},
 	{
 		icon: 'mdi:code-tags',
+		cur: 'term',
 		title: 'Development',
 		desc: ['Web and mobile engineering,', 'built to scale, shipped fast and kept standing.'],
 		tag: 'web · iOS · Android · APIs',
@@ -42,6 +53,7 @@ const disciplines = [
 	},
 	{
 		icon: 'mdi:bullhorn-outline',
+		cur: 'pulse',
 		title: 'Marketing',
 		desc: ['Search, paid, social and content,', 'run as one campaign instead of four.'],
 		tag: 'SEO · ads · social · content',
@@ -52,6 +64,7 @@ const disciplines = [
 	},
 	{
 		icon: 'mdi:wrench-outline',
+		cur: 'shield',
 		title: 'Maintenance',
 		desc: ['Products already live, kept healthy', 'year after year, long after launch day.'],
 		tag: 'support · DevOps · uptime',
@@ -361,7 +374,7 @@ const logos = [
 			disciplines.map((d) => (
 				<section
 					class:list={['bd-tile', 'bd-tile--svc', d.span, 'bd-reveal', { 'bd-tile--loud': d.loud }]}
-					data-cursor="layers"
+					data-cursor={d.cur}
 				>
 					{
 						d.video ? (
@@ -497,34 +510,47 @@ const logos = [
 		</section>
 	</div>
 
-	<div class="bd-grid">
-		<!-- Numbers tile -->
-		<section class="bd-tile bd-tile--full bd-tile--inverse bd-reveal" id="bd-numbers" data-cursor="chart">
-			<div class="bd-tile-copy">
-				<h3 class="bd-h">The numbers behind the calm.</h3>
-				<p class="bd-p">
-					Seven years of shipping for ambitious businesses, measured the
-					only way that matters.
-				</p>
-			</div>
-			<ul class="bd-numbers">
-				{
-					numbers.map((n) => (
-						<li class="bd-number">
-							<strong
-								data-count={n.to}
-								data-suffix={n.suffix}
-								data-decimals={n.decimals || 0}
-							>
-								0{n.suffix}
-							</strong>
-							<span>{n.label}</span>
-						</li>
-					))
-				}
-			</ul>
-		</section>
+	<!-- Numbers — a full-width band, with each figure drawing its own line -->
+	<section
+		class="bd-tile bd-tile--full bd-tile--inverse bd-band bd-reveal"
+		id="bd-numbers"
+		data-cursor="chart"
+	>
+		<span class="bd-band-grid" aria-hidden="true" />
+		<span class="bd-band-sweep" aria-hidden="true" />
+		<div class="bd-tile-copy">
+			<h3 class="bd-h">The numbers behind the calm.</h3>
+			<p class="bd-p">
+				Seven years of shipping for ambitious businesses, measured the
+				only way that matters.
+			</p>
+		</div>
+		<ul class="bd-numbers">
+			{
+				numbers.map((n, i) => (
+					<li class="bd-number" style={`--n:${i}`}>
+						<strong
+							data-count={n.to}
+							data-suffix={n.suffix}
+							data-decimals={n.decimals || 0}
+						>
+							0{n.suffix}
+						</strong>
+						<svg class="bd-trend" viewBox="0 0 100 34" preserveAspectRatio="none" aria-hidden="true">
+							<path class="bd-trend-fill" d={`${n.spark} L100 34 L0 34 Z`} />
+							<path class="bd-trend-line" d={n.spark} />
+						</svg>
+						<span class="bd-number-bar" aria-hidden="true">
+							<i style={`--f:${n.fill}%`} />
+						</span>
+						<span class="bd-number-l">{n.label}</span>
+					</li>
+				))
+			}
+		</ul>
+	</section>
 
+	<div class="bd-grid">
 		<!-- Rotating client words -->
 		<section class="bd-tile bd-tile--full bd-tile--quote bd-reveal" data-cursor="quote" id="bd-quotes">
 			{
@@ -596,35 +622,80 @@ const logos = [
 	<!-- Sectors — endless drift -->
 	<section class="bd-sectors bd-reveal">
 		<h3 class="bd-h bd-h--center">At home in your industry.</h3>
-		<div class="bd-marquee" aria-hidden="true">
+		{/* two rails, drifting against each other: one line of industries
+		    reads as a list, two read as a place with traffic in it */}
+		<div class="bd-marquee bd-marquee--a" aria-hidden="true">
 			<div class="bd-marquee-track bd-marquee-track--sectors">
 				{
 					[0, 1].map(() =>
-						sectors.map((s) => <span class="bd-sector">{s}</span>)
+						sectors.map((s, i) => (
+							<span class:list={['bd-sector', { 'is-hot': i % 3 === 1 }]}>
+								<i class="bd-sector-dot" />
+								{s}
+							</span>
+						))
+					)
+				}
+			</div>
+		</div>
+		<div class="bd-marquee bd-marquee--b" aria-hidden="true">
+			<div class="bd-marquee-track bd-marquee-track--sectors bd-marquee-track--back">
+				{
+					[0, 1].map(() =>
+						[...sectors].reverse().map((s, i) => (
+							<span class:list={['bd-sector', 'bd-sector--sm', { 'is-hot': i % 4 === 2 }]}>
+								<i class="bd-sector-dot" />
+								{s}
+							</span>
+						))
 					)
 				}
 			</div>
 		</div>
 	</section>
 
-	<!-- Final CTA tile -->
+	<!-- Final CTA — the desk on the right, the ask on the left.
+	     The type is set live rather than baked into the picture, so it
+	     reflows, it is readable to a crawler, and it can be changed
+	     without opening an image editor. -->
 	<section class="bd-grid">
 		<div class="bd-tile bd-tile--full bd-tile--cta bd-reveal" data-cursor="phone">
-			<h3 class="bd-display bd-display--cta">Let's talk about your business.</h3>
-			<p class="bd-sub">
-				Tell us where you want the numbers to go. You'll have a reply
-				within one business day.
-			</p>
-			<div class="bd-links bd-links--center">
-				<a href="/contact" class="bd-pill bd-pill--light">Start your project</a>
+			<div class="bd-cta-copy">
+				<span class="bd-cta-kick"><i aria-hidden="true" />Let's connect</span>
+				<h3 class="bd-display bd-display--cta">
+					Let's talk about
+					<em>your business.</em>
+				</h3>
+				<p class="bd-sub">
+					Tell us where you want the numbers to go. You'll have a reply
+					within one business day.
+				</p>
+				<div class="bd-cta-act">
+					<a href="/contact" class="bd-cta-go">
+						<Icon width={18} name="mdi:arrow-right" />
+						Start your project
+					</a>
+					<a href="tel:+2348100204570" class="bd-call">
+						<span class="bd-call-hint">or call us now</span>
+						<span class="bd-call-num">
+							<Icon width={22} name="mdi:phone" />
+							+234 810 020 4570
+						</span>
+					</a>
+				</div>
 			</div>
-			<a href="tel:+2348100204570" class="bd-call">
-				<span class="bd-call-hint">or call us now</span>
-				<span class="bd-call-num">
-					<Icon width={30} name="mdi:phone" />
-					+234 810 020 4570
-				</span>
-			</a>
+			<figure class="bd-cta-shot">
+				<img
+					src="/images/cta/talk-business.jpg"
+					alt="A Swizel desk at the end of the day"
+					loading="lazy"
+					decoding="async"
+				/>
+				<figcaption class="bd-cta-stamp">
+					Bigger ideas.
+					<strong>Real results.</strong>
+				</figcaption>
+			</figure>
 		</div>
 	</section>
 
@@ -710,13 +781,7 @@ const logos = [
 		color: rgba(244, 246, 251, 0.62);
 	}
 	/* logos read dark on the light base */
-	:global(html:not(.dark)) .bdbody .bd-logo img {
-		filter: grayscale(1) brightness(0) opacity(0.55);
-	}
-	:global(html:not(.dark)) .bdbody .bd-logo:hover img {
-		filter: none;
-		opacity: 1;
-	}
+	/* the logos keep their own colours in both themes — see .bd-logo */
 
 	/* ── Type ── */
 	.bd-kicker {
@@ -1017,18 +1082,161 @@ const logos = [
 	.bd-tile--inverse .bd-p {
 		color: rgba(245, 245, 247, 0.62);
 	}
+	/* ── the numbers band ──────────────────────────────────────────────
+	   It spans the page rather than sitting inside the 88rem grid: five
+	   figures deserve the width, and the band is what separates the story
+	   above it from the proof below. The body's own side padding is given
+	   back with a negative margin, which is exact and, unlike 100vw,
+	   cannot open a scrollbar of its own. */
+	.bd-band {
+		position: relative;
+		isolation: isolate;
+		overflow: hidden;
+		max-width: none;
+		width: auto;
+		margin-inline: calc(-1 * clamp(1rem, 3vw, 2rem));
+		margin-block: clamp(1.4rem, 3vw, 2.4rem) clamp(0.9rem, 2vw, 1.4rem);
+		border-radius: clamp(1rem, 2vw, 1.6rem);
+		padding-inline: clamp(1.4rem, 5vw, 4.5rem);
+		padding-block: clamp(2.4rem, 5vw, 3.8rem);
+	}
+	/* a plotting grid, drifting slowly — the paper the figures sit on */
+	.bd-band-grid {
+		position: absolute;
+		inset: -1px;
+		z-index: -1;
+		opacity: 0.5;
+		background-image:
+			linear-gradient(to right, rgba(155, 216, 255, 0.07) 1px, transparent 1px),
+			linear-gradient(to bottom, rgba(155, 216, 255, 0.07) 1px, transparent 1px);
+		background-size: 46px 46px;
+		mask-image: radial-gradient(120% 120% at 50% 0%, #000 30%, transparent 78%);
+		-webkit-mask-image: radial-gradient(120% 120% at 50% 0%, #000 30%, transparent 78%);
+		animation: bd-band-drift 24s linear infinite;
+	}
+	@keyframes bd-band-drift {
+		to { background-position: 46px 46px; }
+	}
+	/* one slow pass of light across the band */
+	.bd-band-sweep {
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		pointer-events: none;
+		background: linear-gradient(
+			105deg,
+			transparent 34%,
+			color-mix(in srgb, var(--bd-accent) 16%, transparent) 50%,
+			transparent 66%
+		);
+		transform: translateX(-60%);
+		opacity: 0;
+	}
+	.bd-band.is-on .bd-band-sweep { animation: bd-band-sweep 7s ease-in-out 0.6s infinite; }
+	@keyframes bd-band-sweep {
+		0%   { transform: translateX(-60%); opacity: 0; }
+		18%  { opacity: 1; }
+		52%  { transform: translateX(60%); opacity: 0; }
+		100% { transform: translateX(60%); opacity: 0; }
+	}
+
 	.bd-numbers {
 		display: grid;
 		grid-template-columns: repeat(5, minmax(0, 1fr));
-		gap: 1.25rem;
+		gap: clamp(1.1rem, 2.6vw, 2.4rem);
 		list-style: none;
-		margin: 0.5rem 0 0.75rem;
+		margin: clamp(1.2rem, 3vw, 2rem) 0 0;
 		padding: 0;
 	}
+	.bd-number { min-width: 0; }
+
+	/* ── the line under each figure ──
+	   Drawn rather than faded in: the stroke is dashed to its own length
+	   and the dash walked to zero, which is a pen moving across the box
+	   rather than a picture appearing. */
+	/* named "trend", not "spark": global.css stops anything whose class
+	   carries spark/glow/aura from animating on weak hardware — right for
+	   a particle emitter, wrong for a line that draws itself once. */
+	.bd-trend {
+		display: block;
+		width: 100%;
+		height: clamp(28px, 3.4vw, 42px);
+		margin: 0.55rem 0 0.7rem;
+		overflow: visible;
+	}
+	.bd-trend-line {
+		fill: none;
+		stroke: var(--bd-accent);
+		stroke-width: 2;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+		vector-effect: non-scaling-stroke;
+		/* the path measures 104 user units; a dash longer than the line it
+		   draws spends most of its travel off the end of it */
+		stroke-dasharray: 106;
+		stroke-dashoffset: 106;
+		filter: drop-shadow(0 0 6px color-mix(in srgb, var(--bd-accent) 55%, transparent));
+	}
+	.bd-trend-fill {
+		fill: color-mix(in srgb, var(--bd-accent) 16%, transparent);
+		opacity: 0;
+	}
+	.bd-band.is-on .bd-trend-line {
+		animation: bd-draw 1.5s cubic-bezier(0.3, 0.8, 0.3, 1) forwards;
+		animation-delay: calc(0.25s + var(--n) * 0.16s);
+	}
+	.bd-band.is-on .bd-trend-fill {
+		animation: bd-trend-fill 1.1s ease forwards;
+		animation-delay: calc(0.75s + var(--n) * 0.16s);
+	}
+	@keyframes bd-draw { to { stroke-dashoffset: 0; } }
+	@keyframes bd-trend-fill { to { opacity: 1; } }
+
+	/* and a rule that fills to the share that figure represents */
+	.bd-number-bar {
+		display: block;
+		height: 3px;
+		border-radius: 999px;
+		background: rgba(255, 255, 255, 0.1);
+		overflow: hidden;
+	}
+	.bd-number-bar i {
+		display: block;
+		width: 0;
+		height: 100%;
+		border-radius: inherit;
+		background: linear-gradient(90deg, #9bd8ff, var(--bd-accent));
+	}
+	.bd-band.is-on .bd-number-bar i {
+		animation: bd-fill 1.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+		animation-delay: calc(0.5s + var(--n) * 0.16s);
+	}
+	@keyframes bd-fill { to { width: var(--f); } }
+
+	.bd-number-l {
+		display: block;
+		margin-top: 0.65rem;
+		font-size: 0.85rem;
+		line-height: 1.35;
+		color: rgba(245, 245, 247, 0.62);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.bd-band-grid,
+		.bd-band.is-on .bd-band-sweep { animation: none; }
+		.bd-band .bd-trend-line { stroke-dashoffset: 0; }
+		.bd-band .bd-trend-fill { opacity: 1; }
+		.bd-band .bd-number-bar i { width: var(--f); }
+		.bd-band.is-on .bd-trend-line,
+		.bd-band.is-on .bd-trend-fill,
+		.bd-band.is-on .bd-number-bar i { animation: none; }
+	}
+
 	@media (max-width: 880px) {
 		.bd-numbers {
 			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
+		.bd-band { padding-inline: clamp(1.2rem, 5vw, 2rem); }
 		/* odd one out sits centered on its own row */
 		.bd-number:last-child {
 			grid-column: 1 / -1;
@@ -1044,10 +1252,7 @@ const logos = [
 		background-clip: text;
 		-webkit-text-fill-color: transparent;
 	}
-	.bd-number span {
-		font-size: 0.85rem;
-		color: rgba(245, 245, 247, 0.6);
-	}
+
 
 	/* ── Rotating quotes — fixed height so the page never shifts,
 	   stylishly overlapping the numbers tile above ── */
@@ -1809,18 +2014,50 @@ const logos = [
 	.bd-sectors .bd-h {
 		margin-bottom: 1.4rem;
 	}
+	.bd-marquee--b { margin-top: clamp(0.5rem, 1.2vw, 0.9rem); }
+	.bd-marquee-track--back {
+		animation-duration: 52s;
+		animation-direction: reverse;
+	}
 	.bd-sector {
 		flex-shrink: 0;
-		margin-right: clamp(1.6rem, 3vw, 2.8rem);
-		font-size: clamp(1.2rem, 2.4vw, 1.7rem);
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+		margin-right: clamp(0.7rem, 1.6vw, 1.15rem);
+		padding: 0.42em 0.95em;
+		border-radius: 999px;
+		border: 1px solid color-mix(in srgb, var(--bd-ink) 11%, transparent);
+		background: color-mix(in srgb, var(--bd-ink) 3%, transparent);
+		font-size: clamp(1.05rem, 2vw, 1.45rem);
 		font-weight: 700;
-		letter-spacing: -0.01em;
-		color: color-mix(in srgb, var(--bd-ink) 34%, transparent);
-		transition: color 0.3s ease;
+		letter-spacing: -0.015em;
+		color: color-mix(in srgb, var(--bd-ink) 46%, transparent);
+		transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease,
+			transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 		cursor: default;
 	}
+	.bd-sector--sm { font-size: clamp(0.88rem, 1.5vw, 1.1rem); }
+	.bd-sector-dot {
+		width: 0.42em;
+		height: 0.42em;
+		border-radius: 50%;
+		background: currentColor;
+		opacity: 0.5;
+		flex: none;
+	}
+	/* a few run in the accent so the rail is never one flat grey line */
+	.bd-sector.is-hot {
+		color: var(--bd-accent);
+		border-color: color-mix(in srgb, var(--bd-accent) 34%, transparent);
+		background: color-mix(in srgb, var(--bd-accent) 8%, transparent);
+	}
+	.bd-sector.is-hot .bd-sector-dot { opacity: 1; }
 	.bd-sector:hover {
 		color: var(--bd-accent);
+		border-color: color-mix(in srgb, var(--bd-accent) 55%, transparent);
+		background: color-mix(in srgb, var(--bd-accent) 12%, transparent);
+		transform: translateY(-3px);
 	}
 
 	.bd-logos {
@@ -1836,38 +2073,219 @@ const logos = [
 		color: color-mix(in srgb, var(--bd-ink) 38%, transparent);
 		margin: 0 0 1.3rem;
 	}
+	/* Our clients' marks, in their own colours. Almost every one of them
+	   is dark artwork, so on the boardroom's dark body they need a light
+	   card to sit on — flattening them to white would have been easier and
+	   would have thrown away the thing that makes a logo a logo. */
 	.bd-logo {
 		flex-shrink: 0;
 		display: grid;
 		place-items: center;
-		margin-right: clamp(2rem, 4vw, 3.5rem);
+		margin-right: clamp(1.1rem, 2.4vw, 2rem);
+		padding: 0.7rem clamp(0.9rem, 1.8vw, 1.4rem);
+		border-radius: 0.9rem;
+		background: rgba(255, 255, 255, 0.94);
+		border: 1px solid rgba(255, 255, 255, 0.5);
+		box-shadow: 0 12px 30px -18px rgba(0, 0, 0, 0.6);
+		transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+	}
+	:global(html:not(.dark)) .bdbody .bd-logo {
+		background: #fff;
+		border-color: color-mix(in srgb, var(--bd-ink) 8%, transparent);
+		box-shadow: 0 14px 30px -22px rgba(20, 22, 40, 0.4);
 	}
 	.bd-logo img {
-		height: 34px;
+		height: 32px;
 		width: auto;
-		max-width: 140px;
+		max-width: 132px;
 		object-fit: contain;
-		filter: grayscale(1) brightness(0) invert(1);
-		opacity: 0.5;
-		transition: opacity 0.3s ease, filter 0.3s ease, transform 0.3s ease;
+		opacity: 0.88;
+		transition: opacity 0.3s ease, transform 0.3s ease;
+	}
+	.bd-logo:hover {
+		background: #fff;
+		transform: translateY(-3px);
+		box-shadow: 0 20px 44px -20px rgba(0, 0, 0, 0.55);
 	}
 	.bd-logo:hover img {
-		filter: none;
 		opacity: 1;
-		transform: scale(1.06);
+		transform: scale(1.04);
 	}
 
 	/* ── Final CTA ── */
+	/* ── the closing tile ── */
 	.bd-tile--cta {
+		position: relative;
+		overflow: hidden;
+		display: grid;
+		grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+		align-items: stretch;
+		gap: 0;
+		padding: 0;
+		text-align: left;
 		background:
-			radial-gradient(820px 380px at 50% 130%, color-mix(in srgb, var(--bd-accent) 38%, transparent), transparent 72%),
-			linear-gradient(180deg, rgba(18, 22, 42, 0.92), rgba(5, 6, 13, 0.96));
+			radial-gradient(760px 420px at 6% 110%, color-mix(in srgb, var(--bd-accent) 26%, transparent), transparent 70%),
+			linear-gradient(180deg, rgba(14, 19, 36, 0.96), rgba(4, 6, 13, 0.98));
 		color: #f5f5f7;
 		border-color: color-mix(in srgb, var(--bd-accent) 26%, rgba(255, 255, 255, 0.1));
-		padding-block: clamp(3rem, 6vw, 5rem);
+	}
+	.bd-cta-copy {
+		padding: clamp(2.2rem, 5vw, 4.2rem) clamp(1.4rem, 3.4vw, 3.4rem);
+		align-self: center;
+	}
+	.bd-cta-kick {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.85rem;
+		font-size: 0.72rem;
+		font-weight: 700;
+		letter-spacing: 0.26em;
+		text-transform: uppercase;
+		color: rgba(245, 245, 247, 0.6);
+	}
+	.bd-cta-kick i {
+		width: clamp(1.6rem, 3vw, 2.6rem);
+		height: 2px;
+		border-radius: 999px;
+		background: var(--bd-accent);
 	}
 	.bd-display--cta {
-		font-size: clamp(2.2rem, 5vw, 3.8rem);
+		margin: clamp(0.9rem, 2vw, 1.3rem) 0 0;
+		font-size: clamp(2.1rem, 4.4vw, 3.6rem);
+		line-height: 1.02;
+		letter-spacing: -0.04em;
+	}
+	.bd-display--cta em {
+		display: block;
+		font-style: normal;
+		font-weight: 800;
+		background: linear-gradient(100deg, #e9f6ff 10%, var(--bd-accent) 85%);
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	.bd-tile--cta .bd-sub {
+		margin: clamp(0.9rem, 2vw, 1.25rem) 0 0;
+		max-width: 34rem;
+		margin-inline: 0;
+	}
+	.bd-cta-act {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: clamp(1rem, 2.4vw, 2rem);
+		margin-top: clamp(1.5rem, 3.2vw, 2.4rem);
+	}
+	/* the one thing on this tile we want pressed: it breathes until it is */
+	.bd-cta-go {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.6rem;
+		min-height: 3.35rem;
+		padding: 0 1.8rem;
+		border-radius: 999px;
+		background: linear-gradient(120deg, var(--bd-accent), #3b7dfd);
+		color: #04101a;
+		font-size: 1rem;
+		font-weight: 700;
+		white-space: nowrap;
+		transition: transform 0.25s ease, filter 0.25s ease;
+	}
+	.bd-cta-go::after {
+		content: '';
+		position: absolute;
+		inset: -3px;
+		border-radius: inherit;
+		border: 2px solid var(--bd-accent);
+		opacity: 0;
+		pointer-events: none;
+		animation: bd-cta-ring 2.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+	}
+	@keyframes bd-cta-ring {
+		0%   { transform: scale(1); opacity: 0.55; }
+		70%  { transform: scale(1.16); opacity: 0; }
+		100% { transform: scale(1.16); opacity: 0; }
+	}
+	.bd-cta-go:hover { transform: translateY(-2px); filter: brightness(1.06); }
+	.bd-cta-go:hover::after { animation-play-state: paused; opacity: 0; }
+
+	/* the photograph, with the promise stamped in its corner */
+	.bd-cta-shot {
+		position: relative;
+		margin: 0;
+		min-height: clamp(18rem, 30vw, 27rem);
+	}
+	/* The picture is dissolved into the tile rather than laid on top of
+	   it: a dark veil over the photograph left a visible seam wherever the
+	   veil's black and the tile's own gradient disagreed, which they do
+	   everywhere except one row of pixels. Masking the image instead means
+	   there is nothing to match — the photograph simply stops. */
+	.bd-cta-shot img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: 42% 50%;
+		mask-image: linear-gradient(
+			90deg,
+			transparent 0%,
+			rgba(0, 0, 0, 0.28) 14%,
+			rgba(0, 0, 0, 0.82) 38%,
+			#000 62%
+		);
+		-webkit-mask-image: linear-gradient(
+			90deg,
+			transparent 0%,
+			rgba(0, 0, 0, 0.28) 14%,
+			rgba(0, 0, 0, 0.82) 38%,
+			#000 62%
+		);
+	}
+	/* just enough shade at the top right to hold the stamp */
+	.bd-cta-shot::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(200deg, rgba(4, 6, 13, 0.5), transparent 42%);
+	}
+	.bd-cta-stamp {
+		position: absolute;
+		top: clamp(1.1rem, 2.6vw, 2.2rem);
+		right: clamp(1.1rem, 2.6vw, 2.2rem);
+		z-index: 1;
+		text-align: right;
+		font-size: 0.66rem;
+		font-weight: 600;
+		letter-spacing: 0.24em;
+		text-transform: uppercase;
+		line-height: 1.9;
+		color: rgba(245, 245, 247, 0.62);
+	}
+	.bd-cta-stamp strong { display: block; color: #fff; font-weight: 700; }
+	.bd-cta-stamp::after {
+		content: '';
+		display: block;
+		width: 2.4rem;
+		height: 1px;
+		margin: 0.6rem 0 0 auto;
+		background: rgba(255, 255, 255, 0.4);
+	}
+
+	@media (max-width: 860px) {
+		.bd-tile--cta { grid-template-columns: 1fr; }
+		/* on a phone the desk goes on top, where a photograph belongs */
+		.bd-cta-shot { order: -1; min-height: clamp(12rem, 46vw, 17rem); }
+		/* stacked, the photograph dissolves downward instead of sideways */
+		.bd-cta-shot img {
+			mask-image: linear-gradient(180deg, #000 34%, rgba(0, 0, 0, 0.5) 74%, transparent 100%);
+			-webkit-mask-image: linear-gradient(180deg, #000 34%, rgba(0, 0, 0, 0.5) 74%, transparent 100%);
+		}
+		.bd-cta-shot::after { background: linear-gradient(180deg, rgba(4, 6, 13, 0.4), transparent 45%); }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.bd-cta-go::after { animation: none; opacity: 0; }
 	}
 	.bd-tile--cta .bd-sub {
 		color: rgba(245, 245, 247, 0.62);
@@ -1879,9 +2297,8 @@ const logos = [
 	.bd-call {
 		display: flex;
 		flex-direction: column;
-		align-items: center;
-		gap: 0.2rem;
-		margin-top: 1.6rem;
+		align-items: flex-start;
+		gap: 0.15rem;
 	}
 	.bd-call-hint {
 		font-size: 0.78rem;
@@ -1893,8 +2310,8 @@ const logos = [
 	.bd-call-num {
 		display: inline-flex;
 		align-items: center;
-		gap: 0.7rem;
-		font-size: clamp(1.8rem, 4.5vw, 3.2rem);
+		gap: 0.55rem;
+		font-size: clamp(1.15rem, 2.2vw, 1.6rem);
 		font-weight: 700;
 		letter-spacing: -0.02em;
 		background: linear-gradient(135deg, #ffffff, #9bd8ff 60%, var(--bd-accent));
