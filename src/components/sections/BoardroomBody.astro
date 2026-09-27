@@ -13,16 +13,16 @@ const numbers = [
 	{ to: 5, decimals: 1, suffix: '', label: 'Average client rating' },
 ];
 
-// The four disciplines. Each one carries a photograph of that discipline
-// actually happening in the studio rather than an icon on an empty card:
-// a code editor for engineering, a bench of layouts for design, a channel
-// we run for marketing, and one person reading another's screen for the
-// work that never ends.
+// The four disciplines. Each card is a piece of the studio actually
+// working rather than an icon on an empty box: the build reel for
+// engineering, the table mid-review for design, the channels we run for
+// marketing, and one engineer reading another's screen for the work that
+// never ends. Copy is held to two lines on every card.
 const disciplines = [
 	{
 		icon: 'mdi:palette-outline',
 		title: 'Design',
-		desc: 'Brand identity, graphics and product design. We draw the thing before we build it, so your customers never have to think about how it works.',
+		desc: 'Brand, interface and product design your customers never have to think about.',
 		tag: 'brand · UI/UX · motion',
 		span: 'bd-w5',
 		img: '/images/film/room.jpg',
@@ -32,37 +32,34 @@ const disciplines = [
 	{
 		icon: 'mdi:code-tags',
 		title: 'Development',
-		desc: 'Web and mobile engineering, built to scale. We build, test and ship fast, and we keep the thing standing once the launch post is written.',
+		desc: 'Web and mobile engineering, built to scale, shipped fast and kept standing.',
 		tag: 'web · iOS · Android · APIs',
 		span: 'bd-w7',
 		loud: true,
-		img: '/images/builder/at-the-keys.jpg',
-		pos: '58% 42%',
-		alt: 'A Swizel engineer at work in the editor',
+		video: '/videos/how-we-build.mp4',
+		poster: '/images/how-we-build-poster.jpg',
 	},
 	{
 		icon: 'mdi:bullhorn-outline',
 		title: 'Marketing',
-		desc: 'We go beyond development to grow your audience. Search, paid, social and content, run as one campaign rather than four disconnected ones.',
+		desc: 'Search, paid, social and content, run as one campaign, not four.',
 		tag: 'SEO · ads · social · content',
 		span: 'bd-w7',
-		img: '/images/spotlight/portrait.jpg',
-		/* the subject sits to the right, clear of the left-set copy */
-		pos: '72% 18%',
-		alt: 'A client whose audience Swizel grows',
+		img: '/images/marketing/the-floor.jpg',
+		pos: '50% 50%',
+		alt: 'The marketing team at work on the Swizel floor',
 	},
 	{
 		icon: 'mdi:wrench-outline',
 		title: 'Maintenance',
-		desc: 'Improving products already in the world and keeping complex systems healthy, year after year, long after the people who built them have moved on.',
+		desc: 'Products already live, kept healthy year after year, long after launch day.',
 		tag: 'support · DevOps · uptime',
 		span: 'bd-w5',
 		img: '/images/builder/over-the-shoulder.jpg',
 		pos: '46% 40%',
-		alt: 'One engineer reading another\'s screen',
+		alt: "One engineer reading another's screen",
 	},
-];
-// ── Swizel for business ───────────────────────────────────────────────
+];// ── Swizel for business ───────────────────────────────────────────────
 // Two rows. The top one is films: the middle one plays, its neighbours
 // wait either side, and the row walks on by itself. The bottom one is the
 // work itself, a band of client screens running edge to edge without
@@ -228,7 +225,7 @@ const logos = [
 	     The belt underneath runs edge to edge and never stops — the work
 	     itself, labelled, sliding past the whole width of the screen.
 	     ══════════════════════════════════════════════════════════════ -->
-	<section class="bd-biz" id="bd-business" data-cursor="chart">
+	<section class="bd-biz" id="bd-business" data-cursor="video">
 		<header class="bd-biz-top bd-reveal">
 			<span class="bd-kicker">Swizel for business</span>
 			<h2 class="bd-biz-title">See how the work gets done.</h2>
@@ -295,7 +292,7 @@ const logos = [
 		</div>
 
 		<!-- ── the belt ── -->
-		<div class="bz-belt" data-bz-belt aria-label="Work we have shipped">
+		<div class="bz-belt" data-cursor="repo" data-bz-belt aria-label="Work we have shipped">
 			<div class="bz-belt-track" data-bz-belt-track>
 				{
 					[0, 1].map((pass) => (
@@ -347,8 +344,8 @@ const logos = [
 	<section class="bd-head bd-reveal" id="bd-services">
 		<h3 class="bd-h bd-h--center">Everything under one roof.</h3>
 		<p class="bd-p bd-p--center">
-			Employ a world-class team of engineers, designers, analysts and
-			marketers, without hiring one.
+			Employ a world-class team of engineers, designers, analysts, and
+			marketers without hiring one.
 		</p>
 	</section>
 	<div class="bd-mosaic bd-mosaic--svc">
@@ -358,14 +355,31 @@ const logos = [
 					class:list={['bd-tile', 'bd-tile--svc', d.span, 'bd-reveal', { 'bd-tile--loud': d.loud }]}
 					data-cursor="layers"
 				>
-					<img
-						class="bd-svc-img"
-						src={d.img}
-						alt={d.alt}
-						style={`object-position:${d.pos}`}
-						loading="lazy"
-						decoding="async"
-					/>
+					{
+						d.video ? (
+							<video
+								class="bd-svc-media"
+								src={d.video}
+								poster={d.poster}
+								autoplay
+								muted
+								loop
+								playsinline
+								preload="metadata"
+								aria-hidden="true"
+								tabindex="-1"
+							/>
+						) : (
+							<img
+								class="bd-svc-media"
+								src={d.img}
+								alt={d.alt}
+								style={`object-position:${d.pos}`}
+								loading="lazy"
+								decoding="async"
+							/>
+						)
+					}
 					<span class="bd-svc-scrim" aria-hidden="true" />
 					<span class="bd-svc-body">
 						<span class="bd-svc-ic">
@@ -1047,8 +1061,11 @@ const logos = [
 		padding: clamp(1.6rem, 3.2vw, 2.4rem);
 		background: #05070d;
 	}
-	.bd-svc-img {
+	/* one rule for all three kinds of media — a still, a running reel,
+	   or a stack of stills changing over */
+	.bd-svc-media {
 		position: absolute;
+		pointer-events: none;
 		inset: 0;
 		z-index: -2;
 		width: 100%;
@@ -1056,7 +1073,7 @@ const logos = [
 		object-fit: cover;
 		transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
 	}
-	.bd-tile--svc:hover .bd-svc-img { transform: scale(1.05); }
+	.bd-tile--svc:hover .bd-svc-media { transform: scale(1.04); }
 	.bd-svc-scrim {
 		position: absolute;
 		inset: 0;
@@ -1069,9 +1086,11 @@ const logos = [
 			rgba(4, 6, 12, 0.3) 100%
 		);
 	}
+
 	.bd-svc-body { display: block; width: 100%; }
-	.bd-tile--svc .bd-h--sm,
-	.bd-tile--svc .bd-svc-p { color: #fff; }
+	/* every card is a dark frame now, so the type is white in both themes
+	   rather than following the body's ink */
+	.bd-tile--svc .bd-h--sm { color: #fff; }
 	.bd-tile--svc .bd-svc-p { color: rgba(255, 255, 255, 0.82); }
 	.bd-tile--svc .bd-chip {
 		border-color: rgba(255, 255, 255, 0.34);
@@ -1085,6 +1104,12 @@ const logos = [
 	.bd-tile--svc .bd-h--sm {
 		margin: 1rem 0 0.45rem;
 	}
+	.bd-tile--svc .bd-svc-p {
+		margin-bottom: 0.9rem;
+		font-size: clamp(0.82rem, 1.05vw, 0.95rem);
+		line-height: 1.48;
+	}
+
 	.bd-svc-p {
 		margin: 0 0 1.4rem;
 		margin-inline: 0;
@@ -1128,8 +1153,8 @@ const logos = [
 	.bd-tile--loud .bd-svc-scrim {
 		background:
 			radial-gradient(480px 260px at 85% -10%, rgba(255, 255, 255, 0.24), transparent 60%),
-			linear-gradient(135deg, rgba(14, 165, 233, 0.76) 0%, rgba(37, 99, 235, 0.8) 60%, rgba(34, 211, 238, 0.68) 130%),
-			linear-gradient(to top, rgba(4, 6, 12, 0.5), transparent 60%);
+			linear-gradient(135deg, rgba(14, 165, 233, 0.34) 0%, rgba(37, 99, 235, 0.4) 60%, rgba(34, 211, 238, 0.3) 130%),
+			linear-gradient(to top, rgba(4, 6, 12, 0.62), rgba(4, 6, 12, 0.12) 62%);
 	}
 	.bd-tile--loud {
 		border-color: rgba(255, 255, 255, 0.45);

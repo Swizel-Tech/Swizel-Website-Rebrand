@@ -106,6 +106,21 @@ export function initBoardroomBody() {
 		stage.addEventListener('pointerleave', start);
 	}
 
+	// the discipline card's film runs only while the card is on screen —
+	// autoplay on a muted, controlless <video> is allowed, but a reel
+	// decoding behind the fold is work nobody asked for
+	body.querySelectorAll<HTMLVideoElement>('.bd-tile--svc video').forEach((film) => {
+		film.muted = true;
+		const io = new IntersectionObserver(
+			(entries) => {
+				if (entries[0]?.isIntersecting) void film.play().catch(() => {});
+				else film.pause();
+			},
+			{ threshold: 0.2 }
+		);
+		io.observe(film);
+	});
+
 	// team profile modal (About page)
 	const modal = document.getElementById('bd-member-modal');
 	if (modal) {
