@@ -156,11 +156,45 @@ const processShort = ['Discover', 'Design', 'Launch'];
 // Each panel borrows a real frame from that discipline's own work; none
 // of these are stock or generated, they are photographs of this studio
 // and screens of things it shipped.
-const doPanels = allDisciplines.map((d) => ({
+// Two lines everywhere: the full sentence on a wide panel, a shorter
+// one on a narrow panel, so the block under each title is always two
+// lines rather than two at one width and four at another.
+const doLine: Record<string, [string, string]> = {
+	design: [
+		'We craft brand and product experiences that people feel, trust, and remember.',
+		'Brand and product people feel, trust and remember.',
+	],
+	development: [
+		'We build high-performance websites and apps engineered to scale and built to last.',
+		'High-performance sites and apps, built to last.',
+	],
+	marketing: [
+		'We drive targeted growth across the platforms that actually move the needle for your business.',
+		'Growth on the platforms that move the needle.',
+	],
+	strategy: [
+		'We define the path, purpose, and direction before placing the first pixel.',
+		'The path and the purpose, before the first pixel.',
+	],
+	maintenance: [
+		'We keep your platforms fast, secure, and running seamlessly, 24/7, while you sleep.',
+		'Fast, secure and running, 24/7, while you sleep.',
+	],
+	'ai-automation': [
+		'We put your repetitive busywork on autopilot so you can focus on growing your business.',
+		'Busywork on autopilot, so you can get on with growing.',
+	],
+};
+
+const doPanels = allDisciplines.map((d, i) => ({
 	slug: d.slug,
 	title: d.title,
-	tagline: d.tagline,
+	line: doLine[d.slug] ?? [d.tagline, d.tagline],
 	color: d.color,
+	// A checkerboard, not two stripes. Alternating on the index alone put
+	// every pale panel in the left column and every deep one in the right,
+	// which reads as two columns of different colours rather than a wall.
+	deep: (Math.floor(i / 2) + (i % 2)) % 2 === 1,
 	img: {
 		design: '/images/portfolio/beauty-hive.webp',
 		development: '/images/builder/at-the-keys.jpg',
@@ -648,14 +682,15 @@ const logos = [
 		</header>
 		<div class="bd-do-wall">
 			{
-				doPanels.map((d, i) => (
+				doPanels.map((d) => (
 					<article
-						class:list={['bd-do-panel', i % 2 === 1 ? 'is-deep' : 'is-pale']}
+						class:list={['bd-do-panel', d.deep ? 'is-deep' : 'is-pale']}
 						style={`--c:${d.color}`}
 					>
 						<div class="bd-do-copy">
 							<h4 class="bd-do-t">{d.title}</h4>
-							<p class="bd-do-s">{d.tagline}</p>
+							<p class="bd-do-s">{d.line[0]}</p>
+							<p class="bd-do-s bd-do-s--sm">{d.line[1]}</p>
 							<div class="bd-do-acts">
 								<a class="bd-do-pill" href={`/services/${d.slug}`}>See the work</a>
 								<a class="bd-do-pill bd-do-pill--ghost" href="/contact">Start</a>
@@ -2054,12 +2089,22 @@ const logos = [
 		line-height: 1.05;
 	}
 	.bd-do-s {
-		margin: 0.4rem 0 0;
-		font-size: clamp(0.84rem, 1.15vw, 1.02rem);
+		margin: 0.4rem auto 0;
+		/* wide enough that the longest of the six sets in two lines: at
+		   34ch Marketing and AI ran to three and the clamp was eating the
+		   end of the sentence */
+		max-width: 48ch;
+		font-size: clamp(0.84rem, 1.1vw, 0.98rem);
 		line-height: 1.4;
 		opacity: 0.72;
 		text-wrap: balance;
+		/* two lines, and a guard so it can never quietly become three */
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
 	}
+	.bd-do-s--sm { display: none; }
 	.bd-do-acts {
 		display: flex;
 		justify-content: center;
@@ -2125,7 +2170,17 @@ const logos = [
 			padding: 0.9rem 0.6rem 0;
 		}
 		.bd-do-t { font-size: 1rem; }
-		.bd-do-s { font-size: 0.66rem; margin-top: 0.22rem; }
+		/* the short line takes over where the long one would run to four */
+		.bd-do-panel .bd-do-s { display: none; }
+		.bd-do-panel .bd-do-s--sm {
+			display: -webkit-box;
+			-webkit-line-clamp: 2;
+			-webkit-box-orient: vertical;
+			overflow: hidden;
+			font-size: 0.66rem;
+			margin-top: 0.22rem;
+			max-width: none;
+		}
 		.bd-do-acts { margin-top: 0.55rem; gap: 0.3rem; }
 		.bd-do-pill {
 			min-height: 1.8rem;
