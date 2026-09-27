@@ -15,15 +15,15 @@ import FilmPlayer from '../FilmPlayer.astro';
 // team growing in steps, a rating that has simply held.
 const numbers = [
 	{ to: 65, suffix: '+', label: 'Products shipped', icon: 'mdi:cube-outline',
-	  spark: 'M0 31 L17 27 L33 24 L50 18 L67 13 L83 7 L100 3' },
+	  spark: 'M0 6.4 L17 5.6 L33 4.9 L50 3.7 L67 2.7 L83 1.4 L100 0.6' },
 	{ to: 7, suffix: '+', label: 'Years in business', icon: 'mdi:calendar-blank-outline',
-	  spark: 'M0 31 L17 27 L33 23 L50 19 L67 15 L83 11 L100 7' },
+	  spark: 'M0 6.4 L17 5.6 L33 4.7 L50 3.9 L67 3.1 L83 2.3 L100 1.4' },
 	{ to: 25, suffix: '+', label: 'Specialists on the team', icon: 'mdi:account-group-outline',
-	  spark: 'M0 31 L17 31 L17 24 L42 24 L42 16 L71 16 L71 8 L100 8' },
+	  spark: 'M0 6.4 L17 6.4 L17 4.9 L42 4.9 L42 3.3 L71 3.3 L71 1.6 L100 1.6' },
 	{ to: 10, suffix: '+', label: 'Countries served', icon: 'mdi:web',
-	  spark: 'M0 30 L17 28 L33 29 L50 21 L67 18 L83 10 L100 6' },
+	  spark: 'M0 6.2 L17 5.8 L33 6 L50 4.3 L67 3.7 L83 2.1 L100 1.2' },
 	{ to: 5, decimals: 1, suffix: '', label: 'Average client rating', icon: 'mdi:star-outline',
-	  spark: 'M0 7 L17 6 L33 7 L50 5 L67 7 L83 6 L100 6' },
+	  spark: 'M0 1.4 L17 1.2 L33 1.4 L50 1 L67 1.4 L83 1.2 L100 1.2' },
 ];
 
 // The four disciplines. Each card is a piece of the studio actually
@@ -544,7 +544,7 @@ const logos = [
 							0{n.suffix}
 						</strong>
 						<span class="bd-number-l">{n.label}</span>
-						<svg class="bd-trend" viewBox="0 0 100 34" preserveAspectRatio="none" aria-hidden="true">
+						<svg class="bd-trend" viewBox="0 0 100 7" preserveAspectRatio="none" aria-hidden="true">
 							<path class="bd-trend-line" d={n.spark} />
 						</svg>
 					</li>
@@ -669,10 +669,6 @@ const logos = [
 					Let's talk about
 					<em>your business.</em>
 				</h3>
-				<p class="bd-sub">
-					Tell us where you want the numbers to go. Call us and we
-					pick up immediately.
-				</p>
 				<div class="bd-cta-act">
 					<a href="/contact" class="bd-cta-go">
 						<Icon width={18} name="mdi:arrow-right" />
@@ -1098,10 +1094,29 @@ const logos = [
 		max-width: none;
 		width: auto;
 		margin-inline: calc(-1 * clamp(1rem, 3vw, 2rem));
-		margin-block: clamp(1.4rem, 3vw, 2.4rem) clamp(0.9rem, 2vw, 1.4rem);
+		margin-block: clamp(1.2rem, 2.6vw, 2rem) clamp(0.9rem, 2vw, 1.4rem);
 		border-radius: clamp(1rem, 2vw, 1.6rem);
-		padding-inline: clamp(1.4rem, 5vw, 4.5rem);
-		padding-block: clamp(2.4rem, 5vw, 3.8rem);
+		padding-inline: clamp(1.2rem, 4vw, 3.4rem);
+		padding-block: clamp(1.6rem, 3vw, 2.5rem);
+		/* deeper than the rest of the body on purpose: this band is the
+		   quiet beat between the story above it and the proof below */
+		background:
+			radial-gradient(900px 320px at 50% -24%, color-mix(in srgb, var(--bd-accent) 13%, transparent), transparent 70%),
+			linear-gradient(180deg, #05070f 0%, #02030a 100%);
+		border-color: rgba(155, 216, 255, 0.1);
+	}
+	/* the heading is a label here, not a headline: the figures are the
+	   thing being looked at */
+	.bd-band .bd-h {
+		font-size: clamp(1.35rem, 2.5vw, 2rem);
+		letter-spacing: -0.03em;
+		margin: 0;
+	}
+	.bd-band .bd-p {
+		margin: 0.45rem auto 0;
+		max-width: 40rem;
+		font-size: clamp(0.82rem, 1vw, 0.92rem);
+		line-height: 1.55;
 	}
 	/* the accent falls on one word, which is the only ornament the
 	   heading needs */
@@ -1112,23 +1127,12 @@ const logos = [
 		background-clip: text;
 		-webkit-text-fill-color: transparent;
 	}
-	/* a hairline under the line of copy, and nothing else */
-	.bd-band .bd-tile-copy::after {
-		content: '';
-		display: block;
-		width: 3.4rem;
-		height: 2px;
-		border-radius: 999px;
-		margin: clamp(1.1rem, 2.4vw, 1.7rem) auto 0;
-		background: linear-gradient(90deg, transparent, var(--bd-accent), transparent);
-	}
-
 	.bd-numbers {
 		display: grid;
 		grid-template-columns: repeat(5, minmax(0, 1fr));
-		gap: clamp(0.7rem, 1.6vw, 1.2rem);
+		gap: clamp(0.5rem, 1.1vw, 0.85rem);
 		list-style: none;
-		margin: clamp(1.4rem, 3.2vw, 2.4rem) 0 0;
+		margin: clamp(1.1rem, 2.4vw, 1.6rem) 0 0;
 		padding: 0;
 	}
 	/* Five cards, each one hairline, icon, figure, label and the shape it
@@ -1140,30 +1144,31 @@ const logos = [
 		flex-direction: column;
 		align-items: center;
 		text-align: center;
-		padding: clamp(1.2rem, 2.4vw, 1.8rem) clamp(0.7rem, 1.6vw, 1.2rem)
-			clamp(0.85rem, 1.8vw, 1.25rem);
-		border-radius: clamp(0.8rem, 1.4vw, 1.1rem);
-		border: 1px solid rgba(155, 216, 255, 0.14);
-		background: rgba(255, 255, 255, 0.022);
+		padding: clamp(0.85rem, 1.7vw, 1.15rem) clamp(0.55rem, 1.2vw, 0.9rem)
+			clamp(0.6rem, 1.3vw, 0.85rem);
+		border-radius: clamp(0.65rem, 1.1vw, 0.85rem);
+		border: 1px solid rgba(155, 216, 255, 0.095);
+		background: rgba(255, 255, 255, 0.014);
 		transition: border-color 0.35s ease, background 0.35s ease,
 			transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 	}
 	.bd-number:hover {
-		border-color: color-mix(in srgb, var(--bd-accent) 44%, transparent);
-		background: rgba(255, 255, 255, 0.045);
-		transform: translateY(-3px);
+		border-color: color-mix(in srgb, var(--bd-accent) 38%, transparent);
+		background: rgba(255, 255, 255, 0.035);
+		transform: translateY(-2px);
 	}
 	.bd-number-ic {
 		display: grid;
 		place-items: center;
-		width: 2.5rem;
-		height: 2.5rem;
-		border-radius: 0.75rem;
-		border: 1px solid rgba(155, 216, 255, 0.2);
-		background: color-mix(in srgb, var(--bd-accent) 11%, transparent);
-		color: #9bd8ff;
-		margin-bottom: clamp(0.7rem, 1.6vw, 1rem);
+		width: 1.85rem;
+		height: 1.85rem;
+		border-radius: 0.55rem;
+		border: 1px solid rgba(155, 216, 255, 0.16);
+		background: color-mix(in srgb, var(--bd-accent) 9%, transparent);
+		color: #7fc7f0;
+		margin-bottom: 0.5rem;
 	}
+	.bd-number-ic :global(svg) { width: 15px; height: 15px; }
 
 	/* ── the line under each figure ──
 	   Drawn rather than faded in: the stroke is dashed to its own length
@@ -1175,22 +1180,21 @@ const logos = [
 	.bd-trend {
 		display: block;
 		width: 100%;
-		height: clamp(18px, 2.1vw, 26px);
-		margin-top: clamp(0.8rem, 1.8vw, 1.15rem);
+		height: clamp(13px, 1.5vw, 17px);
+		margin-top: clamp(0.5rem, 1.1vw, 0.75rem);
 		overflow: hidden;
 	}
 	.bd-trend-line {
 		fill: none;
 		stroke: var(--bd-accent);
-		stroke-width: 1.6;
+		stroke-width: 0.75;
 		stroke-linecap: round;
 		stroke-linejoin: round;
-		opacity: 0.8;
-		vector-effect: non-scaling-stroke;
-		/* the path measures 104 user units; a dash longer than the line it
-		   draws spends most of its travel off the end of it */
-		stroke-dasharray: 106;
-		stroke-dashoffset: 106;
+		opacity: 0.62;
+		/* the path measures a shade over 100 user units, and the dash is
+		   measured in the same units now, so one dash covers one line */
+		stroke-dasharray: 104;
+		stroke-dashoffset: 104;
 
 	}
 
@@ -1202,10 +1206,10 @@ const logos = [
 
 	.bd-number-l {
 		display: block;
-		margin-top: 0.4rem;
-		font-size: 0.85rem;
-		line-height: 1.35;
-		color: rgba(245, 245, 247, 0.62);
+		margin-top: 0.22rem;
+		font-size: clamp(0.7rem, 0.82vw, 0.78rem);
+		line-height: 1.3;
+		color: rgba(245, 245, 247, 0.5);
 	}
 
 	@media (prefers-reduced-motion: reduce) {
@@ -1231,7 +1235,7 @@ const logos = [
 	}
 	.bd-number strong {
 		display: block;
-		font-size: clamp(2.4rem, 5vw, 3.6rem);
+		font-size: clamp(1.7rem, 3.1vw, 2.4rem);
 		font-weight: 700;
 		letter-spacing: -0.03em;
 		background: linear-gradient(135deg, #9bd8ff, var(--bd-accent));

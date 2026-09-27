@@ -8,6 +8,27 @@
 // route starts with the sound on.
 import { FILM_DELAY, hintUnmute, startWhenSeen } from './filmAutoplay';
 export function initFooterTv() {
+	// The footer marks itself once it has actually been reached, so the
+	// things inside it that draw themselves do it when somebody is there
+	// to see rather than silently before the page is scrolled.
+	const foot = document.querySelector<HTMLElement>('.site-footer');
+	if (foot && foot.dataset.seenBound !== '1') {
+		foot.dataset.seenBound = '1';
+		if (!('IntersectionObserver' in window)) {
+			foot.classList.add('is-seen');
+		} else {
+			const io = new IntersectionObserver(
+				(entries) => {
+					if (!entries[0]?.isIntersecting) return;
+					foot.classList.add('is-seen');
+					io.disconnect();
+				},
+				{ threshold: 0.1 }
+			);
+			io.observe(foot);
+		}
+	}
+
 	document.querySelectorAll<HTMLElement>('[data-ft-tv]').forEach((tv) => {
 		if (tv.dataset.tvBound === '1') return;
 		tv.dataset.tvBound = '1';

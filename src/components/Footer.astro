@@ -60,6 +60,18 @@ const socials = [
 // The channel's uploads playlist is simply UU + the channel id minus its
 // UC prefix, so the TV in the footer always plays the newest videos with
 // nothing to keep up to date by hand.
+// A short line per channel for the boardroom's report rows. Drawn on a
+// 40×7 box so stretching it into a narrow cell scales both axes by much
+// the same amount, and the stroke can stay uniform without
+// non-scaling-stroke — which measures dashes in screen pixels while the
+// path measures in user units, and breaks every drawn line in two.
+const channelTrend: Record<string, string> = {
+	X: 'M0 6 L10 5 L20 5.2 L30 3 L40 1.5',
+	Instagram: 'M0 5.6 L10 4.4 L20 4.9 L30 2.6 L40 1.8',
+	LinkedIn: 'M0 6.2 L10 4.8 L20 3.6 L30 3 L40 1.2',
+	Facebook: 'M0 5.8 L10 5.2 L20 4 L30 3.4 L40 2',
+};
+
 const YT_CHANNEL = 'UCZlQKVfjUd1Y0t362gQDgDg';
 const YT_UPLOADS = `UU${YT_CHANNEL.slice(2)}`;
 const YT_URL = 'https://www.youtube.com/@SwizelTechnologiesLtd';
@@ -346,6 +358,52 @@ const phones = [
 						<em>@swizelhq · four channels, one studio</em>
 					</span>
 				</div>
+			</div>
+
+			{/* Boardroom: the channels as a board report. Every other world
+			    owns an object here — a pinboard, a terminal, a projector —
+			    and boardroom was falling through to the house card list. */}
+			<div class="ft-board">
+				<div class="ft-board-head">
+					<span>Channel</span>
+					<span>Handle</span>
+				</div>
+				<ul class="ft-board-rows">
+					{
+						socials.map((s, i) => (
+							<li>
+								<a
+									class="ft-board-row"
+									href={s.href}
+									target="_blank"
+									rel="noopener noreferrer"
+									data-leaving=""
+									data-leaving-name={`Swizel on ${s.name}`}
+									style={`--i:${i}`}
+								>
+									<span class="ft-board-ic">
+										<Icon size={15} name={s.icon} />
+									</span>
+									<span class="ft-board-id">
+										<strong>{s.name}</strong>
+										<em>{s.handle}</em>
+									</span>
+									<svg
+										class="ft-board-trend"
+										viewBox="0 0 40 7"
+										preserveAspectRatio="none"
+										aria-hidden="true"
+									>
+										<path d={channelTrend[s.name]} />
+									</svg>
+									<span class="ft-board-go">
+										<Icon width={13} name="mdi:arrow-top-right" />
+									</span>
+								</a>
+							</li>
+						))
+					}
+				</ul>
 			</div>
 
 			<div class="ft-socials">
@@ -1492,10 +1550,115 @@ const phones = [
 	   Campus pins paper to cork. Builder runs a script. Founder puts it
 	   on a projector screen. The plain card list stays for the worlds
 	   that have no object of their own. */
-	.ft-term, .ft-deck, .ft-wall { display: none; }
+	.ft-term, .ft-deck, .ft-wall, .ft-board { display: none; }
 	:global(html[data-view='builder']) .ft-socials,
 	:global(html[data-view='founder']) .ft-socials,
-	:global(html[data-view='studio']) .ft-socials { display: none; }
+	:global(html[data-view='studio']) .ft-socials,
+	:global(html[data-view='boardroom']) .ft-socials,
+	:global(html:not([data-view])) .ft-socials { display: none; }
+
+	/* ── Boardroom: the channels as a board report ──────────────────
+	   A ruled sheet with a header row, one line per channel and the
+	   shape that channel has been making. Calm, hairline, no cards —
+	   the only object in this footer a boardroom would actually own. */
+	:global(html[data-view='boardroom']) .ft-board,
+	:global(html:not([data-view])) .ft-board { display: block; }
+	.ft-board {
+		border: 1px solid rgba(40, 166, 236, 0.22);
+		border-radius: 0.85rem;
+		overflow: hidden;
+		background: linear-gradient(180deg, rgba(8, 14, 26, 0.55), rgba(4, 7, 15, 0.7));
+	}
+	:global(html:not(.dark)) .ft-board {
+		border-color: rgba(30, 64, 175, 0.16);
+		background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.6));
+	}
+	.ft-board-head {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 0.5rem 0.85rem;
+		border-bottom: 1px solid rgba(40, 166, 236, 0.18);
+		font-size: 0.62rem;
+		font-weight: 700;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+		color: var(--ft-faint);
+	}
+	:global(html:not(.dark)) .ft-board-head { border-bottom-color: rgba(30, 64, 175, 0.14); }
+	.ft-board-rows { list-style: none; margin: 0; padding: 0; }
+	.ft-board-row {
+		display: grid;
+		position: relative;
+		/* three columns only: the footer column is narrow, and a fourth
+		   was squeezing the handles down to a single character */
+		grid-template-columns: auto minmax(0, 1fr) auto;
+		align-items: center;
+		gap: 0.7rem;
+		padding: 0.6rem 0.85rem 0.7rem;
+		border-top: 1px solid rgba(40, 166, 236, 0.1);
+		text-decoration: none;
+		transition: background 0.25s ease;
+	}
+	:global(html:not(.dark)) .ft-board-row { border-top-color: rgba(30, 64, 175, 0.09); }
+	.ft-board-rows li:first-child .ft-board-row { border-top: 0; }
+	.ft-board-row:hover { background: color-mix(in srgb, #28a6ec 10%, transparent); }
+	.ft-board-ic {
+		display: grid;
+		place-items: center;
+		width: 26px;
+		height: 26px;
+		border-radius: 0.45rem;
+		border: 1px solid rgba(40, 166, 236, 0.2);
+		background: color-mix(in srgb, #28a6ec 10%, transparent);
+		color: #7fc7f0;
+		flex: none;
+	}
+	:global(html:not(.dark)) .ft-board-ic { color: #1e40af; border-color: rgba(30, 64, 175, 0.2); }
+	.ft-board-id { display: flex; flex-direction: column; line-height: 1.2; min-width: 0; }
+	.ft-board-id strong { font-size: 0.82rem; font-weight: 700; color: var(--ft-ink); }
+	.ft-board-id em {
+		font-style: normal;
+		font-size: 0.7rem;
+		color: #7fc7f0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	:global(html:not(.dark)) .ft-board-id em { color: #1e40af; }
+	/* the shape runs along the floor of its row rather than taking a
+	   column of its own */
+	.ft-board-trend {
+		position: absolute;
+		left: 0.85rem;
+		right: 0.85rem;
+		bottom: 0.2rem;
+		width: auto;
+		height: 9px;
+		overflow: hidden;
+		pointer-events: none;
+	}
+	.ft-board-trend path {
+		fill: none;
+		stroke: #28a6ec;
+		stroke-width: 0.6;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+		opacity: 0.4;
+		stroke-dasharray: 42;
+		stroke-dashoffset: 42;
+		transition: stroke-dashoffset 0.9s cubic-bezier(0.3, 0.8, 0.3, 1), opacity 0.3s ease;
+		transition-delay: calc(var(--i) * 0.09s);
+	}
+	/* the lines draw themselves the first time the footer is reached */
+	:global(.site-footer.is-seen) .ft-board-trend path { stroke-dashoffset: 0; }
+	.ft-board-row:hover .ft-board-trend path { opacity: 0.9; }
+	.ft-board-go { color: var(--ft-faint); transition: transform 0.25s ease, color 0.25s ease; }
+	.ft-board-row:hover .ft-board-go { color: #28a6ec; transform: translate(2px, -2px); }
+
+	@media (prefers-reduced-motion: reduce) {
+		.ft-board-trend path { transition: none; stroke-dashoffset: 0; }
+	}
 
 	/* ── Studio: one work, four panes ───────────────────────────────
 	   Campus pins cards to a board, Builder runs a script, Founder uses
