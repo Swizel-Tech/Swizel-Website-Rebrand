@@ -20,9 +20,9 @@ const yearsWordRaw = NUMBER_WORDS[yearsInBusiness] || String(yearsInBusiness);
 const yearsWord = yearsWordRaw.charAt(0).toUpperCase() + yearsWordRaw.slice(1);
 
 const glance = [
-	{ k: 'Since', v: '2019' },
-	{ k: 'Products shipped', v: '65+' },
-	{ k: 'Countries served', v: '10+' },
+	{ k: 'Since', s: 'Since', v: '2019' },
+	{ k: 'Products shipped', s: 'Shipped', v: '65+' },
+	{ k: 'Countries served', s: 'Countries', v: '10+' },
 ];
 
 const numbers = [
@@ -246,57 +246,75 @@ const currentYear = new Date().getFullYear();
 	     that a photograph could say instead.
 	     ══════════════════════════════════════════════════════════════ -->
 
-	<!-- ── the opening: centred, sparse, one thing to read ── -->
-	<header class="ab-hero bd-reveal">
-		<span class="ab-kick">About Swizel</span>
-		<h1 class="ab-h1">
-			<span data-years-since={FOUNDED_YEAR}>{yearsWord}</span> years building
-			<em>the software Africa runs on.</em>
-		</h1>
-		<p class="ab-lede">
-			One product team. Designers, engineers, analysts and marketers,
-			turning ambitious ideas into software that ships, scales and keeps
-			earning long after launch.
-		</p>
-		<div class="ab-acts">
-			<a href="/contact" class="ab-pill">Start a project</a>
-			<a href="#bd-team" class="ab-more">
-				Meet the team
-				<Icon width={14} name="mdi:chevron-right" />
-			</a>
-		</div>
-		<ul class="ab-glance" aria-label="Swizel at a glance">
-			{
-				glance.map((g) => (
-					<li>
-						<strong>{g.v}</strong>
-						<span>{g.k}</span>
-					</li>
-				))
-			}
-		</ul>
-	</header>
+	<!-- ── the opening: two panels, the way HomePod sits beside HomePod
+	     mini. One carries the words, the other carries the film with its
+	     own words on it. Same four beats in each: label, headline,
+	     support, then the pill beside the plain link. ── -->
+	<div class="ab-open">
+		<article class="ab-open-panel is-pale bd-reveal">
+			<div class="ab-open-copy">
+				<span class="ab-kick">About Swizel</span>
+				<h1 class="ab-h1">
+					<span data-years-since={FOUNDED_YEAR}>{yearsWord}</span> years building
+					<em>the software Africa runs on.</em>
+				</h1>
+				<p class="ab-lede">
+					One product team. Designers, engineers, analysts and marketers,
+					turning ambitious ideas into software that ships, scales and
+					keeps earning long after launch.
+				</p>
+				<p class="ab-lede ab-lede--sm">
+					One team. Designers, engineers and marketers, turning ideas into
+					software that ships and keeps earning.
+				</p>
+				<div class="ab-acts">
+					<a href="/contact" class="ab-pill">Start a project</a>
+					<a href="#bd-team" class="ab-more">
+						Meet the team
+						<Icon width={14} name="mdi:chevron-right" />
+					</a>
+				</div>
+			</div>
+			<ul class="ab-glance" aria-label="Swizel at a glance">
+				{
+					glance.map((g) => (
+						<li>
+							<strong>{g.v}</strong>
+							<span>{g.k}</span>
+							<span class="ab-glance-s">{g.s}</span>
+						</li>
+					))
+				}
+			</ul>
+		</article>
 
-	<!-- ── the film, on the big screen ── -->
-	<section class="ab-film bd-reveal" data-cursor="video">
-		<h2 class="ab-h2">
-			You have an idea.
-			<span>We have the technology.</span>
-		</h2>
-		<figure class="ab-screen">
-			<FilmPlayer
-				videoId="p563SFG9Nwg"
-				label="You have an idea? We have the technology to help you build it"
-				fallback="/images/builder/the-table.jpg"
-				class="ab-screen-film"
-			/>
-			<figcaption class="ab-screen-badge">
-				<Icon width={15} name="mdi:play-circle-outline" />
-				<span>Swizel</span>
-				<em>the film</em>
-			</figcaption>
-		</figure>
-	</section>
+		<article class="ab-open-panel is-deep bd-reveal" data-cursor="video">
+			<div class="ab-open-copy">
+				<span class="ab-kick">The film</span>
+				<h2 class="ab-h2 ab-h2--panel">
+					You have an idea.
+					<span>We have the technology.</span>
+				</h2>
+				<p class="ab-lede">
+					Ninety seconds inside the studio that builds it with you.
+				</p>
+			</div>
+			<figure class="ab-screen">
+				<FilmPlayer
+					videoId="p563SFG9Nwg"
+					label="You have an idea? We have the technology to help you build it"
+					fallback="/images/builder/the-table.jpg"
+					cover
+					class="ab-screen-film"
+				/>
+				<figcaption class="ab-screen-badge">
+					<Icon width={15} name="mdi:play-circle-outline" />
+					<span>Swizel</span>
+					<em>the film</em>
+				</figcaption>
+			</figure>
+		</article>
+	</div>
 
 	<!-- ── our story: one wide panel, the picture doing the talking ── -->
 	<section class="ab-wide is-deep bd-reveal" data-cursor="clock">
@@ -2873,16 +2891,36 @@ const currentYear = new Date().getFullYear();
 	   above it — a media query carries no extra specificity, and source
 	   order is the only thing that does.
 	   ══════════════════════════════════════════════════════════════════ */
-	.ab-hero,
-	.ab-film,
 	.ab-vals {
-		max-width: 62rem;
+		max-width: 76rem;
 		margin-inline: auto;
 		text-align: center;
 	}
-	.ab-hero {
-		padding: clamp(3rem, 8vw, 6.5rem) clamp(1rem, 3vw, 2rem) clamp(2rem, 5vw, 3.5rem);
+
+	/* ── the opening two-up ──
+	   Equal panels, stretched to one height, each centred on its own
+	   words. One carries the type, the other carries the film. */
+	.ab-open {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: clamp(0.9rem, 1.8vw, 1.4rem);
+		max-width: 88rem;
+		margin: clamp(1.2rem, 3vw, 2.2rem) auto clamp(2.5rem, 6vw, 4.5rem);
 	}
+	.ab-open-panel {
+		display: flex;
+		flex-direction: column;
+		border-radius: clamp(1rem, 2vw, 1.7rem);
+		overflow: hidden;
+		min-height: clamp(26rem, 46vw, 40rem);
+	}
+	.ab-open-panel.is-pale { background: #f2f4f9; color: #10121f; }
+	.ab-open-panel.is-deep { background: #05070f; color: #f3f6fc; }
+	.ab-open-copy {
+		padding: clamp(1.8rem, 3.6vw, 3.2rem) clamp(1.2rem, 2.6vw, 2.4rem) 0;
+		text-align: center;
+	}
+	.ab-open-panel .ab-acts { justify-content: center; }
 	.ab-kick {
 		display: inline-block;
 		font-size: 0.74rem;
@@ -2892,8 +2930,8 @@ const currentYear = new Date().getFullYear();
 		color: var(--bd-accent);
 	}
 	.ab-h1 {
-		margin: clamp(0.8rem, 2vw, 1.2rem) 0 0;
-		font-size: clamp(2.2rem, 6vw, 4.6rem);
+		margin: clamp(0.7rem, 1.6vw, 1rem) 0 0;
+		font-size: clamp(1.6rem, 3.4vw, 2.9rem);
 		font-weight: 800;
 		letter-spacing: -0.045em;
 		line-height: 1.02;
@@ -2914,12 +2952,13 @@ const currentYear = new Date().getFullYear();
 		-webkit-text-fill-color: transparent;
 	}
 	.ab-lede {
-		margin: clamp(1rem, 2.2vw, 1.5rem) auto 0;
-		max-width: 46rem;
-		font-size: clamp(1rem, 1.4vw, 1.2rem);
+		margin: clamp(0.8rem, 1.8vw, 1.15rem) auto 0;
+		max-width: 34rem;
+		font-size: clamp(0.9rem, 1.1vw, 1.02rem);
 		line-height: 1.6;
-		color: var(--bd-muted);
+		opacity: 0.74;
 	}
+	.ab-lede--sm { display: none; }
 
 	/* the pair of ways in: one solid, one plain, always together */
 	.ab-acts {
@@ -2956,30 +2995,30 @@ const currentYear = new Date().getFullYear();
 	}
 	.ab-more:hover { gap: 0.4rem; }
 
+	/* the figures sit on the floor of the panel, where the product
+	   photograph sits on the reference */
 	.ab-glance {
 		display: flex;
 		justify-content: center;
 		flex-wrap: wrap;
-		gap: clamp(1.4rem, 4vw, 3.6rem);
+		gap: clamp(1rem, 3vw, 3rem);
 		list-style: none;
-		margin: clamp(2rem, 4.5vw, 3.2rem) 0 0;
-		padding: 0;
+		margin: auto 0 0;
+		padding: clamp(1.6rem, 3.4vw, 2.6rem) clamp(1rem, 2.4vw, 2rem)
+			clamp(1.8rem, 3.6vw, 2.8rem);
 	}
 	.ab-glance strong {
 		display: block;
-		font-size: clamp(1.4rem, 2.6vw, 2rem);
+		font-size: clamp(1.25rem, 2.3vw, 1.85rem);
 		font-weight: 800;
 		letter-spacing: -0.03em;
-		color: var(--bd-ink);
 	}
 	.ab-glance span {
-		font-size: 0.78rem;
+		font-size: 0.74rem;
 		letter-spacing: 0.02em;
-		color: var(--bd-muted);
+		opacity: 0.66;
 	}
 
-	/* ── the film, on the big screen ── */
-	.ab-film { padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 3vw, 2rem); }
 	.ab-h2 {
 		margin: 0;
 		font-size: clamp(1.8rem, 4.4vw, 3.4rem);
@@ -2988,11 +3027,17 @@ const currentYear = new Date().getFullYear();
 		line-height: 1.04;
 		text-wrap: balance;
 	}
-	.ab-h2 span { display: block; color: var(--bd-muted); }
+	.ab-h2 span { display: block; opacity: 0.6; }
+	.ab-h2--panel { font-size: clamp(1.4rem, 2.6vw, 2.1rem); }
+	/* the screen is the floor of its panel, the way the product photograph
+	   is the floor of the panel it sits in */
 	.ab-screen {
 		position: relative;
-		margin: clamp(1.6rem, 3.6vw, 2.8rem) 0 0;
-		border-radius: clamp(0.8rem, 1.6vw, 1.3rem);
+		flex: 1;
+		display: flex;
+		margin: clamp(1.4rem, 3vw, 2.4rem) clamp(1rem, 2.2vw, 1.8rem)
+			clamp(1rem, 2.2vw, 1.8rem);
+		border-radius: clamp(0.7rem, 1.3vw, 1.05rem);
 		overflow: hidden;
 		/* the bezel: a dark rim and a long shadow, the way a screen sits in
 		   a room rather than on a page */
@@ -3002,7 +3047,22 @@ const currentYear = new Date().getFullYear();
 			0 48px 90px -40px rgba(0, 0, 0, 0.75);
 		background: #05070f;
 	}
-	.ab-screen :global(.flm) { border-radius: 0; }
+	.ab-screen :global(.flm) {
+		border-radius: 0;
+		width: 100%;
+		height: 100%;
+	}
+	/* The ratio lives on .flm__screen, not on .flm — setting it on the
+	   wrapper left the picture at 16/9 with a shelf of dark underneath.
+	   Released here, the panel's own height decides, and `cover` crops. */
+	.ab-screen :global(.flm__screen) {
+		height: 100%;
+		aspect-ratio: auto;
+		border-radius: 0;
+		border: 0;
+	}
+	.ab-screen-film { flex: 1; display: flex; min-height: 0; }
+	.ab-glance-s { display: none; }
 	.ab-screen-badge {
 		position: absolute;
 		left: clamp(0.7rem, 1.6vw, 1.2rem);
@@ -3156,6 +3216,9 @@ const currentYear = new Date().getFullYear();
 	}
 
 	@media (max-width: 860px) {
+		.ab-open-panel { min-height: clamp(20rem, 52vw, 28rem); }
+		.ab-h1 { font-size: clamp(1.4rem, 3.4vw, 2rem); }
+		.ab-h2--panel { font-size: clamp(1.2rem, 3vw, 1.6rem); }
 		.ab-wide { grid-template-columns: 1fr; }
 		.ab-wide-shot { order: -1; min-height: clamp(12rem, 44vw, 18rem); }
 		.ab-wide-copy { text-align: center; }
@@ -3164,8 +3227,39 @@ const currentYear = new Date().getFullYear();
 		.ab-vrow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 	}
 	@media (max-width: 620px) {
-		/* the two-up stays two across — it is the shape of the idea, and
-		   one panel per screen turns a pair into a scroll */
+		/* the opening stays two across as well: the words on one side,
+		   the film on the other, just smaller */
+		.ab-open { gap: 0.5rem; }
+		.ab-open-panel { min-height: clamp(17rem, 62vw, 23rem); }
+		.ab-open-copy { padding: 0.9rem 0.55rem 0; }
+		.ab-h1 { font-size: 1.05rem; line-height: 1.12; }
+		.ab-h2--panel { font-size: 0.98rem; }
+		.ab-open-panel .ab-lede { display: none; }
+		.ab-open-panel .ab-lede--sm {
+			display: block;
+			font-size: 0.66rem;
+			margin-top: 0.3rem;
+		}
+		.ab-open-panel .ab-acts { margin-top: 0.7rem; gap: 0.35rem; }
+		.ab-open-panel .ab-pill { min-height: 1.9rem; padding: 0 0.75rem; font-size: 0.68rem; }
+		.ab-open-panel .ab-more { display: none; }
+		/* three figures, one row: the long labels wrapped it into two and
+		   left "10+" stranded on its own line */
+		.ab-glance {
+			flex-wrap: nowrap;
+			gap: 0.3rem;
+			padding: 0.8rem 0.3rem 0.95rem;
+		}
+		.ab-glance li { min-width: 0; }
+		.ab-glance strong { font-size: 0.88rem; }
+		.ab-glance span { display: none; }
+		.ab-glance .ab-glance-s { display: block; font-size: 0.54rem; white-space: nowrap; }
+		/* the poster's play button is sized for a panel, not for a third
+		   of a phone; it comes down with everything else */
+		.ab-screen :global(.flm__big) { transform: scale(0.52); }
+		.ab-screen { margin: 0.7rem 0.55rem 0.55rem; border-width: 4px; }
+		.ab-screen-badge { display: none; }
+
 		.ab-pair { gap: 0.5rem; }
 		.ab-panel { min-height: clamp(15rem, 54vw, 20rem); }
 		.ab-panel-copy { padding: 0.9rem 0.6rem 0; }
@@ -3182,7 +3276,6 @@ const currentYear = new Date().getFullYear();
 		.ab-panel .ab-pill { min-height: 1.9rem; padding: 0 0.75rem; font-size: 0.68rem; }
 		.ab-panel .ab-more { display: none; }
 		.ab-panel-shot { min-height: 5rem; margin-top: 0.8rem; }
-		.ab-glance { gap: 1.1rem 1.6rem; }
 		.ab-val-d { font-size: 0.76rem; }
 	}
 	@media (prefers-reduced-motion: reduce) {
