@@ -3555,7 +3555,11 @@ const currentYear = new Date().getFullYear();
 	}
 	.bd-numbers {
 		display: grid;
-		grid-template-columns: repeat(5, minmax(0, 1fr));
+		/* however many figures there are, not always five: with four the
+		   fixed five-column grid left an empty column and the row sat
+		   off-centre in its own band */
+		grid-auto-flow: column;
+		grid-auto-columns: minmax(0, 1fr);
 		gap: clamp(0.5rem, 1.1vw, 0.85rem);
 		list-style: none;
 		margin: clamp(1.1rem, 2.4vw, 1.6rem) 0 0;
