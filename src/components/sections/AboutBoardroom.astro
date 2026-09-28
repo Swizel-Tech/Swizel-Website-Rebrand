@@ -7,6 +7,7 @@ import { Icon } from 'astro-icon/components';
 import { teamDetails, CORE_VALUES, MISSION, MISSION_SUPPORT, VISION } from '../../consts';
 import FilmPlayer from '../FilmPlayer.astro';
 import CardShuffle from '../CardShuffle.astro';
+import DoWall from './DoWall.astro';
 
 // Years in business, computed from the founding year so it self-increments
 // every year (build-time value; a tiny runtime script below also corrects it).
@@ -109,6 +110,11 @@ const milestones = [
 		year: '2020',
 		title: 'Products, not projects.',
 		desc: 'We stop thinking in deliverables and start thinking in products, software meant to live and grow.',
+	},
+	{
+		year: '2021',
+		title: 'The team doubles.',
+		desc: 'Designers, engineers and marketers join the bench, and Swizel stops being a handful of people doing everything.',
 	},
 	{
 		year: '2022',
@@ -556,35 +562,50 @@ const currentYear = new Date().getFullYear();
 		/>
 	</div>
 
-	<!-- ── Values ──────────────────────────────────────────── -->
-	<section class="bd-head bd-reveal" id="bd-values">
-		<h2 class="bd-h bd-h--center">What we believe.</h2>
-		<p class="bd-p bd-p--center">
-			Four rules we have not broken in seven years, they are why clients
-			stay.
-		</p>
-	</section>
-	<div class="bd-mosaic bd-mosaic--svc">
-		{
-			values.map((v) => (
-				<section
-					class:list={['bd-tile', 'bd-tile--svc', 'bd-w6', 'bd-reveal', { 'bd-tile--loud': v.loud }]}
-					data-cursor="shield"
-				>
-					<span class="bd-svc-ic">
-						<Icon width={28} name={v.icon} />
-					</span>
-					<h3 class="bd-h bd-h--sm">{v.title}</h3>
-					<p class="bd-p bd-svc-p">{v.desc}</p>
-				</section>
-			))
-		}
-	</div>
+	<!-- What we actually do — the same wall the home page carries -->
+	<DoWall />
 
-	<!-- ── Timeline — the road so far (animated aurora bg) ──── -->
+	<!-- ── What we believe ───────────────────────────────────
+	     Four rules set as rules: a numeral, the rule, and the reason
+	     under it, ruled off from each other. The page already has two
+	     grids of four cards above this one; a third would have read as
+	     the same furniture a third time.
+	     ────────────────────────────────────────────────────── -->
+	<section class="bd-creed" id="bd-values" data-cursor="shield">
+		<div class="bd-creed-head bd-reveal">
+			<span class="bd-kicker">What we believe</span>
+			<h2 class="bd-creed-h">Four rules, unbroken.</h2>
+			<p class="bd-creed-p">
+				Seven years, sixty-five products, and not one of these bent. They
+				are why clients stay.
+			</p>
+		</div>
+		<ol class="bd-creed-list">
+			{
+				values.map((v, i) => (
+					<li class:list={['bd-creed-rule', 'bd-reveal', { 'is-loud': v.loud }]} style={`--i:${i}`}>
+						<span class="bd-creed-n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+						<span class="bd-creed-body">
+							<h3 class="bd-creed-t">
+								<Icon width={19} name={v.icon} />
+								{v.title}
+							</h3>
+							<p class="bd-creed-d">{v.desc}</p>
+						</span>
+					</li>
+				))
+			}
+		</ol>
+	</section>
+
+	<!-- ── The road so far ───────────────────────────────────
+	     A rail you read along rather than a column you scroll
+	     through: one line, one node a year, and the year set large
+	     enough to be the thing you see first. It scrolls sideways on
+	     a narrow screen, which is how a timeline wants to behave.
+	     ────────────────────────────────────────────────────── -->
 	<section class="bd-timeline-wrap" id="bd-timeline">
 		<span class="bd-tl-aurora" aria-hidden="true"></span>
-		<span class="bd-tl-grid-lines" aria-hidden="true"></span>
 		<div class="bd-head bd-reveal">
 			<h2 class="bd-h bd-h--center">The road so far.</h2>
 			<p class="bd-p bd-p--center">
@@ -592,17 +613,17 @@ const currentYear = new Date().getFullYear();
 				the continent.
 			</p>
 		</div>
-		<div class="bd-grid bd-grid--narrow">
-			<ol class="bd-timeline">
+		<div class="bd-rail-wrap bd-reveal">
+			<ol class="bd-rail" data-cursor="clock">
 				{
-					milestones.map((m) => (
-						<li class="bd-tl-item bd-reveal" data-cursor="branch">
-							<span class="bd-tl-node" aria-hidden="true" />
-							<div class="bd-tl-card">
-								<span class="bd-tl-year">{m.year}</span>
-								<h3 class="bd-tl-title">{m.title}</h3>
-								<p class="bd-tl-desc">{m.desc}</p>
-							</div>
+					milestones.map((m, i) => (
+						<li class="bd-rail-stop" style={`--i:${i}`}>
+							<span class="bd-rail-node" aria-hidden="true">
+								<i />
+							</span>
+							<span class="bd-rail-year">{m.year}</span>
+							<h3 class="bd-rail-t">{m.title}</h3>
+							<p class="bd-rail-d">{m.desc}</p>
 						</li>
 					))
 				}
@@ -3658,5 +3679,197 @@ const currentYear = new Date().getFullYear();
 	@media (max-width: 520px) {
 		.ab-val-card .ab-val-d--sm { font-size: 0.68rem; line-height: 1.4; }
 		.ab-val-t { font-size: 0.82rem; margin-top: 0.5rem; }
+	}
+
+	/* ═══ the road, as a rail ══════════════════════════════════════════
+	   The old version was a column of cards with a node beside each: a
+	   timeline you scroll down, which is the one direction a timeline
+	   does not run. This is one line with a stop on it for each year, read
+	   left to right, scrolling sideways when there is not room. The year
+	   is the largest thing on each stop, because the year is the point.
+	   ══════════════════════════════════════════════════════════════════ */
+	.bd-rail-wrap {
+		max-width: 92rem;
+		margin: clamp(1.6rem, 3.6vw, 2.6rem) auto 0;
+		padding-inline: clamp(1rem, 3vw, 2rem);
+		overflow-x: auto;
+		overscroll-behavior-x: contain;
+		scroll-snap-type: x proximity;
+		scrollbar-width: none;
+		-webkit-mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent);
+		mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent);
+	}
+	.bd-rail-wrap::-webkit-scrollbar { display: none; }
+	.bd-rail {
+		position: relative;
+		display: grid;
+		grid-auto-flow: column;
+		grid-auto-columns: minmax(13.5rem, 1fr);
+		gap: clamp(1rem, 2.4vw, 2rem);
+		list-style: none;
+		margin: 0;
+		padding: clamp(1.6rem, 3vw, 2.4rem) 0 clamp(1rem, 2vw, 1.6rem);
+		min-width: min-content;
+	}
+	/* the line itself, running through every node */
+	.bd-rail::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: calc(clamp(1.6rem, 3vw, 2.4rem) + 0.5rem);
+		height: 2px;
+		border-radius: 999px;
+		background: linear-gradient(
+			90deg,
+			transparent,
+			color-mix(in srgb, var(--bd-accent) 55%, transparent) 6%,
+			color-mix(in srgb, var(--bd-accent) 55%, transparent) 94%,
+			transparent
+		);
+	}
+	.bd-rail-stop {
+		position: relative;
+		scroll-snap-align: center;
+		padding-right: clamp(0.4rem, 1vw, 0.8rem);
+	}
+	.bd-rail-node {
+		display: grid;
+		place-items: center;
+		width: 1.05rem;
+		height: 1.05rem;
+		border-radius: 50%;
+		background: var(--bd-bg, #070910);
+		border: 2px solid color-mix(in srgb, var(--bd-accent) 70%, transparent);
+		margin-bottom: clamp(0.9rem, 2vw, 1.4rem);
+	}
+	:global(html:not(.dark)) .bdbody .bd-rail-node { background: #eef1f8; }
+	.bd-rail-node i {
+		width: 0.36rem;
+		height: 0.36rem;
+		border-radius: 50%;
+		background: var(--bd-accent);
+		transition: transform 0.3s ease;
+	}
+	.bd-rail-stop:hover .bd-rail-node i { transform: scale(1.7); }
+	.bd-rail-year {
+		display: block;
+		font-size: clamp(1.7rem, 3.2vw, 2.6rem);
+		font-weight: 800;
+		letter-spacing: -0.04em;
+		line-height: 1;
+		background: linear-gradient(135deg, #9bd8ff, var(--bd-accent));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	:global(html:not(.dark)) .bdbody .bd-rail-year {
+		background: linear-gradient(135deg, #1e40af, var(--bd-accent));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	.bd-rail-t {
+		margin: 0.5rem 0 0;
+		font-size: clamp(0.95rem, 1.25vw, 1.08rem);
+		font-weight: 700;
+		letter-spacing: -0.015em;
+		line-height: 1.25;
+	}
+	.bd-rail-d {
+		margin: 0.35rem 0 0;
+		font-size: 0.84rem;
+		line-height: 1.5;
+		color: var(--bd-muted);
+	}
+	@media (max-width: 620px) {
+		.bd-rail { grid-auto-columns: minmax(11rem, 1fr); gap: 0.9rem; }
+		.bd-rail-year { font-size: 1.5rem; }
+		.bd-rail-t { font-size: 0.86rem; }
+		.bd-rail-d { font-size: 0.72rem; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.bd-rail-node i { transition: none; }
+	}
+
+	/* ═══ what we believe ══════════════════════════════════════════════
+	   Rules, set as rules. Two grids of four cards already sit above this
+	   on the page, so a third would have been the same furniture a third
+	   time. A numeral, the rule, the reason, and a hairline between each.
+	   ══════════════════════════════════════════════════════════════════ */
+	.bd-creed {
+		max-width: 68rem;
+		margin: clamp(2.5rem, 6vw, 4.5rem) auto;
+		padding-inline: clamp(1rem, 3vw, 2rem);
+	}
+	.bd-creed-head { max-width: 44rem; }
+	.bd-creed-h {
+		margin: 0.6rem 0 0;
+		font-size: clamp(1.9rem, 4.4vw, 3.2rem);
+		font-weight: 800;
+		letter-spacing: -0.04em;
+		line-height: 1.02;
+	}
+	.bd-creed-p {
+		margin: clamp(0.8rem, 1.8vw, 1.1rem) 0 0;
+		font-size: clamp(0.95rem, 1.2vw, 1.05rem);
+		line-height: 1.6;
+		color: var(--bd-muted);
+	}
+	.bd-creed-list {
+		list-style: none;
+		margin: clamp(1.8rem, 4vw, 3rem) 0 0;
+		padding: 0;
+		border-top: 1px solid var(--bd-glass-border);
+	}
+	.bd-creed-rule {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr);
+		align-items: start;
+		gap: clamp(1rem, 2.6vw, 2.2rem);
+		padding: clamp(1.1rem, 2.6vw, 1.8rem) clamp(0.6rem, 1.6vw, 1.2rem);
+		border-bottom: 1px solid var(--bd-glass-border);
+		transition: background 0.3s ease;
+	}
+	.bd-creed-rule:hover { background: color-mix(in srgb, var(--bd-accent) 5%, transparent); }
+	.bd-creed-n {
+		font-size: clamp(1.5rem, 3vw, 2.3rem);
+		font-weight: 800;
+		letter-spacing: -0.04em;
+		line-height: 1;
+		color: color-mix(in srgb, var(--bd-ink) 16%, transparent);
+		font-variant-numeric: tabular-nums;
+	}
+	/* one rule runs in the accent, so the list has a beat in it */
+	.bd-creed-rule.is-loud .bd-creed-n { color: var(--bd-accent); }
+	.bd-creed-t {
+		display: flex;
+		align-items: center;
+		gap: 0.55rem;
+		margin: 0;
+		font-size: clamp(1.05rem, 1.7vw, 1.4rem);
+		font-weight: 700;
+		letter-spacing: -0.02em;
+		line-height: 1.2;
+	}
+	.bd-creed-t :global(svg) { color: var(--bd-accent); flex: none; }
+	.bd-creed-d {
+		margin: 0.4rem 0 0;
+		max-width: 52ch;
+		font-size: clamp(0.88rem, 1.1vw, 0.98rem);
+		line-height: 1.6;
+		color: var(--bd-muted);
+	}
+	@media (max-width: 620px) {
+		.bd-creed-rule {
+			gap: 0.7rem;
+			padding: 0.9rem 0.2rem;
+		}
+		.bd-creed-n { font-size: 1.25rem; }
+		.bd-creed-t { font-size: 0.95rem; gap: 0.4rem; }
+		.bd-creed-d { font-size: 0.8rem; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.bd-creed-rule { transition: none; }
 	}
 </style>

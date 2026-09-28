@@ -1,0 +1,281 @@
+---
+// The wall of disciplines, shared by the home page and /about so the two
+// cannot drift apart. Six panels, one a discipline, running the full width
+// with a hairline between them and alternating pale and deep.
+//
+// The section carries no cursor of its own: each panel names the glyph
+// that belongs to its discipline, and a cursor on the section would have
+// been the nearest [data-cursor] ancestor for all six, which is why they
+// all pointed with the same mark.
+import { Icon } from 'astro-icon/components';
+import { disciplines as allDisciplines } from '../../data/disciplines';
+
+// ── What we actually do ──────────────────────────────────────────────
+// The six disciplines, straight from the same data the service pages
+// are built from, so this section cannot drift out of step with them.
+// Each panel borrows a real frame from that discipline's own work; none
+// of these are stock or generated, they are photographs of this studio
+// and screens of things it shipped.
+// Two lines everywhere: the full sentence on a wide panel, a shorter
+// one on a narrow panel, so the block under each title is always two
+// lines rather than two at one width and four at another.
+const doLine: Record<string, [string, string]> = {
+	design: [
+		'We craft brand and product experiences that people feel, trust, and remember.',
+		'Brand and product people feel, trust and remember.',
+	],
+	development: [
+		'We build high-performance websites and apps engineered to scale and built to last.',
+		'High-performance sites and apps, built to last.',
+	],
+	marketing: [
+		'We drive targeted growth across the platforms that actually move the needle for your business.',
+		'Growth on the platforms that move the needle.',
+	],
+	strategy: [
+		'We define the path, purpose, and direction before placing the first pixel.',
+		'The path and the purpose, before the first pixel.',
+	],
+	maintenance: [
+		'We keep your platforms fast, secure, and running seamlessly, 24/7, while you sleep.',
+		'Fast, secure and running, 24/7, while you sleep.',
+	],
+	'ai-automation': [
+		'We put your repetitive busywork on autopilot so you can focus on growing your business.',
+		'Busywork on autopilot, so you can get on with growing.',
+	],
+};
+
+const doPanels = allDisciplines.map((d, i) => ({
+	slug: d.slug,
+	title: d.title,
+	cursor: d.cursor,
+	line: doLine[d.slug] ?? [d.tagline, d.tagline],
+	color: d.color,
+	// A checkerboard, not two stripes. Alternating on the index alone put
+	// every pale panel in the left column and every deep one in the right,
+	// which reads as two columns of different colours rather than a wall.
+	deep: (Math.floor(i / 2) + (i % 2)) % 2 === 1,
+	img: {
+		design: '/images/portfolio/beauty-hive.webp',
+		development: '/images/builder/at-the-keys.jpg',
+		marketing: '/images/marketing/the-floor.jpg',
+		strategy: '/images/builder/the-table.jpg',
+		maintenance: '/images/builder/over-the-shoulder.jpg',
+		'ai-automation': '/images/campus/the-lab.jpg',
+	}[d.slug] ?? '/images/builder/studio-grid.jpg',
+	pos: {
+		design: '50% 22%',
+		development: '58% 42%',
+		marketing: '50% 46%',
+		strategy: '50% 42%',
+		maintenance: '46% 38%',
+		'ai-automation': '50% 46%',
+	}[d.slug] ?? '50% 50%',
+}));
+---
+
+	<!-- ═══ What we actually do ═══════════════════════════════════════
+	     Edge to edge, one panel a discipline, alternating light and deep
+	     so the grid reads as a wall of work rather than a list of cards.
+	     Each panel says the thing, says it in one line, gives you the
+	     page and the way in, and then gets out of the way for the
+	     photograph.
+	     ══════════════════════════════════════════════════════════════ -->
+	<section class="bd-do" id="bd-do">
+		<header class="bd-do-top bd-reveal">
+			<span class="bd-kicker">Six disciplines, one team</span>
+			<h3 class="bd-do-h">What we actually do.</h3>
+		</header>
+		<div class="bd-do-wall">
+			{
+				doPanels.map((d) => (
+					<article
+						class:list={['bd-do-panel', d.deep ? 'is-deep' : 'is-pale']}
+						style={`--c:${d.color}`}
+						data-cursor={d.cursor}
+					>
+						<div class="bd-do-copy">
+							<h4 class="bd-do-t">{d.title}</h4>
+							<p class="bd-do-s">{d.line[0]}</p>
+							<p class="bd-do-s bd-do-s--sm">{d.line[1]}</p>
+							<div class="bd-do-acts">
+								<a class="bd-do-pill" href={`/services/${d.slug}`}>See the work</a>
+								<a class="bd-do-pill bd-do-pill--ghost" href="/contact">Start</a>
+							</div>
+						</div>
+						<div class="bd-do-shot">
+							<img
+								src={d.img}
+								alt={`${d.title} at Swizel`}
+								style={`object-position:${d.pos}`}
+								loading="lazy"
+								decoding="async"
+							/>
+						</div>
+					</article>
+				))
+			}
+		</div>
+	</section>
+
+<style>
+	/* ═══ What we actually do ══════════════════════════════════════════
+	   A wall, not a row of cards: the panels run edge to edge with a
+	   hairline between them, and they alternate pale and deep so the grid
+	   has a rhythm of its own. Each one is words at the top and a
+	   photograph filling everything under them.
+	   ══════════════════════════════════════════════════════════════════ */
+	.bd-do {
+		margin: clamp(2.5rem, 6vw, 4.5rem) 0 clamp(2rem, 5vw, 3.5rem);
+	}
+	.bd-do-top {
+		max-width: 60rem;
+		margin: 0 auto clamp(1.3rem, 3vw, 2.2rem);
+		text-align: center;
+	}
+	.bd-do-h {
+		margin: 0.55rem 0 0;
+		font-size: clamp(1.9rem, 4.6vw, 3.4rem);
+		font-weight: 800;
+		letter-spacing: -0.04em;
+		line-height: 1;
+	}
+	/* the body's own side padding, given back */
+	.bd-do-wall {
+		margin-inline: calc(-1 * clamp(1rem, 3vw, 2rem));
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 2px;
+		background: var(--bd-glass-border);
+	}
+	.bd-do-panel {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+		overflow: hidden;
+		min-height: clamp(21rem, 34vw, 30rem);
+		padding: clamp(1.6rem, 3.2vw, 2.6rem) clamp(1rem, 2.4vw, 2rem) 0;
+	}
+	.bd-do-panel.is-pale { background: #f2f4f9; color: #10121f; }
+	.bd-do-panel.is-deep { background: #05070f; color: #f3f6fc; }
+	:global(html.dark) .bd-do-panel.is-pale { background: #e9edf5; }
+
+	.bd-do-copy { position: relative; z-index: 1; }
+	.bd-do-t {
+		margin: 0;
+		font-size: clamp(1.35rem, 2.8vw, 2.1rem);
+		font-weight: 800;
+		letter-spacing: -0.035em;
+		line-height: 1.05;
+	}
+	.bd-do-s {
+		margin: 0.4rem auto 0;
+		/* wide enough that the longest of the six sets in two lines: at
+		   34ch Marketing and AI ran to three and the clamp was eating the
+		   end of the sentence */
+		max-width: 48ch;
+		font-size: clamp(0.84rem, 1.1vw, 0.98rem);
+		line-height: 1.4;
+		opacity: 0.72;
+		text-wrap: balance;
+		/* two lines, and a guard so it can never quietly become three */
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+	.bd-do-s--sm { display: none; }
+	.bd-do-acts {
+		display: flex;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin-top: clamp(0.85rem, 1.8vw, 1.15rem);
+	}
+	.bd-do-pill {
+		display: inline-flex;
+		align-items: center;
+		min-height: 2.3rem;
+		padding: 0 1.05rem;
+		border-radius: 999px;
+		background: var(--c, #28a6ec);
+		color: #04101a;
+		font-size: 0.84rem;
+		font-weight: 650;
+		white-space: nowrap;
+		transition: transform 0.25s ease, filter 0.25s ease;
+	}
+	.bd-do-pill:hover { transform: translateY(-2px); filter: brightness(1.07); }
+	.bd-do-pill--ghost {
+		background: none;
+		border: 1px solid color-mix(in srgb, var(--c, #28a6ec) 62%, transparent);
+		color: var(--c, #28a6ec);
+	}
+	.is-pale .bd-do-pill--ghost { color: color-mix(in srgb, var(--c) 72%, #000); }
+
+	/* the photograph takes everything under the words */
+	.bd-do-shot {
+		position: relative;
+		width: 100%;
+		flex: 1;
+		min-height: clamp(9rem, 16vw, 15rem);
+		margin-top: clamp(1.1rem, 2.4vw, 1.9rem);
+	}
+	.bd-do-shot img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.bd-do-panel:hover .bd-do-shot img { transform: scale(1.04); }
+	/* the picture rises out of the panel rather than being pasted on it */
+	.bd-do-shot::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(180deg, currentColor 0%, transparent 22%);
+		opacity: 0.001;
+	}
+	.is-pale .bd-do-shot { mask-image: linear-gradient(180deg, transparent 0%, #000 14%); -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 14%); }
+	.is-deep .bd-do-shot { mask-image: linear-gradient(180deg, transparent 0%, #000 14%); -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 14%); }
+
+	@media (max-width: 620px) {
+		.bd-do { margin-block: clamp(1.8rem, 6vw, 2.6rem); }
+		.bd-do-h { font-size: clamp(1.5rem, 6.4vw, 2rem); }
+		.bd-do-wall { gap: 1px; }
+		.bd-do-panel {
+			min-height: clamp(12.5rem, 46vw, 16rem);
+			padding: 0.9rem 0.6rem 0;
+		}
+		.bd-do-t { font-size: 1rem; }
+		/* the short line takes over where the long one would run to four */
+		.bd-do-panel .bd-do-s { display: none; }
+		.bd-do-panel .bd-do-s--sm {
+			display: -webkit-box;
+			-webkit-line-clamp: 2;
+			-webkit-box-orient: vertical;
+			overflow: hidden;
+			font-size: 0.66rem;
+			margin-top: 0.22rem;
+			max-width: none;
+		}
+		.bd-do-acts { margin-top: 0.55rem; gap: 0.3rem; }
+		.bd-do-pill {
+			min-height: 1.8rem;
+			padding: 0 0.7rem;
+			font-size: 0.65rem;
+		}
+		/* one way in is enough at this size */
+		.bd-do-pill--ghost { display: none; }
+		.bd-do-shot { min-height: 5rem; margin-top: 0.7rem; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.bd-do-shot img,
+		.bd-do-panel:hover .bd-do-shot img { transition: none; transform: none; }
+	}
+</style>
