@@ -1,26 +1,78 @@
 ---
-// Blog index — the Boardroom world. The Swizel journal: a featured lead
-// article, a CSS-only category filter, a grid of posts, a newsletter band and
-// a Brevarium cross-promo. Reuses initBoardroomBody reveals + the themed cursor.
+// Blog index — the Boardroom world.
+//
+// Rebuilt in the same grammar as About, Services and Portfolio: the
+// opening two-up, then the thing the visitor came for, then the shared
+// closing tile. What stood here before was a hero, then a featured
+// article, then a heading, then the grid — four separate introductions
+// before a single post could be reached, on a journal that has four
+// posts in it.
+//
+// So the featured piece IS the opening now: it sits in the deep panel
+// where the film sits on every other page, which is the right place for
+// the one thing we most want read. The filter and the grid follow
+// immediately, the way the searchable shelf follows the headliner on
+// the portfolio page.
 import { Icon } from 'astro-icon/components';
 import type { CollectionEntry } from 'astro:content';
 
-interface Props { posts: CollectionEntry<'blog'>[]; }
+interface Props {
+	posts: CollectionEntry<'blog'>[];
+}
 const { posts } = Astro.props;
 
 const featured = posts.find((p) => p.data.featured) ?? posts[0];
+// the rest, in date order — the featured piece is already the opening
+const rest = posts.filter((p) => p.slug !== featured?.slug);
+
 const cats = [...new Set(posts.map((p) => p.data.category))];
 const catSlug = (c: string) => c.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 const catCount = (c: string) => posts.filter((p) => p.data.category === c).length;
-const readTime = (body: string) => Math.max(1, Math.round((body?.trim().split(/\s+/).length || 0) / 200));
-const fmtDate = (d: Date) => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-// a small accent per category, for variety
-const catColor: Record<string, string> = { EdTech: '#2bb3c0', Fintech: '#6366f1', Marketing: '#ec4899', Technology: '#28a6ec', Insights: '#28a6ec' };
+
+const words = (body: string) => body?.trim().split(/\s+/).length || 0;
+const readTime = (body: string) => Math.max(1, Math.round(words(body) / 200));
+const fmtDate = (d: Date) =>
+	new Date(d).toLocaleDateString('en-GB', { month: 'short', day: 'numeric', year: 'numeric' });
+
+// a small accent per category, so a page of cards is not one colour
+const catColor: Record<string, string> = {
+	EdTech: '#2bb3c0',
+	Fintech: '#6366f1',
+	Marketing: '#ec4899',
+	Technology: '#28a6ec',
+	Insights: '#28a6ec',
+};
 const col = (c: string) => catColor[c] ?? '#28a6ec';
 
-// Categories are data-driven, so emit the CSS-only filter rules at build time:
-// when a category radio is checked, hide cards that aren't in it and light up
-// that chip in the category's own colour.
+// what each topic actually covers, in our own words rather than a bare
+// category name — a chip that says "EdTech" tells a reader nothing
+const catBlurb: Record<string, string> = {
+	EdTech: 'Schools, students and the software that reaches them.',
+	Fintech: 'Payments, regulation and who actually gets banked.',
+	Marketing: 'What earns attention, and what only rents it.',
+	Technology: 'The tools, and the arguments about how to use them.',
+	Insights: 'What we are seeing from where we build.',
+};
+const catIcon: Record<string, string> = {
+	EdTech: 'mdi:school-outline',
+	Fintech: 'mdi:bank-outline',
+	Marketing: 'mdi:bullhorn-outline',
+	Technology: 'mdi:chip',
+	Insights: 'mdi:lightbulb-on-outline',
+};
+
+// the opening's three figures — measured from the journal itself, so
+// they cannot drift out of step with what is actually published
+const totalMinutes = posts.reduce((n, p) => n + readTime(p.body), 0);
+const glance = [
+	{ v: `${posts.length}`, k: 'Articles published', s: 'Articles' },
+	{ v: `${cats.length}`, k: 'Topics covered', s: 'Topics' },
+	{ v: `${totalMinutes}`, k: 'Minutes of reading', s: 'Minutes' },
+];
+
+// Categories are data-driven, so the CSS-only filter rules are written
+// at build time: a checked radio hides the cards that are not in that
+// category and lights its chip in the category's own colour.
 const filterCss = cats
 	.map((c) => {
 		const s = catSlug(c);
@@ -35,99 +87,273 @@ const filterCss = cats
 ---
 
 <div class="bdbody bd-services bd-blog view-body view-body-boardroom" data-cursor="pen">
-	<!-- ── Hero ───────────────────────────────────────────── -->
-	<header class="bl-hero bd-reveal">
-		<span class="bd-kicker">The Swizel journal</span>
-		<h1 class="bd-display bl-h1">Ideas, <span class="bd-grad">in the open.</span></h1>
-		<p class="bd-sub bl-hero-sub">Field notes on technology, design, fintech, edtech and growth — what we’re building, learning and seeing across the African digital landscape.</p>
-	</header>
-
-	<!-- ── Featured article ────────────────────────────────── -->
-	{featured && (
-		<a href={`/blog/${featured.slug}`} class="bl-feature bd-reveal" style={`--c:${col(featured.data.category)}`} data-cursor="book">
-			<span class="bl-feature-media">
-				<img src={featured.data.heroImage} alt={featured.data.title} loading="eager" />
-				<span class="bl-feature-veil" aria-hidden="true"></span>
-			</span>
-			<div class="bl-feature-body">
-				<span class="bl-feature-tag">Featured · {featured.data.category}</span>
-				<h2 class="bl-feature-title">{featured.data.title}</h2>
-				<p class="bl-feature-desc">{featured.data.description}</p>
-				<div class="bl-meta">
-					<span>{featured.data.author}</span>
-					<span class="bl-dot">•</span>
-					<span>{fmtDate(featured.data.pubDate)}</span>
-					<span class="bl-dot">•</span>
-					<span>{readTime(featured.body)} min read</span>
+	<!-- ── the opening: the words beside the piece we want read ──
+	     The same two-up the rest of the site opens on. Where the other
+	     pages put a film in the deep panel, the journal puts its lead
+	     article: the one thing on a blog worth showing at that size.
+	     ────────────────────────────────────────────────────── -->
+	<div class="ab-open">
+		<article class="ab-open-panel is-pale bd-reveal">
+			<div class="ab-open-copy">
+				<span class="ab-kick">The Swizel journal</span>
+				<h1 class="ab-h1">
+					Ideas,
+					<em>in the open.</em>
+				</h1>
+				<p class="ab-lede">
+					Field notes from the people building it — technology, fintech,
+					education and growth, as they actually look from Lagos, Abuja
+					and everywhere else we ship.
+				</p>
+				<p class="ab-lede ab-lede--sm">
+					Field notes from the people building it.
+				</p>
+				<div class="ab-acts">
+					<a href="#bl-journal" class="ab-pill">Read the journal</a>
+					<a href="#bl-topics" class="ab-more">
+						What we write about
+						<Icon width={14} name="mdi:chevron-right" />
+					</a>
 				</div>
-				<span class="bl-feature-cta">Read the article <Icon width={16} name="mdi:arrow-right" /></span>
 			</div>
-		</a>
-	)}
+			<ul class="ab-glance" aria-label="The journal at a glance">
+				{
+					glance.map((g) => (
+						<li>
+							<strong>{g.v}</strong>
+							<span>{g.k}</span>
+							<span class="ab-glance-s">{g.s}</span>
+						</li>
+					))
+				}
+			</ul>
+		</article>
 
-	<!-- ── All posts — CSS category filter ─────────────────── -->
-	<section class="bd-head bd-reveal" id="bl-all">
+		{
+			featured && (
+				<article class="ab-open-panel is-deep bd-reveal" style={`--c:${col(featured.data.category)}`}>
+					<div class="ab-open-copy">
+						<span class="ab-kick">Read this first</span>
+						<h2 class="ab-h2 ab-h2--panel">
+							The one
+							<span>we'd start with.</span>
+						</h2>
+					</div>
+					<a class="bl-lead" href={`/blog/${featured.slug}`} data-cursor="book">
+						<span class="bl-lead-shot">
+							<img
+								src={featured.data.heroImage}
+								alt={featured.data.title}
+								loading="eager"
+								decoding="async"
+							/>
+							<span class="bl-lead-veil" aria-hidden="true" />
+						</span>
+						<span class="bl-lead-copy">
+							<span class="bl-lead-cat">{featured.data.category}</span>
+							<strong class="bl-lead-title">{featured.data.title}</strong>
+							<span class="bl-lead-meta">
+								{fmtDate(featured.data.pubDate)}
+								<i aria-hidden="true">·</i>
+								{readTime(featured.body)} min read
+							</span>
+							<span class="bl-lead-go">
+								Read the article
+								<Icon width={15} name="mdi:arrow-right" />
+							</span>
+						</span>
+					</a>
+				</article>
+			)
+		}
+	</div>
+
+	<!-- ── the journal itself ───────────────────────────────
+	     Second on the page on purpose. On the portfolio page the search
+	     sat nine screens down and nobody was going to reach it; the same
+	     mistake on a journal with four articles in it would be worse.
+	     ────────────────────────────────────────────────────── -->
+	<section class="bd-head bd-reveal" id="bl-journal">
 		<span class="bd-kicker">Latest writing</span>
-		<h2 class="bd-h bd-h--center">From the journal.</h2>
-		<p class="bd-p bd-p--center">{posts.length} {posts.length === 1 ? 'article' : 'articles'} — more on the way. Filter by topic.</p>
+		<h2 class="bd-h bd-h--center">Everything we've published.</h2>
+		<p class="bd-p bd-p--center">
+			{posts.length} {posts.length === 1 ? 'article' : 'articles'}, {totalMinutes} minutes
+			of reading. Pick a topic, or read the lot.
+		</p>
 	</section>
+
 	<form class="bl-filter" autocomplete="off">
 		<input class="bl-radio" type="radio" name="bl" id="bl-all-r" checked />
 		{cats.map((c) => <input class="bl-radio" type="radio" name="bl" id={`bl-${catSlug(c)}`} />)}
 		<div class="bl-chips bd-reveal">
 			<label class="bl-chip" for="bl-all-r">All <span>{posts.length}</span></label>
-			{cats.map((c) => <label class="bl-chip" for={`bl-${catSlug(c)}`}>{c} <span>{catCount(c)}</span></label>)}
+			{
+				cats.map((c) => (
+					<label class="bl-chip" for={`bl-${catSlug(c)}`}>
+						{c} <span>{catCount(c)}</span>
+					</label>
+				))
+			}
 		</div>
-		<div class="bl-grid">
-			{posts.map((p) => (
-				<article class:list={['bl-card', 'bd-reveal', `c-${catSlug(p.data.category)}`]} style={`--c:${col(p.data.category)}`} data-cursor="book">
-					<a href={`/blog/${p.slug}`} class="bl-card-link">
-						<span class="bl-card-media">
-							<img src={p.data.heroImage} alt={p.data.title} loading="lazy" />
-							<span class="bl-card-cat">{p.data.category}</span>
-						</span>
-						<div class="bl-card-body">
-							<h3 class="bl-card-title">{p.data.title}</h3>
-							<p class="bl-card-desc">{p.data.description}</p>
-							<div class="bl-meta">
-								<span>{fmtDate(p.data.pubDate)}</span>
-								<span class="bl-dot">•</span>
-								<span>{readTime(p.body)} min read</span>
-							</div>
-						</div>
-					</a>
-				</article>
-			))}
+		<div class:list={['bl-grid', { 'bl-grid--two': posts.length <= 4 }]}>
+			{
+				posts.map((p) => (
+					<article
+						class:list={['bl-card', 'bd-reveal', `c-${catSlug(p.data.category)}`]}
+						style={`--c:${col(p.data.category)}`}
+						data-cursor="book"
+					>
+						<a href={`/blog/${p.slug}`} class="bl-card-link">
+							<span class="bl-card-media">
+								<img src={p.data.heroImage} alt={p.data.title} loading="lazy" decoding="async" />
+								<span class="bl-card-cat">{p.data.category}</span>
+							</span>
+							<span class="bl-card-body">
+								<strong class="bl-card-title">{p.data.title}</strong>
+								<span class="bl-card-desc">{p.data.description}</span>
+							</span>
+							<span class="bl-card-foot">
+								<span class="bl-card-meta">
+									{fmtDate(p.data.pubDate)}
+									<i aria-hidden="true">·</i>
+									{readTime(p.body)} min
+								</span>
+								<span class="bl-card-go">
+									Read
+									<Icon width={14} name="mdi:arrow-right" />
+								</span>
+							</span>
+						</a>
+					</article>
+				))
+			}
 		</div>
 	</form>
 
-	<!-- ── Newsletter ──────────────────────────────────────── -->
-	<section class="bl-news bd-reveal" data-cursor="phone">
-		<span class="bl-news-glow" aria-hidden="true"></span>
-		<div class="bl-news-inner">
-			<span class="bd-kicker">Stay in the loop</span>
-			<h2 class="bd-display bl-news-h">Get the next one in your inbox.</h2>
-			<p class="bd-sub">No spam, no fluff — just our sharpest thinking on building for the African market, when it’s worth your time.</p>
-			<form class="bl-news-form" name="newsletter" method="post" data-netlify="true" netlify-honeypot="bot-field">
-				<input type="hidden" name="form-name" value="newsletter" />
-				<p class="bl-hp"><label>Don’t fill this out: <input name="bot-field" /></label></p>
-				<input class="bl-news-input" type="email" name="email" placeholder="you@company.com" required aria-label="Email address" />
-				<button class="bl-news-btn" type="submit">Subscribe <Icon width={16} name="mdi:arrow-right" /></button>
-			</form>
-			<span class="bl-news-note">Wire this to your provider whenever you’re ready — it posts to Netlify Forms by default.</span>
+	<!-- ── what we write about ──────────────────────────────
+	     A chip that says "EdTech" tells a reader nothing. These say what
+	     the topic actually covers, and each one is the filter above it.
+	     ────────────────────────────────────────────────────── -->
+	<section class="bd-head bd-reveal" id="bl-topics">
+		<span class="bd-kicker">The beats</span>
+		<h2 class="bd-h bd-h--center">What we write about.</h2>
+		<p class="bd-p bd-p--center">
+			We only write about the work we do, which is why there is no advice here
+			we have not had to take ourselves. Press one to filter the journal.
+		</p>
+	</section>
+	<ul class="bl-topics bd-reveal">
+		{
+			cats.map((c) => (
+				<li class="bl-topic" style={`--c:${col(c)}`}>
+					<label class="bl-topic-in" for={`bl-${catSlug(c)}`} data-bl-beat>
+						<span class="bl-topic-ic" aria-hidden="true">
+							<Icon width={19} name={catIcon[c] ?? 'mdi:lightbulb-on-outline'} />
+						</span>
+						<strong>{c}</strong>
+						<span class="bl-topic-d">{catBlurb[c] ?? 'Notes from the work.'}</span>
+						<span class="bl-topic-n">
+							{catCount(c)} {catCount(c) === 1 ? 'article' : 'articles'}
+						</span>
+					</label>
+				</li>
+			))
+		}
+	</ul>
+
+	<!-- ── the newsletter ───────────────────────────────────
+	     Quieter than it was. It used to be a dark billboard with its own
+	     glow, two screens tall, and it carried a note to ourselves about
+	     wiring up a provider — which every visitor could read.
+	     ────────────────────────────────────────────────────── -->
+	<section class="bl-signal bd-reveal" id="bl-signal">
+		<span class="bl-signal-edge" aria-hidden="true"></span>
+		<div class="bl-signal-copy">
+			<span class="bl-signal-h">
+				<Icon width={15} name="mdi:email-outline" />
+				Stay in the loop
+			</span>
+			<p>One short note when we publish. No noise, no selling.</p>
 		</div>
+		<form
+			class="bl-signal-form"
+			name="newsletter"
+			method="post"
+			data-netlify="true"
+			netlify-honeypot="bot-field"
+		>
+			<input type="hidden" name="form-name" value="newsletter" />
+			<p class="bl-hp"><label>Don't fill this out: <input name="bot-field" /></label></p>
+			<span class="bl-signal-field">
+				<Icon width={16} name="mdi:email-outline" />
+				<input type="email" name="email" required placeholder="you@company.com" aria-label="Email address" />
+			</span>
+			<button type="submit">
+				<span>Join</span>
+				<Icon width={16} name="mdi:send" />
+			</button>
+		</form>
 	</section>
 
-	<!-- ── Brevarium cross-promo ───────────────────────────── -->
+	<!-- ── the magazine ─────────────────────────────────────
+	     The long-form version of the same instinct, in print.
+	     ────────────────────────────────────────────────────── -->
 	<a class="bl-mag bd-reveal" href="/brevarium/the-brevarium-latest.pdf" download data-cursor="book">
-		<span class="bl-mag-cover"><img src="/images/portfolio/mag-latest-cover.jpg" alt="The Brevarium magazine" loading="lazy" /></span>
+		<span class="bl-mag-cover">
+			<img src="/images/portfolio/mag-latest-cover.jpg" alt="The Brevarium magazine" loading="lazy" />
+		</span>
 		<span class="bl-mag-meta">
 			<span class="bd-kicker">Long-form, in print</span>
 			<strong>Prefer the magazine? Read The Brevarium.</strong>
-			<em>Our featured projects, the team and the thinking behind the work — cover to cover.</em>
-			<span class="bl-mag-dl"><Icon width={16} name="mdi:download" /> Download the latest edition</span>
+			<em>
+				Our featured projects, the team and the thinking behind the work —
+				cover to cover.
+			</em>
+			<span class="bl-mag-dl">
+				<Icon width={16} name="mdi:download" />
+				Download the latest edition
+			</span>
 		</span>
 	</a>
+
+	<!-- Final CTA — the same desk that closes every other page. -->
+	<section class="bd-grid">
+		<div class="bd-tile bd-tile--full bd-tile--cta bd-reveal" data-cursor="phone">
+			<div class="bd-cta-copy">
+				<span class="bd-cta-kick"><i aria-hidden="true" />Let's connect</span>
+				<h3 class="bd-display bd-display--cta">
+					Read enough.
+					<em>Let's build yours.</em>
+				</h3>
+				<div class="bd-cta-act">
+					<a href="/contact" class="bd-cta-go">
+						<Icon width={18} name="mdi:arrow-right" />
+						<span class="bd-cta-go-l">Start your project</span>
+						<span class="bd-cta-go-s">Start a project</span>
+					</a>
+					<a href="tel:+2348100204570" class="bd-call">
+						<span class="bd-call-hint">or call us now</span>
+						<span class="bd-call-num">
+							<Icon width={22} name="mdi:phone" />
+							+234 810 020 4570
+						</span>
+					</a>
+				</div>
+			</div>
+			<figure class="bd-cta-shot">
+				<img
+					src="/images/cta/talk-business.jpg"
+					alt="A Swizel desk at the end of the day"
+					loading="lazy"
+					decoding="async"
+				/>
+				<figcaption class="bd-cta-stamp">
+					Bigger ideas.
+					<strong>Real results.</strong>
+				</figcaption>
+			</figure>
+		</div>
+	</section>
 </div>
 
 <style>
@@ -170,8 +396,6 @@ const filterCss = cats
 	.bd-kicker { display: inline-block; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bd-accent); margin-bottom: 1rem; }
 	:global(html:not(.dark)) .bd-kicker { color: #1577b8; }
 	.bd-display { font-size: clamp(2.6rem, 6vw, 4.6rem); font-weight: 700; letter-spacing: -0.025em; line-height: 1.04; margin: 0 0 1.1rem; }
-	.bd-grad { background: linear-gradient(110deg, #9bd8ff 0%, var(--bd-accent) 38%, #7ef0d2 64%, #9bd8ff 100%); background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; animation: bl-grad 7s ease infinite; }
-	@keyframes bl-grad { 0%,100%{ background-position:0% 50%; } 50%{ background-position:100% 50%; } }
 	.bd-sub { font-size: clamp(1.05rem, 2vw, 1.35rem); line-height: 1.5; color: var(--bd-muted); max-width: 42rem; margin: 0 auto 1.6rem; }
 	.bd-h { font-size: clamp(1.7rem, 3.4vw, 2.5rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; margin: 0 0 0.7rem; }
 	.bd-h--center { text-align: center; }
@@ -179,89 +403,171 @@ const filterCss = cats
 	.bd-p--center { margin-inline: auto; text-align: center; }
 	.bd-head { max-width: 56rem; margin: clamp(2.5rem, 7vw, 4.5rem) auto clamp(1.5rem, 3vw, 2rem); text-align: center; }
 
-	/* ── Hero ── */
-	.bl-hero { text-align: center; max-width: 52rem; margin: clamp(1rem, 3vw, 2rem) auto clamp(2.5rem, 5vw, 3.5rem); position: relative; z-index: 1; }
-	.bl-h1 { max-width: 14ch; margin-inline: auto; }
-	.bl-hero-sub { margin-inline: auto; }
+	/* ── the lead article, in the deep panel ──
+	   Where the film sits on every other page. It is a picture with the
+	   title on it rather than beside it, because the panel is tall and
+	   narrow and a headline in a column beside a photograph at this width
+	   ends up two words to a line. */
+	.bl-lead {
+		position: relative;
+		display: block;
+		flex: 1;
+		min-height: 0;
+		margin: clamp(1.2rem, 3vw, 2rem) clamp(1rem, 2.2vw, 1.8rem) clamp(1rem, 2.2vw, 1.8rem);
+		border-radius: clamp(0.8rem, 1.4vw, 1.15rem);
+		overflow: hidden;
+		background: #05070f;
+		border: 1px solid color-mix(in srgb, var(--c, #28a6ec) 34%, rgba(255, 255, 255, 0.12));
+		box-shadow: 0 40px 80px -38px rgba(0, 0, 0, 0.8);
+		transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.4s ease;
+	}
+	.bl-lead:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--c, #28a6ec) 62%, transparent); }
+	.bl-lead-shot { position: absolute; inset: 0; display: block; }
+	.bl-lead-shot img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
+	.bl-lead:hover .bl-lead-shot img { transform: scale(1.05); }
+	/* the picture has to carry type, so it is darkened from the bottom
+	   rather than dimmed all over — the photograph still reads */
+	.bl-lead-veil {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(
+			180deg,
+			rgba(4, 6, 12, 0.08) 0%,
+			rgba(4, 6, 12, 0.55) 46%,
+			rgba(4, 6, 12, 0.92) 100%
+		);
+	}
+	.bl-lead-copy {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		justify-content: flex-end;
+		height: 100%;
+		min-height: clamp(14rem, 34vw, 21rem);
+		padding: clamp(1rem, 2.4vw, 1.5rem);
+		color: #fff;
+	}
+	.bl-lead-cat {
+		align-self: flex-start;
+		margin-bottom: auto;
+		padding: 0.28rem 0.65rem;
+		border-radius: 9999px;
+		font-size: 0.68rem;
+		font-weight: 800;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: #fff;
+		background: color-mix(in srgb, var(--c, #28a6ec) 88%, transparent);
+		box-shadow: 0 8px 20px -8px color-mix(in srgb, var(--c, #28a6ec) 80%, transparent);
+	}
+	.bl-lead-title {
+		font-size: clamp(1.15rem, 2.4vw, 1.6rem);
+		font-weight: 700;
+		line-height: 1.2;
+		letter-spacing: -0.02em;
+		margin: 0.9rem 0 0.4rem;
+		text-wrap: balance;
+	}
+	.bl-lead-meta {
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
+		font-size: 0.78rem;
+		color: rgba(255, 255, 255, 0.72);
+	}
+	.bl-lead-meta i { font-style: normal; opacity: 0.55; }
+	.bl-lead-go {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		margin-top: 0.85rem;
+		font-size: 0.85rem;
+		font-weight: 750;
+		color: #fff;
+		transition: gap 0.25s ease;
+	}
+	.bl-lead:hover .bl-lead-go { gap: 0.62rem; }
 
-	/* ── Featured article ── */
-	.bl-feature { display: grid; gap: 0; max-width: 84rem; margin: 0 auto; border-radius: 1.75rem; overflow: hidden; background: var(--bd-glass); border: 1px solid color-mix(in srgb, var(--c) 26%, var(--bd-glass-border)); box-shadow: var(--bd-shadow); backdrop-filter: blur(22px) saturate(130%); -webkit-backdrop-filter: blur(22px) saturate(130%); transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), border-color 0.4s ease, box-shadow 0.4s ease; }
-	@media (min-width: 880px) { .bl-feature { grid-template-columns: 1.05fr 0.95fr; } }
-	.bl-feature:hover { transform: translateY(-6px); border-color: color-mix(in srgb, var(--c) 48%, var(--bd-glass-border)); box-shadow: 0 50px 100px -40px color-mix(in srgb, var(--c) 42%, rgba(0,0,0,0.85)); }
-	.bl-feature-media { position: relative; overflow: hidden; min-height: 260px; }
-	.bl-feature-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s cubic-bezier(0.22,1,0.36,1); }
-	.bl-feature:hover .bl-feature-media img { transform: scale(1.05); }
-	.bl-feature-veil { position: absolute; inset: 0; background: linear-gradient(120deg, transparent 55%, color-mix(in srgb, var(--c) 22%, transparent)); }
-	.bl-feature-body { padding: clamp(1.8rem, 4vw, 3rem); display: flex; flex-direction: column; justify-content: center; }
-	.bl-feature-tag { font-size: 0.74rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--c); margin-bottom: 0.9rem; }
-	:global(html:not(.dark)) .bl-feature-tag { color: color-mix(in srgb, var(--c) 55%, #14162a); }
-	.bl-feature-title { font-size: clamp(1.6rem, 3.2vw, 2.4rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.12; margin: 0 0 0.8rem; }
-	.bl-feature-desc { font-size: 1rem; line-height: 1.6; color: var(--bd-muted); margin: 0 0 1.2rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-	.bl-feature-cta { display: inline-flex; align-items: center; gap: 0.45rem; margin-top: 1.2rem; font-size: 0.98rem; font-weight: 700; color: var(--c); transition: gap 0.25s ease; }
-	:global(html:not(.dark)) .bl-feature-cta { color: color-mix(in srgb, var(--c) 55%, #14162a); }
-	.bl-feature:hover .bl-feature-cta { gap: 0.7rem; }
-
-	/* ── Meta line ── */
-	.bl-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--bd-muted); }
-	.bl-dot { opacity: 0.5; }
-
-	/* ── Filter ── */
+	/* ── the filter ── */
 	.bl-filter { max-width: 84rem; margin: 0 auto; }
 	.bl-radio { position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0; }
-	.bl-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6rem; margin-bottom: clamp(1.5rem, 3vw, 2.25rem); padding: clamp(0.9rem, 2vw, 1.2rem); border-radius: 1.5rem; background: color-mix(in srgb, var(--bd-accent) 6%, var(--bd-glass)); border: 1px solid color-mix(in srgb, var(--bd-accent) 18%, var(--bd-glass-border)); box-shadow: var(--bd-shadow); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); max-width: 52rem; margin-inline: auto; }
-	.bl-chip { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.15rem; border-radius: 9999px; font-size: 0.95rem; font-weight: 700; color: var(--bd-ink); background: var(--bd-glass); border: 1.5px solid color-mix(in srgb, var(--bd-ink) 16%, var(--bd-glass-border)); cursor: pointer; transition: transform 0.2s ease, border-color 0.25s ease, background 0.25s ease, color 0.25s ease, box-shadow 0.25s ease; }
-	.bl-chip span { font-size: 0.74rem; font-weight: 800; padding: 0.08rem 0.5rem; border-radius: 9999px; color: var(--bd-accent); background: color-mix(in srgb, var(--bd-accent) 16%, transparent); }
+	.bl-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.55rem; margin: 0 auto clamp(1.4rem, 3vw, 2rem); padding: clamp(0.8rem, 1.8vw, 1.05rem); border-radius: 1.4rem; background: color-mix(in srgb, var(--bd-accent) 6%, var(--bd-glass)); border: 1px solid color-mix(in srgb, var(--bd-accent) 18%, var(--bd-glass-border)); box-shadow: var(--bd-shadow); max-width: 52rem; }
+	.bl-chip { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.52rem 1rem; border-radius: 9999px; font-size: 0.9rem; font-weight: 700; color: var(--bd-ink); background: var(--bd-glass); border: 1.5px solid color-mix(in srgb, var(--bd-ink) 16%, var(--bd-glass-border)); cursor: pointer; transition: transform 0.2s ease, border-color 0.25s ease, background 0.25s ease, color 0.25s ease, box-shadow 0.25s ease; }
+	.bl-chip span { font-size: 0.72rem; font-weight: 800; padding: 0.06rem 0.46rem; border-radius: 9999px; color: var(--bd-accent); background: color-mix(in srgb, var(--bd-accent) 16%, transparent); }
 	:global(html:not(.dark)) .bl-chip span { color: #1577b8; background: color-mix(in srgb, #1577b8 16%, transparent); }
 	.bl-chip:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--bd-accent) 55%, var(--bd-glass-border)); }
-
 	#bl-all-r:checked ~ .bl-chips label[for='bl-all-r'] { color: #06121a; background: linear-gradient(95deg, #8dfeea, #18debe, #28a6ec); border-color: transparent; box-shadow: 0 12px 26px -12px rgba(24, 222, 190, 0.5); }
 	#bl-all-r:checked ~ .bl-chips label[for='bl-all-r'] span { color: #06121a; background: rgba(0,0,0,0.14); }
 
-	.bl-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1rem, 2.2vw, 1.6rem); }
-	@media (max-width: 900px) { .bl-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-	@media (max-width: 580px) { .bl-grid { grid-template-columns: 1fr; } }
-	.bl-card { border-radius: 1.3rem; overflow: hidden; background: var(--bd-glass); border: 1px solid var(--bd-glass-border); box-shadow: var(--bd-shadow); backdrop-filter: blur(18px) saturate(130%); -webkit-backdrop-filter: blur(18px) saturate(130%); transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), border-color 0.4s ease, box-shadow 0.4s ease; }
-	.bl-card:hover { transform: translateY(-7px); border-color: color-mix(in srgb, var(--c) 50%, var(--bd-glass-border)); box-shadow: 0 44px 90px -34px color-mix(in srgb, var(--c) 40%, rgba(0,0,0,0.85)); }
-	.bl-card-link { display: block; }
+	/* ── the grid ──
+	   Three across, and the cards keep the same shape whatever length of
+	   title or standfirst they are given: the picture is a fixed ratio,
+	   the text block is clamped, and the date and the link are the card's
+	   own last row so they sit on the floor of every card in the line. */
+	.bl-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1rem, 2.2vw, 1.55rem); }
+	/* Four articles in a three-column grid is a row of three and then one
+	   card sitting on its own, which reads as a page that has lost
+	   something. While the journal is this small it runs two across and
+	   squares up; the class comes off by itself once there are more than
+	   four posts to lay out. */
+	.bl-grid--two { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 68rem; margin-inline: auto; }
+	.bl-card { border-radius: 1.3rem; overflow: hidden; background: var(--bd-glass); border: 1px solid var(--bd-glass-border); box-shadow: var(--bd-shadow); transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), border-color 0.4s ease, box-shadow 0.4s ease; }
+	.bl-card:hover { transform: translateY(-6px); border-color: color-mix(in srgb, var(--c) 50%, var(--bd-glass-border)); box-shadow: 0 44px 90px -34px color-mix(in srgb, var(--c) 40%, rgba(0,0,0,0.85)); }
+	.bl-card-link { display: grid; grid-template-rows: auto 1fr auto; height: 100%; }
 	.bl-card-media { position: relative; display: block; aspect-ratio: 16 / 9; overflow: hidden; }
 	.bl-card-media img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.22,1,0.36,1); }
 	.bl-card:hover .bl-card-media img { transform: scale(1.06); }
-	.bl-card-cat { position: absolute; top: 0.7rem; left: 0.7rem; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.3rem 0.65rem; border-radius: 9999px; color: #fff; background: color-mix(in srgb, var(--c) 85%, transparent); box-shadow: 0 6px 16px -6px color-mix(in srgb, var(--c) 70%, transparent); }
-	.bl-card-body { padding: 1.1rem 1.25rem 1.35rem; }
-	.bl-card-title { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.25; margin: 0 0 0.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-	.bl-card-desc { font-size: 0.9rem; line-height: 1.55; color: var(--bd-muted); margin: 0 0 0.9rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+	.bl-card-cat { position: absolute; top: 0.7rem; left: 0.7rem; font-size: 0.68rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.28rem 0.62rem; border-radius: 9999px; color: #fff; background: color-mix(in srgb, var(--c) 85%, transparent); box-shadow: 0 6px 16px -6px color-mix(in srgb, var(--c) 70%, transparent); }
+	.bl-card-body { display: block; padding: 1rem 1.15rem 0.4rem; }
+	.bl-card-title { display: block; font-size: 1.08rem; font-weight: 700; letter-spacing: -0.012em; line-height: 1.25; margin-bottom: 0.4rem; color: var(--bd-ink); display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+	.bl-card-desc { font-size: 0.88rem; line-height: 1.55; color: var(--bd-muted); display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+	.bl-card-foot { display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; padding: 0.7rem 1.15rem 1.05rem; }
+	.bl-card-meta { display: flex; align-items: center; gap: 0.35rem; font-size: 0.76rem; color: var(--bd-muted); }
+	.bl-card-meta i { font-style: normal; opacity: 0.55; }
+	.bl-card-go { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.78rem; font-weight: 750; color: var(--c); transition: gap 0.25s ease; }
+	.bl-card:hover .bl-card-go { gap: 0.5rem; }
 
-	/* ── Newsletter ── */
-	.bl-news { position: relative; overflow: hidden; max-width: 72rem; margin: clamp(3rem, 7vw, 5rem) auto; border-radius: 2rem; text-align: center; padding: clamp(2.5rem, 6vw, 4rem) clamp(1.5rem, 4vw, 3rem); background: radial-gradient(820px 380px at 50% -20%, color-mix(in srgb, var(--bd-accent) 30%, transparent), transparent 70%), linear-gradient(180deg, rgba(18, 22, 42, 0.92), rgba(5, 6, 13, 0.96)); color: #f5f5f7; border: 1px solid color-mix(in srgb, var(--bd-accent) 28%, rgba(255, 255, 255, 0.1)); }
-	.bl-news .bd-kicker { color: color-mix(in srgb, var(--bd-accent) 70%, #fff); }
-	.bl-news .bd-sub { color: rgba(245, 245, 247, 0.66); margin-inline: auto; }
-	.bl-news-glow { position: absolute; inset: -40% 20% auto; height: 120%; background: radial-gradient(closest-side, color-mix(in srgb, var(--bd-accent) 35%, transparent), transparent 70%); filter: blur(50px); opacity: 0.5; animation: bl-bg 18s ease-in-out infinite; pointer-events: none; }
-	.bl-news-inner { position: relative; z-index: 1; }
-	.bl-news-h { font-size: clamp(1.8rem, 4vw, 3rem); color: #fff; }
-	.bl-news-form { display: flex; flex-wrap: wrap; gap: 0.7rem; justify-content: center; max-width: 32rem; margin: 1.5rem auto 0; }
-	.bl-news-input { flex: 1; min-width: 220px; padding: 0.85rem 1.2rem; border-radius: 9999px; border: 1px solid rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.08); color: #fff; font-size: 0.98rem; }
-	.bl-news-input::placeholder { color: rgba(255, 255, 255, 0.5); }
-	.bl-news-input:focus { outline: none; border-color: color-mix(in srgb, var(--bd-accent) 70%, #fff); background: rgba(255, 255, 255, 0.12); }
-	.bl-news-btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.85rem 1.6rem; border-radius: 9999px; font-size: 0.95rem; font-weight: 700; color: #06121a; background: linear-gradient(95deg, #8dfeea, #18debe, #28a6ec); border: none; cursor: pointer; transition: transform 0.25s ease, gap 0.25s ease; }
-	.bl-news-btn:hover { transform: translateY(-2px); gap: 0.6rem; }
-	@media (max-width: 640px) {
-		/* phones: input and Subscribe button run edge to edge */
-		.bl-news-input { width: 100%; flex: 1 0 100%; }
-		.bl-news-btn { width: 100%; justify-content: center; }
-	}
-	.bl-news-note { display: block; margin-top: 1rem; font-size: 0.78rem; color: rgba(245, 245, 247, 0.45); }
+	/* ── the beats ──
+	   Each one is a label for the radio above, so pressing a topic filters
+	   the grid — the section is not decoration, it is the same control in
+	   a form that says what it does. */
+	.bl-topics { list-style: none; max-width: 84rem; margin: 0 auto; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(0.8rem, 1.8vw, 1.2rem); }
+	.bl-topic { min-width: 0; }
+	.bl-topic-in { display: grid; align-content: start; gap: 0.3rem; height: 100%; padding: clamp(0.95rem, 2vw, 1.25rem); border-radius: 1.15rem; background: var(--bd-glass); border: 1px solid var(--bd-glass-border); box-shadow: var(--bd-shadow); cursor: pointer; transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), border-color 0.3s ease; }
+	.bl-topic-in:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--c) 45%, var(--bd-glass-border)); }
+	.bl-topic-ic { display: grid; place-items: center; width: 2.3rem; height: 2.3rem; margin-bottom: 0.35rem; border-radius: 0.8rem; color: var(--c); background: color-mix(in srgb, var(--c) 14%, transparent); border: 1px solid color-mix(in srgb, var(--c) 28%, transparent); }
+	.bl-topic-in strong { font-size: 1rem; font-weight: 700; letter-spacing: -0.01em; color: var(--bd-ink); }
+	.bl-topic-d { font-size: 0.84rem; line-height: 1.45; color: var(--bd-muted); }
+	.bl-topic-n { margin-top: 0.45rem; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c); }
+
+	/* ── the newsletter, at the volume of the footer's ── */
+	.bl-signal { position: relative; overflow: hidden; display: grid; gap: 0.9rem; max-width: 60rem; margin: clamp(2.5rem, 6vw, 4rem) auto; padding: clamp(1.15rem, 2.6vw, 1.6rem) clamp(1.25rem, 3vw, 1.9rem) clamp(1.35rem, 3vw, 1.9rem); border-radius: 1.25rem; background: color-mix(in srgb, var(--bd-accent) 7%, var(--bd-glass)); border: 1px solid color-mix(in srgb, var(--bd-accent) 26%, var(--bd-glass-border)); box-shadow: var(--bd-shadow); }
+	.bl-signal-edge { position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--bd-accent), transparent); opacity: 0.85; }
+	.bl-signal-copy { display: flex; flex-direction: column; gap: 0.2rem; }
+	.bl-signal-h { display: inline-flex; align-items: center; gap: 0.42rem; font-size: 0.74rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bd-accent); }
+	:global(html:not(.dark)) .bl-signal-h { color: #1577b8; }
+	.bl-signal-copy p { margin: 0; font-size: 0.86rem; line-height: 1.5; color: var(--bd-muted); }
+	.bl-signal-form { display: flex; gap: 0.55rem; width: 100%; }
+	.bl-signal-field { flex: 1; display: flex; align-items: center; gap: 0.5rem; min-width: 0; padding: 0.15rem 0.9rem; border-radius: 9999px; color: var(--bd-muted); background: color-mix(in srgb, var(--bd-ink) 6%, transparent); border: 1px solid var(--bd-glass-border); transition: border-color 0.25s ease; }
+	.bl-signal-field:focus-within { border-color: color-mix(in srgb, var(--bd-accent) 55%, transparent); }
+	.bl-signal-field input { flex: 1; min-width: 0; padding-block: 0.68rem; border: 0; background: none; color: var(--bd-ink); font-size: 0.92rem; }
+	.bl-signal-field input:focus { outline: none; }
+	.bl-signal-field input::placeholder { color: var(--bd-muted); }
+	.bl-signal-form button { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.68rem 1.35rem; border-radius: 9999px; border: 0; font-size: 0.9rem; font-weight: 750; color: #06121a; background: linear-gradient(95deg, #8dfeea, #18debe, #28a6ec); cursor: pointer; transition: transform 0.25s ease, filter 0.25s ease; }
+	.bl-signal-form button:hover { transform: translateY(-1px); filter: brightness(1.06); }
 	.bl-hp { position: absolute; left: -9999px; }
 
-	/* ── Brevarium cross-promo ── */
-	.bl-mag { display: flex; gap: clamp(1rem, 2.5vw, 1.6rem); align-items: center; max-width: 60rem; margin: 0 auto; padding: clamp(1.1rem, 2.5vw, 1.6rem); border-radius: 1.4rem; background: var(--bd-glass); border: 1px solid var(--bd-glass-border); box-shadow: var(--bd-shadow); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); transition: transform 0.35s ease, border-color 0.35s ease; }
+	/* ── the magazine ── */
+	.bl-mag { display: flex; gap: clamp(1rem, 2.5vw, 1.6rem); align-items: center; max-width: 60rem; margin: 0 auto; padding: clamp(1.1rem, 2.5vw, 1.6rem); border-radius: 1.4rem; background: var(--bd-glass); border: 1px solid var(--bd-glass-border); box-shadow: var(--bd-shadow); transition: transform 0.35s ease, border-color 0.35s ease; }
 	.bl-mag:hover { transform: translateY(-5px); border-color: color-mix(in srgb, var(--bd-accent) 45%, var(--bd-glass-border)); }
-	.bl-mag-cover { flex-shrink: 0; width: clamp(80px, 18vw, 120px); border-radius: 0.7rem; overflow: hidden; box-shadow: 0 18px 40px -18px rgba(0,0,0,0.6); }
+	.bl-mag-cover { flex-shrink: 0; width: clamp(80px, 18vw, 118px); border-radius: 0.7rem; overflow: hidden; box-shadow: 0 18px 40px -18px rgba(0,0,0,0.6); }
 	.bl-mag-cover img { width: 100%; display: block; }
-	.bl-mag-meta { display: flex; flex-direction: column; gap: 0.3rem; }
+	.bl-mag-meta { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
 	.bl-mag-meta .bd-kicker { margin-bottom: 0.2rem; }
-	.bl-mag-meta strong { font-size: clamp(1.1rem, 2.2vw, 1.4rem); font-weight: 700; letter-spacing: -0.01em; }
-	.bl-mag-meta em { font-style: normal; font-size: 0.92rem; line-height: 1.5; color: var(--bd-muted); }
-	.bl-mag-dl { margin-top: 0.4rem; display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.86rem; font-weight: 700; color: var(--bd-accent); }
+	.bl-mag-meta strong { font-size: clamp(1.05rem, 2.2vw, 1.35rem); font-weight: 700; letter-spacing: -0.01em; }
+	.bl-mag-meta em { font-style: normal; font-size: 0.9rem; line-height: 1.5; color: var(--bd-muted); }
+	.bl-mag-dl { margin-top: 0.4rem; display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.85rem; font-weight: 750; color: var(--bd-accent); }
 	:global(html:not(.dark)) .bl-mag-dl { color: #1577b8; }
 
 	/* ── Reveal ── */
@@ -269,8 +575,1070 @@ const filterCss = cats
 	.bd-reveal.is-on { opacity: 1; transform: translateY(0); }
 	@media (prefers-reduced-motion: reduce) {
 		.bd-reveal { opacity: 1; transform: none; transition: none; }
-		.bdbody::before, .bdbody::after, .bd-grad, .bl-news-glow { animation: none; }
-		.bl-card:hover, .bl-feature:hover, .bl-mag:hover { transform: none; }
+		.bdbody::before, .bdbody::after { animation: none; }
+		.bl-card:hover, .bl-mag:hover, .bl-lead:hover, .bl-topic-in:hover { transform: none; }
+	}
+	/* ═══ shared with the rest of the site ═════════════════════════════
+	   The opening two-up, the numbers band and the closing tile are the
+	   same objects everywhere. Lifted rather than re-written, and kept at
+	   the end of the sheet where source order settles them against the
+	   older page-specific rules above.
+	   ══════════════════════════════════════════════════════════════════ */
+	/* ── the numbers band ──────────────────────────────────────────────
+	   It spans the page rather than sitting inside the 88rem grid: five
+	   figures deserve the width, and the band is what separates the story
+	   above it from the proof below. The body's own side padding is given
+	   back with a negative margin, which is exact and, unlike 100vw,
+	   cannot open a scrollbar of its own. */
+	.bd-band {
+		position: relative;
+		isolation: isolate;
+		overflow: hidden;
+		max-width: none;
+		width: auto;
+		margin-inline: calc(-1 * clamp(1rem, 3vw, 2rem));
+		margin-block: clamp(1.2rem, 2.6vw, 2rem) clamp(0.9rem, 2vw, 1.4rem);
+		border-radius: clamp(1rem, 2vw, 1.6rem);
+		padding-inline: clamp(1.2rem, 4vw, 3.4rem);
+		padding-block: clamp(1.6rem, 3vw, 2.5rem);
+		/* deeper than the rest of the body on purpose: this band is the
+		   quiet beat between the story above it and the proof below */
+		background:
+			radial-gradient(900px 320px at 50% -24%, color-mix(in srgb, var(--bd-accent) 13%, transparent), transparent 70%),
+			linear-gradient(180deg, #05070f 0%, #02030a 100%);
+		border-color: rgba(155, 216, 255, 0.1);
+	}
+	/* the heading is a label here, not a headline: the figures are the
+	   thing being looked at */
+	.bd-band .bd-h {
+		font-size: clamp(1.35rem, 2.5vw, 2rem);
+		letter-spacing: -0.03em;
+		margin: 0;
+	}
+	.bd-band .bd-p {
+		margin: 0.45rem auto 0;
+		max-width: 40rem;
+		font-size: clamp(0.82rem, 1vw, 0.92rem);
+		line-height: 1.55;
+	}
+	/* the accent falls on one word, which is the only ornament the
+	   heading needs */
+	.bd-band .bd-h em {
+		font-style: normal;
+		background: linear-gradient(120deg, #cfeaff 5%, var(--bd-accent) 75%);
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	.bd-numbers {
+		display: grid;
+		/* however many figures there are, not always five: with four the
+		   fixed five-column grid left an empty column and the row sat
+		   off-centre in its own band */
+		grid-auto-flow: column;
+		grid-auto-columns: minmax(0, 1fr);
+		gap: clamp(0.5rem, 1.1vw, 0.85rem);
+		list-style: none;
+		margin: clamp(1.1rem, 2.4vw, 1.6rem) 0 0;
+		padding: 0;
+	}
+	/* Five cards, each one hairline, icon, figure, label and the shape it
+	   made. Nothing is filled, nothing glows: the only movement is the
+	   figure counting and the line drawing itself. */
+	.bd-number {
+		min-width: 0;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+		padding: clamp(0.85rem, 1.7vw, 1.15rem) clamp(0.55rem, 1.2vw, 0.9rem)
+			clamp(0.6rem, 1.3vw, 0.85rem);
+		border-radius: clamp(0.65rem, 1.1vw, 0.85rem);
+		border: 1px solid rgba(155, 216, 255, 0.095);
+		background: rgba(255, 255, 255, 0.014);
+		transition: border-color 0.35s ease, background 0.35s ease,
+			transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.bd-number:hover {
+		border-color: color-mix(in srgb, var(--bd-accent) 38%, transparent);
+		background: rgba(255, 255, 255, 0.035);
+		transform: translateY(-2px);
+	}
+	.bd-number-ic {
+		display: grid;
+		place-items: center;
+		width: 1.85rem;
+		height: 1.85rem;
+		border-radius: 0.55rem;
+		border: 1px solid rgba(155, 216, 255, 0.16);
+		background: color-mix(in srgb, var(--bd-accent) 9%, transparent);
+		color: #7fc7f0;
+		margin-bottom: 0.5rem;
+	}
+	.bd-number-ic :global(svg) { width: 15px; height: 15px; }
+
+	/* ── the line under each figure ──
+	   Drawn rather than faded in: the stroke is dashed to its own length
+	   and the dash walked to zero, which is a pen moving across the box
+	   rather than a picture appearing. */
+	/* named "trend", not "spark": global.css stops anything whose class
+	   carries spark/glow/aura from animating on weak hardware — right for
+	   a particle emitter, wrong for a line that draws itself once. */
+	.bd-trend {
+		display: block;
+		width: 100%;
+		height: clamp(13px, 1.5vw, 17px);
+		margin-top: clamp(0.5rem, 1.1vw, 0.75rem);
+		overflow: hidden;
+	}
+	.bd-trend-line {
+		fill: none;
+		stroke: var(--bd-accent);
+		stroke-width: 0.75;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+		opacity: 0.62;
+		/* the path measures a shade over 100 user units, and the dash is
+		   measured in the same units now, so one dash covers one line */
+		stroke-dasharray: 104;
+		stroke-dashoffset: 104;
+
+	}
+
+	.bd-band.is-on .bd-trend-line {
+		animation: bd-draw 1.5s cubic-bezier(0.3, 0.8, 0.3, 1) forwards;
+		animation-delay: calc(0.25s + var(--n) * 0.16s);
+	}
+	@keyframes bd-draw { to { stroke-dashoffset: 0; } }
+
+	.bd-number-l {
+		display: block;
+		margin-top: 0.22rem;
+		font-size: clamp(0.7rem, 0.82vw, 0.78rem);
+		line-height: 1.3;
+		color: rgba(245, 245, 247, 0.5);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.bd-band .bd-trend-line { stroke-dashoffset: 0; }
+		.bd-band.is-on .bd-trend-line { animation: none; }
+		.bd-number,
+		.bd-number:hover { transform: none; transition: none; }
+	}
+	/* The band stays one row of five on every screen — it is a line of
+	   figures, and a line of figures wrapped over two rows is a table.
+	   What gives instead is the weight: the icon goes, the label shortens
+	   to a single word, and the card loses its frame until only the
+	   numbers and their lines are left. */
+	.bd-number-s { display: none; }
+	@media (max-width: 880px) {
+		.bd-numbers { gap: clamp(0.25rem, 1.2vw, 0.6rem); }
+		.bd-number { padding: 0.75rem 0.3rem 0.5rem; }
+		.bd-number-ic { width: 1.5rem; height: 1.5rem; border-radius: 0.45rem; margin-bottom: 0.35rem; }
+		.bd-number-ic :global(svg) { width: 12px; height: 12px; }
+		.bd-number strong { font-size: clamp(1.05rem, 3.2vw, 1.6rem); }
+		.bd-number-l { font-size: 0.62rem; }
+	}
+	@media (max-width: 620px) {
+		.bd-number {
+			padding: 0.55rem 0.15rem 0.4rem;
+			border-color: transparent;
+			background: none;
+		}
+		.bd-number-ic { display: none; }
+		.bd-number strong { font-size: clamp(0.95rem, 4.4vw, 1.35rem); }
+		.bd-number-l { display: none; }
+		.bd-number-s {
+			display: block;
+			margin-top: 0.15rem;
+			font-size: clamp(0.54rem, 2.1vw, 0.66rem);
+			line-height: 1.2;
+			letter-spacing: 0.01em;
+			color: rgba(245, 245, 247, 0.5);
+		}
+		.bd-trend { height: 10px; margin-top: 0.4rem; }
+		.bd-band { padding-inline: clamp(0.7rem, 3vw, 1.2rem); }
+		.bd-band .bd-h { font-size: clamp(1.15rem, 5vw, 1.5rem); }
+		.bd-band .bd-p { font-size: 0.76rem; }
+	}
+
+	@media (max-width: 880px) {
+		.bd-band { padding-inline: clamp(1.2rem, 5vw, 2rem); }
+	}
+	.bd-number strong {
+		display: block;
+		font-size: clamp(1.7rem, 3.1vw, 2.4rem);
+		font-weight: 700;
+		letter-spacing: -0.03em;
+		background: linear-gradient(135deg, #9bd8ff, var(--bd-accent));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+
+
+
+	/* ── the closing tile ── */
+	.bd-tile--cta {
+		position: relative;
+		overflow: hidden;
+		display: grid;
+		grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+		align-items: stretch;
+		gap: 0;
+		padding: 0;
+		text-align: left;
+		background:
+			radial-gradient(760px 420px at 6% 110%, color-mix(in srgb, var(--bd-accent) 26%, transparent), transparent 70%),
+			linear-gradient(180deg, rgba(14, 19, 36, 0.96), rgba(4, 6, 13, 0.98));
+		color: #f5f5f7;
+		border-color: color-mix(in srgb, var(--bd-accent) 26%, rgba(255, 255, 255, 0.1));
+	}
+	.bd-cta-copy {
+		padding: clamp(2.2rem, 5vw, 4.2rem) clamp(1.4rem, 3.4vw, 3.4rem);
+		align-self: center;
+		/* a grid item's automatic minimum is its content, and a phone
+		   number set nowrap is wide content: without this the column grows
+		   past the tile and the tile quietly clips it */
+		min-width: 0;
+	}
+	.bd-cta-kick {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.85rem;
+		font-size: 0.72rem;
+		font-weight: 700;
+		letter-spacing: 0.26em;
+		text-transform: uppercase;
+		color: rgba(245, 245, 247, 0.6);
+	}
+	.bd-cta-kick i {
+		width: clamp(1.6rem, 3vw, 2.6rem);
+		height: 2px;
+		border-radius: 999px;
+		background: var(--bd-accent);
+	}
+	.bd-display--cta {
+		margin: clamp(0.9rem, 2vw, 1.3rem) 0 0;
+		font-size: clamp(2.1rem, 4.4vw, 3.6rem);
+		line-height: 1.02;
+		letter-spacing: -0.04em;
+	}
+	.bd-display--cta em {
+		display: block;
+		font-style: normal;
+		font-weight: 800;
+		background: linear-gradient(100deg, #e9f6ff 10%, var(--bd-accent) 85%);
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	.bd-tile--cta .bd-sub {
+		margin: clamp(0.9rem, 2vw, 1.25rem) 0 0;
+		max-width: 27rem;
+		margin-inline: 0;
+	}
+	.bd-cta-act {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: clamp(1rem, 2.4vw, 2rem);
+		margin-top: clamp(1.5rem, 3.2vw, 2.4rem);
+	}
+	/* the one thing on this tile we want pressed: it breathes until it is */
+	.bd-cta-go {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.6rem;
+		min-height: 3.35rem;
+		padding: 0 1.8rem;
+		border-radius: 999px;
+		background: linear-gradient(120deg, var(--bd-accent), #3b7dfd);
+		color: #04101a;
+		font-size: 1rem;
+		font-weight: 700;
+		white-space: nowrap;
+		transition: transform 0.25s ease, filter 0.25s ease;
+	}
+	.bd-cta-go::after {
+		content: '';
+		position: absolute;
+		inset: -3px;
+		border-radius: inherit;
+		border: 2px solid var(--bd-accent);
+		opacity: 0;
+		pointer-events: none;
+		animation: bd-cta-ring 2.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+	}
+	@keyframes bd-cta-ring {
+		0%   { transform: scale(1); opacity: 0.55; }
+		70%  { transform: scale(1.16); opacity: 0; }
+		100% { transform: scale(1.16); opacity: 0; }
+	}
+	.bd-cta-go:hover { transform: translateY(-2px); filter: brightness(1.06); }
+	.bd-cta-go-s { display: none; }
+	.bd-cta-go:hover::after { animation-play-state: paused; opacity: 0; }
+
+	/* the photograph, with the promise stamped in its corner */
+	.bd-cta-shot {
+		position: relative;
+		margin: 0;
+		min-height: clamp(18rem, 30vw, 27rem);
+	}
+	/* The picture is dissolved into the tile rather than laid on top of
+	   it: a dark veil over the photograph left a visible seam wherever the
+	   veil's black and the tile's own gradient disagreed, which they do
+	   everywhere except one row of pixels. Masking the image instead means
+	   there is nothing to match — the photograph simply stops. */
+	.bd-cta-shot img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: 42% 50%;
+		mask-image: linear-gradient(
+			90deg,
+			transparent 0%,
+			rgba(0, 0, 0, 0.28) 14%,
+			rgba(0, 0, 0, 0.82) 38%,
+			#000 62%
+		);
+		-webkit-mask-image: linear-gradient(
+			90deg,
+			transparent 0%,
+			rgba(0, 0, 0, 0.28) 14%,
+			rgba(0, 0, 0, 0.82) 38%,
+			#000 62%
+		);
+	}
+	/* just enough shade at the top right to hold the stamp */
+	.bd-cta-shot::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(200deg, rgba(4, 6, 13, 0.5), transparent 42%);
+	}
+	.bd-cta-stamp {
+		position: absolute;
+		top: clamp(1.1rem, 2.6vw, 2.2rem);
+		right: clamp(1.1rem, 2.6vw, 2.2rem);
+		z-index: 1;
+		text-align: right;
+		font-size: 0.66rem;
+		font-weight: 600;
+		letter-spacing: 0.24em;
+		text-transform: uppercase;
+		line-height: 1.9;
+		color: rgba(245, 245, 247, 0.62);
+	}
+	.bd-cta-stamp strong { display: block; color: #fff; font-weight: 700; }
+	.bd-cta-stamp::after {
+		content: '';
+		display: block;
+		width: 2.4rem;
+		height: 1px;
+		margin: 0.6rem 0 0 auto;
+		background: rgba(255, 255, 255, 0.4);
+	}
+
+	@media (max-width: 860px) {
+		.bd-tile--cta { grid-template-columns: 1fr; }
+		/* on a phone the desk goes on top, where a photograph belongs */
+		.bd-cta-shot { order: -1; min-height: clamp(12rem, 46vw, 17rem); }
+		/* stacked, the photograph dissolves downward instead of sideways */
+		.bd-cta-shot img {
+			mask-image: linear-gradient(180deg, #000 34%, rgba(0, 0, 0, 0.5) 74%, transparent 100%);
+			-webkit-mask-image: linear-gradient(180deg, #000 34%, rgba(0, 0, 0, 0.5) 74%, transparent 100%);
+		}
+		.bd-cta-shot::after { background: linear-gradient(180deg, rgba(4, 6, 13, 0.4), transparent 45%); }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.bd-cta-go::after { animation: none; opacity: 0; }
+	}
+	.bd-tile--cta .bd-sub {
+		color: rgba(245, 245, 247, 0.62);
+	}
+	.bd-links--center {
+		justify-content: center;
+	}
+	/* the phone number — impossible to miss */
+	.bd-call {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.15rem;
+	}
+	.bd-call-hint {
+		font-size: 0.78rem;
+		font-weight: 700;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: rgba(245, 245, 247, 0.5);
+	}
+	.bd-call-num {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+		font-size: clamp(1.15rem, 2.2vw, 1.6rem);
+		font-weight: 700;
+		letter-spacing: -0.02em;
+		background: linear-gradient(135deg, #ffffff, #9bd8ff 60%, var(--bd-accent));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+		transition: transform 0.3s ease, filter 0.3s ease;
+	}
+	.bd-call-num :global(svg) {
+		color: var(--bd-accent);
+		-webkit-text-fill-color: initial;
+	}
+	.bd-call:hover .bd-call-num {
+		transform: scale(1.03);
+		filter: drop-shadow(0 10px 30px color-mix(in srgb, var(--bd-accent) 55%, transparent));
+	}
+
+
+	/* ═══ the closing tile on a phone ═════════════════════════════════
+	   Kept at the end of the sheet on purpose: these override plain-class
+	   rules written further down, and a media query carries no extra
+	   specificity — only source order was ever going to settle it.
+	   ══════════════════════════════════════════════════════════════════ */
+	/* On a phone these two were stacking, which put the number below the
+	   fold of the tile. They stay on one line: the button gives up its
+	   padding, the number keeps its weight, and "or call us now" goes,
+	   since a phone number beside a button needs no caption. */
+	@media (max-width: 620px) {
+		/* the two together need every pixel of the tile, so the copy gives
+		   back its outer padding, the label shortens, and the arrow goes */
+		.bd-cta-copy { padding-inline: 1rem; }
+		.bd-cta-act {
+			flex-wrap: nowrap;
+			/* the number is the loudest thing on this row now, so it gets
+			   air between it and the button rather than sitting against it */
+			gap: 1rem;
+			margin-top: 1.2rem;
+		}
+		.bd-cta-go {
+			min-height: 2.9rem;
+			padding: 0 0.95rem;
+			font-size: 0.86rem;
+			gap: 0;
+			flex: 0 1 auto;
+			min-width: 0;
+		}
+		.bd-cta-go :global(svg) { display: none; }
+		/* scoped to the button, because the plain-class default for these
+		   two is written further down the sheet and would otherwise win */
+		.bd-cta-go .bd-cta-go-l { display: none; }
+		.bd-cta-go .bd-cta-go-s { display: inline; }
+		/* the stamp sits off the edge of a one-column tile, and the tile
+		   clips it; the promise is already in the headline */
+		.bd-cta-stamp { display: none; }
+		.bd-call { flex: 0 1 auto; min-width: 0; }
+		.bd-call-hint { display: none; }
+		.bd-call-num {
+			font-size: 1.22rem;
+			font-weight: 900;
+			letter-spacing: -0.01em;
+			gap: 0.35rem;
+			white-space: nowrap;
+		}
+		.bd-call-num :global(svg) { width: 16px; height: 16px; }
+	}
+	/* On the narrowest phones the pair still ran past the edge of the
+	   tile, which quietly clipped the last four digits. The handset icon
+	   goes — beside a button that says "start a project", a number needs
+	   no explaining — and both come down one more step. Measured to clear
+	   the tile by 30px at 360 rather than sitting on the edge. */
+	@media (max-width: 460px) {
+		.bd-cta-go { font-size: 0.78rem; padding: 0 0.8rem; min-height: 2.7rem; }
+		.bd-call-num { font-size: 1.1rem; }
+		.bd-call-num :global(svg) { display: none; }
+	}
+
+	/* ── the opening two-up ──
+	   Equal panels, stretched to one height, each centred on its own
+	   words. One carries the type, the other carries the film. */
+	.ab-open {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: clamp(0.9rem, 1.8vw, 1.4rem);
+		max-width: 88rem;
+		margin: clamp(1.2rem, 3vw, 2.2rem) auto clamp(2.5rem, 6vw, 4.5rem);
+	}
+	.ab-open-panel {
+		display: flex;
+		flex-direction: column;
+		border-radius: clamp(1rem, 2vw, 1.7rem);
+		overflow: hidden;
+		min-height: clamp(24rem, 40vw, 34rem);
+	}
+	.ab-open-panel.is-pale { background: #f2f4f9; color: #10121f; }
+	.ab-open-panel.is-deep { background: #05070f; color: #f3f6fc; }
+	.ab-open-copy {
+		padding: clamp(1.8rem, 3.6vw, 3.2rem) clamp(1.2rem, 2.6vw, 2.4rem) 0;
+		text-align: center;
+	}
+	.ab-open-panel .ab-acts { justify-content: center; }
+	.ab-kick {
+		display: inline-block;
+		font-size: 0.74rem;
+		font-weight: 700;
+		letter-spacing: 0.22em;
+		text-transform: uppercase;
+		color: var(--bd-accent);
+	}
+	.ab-h1 {
+		margin: clamp(0.7rem, 1.6vw, 1rem) 0 0;
+		font-size: clamp(1.6rem, 3.4vw, 2.9rem);
+		font-weight: 800;
+		letter-spacing: -0.045em;
+		line-height: 1.02;
+		text-wrap: balance;
+	}
+	/* The panels are pale and deep whatever the theme is, so the headline
+	   gradient has to key off the panel rather than off html.dark. Keyed
+	   off the theme it went pale-on-pale in dark mode and all but
+	   disappeared. */
+	.ab-h1 em,
+	.ab-h2 em {
+		display: block;
+		font-style: normal;
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	.is-pale .ab-h1 em,
+	.is-pale .ab-h2 em {
+		background-image: linear-gradient(100deg, #1e3a8a 4%, #2f86d6 84%);
+	}
+	.is-deep .ab-h1 em,
+	.is-deep .ab-h2 em {
+		background-image: linear-gradient(100deg, #d9edff 6%, var(--bd-accent) 80%);
+	}
+	.ab-lede {
+		margin: clamp(0.8rem, 1.8vw, 1.15rem) auto 0;
+		max-width: 34rem;
+		font-size: clamp(0.9rem, 1.1vw, 1.02rem);
+		line-height: 1.6;
+		opacity: 0.74;
+	}
+	.ab-lede--sm { display: none; }
+
+	/* the pair of ways in: one solid, one plain, always together */
+	.ab-acts {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: clamp(0.8rem, 1.8vw, 1.6rem);
+		margin-top: clamp(1.3rem, 2.8vw, 2rem);
+	}
+	.ab-hero .ab-acts,
+	.ab-film .ab-acts { justify-content: center; }
+	.ab-pill {
+		display: inline-flex;
+		align-items: center;
+		min-height: 2.9rem;
+		padding: 0 1.5rem;
+		border-radius: 999px;
+		background: var(--bd-accent);
+		color: #04101a;
+		font-size: 0.95rem;
+		font-weight: 650;
+		white-space: nowrap;
+		transition: transform 0.25s ease, filter 0.25s ease;
+	}
+	.ab-pill:hover { transform: translateY(-2px); filter: brightness(1.08); }
+	.ab-more {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.15rem;
+		font-size: 0.95rem;
+		font-weight: 600;
+		color: var(--bd-accent);
+		transition: gap 0.25s ease;
+	}
+	.ab-more:hover { gap: 0.4rem; }
+
+	/* the figures sit on the floor of the panel, where the product
+	   photograph sits on the reference */
+	/* An even three, ruled off from the copy, so the floor of the panel
+	   reads as structure rather than as the hole left by a short column
+	   of text. */
+	.ab-glance {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		list-style: none;
+		margin: auto clamp(1rem, 2.4vw, 2.2rem) 0;
+		padding: clamp(1.1rem, 2.4vw, 1.7rem) 0 clamp(1.2rem, 2.6vw, 1.9rem);
+		border-top: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+		text-align: center;
+	}
+	.ab-glance li {
+		min-width: 0;
+		padding-inline: 0.4rem;
+		border-left: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+	}
+	.ab-glance li:first-child { border-left: 0; }
+	.ab-glance strong {
+		display: block;
+		font-size: clamp(1.25rem, 2.3vw, 1.85rem);
+		font-weight: 800;
+		letter-spacing: -0.03em;
+	}
+	.ab-glance span {
+		font-size: 0.74rem;
+		letter-spacing: 0.02em;
+		opacity: 0.66;
+	}
+
+	.ab-h2 {
+		margin: 0;
+		font-size: clamp(1.8rem, 4.4vw, 3.4rem);
+		font-weight: 800;
+		letter-spacing: -0.04em;
+		line-height: 1.04;
+		text-wrap: balance;
+	}
+	.ab-h2 span { display: block; opacity: 0.6; }
+	.ab-h2--panel { font-size: clamp(1.4rem, 2.6vw, 2.1rem); }
+	/* the screen is the floor of its panel, the way the product photograph
+	   is the floor of the panel it sits in */
+	.ab-screen {
+		position: relative;
+		flex: 1;
+		display: flex;
+		margin: clamp(1.4rem, 3vw, 2.4rem) clamp(1rem, 2.2vw, 1.8rem)
+			clamp(1rem, 2.2vw, 1.8rem);
+		border-radius: clamp(0.7rem, 1.3vw, 1.05rem);
+		overflow: hidden;
+		/* the bezel: a dark rim and a long shadow, the way a screen sits in
+		   a room rather than on a page */
+		border: clamp(6px, 0.9vw, 11px) solid #0b0d15;
+		box-shadow:
+			0 2px 0 rgba(255, 255, 255, 0.06) inset,
+			0 48px 90px -40px rgba(0, 0, 0, 0.75);
+		background: #05070f;
+	}
+	.ab-screen :global(.flm) {
+		border-radius: 0;
+		width: 100%;
+		height: 100%;
+	}
+	/* The ratio lives on .flm__screen, not on .flm — setting it on the
+	   wrapper left the picture at 16/9 with a shelf of dark underneath.
+	   Released here, the panel's own height decides, and `cover` crops. */
+	.ab-screen :global(.flm__screen) {
+		height: 100%;
+		aspect-ratio: auto;
+		border-radius: 0;
+		border: 0;
+	}
+	.ab-screen-film { flex: 1; display: flex; min-height: 0; }
+	.ab-glance-s { display: none; }
+
+	.ab-kick {
+		display: inline-block;
+		font-size: 0.74rem;
+		font-weight: 700;
+		letter-spacing: 0.22em;
+		text-transform: uppercase;
+		color: var(--bd-accent);
+	}
+	.ab-h1 {
+		margin: clamp(0.7rem, 1.6vw, 1rem) 0 0;
+		font-size: clamp(1.6rem, 3.4vw, 2.9rem);
+		font-weight: 800;
+		letter-spacing: -0.045em;
+		line-height: 1.02;
+		text-wrap: balance;
+	}
+	/* The panels are pale and deep whatever the theme is, so the headline
+	   gradient has to key off the panel rather than off html.dark. Keyed
+	   off the theme it went pale-on-pale in dark mode and all but
+	   disappeared. */
+	.ab-h1 em,
+	.ab-h2 em {
+		display: block;
+		font-style: normal;
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	.is-pale .ab-h1 em,
+	.is-pale .ab-h2 em {
+		background-image: linear-gradient(100deg, #1e3a8a 4%, #2f86d6 84%);
+	}
+	.is-deep .ab-h1 em,
+	.is-deep .ab-h2 em {
+		background-image: linear-gradient(100deg, #d9edff 6%, var(--bd-accent) 80%);
+	}
+	.ab-lede {
+		margin: clamp(0.8rem, 1.8vw, 1.15rem) auto 0;
+		max-width: 34rem;
+		font-size: clamp(0.9rem, 1.1vw, 1.02rem);
+		line-height: 1.6;
+		opacity: 0.74;
+	}
+	.ab-lede--sm { display: none; }
+
+	/* the pair of ways in: one solid, one plain, always together */
+	.ab-acts {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: clamp(0.8rem, 1.8vw, 1.6rem);
+		margin-top: clamp(1.3rem, 2.8vw, 2rem);
+	}
+	.ab-hero .ab-acts,
+	.ab-film .ab-acts { justify-content: center; }
+	.ab-pill {
+		display: inline-flex;
+		align-items: center;
+		min-height: 2.9rem;
+		padding: 0 1.5rem;
+		border-radius: 999px;
+		background: var(--bd-accent);
+		color: #04101a;
+		font-size: 0.95rem;
+		font-weight: 650;
+		white-space: nowrap;
+		transition: transform 0.25s ease, filter 0.25s ease;
+	}
+	.ab-pill:hover { transform: translateY(-2px); filter: brightness(1.08); }
+	.ab-more {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.15rem;
+		font-size: 0.95rem;
+		font-weight: 600;
+		color: var(--bd-accent);
+		transition: gap 0.25s ease;
+	}
+	.ab-more:hover { gap: 0.4rem; }
+
+	/* the figures sit on the floor of the panel, where the product
+	   photograph sits on the reference */
+	/* An even three, ruled off from the copy, so the floor of the panel
+	   reads as structure rather than as the hole left by a short column
+	   of text. */
+	.ab-glance {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		list-style: none;
+		margin: auto clamp(1rem, 2.4vw, 2.2rem) 0;
+		padding: clamp(1.1rem, 2.4vw, 1.7rem) 0 clamp(1.2rem, 2.6vw, 1.9rem);
+		border-top: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+		text-align: center;
+	}
+	.ab-glance li {
+		min-width: 0;
+		padding-inline: 0.4rem;
+		border-left: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+	}
+	.ab-glance li:first-child { border-left: 0; }
+	.ab-glance strong {
+		display: block;
+		font-size: clamp(1.25rem, 2.3vw, 1.85rem);
+		font-weight: 800;
+		letter-spacing: -0.03em;
+	}
+	.ab-glance span {
+		font-size: 0.74rem;
+		letter-spacing: 0.02em;
+		opacity: 0.66;
+	}
+
+	.ab-h2 {
+		margin: 0;
+		font-size: clamp(1.8rem, 4.4vw, 3.4rem);
+		font-weight: 800;
+		letter-spacing: -0.04em;
+		line-height: 1.04;
+		text-wrap: balance;
+	}
+	.ab-h2 span { display: block; opacity: 0.6; }
+	.ab-h2--panel { font-size: clamp(1.4rem, 2.6vw, 2.1rem); }
+	/* the screen is the floor of its panel, the way the product photograph
+	   is the floor of the panel it sits in */
+	.ab-screen {
+		position: relative;
+		flex: 1;
+		display: flex;
+		margin: clamp(1.4rem, 3vw, 2.4rem) clamp(1rem, 2.2vw, 1.8rem)
+			clamp(1rem, 2.2vw, 1.8rem);
+		border-radius: clamp(0.7rem, 1.3vw, 1.05rem);
+		overflow: hidden;
+		/* the bezel: a dark rim and a long shadow, the way a screen sits in
+		   a room rather than on a page */
+		border: clamp(6px, 0.9vw, 11px) solid #0b0d15;
+		box-shadow:
+			0 2px 0 rgba(255, 255, 255, 0.06) inset,
+			0 48px 90px -40px rgba(0, 0, 0, 0.75);
+		background: #05070f;
+	}
+	.ab-screen :global(.flm) {
+		border-radius: 0;
+		width: 100%;
+		height: 100%;
+	}
+	/* The ratio lives on .flm__screen, not on .flm — setting it on the
+	   wrapper left the picture at 16/9 with a shelf of dark underneath.
+	   Released here, the panel's own height decides, and `cover` crops. */
+	.ab-screen :global(.flm__screen) {
+		height: 100%;
+		aspect-ratio: auto;
+		border-radius: 0;
+		border: 0;
+	}
+	.ab-screen-film { flex: 1; display: flex; min-height: 0; }
+	.ab-glance-s { display: none; }
+	.ab-screen-badge {
+		position: absolute;
+		left: clamp(0.7rem, 1.6vw, 1.2rem);
+		bottom: clamp(0.7rem, 1.6vw, 1.2rem);
+		z-index: 4;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		padding: 0.3rem 0.7rem 0.3rem 0.55rem;
+		border-radius: 999px;
+		background: rgba(6, 9, 16, 0.55);
+		border: 1px solid rgba(255, 255, 255, 0.16);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		color: #fff;
+		font-size: 0.72rem;
+		pointer-events: none;
+	}
+	.ab-screen-badge span { font-weight: 700; }
+	.ab-screen-badge em {
+		font-style: normal;
+		opacity: 0.7;
+		padding-left: 0.4rem;
+		border-left: 1px solid rgba(255, 255, 255, 0.28);
+	}
+
+
+	@media (max-width: 860px) {
+		.ab-open-panel { min-height: clamp(20rem, 52vw, 28rem); }
+		.ab-h1 { font-size: clamp(1.4rem, 3.4vw, 2rem); }
+		.ab-h2--panel { font-size: clamp(1.2rem, 3vw, 1.6rem); }
+	}
+	@media (max-width: 620px) {
+		.ab-open { gap: 0.5rem; }
+		.ab-open-panel { min-height: clamp(17rem, 62vw, 23rem); }
+		.ab-open-copy { padding: 0.9rem 0.55rem 0; }
+		.ab-h1 { font-size: 1.05rem; line-height: 1.12; }
+		.ab-h2--panel { font-size: 0.98rem; }
+		.ab-open-panel .ab-lede { display: none; }
+		.ab-open-panel .ab-lede--sm { display: block; font-size: 0.66rem; margin-top: 0.3rem; }
+		.ab-open-panel .ab-acts { margin-top: 0.7rem; gap: 0.35rem; }
+		.ab-open-panel .ab-pill { min-height: 1.9rem; padding: 0 0.75rem; font-size: 0.68rem; }
+		.ab-open-panel .ab-more { display: none; }
+		.ab-glance { margin-inline: 0.35rem; padding: 0.65rem 0 0.8rem; }
+		.ab-glance li { padding-inline: 0.28rem; }
+		.ab-glance strong { font-size: 0.8rem; letter-spacing: -0.02em; }
+		.ab-glance span { display: none; }
+		.ab-glance .ab-glance-s { display: block; font-size: 0.5rem; white-space: nowrap; }
+		.ab-screen { margin: 0.7rem 0.55rem 0.55rem; border-width: 4px; }
+		.ab-screen-badge { display: none; }
+		.ab-screen :global(.flm__big) { transform: scale(0.52); }
+	}
+	@media (prefers-reduced-motion: reduce) { .ab-pill:hover { transform: none; } }
+
+	/* ── tap to expand ──
+	   On a phone the film in this panel is about a third of the screen
+	   wide: fine as a picture, poor as a film. This says so, and presses
+	   the player's own full-screen and play controls in order, so
+	   expanding here behaves exactly as it does anywhere else. */
+	.ab-screen-open {
+		position: absolute;
+		top: clamp(0.5rem, 1.4vw, 0.9rem);
+		right: clamp(0.5rem, 1.4vw, 0.9rem);
+		z-index: 5;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		padding: 0.34rem 0.7rem 0.34rem 0.55rem;
+		border-radius: 999px;
+		border: 1px solid rgba(255, 255, 255, 0.28);
+		background: rgba(6, 9, 16, 0.6);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		color: #fff;
+		font-size: 0.68rem;
+		font-weight: 650;
+		white-space: nowrap;
+		cursor: pointer;
+		transition: background 0.25s ease, transform 0.25s ease;
+	}
+	.ab-screen-open:hover { background: rgba(6, 9, 16, 0.85); transform: translateY(-1px); }
+	/* it breathes on a touch screen, where it is most needed and there is
+	   no hover to discover it with */
+	@media (hover: none) {
+		.ab-screen-open { animation: ab-open-beat 2.8s ease-in-out infinite; }
+	}
+	@keyframes ab-open-beat {
+		0%, 100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.35); }
+		60% { box-shadow: 0 0 0 8px rgba(255, 255, 255, 0); }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.ab-screen-open { animation: none; }
+	}
+
+	/* ── the case-study shelf on a phone ──
+	   Last in the sheet on purpose: a media query carries no extra weight
+	   of its own, so it only beats the plain-class rules above by coming
+	   after them.
+
+	   Narrower cards, never a stacked column — about a card and a half in
+	   view, so the next one is always showing past the right edge and the
+	   row reads as a row. The arrows go, because a finger does not need
+	   them, and a line of text says so instead. */
+
+	/* ── the expand control, on a phone ──
+	   Last in the sheet on purpose: a media query carries no weight of its
+	   own and only beats the plain rules above by coming after them.
+
+	   A small dark pill in the corner of a film was the wrong answer at
+	   this size. It sat on top of whatever the film happened to be showing
+	   — often white type — so half the time it could not be read, and the
+	   player's own transport underneath it was a row of three-millimetre
+	   buttons that nobody can hit anyway.
+
+	   So at this width the frame stops pretending to be a player and goes
+	   back to being a poster: the whole picture is the button, it carries
+	   one unmissable label, and everything else happens in cinema mode
+	   where the controls are full size. */
+	@media (max-width: 720px) {
+		.ab-screen-open {
+			position: absolute;
+			inset: 0;
+			top: 0;
+			right: 0;
+			z-index: 6;
+			display: grid;
+			place-items: center;
+			width: 100%;
+			height: 100%;
+			padding: 0;
+			border: 0;
+			border-radius: 0;
+			background: linear-gradient(180deg, rgba(3, 5, 12, 0.18), rgba(3, 5, 12, 0.58));
+			backdrop-filter: none;
+			-webkit-backdrop-filter: none;
+			font-size: inherit;
+			animation: none;
+		}
+		.ab-screen-open-in {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.4rem;
+			padding: 0.5rem 0.9rem;
+			border-radius: 9999px;
+			background: #28a6ec;
+			color: #fff;
+			font-size: 0.78rem;
+			font-weight: 750;
+			letter-spacing: 0.01em;
+			white-space: nowrap;
+			box-shadow: 0 10px 26px -10px rgba(40, 166, 236, 0.85);
+			animation: ab-open-beat 2.8s ease-in-out infinite;
+		}
+		.ab-screen-open:active .ab-screen-open-in { transform: scale(0.96); }
+		/* the cramped transport and the small play ring both belong to the
+		   full-size player now, not to this poster */
+		.ab-screen :global(.flm:not(.is-cinema) .flm__bar),
+		.ab-screen :global(.flm:not(.is-cinema) .flm__big) { display: none; }
+	}
+	/* while a film is filling the screen, the poster's button is not
+	   wanted anywhere underneath it */
+	:global(html.flm-cinema) .ab-screen-open { display: none; }
+	/* a narrow phone: the label still has to sit inside the frame with
+	   room to breathe rather than touching both bezels */
+	@media (max-width: 420px) {
+		.ab-screen-open-in { padding: 0.44rem 0.72rem; font-size: 0.72rem; gap: 0.32rem; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.ab-screen-open-in { animation: none; }
+	}
+
+	/* ── the journal on smaller screens ──
+	   Last in the sheet on purpose: a media query carries no weight of
+	   its own and only beats the plain rules above by coming after them.
+
+	   The grid narrows rather than unstacking: two across on a tablet,
+	   and on a phone the cards go one under the other only because a
+	   blog card is a picture plus three lines of standfirst and half of
+	   that at 46vw is unreadable — the beats below stay two across,
+	   because those are four short labels and there is no reason to make
+	   somebody scroll through them one at a time. */
+	@media (max-width: 1000px) {
+		.bl-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+		.bl-topics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	}
+	@media (max-width: 620px) {
+		.bl-grid { grid-template-columns: 1fr; gap: 0.9rem; }
+		.bl-card-title { font-size: 1.02rem; }
+		.bl-card-desc { -webkit-line-clamp: 2; line-clamp: 2; }
+		.bl-topic-in { padding: 0.85rem 0.9rem 1rem; border-radius: 1rem; }
+		.bl-topic-ic { width: 2rem; height: 2rem; border-radius: 0.68rem; margin-bottom: 0.25rem; }
+		.bl-topic-in strong { font-size: 0.92rem; }
+		.bl-topic-d { font-size: 0.76rem; line-height: 1.4; }
+		.bl-topic-n { font-size: 0.66rem; margin-top: 0.35rem; }
+		/* the chips scroll sideways rather than stacking into a block of
+		   buttons that is taller than the first article */
+		.bl-chips {
+			flex-wrap: nowrap;
+			justify-content: flex-start;
+			overflow-x: auto;
+			scrollbar-width: none;
+			border-radius: 1.1rem;
+			padding: 0.7rem;
+		}
+		.bl-chips::-webkit-scrollbar { display: none; }
+		.bl-chip { flex: 0 0 auto; font-size: 0.84rem; padding: 0.46rem 0.85rem; }
+		/* The lead article keeps its picture and stays beside the copy
+		   panel rather than dropping under it, so the column it lives in
+		   is about a hundred and fifty pixels of text. A headline set at
+		   desktop size in that space comes out two words to a line and
+		   six lines tall, and the date and the link wrap as well. Every
+		   line here is about making that column readable rather than
+		   about making it smaller. */
+		.bl-lead { margin: 0.8rem 0.7rem 0.7rem; }
+		.bl-lead-copy { min-height: 11.5rem; padding: 0.8rem; }
+		.bl-lead-cat { font-size: 0.6rem; padding: 0.22rem 0.5rem; }
+		.bl-lead-title {
+			font-size: 0.92rem;
+			line-height: 1.22;
+			letter-spacing: -0.015em;
+			margin: 0.7rem 0 0.35rem;
+			text-wrap: pretty;
+			display: -webkit-box;
+			-webkit-line-clamp: 4;
+			line-clamp: 4;
+			-webkit-box-orient: vertical;
+			overflow: hidden;
+		}
+		/* one line, both halves of it: a date that breaks after "Jun" and
+		   a read time that breaks after "8 min" is three lines of noise */
+		.bl-lead-meta { flex-wrap: nowrap; white-space: nowrap; font-size: 0.68rem; gap: 0.3rem; }
+		.bl-lead-go { margin-top: 0.6rem; font-size: 0.75rem; white-space: nowrap; }
+	}
+	@media (max-width: 400px) {
+		.bl-lead-title { font-size: 0.86rem; -webkit-line-clamp: 3; line-clamp: 3; }
+		.bl-lead-meta { font-size: 0.64rem; }
+		.bl-lead-copy { min-height: 10.5rem; padding: 0.7rem; }
+	}
+	@media (max-width: 560px) {
+		/* the field and the button, one under the other, both full width */
+		.bl-signal-form { flex-wrap: wrap; }
+		.bl-signal-form button { width: 100%; justify-content: center; }
+		.bl-mag { gap: 0.85rem; padding: 0.95rem; }
+		.bl-mag-meta em { font-size: 0.82rem; }
 	}
 </style>
 
