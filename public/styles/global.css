@@ -2188,23 +2188,33 @@ html.perf-lite .shuf__ring-f {
   .is-mutehint::after { animation: none; }
 }
 
-/* ── Tawk's own launcher never shows ──────────────────────────────────
+/* ── Tawk's own furniture never shows ────────────────────────────────
    The live chat is opened from our own bubble (#swizel-chat-fab), and
    Tawk is told to hide itself as it loads. But a script that hides
-   something can only run once the something exists, so on every refresh
-   Tawk's default round launcher was painted first and pulled a moment
-   later: a flash of a chat button that isn't ours, in the corner where
-   ours is about to appear.
+   something can only run once the something exists, and Tawk does not
+   always draw the same thing: sometimes the round launcher, sometimes a
+   vertical "Chat" tab stuck to the edge of the screen with an unread
+   badge on it. Naming the round one by id missed the tab entirely, which
+   is why it sat there until the next page load.
 
-   These rules are in the stylesheet, so they apply the frame the widget
-   is inserted and there is nothing to flash. Only the *minified*
-   launcher is named here — never the maximized panel, which is the
-   actual chat and still has to open when somebody asks for it. */
-#tawkchat-minified-container,
-#tawkchat-minified-wrapper,
-#tawkchat-minified-iframe-element,
-.tawk-min-container {
+   So nothing Tawk injects is shown by default — matched by what it is
+   (an iframe pointed at tawk.to, a container whose id starts tawkchat)
+   rather than by one id we happened to know. The chat itself is let
+   through only while html carries .tawk-open, which our launcher puts
+   there when it maximizes the widget and takes off again when the chat
+   is minimised, hidden or ended. */
+iframe[src*='tawk.to'],
+iframe[title='chat widget'],
+div[id^='tawkchat'],
+.tawk-min-container,
+.tawk-bubble-container,
+.widget-visible {
   display: none !important;
+}
+html.tawk-open iframe[src*='tawk.to'],
+html.tawk-open iframe[title='chat widget'],
+html.tawk-open div[id^='tawkchat'] {
+  display: block !important;
 }
 
 /* ── the mobile bar's three controls, dressed as one set ──────────────

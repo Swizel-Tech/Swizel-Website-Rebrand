@@ -136,6 +136,31 @@ const sectors = [
 	     each panel a door into its own /services page -->
 	<DoWall />
 
+	<!-- ── The stack — a static, grouped capability grid ────── -->
+	<section class="svc-stack bd-reveal" data-cursor="layers">
+		<div class="bd-head">
+			<h2 class="bd-h bd-h--center">The tools in our hands.</h2>
+			<p class="bd-p bd-p--center">A modern, proven toolkit, picked for the job, not for the hype.</p>
+		</div>
+		{/* Nine boxes of pills is a wall of reading. The same hand of
+		    playing cards the disciplines are dealt as, one card a group,
+		    bigger here because a card holding eight tool names needs the
+		    room. */}
+		<div class="svc-deck bd-reveal">
+			<CardShuffle
+				variant="deck"
+				label="The stack"
+				every={6}
+				items={stack.map((cat) => ({
+					icon: cat.icon,
+					title: cat.group,
+					desc: cat.tools.join(' · '),
+				}))}
+			/>
+		</div>
+		<p class="svc-stack-note">…and whatever else the job calls for. We pick tools to fit your product, not our comfort zone.</p>
+	</section>
+
 	<!-- ── How we work — the journey ───────────────────────── -->
 	<section class="svc-journey bd-reveal" data-cursor="branch">
 		<span class="svc-journey-aurora" aria-hidden="true"></span>
@@ -219,31 +244,6 @@ const sectors = [
 				))
 			}
 		</ul>
-	</section>
-
-	<!-- ── The stack — a static, grouped capability grid ────── -->
-	<section class="svc-stack bd-reveal" data-cursor="layers">
-		<div class="bd-head">
-			<h2 class="bd-h bd-h--center">The tools in our hands.</h2>
-			<p class="bd-p bd-p--center">A modern, proven toolkit, picked for the job, not for the hype.</p>
-		</div>
-		{/* Nine boxes of pills is a wall of reading. The same hand of
-		    playing cards the disciplines are dealt as, one card a group,
-		    bigger here because a card holding eight tool names needs the
-		    room. */}
-		<div class="svc-deck bd-reveal">
-			<CardShuffle
-				variant="deck"
-				label="The stack"
-				every={6}
-				items={stack.map((cat) => ({
-					icon: cat.icon,
-					title: cat.group,
-					desc: cat.tools.join(' · '),
-				}))}
-			/>
-		</div>
-		<p class="svc-stack-note">…and whatever else the job calls for. We pick tools to fit your product, not our comfort zone.</p>
 	</section>
 
 	<!-- ── Sectors ─────────────────────────────────────────── -->

@@ -66,9 +66,16 @@ const {
 		Tawk_API.onLoad = function () {
 			if (Tawk_API.hideWidget) Tawk_API.hideWidget();
 		};
-		Tawk_API.onChatMinimized = function () {
+		// Every way the chat can go away puts the page back to "no Tawk
+		// furniture on screen". Minimised, hidden and ended are three
+		// different events and Tawk fires whichever fits.
+		var swzTawkShut = function () {
+			document.documentElement.classList.remove('tawk-open');
 			if (Tawk_API.hideWidget) Tawk_API.hideWidget();
 		};
+		Tawk_API.onChatMinimized = swzTawkShut;
+		Tawk_API.onChatHidden = swzTawkShut;
+		Tawk_API.onChatEnded = swzTawkShut;
 		(function () {
 			var s1 = document.createElement('script'),
 				s0 = document.getElementsByTagName('script')[0];
@@ -850,6 +857,8 @@ const {
 		const openTawk = () => {
 			const api = (window as any).Tawk_API;
 			if (api && api.maximize) {
+				// the class is what lets the stylesheet show Tawk at all
+				document.documentElement.classList.add('tawk-open');
 				if (api.showWidget) api.showWidget();
 				api.maximize();
 			}

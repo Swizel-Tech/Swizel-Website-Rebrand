@@ -251,8 +251,11 @@ const isActive = (href: string) => {
 					</span>
 					<svg class="m-nav-go" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6" /></svg>
 				</button>
+				{/* "Contact us" rather than "Start a project": the desktop bar's
+				    button says Contact, and a visitor who opens the menu to find
+				    a phone number should not be asked to start a project. */}
 				<CustomButton elementType="a" class="m-nav-cta" variant="primary" href="/contact" notRounded>
-					Start a project
+					Contact us
 				</CustomButton>
 				<div class="m-nav-social" data-no-tip>
 					<a href="https://wa.me/2348100204570" aria-label="WhatsApp" target="_blank" rel="noopener"><Icon width={18} name="mdi:whatsapp" /></a>
