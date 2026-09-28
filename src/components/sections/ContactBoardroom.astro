@@ -1,0 +1,1109 @@
+---
+// Contact — the Boardroom world.
+//
+// The shared contact page was the last one still speaking the old
+// language: a waving-hand emoji, a Bebas headline, drifting orbs, rising
+// sparks and cards that tilt at the cursor. Every other page in this
+// world now opens on the two-up, so this one does too.
+//
+// The order is what a contact page is for: the ways to reach a person
+// first, the form second, the questions people ask before writing third,
+// and the offices last — the page closes on somewhere real rather than
+// on another ask.
+import { Icon } from 'astro-icon/components';
+import ContactForm from '../blocks/ContactForm.astro';
+import { faq } from '../../consts';
+
+const contactFaq = faq.slice(0, 6);
+
+// Straight lines, in the order somebody in a hurry wants them.
+const channels = [
+	{
+		icon: 'mdi:phone-outline',
+		label: 'Call us',
+		value: '+234 810 020 4570',
+		note: 'Mon–Fri, 9–6 WAT',
+		href: 'tel:+2348100204570',
+		accent: '#28a6ec',
+	},
+	{
+		icon: 'mdi:whatsapp',
+		label: 'WhatsApp',
+		value: 'Message us now',
+		note: 'Usually the fastest',
+		href: 'https://wa.me/2348100204570',
+		accent: '#25d366',
+		external: true,
+	},
+	{
+		icon: 'mdi:email-outline',
+		label: 'Email us',
+		value: 'contact@swizel.co',
+		note: 'Briefs and attachments',
+		href: 'mailto:contact@swizel.co',
+		accent: '#8b5cf6',
+	},
+];
+
+// The same four offices the footer carries, with the same live clocks —
+// the tick is already bound globally to .ft-clock, so these only have to
+// carry the class and their zone.
+const offices = [
+	{ flag: '🇳🇬', country: 'Nigeria', city: 'Abuja', lines: ['2155 Peculiar Estate', 'Lokogoma, Abuja'], tz: 'Africa/Lagos' },
+	{ flag: '🇮🇪', country: 'Ireland', city: 'Cork', lines: ['Eden Hall, Modern Farm Road', 'Cork, Ireland'], tz: 'Europe/Dublin' },
+	{ flag: '🇬🇧', country: 'United Kingdom', city: 'Sheffield', lines: ['1, Sheffield, South Yorkshire', 'S2 3DB, England'], tz: 'Europe/London' },
+	{ flag: '🇺🇸', country: 'United States', city: 'New York', lines: ['Tiemann Ave', 'Bronx, New York'], tz: 'America/New_York' },
+];
+
+// Three figures for the floor of the opening panel — all of them things
+// we can actually stand behind.
+const glance = [
+	{ v: '1 day', k: 'Typical reply', s: 'Reply' },
+	{ v: '4', k: 'Offices worldwide', s: 'Offices' },
+	{ v: '10+', k: 'Countries served', s: 'Countries' },
+];
+---
+
+<div class="bdbody bd-services bd-contact view-body view-body-boardroom" data-cursor="phone">
+	<!-- ── the opening: the words beside the lines ──────────
+	     Where the other pages put a film, a contact page puts the ways
+	     through. Somebody who came here to ring us should not have to
+	     read a page first.
+	     ────────────────────────────────────────────────────── -->
+	<div class="ab-open">
+		<article class="ab-open-panel is-pale bd-reveal">
+			<div class="ab-open-copy">
+				<span class="ab-kick">Talk to us</span>
+				<h1 class="ab-h1">
+					Start with a
+					<em>conversation.</em>
+				</h1>
+				<p class="ab-lede">
+					A finished brief or a rough idea — either is a good place to
+					begin. Tell us where you want to get to and we will tell you
+					what it takes, honestly, before anyone signs anything.
+				</p>
+				<p class="ab-lede ab-lede--sm">
+					A finished brief or a rough idea — either is a good place to begin.
+				</p>
+				<div class="ab-acts">
+					<a href="#ct-brief" class="ab-pill">Send us a brief</a>
+					<a href="tel:+2348100204570" class="ab-more">
+						Or call now
+						<Icon width={14} name="mdi:chevron-right" />
+					</a>
+				</div>
+			</div>
+			<ul class="ab-glance" aria-label="What to expect">
+				{
+					glance.map((g) => (
+						<li>
+							<strong>{g.v}</strong>
+							<span>{g.k}</span>
+							<span class="ab-glance-s">{g.s}</span>
+						</li>
+					))
+				}
+			</ul>
+		</article>
+
+		<article class="ab-open-panel is-deep bd-reveal">
+			<div class="ab-open-copy">
+				<span class="ab-kick">Straight through</span>
+				<h2 class="ab-h2 ab-h2--panel">
+					Pick a line,
+					<span>we'll pick up.</span>
+				</h2>
+			</div>
+			<ul class="ct-lines">
+				{
+					channels.map((c) => (
+						<li class="ct-line" style={`--c:${c.accent}`}>
+							<a
+								class="ct-line-go"
+								href={c.href}
+								target={c.external ? '_blank' : undefined}
+								rel={c.external ? 'noopener noreferrer' : undefined}
+							>
+								<span class="ct-line-ic">
+									<Icon width={18} name={c.icon} />
+								</span>
+								<span class="ct-line-txt">
+									<span class="ct-line-l">{c.label}</span>
+									{/* an email is one long word, so on a narrow phone it breaks
+								    wherever the line runs out — "contact@swiz / el.co". A
+								    break opportunity after the @ puts the fold where a
+								    reader would put it. */}
+								<strong class="ct-line-v">
+									{c.value.includes('@') && !c.value.startsWith('+') ? (
+										<>
+											{c.value.split('@')[0]}@<wbr />
+											{c.value.split('@')[1]}
+										</>
+									) : (
+										c.value
+									)}
+								</strong>
+									<span class="ct-line-n">{c.note}</span>
+								</span>
+								<Icon class="ct-line-arrow" width={15} name="mdi:arrow-top-right" />
+							</a>
+						</li>
+					))
+				}
+				{/* the one line that is not a link: it opens the chat we already
+				    carry on every page rather than sending anyone anywhere */}
+				<li class="ct-line ct-line--live" style="--c:#18debe">
+					<button class="ct-line-go" type="button" data-open-chat>
+						<span class="ct-line-ic">
+							<span class="ct-live-dot" aria-hidden="true"></span>
+							<Icon width={18} name="mdi:message-text-outline" />
+						</span>
+						<span class="ct-line-txt">
+							<span class="ct-line-l">Live chat</span>
+							<strong class="ct-line-v">Chat with us now</strong>
+							<span class="ct-line-n">Someone is usually here</span>
+						</span>
+						<Icon class="ct-line-arrow" width={15} name="mdi:arrow-right" />
+					</button>
+				</li>
+			</ul>
+		</article>
+	</div>
+
+	<!-- ── the brief ───────────────────────────────────────── -->
+	<section class="bd-head bd-reveal" id="ct-brief">
+		<span class="bd-kicker">The brief</span>
+		<h2 class="bd-h bd-h--center">Tell us what you're building.</h2>
+		<p class="bd-p bd-p--center">
+			As much or as little as you have. A senior person reads every one of
+			these — not a form queue.
+		</p>
+	</section>
+	<div class="ct-brief bd-reveal">
+		<div class="ct-brief-form">
+			<ContactForm />
+		</div>
+		<aside class="ct-brief-side">
+			<span class="ct-side-k">What happens next</span>
+			<ol class="ct-steps">
+				<li>
+					<strong>We read it</strong>
+					<span>Usually the same day, always within one business day.</span>
+				</li>
+				<li>
+					<strong>We come back with questions</strong>
+					<span>The ones that decide scope, cost and how long it takes.</span>
+				</li>
+				<li>
+					<strong>You get a plan and a number</strong>
+					<span>Written down, before anyone signs anything.</span>
+				</li>
+			</ol>
+			<div class="ct-promise">
+				<Icon width={17} name="mdi:shield-check-outline" />
+				<span>Your brief stays with us. We don't share it, and we don't sell lists.</span>
+			</div>
+		</aside>
+	</div>
+
+	<!-- ── the questions people ask before writing ─────────── -->
+	<section class="bd-head bd-reveal">
+		<span class="bd-kicker">Before you ask</span>
+		<h2 class="bd-h bd-h--center">Common questions.</h2>
+		<p class="bd-p bd-p--center">The ones that come up most often, answered plainly.</p>
+	</section>
+	<div class="ct-faq bd-reveal">
+		{
+			contactFaq.map((f, i) => (
+				<details class="ct-faq-item" open={i === 0}>
+					<summary>
+						<span>{f.question.replace(/\s+\?/g, '?').trim()}</span>
+						<Icon class="ct-faq-caret" width={19} name="mdi:chevron-down" />
+					</summary>
+					<p>{f.answer.trim()}</p>
+				</details>
+			))
+		}
+	</div>
+
+	<!-- ── where we actually are ───────────────────────────
+	     The page closes on somewhere real rather than on another ask.
+	     The clocks are live, so it is obvious at a glance whether the
+	     office you are writing to is awake.
+	     ────────────────────────────────────────────────────── -->
+	<section class="bd-head bd-reveal">
+		<span class="bd-kicker">On the ground</span>
+		<h2 class="bd-h bd-h--center">Four desks, four time zones.</h2>
+		<p class="bd-p bd-p--center">Abuja is home. The rest is where the work took us.</p>
+	</section>
+	<ul class="ct-offices bd-reveal">
+		{
+			offices.map((o) => (
+				<li class="ct-office">
+					<span class="ct-office-top">
+						<span class="ct-office-flag" aria-hidden="true">{o.flag}</span>
+						<span class="ct-office-where">
+							<strong>{o.country}</strong>
+							<em>{o.city}</em>
+						</span>
+						<span class="ct-office-clock ft-clock" data-tz={o.tz}>
+							<Icon width={12} name="mdi:clock-outline" />
+							<span class="ft-clock-time">--:--</span>
+						</span>
+					</span>
+					<address class="ct-office-addr">
+						{o.lines.map((l) => <span>{l}</span>)}
+					</address>
+				</li>
+			))
+		}
+	</ul>
+</div>
+
+<style>
+	/* ════ Boardroom base (self-contained), boardroom blue ════ */
+	.bdbody {
+		--bd-accent: #28a6ec;
+		--bd-ink: #f4f6fb;
+		--bd-muted: rgba(244, 246, 251, 0.62);
+		--bd-glass: linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02) 55%);
+		--bd-glass-border: rgba(255, 255, 255, 0.1);
+		--bd-shadow: 0 34px 80px -34px rgba(0, 0, 0, 0.8);
+		font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+		position: relative; isolation: isolate; overflow: hidden;
+		background:
+			radial-gradient(1100px 540px at 78% -6%, color-mix(in srgb, var(--bd-accent) 13%, transparent), transparent 62%),
+			radial-gradient(900px 520px at 8% 38%, rgba(58, 90, 200, 0.1), transparent 60%),
+			linear-gradient(180deg, #070910 0%, #0a0d1c 45%, #05060d 100%);
+		color: var(--bd-ink);
+		padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 4rem);
+		transition: background 0.4s ease, color 0.4s ease;
+	}
+	:global(html:not(.dark)) .bdbody {
+		--bd-ink: #0f1120;
+		--bd-muted: rgba(28, 32, 52, 0.82);
+		--bd-glass: linear-gradient(160deg, #ffffff, #f3f6fb 60%);
+		--bd-glass-border: rgba(18, 22, 45, 0.16);
+		--bd-shadow: 0 26px 60px -32px rgba(20, 28, 60, 0.4);
+		background:
+			radial-gradient(1100px 540px at 78% -6%, color-mix(in srgb, var(--bd-accent) 12%, transparent), transparent 62%),
+			linear-gradient(180deg, #e4eaf2 0%, #dbe3ee 50%, #e4eaf2 100%);
+	}
+	.bdbody::before { content: ''; position: absolute; inset: -12%; z-index: -2; pointer-events: none; background: radial-gradient(440px 440px at 14% 16%, color-mix(in srgb, var(--bd-accent) 22%, transparent), transparent 60%), radial-gradient(400px 400px at 86% 26%, rgba(139, 92, 246, 0.18), transparent 60%), radial-gradient(480px 480px at 60% 90%, rgba(34, 211, 238, 0.16), transparent 62%); filter: blur(60px); opacity: 0.65; animation: ct-bg 26s ease-in-out infinite; }
+	:global(html:not(.dark)) .bdbody::before { opacity: 0.42; }
+	@keyframes ct-bg { 0%,100%{ transform: translate3d(0,0,0) scale(1); } 33%{ transform: translate3d(3%,-2%,0) scale(1.08); } 66%{ transform: translate3d(-2%,2%,0) scale(1.04); } }
+	.bdbody::after { content: ''; position: absolute; inset: 0; z-index: -2; pointer-events: none; opacity: 0.45; background-image: radial-gradient(circle, color-mix(in srgb, var(--bd-accent) 30%, transparent) 1px, transparent 1px); background-size: 36px 36px; -webkit-mask-image: radial-gradient(1300px 760px at 50% 2%, #000, transparent 72%); mask-image: radial-gradient(1300px 760px at 50% 2%, #000, transparent 72%); animation: ct-pan 46s linear infinite; }
+	:global(html:not(.dark)) .bdbody::after { opacity: 0.28; }
+	@keyframes ct-pan { to { background-position: 360px 220px; } }
+
+	.bd-kicker { display: inline-block; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bd-accent); margin-bottom: 1rem; }
+	:global(html:not(.dark)) .bd-kicker { color: #1577b8; }
+	.bd-h { font-size: clamp(1.7rem, 3.4vw, 2.5rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; margin: 0 0 0.7rem; }
+	.bd-h--center { text-align: center; }
+	.bd-p { font-size: 1.02rem; line-height: 1.6; color: var(--bd-muted); max-width: 36rem; margin: 0 auto 1.2rem; }
+	.bd-p--center { margin-inline: auto; text-align: center; }
+	.bd-head { max-width: 56rem; margin: clamp(2.5rem, 7vw, 4.5rem) auto clamp(1.5rem, 3vw, 2rem); text-align: center; }
+
+	/* ── the lines, in the deep panel ──
+	   Rows rather than a grid of tiles: a phone number, an address and a
+	   chat button are not four equal things, they are a list you run your
+	   eye down until one of them is the one you wanted. */
+	.ct-lines {
+		list-style: none;
+		margin: clamp(0.8rem, 2vw, 1.2rem) 0 0;
+		padding: 0 clamp(1rem, 2.2vw, 1.8rem) clamp(1rem, 2.2vw, 1.8rem);
+		display: grid;
+		gap: 0.5rem;
+	}
+	.ct-line { min-width: 0; }
+	.ct-line-go {
+		position: relative;
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr) auto;
+		align-items: center;
+		gap: 0.85rem;
+		width: 100%;
+		padding: 0.7rem 0.85rem;
+		border-radius: 0.95rem;
+		text-align: left;
+		color: inherit;
+		background: rgba(255, 255, 255, 0.045);
+		border: 1px solid rgba(255, 255, 255, 0.09);
+		cursor: pointer;
+		transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), background 0.25s ease,
+			border-color 0.25s ease;
+	}
+	.ct-line-go:hover {
+		transform: translateX(3px);
+		background: color-mix(in srgb, var(--c) 14%, transparent);
+		border-color: color-mix(in srgb, var(--c) 42%, transparent);
+	}
+	.ct-line-ic {
+		position: relative;
+		display: grid;
+		place-items: center;
+		width: 2.2rem;
+		height: 2.2rem;
+		border-radius: 0.7rem;
+		color: color-mix(in srgb, var(--c) 58%, #ffffff);
+		background: color-mix(in srgb, var(--c) 16%, transparent);
+		border: 1px solid color-mix(in srgb, var(--c) 32%, transparent);
+	}
+	.ct-line-txt { display: grid; min-width: 0; line-height: 1.25; }
+	.ct-line-l { font-size: 0.66rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(243, 246, 252, 0.5); }
+	.ct-line-v { font-size: 0.95rem; font-weight: 700; margin-top: 0.12rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+	.ct-line-n { font-size: 0.74rem; color: rgba(243, 246, 252, 0.48); margin-top: 0.1rem; }
+	.ct-line-arrow { color: rgba(243, 246, 252, 0.35); transition: color 0.25s ease, transform 0.25s ease; }
+	.ct-line-go:hover .ct-line-arrow { color: color-mix(in srgb, var(--c) 60%, #ffffff); transform: translate(2px, -2px); }
+	/* a pulse on the chat row, because "someone is here" is a claim that
+	   should look live rather than be typed */
+	.ct-live-dot {
+		position: absolute;
+		top: -2px;
+		right: -2px;
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		background: #18debe;
+		box-shadow: 0 0 0 0 rgba(24, 222, 190, 0.7);
+		animation: ct-live 2.4s ease-out infinite;
+	}
+	@keyframes ct-live {
+		0% { box-shadow: 0 0 0 0 rgba(24, 222, 190, 0.6); }
+		70% { box-shadow: 0 0 0 7px rgba(24, 222, 190, 0); }
+		100% { box-shadow: 0 0 0 0 rgba(24, 222, 190, 0); }
+	}
+
+	/* ── the brief ── */
+	.ct-brief {
+		max-width: 76rem;
+		margin: 0 auto;
+		display: grid;
+		gap: clamp(1rem, 2.2vw, 1.6rem);
+		align-items: start;
+	}
+	@media (min-width: 940px) {
+		.ct-brief { grid-template-columns: 1.4fr 0.85fr; }
+	}
+	/* The form card stays dark in both themes on purpose: its inputs are
+	   built with light type on a dark field, and re-skinning them for a
+	   pale page is a much bigger change than a contact page needs. */
+	.ct-brief-form {
+		padding: clamp(1.3rem, 3vw, 2.2rem);
+		border-radius: 1.5rem;
+		background: linear-gradient(165deg, #141b2e, #0c1020);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		box-shadow: var(--bd-shadow);
+	}
+	.ct-brief-side {
+		display: grid;
+		gap: 1rem;
+		padding: clamp(1.2rem, 2.6vw, 1.7rem);
+		border-radius: 1.5rem;
+		background: var(--bd-glass);
+		border: 1px solid var(--bd-glass-border);
+		box-shadow: var(--bd-shadow);
+	}
+	/* The submit button arrives in the house green, which is nobody's
+	   colour on a boardroom page — the button that sends the brief should
+	   be the same blue as the button that sent you to the form. */
+	.ct-brief-form :global(#form-button) {
+		background: var(--bd-accent);
+		color: #04101a;
+		font-weight: 700;
+		letter-spacing: 0.02em;
+		transition: transform 0.25s ease, filter 0.25s ease;
+	}
+	.ct-brief-form :global(#form-button:hover) { filter: brightness(1.07); transform: translateY(-1px); }
+	/* the field labels and rings, in the world's colour rather than the
+	   default sheet's */
+	.ct-brief-form :global(input:focus),
+	.ct-brief-form :global(textarea:focus) {
+		border-color: var(--bd-accent);
+		outline: none;
+	}
+
+	.ct-side-k { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bd-accent); }
+	:global(html:not(.dark)) .ct-side-k { color: #1577b8; }
+	.ct-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.9rem; counter-reset: ct; }
+	.ct-steps li { position: relative; padding-left: 2.1rem; counter-increment: ct; }
+	.ct-steps li::before {
+		content: counter(ct);
+		position: absolute;
+		left: 0;
+		top: 0.05rem;
+		display: grid;
+		place-items: center;
+		width: 1.5rem;
+		height: 1.5rem;
+		border-radius: 9999px;
+		font-size: 0.72rem;
+		font-weight: 800;
+		color: var(--bd-accent);
+		background: color-mix(in srgb, var(--bd-accent) 14%, transparent);
+		border: 1px solid color-mix(in srgb, var(--bd-accent) 30%, transparent);
+	}
+	:global(html:not(.dark)) .ct-steps li::before { color: #1577b8; }
+	.ct-steps strong { display: block; font-size: 0.94rem; font-weight: 700; letter-spacing: -0.01em; }
+	.ct-steps span { display: block; margin-top: 0.15rem; font-size: 0.85rem; line-height: 1.5; color: var(--bd-muted); }
+	.ct-promise {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.55rem;
+		padding: 0.75rem 0.85rem;
+		border-radius: 0.9rem;
+		font-size: 0.82rem;
+		line-height: 1.5;
+		color: var(--bd-muted);
+		background: color-mix(in srgb, var(--bd-accent) 8%, transparent);
+		border: 1px solid color-mix(in srgb, var(--bd-accent) 20%, transparent);
+	}
+	.ct-promise :global(svg) { flex: none; margin-top: 0.1rem; color: var(--bd-accent); }
+
+	/* ── the questions ── */
+	.ct-faq { max-width: 62rem; margin: 0 auto; display: grid; gap: 0.6rem; }
+	@media (min-width: 900px) { .ct-faq { grid-template-columns: 1fr 1fr; align-items: start; } }
+	.ct-faq-item {
+		border-radius: 1.05rem;
+		padding: 0.15rem 0.35rem;
+		background: var(--bd-glass);
+		border: 1px solid var(--bd-glass-border);
+		box-shadow: var(--bd-shadow);
+		transition: border-color 0.3s ease;
+	}
+	.ct-faq-item[open] { border-color: color-mix(in srgb, var(--bd-accent) 40%, var(--bd-glass-border)); }
+	.ct-faq-item summary {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.9rem;
+		padding: 0.9rem 0.85rem;
+		font-size: 0.97rem;
+		font-weight: 650;
+		line-height: 1.35;
+		cursor: pointer;
+		list-style: none;
+	}
+	.ct-faq-item summary::-webkit-details-marker { display: none; }
+	.ct-faq-caret { flex: none; color: var(--bd-accent); transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
+	.ct-faq-item[open] .ct-faq-caret { transform: rotate(180deg); }
+	.ct-faq-item p { margin: 0; padding: 0 0.85rem 1rem; font-size: 0.9rem; line-height: 1.6; color: var(--bd-muted); }
+
+	/* ── the offices ──
+	   Four across on a desktop and two across on a phone: these are four
+	   short cards, and a column of them one at a time is a lot of
+	   scrolling for an address list. */
+	.ct-offices {
+		list-style: none;
+		max-width: 76rem;
+		margin: 0 auto;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: clamp(0.7rem, 1.6vw, 1.1rem);
+	}
+	.ct-office {
+		min-width: 0;
+		padding: clamp(0.9rem, 2vw, 1.2rem);
+		border-radius: 1.15rem;
+		background: var(--bd-glass);
+		border: 1px solid var(--bd-glass-border);
+		box-shadow: var(--bd-shadow);
+		transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease;
+	}
+	.ct-office:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--bd-accent) 40%, var(--bd-glass-border)); }
+	.ct-office-top { display: flex; align-items: center; gap: 0.55rem; }
+	.ct-office-flag { font-size: 1.15rem; line-height: 1; }
+	.ct-office-where { display: grid; min-width: 0; line-height: 1.2; margin-right: auto; }
+	.ct-office-where strong { font-size: 0.95rem; font-weight: 700; letter-spacing: -0.01em; }
+	.ct-office-where em { font-style: normal; font-size: 0.76rem; color: var(--bd-muted); }
+	.ct-office-clock {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.25rem;
+		flex: none;
+		padding: 0.2rem 0.45rem;
+		border-radius: 9999px;
+		font-size: 0.7rem;
+		font-weight: 700;
+		font-variant-numeric: tabular-nums;
+		color: var(--bd-accent);
+		background: color-mix(in srgb, var(--bd-accent) 12%, transparent);
+		border: 1px solid color-mix(in srgb, var(--bd-accent) 26%, transparent);
+	}
+	:global(html:not(.dark)) .ct-office-clock { color: #1577b8; }
+	.ct-office-addr {
+		display: grid;
+		gap: 0.1rem;
+		margin-top: 0.7rem;
+		font-style: normal;
+		font-size: 0.82rem;
+		line-height: 1.45;
+		color: var(--bd-muted);
+	}
+
+	/* ── Reveal ── */
+	.bd-reveal { opacity: 0; transform: translateY(26px); transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
+	.bd-reveal.is-on { opacity: 1; transform: translateY(0); }
+	@media (prefers-reduced-motion: reduce) {
+		.bd-reveal { opacity: 1; transform: none; transition: none; }
+		.bdbody::before, .bdbody::after, .ct-live-dot { animation: none; }
+		.ct-office:hover, .ct-line-go:hover { transform: none; }
+	}
+
+	/* ── the opening two-up ──
+	   Equal panels, stretched to one height, each centred on its own
+	   words. One carries the type, the other carries the film. */
+	.ab-open {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: clamp(0.9rem, 1.8vw, 1.4rem);
+		max-width: 88rem;
+		margin: clamp(1.2rem, 3vw, 2.2rem) auto clamp(2.5rem, 6vw, 4.5rem);
+	}
+	.ab-open-panel {
+		display: flex;
+		flex-direction: column;
+		border-radius: clamp(1rem, 2vw, 1.7rem);
+		overflow: hidden;
+		min-height: clamp(24rem, 40vw, 34rem);
+	}
+	.ab-open-panel.is-pale { background: #f2f4f9; color: #10121f; }
+	.ab-open-panel.is-deep { background: #05070f; color: #f3f6fc; }
+	.ab-open-copy {
+		padding: clamp(1.8rem, 3.6vw, 3.2rem) clamp(1.2rem, 2.6vw, 2.4rem) 0;
+		text-align: center;
+	}
+	.ab-open-panel .ab-acts { justify-content: center; }
+	.ab-kick {
+		display: inline-block;
+		font-size: 0.74rem;
+		font-weight: 700;
+		letter-spacing: 0.22em;
+		text-transform: uppercase;
+		color: var(--bd-accent);
+	}
+	.ab-h1 {
+		margin: clamp(0.7rem, 1.6vw, 1rem) 0 0;
+		font-size: clamp(1.6rem, 3.4vw, 2.9rem);
+		font-weight: 800;
+		letter-spacing: -0.045em;
+		line-height: 1.02;
+		text-wrap: balance;
+	}
+	/* The panels are pale and deep whatever the theme is, so the headline
+	   gradient has to key off the panel rather than off html.dark. Keyed
+	   off the theme it went pale-on-pale in dark mode and all but
+	   disappeared. */
+	.ab-h1 em,
+	.ab-h2 em {
+		display: block;
+		font-style: normal;
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	.is-pale .ab-h1 em,
+	.is-pale .ab-h2 em {
+		background-image: linear-gradient(100deg, #1e3a8a 4%, #2f86d6 84%);
+	}
+	.is-deep .ab-h1 em,
+	.is-deep .ab-h2 em {
+		background-image: linear-gradient(100deg, #d9edff 6%, var(--bd-accent) 80%);
+	}
+	.ab-lede {
+		margin: clamp(0.8rem, 1.8vw, 1.15rem) auto 0;
+		max-width: 34rem;
+		font-size: clamp(0.9rem, 1.1vw, 1.02rem);
+		line-height: 1.6;
+		opacity: 0.74;
+	}
+	.ab-lede--sm { display: none; }
+
+	/* the pair of ways in: one solid, one plain, always together */
+	.ab-acts {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: clamp(0.8rem, 1.8vw, 1.6rem);
+		margin-top: clamp(1.3rem, 2.8vw, 2rem);
+	}
+	.ab-hero .ab-acts,
+	.ab-film .ab-acts { justify-content: center; }
+	.ab-pill {
+		display: inline-flex;
+		align-items: center;
+		min-height: 2.9rem;
+		padding: 0 1.5rem;
+		border-radius: 999px;
+		background: var(--bd-accent);
+		color: #04101a;
+		font-size: 0.95rem;
+		font-weight: 650;
+		white-space: nowrap;
+		transition: transform 0.25s ease, filter 0.25s ease;
+	}
+	.ab-pill:hover { transform: translateY(-2px); filter: brightness(1.08); }
+	.ab-more {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.15rem;
+		font-size: 0.95rem;
+		font-weight: 600;
+		color: var(--bd-accent);
+		transition: gap 0.25s ease;
+	}
+	.ab-more:hover { gap: 0.4rem; }
+
+	/* the figures sit on the floor of the panel, where the product
+	   photograph sits on the reference */
+	/* An even three, ruled off from the copy, so the floor of the panel
+	   reads as structure rather than as the hole left by a short column
+	   of text. */
+	.ab-glance {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		list-style: none;
+		margin: auto clamp(1rem, 2.4vw, 2.2rem) 0;
+		padding: clamp(1.1rem, 2.4vw, 1.7rem) 0 clamp(1.2rem, 2.6vw, 1.9rem);
+		border-top: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+		text-align: center;
+	}
+	.ab-glance li {
+		min-width: 0;
+		padding-inline: 0.4rem;
+		border-left: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+	}
+	.ab-glance li:first-child { border-left: 0; }
+	.ab-glance strong {
+		display: block;
+		font-size: clamp(1.25rem, 2.3vw, 1.85rem);
+		font-weight: 800;
+		letter-spacing: -0.03em;
+	}
+	.ab-glance span {
+		font-size: 0.74rem;
+		letter-spacing: 0.02em;
+		opacity: 0.66;
+	}
+
+	.ab-h2 {
+		margin: 0;
+		font-size: clamp(1.8rem, 4.4vw, 3.4rem);
+		font-weight: 800;
+		letter-spacing: -0.04em;
+		line-height: 1.04;
+		text-wrap: balance;
+	}
+	.ab-h2 span { display: block; opacity: 0.6; }
+	.ab-h2--panel { font-size: clamp(1.4rem, 2.6vw, 2.1rem); }
+	/* the screen is the floor of its panel, the way the product photograph
+	   is the floor of the panel it sits in */
+	.ab-screen {
+		position: relative;
+		flex: 1;
+		display: flex;
+		margin: clamp(1.4rem, 3vw, 2.4rem) clamp(1rem, 2.2vw, 1.8rem)
+			clamp(1rem, 2.2vw, 1.8rem);
+		border-radius: clamp(0.7rem, 1.3vw, 1.05rem);
+		overflow: hidden;
+		/* the bezel: a dark rim and a long shadow, the way a screen sits in
+		   a room rather than on a page */
+		border: clamp(6px, 0.9vw, 11px) solid #0b0d15;
+		box-shadow:
+			0 2px 0 rgba(255, 255, 255, 0.06) inset,
+			0 48px 90px -40px rgba(0, 0, 0, 0.75);
+		background: #05070f;
+	}
+	.ab-screen :global(.flm) {
+		border-radius: 0;
+		width: 100%;
+		height: 100%;
+	}
+	/* The ratio lives on .flm__screen, not on .flm — setting it on the
+	   wrapper left the picture at 16/9 with a shelf of dark underneath.
+	   Released here, the panel's own height decides, and `cover` crops. */
+	.ab-screen :global(.flm__screen) {
+		height: 100%;
+		aspect-ratio: auto;
+		border-radius: 0;
+		border: 0;
+	}
+	.ab-screen-film { flex: 1; display: flex; min-height: 0; }
+	.ab-glance-s { display: none; }
+
+	.ab-kick {
+		display: inline-block;
+		font-size: 0.74rem;
+		font-weight: 700;
+		letter-spacing: 0.22em;
+		text-transform: uppercase;
+		color: var(--bd-accent);
+	}
+	.ab-h1 {
+		margin: clamp(0.7rem, 1.6vw, 1rem) 0 0;
+		font-size: clamp(1.6rem, 3.4vw, 2.9rem);
+		font-weight: 800;
+		letter-spacing: -0.045em;
+		line-height: 1.02;
+		text-wrap: balance;
+	}
+	/* The panels are pale and deep whatever the theme is, so the headline
+	   gradient has to key off the panel rather than off html.dark. Keyed
+	   off the theme it went pale-on-pale in dark mode and all but
+	   disappeared. */
+	.ab-h1 em,
+	.ab-h2 em {
+		display: block;
+		font-style: normal;
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	.is-pale .ab-h1 em,
+	.is-pale .ab-h2 em {
+		background-image: linear-gradient(100deg, #1e3a8a 4%, #2f86d6 84%);
+	}
+	.is-deep .ab-h1 em,
+	.is-deep .ab-h2 em {
+		background-image: linear-gradient(100deg, #d9edff 6%, var(--bd-accent) 80%);
+	}
+	.ab-lede {
+		margin: clamp(0.8rem, 1.8vw, 1.15rem) auto 0;
+		max-width: 34rem;
+		font-size: clamp(0.9rem, 1.1vw, 1.02rem);
+		line-height: 1.6;
+		opacity: 0.74;
+	}
+	.ab-lede--sm { display: none; }
+
+	/* the pair of ways in: one solid, one plain, always together */
+	.ab-acts {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: clamp(0.8rem, 1.8vw, 1.6rem);
+		margin-top: clamp(1.3rem, 2.8vw, 2rem);
+	}
+	.ab-hero .ab-acts,
+	.ab-film .ab-acts { justify-content: center; }
+	.ab-pill {
+		display: inline-flex;
+		align-items: center;
+		min-height: 2.9rem;
+		padding: 0 1.5rem;
+		border-radius: 999px;
+		background: var(--bd-accent);
+		color: #04101a;
+		font-size: 0.95rem;
+		font-weight: 650;
+		white-space: nowrap;
+		transition: transform 0.25s ease, filter 0.25s ease;
+	}
+	.ab-pill:hover { transform: translateY(-2px); filter: brightness(1.08); }
+	.ab-more {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.15rem;
+		font-size: 0.95rem;
+		font-weight: 600;
+		color: var(--bd-accent);
+		transition: gap 0.25s ease;
+	}
+	.ab-more:hover { gap: 0.4rem; }
+
+	/* the figures sit on the floor of the panel, where the product
+	   photograph sits on the reference */
+	/* An even three, ruled off from the copy, so the floor of the panel
+	   reads as structure rather than as the hole left by a short column
+	   of text. */
+	.ab-glance {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		list-style: none;
+		margin: auto clamp(1rem, 2.4vw, 2.2rem) 0;
+		padding: clamp(1.1rem, 2.4vw, 1.7rem) 0 clamp(1.2rem, 2.6vw, 1.9rem);
+		border-top: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+		text-align: center;
+	}
+	.ab-glance li {
+		min-width: 0;
+		padding-inline: 0.4rem;
+		border-left: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+	}
+	.ab-glance li:first-child { border-left: 0; }
+	.ab-glance strong {
+		display: block;
+		font-size: clamp(1.25rem, 2.3vw, 1.85rem);
+		font-weight: 800;
+		letter-spacing: -0.03em;
+	}
+	.ab-glance span {
+		font-size: 0.74rem;
+		letter-spacing: 0.02em;
+		opacity: 0.66;
+	}
+
+	.ab-h2 {
+		margin: 0;
+		font-size: clamp(1.8rem, 4.4vw, 3.4rem);
+		font-weight: 800;
+		letter-spacing: -0.04em;
+		line-height: 1.04;
+		text-wrap: balance;
+	}
+	.ab-h2 span { display: block; opacity: 0.6; }
+	.ab-h2--panel { font-size: clamp(1.4rem, 2.6vw, 2.1rem); }
+	/* the screen is the floor of its panel, the way the product photograph
+	   is the floor of the panel it sits in */
+	.ab-screen {
+		position: relative;
+		flex: 1;
+		display: flex;
+		margin: clamp(1.4rem, 3vw, 2.4rem) clamp(1rem, 2.2vw, 1.8rem)
+			clamp(1rem, 2.2vw, 1.8rem);
+		border-radius: clamp(0.7rem, 1.3vw, 1.05rem);
+		overflow: hidden;
+		/* the bezel: a dark rim and a long shadow, the way a screen sits in
+		   a room rather than on a page */
+		border: clamp(6px, 0.9vw, 11px) solid #0b0d15;
+		box-shadow:
+			0 2px 0 rgba(255, 255, 255, 0.06) inset,
+			0 48px 90px -40px rgba(0, 0, 0, 0.75);
+		background: #05070f;
+	}
+	.ab-screen :global(.flm) {
+		border-radius: 0;
+		width: 100%;
+		height: 100%;
+	}
+	/* The ratio lives on .flm__screen, not on .flm — setting it on the
+	   wrapper left the picture at 16/9 with a shelf of dark underneath.
+	   Released here, the panel's own height decides, and `cover` crops. */
+	.ab-screen :global(.flm__screen) {
+		height: 100%;
+		aspect-ratio: auto;
+		border-radius: 0;
+		border: 0;
+	}
+	.ab-screen-film { flex: 1; display: flex; min-height: 0; }
+	.ab-glance-s { display: none; }
+	.ab-screen-badge {
+		position: absolute;
+		left: clamp(0.7rem, 1.6vw, 1.2rem);
+		bottom: clamp(0.7rem, 1.6vw, 1.2rem);
+		z-index: 4;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		padding: 0.3rem 0.7rem 0.3rem 0.55rem;
+		border-radius: 999px;
+		background: rgba(6, 9, 16, 0.55);
+		border: 1px solid rgba(255, 255, 255, 0.16);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		color: #fff;
+		font-size: 0.72rem;
+		pointer-events: none;
+	}
+	.ab-screen-badge span { font-weight: 700; }
+	.ab-screen-badge em {
+		font-style: normal;
+		opacity: 0.7;
+		padding-left: 0.4rem;
+		border-left: 1px solid rgba(255, 255, 255, 0.28);
+	}
+
+
+	@media (max-width: 860px) {
+		.ab-open-panel { min-height: clamp(20rem, 52vw, 28rem); }
+		.ab-h1 { font-size: clamp(1.4rem, 3.4vw, 2rem); }
+		.ab-h2--panel { font-size: clamp(1.2rem, 3vw, 1.6rem); }
+	}
+	@media (max-width: 620px) {
+		.ab-open { gap: 0.5rem; }
+		.ab-open-panel { min-height: clamp(17rem, 62vw, 23rem); }
+		.ab-open-copy { padding: 0.9rem 0.55rem 0; }
+		.ab-h1 { font-size: 1.05rem; line-height: 1.12; }
+		.ab-h2--panel { font-size: 0.98rem; }
+		.ab-open-panel .ab-lede { display: none; }
+		.ab-open-panel .ab-lede--sm { display: block; font-size: 0.66rem; margin-top: 0.3rem; }
+		.ab-open-panel .ab-acts { margin-top: 0.7rem; gap: 0.35rem; }
+		.ab-open-panel .ab-pill { min-height: 1.9rem; padding: 0 0.75rem; font-size: 0.68rem; }
+		.ab-open-panel .ab-more { display: none; }
+		.ab-glance { margin-inline: 0.35rem; padding: 0.65rem 0 0.8rem; }
+		.ab-glance li { padding-inline: 0.28rem; }
+		.ab-glance strong { font-size: 0.8rem; letter-spacing: -0.02em; }
+		.ab-glance span { display: none; }
+		.ab-glance .ab-glance-s { display: block; font-size: 0.5rem; white-space: nowrap; }
+		.ab-screen { margin: 0.7rem 0.55rem 0.55rem; border-width: 4px; }
+		.ab-screen-badge { display: none; }
+		.ab-screen :global(.flm__big) { transform: scale(0.52); }
+	}
+	@media (prefers-reduced-motion: reduce) { .ab-pill:hover { transform: none; } }
+
+	/* ── tap to expand ──
+	   On a phone the film in this panel is about a third of the screen
+	   wide: fine as a picture, poor as a film. This says so, and presses
+	   the player's own full-screen and play controls in order, so
+	   expanding here behaves exactly as it does anywhere else. */
+	.ab-screen-open {
+		position: absolute;
+		top: clamp(0.5rem, 1.4vw, 0.9rem);
+		right: clamp(0.5rem, 1.4vw, 0.9rem);
+		z-index: 5;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		padding: 0.34rem 0.7rem 0.34rem 0.55rem;
+		border-radius: 999px;
+		border: 1px solid rgba(255, 255, 255, 0.28);
+		background: rgba(6, 9, 16, 0.6);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		color: #fff;
+		font-size: 0.68rem;
+		font-weight: 650;
+		white-space: nowrap;
+		cursor: pointer;
+		transition: background 0.25s ease, transform 0.25s ease;
+	}
+	.ab-screen-open:hover { background: rgba(6, 9, 16, 0.85); transform: translateY(-1px); }
+	/* it breathes on a touch screen, where it is most needed and there is
+	   no hover to discover it with */
+	@media (hover: none) {
+		.ab-screen-open { animation: ab-open-beat 2.8s ease-in-out infinite; }
+	}
+	@keyframes ab-open-beat {
+		0%, 100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.35); }
+		60% { box-shadow: 0 0 0 8px rgba(255, 255, 255, 0); }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.ab-screen-open { animation: none; }
+	}
+
+	/* ── the case-study shelf on a phone ──
+	   Last in the sheet on purpose: a media query carries no extra weight
+	   of its own, so it only beats the plain-class rules above by coming
+	   after them.
+
+	   Narrower cards, never a stacked column — about a card and a half in
+	   view, so the next one is always showing past the right edge and the
+	   row reads as a row. The arrows go, because a finger does not need
+	   them, and a line of text says so instead. */
+
+	/* ── the expand control, on a phone ──
+	   Last in the sheet on purpose: a media query carries no weight of its
+	   own and only beats the plain rules above by coming after them.
+
+	   A small dark pill in the corner of a film was the wrong answer at
+	   this size. It sat on top of whatever the film happened to be showing
+	   — often white type — so half the time it could not be read, and the
+	   player's own transport underneath it was a row of three-millimetre
+	   buttons that nobody can hit anyway.
+
+	   So at this width the frame stops pretending to be a player and goes
+	   back to being a poster: the whole picture is the button, it carries
+	   one unmissable label, and everything else happens in cinema mode
+	   where the controls are full size. */
+	@media (max-width: 720px) {
+		.ab-screen-open {
+			position: absolute;
+			inset: 0;
+			top: 0;
+			right: 0;
+			z-index: 6;
+			display: grid;
+			place-items: center;
+			width: 100%;
+			height: 100%;
+			padding: 0;
+			border: 0;
+			border-radius: 0;
+			background: linear-gradient(180deg, rgba(3, 5, 12, 0.18), rgba(3, 5, 12, 0.58));
+			backdrop-filter: none;
+			-webkit-backdrop-filter: none;
+			font-size: inherit;
+			animation: none;
+		}
+		.ab-screen-open-in {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.4rem;
+			padding: 0.5rem 0.9rem;
+			border-radius: 9999px;
+			background: #28a6ec;
+			color: #fff;
+			font-size: 0.78rem;
+			font-weight: 750;
+			letter-spacing: 0.01em;
+			white-space: nowrap;
+			box-shadow: 0 10px 26px -10px rgba(40, 166, 236, 0.85);
+			animation: ab-open-beat 2.8s ease-in-out infinite;
+		}
+		.ab-screen-open:active .ab-screen-open-in { transform: scale(0.96); }
+		/* the cramped transport and the small play ring both belong to the
+		   full-size player now, not to this poster */
+		.ab-screen :global(.flm:not(.is-cinema) .flm__bar),
+		.ab-screen :global(.flm:not(.is-cinema) .flm__big) { display: none; }
+	}
+	/* while a film is filling the screen, the poster's button is not
+	   wanted anywhere underneath it */
+	:global(html.flm-cinema) .ab-screen-open { display: none; }
+	/* a narrow phone: the label still has to sit inside the frame with
+	   room to breathe rather than touching both bezels */
+	@media (max-width: 420px) {
+		.ab-screen-open-in { padding: 0.44rem 0.72rem; font-size: 0.72rem; gap: 0.32rem; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.ab-screen-open-in { animation: none; }
+	}
+
+	/* ── the contact page on smaller screens ──
+	   Last in the sheet on purpose: a media query carries no weight of
+	   its own and only beats the plain rules above by coming after them. */
+	@media (max-width: 1000px) {
+		.ct-offices { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	}
+	@media (max-width: 620px) {
+		/* The panel these rows live in is beside the copy panel, not under
+		   it, so on a phone each row has about a hundred and fifty pixels
+		   to work with. At desktop sizing that turned the phone number
+		   into "+234 810 8…", which is worse than useless — a number you
+		   cannot read is a number you cannot ring.
+
+		   So the arrow goes (the whole row is the target anyway), the tile
+		   shrinks, and the value is allowed to wrap instead of being cut. */
+		.ct-lines { padding-inline: 0.7rem; gap: 0.4rem; }
+		.ct-line-go { padding: 0.55rem 0.55rem; gap: 0.5rem; }
+		.ct-line-ic { width: 1.8rem; height: 1.8rem; border-radius: 0.55rem; }
+		.ct-line-arrow { display: none; }
+		.ct-line-l { font-size: 0.58rem; letter-spacing: 0.1em; }
+		.ct-line-v {
+			font-size: 0.78rem;
+			white-space: normal;
+			overflow: visible;
+			/* break-word, not anywhere: the only place any of these values
+			   should fold is where the markup says it may */
+			overflow-wrap: break-word;
+			line-height: 1.25;
+		}
+		.ct-line-n { font-size: 0.66rem; line-height: 1.3; }
+		.ct-brief-form { padding: 1rem 0.9rem 1.2rem; border-radius: 1.1rem; }
+		.ct-brief-side { padding: 1rem; border-radius: 1.1rem; }
+		.ct-faq-item summary { font-size: 0.9rem; padding: 0.8rem 0.7rem; }
+		.ct-faq-item p { font-size: 0.85rem; padding: 0 0.7rem 0.9rem; }
+		/* two offices across, still — four short address cards in a single
+		   column is a screen and a half of scrolling for a list */
+		.ct-office { padding: 0.75rem 0.7rem 0.85rem; border-radius: 0.95rem; }
+		.ct-office-where strong { font-size: 0.85rem; }
+		.ct-office-where em { font-size: 0.7rem; }
+		.ct-office-clock { font-size: 0.64rem; padding: 0.16rem 0.35rem; }
+		.ct-office-addr { font-size: 0.74rem; margin-top: 0.55rem; }
+	}
+	@media (max-width: 420px) {
+		.ct-office-top { flex-wrap: wrap; gap: 0.35rem; }
+		.ct-office-clock { order: 3; }
+	}
+</style>
