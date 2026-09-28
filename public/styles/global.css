@@ -2264,3 +2264,20 @@ html.tawk-open div[id^='tawkchat'] {
 @media (prefers-reduced-motion: reduce) {
   .site-header #toggler-show { transition: none; }
 }
+
+/* ── the newsletter status line ───────────────────────────────────────
+   Made by script for the sign-up forms that were never given one, since
+   until now nothing was ever going to answer them. Neutral enough to sit
+   in any of the five worlds; each is free to restyle it. */
+.nl-note {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  min-height: 1.1em;
+  opacity: 0.75;
+}
+.nl-note[data-bad] {
+  color: #ff8b8b;
+  opacity: 1;
+}

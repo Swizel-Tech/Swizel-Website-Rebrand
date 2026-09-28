@@ -1,3 +1,4 @@
+import { checkEmail } from './validate';
 // Campus world: scroll reveals, XP counters, the quest bar fill with
 // popping level nodes, the achievements unlock sequence and the portfolio
 // Show & Tell projector.
@@ -183,9 +184,12 @@ export function initCampusBody() {
 			const address = (input?.value || '').trim();
 			const trap = slip.querySelector<HTMLInputElement>('input[name="bot-field"]');
 			if (trap?.value) return;
-			if (!address || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(address)) {
+			// the shared check, which also catches a missing top-level
+			// domain and says "did you mean @gmail.com?" for the near misses
+			const bad = checkEmail(address);
+			if (bad) {
 				if (note) {
-					note.textContent = 'That email does not look right. Try again?';
+					note.textContent = bad;
 					note.setAttribute('data-bad', '');
 				}
 				input?.focus();
@@ -204,7 +208,7 @@ export function initCampusBody() {
 					reply_to: address,
 					phoneNumber: 'N/A',
 					to_email: 'contact@swizel.co',
-					subject: 'Newsletter sign-up',
+					subject: '[Newsletter] campus journal',
 					message: `New newsletter sign-up from the blog.\n\nEmail: ${address}\nPage: ${window.location.href}`,
 				});
 				if (note) note.textContent = '';

@@ -2,6 +2,7 @@
 // application form. It lives here rather than in the page so that a swup
 // navigation re-binds it, instead of only a hard refresh.
 import toaster from './toast';
+import { checkName, checkEmail, checkPhone, checkMessage, checkWords } from './validate';
 
 type Rule = { name: string; test: (v: string) => boolean; msg: string };
 
@@ -177,8 +178,9 @@ export function initProgramsPage() {
 					email: values.email,
 					reply_to: values.email,
 					phoneNumber: values.phone,
-					to_email: 'contact@swizel.co',
-					subject: `Application: ${values.track} · ${values.fullName}`,
+					// IT and NYSC placements are a careers matter, not a sales one
+					to_email: 'career@swizel.co',
+					subject: `[Application] ${values.track} — ${values.fullName}`,
 						message: `NEW APPLICATION\n\n${message}`,
 					});
 				})
@@ -201,22 +203,24 @@ export function initProgramsPage() {
 
 }
 
-const NAMEISH = /^[A-Za-zÀ-ÿ'’.\-\s]{2,}$/;
+// The application's own copy of these rules has gone: the checks live in
+// one module now, so a name refused on the contact form is refused here
+// too, and for the same stated reason.
 const RULES: Rule[] = [
-		{ name: 'fullName', test: (v) => NAMEISH.test(v) && v.trim().split(/\s+/).length >= 2, msg: 'Please give your full name in letters, first and last.' },
-		{ name: 'email', test: (v) => /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(v), msg: 'That email address does not look right.' },
-		{ name: 'phone', test: (v) => /^[+]?[\d][\d\s()\-]{7,19}$/.test(v) && (v.match(/\d/g) || []).length >= 8, msg: 'Please give a phone number we can actually reach, digits only.' },
-		{ name: 'track', test: (v) => !!v, msg: 'Choose the track you are applying for.' },
-		{ name: 'institution', test: (v) => NAMEISH.test(v) && v.trim().length >= 3, msg: 'Your institution name should be words, not numbers.' },
-		{ name: 'course', test: (v) => NAMEISH.test(v) && v.trim().length >= 3, msg: 'Your course of study should be words, not numbers.' },
-		{ name: 'level', test: (v) => !!v, msg: 'Choose your level.' },
-		{ name: 'discipline', test: (v) => !!v, msg: 'Choose the discipline you want.' },
-		{ name: 'address', test: (v) => v.trim().length >= 8 && /[A-Za-z]/.test(v), msg: 'Please give an address we could find, not just a number.' },
-		{ name: 'startDate', test: (v) => v.trim().length >= 3, msg: 'Tell us when you can start.' },
-		{ name: 'portfolio', test: (v) => !v || /^(https?:\/\/)?[\w.-]+\.[a-z]{2,}(\/\S*)?$/i.test(v), msg: 'That link does not look like a web address.' },
-		{ name: 'built', test: (v) => v.trim().split(/\s+/).length >= 12, msg: 'Tell us a little more about what you built, a dozen words at least.' },
-		{ name: 'goal', test: (v) => v.trim().split(/\s+/).length >= 12, msg: 'Tell us a little more about what you want out of this.' },
-			];
+	{ name: 'fullName', test: (v) => checkName(v, { full: true, label: 'full name' }) === null, msg: 'Please give your full name in letters, first and last.' },
+	{ name: 'email', test: (v) => checkEmail(v) === null, msg: 'That email address does not look right.' },
+	{ name: 'phone', test: (v) => checkPhone(v, true) === null, msg: 'Please give a phone number we can actually reach.' },
+	{ name: 'track', test: (v) => !!v, msg: 'Choose the track you are applying for.' },
+	{ name: 'institution', test: (v) => checkWords(v, { label: 'institution' }) === null, msg: 'Your institution name should be words, not numbers.' },
+	{ name: 'course', test: (v) => checkWords(v, { label: 'course' }) === null, msg: 'Your course of study should be words, not numbers.' },
+	{ name: 'level', test: (v) => !!v, msg: 'Choose your level.' },
+	{ name: 'discipline', test: (v) => !!v, msg: 'Choose the discipline you want.' },
+	{ name: 'address', test: (v) => v.trim().length >= 8 && /[A-Za-z]/.test(v), msg: 'Please give an address we could find, not just a number.' },
+	{ name: 'startDate', test: (v) => v.trim().length >= 3, msg: 'Tell us when you can start.' },
+	{ name: 'portfolio', test: (v) => !v || /^(https?:\/\/)?[\w.-]+\.[a-z]{2,}(\/\S*)?$/i.test(v), msg: 'That link does not look like a web address.' },
+	{ name: 'built', test: (v) => checkMessage(v, { minWords: 12 }) === null, msg: 'Tell us a little more about what you built, a dozen words at least.' },
+	{ name: 'goal', test: (v) => checkMessage(v, { minWords: 12 }) === null, msg: 'Tell us a little more about what you want out of this.' },
+];
 
 // ── typing guards ────────────────────────────────────────────────────
 // The rules above only ran on submit, so you could type a phone number into

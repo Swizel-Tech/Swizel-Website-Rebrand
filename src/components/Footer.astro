@@ -168,9 +168,12 @@ const phones = [
 					<Icon width={17} name="mdi:email-outline" />
 					<a href="mailto:contact@swizel.co">contact@swizel.co</a>
 				</li>
+				{/* Two general addresses side by side only makes a visitor
+				    choose between them. The second one is the careers line
+				    now, which is a different question and a different desk. */}
 				<li>
-					<Icon width={17} name="mdi:email-outline" />
-					<a href="mailto:swizelhq@swizel.co">swizelhq@swizel.co</a>
+					<Icon width={17} name="mdi:briefcase-outline" />
+					<a href="mailto:career@swizel.co?subject=Joining%20Swizel">career@swizel.co</a>
 				</li>
 				{
 					phones.map((p) => (
@@ -461,7 +464,7 @@ const phones = [
 				<strong class="ft-signal-t">One note, <em>when it matters.</em></strong>
 				<p>Only when something ships. No noise, no selling.</p>
 			</div>
-			<form id="footer-newsletter" class="ft-signal-form">
+			<form id="footer-newsletter" class="ft-signal-form" data-source="footer">
 				<span class="ft-signal-field">
 					<Icon width={16} name="mdi:email-outline" />
 					<input

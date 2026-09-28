@@ -236,6 +236,7 @@ const {
 	import { initFilmExpand } from '../scripts/filmExpand';
 	import { initCaseShelf } from '../scripts/caseShelf';
 	import { initBlogBeats } from '../scripts/blogBeats';
+	import { initNewsletter } from '../scripts/newsletter';
 	import { initProgramsNotice } from '../scripts/programsNotice';
 
 	const handleMenuToggle = () => {
@@ -549,7 +550,18 @@ const {
 				const btn = document.getElementById('footer-news-btn') as HTMLButtonElement | null;
 				const input = nf.querySelector<HTMLInputElement>('input[name="email"]');
 				const address = (input?.value || '').trim();
-				if (!address) return;
+				// it only checked that the box was not empty, so "abc" was a
+				// perfectly good address to sign somebody up with
+				const { checkEmail } = await import('../scripts/validate');
+				const bad = checkEmail(address);
+				if (bad) {
+					if (msg) {
+						msg.textContent = bad;
+						msg.setAttribute('data-bad', '');
+					}
+					input?.focus();
+					return;
+				}
 
 				msg?.removeAttribute('data-bad');
 				if (msg) msg.textContent = 'Signing you up…';
@@ -565,7 +577,7 @@ const {
 						reply_to: address,
 						phoneNumber: 'N/A',
 						to_email: 'contact@swizel.co',
-						subject: 'Newsletter sign-up',
+						subject: '[Newsletter] footer',
 						message: `New newsletter sign-up from the footer.\n\nEmail: ${address}\nPage: ${window.location.href}`,
 					});
 					if (msg) msg.textContent = 'You are on the list. Talk soon.';
@@ -735,6 +747,7 @@ const {
 			initFilmExpand,
 			initCaseShelf,
 			initBlogBeats,
+			initNewsletter,
 			handleFooter,
 		].forEach(later);
 

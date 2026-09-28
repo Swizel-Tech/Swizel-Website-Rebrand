@@ -275,14 +275,7 @@ const filterCss = cats
 			</span>
 			<p>One short note when we publish. No noise, no selling.</p>
 		</div>
-		<form
-			class="bl-signal-form"
-			name="newsletter"
-			method="post"
-			data-netlify="true"
-			netlify-honeypot="bot-field"
-		>
-			<input type="hidden" name="form-name" value="newsletter" />
+		<form class="bl-signal-form" name="newsletter" data-newsletter="journal">
 			<p class="bl-hp"><label>Don't fill this out: <input name="bot-field" /></label></p>
 			<span class="bl-signal-field">
 				<Icon width={16} name="mdi:email-outline" />
@@ -293,6 +286,7 @@ const filterCss = cats
 				<Icon width={16} name="mdi:send" />
 			</button>
 		</form>
+		<span class="bl-signal-note" data-newsletter-note role="status"></span>
 	</section>
 
 	<!-- ── the magazine ─────────────────────────────────────
@@ -557,6 +551,8 @@ const filterCss = cats
 	.bl-signal-form button { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.68rem 1.35rem; border-radius: 9999px; border: 0; font-size: 0.9rem; font-weight: 750; color: #06121a; background: linear-gradient(95deg, #8dfeea, #18debe, #28a6ec); cursor: pointer; transition: transform 0.25s ease, filter 0.25s ease; }
 	.bl-signal-form button:hover { transform: translateY(-1px); filter: brightness(1.06); }
 	.bl-hp { position: absolute; left: -9999px; }
+	.bl-signal-note { grid-column: 1 / -1; font-size: 0.78rem; color: var(--bd-muted); min-height: 1.1em; }
+	.bl-signal-note[data-bad] { color: #ff8b8b; }
 
 	/* ── the magazine ── */
 	.bl-mag { display: flex; gap: clamp(1rem, 2.5vw, 1.6rem); align-items: center; max-width: 60rem; margin: 0 auto; padding: clamp(1.1rem, 2.5vw, 1.6rem); border-radius: 1.4rem; background: var(--bd-glass); border: 1px solid var(--bd-glass-border); box-shadow: var(--bd-shadow); transition: transform 0.35s ease, border-color 0.35s ease; }

@@ -3,6 +3,7 @@
 // box writes your opening line, the meter fills as you go, the encouragement
 // changes with it, and handing it in lands on a real desk.
 import toaster from './toast';
+import { checkName, checkEmail, checkPhone, checkMessage } from './validate';
 
 const CHEERS = [
 	'Nothing filled in yet. Start anywhere you like.',
@@ -141,7 +142,6 @@ export function initContactCampus() {
 	root.classList.remove('is-noting');
 
 	// ── handing it in ──
-	const NAMEISH = /^[A-Za-zÀ-ÿ'’.\-\s]{2,}$/;
 	const required = ['name', 'email', 'phoneNumber', 'message'];
 
 	form.addEventListener('submit', async (e) => {
@@ -152,21 +152,19 @@ export function initContactCampus() {
 			f.querySelector('.ck-err')?.remove();
 		});
 
-		const phone = val('phoneNumber');
-		const rules: [string, boolean, string][] = [
-			['name', NAMEISH.test(val('name')) && val('name').length >= 3, 'Your name, in letters please.'],
-			['email', /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(val('email')), 'That email address will not reach you.'],
-			[
-				'phoneNumber',
-				/^[+]?[\d][\d\s()\-]{7,19}$/.test(phone) && (phone.match(/\d/g) || []).length >= 8,
-				'That does not look like a phone number.',
-			],
-			[
-				'message',
-				val('message').split(/\s+/).filter(Boolean).length >= 8,
-				'A sentence or two more, so we can actually be useful.',
-			],
+		// the same checks the rest of the site uses, so a name that is
+		// refused here is refused everywhere and for the same reason
+		const checks: [string, string | null][] = [
+			['name', checkName(val('name'))],
+			['email', checkEmail(val('email'))],
+			['phoneNumber', checkPhone(val('phoneNumber'), true)],
+			['message', checkMessage(val('message'), { minWords: 8 })],
 		];
+		const rules: [string, boolean, string][] = checks.map(([n, msg]) => [
+			n,
+			msg === null,
+			msg ?? '',
+		]);
 
 		let bad: HTMLElement | null = null;
 		let badMsg = '';
@@ -209,7 +207,7 @@ export function initContactCampus() {
 				reply_to: val('email'),
 				phoneNumber: phone || 'N/A',
 				to_email: 'contact@swizel.co',
-				subject: `New enquiry from ${val('name')}`,
+				subject: `[Contact] ${val('name')} — campus sheet`,
 				message: `NEW ENQUIRY (campus contact sheet)\n\nName: ${val('name')}\nEmail: ${val('email')}\nPhone: ${phone || 'Not given'}\nPage: ${window.location.href}\n\n${val('message')}`,
 			});
 			form.reset();

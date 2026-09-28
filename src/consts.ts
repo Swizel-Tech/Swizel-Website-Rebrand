@@ -457,7 +457,7 @@ export const faq = [
   {
     question: "How do I join the swizel team?",
     answer:
-      "We are always looking for bright and innovative minds at swizel, please contact us at info@swizel.co for information on vacancies and internship opportunities.",
+      "We are always looking for bright and innovative minds at swizel, please write to career@swizel.co for vacancies and internship opportunities.",
   },
   {
     question: "I want to learn to code, how do I start?",
