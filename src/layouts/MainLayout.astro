@@ -55,6 +55,14 @@ const {
 		// We drive Tawk from our own compact icon launcher (#swizel-chat-fab) so the
 		// chat is a clean bubble that never covers content. Hide Tawk's own widget on
 		// load, and re-hide it whenever the chat is minimised so only our FAB shows.
+		// onLoad fires after Tawk has already drawn its own round launcher,
+		// so hiding it there means every refresh showed somebody else's
+		// green bubble for a moment and then took it away — the flash of an
+		// old design that isn't ours. onBeforeLoad runs first, and the
+		// stylesheet keeps the launcher down even if this never runs at all.
+		Tawk_API.onBeforeLoad = function () {
+			if (Tawk_API.hideWidget) Tawk_API.hideWidget();
+		};
 		Tawk_API.onLoad = function () {
 			if (Tawk_API.hideWidget) Tawk_API.hideWidget();
 		};

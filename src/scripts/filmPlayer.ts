@@ -461,10 +461,114 @@ export function initFilmPlayers(root: ParentNode = document) {
 			paint();
 		});
 
+		// ── full screen, and what to do when there is no such thing ──
+		//
+		// iOS Safari has no Fullscreen API for an ordinary element: only a
+		// <video> can go full screen, and a YouTube film here is an iframe.
+		// So on an iPhone the full-screen button was calling a method that
+		// does not exist and silently doing nothing — which is exactly what
+		// the "tap to expand" pill on the phone-sized films was doing too.
+		//
+		// Cinema mode is the answer for those devices: the player itself is
+		// thrown over the viewport, black surround, its own controls at
+		// full size, a close button and the escape key. No reparenting, so
+		// the iframe is never reloaded and the film does not restart.
+		//
+		// The catch is that position:fixed is measured against the nearest
+		// ancestor carrying a transform, a filter or a backdrop-filter, and
+		// the panels these films sit in animate in on a transform that is
+		// left behind as matrix(1,0,0,1,0,0) — not "none". So those
+		// properties are lifted off the ancestors while cinema is open and
+		// put back exactly as they were on the way out.
+		const closeBtn = q<HTMLButtonElement>('[data-flm-close]');
+		const TRAPPED = 'data-flm-trapped';
+		let freed: HTMLElement[] = [];
+
+		const freeAncestors = () => {
+			freed = [];
+			let n: HTMLElement | null = film.parentElement;
+			while (n && n !== document.body && n !== document.documentElement) {
+				const c = getComputedStyle(n);
+				if (
+					c.transform !== 'none' ||
+					c.filter !== 'none' ||
+					c.backdropFilter !== 'none' ||
+					c.perspective !== 'none' ||
+					c.contain.includes('paint') ||
+					// A stacking context is the other half of the problem: the
+					// page body carries `isolation: isolate`, so z-index 9000
+					// only ever meant "on top of everything inside the body" —
+					// the header sat over the film regardless of the number.
+					c.isolation === 'isolate' ||
+					c.mixBlendMode !== 'normal' ||
+					(c.position !== 'static' && c.zIndex !== 'auto')
+				) {
+					n.setAttribute(TRAPPED, n.getAttribute('style') ?? '');
+					// The transition has to go first. These panels carry
+					// `transition: transform .7s`, so simply writing "none"
+					// starts a seven-hundred-millisecond animation towards it
+					// — and every frame of that animation is still a computed
+					// transform, which still traps the fixed player. The film
+					// would sit in its little box for most of a second and
+					// then jump out. Killing the transition makes it instant.
+					n.style.transition = 'none';
+					n.style.transform = 'none';
+					n.style.filter = 'none';
+					n.style.backdropFilter = 'none';
+					n.style.perspective = 'none';
+					n.style.contain = 'none';
+					n.style.isolation = 'auto';
+					n.style.mixBlendMode = 'normal';
+					n.style.zIndex = 'auto';
+					freed.push(n);
+				}
+				n = n.parentElement;
+			}
+		};
+		const restoreAncestors = () => {
+			freed.forEach((n) => {
+				const was = n.getAttribute(TRAPPED) ?? '';
+				n.removeAttribute(TRAPPED);
+				if (was) n.setAttribute('style', was);
+				else n.removeAttribute('style');
+			});
+			freed = [];
+		};
+
+		const inCinema = () => film.classList.contains('is-cinema');
+		const cinema = (on: boolean) => {
+			if (on === inCinema()) return;
+			if (on) {
+				freeAncestors();
+				film.classList.add('is-cinema');
+				document.documentElement.classList.add('flm-cinema');
+				closeBtn?.removeAttribute('hidden');
+			} else {
+				film.classList.remove('is-cinema');
+				document.documentElement.classList.remove('flm-cinema');
+				closeBtn?.setAttribute('hidden', '');
+				restoreAncestors();
+			}
+			// the cover fit is measured, so it has to be measured again
+			window.dispatchEvent(new Event('resize'));
+		};
+
 		fullBtn?.addEventListener('click', () => {
 			const target = (screen as HTMLElement) || film;
-			if (document.fullscreenElement) void document.exitFullscreen();
-			else void target.requestFullscreen?.().catch(() => {});
+			if (inCinema()) return cinema(false);
+			if (document.fullscreenElement) return void document.exitFullscreen();
+			// Only ask for real full screen where the browser says it will
+			// give it; otherwise the promise rejects (or the method is
+			// simply absent) and the button appears broken.
+			if (document.fullscreenEnabled && typeof target.requestFullscreen === 'function') {
+				void target.requestFullscreen().catch(() => cinema(true));
+			} else {
+				cinema(true);
+			}
+		});
+		closeBtn?.addEventListener('click', () => cinema(false));
+		document.addEventListener('keydown', (e) => {
+			if (e.key === 'Escape' && inCinema()) cinema(false);
 		});
 
 		// nothing plays off-screen, and nothing burns a frame loop there

@@ -362,8 +362,10 @@ const currentYear = new Date().getFullYear();
 					class="ab-screen-film"
 				/>
 				<button class="ab-screen-open" type="button" data-film-expand-btn>
-					<Icon width={15} name="mdi:arrow-expand-all" />
-					Tap to expand
+					<span class="ab-screen-open-in">
+						<Icon width={15} name="mdi:arrow-expand-all" />
+						<span>Tap to expand</span>
+					</span>
 				</button>
 				<figcaption class="ab-screen-badge">
 					<Icon width={15} name="mdi:play-circle-outline" />
@@ -4523,5 +4525,72 @@ const currentYear = new Date().getFullYear();
 	}
 	@media (prefers-reduced-motion: reduce) {
 		.ab-screen-open { animation: none; }
+	}
+
+	/* ── the expand control, on a phone ──
+	   Last in the sheet on purpose: a media query carries no weight of its
+	   own and only beats the plain rules above by coming after them.
+
+	   A small dark pill in the corner of a film was the wrong answer at
+	   this size. It sat on top of whatever the film happened to be showing
+	   — often white type — so half the time it could not be read, and the
+	   player's own transport underneath it was a row of three-millimetre
+	   buttons that nobody can hit anyway.
+
+	   So at this width the frame stops pretending to be a player and goes
+	   back to being a poster: the whole picture is the button, it carries
+	   one unmissable label, and everything else happens in cinema mode
+	   where the controls are full size. */
+	@media (max-width: 720px) {
+		.ab-screen-open {
+			position: absolute;
+			inset: 0;
+			top: 0;
+			right: 0;
+			z-index: 6;
+			display: grid;
+			place-items: center;
+			width: 100%;
+			height: 100%;
+			padding: 0;
+			border: 0;
+			border-radius: 0;
+			background: linear-gradient(180deg, rgba(3, 5, 12, 0.18), rgba(3, 5, 12, 0.58));
+			backdrop-filter: none;
+			-webkit-backdrop-filter: none;
+			font-size: inherit;
+			animation: none;
+		}
+		.ab-screen-open-in {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.4rem;
+			padding: 0.5rem 0.9rem;
+			border-radius: 9999px;
+			background: #28a6ec;
+			color: #fff;
+			font-size: 0.78rem;
+			font-weight: 750;
+			letter-spacing: 0.01em;
+			white-space: nowrap;
+			box-shadow: 0 10px 26px -10px rgba(40, 166, 236, 0.85);
+			animation: ab-open-beat 2.8s ease-in-out infinite;
+		}
+		.ab-screen-open:active .ab-screen-open-in { transform: scale(0.96); }
+		/* the cramped transport and the small play ring both belong to the
+		   full-size player now, not to this poster */
+		.ab-screen :global(.flm:not(.is-cinema) .flm__bar),
+		.ab-screen :global(.flm:not(.is-cinema) .flm__big) { display: none; }
+	}
+	/* while a film is filling the screen, the poster's button is not
+	   wanted anywhere underneath it */
+	:global(html.flm-cinema) .ab-screen-open { display: none; }
+	/* a narrow phone: the label still has to sit inside the frame with
+	   room to breathe rather than touching both bezels */
+	@media (max-width: 420px) {
+		.ab-screen-open-in { padding: 0.44rem 0.72rem; font-size: 0.72rem; gap: 0.32rem; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.ab-screen-open-in { animation: none; }
 	}
 </style>

@@ -364,6 +364,12 @@ const phones = [
 			    owns an object here — a pinboard, a terminal, a projector —
 			    and boardroom was falling through to the house card list. */}
 			<div class="ft-board">
+				<span class="ft-board-edge" aria-hidden="true"></span>
+				<div class="ft-board-intro">
+					<span class="ft-board-kick"><i aria-hidden="true"></i>Follow the journey</span>
+					<strong class="ft-board-h">Stay connected <em>with us.</em></strong>
+					<p>Updates, the build in progress, and the latest from Swizel.</p>
+				</div>
 				<div class="ft-board-head">
 					<span>Channel</span>
 					<span>Handle</span>
@@ -1609,8 +1615,9 @@ const phones = [
 	:global(html[data-view='boardroom']) .ft-board,
 	:global(html:not([data-view])) .ft-board { display: block; }
 	.ft-board {
+		position: relative;
 		border: 1px solid rgba(40, 166, 236, 0.22);
-		border-radius: 0.85rem;
+		border-radius: 1rem;
 		overflow: hidden;
 		background: linear-gradient(180deg, rgba(8, 14, 26, 0.55), rgba(4, 7, 15, 0.7));
 	}
@@ -1618,6 +1625,76 @@ const phones = [
 		border-color: rgba(30, 64, 175, 0.16);
 		background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.6));
 	}
+
+	/* ── the card says what it is before it lists anything ──
+	   A bare table of handles asks the visitor to work out why it is
+	   there. A line of light, a kicker, a short headline and one sentence
+	   cost three rows of space and turn the table into an invitation.
+	   Deliberately small: the newsletter band beside it earns its calm by
+	   not shouting, and these two have to read as a pair. */
+	.ft-board-edge {
+		position: absolute;
+		top: -35%;
+		right: -18%;
+		width: 62%;
+		height: 120%;
+		pointer-events: none;
+		background: radial-gradient(
+			closest-side,
+			rgba(40, 166, 236, 0.5),
+			rgba(40, 166, 236, 0.12) 55%,
+			transparent 75%
+		);
+		opacity: 0.55;
+		filter: blur(14px);
+	}
+	:global(html:not(.dark)) .ft-board-edge { opacity: 0.3; }
+	.ft-board-intro {
+		position: relative;
+		padding: 0.95rem 0.95rem 0.8rem;
+	}
+	.ft-board-kick {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 0.6rem;
+		font-weight: 800;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+		color: var(--ft-faint);
+	}
+	/* the short rule the old card opened on, kept because it does the
+	   work of a heading without being one */
+	.ft-board-kick i {
+		display: block;
+		width: 1.35rem;
+		height: 2px;
+		border-radius: 2px;
+		background: #28a6ec;
+	}
+	.ft-board-h {
+		display: block;
+		margin: 0.45rem 0 0.3rem;
+		font-size: 1.16rem;
+		font-weight: 700;
+		line-height: 1.15;
+		letter-spacing: -0.02em;
+		color: var(--ft-ink);
+	}
+	.ft-board-h em { font-style: normal; color: #28a6ec; }
+	:global(html:not(.dark)) .ft-board-h em { color: #1e40af; }
+	.ft-board-intro p {
+		margin: 0;
+		font-size: 0.78rem;
+		line-height: 1.45;
+		color: var(--ft-faint);
+		max-width: 22rem;
+	}
+	/* the column already says "Follow the build" above every other world's
+	   object; here the card says it better, so the heading would be the
+	   same words twice */
+	:global(html[data-view='boardroom']) .ft-social-col > .ft-h,
+	:global(html:not([data-view])) .ft-social-col > .ft-h { display: none; }
 	.ft-board-head {
 		display: flex;
 		justify-content: space-between;

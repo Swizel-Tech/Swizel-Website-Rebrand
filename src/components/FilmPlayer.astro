@@ -114,6 +114,14 @@ const rates = [0.5, 1, 1.25, 1.5, 2];
 
 		<span class="flm__spin" aria-hidden="true" data-flm-spin />
 
+		<!-- Only ever seen in cinema mode: the way back out. iOS will not
+		     put a div in real full screen, so on a phone "full screen"
+		     means this player is thrown over the viewport instead, and a
+		     thrown-over player with no visible way out is a trap. -->
+		<button class="flm__close" type="button" data-flm-close aria-label="Close full screen" hidden>
+			<Icon width={20} name="mdi:close" />
+		</button>
+
 		<!-- ── the transport, on the glass ── -->
 		<div class="flm__bar" data-flm-bar>
 			<div
@@ -556,4 +564,98 @@ const rates = [0.5, 1, 1.25, 1.5, 2];
 	@media (prefers-reduced-motion: reduce) {
 		.flm__spin { animation: none !important; }
 	}
+
+	/* ══ cinema mode ══════════════════════════════════════════════════
+	   What "full screen" means on a device that will not give an element
+	   real full screen. The player is thrown over the viewport, the room
+	   goes black around it, and the controls are at their proper size for
+	   the first time — which on a phone is the whole point, because the
+	   inline bar on a card a third of a screen wide is unusable.
+
+	   Last in the sheet so it beats the sizing rules above it without
+	   having to out-specify them. */
+	/* !important on the box: the pages that host a film pin it to their own
+	   panel with `.ab-screen .flm { width: 100%; height: 100% }`, which is
+	   the same weight as this rule, so which one wins comes down to which
+	   stylesheet the bundler happens to put last. A mode that fills the
+	   screen cannot be decided by sheet order. */
+	.flm.is-cinema {
+		position: fixed !important;
+		inset: 0 !important;
+		z-index: 9000;
+		margin: 0;
+		display: grid;
+		place-items: center;
+		gap: 0;
+		width: 100vw !important;
+		height: 100dvh !important;
+		max-width: none !important;
+		max-height: none !important;
+		padding: env(safe-area-inset-top) env(safe-area-inset-right)
+			env(safe-area-inset-bottom) env(safe-area-inset-left);
+		background: #000;
+		animation: flm-cinema-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+	}
+	@keyframes flm-cinema-in {
+		from { opacity: 0; }
+		to { opacity: 1; }
+	}
+	.flm.is-cinema .flm__screen {
+		width: 100% !important;
+		height: auto !important;
+		max-height: 100% !important;
+		aspect-ratio: 16 / 9 !important;
+		border: 0;
+		border-radius: 0;
+		box-shadow: none;
+		background: #000;
+	}
+	/* the cover crop exists to fill a short card; over a whole screen it
+	   would throw away the sides of the picture instead */
+	.flm.is-cinema :global(.flm__yt),
+	.flm.is-cinema .flm__vid,
+	.flm.is-cinema .flm__poster {
+		width: 100% !important;
+		height: 100% !important;
+		top: 0 !important;
+		left: 0 !important;
+		transform: none !important;
+		object-fit: contain;
+	}
+	.flm.is-cinema .flm__cap,
+	.flm.is-cinema .flm__tag { display: none; }
+	/* full-size transport, and never hidden behind a hover it cannot get */
+	.flm.is-cinema .flm__bar {
+		opacity: 1;
+		transform: none;
+		padding: 0.7rem 0.9rem calc(0.7rem + env(safe-area-inset-bottom));
+	}
+	.flm.is-cinema .flm__b { width: 2.5rem; height: 2.5rem; }
+	.flm.is-cinema .flm__t { font-size: 0.78rem; min-width: 2.6rem; }
+	.flm.is-cinema .flm__vol-range,
+	.flm.is-cinema .flm__b--rate { display: revert; }
+	.flm__close {
+		position: absolute;
+		top: max(0.8rem, env(safe-area-inset-top));
+		right: max(0.8rem, env(safe-area-inset-right));
+		z-index: 3;
+		display: grid;
+		place-items: center;
+		width: 2.6rem;
+		height: 2.6rem;
+		border-radius: 9999px;
+		color: #fff;
+		background: rgba(10, 12, 20, 0.66);
+		border: 1px solid rgba(255, 255, 255, 0.22);
+		cursor: pointer;
+		transition: background 0.2s ease, transform 0.2s ease;
+	}
+	.flm__close:hover { background: rgba(10, 12, 20, 0.88); transform: scale(1.05); }
+	.flm__close[hidden] { display: none; }
+</style>
+
+<style is:global>
+	/* nothing scrolls behind a film that is filling the screen */
+	html.flm-cinema,
+	html.flm-cinema body { overflow: hidden; }
 </style>

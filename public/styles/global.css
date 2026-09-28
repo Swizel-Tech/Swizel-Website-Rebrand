@@ -2187,3 +2187,22 @@ html.perf-lite .shuf__ring-f {
   .is-mutehint,
   .is-mutehint::after { animation: none; }
 }
+
+/* ── Tawk's own launcher never shows ──────────────────────────────────
+   The live chat is opened from our own bubble (#swizel-chat-fab), and
+   Tawk is told to hide itself as it loads. But a script that hides
+   something can only run once the something exists, so on every refresh
+   Tawk's default round launcher was painted first and pulled a moment
+   later: a flash of a chat button that isn't ours, in the corner where
+   ours is about to appear.
+
+   These rules are in the stylesheet, so they apply the frame the widget
+   is inserted and there is nothing to flash. Only the *minified*
+   launcher is named here — never the maximized panel, which is the
+   actual chat and still has to open when somebody asks for it. */
+#tawkchat-minified-container,
+#tawkchat-minified-wrapper,
+#tawkchat-minified-iframe-element,
+.tawk-min-container {
+  display: none !important;
+}
