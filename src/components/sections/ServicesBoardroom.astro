@@ -5,6 +5,15 @@
 // and the themed cursor; locked to boardroom blue. Self-contained .bd-* styles.
 import { Icon } from 'astro-icon/components';
 import { disciplines } from '../../data/disciplines';
+import FilmPlayer from '../FilmPlayer.astro';
+import DoWall from './DoWall.astro';
+
+// Three figures for the floor of the opening panel.
+const glance = [
+	{ k: 'Disciplines', s: 'Fields', v: '6' },
+	{ k: 'Products shipped', s: 'Shipped', v: '65+' },
+	{ k: 'On time', s: 'On time', v: '98%' },
+];
 // Each discipline links to its own detail page (/services/<slug>).
 
 const process = [
@@ -25,11 +34,17 @@ const stack = [
 	{ group: 'Quality & tooling', icon: 'mdi:check-decagram-outline', tools: ['Git', 'Jest', 'Playwright', 'Storybook', 'Sentry'] },
 ];
 
+// The same band the home page and /about carry: an icon, the figure, its
+// label, and under it the shape that figure actually made.
 const stats = [
-	{ to: 65, suffix: '+', label: 'Products shipped' },
-	{ to: 98, suffix: '%', label: 'On-time delivery' },
-	{ to: 7, suffix: '+', label: 'Years building' },
-	{ to: 5, decimals: 1, suffix: '', label: 'Average rating' },
+	{ to: 65, suffix: '+', label: 'Products shipped', short: 'Shipped', icon: 'mdi:cube-outline',
+	  spark: 'M0 6.4 L17 5.6 L33 4.9 L50 3.7 L67 2.7 L83 1.4 L100 0.6' },
+	{ to: 98, suffix: '%', label: 'On-time delivery', short: 'On time', icon: 'mdi:clock-check-outline',
+	  spark: 'M0 5.8 L17 5.2 L33 5.4 L50 3.6 L67 3 L83 1.8 L100 1.2' },
+	{ to: 7, suffix: '+', label: 'Years building', short: 'Years', icon: 'mdi:calendar-blank-outline',
+	  spark: 'M0 6.4 L17 5.6 L33 4.7 L50 3.9 L67 3.1 L83 2.3 L100 1.4' },
+	{ to: 5, decimals: 1, suffix: '', label: 'Average rating', short: 'Rating', icon: 'mdi:star-outline',
+	  spark: 'M0 1.4 L17 1.2 L33 1.4 L50 1 L67 1.4 L83 1.2 L100 1.2' },
 ];
 
 const sectors = [
@@ -41,88 +56,78 @@ const sectors = [
 
 <div class="bdbody bd-services view-body view-body-boardroom">
 	<!-- ── Hero — split: copy + an animated disciplines panel ── -->
-	<header class="svc-hero bd-reveal">
-		<span class="svc-hero-aurora" aria-hidden="true"></span>
-		<div class="svc-hero-grid">
-			<div class="svc-hero-copy">
-				<span class="bd-kicker">What we do</span>
-				<h1 class="bd-display svc-h1">
+	<!-- ── the opening: two panels, the words beside the film ──
+	     The same shape the home page and /about open on: one pale panel
+	     carrying the words with the figures on its floor, one deep panel
+	     carrying the film with its own words on it. The animated tile
+	     panel it replaces was six links dressed as a product shot.
+	     ────────────────────────────────────────────────────── -->
+	<div class="ab-open">
+		<article class="ab-open-panel is-pale bd-reveal">
+			<div class="ab-open-copy">
+				<span class="ab-kick">What we do</span>
+				<h1 class="ab-h1">
 					One team for the
-					<span class="bd-grad">whole journey.</span>
+					<em>whole journey.</em>
 				</h1>
-				<p class="bd-sub svc-hero-sub">
-					Design, build, market and maintain, every discipline you need to
-					launch and grow, under one roof.
+				<p class="ab-lede">
+					Design, build, market and maintain. Every discipline you need to
+					launch and grow, under one roof and on one contract.
 				</p>
-				<div class="bd-links svc-hero-links">
-					<a href="/contact" class="bd-pill">Start a project</a>
-					<a href="#svc-disciplines" class="bd-link">
+				<p class="ab-lede ab-lede--sm">
+					Design, build, market and maintain. One roof, one contract.
+				</p>
+				<div class="ab-acts">
+					<a href="/contact" class="ab-pill">Start a project</a>
+					<a href="#bd-do" class="ab-more">
 						Explore what we do
-						<Icon width={15} name="mdi:chevron-down" />
+						<Icon width={14} name="mdi:chevron-right" />
 					</a>
 				</div>
 			</div>
-			<div class="svc-hero-panel">
-				<span class="svc-hero-panel-top">
-					<span class="svc-hero-panel-dot" aria-hidden="true"></span>
-					Six disciplines · one contract
-				</span>
-				<div class="svc-hero-tiles">
-					{
-						disciplines.map((d, i) => (
-							<a href={`/services/${d.slug}`} class="svc-hero-tile" style={`--c:${d.color}; --i:${i}`} data-cursor={d.cursor} aria-label={d.title}>
-								<span class="svc-hero-tile-ic"><Icon width={20} name={d.icon} /></span>
-								<span class="svc-hero-tile-name">{d.title}</span>
-								<Icon class="svc-hero-tile-go" width={15} name="mdi:arrow-right" />
-							</a>
-						))
-					}
-				</div>
-			</div>
-		</div>
-	</header>
+			<ul class="ab-glance" aria-label="Swizel at a glance">
+				{
+					glance.map((g) => (
+						<li>
+							<strong>{g.v}</strong>
+							<span>{g.k}</span>
+							<span class="ab-glance-s">{g.s}</span>
+						</li>
+					))
+				}
+			</ul>
+		</article>
 
-	<!-- ── The disciplines — doors into each world ─────────── -->
-	<section class="bd-head bd-reveal" id="svc-disciplines">
-		<h2 class="bd-h bd-h--center">Six disciplines. One contract.</h2>
-		<p class="bd-p bd-p--center">
-			No hiring, no hand-offs, no finger-pointing, every capability you
-			need lives in the same room.
-		</p>
-	</section>
-	<div class="svc-grid">
-		{
-			disciplines.map((d) => (
-				<a
-					href={`/services/${d.slug}`}
-					class="svc-card bd-reveal"
-					data-cursor={d.cursor}
-					style={`--c:${d.color}`}
-				>
-					<span class="svc-card-glow" aria-hidden="true" />
-					<span class="svc-card-n">{d.n}</span>
-					<span class="svc-card-ic">
-						<Icon width={30} name={d.icon} />
-					</span>
-					<h3 class="svc-card-title">{d.title}</h3>
-					<p class="svc-card-tag">{d.tagline}</p>
-					<p class="svc-card-desc">{d.desc}</p>
-					<ul class="svc-card-items">
-						{d.items.map((it) => (
-							<li>
-								<Icon width={14} name="mdi:check" />
-								{it}
-							</li>
-						))}
-					</ul>
-					<span class="svc-card-go">
-						Explore {d.title}
-						<Icon width={16} name="mdi:arrow-right" />
-					</span>
-				</a>
-			))
-		}
+		<article class="ab-open-panel is-deep bd-reveal" data-cursor="video">
+			<div class="ab-open-copy">
+				<span class="ab-kick">Behind the code</span>
+				<h2 class="ab-h2 ab-h2--panel">
+					How a Swizel product
+					<span>gets built.</span>
+				</h2>
+				<p class="ab-lede">
+					Designed, engineered and shipped in tight, visible loops.
+				</p>
+			</div>
+			<figure class="ab-screen">
+				<FilmPlayer
+					videoId="R2jdjZwv-ZE"
+					label="Behind the code: how Swizel builds digital products"
+					fallback="/images/builder/at-the-keys.jpg"
+					cover
+				/>
+				<figcaption class="ab-screen-badge">
+					<Icon width={15} name="mdi:play-circle-outline" />
+					<span>Swizel</span>
+					<em>behind the code</em>
+				</figcaption>
+			</figure>
+		</article>
 	</div>
+
+	<!-- Six disciplines — the same wall the home page and /about carry,
+	     each panel a door into its own /services page -->
+	<DoWall />
 
 	<!-- ── How we work — the journey ───────────────────────── -->
 	<section class="svc-journey bd-reveal" data-cursor="branch">
@@ -149,51 +154,65 @@ const sectors = [
 	</section>
 
 	<!-- ── Showreel — copy paired with the video placeholder ── -->
+	<!-- ── the build reel ── -->
 	<section class="svc-reel bd-reveal" data-cursor="play">
 		<div class="svc-reel-grid">
 			<div class="svc-reel-copy">
 				<span class="bd-kicker">Inside the studio</span>
 				<h2 class="bd-h">See how we build.</h2>
-				<p class="bd-p">A two-minute look from first sketch to launch day, the messy, honest middle included.</p>
+				<p class="bd-p">
+					From first sketch to launch day, the messy, honest middle
+					included.
+				</p>
 				<ol class="svc-reel-chapters">
 					<li><span>01</span> Discovery &amp; sketches</li>
 					<li><span>02</span> Design &amp; build loops</li>
 					<li><span>03</span> Launch day</li>
 				</ol>
-				<span class="svc-reel-meta"><Icon width={15} name="mdi:clock-outline" /> 2:00 · studio showreel</span>
 			</div>
-			<div class="svc-reel-frame">
-				<span class="svc-reel-sheen" aria-hidden="true"></span>
-				<span class="svc-reel-gridlines" aria-hidden="true"></span>
-				<button type="button" class="svc-reel-play" aria-label="Play showreel">
-					<Icon width={32} name="mdi:play" />
-				</button>
-				<span class="svc-reel-label">Video placeholder</span>
-			</div>
+			<figure class="svc-reel-stage">
+				<FilmPlayer
+					src="/videos/how-we-build.mp4"
+					poster="/images/how-we-build-poster.jpg"
+					label="See how we build"
+					tag="the build reel"
+				/>
+			</figure>
 		</div>
 	</section>
 
-	<!-- ── Numbers ─────────────────────────────────────────── -->
-	<div class="bd-grid">
-		<section class="bd-tile bd-tile--full bd-tile--inverse bd-reveal" id="svc-numbers" data-cursor="chart">
-			<div class="bd-tile-copy">
-				<h2 class="bd-h">Measured the only way that matters.</h2>
-				<p class="bd-p">Seven years of shipping for ambitious businesses.</p>
-			</div>
-			<ul class="bd-numbers">
-				{
-					stats.map((n) => (
-						<li class="bd-number">
-							<strong data-count={n.to} data-suffix={n.suffix} data-decimals={n.decimals || 0}>
-								0{n.suffix}
-							</strong>
-							<span>{n.label}</span>
-						</li>
-					))
-				}
-			</ul>
-		</section>
-	</div>
+	<!-- ── Numbers — the band both other pages carry ───────── -->
+	<section
+		class="bd-tile bd-tile--full bd-tile--inverse bd-band bd-reveal"
+		id="bd-numbers"
+		data-cursor="chart"
+	>
+		<div class="bd-tile-copy">
+			<h2 class="bd-h">
+				Measured the only way that <em>matters.</em>
+			</h2>
+			<p class="bd-p">Seven years of shipping for ambitious businesses.</p>
+		</div>
+		<ul class="bd-numbers">
+			{
+				stats.map((n, i) => (
+					<li class="bd-number" style={`--n:${i}`}>
+						<span class="bd-number-ic" aria-hidden="true">
+							<Icon width={20} name={n.icon} />
+						</span>
+						<strong data-count={n.to} data-suffix={n.suffix} data-decimals={n.decimals || 0}>
+							0{n.suffix}
+						</strong>
+						<span class="bd-number-l">{n.label}</span>
+						<span class="bd-number-s">{n.short}</span>
+						<svg class="bd-trend" viewBox="0 0 100 7" preserveAspectRatio="none" aria-hidden="true">
+							<path class="bd-trend-line" d={n.spark} />
+						</svg>
+					</li>
+				))
+			}
+		</ul>
+	</section>
 
 	<!-- ── The stack — a static, grouped capability grid ────── -->
 	<section class="svc-stack bd-reveal" data-cursor="layers">
@@ -221,43 +240,83 @@ const sectors = [
 	</section>
 
 	<!-- ── Sectors ─────────────────────────────────────────── -->
-	<section class="bd-sectors bd-reveal" data-cursor="repo">
-		<h2 class="bd-h bd-h--center">At home in your industry.</h2>
-		<div class="bd-marquee" aria-hidden="true">
+	<!-- Sectors — endless drift -->
+	<section class="bd-sectors bd-reveal">
+		<h3 class="bd-h bd-h--center">At home in your industry.</h3>
+		{/* two rails, drifting against each other: one line of industries
+		    reads as a list, two read as a place with traffic in it */}
+		<div class="bd-marquee bd-marquee--a" aria-hidden="true">
 			<div class="bd-marquee-track bd-marquee-track--sectors">
 				{
 					[0, 1].map(() =>
-						sectors.map((s) => <span class="bd-sector">{s}</span>)
+						sectors.map((s, i) => (
+							<span class:list={['bd-sector', { 'is-hot': i % 3 === 1 }]}>
+								<i class="bd-sector-dot" />
+								{s}
+							</span>
+						))
+					)
+				}
+			</div>
+		</div>
+		<div class="bd-marquee bd-marquee--b" aria-hidden="true">
+			<div class="bd-marquee-track bd-marquee-track--sectors bd-marquee-track--back">
+				{
+					[0, 1].map(() =>
+						[...sectors].reverse().map((s, i) => (
+							<span class:list={['bd-sector', 'bd-sector--sm', { 'is-hot': i % 4 === 2 }]}>
+								<i class="bd-sector-dot" />
+								{s}
+							</span>
+						))
 					)
 				}
 			</div>
 		</div>
 	</section>
 
-	<!-- ── CTA ─────────────────────────────────────────────── -->
+	<!-- Final CTA — the desk on the right, the ask on the left.
+	     The type is set live rather than baked into the picture, so it
+	     reflows, it is readable to a crawler, and it can be changed
+	     without opening an image editor. -->
 	<section class="bd-grid">
 		<div class="bd-tile bd-tile--full bd-tile--cta bd-reveal" data-cursor="phone">
-			<h2 class="bd-display bd-display--cta">Ready to build?</h2>
-			<p class="bd-sub">
-				Tell us what you have in mind. You'll have a reply within one
-				business day.
-			</p>
-			<div class="bd-links bd-links--center">
-				<a href="/contact" class="bd-pill bd-pill--light">Start your project</a>
-				<a href="/portfolio" class="bd-link bd-link--invert">
-					See the work
-					<Icon width={15} name="mdi:chevron-right" />
-				</a>
+			<div class="bd-cta-copy">
+				<span class="bd-cta-kick"><i aria-hidden="true" />Let's connect</span>
+				<h3 class="bd-display bd-display--cta">
+					Tell us what you need.
+					<em>We'll build it.</em>
+				</h3>
+				<div class="bd-cta-act">
+					<a href="/contact" class="bd-cta-go">
+						<Icon width={18} name="mdi:arrow-right" />
+						<span class="bd-cta-go-l">Start your project</span>
+						<span class="bd-cta-go-s">Start a project</span>
+					</a>
+					<a href="tel:+2348100204570" class="bd-call">
+						<span class="bd-call-hint">or call us now</span>
+						<span class="bd-call-num">
+							<Icon width={22} name="mdi:phone" />
+							+234 810 020 4570
+						</span>
+					</a>
+				</div>
 			</div>
-			<a href="tel:+2348100204570" class="bd-call">
-				<span class="bd-call-hint">or call us now</span>
-				<span class="bd-call-num">
-					<Icon width={30} name="mdi:phone" />
-					+234 810 020 4570
-				</span>
-			</a>
+			<figure class="bd-cta-shot">
+				<img
+					src="/images/cta/talk-business.jpg"
+					alt="A Swizel desk at the end of the day"
+					loading="lazy"
+					decoding="async"
+				/>
+				<figcaption class="bd-cta-stamp">
+					Bigger ideas.
+					<strong>Real results.</strong>
+				</figcaption>
+			</figure>
 		</div>
 	</section>
+
 </div>
 
 <style>
@@ -550,5 +609,918 @@ const sectors = [
 		.svc-hero-tile, .svc-hero-panel-dot, .svc-reel-play::after { animation: none; }
 		.bd-marquee { overflow-x: auto; }
 		.svc-card:hover, .svc-step:hover, .svc-hero-tile:hover { transform: none; }
+	}
+
+	/* ═══ shared with the home page and /about ═════════════════════════
+	   The opening two-up, the numbers band, the sectors rails and the
+	   closing tile are the same objects on all three pages. Lifted rather
+	   than re-written, and kept at the end of the sheet where source order
+	   settles them against the older .svc- rules above.
+	   ══════════════════════════════════════════════════════════════════ */
+	/* ── the numbers band ──────────────────────────────────────────────
+	   It spans the page rather than sitting inside the 88rem grid: five
+	   figures deserve the width, and the band is what separates the story
+	   above it from the proof below. The body's own side padding is given
+	   back with a negative margin, which is exact and, unlike 100vw,
+	   cannot open a scrollbar of its own. */
+	.bd-band {
+		position: relative;
+		isolation: isolate;
+		overflow: hidden;
+		max-width: none;
+		width: auto;
+		margin-inline: calc(-1 * clamp(1rem, 3vw, 2rem));
+		margin-block: clamp(1.2rem, 2.6vw, 2rem) clamp(0.9rem, 2vw, 1.4rem);
+		border-radius: clamp(1rem, 2vw, 1.6rem);
+		padding-inline: clamp(1.2rem, 4vw, 3.4rem);
+		padding-block: clamp(1.6rem, 3vw, 2.5rem);
+		/* deeper than the rest of the body on purpose: this band is the
+		   quiet beat between the story above it and the proof below */
+		background:
+			radial-gradient(900px 320px at 50% -24%, color-mix(in srgb, var(--bd-accent) 13%, transparent), transparent 70%),
+			linear-gradient(180deg, #05070f 0%, #02030a 100%);
+		border-color: rgba(155, 216, 255, 0.1);
+	}
+	/* the heading is a label here, not a headline: the figures are the
+	   thing being looked at */
+	.bd-band .bd-h {
+		font-size: clamp(1.35rem, 2.5vw, 2rem);
+		letter-spacing: -0.03em;
+		margin: 0;
+	}
+	.bd-band .bd-p {
+		margin: 0.45rem auto 0;
+		max-width: 40rem;
+		font-size: clamp(0.82rem, 1vw, 0.92rem);
+		line-height: 1.55;
+	}
+	/* the accent falls on one word, which is the only ornament the
+	   heading needs */
+	.bd-band .bd-h em {
+		font-style: normal;
+		background: linear-gradient(120deg, #cfeaff 5%, var(--bd-accent) 75%);
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	.bd-numbers {
+		display: grid;
+		grid-template-columns: repeat(5, minmax(0, 1fr));
+		gap: clamp(0.5rem, 1.1vw, 0.85rem);
+		list-style: none;
+		margin: clamp(1.1rem, 2.4vw, 1.6rem) 0 0;
+		padding: 0;
+	}
+	/* Five cards, each one hairline, icon, figure, label and the shape it
+	   made. Nothing is filled, nothing glows: the only movement is the
+	   figure counting and the line drawing itself. */
+	.bd-number {
+		min-width: 0;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+		padding: clamp(0.85rem, 1.7vw, 1.15rem) clamp(0.55rem, 1.2vw, 0.9rem)
+			clamp(0.6rem, 1.3vw, 0.85rem);
+		border-radius: clamp(0.65rem, 1.1vw, 0.85rem);
+		border: 1px solid rgba(155, 216, 255, 0.095);
+		background: rgba(255, 255, 255, 0.014);
+		transition: border-color 0.35s ease, background 0.35s ease,
+			transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.bd-number:hover {
+		border-color: color-mix(in srgb, var(--bd-accent) 38%, transparent);
+		background: rgba(255, 255, 255, 0.035);
+		transform: translateY(-2px);
+	}
+	.bd-number-ic {
+		display: grid;
+		place-items: center;
+		width: 1.85rem;
+		height: 1.85rem;
+		border-radius: 0.55rem;
+		border: 1px solid rgba(155, 216, 255, 0.16);
+		background: color-mix(in srgb, var(--bd-accent) 9%, transparent);
+		color: #7fc7f0;
+		margin-bottom: 0.5rem;
+	}
+	.bd-number-ic :global(svg) { width: 15px; height: 15px; }
+
+	/* ── the line under each figure ──
+	   Drawn rather than faded in: the stroke is dashed to its own length
+	   and the dash walked to zero, which is a pen moving across the box
+	   rather than a picture appearing. */
+	/* named "trend", not "spark": global.css stops anything whose class
+	   carries spark/glow/aura from animating on weak hardware — right for
+	   a particle emitter, wrong for a line that draws itself once. */
+	.bd-trend {
+		display: block;
+		width: 100%;
+		height: clamp(13px, 1.5vw, 17px);
+		margin-top: clamp(0.5rem, 1.1vw, 0.75rem);
+		overflow: hidden;
+	}
+	.bd-trend-line {
+		fill: none;
+		stroke: var(--bd-accent);
+		stroke-width: 0.75;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+		opacity: 0.62;
+		/* the path measures a shade over 100 user units, and the dash is
+		   measured in the same units now, so one dash covers one line */
+		stroke-dasharray: 104;
+		stroke-dashoffset: 104;
+
+	}
+
+	.bd-band.is-on .bd-trend-line {
+		animation: bd-draw 1.5s cubic-bezier(0.3, 0.8, 0.3, 1) forwards;
+		animation-delay: calc(0.25s + var(--n) * 0.16s);
+	}
+	@keyframes bd-draw { to { stroke-dashoffset: 0; } }
+
+	.bd-number-l {
+		display: block;
+		margin-top: 0.22rem;
+		font-size: clamp(0.7rem, 0.82vw, 0.78rem);
+		line-height: 1.3;
+		color: rgba(245, 245, 247, 0.5);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.bd-band .bd-trend-line { stroke-dashoffset: 0; }
+		.bd-band.is-on .bd-trend-line { animation: none; }
+		.bd-number,
+		.bd-number:hover { transform: none; transition: none; }
+	}
+	/* The band stays one row of five on every screen — it is a line of
+	   figures, and a line of figures wrapped over two rows is a table.
+	   What gives instead is the weight: the icon goes, the label shortens
+	   to a single word, and the card loses its frame until only the
+	   numbers and their lines are left. */
+	.bd-number-s { display: none; }
+	@media (max-width: 880px) {
+		.bd-numbers { gap: clamp(0.25rem, 1.2vw, 0.6rem); }
+		.bd-number { padding: 0.75rem 0.3rem 0.5rem; }
+		.bd-number-ic { width: 1.5rem; height: 1.5rem; border-radius: 0.45rem; margin-bottom: 0.35rem; }
+		.bd-number-ic :global(svg) { width: 12px; height: 12px; }
+		.bd-number strong { font-size: clamp(1.05rem, 3.2vw, 1.6rem); }
+		.bd-number-l { font-size: 0.62rem; }
+	}
+	@media (max-width: 620px) {
+		.bd-number {
+			padding: 0.55rem 0.15rem 0.4rem;
+			border-color: transparent;
+			background: none;
+		}
+		.bd-number-ic { display: none; }
+		.bd-number strong { font-size: clamp(0.95rem, 4.4vw, 1.35rem); }
+		.bd-number-l { display: none; }
+		.bd-number-s {
+			display: block;
+			margin-top: 0.15rem;
+			font-size: clamp(0.54rem, 2.1vw, 0.66rem);
+			line-height: 1.2;
+			letter-spacing: 0.01em;
+			color: rgba(245, 245, 247, 0.5);
+		}
+		.bd-trend { height: 10px; margin-top: 0.4rem; }
+		.bd-band { padding-inline: clamp(0.7rem, 3vw, 1.2rem); }
+		.bd-band .bd-h { font-size: clamp(1.15rem, 5vw, 1.5rem); }
+		.bd-band .bd-p { font-size: 0.76rem; }
+	}
+
+	@media (max-width: 880px) {
+		.bd-band { padding-inline: clamp(1.2rem, 5vw, 2rem); }
+	}
+	.bd-number strong {
+		display: block;
+		font-size: clamp(1.7rem, 3.1vw, 2.4rem);
+		font-weight: 700;
+		letter-spacing: -0.03em;
+		background: linear-gradient(135deg, #9bd8ff, var(--bd-accent));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+
+
+
+	.bd-marquee--b { margin-top: clamp(0.5rem, 1.2vw, 0.9rem); }
+	.bd-marquee-track--back {
+		animation-duration: 52s;
+		animation-direction: reverse;
+	}
+	.bd-sector {
+		flex-shrink: 0;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+		margin-right: clamp(0.7rem, 1.6vw, 1.15rem);
+		padding: 0.42em 0.95em;
+		border-radius: 999px;
+		border: 1px solid color-mix(in srgb, var(--bd-ink) 11%, transparent);
+		background: color-mix(in srgb, var(--bd-ink) 3%, transparent);
+		font-size: clamp(1.05rem, 2vw, 1.45rem);
+		font-weight: 700;
+		letter-spacing: -0.015em;
+		color: color-mix(in srgb, var(--bd-ink) 46%, transparent);
+		transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease,
+			transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+		cursor: default;
+	}
+	.bd-sector--sm { font-size: clamp(0.88rem, 1.5vw, 1.1rem); }
+	.bd-sector-dot {
+		width: 0.42em;
+		height: 0.42em;
+		border-radius: 50%;
+		background: currentColor;
+		opacity: 0.5;
+		flex: none;
+	}
+	/* a few run in the accent so the rail is never one flat grey line */
+	.bd-sector.is-hot {
+		color: var(--bd-accent);
+		border-color: color-mix(in srgb, var(--bd-accent) 34%, transparent);
+		background: color-mix(in srgb, var(--bd-accent) 8%, transparent);
+	}
+	.bd-sector.is-hot .bd-sector-dot { opacity: 1; }
+	.bd-sector:hover {
+		color: var(--bd-accent);
+		border-color: color-mix(in srgb, var(--bd-accent) 55%, transparent);
+		background: color-mix(in srgb, var(--bd-accent) 12%, transparent);
+		transform: translateY(-3px);
+	}
+
+
+	/* ── the closing tile ── */
+	.bd-tile--cta {
+		position: relative;
+		overflow: hidden;
+		display: grid;
+		grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+		align-items: stretch;
+		gap: 0;
+		padding: 0;
+		text-align: left;
+		background:
+			radial-gradient(760px 420px at 6% 110%, color-mix(in srgb, var(--bd-accent) 26%, transparent), transparent 70%),
+			linear-gradient(180deg, rgba(14, 19, 36, 0.96), rgba(4, 6, 13, 0.98));
+		color: #f5f5f7;
+		border-color: color-mix(in srgb, var(--bd-accent) 26%, rgba(255, 255, 255, 0.1));
+	}
+	.bd-cta-copy {
+		padding: clamp(2.2rem, 5vw, 4.2rem) clamp(1.4rem, 3.4vw, 3.4rem);
+		align-self: center;
+		/* a grid item's automatic minimum is its content, and a phone
+		   number set nowrap is wide content: without this the column grows
+		   past the tile and the tile quietly clips it */
+		min-width: 0;
+	}
+	.bd-cta-kick {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.85rem;
+		font-size: 0.72rem;
+		font-weight: 700;
+		letter-spacing: 0.26em;
+		text-transform: uppercase;
+		color: rgba(245, 245, 247, 0.6);
+	}
+	.bd-cta-kick i {
+		width: clamp(1.6rem, 3vw, 2.6rem);
+		height: 2px;
+		border-radius: 999px;
+		background: var(--bd-accent);
+	}
+	.bd-display--cta {
+		margin: clamp(0.9rem, 2vw, 1.3rem) 0 0;
+		font-size: clamp(2.1rem, 4.4vw, 3.6rem);
+		line-height: 1.02;
+		letter-spacing: -0.04em;
+	}
+	.bd-display--cta em {
+		display: block;
+		font-style: normal;
+		font-weight: 800;
+		background: linear-gradient(100deg, #e9f6ff 10%, var(--bd-accent) 85%);
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	.bd-tile--cta .bd-sub {
+		margin: clamp(0.9rem, 2vw, 1.25rem) 0 0;
+		max-width: 27rem;
+		margin-inline: 0;
+	}
+	.bd-cta-act {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: clamp(1rem, 2.4vw, 2rem);
+		margin-top: clamp(1.5rem, 3.2vw, 2.4rem);
+	}
+	/* the one thing on this tile we want pressed: it breathes until it is */
+	.bd-cta-go {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.6rem;
+		min-height: 3.35rem;
+		padding: 0 1.8rem;
+		border-radius: 999px;
+		background: linear-gradient(120deg, var(--bd-accent), #3b7dfd);
+		color: #04101a;
+		font-size: 1rem;
+		font-weight: 700;
+		white-space: nowrap;
+		transition: transform 0.25s ease, filter 0.25s ease;
+	}
+	.bd-cta-go::after {
+		content: '';
+		position: absolute;
+		inset: -3px;
+		border-radius: inherit;
+		border: 2px solid var(--bd-accent);
+		opacity: 0;
+		pointer-events: none;
+		animation: bd-cta-ring 2.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+	}
+	@keyframes bd-cta-ring {
+		0%   { transform: scale(1); opacity: 0.55; }
+		70%  { transform: scale(1.16); opacity: 0; }
+		100% { transform: scale(1.16); opacity: 0; }
+	}
+	.bd-cta-go:hover { transform: translateY(-2px); filter: brightness(1.06); }
+	.bd-cta-go-s { display: none; }
+	.bd-cta-go:hover::after { animation-play-state: paused; opacity: 0; }
+
+	/* the photograph, with the promise stamped in its corner */
+	.bd-cta-shot {
+		position: relative;
+		margin: 0;
+		min-height: clamp(18rem, 30vw, 27rem);
+	}
+	/* The picture is dissolved into the tile rather than laid on top of
+	   it: a dark veil over the photograph left a visible seam wherever the
+	   veil's black and the tile's own gradient disagreed, which they do
+	   everywhere except one row of pixels. Masking the image instead means
+	   there is nothing to match — the photograph simply stops. */
+	.bd-cta-shot img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: 42% 50%;
+		mask-image: linear-gradient(
+			90deg,
+			transparent 0%,
+			rgba(0, 0, 0, 0.28) 14%,
+			rgba(0, 0, 0, 0.82) 38%,
+			#000 62%
+		);
+		-webkit-mask-image: linear-gradient(
+			90deg,
+			transparent 0%,
+			rgba(0, 0, 0, 0.28) 14%,
+			rgba(0, 0, 0, 0.82) 38%,
+			#000 62%
+		);
+	}
+	/* just enough shade at the top right to hold the stamp */
+	.bd-cta-shot::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(200deg, rgba(4, 6, 13, 0.5), transparent 42%);
+	}
+	.bd-cta-stamp {
+		position: absolute;
+		top: clamp(1.1rem, 2.6vw, 2.2rem);
+		right: clamp(1.1rem, 2.6vw, 2.2rem);
+		z-index: 1;
+		text-align: right;
+		font-size: 0.66rem;
+		font-weight: 600;
+		letter-spacing: 0.24em;
+		text-transform: uppercase;
+		line-height: 1.9;
+		color: rgba(245, 245, 247, 0.62);
+	}
+	.bd-cta-stamp strong { display: block; color: #fff; font-weight: 700; }
+	.bd-cta-stamp::after {
+		content: '';
+		display: block;
+		width: 2.4rem;
+		height: 1px;
+		margin: 0.6rem 0 0 auto;
+		background: rgba(255, 255, 255, 0.4);
+	}
+
+	@media (max-width: 860px) {
+		.bd-tile--cta { grid-template-columns: 1fr; }
+		/* on a phone the desk goes on top, where a photograph belongs */
+		.bd-cta-shot { order: -1; min-height: clamp(12rem, 46vw, 17rem); }
+		/* stacked, the photograph dissolves downward instead of sideways */
+		.bd-cta-shot img {
+			mask-image: linear-gradient(180deg, #000 34%, rgba(0, 0, 0, 0.5) 74%, transparent 100%);
+			-webkit-mask-image: linear-gradient(180deg, #000 34%, rgba(0, 0, 0, 0.5) 74%, transparent 100%);
+		}
+		.bd-cta-shot::after { background: linear-gradient(180deg, rgba(4, 6, 13, 0.4), transparent 45%); }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.bd-cta-go::after { animation: none; opacity: 0; }
+	}
+	.bd-tile--cta .bd-sub {
+		color: rgba(245, 245, 247, 0.62);
+	}
+	.bd-links--center {
+		justify-content: center;
+	}
+	/* the phone number — impossible to miss */
+	.bd-call {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.15rem;
+	}
+	.bd-call-hint {
+		font-size: 0.78rem;
+		font-weight: 700;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: rgba(245, 245, 247, 0.5);
+	}
+	.bd-call-num {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+		font-size: clamp(1.15rem, 2.2vw, 1.6rem);
+		font-weight: 700;
+		letter-spacing: -0.02em;
+		background: linear-gradient(135deg, #ffffff, #9bd8ff 60%, var(--bd-accent));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+		transition: transform 0.3s ease, filter 0.3s ease;
+	}
+	.bd-call-num :global(svg) {
+		color: var(--bd-accent);
+		-webkit-text-fill-color: initial;
+	}
+	.bd-call:hover .bd-call-num {
+		transform: scale(1.03);
+		filter: drop-shadow(0 10px 30px color-mix(in srgb, var(--bd-accent) 55%, transparent));
+	}
+
+
+	/* ═══ the closing tile on a phone ═════════════════════════════════
+	   Kept at the end of the sheet on purpose: these override plain-class
+	   rules written further down, and a media query carries no extra
+	   specificity — only source order was ever going to settle it.
+	   ══════════════════════════════════════════════════════════════════ */
+	/* On a phone these two were stacking, which put the number below the
+	   fold of the tile. They stay on one line: the button gives up its
+	   padding, the number keeps its weight, and "or call us now" goes,
+	   since a phone number beside a button needs no caption. */
+	@media (max-width: 620px) {
+		/* the two together need every pixel of the tile, so the copy gives
+		   back its outer padding, the label shortens, and the arrow goes */
+		.bd-cta-copy { padding-inline: 1rem; }
+		.bd-cta-act {
+			flex-wrap: nowrap;
+			gap: 0.55rem;
+			margin-top: 1.2rem;
+		}
+		.bd-cta-go {
+			min-height: 2.9rem;
+			padding: 0 0.95rem;
+			font-size: 0.86rem;
+			gap: 0;
+			flex: 0 1 auto;
+			min-width: 0;
+		}
+		.bd-cta-go :global(svg) { display: none; }
+		/* scoped to the button, because the plain-class default for these
+		   two is written further down the sheet and would otherwise win */
+		.bd-cta-go .bd-cta-go-l { display: none; }
+		.bd-cta-go .bd-cta-go-s { display: inline; }
+		/* the stamp sits off the edge of a one-column tile, and the tile
+		   clips it; the promise is already in the headline */
+		.bd-cta-stamp { display: none; }
+		.bd-call { flex: 0 1 auto; min-width: 0; }
+		.bd-call-hint { display: none; }
+		.bd-call-num {
+			font-size: 1.05rem;
+			font-weight: 800;
+			gap: 0.35rem;
+			white-space: nowrap;
+		}
+		.bd-call-num :global(svg) { width: 16px; height: 16px; }
+	}
+	/* On the narrowest phones the pair still ran past the edge of the
+	   tile, which quietly clipped the last four digits. The handset icon
+	   goes — beside a button that says "start a project", a number needs
+	   no explaining — and both come down one more step. Measured to clear
+	   the tile by 30px at 360 rather than sitting on the edge. */
+	@media (max-width: 460px) {
+		.bd-cta-go { font-size: 0.8rem; padding: 0 0.85rem; min-height: 2.75rem; }
+		.bd-call-num { font-size: 0.98rem; }
+		.bd-call-num :global(svg) { display: none; }
+	}
+
+	/* ── the opening two-up ──
+	   Equal panels, stretched to one height, each centred on its own
+	   words. One carries the type, the other carries the film. */
+	.ab-open {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: clamp(0.9rem, 1.8vw, 1.4rem);
+		max-width: 88rem;
+		margin: clamp(1.2rem, 3vw, 2.2rem) auto clamp(2.5rem, 6vw, 4.5rem);
+	}
+	.ab-open-panel {
+		display: flex;
+		flex-direction: column;
+		border-radius: clamp(1rem, 2vw, 1.7rem);
+		overflow: hidden;
+		min-height: clamp(24rem, 40vw, 34rem);
+	}
+	.ab-open-panel.is-pale { background: #f2f4f9; color: #10121f; }
+	.ab-open-panel.is-deep { background: #05070f; color: #f3f6fc; }
+	.ab-open-copy {
+		padding: clamp(1.8rem, 3.6vw, 3.2rem) clamp(1.2rem, 2.6vw, 2.4rem) 0;
+		text-align: center;
+	}
+	.ab-open-panel .ab-acts { justify-content: center; }
+	.ab-kick {
+		display: inline-block;
+		font-size: 0.74rem;
+		font-weight: 700;
+		letter-spacing: 0.22em;
+		text-transform: uppercase;
+		color: var(--bd-accent);
+	}
+	.ab-h1 {
+		margin: clamp(0.7rem, 1.6vw, 1rem) 0 0;
+		font-size: clamp(1.6rem, 3.4vw, 2.9rem);
+		font-weight: 800;
+		letter-spacing: -0.045em;
+		line-height: 1.02;
+		text-wrap: balance;
+	}
+	/* The panels are pale and deep whatever the theme is, so the headline
+	   gradient has to key off the panel rather than off html.dark. Keyed
+	   off the theme it went pale-on-pale in dark mode and all but
+	   disappeared. */
+	.ab-h1 em,
+	.ab-h2 em {
+		display: block;
+		font-style: normal;
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	.is-pale .ab-h1 em,
+	.is-pale .ab-h2 em {
+		background-image: linear-gradient(100deg, #1e3a8a 4%, #2f86d6 84%);
+	}
+	.is-deep .ab-h1 em,
+	.is-deep .ab-h2 em {
+		background-image: linear-gradient(100deg, #d9edff 6%, var(--bd-accent) 80%);
+	}
+	.ab-lede {
+		margin: clamp(0.8rem, 1.8vw, 1.15rem) auto 0;
+		max-width: 34rem;
+		font-size: clamp(0.9rem, 1.1vw, 1.02rem);
+		line-height: 1.6;
+		opacity: 0.74;
+	}
+	.ab-lede--sm { display: none; }
+
+	/* the pair of ways in: one solid, one plain, always together */
+	.ab-acts {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: clamp(0.8rem, 1.8vw, 1.6rem);
+		margin-top: clamp(1.3rem, 2.8vw, 2rem);
+	}
+	.ab-hero .ab-acts,
+	.ab-film .ab-acts { justify-content: center; }
+	.ab-pill {
+		display: inline-flex;
+		align-items: center;
+		min-height: 2.9rem;
+		padding: 0 1.5rem;
+		border-radius: 999px;
+		background: var(--bd-accent);
+		color: #04101a;
+		font-size: 0.95rem;
+		font-weight: 650;
+		white-space: nowrap;
+		transition: transform 0.25s ease, filter 0.25s ease;
+	}
+	.ab-pill:hover { transform: translateY(-2px); filter: brightness(1.08); }
+	.ab-more {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.15rem;
+		font-size: 0.95rem;
+		font-weight: 600;
+		color: var(--bd-accent);
+		transition: gap 0.25s ease;
+	}
+	.ab-more:hover { gap: 0.4rem; }
+
+	/* the figures sit on the floor of the panel, where the product
+	   photograph sits on the reference */
+	/* An even three, ruled off from the copy, so the floor of the panel
+	   reads as structure rather than as the hole left by a short column
+	   of text. */
+	.ab-glance {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		list-style: none;
+		margin: auto clamp(1rem, 2.4vw, 2.2rem) 0;
+		padding: clamp(1.1rem, 2.4vw, 1.7rem) 0 clamp(1.2rem, 2.6vw, 1.9rem);
+		border-top: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+		text-align: center;
+	}
+	.ab-glance li {
+		min-width: 0;
+		padding-inline: 0.4rem;
+		border-left: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+	}
+	.ab-glance li:first-child { border-left: 0; }
+	.ab-glance strong {
+		display: block;
+		font-size: clamp(1.25rem, 2.3vw, 1.85rem);
+		font-weight: 800;
+		letter-spacing: -0.03em;
+	}
+	.ab-glance span {
+		font-size: 0.74rem;
+		letter-spacing: 0.02em;
+		opacity: 0.66;
+	}
+
+	.ab-h2 {
+		margin: 0;
+		font-size: clamp(1.8rem, 4.4vw, 3.4rem);
+		font-weight: 800;
+		letter-spacing: -0.04em;
+		line-height: 1.04;
+		text-wrap: balance;
+	}
+	.ab-h2 span { display: block; opacity: 0.6; }
+	.ab-h2--panel { font-size: clamp(1.4rem, 2.6vw, 2.1rem); }
+	/* the screen is the floor of its panel, the way the product photograph
+	   is the floor of the panel it sits in */
+	.ab-screen {
+		position: relative;
+		flex: 1;
+		display: flex;
+		margin: clamp(1.4rem, 3vw, 2.4rem) clamp(1rem, 2.2vw, 1.8rem)
+			clamp(1rem, 2.2vw, 1.8rem);
+		border-radius: clamp(0.7rem, 1.3vw, 1.05rem);
+		overflow: hidden;
+		/* the bezel: a dark rim and a long shadow, the way a screen sits in
+		   a room rather than on a page */
+		border: clamp(6px, 0.9vw, 11px) solid #0b0d15;
+		box-shadow:
+			0 2px 0 rgba(255, 255, 255, 0.06) inset,
+			0 48px 90px -40px rgba(0, 0, 0, 0.75);
+		background: #05070f;
+	}
+	.ab-screen :global(.flm) {
+		border-radius: 0;
+		width: 100%;
+		height: 100%;
+	}
+	/* The ratio lives on .flm__screen, not on .flm — setting it on the
+	   wrapper left the picture at 16/9 with a shelf of dark underneath.
+	   Released here, the panel's own height decides, and `cover` crops. */
+	.ab-screen :global(.flm__screen) {
+		height: 100%;
+		aspect-ratio: auto;
+		border-radius: 0;
+		border: 0;
+	}
+	.ab-screen-film { flex: 1; display: flex; min-height: 0; }
+	.ab-glance-s { display: none; }
+
+	.ab-kick {
+		display: inline-block;
+		font-size: 0.74rem;
+		font-weight: 700;
+		letter-spacing: 0.22em;
+		text-transform: uppercase;
+		color: var(--bd-accent);
+	}
+	.ab-h1 {
+		margin: clamp(0.7rem, 1.6vw, 1rem) 0 0;
+		font-size: clamp(1.6rem, 3.4vw, 2.9rem);
+		font-weight: 800;
+		letter-spacing: -0.045em;
+		line-height: 1.02;
+		text-wrap: balance;
+	}
+	/* The panels are pale and deep whatever the theme is, so the headline
+	   gradient has to key off the panel rather than off html.dark. Keyed
+	   off the theme it went pale-on-pale in dark mode and all but
+	   disappeared. */
+	.ab-h1 em,
+	.ab-h2 em {
+		display: block;
+		font-style: normal;
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	.is-pale .ab-h1 em,
+	.is-pale .ab-h2 em {
+		background-image: linear-gradient(100deg, #1e3a8a 4%, #2f86d6 84%);
+	}
+	.is-deep .ab-h1 em,
+	.is-deep .ab-h2 em {
+		background-image: linear-gradient(100deg, #d9edff 6%, var(--bd-accent) 80%);
+	}
+	.ab-lede {
+		margin: clamp(0.8rem, 1.8vw, 1.15rem) auto 0;
+		max-width: 34rem;
+		font-size: clamp(0.9rem, 1.1vw, 1.02rem);
+		line-height: 1.6;
+		opacity: 0.74;
+	}
+	.ab-lede--sm { display: none; }
+
+	/* the pair of ways in: one solid, one plain, always together */
+	.ab-acts {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: clamp(0.8rem, 1.8vw, 1.6rem);
+		margin-top: clamp(1.3rem, 2.8vw, 2rem);
+	}
+	.ab-hero .ab-acts,
+	.ab-film .ab-acts { justify-content: center; }
+	.ab-pill {
+		display: inline-flex;
+		align-items: center;
+		min-height: 2.9rem;
+		padding: 0 1.5rem;
+		border-radius: 999px;
+		background: var(--bd-accent);
+		color: #04101a;
+		font-size: 0.95rem;
+		font-weight: 650;
+		white-space: nowrap;
+		transition: transform 0.25s ease, filter 0.25s ease;
+	}
+	.ab-pill:hover { transform: translateY(-2px); filter: brightness(1.08); }
+	.ab-more {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.15rem;
+		font-size: 0.95rem;
+		font-weight: 600;
+		color: var(--bd-accent);
+		transition: gap 0.25s ease;
+	}
+	.ab-more:hover { gap: 0.4rem; }
+
+	/* the figures sit on the floor of the panel, where the product
+	   photograph sits on the reference */
+	/* An even three, ruled off from the copy, so the floor of the panel
+	   reads as structure rather than as the hole left by a short column
+	   of text. */
+	.ab-glance {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		list-style: none;
+		margin: auto clamp(1rem, 2.4vw, 2.2rem) 0;
+		padding: clamp(1.1rem, 2.4vw, 1.7rem) 0 clamp(1.2rem, 2.6vw, 1.9rem);
+		border-top: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+		text-align: center;
+	}
+	.ab-glance li {
+		min-width: 0;
+		padding-inline: 0.4rem;
+		border-left: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+	}
+	.ab-glance li:first-child { border-left: 0; }
+	.ab-glance strong {
+		display: block;
+		font-size: clamp(1.25rem, 2.3vw, 1.85rem);
+		font-weight: 800;
+		letter-spacing: -0.03em;
+	}
+	.ab-glance span {
+		font-size: 0.74rem;
+		letter-spacing: 0.02em;
+		opacity: 0.66;
+	}
+
+	.ab-h2 {
+		margin: 0;
+		font-size: clamp(1.8rem, 4.4vw, 3.4rem);
+		font-weight: 800;
+		letter-spacing: -0.04em;
+		line-height: 1.04;
+		text-wrap: balance;
+	}
+	.ab-h2 span { display: block; opacity: 0.6; }
+	.ab-h2--panel { font-size: clamp(1.4rem, 2.6vw, 2.1rem); }
+	/* the screen is the floor of its panel, the way the product photograph
+	   is the floor of the panel it sits in */
+	.ab-screen {
+		position: relative;
+		flex: 1;
+		display: flex;
+		margin: clamp(1.4rem, 3vw, 2.4rem) clamp(1rem, 2.2vw, 1.8rem)
+			clamp(1rem, 2.2vw, 1.8rem);
+		border-radius: clamp(0.7rem, 1.3vw, 1.05rem);
+		overflow: hidden;
+		/* the bezel: a dark rim and a long shadow, the way a screen sits in
+		   a room rather than on a page */
+		border: clamp(6px, 0.9vw, 11px) solid #0b0d15;
+		box-shadow:
+			0 2px 0 rgba(255, 255, 255, 0.06) inset,
+			0 48px 90px -40px rgba(0, 0, 0, 0.75);
+		background: #05070f;
+	}
+	.ab-screen :global(.flm) {
+		border-radius: 0;
+		width: 100%;
+		height: 100%;
+	}
+	/* The ratio lives on .flm__screen, not on .flm — setting it on the
+	   wrapper left the picture at 16/9 with a shelf of dark underneath.
+	   Released here, the panel's own height decides, and `cover` crops. */
+	.ab-screen :global(.flm__screen) {
+		height: 100%;
+		aspect-ratio: auto;
+		border-radius: 0;
+		border: 0;
+	}
+	.ab-screen-film { flex: 1; display: flex; min-height: 0; }
+	.ab-glance-s { display: none; }
+	.ab-screen-badge {
+		position: absolute;
+		left: clamp(0.7rem, 1.6vw, 1.2rem);
+		bottom: clamp(0.7rem, 1.6vw, 1.2rem);
+		z-index: 4;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		padding: 0.3rem 0.7rem 0.3rem 0.55rem;
+		border-radius: 999px;
+		background: rgba(6, 9, 16, 0.55);
+		border: 1px solid rgba(255, 255, 255, 0.16);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		color: #fff;
+		font-size: 0.72rem;
+		pointer-events: none;
+	}
+	.ab-screen-badge span { font-weight: 700; }
+	.ab-screen-badge em {
+		font-style: normal;
+		opacity: 0.7;
+		padding-left: 0.4rem;
+		border-left: 1px solid rgba(255, 255, 255, 0.28);
+	}
+
+
+	@media (max-width: 860px) {
+		.ab-open-panel { min-height: clamp(20rem, 52vw, 28rem); }
+		.ab-h1 { font-size: clamp(1.4rem, 3.4vw, 2rem); }
+		.ab-h2--panel { font-size: clamp(1.2rem, 3vw, 1.6rem); }
+	}
+	@media (max-width: 620px) {
+		.ab-open { gap: 0.5rem; }
+		.ab-open-panel { min-height: clamp(17rem, 62vw, 23rem); }
+		.ab-open-copy { padding: 0.9rem 0.55rem 0; }
+		.ab-h1 { font-size: 1.05rem; line-height: 1.12; }
+		.ab-h2--panel { font-size: 0.98rem; }
+		.ab-open-panel .ab-lede { display: none; }
+		.ab-open-panel .ab-lede--sm { display: block; font-size: 0.66rem; margin-top: 0.3rem; }
+		.ab-open-panel .ab-acts { margin-top: 0.7rem; gap: 0.35rem; }
+		.ab-open-panel .ab-pill { min-height: 1.9rem; padding: 0 0.75rem; font-size: 0.68rem; }
+		.ab-open-panel .ab-more { display: none; }
+		.ab-glance { margin-inline: 0.35rem; padding: 0.65rem 0 0.8rem; }
+		.ab-glance li { padding-inline: 0.28rem; }
+		.ab-glance strong { font-size: 0.8rem; letter-spacing: -0.02em; }
+		.ab-glance span { display: none; }
+		.ab-glance .ab-glance-s { display: block; font-size: 0.5rem; white-space: nowrap; }
+		.ab-screen { margin: 0.7rem 0.55rem 0.55rem; border-width: 4px; }
+		.ab-screen-badge { display: none; }
+		.ab-screen :global(.flm__big) { transform: scale(0.52); }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.ab-pill:hover { transform: none; }
 	}
 </style>
