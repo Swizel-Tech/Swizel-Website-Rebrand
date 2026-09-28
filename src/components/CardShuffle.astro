@@ -44,6 +44,11 @@ const SUITS = [
 	{ mark: '♣', red: false },
 	{ mark: '♥', red: true },
 ];
+
+// A hand is not eight aces. The rank walks down as the suits cycle, so a
+// spread of six or nine cards reads as a hand somebody was dealt rather
+// than as one card printed several times.
+const RANKS = ['A', 'K', 'Q', 'J', '10', '9', '8', '7', '6', '5', '4', '3', '2'];
 ---
 
 <div class:list={['shuf', `shuf--${variant}`, klass]} data-shuffle data-every={String(every)}>
@@ -59,11 +64,11 @@ const SUITS = [
 					{variant === 'deck' ? (
 						<Fragment>
 							<span class="shuf__corner shuf__corner--tl" aria-hidden="true">
-								<b>A</b>
+								<b>{RANKS[i % RANKS.length]}</b>
 								<i>{SUITS[i % 4].mark}</i>
 							</span>
 							<span class="shuf__corner shuf__corner--br" aria-hidden="true">
-								<b>A</b>
+								<b>{RANKS[i % RANKS.length]}</b>
 								<i>{SUITS[i % 4].mark}</i>
 							</span>
 						</Fragment>
@@ -540,7 +545,11 @@ const SUITS = [
 		font-weight: 800;
 	}
 	.shuf--deck .shuf__card.is-red .shuf__corner { color: #d92040; }
-	.shuf--deck .shuf__corner b { font-size: clamp(0.95rem, 1.7vw, 1.25rem); }
+	.shuf--deck .shuf__corner b {
+		font-size: clamp(0.95rem, 1.7vw, 1.25rem);
+		font-variant-numeric: tabular-nums;
+		letter-spacing: -0.04em;
+	}
 	.shuf--deck .shuf__corner i { font-style: normal; font-size: clamp(0.8rem, 1.4vw, 1.05rem); }
 	.shuf--deck .shuf__corner--tl { top: 0.6rem; left: 0.65rem; }
 	.shuf--deck .shuf__corner--br { bottom: 0.6rem; right: 0.65rem; transform: rotate(180deg); }

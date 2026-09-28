@@ -6,6 +6,7 @@ import { Icon } from 'astro-icon/components';
 import type { Discipline } from '../../data/disciplines';
 import ServiceVisual from './ServiceVisual.astro';
 import FilmPlayer from '../FilmPlayer.astro';
+import CardShuffle from '../CardShuffle.astro';
 
 interface Props {
 	discipline: Discipline;
@@ -16,19 +17,20 @@ const { discipline: d, others } = Astro.props;
 // standard "selected work" lower down.
 const isDesign = d.slug === 'design';
 
-// Per-discipline layout so the pages differ in STRUCTURE, not just colour/copy:
-// the hero is split (copy + signature visual), and we alternate which side the
-// visual sits on and vary the shape of the "included" block.
-type Lay = { incl: 2 | 3 | 'list'; heroRev?: boolean };
+// Which side the hero's visual sits on, so the six pages are not one page
+// six times. The "included" block used to take three shapes as well; that
+// varied the arrangement without varying what it said, and it is a hand of
+// cards on every page now.
+type Lay = { heroRev?: boolean };
 const layouts: Record<string, Lay> = {
-	design: { incl: 2 },
-	development: { incl: 3, heroRev: true },
-	marketing: { incl: 2 },
-	strategy: { incl: 'list', heroRev: true },
-	maintenance: { incl: 2 },
-	'ai-automation': { incl: 3, heroRev: true },
+	design: {},
+	development: { heroRev: true },
+	marketing: {},
+	strategy: { heroRev: true },
+	maintenance: {},
+	'ai-automation': { heroRev: true },
 };
-const L: Lay = layouts[d.slug] ?? { incl: 2 };
+const L: Lay = layouts[d.slug] ?? {};
 
 // Real media for every discipline. Each page shipped a dashed box reading
 // "video placeholder" or "image placeholder"; six pages, six placeholders.
@@ -134,40 +136,22 @@ const slotIsFilm = slot.kind === 'film';
 		<h2 class="bd-h bd-h--center">What's included.</h2>
 		<p class="bd-p bd-p--center">Everything under {d.title}, handled by one team.</p>
 	</section>
-	{
-		L.incl === 'list' ? (
-			<ol class="det-list">
-				{d.included.map((s, i) => (
-					<li class="det-list-item bd-reveal" data-cursor="layers">
-						<span class="det-list-n">{String(i + 1).padStart(2, '0')}</span>
-						<div class="det-list-body">
-							<h3 class="det-card-t">{s.title}</h3>
-							<p class="det-card-d">{s.desc}</p>
-							<ul class="det-card-items">
-								{s.items.map((it) => (
-									<li><Icon width={14} name="mdi:check" /> {it}</li>
-								))}
-							</ul>
-						</div>
-					</li>
-				))}
-			</ol>
-		) : (
-			<div class:list={['det-grid', L.incl === 3 ? 'det-grid--3' : 'det-grid--2']}>
-				{d.included.map((s) => (
-					<article class="det-card bd-reveal" data-cursor="layers">
-						<h3 class="det-card-t">{s.title}</h3>
-						<p class="det-card-d">{s.desc}</p>
-						<ul class="det-card-items">
-							{s.items.map((it) => (
-								<li><Icon width={14} name="mdi:check" /> {it}</li>
-							))}
-						</ul>
-					</article>
-				))}
-			</div>
-		)
-	}
+	{/* What's included, dealt as a hand: one card a sub-service, the
+	    items as its line, and the ranks walking down from the ace so a
+	    spread reads as a hand rather than one card printed six times.
+	    The three layouts this block used to take are gone with it — they
+	    varied the arrangement without varying what it said. */}
+	<div class="det-deck bd-reveal">
+		<CardShuffle
+			variant="deck"
+			label="What's included"
+			every={6}
+			items={d.included.map((sv) => ({
+				title: sv.title,
+				desc: sv.items.join(' · '),
+			}))}
+		/>
+	</div>
 
 	<!-- ── Ways we can work together ───────────────────────── -->
 	<section class="bd-head bd-reveal">
@@ -932,4 +916,44 @@ const slotIsFilm = slot.kind === 'film';
 		inset: 0;
 	}
 	.det-media-go { margin-top: clamp(0.9rem, 2vw, 1.2rem); }
+	/* ── what's included, dealt ──
+	   Sized like the stack's hand: a card carrying a list of items needs
+	   more room than one carrying a sentence. */
+	.det-deck { margin-top: clamp(1.2rem, 2.6vw, 2rem); }
+	.det-deck :global(.shuf__stage) {
+		width: min(880px, 100%);
+		min-height: clamp(22rem, 46vw, 29rem);
+	}
+	.det-deck :global(.shuf--deck .shuf__card) {
+		width: clamp(11rem, 26vw, 16rem);
+		aspect-ratio: 5 / 6.6;
+		gap: 0.5rem;
+		padding: clamp(1.1rem, 2.2vw, 1.6rem);
+	}
+	.det-deck :global(.shuf--deck .shuf__t) { font-size: clamp(0.92rem, 1.5vw, 1.15rem); }
+	.det-deck :global(.shuf--deck .shuf__d) {
+		max-width: 22ch;
+		font-style: normal;
+		font-size: clamp(0.72rem, 1.05vw, 0.86rem);
+		line-height: 1.5;
+	}
+	@media (max-width: 720px) {
+		.det-deck :global(.shuf__stage) { min-height: clamp(17rem, 62vw, 23rem); }
+		.det-deck :global(.shuf--deck .shuf__card) { width: clamp(9rem, 44vw, 12.5rem); }
+	}
+
+	/* ── no orphans ──
+	   A line that breaks with one word alone on the second reads as a
+	   mistake. text-wrap: pretty asks the browser to avoid exactly that. */
+	/* the longest of the six clarifiers is 74 characters and needed about
+	   ten pixels more than a 34rem measure gave it, so it broke with nine
+	   characters alone on a second line */
+	.det-clarify { max-width: 42rem; }
+	.det-clarify,
+	.det-sub,
+	.det-card-d,
+	.det-media-p,
+	.bd-p { text-wrap: pretty; }
+	.det-h1,
+	.det-media-h { text-wrap: balance; }
 </style>
