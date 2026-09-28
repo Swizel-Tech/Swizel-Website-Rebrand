@@ -25,13 +25,43 @@ const glance = [
 	{ k: 'Countries served', s: 'Countries', v: '10+' },
 ];
 
+// The same band the home page carries, so the two pages count the same
+// way: an icon, the figure, its label, and under it the shape that figure
+// actually made, drawn stroke by stroke when the band arrives.
 const numbers = [
-	{ to: 65, suffix: '+', label: 'Products shipped' },
-	{ to: yearsInBusiness, suffix: '+', label: 'Years in business' },
-	{ to: 25, suffix: '+', label: 'Specialists on the team' },
-	{ to: 98, suffix: '%', label: 'On-time delivery' },
-	{ to: 5, decimals: 1, suffix: '', label: 'Average client rating' },
+	{ to: 65, suffix: '+', label: 'Products shipped', short: 'Shipped', icon: 'mdi:cube-outline',
+	  spark: 'M0 6.4 L17 5.6 L33 4.9 L50 3.7 L67 2.7 L83 1.4 L100 0.6' },
+	{ to: yearsInBusiness, suffix: '+', label: 'Years in business', short: 'Years', icon: 'mdi:calendar-blank-outline',
+	  spark: 'M0 6.4 L17 5.6 L33 4.7 L50 3.9 L67 3.1 L83 2.3 L100 1.4' },
+	{ to: 25, suffix: '+', label: 'Specialists on the team', short: 'Specialists', icon: 'mdi:account-group-outline',
+	  spark: 'M0 6.4 L17 6.4 L17 4.9 L42 4.9 L42 3.3 L71 3.3 L71 1.6 L100 1.6' },
+	{ to: 98, suffix: '%', label: 'On-time delivery', short: 'On time', icon: 'mdi:clock-check-outline',
+	  spark: 'M0 5.8 L17 5.2 L33 5.4 L50 3.6 L67 3 L83 1.8 L100 1.2' },
+	{ to: 5, decimals: 1, suffix: '', label: 'Average client rating', short: 'Rating', icon: 'mdi:star-outline',
+	  spark: 'M0 1.4 L17 1.2 L33 1.4 L50 1 L67 1.4 L83 1.2 L100 1.2' },
 ];
+
+// Each promise gets a photograph of it happening and a page to follow.
+// On the reference a four-up is never four icons on an empty field; it is
+// four cards, each with a picture, a name, a line and a link.
+const promiseArt: Record<string, { img: string; pos: string; href: string; go: string }> = {
+	'We build for the user': {
+		img: '/images/builder/over-the-shoulder.jpg', pos: '46% 38%',
+		href: '/services/design', go: 'How we design',
+	},
+	'We ship when we said': {
+		img: '/images/builder/at-the-keys.jpg', pos: '58% 42%',
+		href: '/services/development', go: 'How we build',
+	},
+	'We stay long after launch': {
+		img: '/images/marketing/the-floor.jpg', pos: '50% 50%',
+		href: '/services/maintenance', go: 'How we maintain',
+	},
+	'We give away the playbook': {
+		img: '/images/campus/class-in-session.jpg', pos: '50% 42%',
+		href: '/programs', go: 'See the programmes',
+	},
+};
 
 const values = [
 	{
@@ -406,47 +436,76 @@ const currentYear = new Date().getFullYear();
 		<p class="ab-vals-sub">{MISSION_SUPPORT}</p>
 		<ul class="ab-vrow">
 			{
-				CORE_VALUES.map((v, i) => (
-					<li class="ab-val" style={`--i:${i}`}>
-						<span class="ab-val-ic">
-							<Icon width={24} name={v.icon} />
-						</span>
-						<h3 class="ab-val-t">{v.name}</h3>
-						<p class="ab-val-d">{v.desc}</p>
-					</li>
-				))
+				CORE_VALUES.map((v, i) => {
+					const art = promiseArt[v.name];
+					return (
+						<li class="ab-val" style={`--i:${i}`}>
+							<a class="ab-val-card" href={art?.href ?? '/services'}>
+								<span class="ab-val-shot">
+									<img
+										src={art?.img ?? '/images/builder/studio-grid.jpg'}
+										alt=""
+										style={`object-position:${art?.pos ?? '50% 50%'}`}
+										loading="lazy"
+										decoding="async"
+									/>
+									<span class="ab-val-ic" aria-hidden="true">
+										<Icon width={18} name={v.icon} />
+									</span>
+								</span>
+								<h3 class="ab-val-t">{v.name}</h3>
+								<p class="ab-val-d">{v.desc}</p>
+								<span class="ab-val-go">
+									{art?.go ?? 'Learn more'}
+									<Icon width={13} name="mdi:chevron-right" />
+								</span>
+							</a>
+						</li>
+					);
+				})
 			}
 		</ul>
 	</section>
 
 	<!-- ── By the numbers ──────────────────────────────────── -->
-	<div class="bd-grid">
-		<section class="bd-tile bd-tile--full bd-tile--inverse bd-reveal" id="bd-numbers" data-cursor="chart">
-			<div class="bd-tile-copy">
-				<h2 class="bd-h">The numbers behind the calm.</h2>
-				<p class="bd-p">
-					Seven years of shipping for ambitious businesses, measured the
-					only way that matters.
-				</p>
-			</div>
-			<ul class="bd-numbers">
-				{
-					numbers.map((n) => (
-						<li class="bd-number">
-							<strong
-								data-count={n.to}
-								data-suffix={n.suffix}
-								data-decimals={n.decimals || 0}
-							>
-								0{n.suffix}
-							</strong>
-							<span>{n.label}</span>
-						</li>
-					))
-				}
-			</ul>
-		</section>
-	</div>
+	<section
+		class="bd-tile bd-tile--full bd-tile--inverse bd-band bd-reveal"
+		id="bd-numbers"
+		data-cursor="chart"
+	>
+		<div class="bd-tile-copy">
+			<h2 class="bd-h">
+				The numbers behind the <em>calm.</em>
+			</h2>
+			<p class="bd-p">
+				Seven years of shipping for ambitious businesses, measured the
+				only way that matters.
+			</p>
+		</div>
+		<ul class="bd-numbers">
+			{
+				numbers.map((n, i) => (
+					<li class="bd-number" style={`--n:${i}`}>
+						<span class="bd-number-ic" aria-hidden="true">
+							<Icon width={20} name={n.icon} />
+						</span>
+						<strong
+							data-count={n.to}
+							data-suffix={n.suffix}
+							data-decimals={n.decimals || 0}
+						>
+							0{n.suffix}
+						</strong>
+						<span class="bd-number-l">{n.label}</span>
+						<span class="bd-number-s">{n.short}</span>
+						<svg class="bd-trend" viewBox="0 0 100 7" preserveAspectRatio="none" aria-hidden="true">
+							<path class="bd-trend-line" d={n.spark} />
+						</svg>
+					</li>
+				))
+			}
+		</ul>
+	</section>
 
 	<!-- ── What we do — services / expertise grid ──────────── -->
 	<section class="bd-head bd-reveal" id="bd-services">
@@ -1380,35 +1439,10 @@ const currentYear = new Date().getFullYear();
 		border-color: color-mix(in srgb, var(--bd-accent) 30%, rgba(255, 255, 255, 0.1));
 	}
 	.bd-tile--inverse .bd-p { color: rgba(245, 245, 247, 0.62); }
-	.bd-numbers {
-		display: grid;
-		grid-template-columns: repeat(5, minmax(0, 1fr));
-		gap: 1.25rem;
-		list-style: none;
-		margin: 0.5rem 0 0.75rem;
-		padding: 0;
-	}
-	@media (max-width: 880px) {
-		.bd-numbers { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-		.bd-number:last-child { grid-column: 1 / -1; }
-	}
-	.bd-number strong {
-		display: block;
-		font-size: clamp(2.4rem, 5vw, 3.6rem);
-		font-weight: 700;
-		letter-spacing: -0.03em;
-		background: linear-gradient(135deg, #9bd8ff, var(--bd-accent));
-		-webkit-background-clip: text;
-		background-clip: text;
-		-webkit-text-fill-color: transparent;
-	}
-	.bd-number span {
-		font-size: 0.85rem;
-		color: rgba(245, 245, 247, 0.6);
-	}
-	:global(html:not(.dark)) .bd-tile--inverse .bd-number span {
-		color: rgba(245, 245, 247, 0.6);
-	}
+	/* The old two-column figures block is gone with the tile it dressed.
+	   One of its rules, .bd-number:last-child { grid-column: 1 / -1 },
+	   was what put the fifth figure on a row of its own — the new band
+	   sets five columns, and a span of all five overrides that quietly. */
 
 	/* ── Section heads ── */
 	.bd-head {
@@ -3187,7 +3221,7 @@ const currentYear = new Date().getFullYear();
 	}
 
 	/* ── the four promises, as a row ── */
-	.ab-vals { padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 6vw, 4rem); max-width: 76rem; }
+	.ab-vals { padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 6vw, 4rem); max-width: 84rem; }
 	.ab-vals-sub {
 		margin: clamp(0.8rem, 1.8vw, 1.1rem) auto 0;
 		max-width: 44rem;
@@ -3198,22 +3232,52 @@ const currentYear = new Date().getFullYear();
 	.ab-vrow {
 		display: grid;
 		grid-template-columns: repeat(4, minmax(0, 1fr));
-		gap: clamp(1.2rem, 2.6vw, 2.4rem);
+		gap: clamp(0.8rem, 1.8vw, 1.5rem);
 		list-style: none;
 		margin: clamp(1.8rem, 4vw, 3rem) 0 0;
 		padding: 0;
 	}
-	.ab-val { text-align: center; }
+	/* Four cards, each with a picture of the promise being kept — the
+	   Accessories pattern from the reference, where a four-up is never
+	   four icons standing on an empty field. */
+	.ab-val { text-align: left; }
+	.ab-val-card {
+		display: block;
+		height: 100%;
+		text-decoration: none;
+		color: inherit;
+	}
+	.ab-val-shot {
+		position: relative;
+		display: block;
+		aspect-ratio: 16 / 11;
+		border-radius: clamp(0.8rem, 1.4vw, 1.15rem);
+		overflow: hidden;
+		background: #05070f;
+		border: 1px solid var(--bd-glass-border);
+	}
+	.ab-val-shot img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.ab-val-card:hover .ab-val-shot img { transform: scale(1.05); }
+	/* the icon stays, but on the picture where it belongs */
 	.ab-val-ic {
+		position: absolute;
+		left: 0.7rem;
+		bottom: 0.7rem;
 		display: grid;
 		place-items: center;
-		width: 2.9rem;
-		height: 2.9rem;
-		margin: 0 auto;
-		border-radius: 0.9rem;
-		border: 1px solid var(--bd-glass-border);
-		background: color-mix(in srgb, var(--bd-accent) 10%, transparent);
-		color: var(--bd-accent);
+		width: 2.1rem;
+		height: 2.1rem;
+		border-radius: 0.65rem;
+		border: 1px solid rgba(255, 255, 255, 0.28);
+		background: rgba(6, 9, 16, 0.5);
+		color: #fff;
 	}
 	.ab-val-t {
 		margin: 0.85rem 0 0;
@@ -3223,11 +3287,22 @@ const currentYear = new Date().getFullYear();
 		line-height: 1.25;
 	}
 	.ab-val-d {
-		margin: 0.45rem 0 0;
+		margin: 0.4rem 0 0;
 		font-size: 0.86rem;
 		line-height: 1.55;
 		color: var(--bd-muted);
 	}
+	.ab-val-go {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.1rem;
+		margin-top: 0.6rem;
+		font-size: 0.82rem;
+		font-weight: 650;
+		color: var(--bd-accent);
+		transition: gap 0.25s ease;
+	}
+	.ab-val-card:hover .ab-val-go { gap: 0.35rem; }
 
 	@media (max-width: 860px) {
 		.ab-open-panel { min-height: clamp(20rem, 52vw, 28rem); }
@@ -3289,7 +3364,12 @@ const currentYear = new Date().getFullYear();
 		.ab-panel .ab-pill { min-height: 1.9rem; padding: 0 0.75rem; font-size: 0.68rem; }
 		.ab-panel .ab-more { display: none; }
 		.ab-panel-shot { min-height: 5rem; margin-top: 0.8rem; }
-		.ab-val-d { font-size: 0.76rem; }
+		.ab-vrow { gap: 0.5rem; }
+		.ab-val-t { font-size: 0.82rem; margin-top: 0.5rem; }
+		.ab-val-d { font-size: 0.68rem; line-height: 1.4; }
+		.ab-val-ic { width: 1.6rem; height: 1.6rem; border-radius: 0.5rem; left: 0.4rem; bottom: 0.4rem; }
+		.ab-val-ic :global(svg) { width: 13px; height: 13px; }
+		.ab-val-go { font-size: 0.68rem; margin-top: 0.4rem; }
 	}
 	@media (prefers-reduced-motion: reduce) {
 		.ab-pill:hover { transform: none; }
@@ -3328,4 +3408,198 @@ const currentYear = new Date().getFullYear();
 		.ab-glance strong { font-size: 0.74rem; }
 		.ab-glance .ab-glance-s { font-size: 0.46rem; }
 	}
+
+	/* ═══ the numbers band ═════════════════════════════════════════════
+	   The same band the home page carries, so both pages count the same
+	   way. Lifted here rather than re-invented: two versions of one
+	   component drift apart the first time either is touched.
+	   ══════════════════════════════════════════════════════════════════ */
+	/* ── the numbers band ──────────────────────────────────────────────
+	   It spans the page rather than sitting inside the 88rem grid: five
+	   figures deserve the width, and the band is what separates the story
+	   above it from the proof below. The body's own side padding is given
+	   back with a negative margin, which is exact and, unlike 100vw,
+	   cannot open a scrollbar of its own. */
+	.bd-band {
+		position: relative;
+		isolation: isolate;
+		overflow: hidden;
+		max-width: none;
+		width: auto;
+		margin-inline: calc(-1 * clamp(1rem, 3vw, 2rem));
+		margin-block: clamp(1.2rem, 2.6vw, 2rem) clamp(0.9rem, 2vw, 1.4rem);
+		border-radius: clamp(1rem, 2vw, 1.6rem);
+		padding-inline: clamp(1.2rem, 4vw, 3.4rem);
+		padding-block: clamp(1.6rem, 3vw, 2.5rem);
+		/* deeper than the rest of the body on purpose: this band is the
+		   quiet beat between the story above it and the proof below */
+		background:
+			radial-gradient(900px 320px at 50% -24%, color-mix(in srgb, var(--bd-accent) 13%, transparent), transparent 70%),
+			linear-gradient(180deg, #05070f 0%, #02030a 100%);
+		border-color: rgba(155, 216, 255, 0.1);
+	}
+	/* the heading is a label here, not a headline: the figures are the
+	   thing being looked at */
+	.bd-band .bd-h {
+		font-size: clamp(1.35rem, 2.5vw, 2rem);
+		letter-spacing: -0.03em;
+		margin: 0;
+	}
+	.bd-band .bd-p {
+		margin: 0.45rem auto 0;
+		max-width: 40rem;
+		font-size: clamp(0.82rem, 1vw, 0.92rem);
+		line-height: 1.55;
+	}
+	/* the accent falls on one word, which is the only ornament the
+	   heading needs */
+	.bd-band .bd-h em {
+		font-style: normal;
+		background: linear-gradient(120deg, #cfeaff 5%, var(--bd-accent) 75%);
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	.bd-numbers {
+		display: grid;
+		grid-template-columns: repeat(5, minmax(0, 1fr));
+		gap: clamp(0.5rem, 1.1vw, 0.85rem);
+		list-style: none;
+		margin: clamp(1.1rem, 2.4vw, 1.6rem) 0 0;
+		padding: 0;
+	}
+	/* Five cards, each one hairline, icon, figure, label and the shape it
+	   made. Nothing is filled, nothing glows: the only movement is the
+	   figure counting and the line drawing itself. */
+	.bd-number {
+		min-width: 0;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+		padding: clamp(0.85rem, 1.7vw, 1.15rem) clamp(0.55rem, 1.2vw, 0.9rem)
+			clamp(0.6rem, 1.3vw, 0.85rem);
+		border-radius: clamp(0.65rem, 1.1vw, 0.85rem);
+		border: 1px solid rgba(155, 216, 255, 0.095);
+		background: rgba(255, 255, 255, 0.014);
+		transition: border-color 0.35s ease, background 0.35s ease,
+			transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.bd-number:hover {
+		border-color: color-mix(in srgb, var(--bd-accent) 38%, transparent);
+		background: rgba(255, 255, 255, 0.035);
+		transform: translateY(-2px);
+	}
+	.bd-number-ic {
+		display: grid;
+		place-items: center;
+		width: 1.85rem;
+		height: 1.85rem;
+		border-radius: 0.55rem;
+		border: 1px solid rgba(155, 216, 255, 0.16);
+		background: color-mix(in srgb, var(--bd-accent) 9%, transparent);
+		color: #7fc7f0;
+		margin-bottom: 0.5rem;
+	}
+	.bd-number-ic :global(svg) { width: 15px; height: 15px; }
+
+	/* ── the line under each figure ──
+	   Drawn rather than faded in: the stroke is dashed to its own length
+	   and the dash walked to zero, which is a pen moving across the box
+	   rather than a picture appearing. */
+	/* named "trend", not "spark": global.css stops anything whose class
+	   carries spark/glow/aura from animating on weak hardware — right for
+	   a particle emitter, wrong for a line that draws itself once. */
+	.bd-trend {
+		display: block;
+		width: 100%;
+		height: clamp(13px, 1.5vw, 17px);
+		margin-top: clamp(0.5rem, 1.1vw, 0.75rem);
+		overflow: hidden;
+	}
+	.bd-trend-line {
+		fill: none;
+		stroke: var(--bd-accent);
+		stroke-width: 0.75;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+		opacity: 0.62;
+		/* the path measures a shade over 100 user units, and the dash is
+		   measured in the same units now, so one dash covers one line */
+		stroke-dasharray: 104;
+		stroke-dashoffset: 104;
+
+	}
+
+	.bd-band.is-on .bd-trend-line {
+		animation: bd-draw 1.5s cubic-bezier(0.3, 0.8, 0.3, 1) forwards;
+		animation-delay: calc(0.25s + var(--n) * 0.16s);
+	}
+	@keyframes bd-draw { to { stroke-dashoffset: 0; } }
+
+	.bd-number-l {
+		display: block;
+		margin-top: 0.22rem;
+		font-size: clamp(0.7rem, 0.82vw, 0.78rem);
+		line-height: 1.3;
+		color: rgba(245, 245, 247, 0.5);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.bd-band .bd-trend-line { stroke-dashoffset: 0; }
+		.bd-band.is-on .bd-trend-line { animation: none; }
+		.bd-number,
+		.bd-number:hover { transform: none; transition: none; }
+	}
+	/* The band stays one row of five on every screen — it is a line of
+	   figures, and a line of figures wrapped over two rows is a table.
+	   What gives instead is the weight: the icon goes, the label shortens
+	   to a single word, and the card loses its frame until only the
+	   numbers and their lines are left. */
+	.bd-number-s { display: none; }
+	@media (max-width: 880px) {
+		.bd-numbers { gap: clamp(0.25rem, 1.2vw, 0.6rem); }
+		.bd-number { padding: 0.75rem 0.3rem 0.5rem; }
+		.bd-number-ic { width: 1.5rem; height: 1.5rem; border-radius: 0.45rem; margin-bottom: 0.35rem; }
+		.bd-number-ic :global(svg) { width: 12px; height: 12px; }
+		.bd-number strong { font-size: clamp(1.05rem, 3.2vw, 1.6rem); }
+		.bd-number-l { font-size: 0.62rem; }
+	}
+	@media (max-width: 620px) {
+		.bd-number {
+			padding: 0.55rem 0.15rem 0.4rem;
+			border-color: transparent;
+			background: none;
+		}
+		.bd-number-ic { display: none; }
+		.bd-number strong { font-size: clamp(0.95rem, 4.4vw, 1.35rem); }
+		.bd-number-l { display: none; }
+		.bd-number-s {
+			display: block;
+			margin-top: 0.15rem;
+			font-size: clamp(0.54rem, 2.1vw, 0.66rem);
+			line-height: 1.2;
+			letter-spacing: 0.01em;
+			color: rgba(245, 245, 247, 0.5);
+		}
+		.bd-trend { height: 10px; margin-top: 0.4rem; }
+		.bd-band { padding-inline: clamp(0.7rem, 3vw, 1.2rem); }
+		.bd-band .bd-h { font-size: clamp(1.15rem, 5vw, 1.5rem); }
+		.bd-band .bd-p { font-size: 0.76rem; }
+	}
+
+	@media (max-width: 880px) {
+		.bd-band { padding-inline: clamp(1.2rem, 5vw, 2rem); }
+	}
+	.bd-number strong {
+		display: block;
+		font-size: clamp(1.7rem, 3.1vw, 2.4rem);
+		font-weight: 700;
+		letter-spacing: -0.03em;
+		background: linear-gradient(135deg, #9bd8ff, var(--bd-accent));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+
 </style>
