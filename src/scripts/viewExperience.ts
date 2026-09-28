@@ -45,7 +45,17 @@ export function initViewExperience() {
 	/** Name the world the visitor is standing in, from the live attribute. */
 	const markHere = () => {
 		if (!hereLine || !hereName) return;
-		const id = document.documentElement.getAttribute('data-view') || 'boardroom';
+		// The attribute is written on load from the stored choice, and the
+		// choice is only ever written by applyView — so its absence means
+		// "has not picked a world yet", which is the first run. Telling
+		// somebody they are standing in Boardroom before they have chosen
+		// anything, on the same screen that recommends Boardroom to them,
+		// is two contradictory claims at once.
+		const id = document.documentElement.getAttribute('data-view');
+		if (!id) {
+			hereLine.hidden = true;
+			return;
+		}
 		const card = root.querySelector<HTMLElement>(`.vo__card[data-view-id="${id}"]`);
 		const name = card?.querySelector('.vo__card-name')?.textContent?.trim();
 		if (!name) {

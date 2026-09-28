@@ -294,13 +294,11 @@ const orbs = [0, 1, 2, 3, 4];
 		.vo__here i,
 		.vo__card-now i { animation: none; }
 	}
-	:global(html:not([data-view])) .vo__card[data-view-id='boardroom'] .vo__card-go,
 	:global(html[data-view='builder']) .vo__card[data-view-id='builder'] .vo__card-go,
 	:global(html[data-view='boardroom']) .vo__card[data-view-id='boardroom'] .vo__card-go,
 	:global(html[data-view='founder']) .vo__card[data-view-id='founder'] .vo__card-go,
 	:global(html[data-view='campus']) .vo__card[data-view-id='campus'] .vo__card-go,
 	:global(html[data-view='studio']) .vo__card[data-view-id='studio'] .vo__card-go { display: none; }
-	:global(html:not([data-view])) .vo__card[data-view-id='boardroom'] .vo__card-now,
 	:global(html[data-view='builder']) .vo__card[data-view-id='builder'] .vo__card-now,
 	:global(html[data-view='boardroom']) .vo__card[data-view-id='boardroom'] .vo__card-now,
 	:global(html[data-view='founder']) .vo__card[data-view-id='founder'] .vo__card-now,
@@ -309,7 +307,6 @@ const orbs = [0, 1, 2, 3, 4];
 		display: inline-flex;
 	}
 	/* the card you are standing in wears its own accent as a rim */
-	:global(html:not([data-view])) .vo__card[data-view-id='boardroom'],
 	:global(html[data-view='builder']) .vo__card[data-view-id='builder'],
 	:global(html[data-view='boardroom']) .vo__card[data-view-id='boardroom'],
 	:global(html[data-view='founder']) .vo__card[data-view-id='founder'],

@@ -3294,4 +3294,38 @@ const currentYear = new Date().getFullYear();
 	@media (prefers-reduced-motion: reduce) {
 		.ab-pill:hover { transform: none; }
 	}
+
+	/* ═══ the mantra, and the figures, on a phone ══════════════════════
+	   Kept at the end of the sheet: these override plain-class rules
+	   written above them, and a media query carries no extra specificity,
+	   so source order is the only thing that settles it.
+	   ══════════════════════════════════════════════════════════════════ */
+	@media (max-width: 620px) {
+		/* the three words are the whole section at this size; the sentence
+		   under them was a second paragraph nobody reads on a phone */
+		.bd-mantra {
+			padding: clamp(2.6rem, 11vw, 4rem) 1rem;
+		}
+		.bd-mantra-words {
+			font-size: clamp(2.9rem, 14vw, 4.2rem);
+			font-weight: 900;
+			letter-spacing: -0.045em;
+			line-height: 0.92;
+		}
+		.bd-mantra-build {
+			text-shadow: 0 0 34px rgba(255, 255, 255, 0.6);
+		}
+		.bd-mantra-sub { display: none; }
+
+		/* 2019 and 65+ were shoulder to shoulder: the figures come down a
+		   step and the columns get their own room */
+		.ab-glance { margin-inline: 0.35rem; }
+		.ab-glance li { padding-inline: 0.28rem; }
+		.ab-glance strong { font-size: 0.8rem; letter-spacing: -0.02em; }
+		.ab-glance .ab-glance-s { font-size: 0.5rem; letter-spacing: 0.01em; }
+	}
+	@media (max-width: 380px) {
+		.ab-glance strong { font-size: 0.74rem; }
+		.ab-glance .ab-glance-s { font-size: 0.46rem; }
+	}
 </style>
