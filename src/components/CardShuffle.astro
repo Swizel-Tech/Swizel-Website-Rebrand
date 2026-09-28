@@ -26,22 +26,50 @@ interface Props {
 	 * fan   — one card face up, the rest stacked behind it
 	 * row   — three abreast on a wide screen, shuffling along
 	 * strip — panels that open and close, like a card index
+	 * deck  — a hand of playing cards, spread and shuffled
 	 */
-	variant?: 'fan' | 'row' | 'strip';
+	variant?: 'fan' | 'row' | 'strip' | 'deck';
 	class?: string;
 }
 
 const { items, label, every = 6, variant = 'fan', class: klass = '' } = Astro.props;
 const n = items.length;
+
+// A hand deals in suits, so the deck variant gives each card one, in the
+// order a hand is read. Two of the four are red, which is what stops a
+// spread of six white cards reading as six white rectangles.
+const SUITS = [
+	{ mark: '♠', red: false },
+	{ mark: '♦', red: true },
+	{ mark: '♣', red: false },
+	{ mark: '♥', red: true },
+];
 ---
 
 <div class:list={['shuf', `shuf--${variant}`, klass]} data-shuffle data-every={String(every)}>
 	<div class="shuf__stage" data-shuf-stage>
 		{
 			items.map((it, i) => (
-				<article class="shuf__card" data-shuf-card={i} style={`--c:${i}`}>
+				<article
+					class:list={['shuf__card', { 'is-red': variant === 'deck' && SUITS[i % 4].red }]}
+					data-shuf-card={i}
+					style={`--c:${i}`}
+				>
 					<span class="shuf__edge" aria-hidden="true" />
-					<span class="shuf__no">{String(i + 1).padStart(2, '0')}</span>
+					{variant === 'deck' ? (
+						<Fragment>
+							<span class="shuf__corner shuf__corner--tl" aria-hidden="true">
+								<b>A</b>
+								<i>{SUITS[i % 4].mark}</i>
+							</span>
+							<span class="shuf__corner shuf__corner--br" aria-hidden="true">
+								<b>A</b>
+								<i>{SUITS[i % 4].mark}</i>
+							</span>
+						</Fragment>
+					) : (
+						<span class="shuf__no">{String(i + 1).padStart(2, '0')}</span>
+					)}
 					{it.icon && (
 						<span class="shuf__ic">
 							<Icon width={22} name={it.icon} />
@@ -462,4 +490,133 @@ const n = items.length;
 			0 30px 60px -28px rgba(0, 0, 0, 0.9);
 	}
 	:global(html.dark) .shuf__tags li { color: #d6c6ff; }
+
+	/* ══ deck: a hand of playing cards, spread and shuffled ══════════
+	   Five slots in an arc, the front card square in the middle and
+	   raised, the rest tilting away either side. The dealer already
+	   cycles data-o, so the same click, swipe, arrow key and autoplay
+	   that turn the fan turn this hand — nothing new drives it.
+	   ════════════════════════════════════════════════════════════════ */
+	.shuf--deck .shuf__stage {
+		width: min(760px, 100%);
+		min-height: clamp(19rem, 42vw, 25rem);
+		padding-top: 0;
+		perspective: 1400px;
+	}
+	.shuf--deck .shuf__card {
+		inset: auto;
+		left: 50%;
+		top: 50%;
+		width: clamp(9.5rem, 22vw, 13.5rem);
+		aspect-ratio: 5 / 7;
+		margin: 0;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.35rem;
+		padding: clamp(0.9rem, 2vw, 1.3rem);
+		border-radius: clamp(0.7rem, 1.4vw, 1.05rem);
+		background: linear-gradient(168deg, #ffffff, #f3f5fa);
+		color: #10121f;
+		border: 1px solid rgba(16, 18, 31, 0.14);
+		box-shadow:
+			0 1px 0 rgba(255, 255, 255, 0.9) inset,
+			0 26px 50px -24px rgba(6, 10, 26, 0.55);
+		text-align: center;
+		transform-origin: 50% 118%;
+	}
+	.shuf--deck .shuf__edge { display: none; }
+
+	/* the corner marks: rank over suit, and the same pair upside down in
+	   the opposite corner, the way a real card is printed */
+	.shuf--deck .shuf__corner {
+		position: absolute;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		line-height: 0.95;
+		color: #10121f;
+		font-weight: 800;
+	}
+	.shuf--deck .shuf__card.is-red .shuf__corner { color: #d92040; }
+	.shuf--deck .shuf__corner b { font-size: clamp(0.95rem, 1.7vw, 1.25rem); }
+	.shuf--deck .shuf__corner i { font-style: normal; font-size: clamp(0.8rem, 1.4vw, 1.05rem); }
+	.shuf--deck .shuf__corner--tl { top: 0.6rem; left: 0.65rem; }
+	.shuf--deck .shuf__corner--br { bottom: 0.6rem; right: 0.65rem; transform: rotate(180deg); }
+
+	.shuf--deck .shuf__ic {
+		width: 2.2rem;
+		height: 2.2rem;
+		border-radius: 0.6rem;
+		background: rgba(16, 18, 31, 0.06);
+		color: #10121f;
+		border: 0;
+		margin-bottom: 0.2rem;
+	}
+	.shuf--deck .shuf__card.is-red .shuf__ic { color: #d92040; background: rgba(217, 32, 64, 0.08); }
+	.shuf--deck .shuf__t {
+		margin: 0;
+		font-size: clamp(0.88rem, 1.5vw, 1.1rem);
+		font-weight: 800;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
+	.shuf--deck .shuf__card.is-red .shuf__t { color: #d92040; }
+	.shuf--deck .shuf__d {
+		margin: 0;
+		max-width: 18ch;
+		font-size: clamp(0.7rem, 1.1vw, 0.82rem);
+		line-height: 1.35;
+		font-style: italic;
+		color: rgba(16, 18, 31, 0.62);
+	}
+	.shuf--deck .shuf__tags { display: none; }
+	.shuf--deck .shuf__go {
+		margin-top: 0.35rem;
+		font-size: 0.68rem;
+		font-weight: 700;
+		letter-spacing: 0.04em;
+		color: #1e40af;
+	}
+	.shuf--deck .shuf__card.is-red .shuf__go { color: #b01634; }
+
+	/* The fan dims the cards behind the front one with a brightness
+	   filter. On white playing cards that reads as four grey cards and
+	   one white one, so the deck keeps them all printed alike and lets
+	   the tilt and the shadow do the depth. */
+	.shuf--deck .shuf__card[data-o] { filter: none; }
+
+	/* the arc: --x across, --y up, --r tilt, applied per slot */
+	.shuf--deck .shuf__card[data-o] {
+		transform: translate(-50%, -50%) translate3d(var(--x, 0), var(--y, 0), var(--z, 0))
+			rotate(var(--r, 0deg)) scale(var(--s, 1));
+	}
+	.shuf--deck .shuf__card[data-o='0'] { --x: 0%; --y: -6%; --r: 0deg; --s: 1; --z: 0px; z-index: 6; }
+	.shuf--deck .shuf__card[data-o='1'] { --x: 62%; --y: 2%; --r: 8deg; --s: 0.95; --z: -40px; z-index: 5; }
+	.shuf--deck .shuf__card[data-o='2'] { --x: -62%; --y: 2%; --r: -8deg; --s: 0.95; --z: -40px; z-index: 5; }
+	.shuf--deck .shuf__card[data-o='3'] { --x: 118%; --y: 12%; --r: 15deg; --s: 0.9; --z: -90px; z-index: 4; }
+	.shuf--deck .shuf__card[data-o='4'] { --x: -118%; --y: 12%; --r: -15deg; --s: 0.9; --z: -90px; z-index: 4; opacity: 1; }
+	.shuf--deck .shuf__card[data-o='gone'] {
+		--x: 210%; --y: -40%; --r: 34deg; --s: 0.86;
+		opacity: 0;
+		z-index: 1;
+	}
+	.shuf--deck .shuf__card[data-o='back'] {
+		--x: -210%; --y: -40%; --r: -34deg; --s: 0.86;
+		opacity: 0;
+		z-index: 1;
+	}
+
+	@media (max-width: 720px) {
+		.shuf--deck .shuf__stage { min-height: clamp(15rem, 56vw, 20rem); }
+		.shuf--deck .shuf__card { width: clamp(8rem, 38vw, 11rem); }
+		.shuf--deck .shuf__card[data-o='3'],
+		.shuf--deck .shuf__card[data-o='4'] { opacity: 0; }
+		.shuf--deck .shuf__card[data-o='1'] { --x: 52%; }
+		.shuf--deck .shuf__card[data-o='2'] { --x: -52%; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.shuf--deck .shuf__card { transition: none; }
+	}
 </style>

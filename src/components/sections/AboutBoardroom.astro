@@ -6,6 +6,7 @@
 import { Icon } from 'astro-icon/components';
 import { teamDetails, CORE_VALUES, MISSION, MISSION_SUPPORT, VISION } from '../../consts';
 import FilmPlayer from '../FilmPlayer.astro';
+import CardShuffle from '../CardShuffle.astro';
 
 // Years in business, computed from the founding year so it self-increments
 // every year (build-time value; a tiny runtime script below also corrects it).
@@ -210,36 +211,42 @@ const services = [
 	{
 		icon: 'mdi:palette-outline',
 		title: 'Design',
+		short: 'What it looks like, and how it feels.',
 		desc: 'Brand identity, graphics and product design, interfaces your customers find effortless.',
 		tag: 'Brand · UI/UX · Motion',
 	},
 	{
 		icon: 'mdi:code-tags',
 		title: 'Development',
+		short: 'Built to scale, shipped fast.',
 		desc: 'Web and mobile engineering built to scale. We build, test and ship fast, without breaking things.',
 		tag: 'Web · iOS · Android · APIs',
 	},
 	{
 		icon: 'mdi:bullhorn-outline',
 		title: 'Marketing',
+		short: 'Where your audience already is.',
 		desc: 'We grow your audience across every platform that matters, and co-market the products we ship.',
 		tag: 'SEO · Ads · Social · Content',
 	},
 	{
 		icon: 'mdi:compass-outline',
 		title: 'Strategy',
+		short: 'The plan before the first pixel.',
 		desc: 'Research, define and lock the goal, a tailored product roadmap before a line of code is written.',
 		tag: 'Research · Roadmaps · MVP',
 	},
 	{
 		icon: 'mdi:wrench-outline',
 		title: 'Maintenance',
+		short: 'Healthy, secure and online, year after year.',
 		desc: 'Improving existing products and keeping complex systems healthy, secure and online, year after year.',
 		tag: 'Support · DevOps · Uptime',
 	},
 	{
 		icon: 'mdi:school-outline',
 		title: 'Education',
+		short: 'Skills into the hands of the next builders.',
 		desc: 'IT / SIWES internships and NYSC placements, plus The Brevarium, putting real, job-ready skills in the hands of the next builders.',
 		tag: 'Training · Brevarium · Mentoring',
 	},
@@ -530,23 +537,23 @@ const currentYear = new Date().getFullYear();
 			hiring, no hand-offs, no finger-pointing.
 		</p>
 	</section>
-	<div class="bd-svc-grid bd-reveal">
-		{
-			services.map((s) => (
-				<a href="/services" class="bd-svc-card" data-cursor="layers">
-					<span class="bd-svc-ic">
-						<Icon width={28} name={s.icon} />
-					</span>
-					<h3 class="bd-svc-title">{s.title}</h3>
-					<p class="bd-svc-desc">{s.desc}</p>
-					<span class="bd-svc-tag">{s.tag}</span>
-					<span class="bd-svc-more">
-						Learn more
-						<Icon width={15} name="mdi:arrow-right" />
-					</span>
-				</a>
-			))
-		}
+	{/* Six disciplines dealt as a hand rather than laid out as a grid of
+	    six identical rectangles: one card square in the middle, the rest
+	    tilting away either side, and the whole hand shuffles on a click,
+	    a swipe, an arrow key or by itself. */}
+	<div class="bd-deck bd-reveal" data-cursor="layers">
+		<CardShuffle
+			variant="deck"
+			label="What we do"
+			every={7}
+			items={services.map((sv) => ({
+				icon: sv.icon,
+				title: sv.title,
+				desc: sv.short ?? sv.desc,
+				href: '/services',
+				hrefLabel: 'Learn more',
+			}))}
+		/>
 	</div>
 
 	<!-- ── Values ──────────────────────────────────────────── -->
