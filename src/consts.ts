@@ -578,3 +578,24 @@ export const bootCampForm = [
 		name: 'message',
 	}, */
 ] as const;
+
+// ── Google tags ──────────────────────────────────────────────────────
+// Committed rather than hidden in environment variables on purpose:
+// every one of these is printed into the page source for any visitor to
+// read, so none of them is a secret and treating them as secrets only
+// adds a step to every deploy. PUBLIC_GA_ID overrides the first if the
+// property ever changes without a code change.
+
+/** The GA4 property for swizel.co. */
+export const GA_ID = 'G-L6G0KQD6D1';
+
+/**
+ * The property the old site reported to. It was hardcoded into the head
+ * and nobody mentioned it, so it is kept firing rather than quietly
+ * dropped — its history stays continuous while the new property fills
+ * up. Set to '' to retire it; nothing else needs changing.
+ */
+export const GA_LEGACY_ID = 'G-9CH1K4P5C8';
+
+/** Google Ads, for conversion tracking on campaigns. */
+export const ADS_ID = 'AW-11006297401';

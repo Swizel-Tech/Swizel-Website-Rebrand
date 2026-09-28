@@ -295,14 +295,10 @@ const organizationSchema = {
 	><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" /></noscript
 >
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-9CH1K4P5C8"></script>
-<script is:inline>
-	window.dataLayer = window.dataLayer || [];
-	function gtag() {
-		dataLayer.push(arguments);
-	}
-	gtag('js', new Date());
-	gtag('config', 'G-9CH1K4P5C8');
-	gtag('config', 'AW-11006297401');
-</script>
+<!-- The Google tag used to sit here, async in the head, competing with
+     the fonts and the first images for the connection on the very
+     request where the first screen is being assembled. It loads from
+     src/scripts/analytics.ts now: on idle, or on the visitor's first
+     move, whichever comes first — and it knows about swup, which this
+     snippet did not, so every page after the first was invisible to it.
+     The IDs live in src/consts.ts. -->

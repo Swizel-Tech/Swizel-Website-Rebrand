@@ -240,6 +240,7 @@ const {
 	import { initCaseShelf } from '../scripts/caseShelf';
 	import { initBlogBeats } from '../scripts/blogBeats';
 	import { initNewsletter } from '../scripts/newsletter';
+	import { initAnalytics } from '../scripts/analytics';
 	import { initProgramsNotice } from '../scripts/programsNotice';
 
 	const handleMenuToggle = () => {
@@ -751,6 +752,7 @@ const {
 			initCaseShelf,
 			initBlogBeats,
 			initNewsletter,
+			initAnalytics,
 			handleFooter,
 		].forEach(later);
 
@@ -1045,6 +1047,26 @@ const {
 	});
 	// expose so the view picker can navigate home when a world is chosen off-home
 	(window as any).swup = swup;
+
+	// ── measurement across a swapped page ───────────────────────
+	// swup changes the URL and replaces the markup without a reload, so the
+	// automatic page_view in Google's snippet fires once, on the first page,
+	// and every page after it is invisible.
+	//
+	// Nothing extra is needed for it, though: initAnalytics is already in
+	// the list above, which runs again on every contentReplaced, and it
+	// sends a view when it finds the tag already loaded. An earlier attempt
+	// to register swup.hooks.on('page:view') here threw outright — hooks are
+	// swup 4 and this is swup 3 — and took the whole client script down with
+	// it, analytics included.
+
+	// Vercel's own two, which need no ID and set no cookies: visitor
+	// numbers, and the field measurements of how the site actually
+	// performs on real devices rather than in a lab.
+	void import('@vercel/analytics').then(({ inject }) => inject());
+	void import('@vercel/speed-insights').then(({ injectSpeedInsights }) =>
+		injectSpeedInsights()
+	);
 
 	// ── first-load curtain ────────────────────────────────────────────────
 	// BaseHead raises it before paint. Release it only once the page has
