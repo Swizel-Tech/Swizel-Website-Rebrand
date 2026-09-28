@@ -52,9 +52,9 @@ const MARKS: Record<string, string> = {
 
 const socials = [
 	{ name: 'X', short: '@swizelhq', handle: '@swizelhq', icon: 'twitter', isX: true, href: 'https://twitter.com/swizelhq', tag: 'Daily build updates', color: '#0f1419', peek: 'Ship week at Swizel. Another product just went live. Follow along for launches and behind-the-build threads.' },
-	{ name: 'Instagram', short: '@swizelhq', handle: '@swizelhq', icon: 'instagram', href: 'https://instagram.com/swizelhq', tag: 'Behind the scenes', color: '#e1486c', peek: 'The studio, unfiltered. Whiteboards, late builds, launch days and the team behind it all.' },
-	{ name: 'LinkedIn', short: 'Swizel Tech', handle: 'Swizel Technologies Limited', icon: 'linkedin', href: 'https://www.linkedin.com/company/swizel-technologies-limited/', tag: 'Company & careers', color: '#0a8bd4', peek: 'Company news, open roles and stories from the products we ship across 10+ countries.' },
-	{ name: 'Facebook', short: 'Swizel Tech', handle: 'Swizel Technologies Limited', icon: 'facebook', href: 'https://www.facebook.com/SWIZELTECHNOLOGIESLIMITED/', tag: 'Community & news', color: '#3b82f6', peek: 'Our community home for announcements, events and milestones from the Swizel family.' },
+	{ name: 'Instagram', short: '@swizelhq', handle: '@swizelhq', icon: 'instagram', href: 'https://instagram.com/swizelhq', tag: 'Behind the scenes', color: '#e1306c', peek: 'The studio, unfiltered. Whiteboards, late builds, launch days and the team behind it all.' },
+	{ name: 'LinkedIn', short: 'Swizel Tech', handle: 'Swizel Technologies Limited', icon: 'linkedin', href: 'https://www.linkedin.com/company/swizel-technologies-limited/', tag: 'Company & careers', color: '#0a66c2', peek: 'Company news, open roles and stories from the products we ship across 10+ countries.' },
+	{ name: 'Facebook', short: 'Swizel Tech', handle: 'Swizel Technologies Limited', icon: 'facebook', href: 'https://www.facebook.com/SWIZELTECHNOLOGIESLIMITED/', tag: 'Community & news', color: '#1877f2', peek: 'Our community home for announcements, events and milestones from the Swizel family.' },
 ];
 
 // The channel's uploads playlist is simply UU + the channel id minus its
@@ -373,7 +373,16 @@ const phones = [
 									aria-label={`Swizel on ${s.name} — ${s.handle}`}
 								>
 									<span class="ft-dot-ic">
-										<Icon size={19} name={s.icon} />
+										{/* X retired the bird in 2023. astro-icon's "twitter"
+										    is still the bird, so the current mark is drawn
+										    here rather than fetched. */}
+										{s.isX ? (
+											<svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true">
+												<path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+											</svg>
+										) : (
+											<Icon size={19} name={s.icon} />
+										)}
 									</span>
 									<span class="ft-dot-n">{s.name}</span>
 									{/* the handle is the thing somebody actually needs if
@@ -440,17 +449,12 @@ const phones = [
 		     way across under Follow the build -->
 		<div class="ft-signal">
 			<span class="ft-signal-edge" aria-hidden="true"></span>
-			<span class="ft-signal-light" aria-hidden="true"></span>
 			<div class="ft-signal-copy">
 				<span class="ft-signal-h">
 					<Icon width={15} name="mdi:paper-airplane" />
 					Stay in the loop
 				</span>
-				<!-- the same opening the channel card next to it uses: a
-				     headline and one sentence, so the field underneath is
-				     being offered rather than just sitting there -->
-				<strong class="ft-signal-t">One note, <em>when it matters.</em></strong>
-				<p>Only when something ships. No noise, no selling.</p>
+				<p>One short note when something ships. No noise, no selling.</p>
 			</div>
 			<form id="footer-newsletter" class="ft-signal-form">
 				<span class="ft-signal-field">
@@ -686,7 +690,11 @@ const phones = [
 		   short ones without a hole under the brand */
 		.ft-brand { grid-row: 1 / span 2; }
 		.ft-offices { grid-row: 1 / span 2; }
-		.ft-signal { grid-column: 3 / -1; grid-row: 2; }
+		/* Its own row, all the way across. Tucked into the two right-hand
+		   columns it had about three hundred pixels for the copy, so the
+		   kicker broke after "THE" and the sentence ran to three lines —
+		   a strip that is taller than it is thin. */
+		.ft-signal { grid-column: 1 / -1; grid-row: 3; }
 	}
 
 	.ft-logo { display: inline-block; color: var(--ft-ink); }
@@ -899,11 +907,16 @@ const phones = [
 	   Its own row rather than a field tucked under the pitch, and the input
 	   runs the full width of the two columns above it. Takes the world's
 	   accent, so it changes with the view like everything else. */
+	/* One row, not a card. This is a strip along the bottom of the footer
+	   — a line saying what it is and a field to put an address in. It had
+	   grown a headline and a lit corner and turned into a third panel;
+	   both are gone. */
 	.ft-signal {
 		position: relative;
 		display: grid;
-		gap: 0.75rem;
-		padding: 0.95rem 1.15rem 1.05rem;
+		align-items: center;
+		gap: 0.7rem 1.4rem;
+		padding: 0.8rem 1rem;
 		border-radius: 1rem;
 		overflow: hidden;
 		border: 1px solid color-mix(in srgb, var(--view-accent, #18debe) 24%, var(--ft-border));
@@ -921,42 +934,15 @@ const phones = [
 		background: linear-gradient(90deg, transparent, var(--view-accent, #18debe), transparent);
 		opacity: 0.85;
 	}
-	/* the same soft light the channel card carries in its top corner, so
-	   the two read as one pair rather than a card and a strip */
-	.ft-signal-light {
-		position: absolute;
-		top: -60%;
-		right: -6%;
-		width: 42%;
-		height: 170%;
-		pointer-events: none;
-		background: radial-gradient(
-			closest-side,
-			color-mix(in srgb, var(--view-accent, #18debe) 42%, transparent),
-			color-mix(in srgb, var(--view-accent, #18debe) 10%, transparent) 58%,
-			transparent 76%
-		);
-		opacity: 0.5;
-		filter: blur(16px);
+	.ft-signal-copy { position: relative; display: flex; flex-direction: column; gap: 0.15rem; }
+	/* the strip lies down on a wide footer: the line on the left, the
+	   field on the right, one row and no more height than it needs */
+	@media (min-width: 720px) {
+		.ft-signal { grid-template-columns: minmax(0, 1fr) minmax(17rem, 21rem); }
 	}
-	:global(html:not(.dark)) .ft-signal-light { opacity: 0.28; }
-	.ft-signal-copy { position: relative; display: flex; flex-direction: column; gap: 0.2rem; }
 	/* the headline the band never had: the kicker said what the section
 	   was called and the sentence went straight to housekeeping, so
 	   there was nothing in between actually asking */
-	/* Small on purpose. The headline earns the card its shape; everything
-	   else around it is held in so the band stays a band rather than
-	   growing into a third panel. */
-	.ft-signal-t {
-		margin: 0.35rem 0 0.25rem;
-		font-size: clamp(1.15rem, 1.7vw, 1.32rem);
-		font-weight: 700;
-		line-height: 1.1;
-		letter-spacing: -0.026em;
-		color: var(--ft-ink);
-	}
-	.ft-signal-t em { display: block; font-style: normal; color: var(--view-accent, #18debe); }
-	:global(html:not(.dark)) .ft-signal-t em { color: #1e40af; }
 	.ft-signal-h {
 		display: inline-flex;
 		align-items: center;
@@ -1744,21 +1730,31 @@ const phones = [
 		min-width: 0;
 		text-decoration: none;
 	}
+	/* Each channel wears its own colour, not the footer's ink: a row of
+	   four identical grey marks is four things you have to read the label
+	   under to tell apart, and these are the four most recognisable marks
+	   on the internet. The ring and the wash take the same colour, so the
+	   button reads as that channel before the eye reaches the name. */
 	.ft-dot-ic {
 		display: grid;
 		place-items: center;
 		width: 2.6rem;
 		height: 2.6rem;
 		border-radius: 9999px;
-		color: var(--ft-ink);
-		background: color-mix(in srgb, var(--ft-ink) 7%, transparent);
-		border: 1px solid color-mix(in srgb, var(--ft-ink) 14%, transparent);
+		color: var(--pk, #28a6ec);
+		background: color-mix(in srgb, var(--pk, #28a6ec) 13%, transparent);
+		border: 1px solid color-mix(in srgb, var(--pk, #28a6ec) 32%, transparent);
 		transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), color 0.25s ease,
 			background 0.25s ease, border-color 0.25s ease, box-shadow 0.3s ease;
 	}
-	/* each channel in its own colour, but only when reached for: four
-	   brand colours standing to attention would out-shout the headline
-	   above them */
+	/* X's own colour is very nearly black, which is a hole on a dark
+	   footer and a smudge on a pale one. It keeps its mark and borrows
+	   the page's ink to draw it with. */
+	:global(html.dark) .ft-dot[aria-label^='Swizel on X'] .ft-dot-ic {
+		color: #f4f6fb;
+		background: rgba(244, 246, 251, 0.1);
+		border-color: rgba(244, 246, 251, 0.24);
+	}
 	.ft-dot:hover .ft-dot-ic,
 	.ft-dot:focus-visible .ft-dot-ic {
 		transform: translateY(-3px);
@@ -1767,9 +1763,10 @@ const phones = [
 		border-color: color-mix(in srgb, var(--pk, #28a6ec) 60%, transparent);
 		box-shadow: 0 14px 26px -12px color-mix(in srgb, var(--pk, #28a6ec) 85%, transparent);
 	}
-	/* X's brand colour is almost black, which is a hole on a dark footer */
 	:global(html.dark) .ft-dot:hover .ft-dot-ic {
+		color: #fff;
 		background: color-mix(in srgb, var(--pk, #28a6ec) 78%, #2a3242);
+		border-color: color-mix(in srgb, var(--pk, #28a6ec) 60%, transparent);
 	}
 	.ft-dot-n {
 		max-width: 100%;

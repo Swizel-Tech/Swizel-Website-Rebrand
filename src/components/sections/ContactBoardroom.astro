@@ -405,14 +405,48 @@ const glance = [
 		border: 1px solid var(--bd-glass-border);
 		box-shadow: var(--bd-shadow);
 	}
+	/* ── the form, finer ──
+	   The shared Input component is built for a full-page form: bold
+	   labels at body size, p-3 fields, my-4 between them and a rounded-xl
+	   corner. Four of those in a column make a card the height of a
+	   screen and a half, which is what made this section feel padded out
+	   rather than designed. Everything below is that same form, drawn
+	   thinner — smaller labels, shallower fields, tighter rhythm. The
+	   component is left alone because four other worlds use it. */
+	.ct-brief-form :global(form) { --ct-fine: 1; }
+	.ct-brief-form :global(form > div) { margin-block: 0.85rem; }
+	.ct-brief-form :global(form > div:first-child) { margin-top: 0.15rem; }
+	.ct-brief-form :global(label) { gap: 0.4rem !important; }
+	.ct-brief-form :global(label > span) {
+		font-size: 0.78rem;
+		font-weight: 600;
+		letter-spacing: 0.01em;
+		color: rgba(244, 246, 251, 0.72);
+	}
+	.ct-brief-form :global(input),
+	.ct-brief-form :global(textarea) {
+		padding: 0.62rem 0.85rem;
+		border-radius: 0.7rem;
+		font-size: 0.9rem;
+		border-color: rgba(255, 255, 255, 0.16);
+		background: rgba(255, 255, 255, 0.03);
+		transition: border-color 0.22s ease, background 0.22s ease;
+	}
+	.ct-brief-form :global(input::placeholder),
+	.ct-brief-form :global(textarea::placeholder) { font-size: 0.86rem; }
+	.ct-brief-form :global(textarea) { min-height: 6.5rem; }
+
 	/* The submit button arrives in the house green, which is nobody's
 	   colour on a boardroom page — the button that sends the brief should
 	   be the same blue as the button that sent you to the form. */
 	.ct-brief-form :global(#form-button) {
+		padding: 0.6rem 2.6rem !important;
 		background: var(--bd-accent);
 		color: #04101a;
+		font-size: 0.88rem;
 		font-weight: 700;
 		letter-spacing: 0.02em;
+		text-transform: none;
 		transition: transform 0.25s ease, filter 0.25s ease;
 	}
 	.ct-brief-form :global(#form-button:hover) { filter: brightness(1.07); transform: translateY(-1px); }
@@ -465,30 +499,73 @@ const glance = [
 	.ct-faq { max-width: 62rem; margin: 0 auto; display: grid; gap: 0.6rem; }
 	@media (min-width: 900px) { .ct-faq { grid-template-columns: 1fr 1fr; align-items: start; } }
 	.ct-faq-item {
-		border-radius: 1.05rem;
-		padding: 0.15rem 0.35rem;
+		position: relative;
+		overflow: hidden;
+		border-radius: 0.9rem;
 		background: var(--bd-glass);
 		border: 1px solid var(--bd-glass-border);
 		box-shadow: var(--bd-shadow);
-		transition: border-color 0.3s ease;
+		transition: border-color 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 	}
-	.ct-faq-item[open] { border-color: color-mix(in srgb, var(--bd-accent) 40%, var(--bd-glass-border)); }
+	.ct-faq-item:hover { transform: translateY(-2px); }
+	/* the open question wears a rail in the world's colour down its edge,
+	   so which one is open is readable from across the page rather than
+	   from the direction of one small arrow */
+	.ct-faq-item::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		width: 3px;
+		background: var(--bd-accent);
+		opacity: 0;
+		transform: scaleY(0.3);
+		transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.ct-faq-item[open]::before { opacity: 1; transform: scaleY(1); }
+	.ct-faq-item[open] { border-color: color-mix(in srgb, var(--bd-accent) 34%, var(--bd-glass-border)); }
 	.ct-faq-item summary {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		gap: 0.9rem;
-		padding: 0.9rem 0.85rem;
-		font-size: 0.97rem;
+		padding: 0.85rem 0.9rem 0.85rem 1.05rem;
+		font-size: 0.94rem;
 		font-weight: 650;
 		line-height: 1.35;
 		cursor: pointer;
 		list-style: none;
 	}
 	.ct-faq-item summary::-webkit-details-marker { display: none; }
-	.ct-faq-caret { flex: none; color: var(--bd-accent); transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
-	.ct-faq-item[open] .ct-faq-caret { transform: rotate(180deg); }
-	.ct-faq-item p { margin: 0; padding: 0 0.85rem 1rem; font-size: 0.9rem; line-height: 1.6; color: var(--bd-muted); }
+	/* the caret in a well rather than loose on the card: it reads as a
+	   control, and it has somewhere to turn in */
+	.ct-faq-caret {
+		flex: none;
+		box-sizing: content-box;
+		width: 19px;
+		height: 19px;
+		padding: 0.22rem;
+		border-radius: 9999px;
+		color: var(--bd-accent);
+		background: color-mix(in srgb, var(--bd-accent) 12%, transparent);
+		transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), background 0.25s ease;
+	}
+	.ct-faq-item[open] .ct-faq-caret {
+		transform: rotate(180deg);
+		background: color-mix(in srgb, var(--bd-accent) 22%, transparent);
+	}
+	/* the answer starts under the question, not under the card's edge */
+	.ct-faq-item p {
+		margin: 0;
+		padding: 0 2.6rem 0.95rem 1.05rem;
+		font-size: 0.875rem;
+		line-height: 1.6;
+		color: var(--bd-muted);
+	}
+	/* a hairline between question and answer, the width of the text */
+	.ct-faq-item[open] summary { padding-bottom: 0.7rem; }
+	.ct-faq-item[open] p { border-top: 1px solid var(--bd-glass-border); padding-top: 0.8rem; }
 
 	/* ── the offices ──
 	   Four across on a desktop and two across on a phone: these are four
