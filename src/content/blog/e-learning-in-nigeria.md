@@ -9,6 +9,8 @@ category: EdTech
 author: Swizel Team
 featured: false
 draft: false
+metaDescription: 'What e-learning and virtual schooling actually mean for Nigerian students and schools — the advantages, the real obstacles, and where the gap is closing.'
+heroAlt: 'Nigerian schoolchildren sharing a tablet during a lesson'
 ---
 The internet now has become a popular tool among the world’s young population. It’s safe to say “we all use the internet' in one way or the other, and for several reasons too. Yes, we research, download movies, pictures and applications, send and receive emails, messages, and get important news updates from the internet but internet technology has proven over the years to be more than that.
 

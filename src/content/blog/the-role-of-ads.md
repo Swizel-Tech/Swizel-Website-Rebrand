@@ -5,6 +5,9 @@ pubDate: 'Jul 22 2020'
 heroImage: '/blogpost/online-advertisment.jpg'
 category: 'Marketing'
 author: 'Swizel Team'
+seoTitle: 'Online advertising for Nigerian SMEs'
+metaDescription: 'How online advertising lets a small Nigerian business compete for attention with companies a thousand times its size — and what it costs to try.'
+heroAlt: 'A tablet showing a social media feed on a desk beside plants'
 ---
 
 <q>2020 will definitely be the year!<q>

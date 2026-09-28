@@ -15,7 +15,26 @@ interface Props {
 	related: CollectionEntry<'blog'>[];
 }
 const { post, prev, next, related } = Astro.props;
-const { title, description, pubDate, updatedDate, heroImage, category, author } = post.data;
+const {
+	title,
+	description,
+	pubDate,
+	updatedDate,
+	heroImage,
+	category,
+	author,
+	seoTitle,
+	metaDescription,
+	heroAlt,
+	canonical,
+} = post.data;
+
+// What Google is given, which is not always what the page shows. A
+// headline can read beautifully on the page and badly in a result, so
+// each has its own field — and when the SEO ones are empty (as they are
+// on every post written so far) the page's own words are used.
+const searchTitle = seoTitle?.trim() || title;
+const searchDesc = metaDescription?.trim() || description;
 
 const readTime = Math.max(1, Math.round((post.body?.trim().split(/\s+/).length || 0) / 200));
 const fmtDate = (d: Date) =>
@@ -43,8 +62,8 @@ const shareUrl = new URL(`/blog/${post.slug}`, Astro.site ?? 'https://swizel.co'
 const articleSchema = {
 	'@context': 'https://schema.org',
 	'@type': 'BlogPosting',
-	headline: title,
-	description,
+	headline: searchTitle,
+	description: searchDesc,
 	image: heroImage ? new URL(heroImage, Astro.site ?? 'https://swizel.co').href : undefined,
 	datePublished: new Date(pubDate).toISOString(),
 	dateModified: new Date(updatedDate ?? pubDate).toISOString(),
@@ -62,10 +81,11 @@ const wa = `https://wa.me/?text=${encodeURIComponent(title + ' ' + shareUrl)}`;
 ---
 
 <MainLayout
-	title={`${title} | Swizel Technologies Limited`}
-	description={description}
+	title={`${searchTitle} | Swizel Technologies Limited`}
+	description={searchDesc}
 	image={heroImage}
 	type="article"
+	canonical={canonical}
 	schema={articleSchema}
 >
 	<!-- Reading progress -->
@@ -98,7 +118,7 @@ const wa = `https://wa.me/?text=${encodeURIComponent(title + ' ' + shareUrl)}`;
 
 		{heroImage && (
 			<figure class="br-figure bd-reveal">
-				<img src={heroImage} alt={title} loading="eager" />
+				<img src={heroImage} alt={heroAlt?.trim() || title} loading="eager" />
 			</figure>
 		)}
 

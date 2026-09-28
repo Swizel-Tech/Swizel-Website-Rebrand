@@ -20,6 +20,8 @@ export interface Props {
 	type?: 'website' | 'article';
 	/** Extra JSON-LD for this page, on top of the site-wide records. */
 	schema?: Record<string, unknown> | null;
+	/** Only for a piece first published elsewhere. */
+	canonical?: string;
 }
 
 const {
@@ -30,6 +32,7 @@ const {
 	hideFooter = false,
 	type = 'website',
 	schema = null,
+	canonical,
 } = Astro.props;
 ---
 

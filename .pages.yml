@@ -28,7 +28,7 @@ content:
         required: true
       - name: description
         label: Description
-        description: 'One or two sentences — shows on the blog cards and in Google results.'
+        description: 'The blurb on the blog cards. One or two sentences, about 120 characters. Used as the Google snippet too, unless you set a meta description below.'
         type: text
         required: true
       - name: pubDate
@@ -37,9 +37,13 @@ content:
         required: true
       - name: heroImage
         label: Hero image
-        description: 'The big picture on the card and at the top of the article.'
+        description: 'The big picture on the card and at the top of the article. Landscape, at least 1200px wide, under 400KB if you can.'
         type: image
         required: true
+      - name: heroAlt
+        label: What the picture shows
+        description: 'One short sentence describing the image for a screen reader and for Google Images. Not "hero image" — say what is actually in it.'
+        type: string
       - name: category
         label: Category
         type: select
@@ -61,4 +65,28 @@ content:
         default: false
       - name: body
         label: Article
+        description: 'Use one H2 per section. Aim for 600 words or more — thin posts do not rank. Link out to your own pages where it helps the reader.'
         type: rich-text
+
+      # ── Search ──────────────────────────────────────────────────────
+      # All optional. Left empty, a post uses its title and description,
+      # which is what every post published so far does. Fill them in when
+      # the headline that reads well on the page is not the one you want
+      # showing in Google.
+      - name: seoTitle
+        label: 'SEO — title for Google'
+        description: 'Optional. Google cuts titles off around 60 characters. Put the thing people search for near the front, and keep "| Swizel" off the end — that is added for you.'
+        type: string
+      - name: metaDescription
+        label: 'SEO — snippet for Google'
+        description: 'Optional. The grey text under the blue link. About 155 characters; anything past that is cut. Write it as a reason to click, not a summary.'
+        type: text
+      - name: keywords
+        label: 'SEO — what this is about'
+        description: 'Optional. Three to six phrases a person would actually type. These are for our own reference and internal linking — Google has ignored the keywords tag for years.'
+        type: string
+        list: true
+      - name: canonical
+        label: 'SEO — original URL'
+        description: 'Only if this piece was published somewhere else first. Tells Google which copy is the real one.'
+        type: string

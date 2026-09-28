@@ -20,6 +20,24 @@ const blog = defineCollection({
 		author: z.string().default('Swizel Team'),
 		featured: z.boolean().default(false),
 		draft: z.boolean().default(false),
+
+		// ── the search fields ────────────────────────────────────────
+		// `description` was doing two jobs: the blurb on the card and the
+		// snippet in Google. They want different lengths — a card reads
+		// better at about 120 characters, a result is cut off after about
+		// 160 — so each has its own field. Both optional: leave them out
+		// and the post falls back to the title and the description, which
+		// is what every existing post does.
+		/** Overrides the <title> in search results only. ~60 characters. */
+		seoTitle: z.string().optional(),
+		/** Overrides the meta description. ~155 characters. */
+		metaDescription: z.string().optional(),
+		/** What this piece is about, for our own reference and internal linking. */
+		keywords: z.array(z.string()).optional(),
+		/** What the hero image shows, for screen readers and image search. */
+		heroAlt: z.string().optional(),
+		/** Set only when this piece was first published somewhere else. */
+		canonical: z.string().url().optional(),
 	}),
 });
 

@@ -5,6 +5,8 @@ pubDate: 'Jul 08 2022'
 heroImage: '/blogpost/tech-edu-nigeria.jpg'
 category: 'Technology'
 author: 'Swizel Team'
+metaDescription: 'Access to good schooling in Nigeria is scarce where it is not expensive. Here is where technology genuinely closes that gap, and where it does not.'
+heroAlt: 'A university computer laboratory lined with desktop machines'
 ---
 
 The state of education in Nigeria is dismal, especially in rural areas. Access to good education is scarce, and where it isn’t, it’s ridiculously expensive. This is due to the enormous amount of resources that go into setting up a school.

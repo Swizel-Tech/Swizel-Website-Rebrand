@@ -6,6 +6,8 @@ heroImage: "/blogpost/fintech.jpg"
 category: 'Fintech'
 author: 'Swizel Team'
 featured: true
+metaDescription: 'Opay, Palmpay, Moniepoint and the CBN freeze, explained for the rest of us: how Nigerian fintech got here and what the rules mean for your money.'
+heroAlt: 'A network of financial connections across a digital map of Africa'
 ---
 
 It’s the beginning of May in 2024. I have heard the word “Fintech” thrown about my immediate surroundings more times than I can count. It was always one of those trendy words that I paid little attention to previously because I felt no direct implication from what I vaguely considered to be some obscure tech companies that aided my financial transactions to some indefinite extent. However, that recently changed. Now it is now nearly impossible to find a Nigerian who has failed to sing the praises of Opay, Palmpay, Piggyvest or Moniepoint.
