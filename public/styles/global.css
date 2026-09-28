@@ -2206,3 +2206,51 @@ html.perf-lite .shuf__ring-f {
 .tawk-min-container {
   display: none !important;
 }
+
+/* ── the mobile bar's three controls, dressed as one set ──────────────
+   The views button and the theme button are rings; the menu button was a
+   bare icon sitting next to them at a different weight, which is what
+   made the bar look like two things and a leftover. All three are the
+   same object now, and the set wears the accent of whichever world you
+   are standing in rather than a neutral grey — the only part of the
+   header that was still the same in every view.
+
+   Scoped to the width the mobile bar actually appears at (below xl), so
+   the desktop nav is untouched. */
+@media (max-width: 1279px) {
+  .site-header #toggler-show {
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border-radius: 9999px;
+    border: 1px solid var(--nav-cta-border);
+    background: transparent;
+    color: var(--nav-ink);
+    transition: border-color 0.25s ease, background 0.25s ease, transform 0.25s ease;
+  }
+  /* the icon came in at 28px inside a 36px ring, which left no rim */
+  .site-header #toggler-show svg {
+    width: 17px;
+    height: 17px;
+  }
+  .site-header .view-switch--icon,
+  .site-header .theme-toggle,
+  .site-header #toggler-show {
+    border-color: color-mix(in srgb, var(--view-accent, #28a6ec) 34%, var(--nav-cta-border));
+  }
+  .site-header .view-switch--icon:hover,
+  .site-header .theme-toggle:hover,
+  .site-header #toggler-show:hover {
+    border-color: color-mix(in srgb, var(--view-accent, #28a6ec) 62%, transparent);
+    background: color-mix(in srgb, var(--view-accent, #28a6ec) 12%, transparent);
+  }
+  .site-header #toggler-show:active { transform: scale(0.94); }
+  /* the rule under the bar is the world's colour too, and visible: at
+     0.13 alpha it may as well not have been drawn */
+  .site-header {
+    border-bottom: 1px solid color-mix(in srgb, var(--view-accent, #28a6ec) 26%, transparent);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-header #toggler-show { transition: none; }
+}

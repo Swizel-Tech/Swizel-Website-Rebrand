@@ -147,13 +147,10 @@ const orbs = [0, 1, 2, 3, 4];
 				Every world carries the same team, the same work and the same numbers.
 				Only the telling changes. Pick one to walk in.
 			</p>
-			{/* Which door you came in by. Written by script from the live
-			    data-view, because the modal is in the markup of every page
-			    and the world can change under it without a reload. */}
-			<p class="vo__here" id="vo-here" hidden>
-				<i aria-hidden="true" />
-				You are standing in <b id="vo-here-name">Boardroom</b> right now.
-			</p>
+			{/* The line that used to sit here said "You are standing in
+			    Boardroom right now." The card for that world already wears
+			    YOU'RE HERE NOW across its face, so this was the same fact
+			    twice on one screen, a sentence above the thing it describes. */}
 
 			<div class="vo__grid">
 				{
@@ -1002,6 +999,11 @@ const orbs = [0, 1, 2, 3, 4];
 	}
 	:global(html:not(.dark)) .vo__mark { color: #14162a; }
 	:global(html:not(.dark)) .vo__h { color: #14162a; }
+	/* "Explore Swizel your way" is the heading of the whole modal and was
+	   breaking after "your", which leaves one word on a line under a
+	   four-word title. It is given room to hold together; the longer
+	   recommendation heading still wraps, which is what it wants to do. */
+	.vo__title { max-width: 30ch; text-wrap: balance; }
 	:global(html:not(.dark)) .vo__count { color: rgba(20, 22, 42, 0.5); }
 	:global(html:not(.dark)) .vo__hint,
 	:global(html:not(.dark)) .vo__lede,

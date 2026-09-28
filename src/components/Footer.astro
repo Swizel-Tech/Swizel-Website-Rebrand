@@ -60,18 +60,6 @@ const socials = [
 // The channel's uploads playlist is simply UU + the channel id minus its
 // UC prefix, so the TV in the footer always plays the newest videos with
 // nothing to keep up to date by hand.
-// A short line per channel for the boardroom's report rows. Drawn on a
-// 40×7 box so stretching it into a narrow cell scales both axes by much
-// the same amount, and the stroke can stay uniform without
-// non-scaling-stroke — which measures dashes in screen pixels while the
-// path measures in user units, and breaks every drawn line in two.
-const channelTrend: Record<string, string> = {
-	X: 'M0 6 L10 5 L20 5.2 L30 3 L40 1.5',
-	Instagram: 'M0 5.6 L10 4.4 L20 4.9 L30 2.6 L40 1.8',
-	LinkedIn: 'M0 6.2 L10 4.8 L20 3.6 L30 3 L40 1.2',
-	Facebook: 'M0 5.8 L10 5.2 L20 4 L30 3.4 L40 2',
-};
-
 const YT_CHANNEL = 'UCZlQKVfjUd1Y0t362gQDgDg';
 const YT_UPLOADS = `UU${YT_CHANNEL.slice(2)}`;
 const YT_URL = 'https://www.youtube.com/@SwizelTechnologiesLtd';
@@ -368,43 +356,31 @@ const phones = [
 				<div class="ft-board-intro">
 					<span class="ft-board-kick"><i aria-hidden="true"></i>Follow the journey</span>
 					<strong class="ft-board-h">Stay connected <em>with us.</em></strong>
-					<p>Updates, the build in progress, and the latest from Swizel.</p>
+					<p>Get updates, behind the scenes, and the latest from Swizel across our social channels.</p>
 				</div>
-				<div class="ft-board-head">
-					<span>Channel</span>
-					<span>Handle</span>
-				</div>
-				<ul class="ft-board-rows">
+				<ul class="ft-dots">
 					{
 						socials.map((s, i) => (
 							<li>
 								<a
-									class="ft-board-row"
+									class="ft-dot"
 									href={s.href}
 									target="_blank"
 									rel="noopener noreferrer"
 									data-leaving=""
 									data-leaving-name={`Swizel on ${s.name}`}
-									style={`--i:${i}`}
+									style={`--i:${i}; --pk:${s.color}`}
+									aria-label={`Swizel on ${s.name} — ${s.handle}`}
 								>
-									<span class="ft-board-ic">
-										<Icon size={15} name={s.icon} />
+									<span class="ft-dot-ic">
+										<Icon size={19} name={s.icon} />
 									</span>
-									<span class="ft-board-id">
-										<strong>{s.name}</strong>
-										<em>{s.handle}</em>
-									</span>
-									<svg
-										class="ft-board-trend"
-										viewBox="0 0 40 7"
-										preserveAspectRatio="none"
-										aria-hidden="true"
-									>
-										<path d={channelTrend[s.name]} />
-									</svg>
-									<span class="ft-board-go">
-										<Icon width={13} name="mdi:arrow-top-right" />
-									</span>
+									<span class="ft-dot-n">{s.name}</span>
+									{/* the handle is the thing somebody actually needs if
+									    they are going to search for us rather than click —
+									    it arrives on hover so four rows of it are not
+									    standing under four names all the time */}
+									<span class="ft-dot-h">{s.handle}</span>
 								</a>
 							</li>
 						))
@@ -464,12 +440,17 @@ const phones = [
 		     way across under Follow the build -->
 		<div class="ft-signal">
 			<span class="ft-signal-edge" aria-hidden="true"></span>
+			<span class="ft-signal-light" aria-hidden="true"></span>
 			<div class="ft-signal-copy">
 				<span class="ft-signal-h">
 					<Icon width={15} name="mdi:paper-airplane" />
 					Stay in the loop
 				</span>
-				<p>One short note when something ships. No noise, no selling.</p>
+				<!-- the same opening the channel card next to it uses: a
+				     headline and one sentence, so the field underneath is
+				     being offered rather than just sitting there -->
+				<strong class="ft-signal-t">One note, <em>when it matters.</em></strong>
+				<p>Only when something ships. No noise, no selling.</p>
 			</div>
 			<form id="footer-newsletter" class="ft-signal-form">
 				<span class="ft-signal-field">
@@ -921,8 +902,8 @@ const phones = [
 	.ft-signal {
 		position: relative;
 		display: grid;
-		gap: 0.9rem;
-		padding: 1.15rem 1.25rem 1.25rem;
+		gap: 0.75rem;
+		padding: 0.95rem 1.15rem 1.05rem;
 		border-radius: 1rem;
 		overflow: hidden;
 		border: 1px solid color-mix(in srgb, var(--view-accent, #18debe) 24%, var(--ft-border));
@@ -940,7 +921,42 @@ const phones = [
 		background: linear-gradient(90deg, transparent, var(--view-accent, #18debe), transparent);
 		opacity: 0.85;
 	}
-	.ft-signal-copy { display: flex; flex-direction: column; gap: 0.2rem; }
+	/* the same soft light the channel card carries in its top corner, so
+	   the two read as one pair rather than a card and a strip */
+	.ft-signal-light {
+		position: absolute;
+		top: -60%;
+		right: -6%;
+		width: 42%;
+		height: 170%;
+		pointer-events: none;
+		background: radial-gradient(
+			closest-side,
+			color-mix(in srgb, var(--view-accent, #18debe) 42%, transparent),
+			color-mix(in srgb, var(--view-accent, #18debe) 10%, transparent) 58%,
+			transparent 76%
+		);
+		opacity: 0.5;
+		filter: blur(16px);
+	}
+	:global(html:not(.dark)) .ft-signal-light { opacity: 0.28; }
+	.ft-signal-copy { position: relative; display: flex; flex-direction: column; gap: 0.2rem; }
+	/* the headline the band never had: the kicker said what the section
+	   was called and the sentence went straight to housekeeping, so
+	   there was nothing in between actually asking */
+	/* Small on purpose. The headline earns the card its shape; everything
+	   else around it is held in so the band stays a band rather than
+	   growing into a third panel. */
+	.ft-signal-t {
+		margin: 0.35rem 0 0.25rem;
+		font-size: clamp(1.15rem, 1.7vw, 1.32rem);
+		font-weight: 700;
+		line-height: 1.1;
+		letter-spacing: -0.026em;
+		color: var(--ft-ink);
+	}
+	.ft-signal-t em { display: block; font-style: normal; color: var(--view-accent, #18debe); }
+	:global(html:not(.dark)) .ft-signal-t em { color: #1e40af; }
 	.ft-signal-h {
 		display: inline-flex;
 		align-items: center;
@@ -1651,7 +1667,7 @@ const phones = [
 	:global(html:not(.dark)) .ft-board-edge { opacity: 0.3; }
 	.ft-board-intro {
 		position: relative;
-		padding: 0.95rem 0.95rem 0.8rem;
+		padding: 0.85rem 0.9rem 0.65rem;
 	}
 	.ft-board-kick {
 		display: flex;
@@ -1674,14 +1690,17 @@ const phones = [
 	}
 	.ft-board-h {
 		display: block;
-		margin: 0.45rem 0 0.3rem;
-		font-size: 1.16rem;
+		margin: 0.5rem 0 0.45rem;
+		font-size: clamp(1.15rem, 1.7vw, 1.32rem);
 		font-weight: 700;
-		line-height: 1.15;
-		letter-spacing: -0.02em;
+		line-height: 1.1;
+		letter-spacing: -0.026em;
 		color: var(--ft-ink);
 	}
-	.ft-board-h em { font-style: normal; color: #28a6ec; }
+	/* "with us." on its own line rather than trailing the first: the
+	   headline is two short lines by design, which is what gives the card
+	   its shape */
+	.ft-board-h em { display: block; font-style: normal; color: #28a6ec; }
 	:global(html:not(.dark)) .ft-board-h em { color: #1e40af; }
 	.ft-board-intro p {
 		margin: 0;
@@ -1690,96 +1709,167 @@ const phones = [
 		color: var(--ft-faint);
 		max-width: 22rem;
 	}
+	/* ── the channels, as buttons rather than a table ──
+	   A Channel/Handle table read as a report about our accounts. These
+	   are four places to go, so they are four things to press: a ring,
+	   the mark, the name under it.
+
+	   The one thing added to that: the handle, which is what somebody
+	   needs if they are going to search for us instead of clicking. It
+	   takes the name's place under a pointer, so it costs no height and
+	   four handles are not standing under four names at all times. */
+	/* Spread, not divided into four equal columns. Equal columns are the
+	   width of the narrowest thing that has to fit, which here is the "X"
+	   button, and "Instagram" then arrives as "Instagr…". Each one takes
+	   the width of its own longest label instead — and because the name
+	   and the handle share a slot, that width already accounts for both,
+	   so nothing moves when they swap on hover. */
+	.ft-dots {
+		position: relative;
+		list-style: none;
+		margin: 0;
+		padding: 1.3rem 0.9rem 0.9rem;
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		gap: 0.35rem;
+	}
+	.ft-dots li { min-width: 0; }
+	.ft-dot {
+		position: relative;
+		display: grid;
+		justify-items: center;
+		gap: 0.45rem;
+		padding: 0.3rem 0.15rem;
+		min-width: 0;
+		text-decoration: none;
+	}
+	.ft-dot-ic {
+		display: grid;
+		place-items: center;
+		width: 2.6rem;
+		height: 2.6rem;
+		border-radius: 9999px;
+		color: var(--ft-ink);
+		background: color-mix(in srgb, var(--ft-ink) 7%, transparent);
+		border: 1px solid color-mix(in srgb, var(--ft-ink) 14%, transparent);
+		transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), color 0.25s ease,
+			background 0.25s ease, border-color 0.25s ease, box-shadow 0.3s ease;
+	}
+	/* each channel in its own colour, but only when reached for: four
+	   brand colours standing to attention would out-shout the headline
+	   above them */
+	.ft-dot:hover .ft-dot-ic,
+	.ft-dot:focus-visible .ft-dot-ic {
+		transform: translateY(-3px);
+		color: #fff;
+		background: var(--pk, #28a6ec);
+		border-color: color-mix(in srgb, var(--pk, #28a6ec) 60%, transparent);
+		box-shadow: 0 14px 26px -12px color-mix(in srgb, var(--pk, #28a6ec) 85%, transparent);
+	}
+	/* X's brand colour is almost black, which is a hole on a dark footer */
+	:global(html.dark) .ft-dot:hover .ft-dot-ic {
+		background: color-mix(in srgb, var(--pk, #28a6ec) 78%, #2a3242);
+	}
+	.ft-dot-n {
+		max-width: 100%;
+		font-size: 0.7rem;
+		line-height: 1.2;
+		text-align: center;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		color: var(--ft-faint);
+		transition: color 0.22s ease;
+	}
+	.ft-dot:hover .ft-dot-n,
+	.ft-dot:focus-visible .ft-dot-n { color: var(--ft-ink); }
+	/* The handle floats above the button rather than sitting in the row.
+	   Four buttons in a column this narrow leaves each about fifty-five
+	   pixels, and "Swizel Technologies Limited" — even shortened — does
+	   not fit in that; laid out in the row it would either clip or push
+	   the buttons apart. Out of flow it costs no width at all. */
+	.ft-dot-h {
+		position: absolute;
+		bottom: calc(100% - 0.35rem);
+		left: 50%;
+		z-index: 2;
+		padding: 0.2rem 0.5rem;
+		border-radius: 9999px;
+		font-size: 0.66rem;
+		font-weight: 700;
+		white-space: nowrap;
+		color: #fff;
+		background: color-mix(in srgb, var(--pk, #28a6ec) 92%, #05070f);
+		box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.8);
+		opacity: 0;
+		transform: translate(-50%, 4px);
+		pointer-events: none;
+		transition: opacity 0.22s ease, transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.ft-dot:hover .ft-dot-h,
+	.ft-dot:focus-visible .ft-dot-h { opacity: 1; transform: translate(-50%, 0); }
+	/* the first and last buttons sit on the card's edges, so their labels
+	   are hung from that edge instead of centred off the side of it */
+	.ft-dots li:first-child .ft-dot-h { left: 0; transform: translate(0, 4px); }
+	.ft-dots li:first-child .ft-dot:hover .ft-dot-h,
+	.ft-dots li:first-child .ft-dot:focus-visible .ft-dot-h { transform: translate(0, 0); }
+	.ft-dots li:last-child .ft-dot-h { left: auto; right: 0; transform: translate(0, 4px); }
+	.ft-dots li:last-child .ft-dot:hover .ft-dot-h,
+	.ft-dots li:last-child .ft-dot:focus-visible .ft-dot-h { transform: translate(0, 0); }
+	@media (prefers-reduced-motion: reduce) {
+		.ft-dot-h { transition: opacity 0.2s ease; }
+	}
+	/* The four-column footer squeezes this card hardest between about a
+	   thousand and twelve hundred pixels — narrower than that and the
+	   footer has already dropped to fewer columns, which gives the card
+	   its width back. "Instagram" was the first thing to clip, so the
+	   labels give up a little size and the row gives up a little padding
+	   only in that band. */
+	@media (min-width: 1000px) and (max-width: 1260px) {
+		.ft-dots { padding-inline: 0.55rem; gap: 0.15rem; }
+		.ft-dot { padding-inline: 0.05rem; }
+		.ft-dot-n { font-size: 0.63rem; letter-spacing: -0.015em; }
+		.ft-dot-ic { width: 2.4rem; height: 2.4rem; }
+	}
+	@media (max-width: 420px) {
+		.ft-dot-ic { width: 2.3rem; height: 2.3rem; }
+		.ft-dot-n { font-size: 0.66rem; }
+		.ft-dot-h { font-size: 0.62rem; }
+		.ft-dots { padding-inline: 0.7rem; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.ft-dot-ic { transition: color 0.2s ease, background 0.2s ease; }
+		.ft-dot:hover .ft-dot-ic { transform: none; }
+	}
+
 	/* the column already says "Follow the build" above every other world's
 	   object; here the card says it better, so the heading would be the
 	   same words twice */
 	:global(html[data-view='boardroom']) .ft-social-col > .ft-h,
 	:global(html:not([data-view])) .ft-social-col > .ft-h { display: none; }
-	.ft-board-head {
-		display: flex;
-		justify-content: space-between;
-		gap: 1rem;
-		padding: 0.5rem 0.85rem;
-		border-bottom: 1px solid rgba(40, 166, 236, 0.18);
-		font-size: 0.62rem;
-		font-weight: 700;
-		letter-spacing: 0.2em;
-		text-transform: uppercase;
-		color: var(--ft-faint);
-	}
-	:global(html:not(.dark)) .ft-board-head { border-bottom-color: rgba(30, 64, 175, 0.14); }
-	.ft-board-rows { list-style: none; margin: 0; padding: 0; }
-	.ft-board-row {
-		display: grid;
-		position: relative;
-		/* three columns only: the footer column is narrow, and a fourth
-		   was squeezing the handles down to a single character */
-		grid-template-columns: auto minmax(0, 1fr) auto;
-		align-items: center;
-		gap: 0.7rem;
-		padding: 0.6rem 0.85rem 0.7rem;
-		border-top: 1px solid rgba(40, 166, 236, 0.1);
-		text-decoration: none;
-		transition: background 0.25s ease;
-	}
-	:global(html:not(.dark)) .ft-board-row { border-top-color: rgba(30, 64, 175, 0.09); }
-	.ft-board-rows li:first-child .ft-board-row { border-top: 0; }
-	.ft-board-row:hover { background: color-mix(in srgb, #28a6ec 10%, transparent); }
-	.ft-board-ic {
-		display: grid;
-		place-items: center;
-		width: 26px;
-		height: 26px;
-		border-radius: 0.45rem;
-		border: 1px solid rgba(40, 166, 236, 0.2);
-		background: color-mix(in srgb, #28a6ec 10%, transparent);
-		color: #7fc7f0;
-		flex: none;
-	}
-	:global(html:not(.dark)) .ft-board-ic { color: #1e40af; border-color: rgba(30, 64, 175, 0.2); }
-	.ft-board-id { display: flex; flex-direction: column; line-height: 1.2; min-width: 0; }
-	.ft-board-id strong { font-size: 0.82rem; font-weight: 700; color: var(--ft-ink); }
-	.ft-board-id em {
-		font-style: normal;
-		font-size: 0.7rem;
-		color: #7fc7f0;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-	}
-	:global(html:not(.dark)) .ft-board-id em { color: #1e40af; }
+	/* a hairline of the channel's colour down the left edge, drawn only
+	   under a pointer — it marks the row without adding a permanent
+	   stripe to a list that is four rows long */
 	/* the shape runs along the floor of its row rather than taking a
 	   column of its own */
-	.ft-board-trend {
-		position: absolute;
-		left: 0.85rem;
-		right: 0.85rem;
-		bottom: 0.2rem;
-		width: auto;
-		height: 9px;
-		overflow: hidden;
-		pointer-events: none;
-	}
-	.ft-board-trend path {
-		fill: none;
-		stroke: #28a6ec;
-		stroke-width: 0.6;
-		stroke-linecap: round;
-		stroke-linejoin: round;
-		opacity: 0.4;
-		stroke-dasharray: 42;
-		stroke-dashoffset: 42;
-		transition: stroke-dashoffset 0.9s cubic-bezier(0.3, 0.8, 0.3, 1), opacity 0.3s ease;
-		transition-delay: calc(var(--i) * 0.09s);
-	}
 	/* the lines draw themselves the first time the footer is reached */
-	:global(.site-footer.is-seen) .ft-board-trend path { stroke-dashoffset: 0; }
-	.ft-board-row:hover .ft-board-trend path { opacity: 0.9; }
-	.ft-board-go { color: var(--ft-faint); transition: transform 0.25s ease, color 0.25s ease; }
-	.ft-board-row:hover .ft-board-go { color: #28a6ec; transform: translate(2px, -2px); }
+	/* ── the row, in the channel's own colour ──
+	   Every row wore boardroom blue, so four different places to find us
+	   looked like one list of four identical things. Each carries its own
+	   brand colour now — the tile, the handle, the line it draws and the
+	   wash it takes on hover — which is the fastest way to tell X from
+	   LinkedIn without reading a word.
+
+	   And the arrow became a word. An arrow in the corner of a row says
+	   "this goes somewhere"; "Follow" says what happens when you press it,
+	   which is the whole reason the row is in the footer. */
+	/* X's brand colour is very nearly black, which is invisible on a dark
+	   footer — it gets a light ink there and keeps its own in light mode */
+	@media (prefers-reduced-motion: reduce) {
+	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.ft-board-trend path { transition: none; stroke-dashoffset: 0; }
 	}
 
 	/* ── Studio: one work, four panes ───────────────────────────────
