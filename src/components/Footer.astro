@@ -449,12 +449,17 @@ const phones = [
 		     way across under Follow the build -->
 		<div class="ft-signal">
 			<span class="ft-signal-edge" aria-hidden="true"></span>
+			<span class="ft-signal-light" aria-hidden="true"></span>
 			<div class="ft-signal-copy">
 				<span class="ft-signal-h">
 					<Icon width={15} name="mdi:paper-airplane" />
 					Stay in the loop
 				</span>
-				<p>One short note when something ships. No noise, no selling.</p>
+				<!-- the same opening the channel card next to it uses: a
+				     headline and one sentence, so the field underneath is
+				     being offered rather than just sitting there -->
+				<strong class="ft-signal-t">One note, <em>when it matters.</em></strong>
+				<p>Only when something ships. No noise, no selling.</p>
 			</div>
 			<form id="footer-newsletter" class="ft-signal-form">
 				<span class="ft-signal-field">
@@ -906,8 +911,8 @@ const phones = [
 	.ft-signal {
 		position: relative;
 		display: grid;
-		gap: 0.9rem;
-		padding: 1.15rem 1.25rem 1.25rem;
+		gap: 0.75rem;
+		padding: 0.95rem 1.15rem 1.05rem;
 		border-radius: 1rem;
 		overflow: hidden;
 		border: 1px solid color-mix(in srgb, var(--view-accent, #18debe) 24%, var(--ft-border));
@@ -925,10 +930,38 @@ const phones = [
 		background: linear-gradient(90deg, transparent, var(--view-accent, #18debe), transparent);
 		opacity: 0.85;
 	}
-	.ft-signal-copy { display: flex; flex-direction: column; gap: 0.2rem; }
+	/* the same soft light the channel card carries in its top corner, so
+	   the two read as one pair rather than a card and a strip */
+	.ft-signal-light {
+		position: absolute;
+		top: -60%;
+		right: -6%;
+		width: 42%;
+		height: 170%;
+		pointer-events: none;
+		background: radial-gradient(
+			closest-side,
+			color-mix(in srgb, var(--view-accent, #18debe) 42%, transparent),
+			color-mix(in srgb, var(--view-accent, #18debe) 10%, transparent) 58%,
+			transparent 76%
+		);
+		opacity: 0.5;
+		filter: blur(16px);
+	}
 	/* the headline the band never had: the kicker said what the section
 	   was called and the sentence went straight to housekeeping, so
 	   there was nothing in between actually asking */
+	/* Small on purpose. The headline earns the card its shape; everything
+	   else around it is held in so the band stays a band rather than
+	   growing into a third panel. */
+	.ft-signal-t {
+		margin: 0.35rem 0 0.25rem;
+		font-size: clamp(1.15rem, 1.7vw, 1.32rem);
+		font-weight: 700;
+		line-height: 1.1;
+		letter-spacing: -0.026em;
+		color: var(--ft-ink);
+	}
 	.ft-signal-h {
 		display: inline-flex;
 		align-items: center;
@@ -939,6 +972,10 @@ const phones = [
 		text-transform: uppercase;
 		color: var(--view-accent, #18debe);
 	}
+	:global(html:not(.dark)) .ft-signal-light { opacity: 0.28; }
+	.ft-signal-t em { display: block; font-style: normal; color: var(--view-accent, #18debe); }
+	:global(html:not(.dark)) .ft-signal-t em { color: #1e40af; }
+	.ft-signal-copy { position: relative; display: flex; flex-direction: column; gap: 0.2rem; }
 	.ft-signal-copy p {
 		margin: 0;
 		font-size: 0.82rem;
