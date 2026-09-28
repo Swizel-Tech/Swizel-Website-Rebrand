@@ -44,22 +44,33 @@ const numbers = [
 // Each promise gets a photograph of it happening and a page to follow.
 // On the reference a four-up is never four icons on an empty field; it is
 // four cards, each with a picture, a name, a line and a link.
-const promiseArt: Record<string, { img: string; pos: string; href: string; go: string }> = {
+const promiseArt: Record<
+	string,
+	{ img: string; pos: string; href: string; go: string; line: string; lineSm: string }
+> = {
 	'We build for the user': {
 		img: '/images/builder/over-the-shoulder.jpg', pos: '46% 38%',
 		href: '/services/design', go: 'How we design',
+		line: 'Zero to market, shaped around whoever actually uses it, not whoever signs for it.',
+		lineSm: 'Shaped around whoever actually uses the thing.',
 	},
 	'We ship when we said': {
 		img: '/images/builder/at-the-keys.jpg', pos: '58% 42%',
 		href: '/services/development', go: 'How we build',
+		line: 'A date is a date. Ninety-eight per cent on time, and we count every one.',
+		lineSm: 'A date is a date. 98% on time, and we count.',
 	},
 	'We stay long after launch': {
 		img: '/images/marketing/the-floor.jpg', pos: '50% 50%',
 		href: '/services/maintenance', go: 'How we maintain',
+		line: 'Launch day is the middle of the job. We market it, maintain it and keep it growing.',
+		lineSm: 'Launch day is the middle of the job, not the end.',
 	},
 	'We give away the playbook': {
 		img: '/images/campus/class-in-session.jpg', pos: '50% 42%',
 		href: '/programs', go: 'See the programmes',
+		line: 'Knowledge should not sit in a silo. Open books and open mentorship, always.',
+		lineSm: 'Open books and open mentorship, for everyone.',
 	},
 };
 
@@ -434,6 +445,9 @@ const currentYear = new Date().getFullYear();
 	<section class="ab-vals bd-reveal">
 		<h2 class="ab-h2">Four promises, and we are held to every one.</h2>
 		<p class="ab-vals-sub">{MISSION_SUPPORT}</p>
+		<p class="ab-vals-sub ab-vals-sub--sm">
+			One team, from the blank page to the product's tenth year.
+		</p>
 		<ul class="ab-vrow">
 			{
 				CORE_VALUES.map((v, i) => {
@@ -454,7 +468,8 @@ const currentYear = new Date().getFullYear();
 									</span>
 								</span>
 								<h3 class="ab-val-t">{v.name}</h3>
-								<p class="ab-val-d">{v.desc}</p>
+								<p class="ab-val-d">{art?.line ?? v.desc}</p>
+								<p class="ab-val-d ab-val-d--sm">{art?.lineSm ?? v.desc}</p>
 								<span class="ab-val-go">
 									{art?.go ?? 'Learn more'}
 									<Icon width={13} name="mdi:chevron-right" />
@@ -3292,6 +3307,7 @@ const currentYear = new Date().getFullYear();
 		line-height: 1.55;
 		color: var(--bd-muted);
 	}
+	.ab-val-d--sm { display: none; }
 	.ab-val-go {
 		display: inline-flex;
 		align-items: center;
@@ -3366,7 +3382,8 @@ const currentYear = new Date().getFullYear();
 		.ab-panel-shot { min-height: 5rem; margin-top: 0.8rem; }
 		.ab-vrow { gap: 0.5rem; }
 		.ab-val-t { font-size: 0.82rem; margin-top: 0.5rem; }
-		.ab-val-d { font-size: 0.68rem; line-height: 1.4; }
+		.ab-val-card .ab-val-d { display: none; }
+		.ab-val-card .ab-val-d--sm { display: block; }
 		.ab-val-ic { width: 1.6rem; height: 1.6rem; border-radius: 0.5rem; left: 0.4rem; bottom: 0.4rem; }
 		.ab-val-ic :global(svg) { width: 13px; height: 13px; }
 		.ab-val-go { font-size: 0.68rem; margin-top: 0.4rem; }
@@ -3602,4 +3619,37 @@ const currentYear = new Date().getFullYear();
 		-webkit-text-fill-color: transparent;
 	}
 
+
+	/* ═══ two lines under every promise ════════════════════════════════
+	   Which line reads in two depends on how wide the card is, and the
+	   card width does not fall monotonically with the viewport: four
+	   columns narrow to about 185px by 1024, then the layout drops to two
+	   columns at 860 and the card jumps back up to 370. So the long line
+	   sets in two above 1100 and again between 860 and 620, and the short
+	   line covers the two narrow stretches in between and below. Measured
+	   across ten widths rather than assumed from three.
+	   Kept at the end of the sheet, because a media query carries no extra
+	   specificity and only source order settles it.
+	   ══════════════════════════════════════════════════════════════════ */
+	.ab-vals-sub--sm { display: none; }
+	/* The card width does not fall with the viewport: four columns narrow
+	   to about 185px by 1024, the grid drops to two at 860 and the card
+	   jumps back to 400, then narrows again to 165 by 360. So the short
+	   line covers the two narrow stretches and the long line the two wide
+	   ones. Measured across ten widths rather than assumed from three. */
+	@media (max-width: 1100px) and (min-width: 861px) {
+		.ab-val-card .ab-val-d { display: none; }
+		.ab-val-card .ab-val-d--sm { display: block; }
+	}
+	@media (max-width: 620px) {
+		/* the supporting line ran to three at this width */
+		.ab-vals .ab-vals-sub { display: none; }
+		.ab-vals .ab-vals-sub--sm { display: block; }
+	}
+	/* the type comes down only once the card really is small; at 620 it is
+	   still 290px wide and the smaller size turned two lines into one */
+	@media (max-width: 520px) {
+		.ab-val-card .ab-val-d--sm { font-size: 0.68rem; line-height: 1.4; }
+		.ab-val-t { font-size: 0.82rem; margin-top: 0.5rem; }
+	}
 </style>
