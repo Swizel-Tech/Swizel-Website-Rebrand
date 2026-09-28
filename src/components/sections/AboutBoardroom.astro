@@ -3742,7 +3742,9 @@ const currentYear = new Date().getFullYear();
 		padding-inline: clamp(1rem, 3vw, 2rem);
 		overflow-x: auto;
 		overscroll-behavior-x: contain;
-		scroll-snap-type: x proximity;
+		/* no snapping: the rail drifts by a fraction of a pixel a frame,
+		   and a proximity snap pulls every one of those steps straight
+		   back to the nearest stop, so it never moves at all */
 		scrollbar-width: none;
 		-webkit-mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent);
 		mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent);
@@ -3778,7 +3780,6 @@ const currentYear = new Date().getFullYear();
 	}
 	.bd-rail-stop {
 		position: relative;
-		scroll-snap-align: center;
 		padding-right: clamp(0.4rem, 1vw, 0.8rem);
 	}
 	.bd-rail-node {
@@ -3937,6 +3938,7 @@ const currentYear = new Date().getFullYear();
 	.bd-cult-acts {
 		display: flex;
 		align-items: center;
+		justify-content: center;
 		flex-wrap: wrap;
 		gap: 0.8rem 1.2rem;
 		margin-top: clamp(0.9rem, 2vw, 1.3rem);

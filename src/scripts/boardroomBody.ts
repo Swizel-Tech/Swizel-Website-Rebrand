@@ -154,6 +154,87 @@ export function initBoardroomBody() {
 		}, 3500);
 	});
 
+	// ── the road so far ──
+	// The rail drifts on its own so the later years are not hidden off the
+	// right edge of a screen that never gets dragged. It only moves while
+	// the section is on screen, it stops the moment a hand is on it, and
+	// when it reaches the end it eases back to the start rather than
+	// jumping — a timeline that snaps back to 2019 reads as broken.
+	const rail = body.querySelector<HTMLElement>('.bd-rail-wrap');
+	if (rail && !reduce) {
+		const SPEED = 0.28; // pixels per frame, about 17 a second
+		let raf = 0;
+		let held = false;
+		let seen = false;
+		let waitUntil = 0;
+		let back = false;
+		// scrollLeft is read back rounded, so adding a fraction of a pixel
+		// to it every frame rounds to nothing and the rail never moves.
+		// The position is kept here as a float and written whole.
+		let pos = 0;
+
+		const room = () => rail.scrollWidth - rail.clientWidth;
+
+		const step = () => {
+			raf = 0;
+			if (!seen || held || document.hidden) return queue();
+			if (Date.now() < waitUntil) return queue();
+			const max = room();
+			if (max < 8) return queue();
+
+			// a hand may have dragged it since the last frame
+			if (Math.abs(rail.scrollLeft - pos) > 2) pos = rail.scrollLeft;
+			pos += back ? -SPEED * 2.4 : SPEED;
+			pos = Math.max(0, Math.min(max, pos));
+			rail.scrollLeft = pos;
+
+			if (!back && pos >= max - 1) {
+				// hold on the last year for a beat, then walk back
+				back = true;
+				waitUntil = Date.now() + 1400;
+			} else if (back && pos <= 1) {
+				back = false;
+				waitUntil = Date.now() + 900;
+			}
+			queue();
+		};
+		const queue = () => {
+			if (!raf) raf = requestAnimationFrame(step);
+		};
+
+		// a hand on the rail owns it; the drift resumes a moment after
+		let release = 0;
+		const hold = () => {
+			held = true;
+			window.clearTimeout(release);
+		};
+		const loosen = () => {
+			window.clearTimeout(release);
+			release = window.setTimeout(() => {
+				held = false;
+				queue();
+			}, 2200);
+		};
+		rail.addEventListener('pointerenter', hold);
+		rail.addEventListener('pointerleave', loosen);
+		rail.addEventListener('touchstart', hold, { passive: true });
+		rail.addEventListener('touchend', loosen, { passive: true });
+		rail.addEventListener('wheel', () => { hold(); loosen(); }, { passive: true });
+
+		if ('IntersectionObserver' in window) {
+			new IntersectionObserver(
+				(entries) => {
+					seen = !!entries[0]?.isIntersecting;
+					if (seen) queue();
+				},
+				{ threshold: 0.2 }
+			).observe(rail);
+		} else {
+			seen = true;
+		}
+		queue();
+	}
+
 	// ── the numbers band ──
 	// The lines are drawn, the bars filled and the sweep started only once
 	// the band is actually on screen, so a visitor never scrolls down to
