@@ -7,6 +7,7 @@ import { Icon } from 'astro-icon/components';
 import { disciplines } from '../../data/disciplines';
 import FilmPlayer from '../FilmPlayer.astro';
 import DoWall from './DoWall.astro';
+import CardShuffle from '../CardShuffle.astro';
 
 // Three figures for the floor of the opening panel.
 const glance = [
@@ -220,21 +221,21 @@ const sectors = [
 			<h2 class="bd-h bd-h--center">The tools in our hands.</h2>
 			<p class="bd-p bd-p--center">A modern, proven toolkit, picked for the job, not for the hype.</p>
 		</div>
-		<div class="svc-stack-grid">
-			{
-				stack.map((cat) => (
-					<div class="svc-stack-cat">
-						<span class="svc-stack-head">
-							<span class="svc-stack-ic"><Icon width={18} name={cat.icon} /></span>
-							<span class="svc-stack-label">{cat.group}</span>
-							<span class="svc-stack-count">{cat.tools.length}</span>
-						</span>
-						<div class="svc-stack-chips">
-							{cat.tools.map((t) => <span class="svc-chip">{t}</span>)}
-						</div>
-					</div>
-				))
-			}
+		{/* Nine boxes of pills is a wall of reading. The same hand of
+		    playing cards the disciplines are dealt as, one card a group,
+		    bigger here because a card holding eight tool names needs the
+		    room. */}
+		<div class="svc-deck bd-reveal">
+			<CardShuffle
+				variant="deck"
+				label="The stack"
+				every={6}
+				items={stack.map((cat) => ({
+					icon: cat.icon,
+					title: cat.group,
+					desc: cat.tools.join(' · '),
+				}))}
+			/>
 		</div>
 		<p class="svc-stack-note">…and whatever else the job calls for. We pick tools to fit your product, not our comfort zone.</p>
 	</section>
@@ -1522,5 +1523,40 @@ const sectors = [
 	}
 	@media (prefers-reduced-motion: reduce) {
 		.ab-pill:hover { transform: none; }
+	}
+
+	/* ═══ the stack, dealt ═════════════════════════════════════════════
+	   Nine framed boxes of pills is a wall of reading, and every one of
+	   them said the same thing in the same shape. It is the hand the
+	   disciplines are dealt as — bigger here, because a card carrying
+	   eight tool names needs more room than one carrying a sentence.
+	   ══════════════════════════════════════════════════════════════════ */
+	.svc-deck { margin-top: clamp(1.4rem, 3vw, 2.4rem); }
+	.svc-deck :global(.shuf__stage) {
+		width: min(880px, 100%);
+		min-height: clamp(22rem, 46vw, 29rem);
+	}
+	.svc-deck :global(.shuf--deck .shuf__card) {
+		width: clamp(11rem, 26vw, 16rem);
+		aspect-ratio: 5 / 6.6;
+		gap: 0.5rem;
+		padding: clamp(1.1rem, 2.2vw, 1.6rem);
+	}
+	.svc-deck :global(.shuf--deck .shuf__t) { font-size: clamp(0.95rem, 1.6vw, 1.2rem); }
+	/* the tools are a list, so they set flush rather than in italic */
+	.svc-deck :global(.shuf--deck .shuf__d) {
+		max-width: 22ch;
+		font-style: normal;
+		font-size: clamp(0.72rem, 1.05vw, 0.86rem);
+		line-height: 1.5;
+	}
+	.svc-deck :global(.shuf--deck .shuf__ic) {
+		width: 2.6rem;
+		height: 2.6rem;
+		border-radius: 0.75rem;
+	}
+	@media (max-width: 720px) {
+		.svc-deck :global(.shuf__stage) { min-height: clamp(17rem, 62vw, 23rem); }
+		.svc-deck :global(.shuf--deck .shuf__card) { width: clamp(9rem, 44vw, 12.5rem); }
 	}
 </style>
