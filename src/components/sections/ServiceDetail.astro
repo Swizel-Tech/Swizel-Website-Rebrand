@@ -853,7 +853,9 @@ const slotIsFilm = slot.kind === 'film';
 		.bd-cta-copy { padding-inline: 1rem; }
 		.bd-cta-act {
 			flex-wrap: nowrap;
-			gap: 0.55rem;
+			/* the number is the loudest thing on this row now, so it gets
+			   air between it and the button rather than sitting against it */
+			gap: 1rem;
 			margin-top: 1.2rem;
 		}
 		.bd-cta-go {
@@ -875,8 +877,9 @@ const slotIsFilm = slot.kind === 'film';
 		.bd-call { flex: 0 1 auto; min-width: 0; }
 		.bd-call-hint { display: none; }
 		.bd-call-num {
-			font-size: 1.05rem;
-			font-weight: 800;
+			font-size: 1.22rem;
+			font-weight: 900;
+			letter-spacing: -0.01em;
 			gap: 0.35rem;
 			white-space: nowrap;
 		}
@@ -888,8 +891,8 @@ const slotIsFilm = slot.kind === 'film';
 	   no explaining — and both come down one more step. Measured to clear
 	   the tile by 30px at 360 rather than sitting on the edge. */
 	@media (max-width: 460px) {
-		.bd-cta-go { font-size: 0.8rem; padding: 0 0.85rem; min-height: 2.75rem; }
-		.bd-call-num { font-size: 0.98rem; }
+		.bd-cta-go { font-size: 0.78rem; padding: 0 0.8rem; min-height: 2.7rem; }
+		.bd-call-num { font-size: 1.1rem; }
 		.bd-call-num :global(svg) { display: none; }
 	}
 

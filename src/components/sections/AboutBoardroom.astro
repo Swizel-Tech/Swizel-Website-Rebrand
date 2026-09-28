@@ -353,7 +353,7 @@ const currentYear = new Date().getFullYear();
 					Ninety seconds inside the studio that builds it with you.
 				</p>
 			</div>
-			<figure class="ab-screen">
+			<figure class="ab-screen" data-film-expand>
 				<FilmPlayer
 					videoId="p563SFG9Nwg"
 					label="You have an idea? We have the technology to help you build it"
@@ -361,6 +361,10 @@ const currentYear = new Date().getFullYear();
 					cover
 					class="ab-screen-film"
 				/>
+				<button class="ab-screen-open" type="button" data-film-expand-btn>
+					<Icon width={15} name="mdi:arrow-expand-all" />
+					Tap to expand
+				</button>
 				<figcaption class="ab-screen-badge">
 					<Icon width={15} name="mdi:play-circle-outline" />
 					<span>Swizel</span>
@@ -4341,7 +4345,9 @@ const currentYear = new Date().getFullYear();
 		.bd-cta-copy { padding-inline: 1rem; }
 		.bd-cta-act {
 			flex-wrap: nowrap;
-			gap: 0.55rem;
+			/* the number is the loudest thing on this row now, so it gets
+			   air between it and the button rather than sitting against it */
+			gap: 1rem;
 			margin-top: 1.2rem;
 		}
 		.bd-cta-go {
@@ -4363,8 +4369,9 @@ const currentYear = new Date().getFullYear();
 		.bd-call { flex: 0 1 auto; min-width: 0; }
 		.bd-call-hint { display: none; }
 		.bd-call-num {
-			font-size: 1.05rem;
-			font-weight: 800;
+			font-size: 1.22rem;
+			font-weight: 900;
+			letter-spacing: -0.01em;
 			gap: 0.35rem;
 			white-space: nowrap;
 		}
@@ -4376,8 +4383,8 @@ const currentYear = new Date().getFullYear();
 	   no explaining — and both come down one more step. Measured to clear
 	   the tile by 30px at 360 rather than sitting on the edge. */
 	@media (max-width: 460px) {
-		.bd-cta-go { font-size: 0.8rem; padding: 0 0.85rem; min-height: 2.75rem; }
-		.bd-call-num { font-size: 0.98rem; }
+		.bd-cta-go { font-size: 0.78rem; padding: 0 0.8rem; min-height: 2.7rem; }
+		.bd-call-num { font-size: 1.1rem; }
 		.bd-call-num :global(svg) { display: none; }
 	}
 
@@ -4476,5 +4483,45 @@ const currentYear = new Date().getFullYear();
 	@media (prefers-reduced-motion: reduce) {
 		.bd-shot-img,
 		.bd-shot-tile:hover .bd-shot-img { transition: none; transform: none; }
+	}
+
+	/* ── tap to expand ──
+	   On a phone the film in this panel is about a third of the screen
+	   wide: fine as a picture, poor as a film. This says so, and presses
+	   the player's own full-screen and play controls in order, so
+	   expanding here behaves exactly as it does anywhere else. */
+	.ab-screen-open {
+		position: absolute;
+		top: clamp(0.5rem, 1.4vw, 0.9rem);
+		right: clamp(0.5rem, 1.4vw, 0.9rem);
+		z-index: 5;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		padding: 0.34rem 0.7rem 0.34rem 0.55rem;
+		border-radius: 999px;
+		border: 1px solid rgba(255, 255, 255, 0.28);
+		background: rgba(6, 9, 16, 0.6);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		color: #fff;
+		font-size: 0.68rem;
+		font-weight: 650;
+		white-space: nowrap;
+		cursor: pointer;
+		transition: background 0.25s ease, transform 0.25s ease;
+	}
+	.ab-screen-open:hover { background: rgba(6, 9, 16, 0.85); transform: translateY(-1px); }
+	/* it breathes on a touch screen, where it is most needed and there is
+	   no hover to discover it with */
+	@media (hover: none) {
+		.ab-screen-open { animation: ab-open-beat 2.8s ease-in-out infinite; }
+	}
+	@keyframes ab-open-beat {
+		0%, 100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.35); }
+		60% { box-shadow: 0 0 0 8px rgba(255, 255, 255, 0); }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.ab-screen-open { animation: none; }
 	}
 </style>

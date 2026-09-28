@@ -237,9 +237,16 @@ const cur = sectorCursor[p.sector] ?? 'repo';
 	<!-- ── Next project ────────────────────────────────────── -->
 	{next && (
 		<a href={`/work/${next.slug}`} class="cs-next bd-reveal" style={`--c:${next.color}`} data-cursor="repo">
-			<span class="cs-next-label">Next case study</span>
-			<span class="cs-next-name">{next.name} <Icon width={22} name="mdi:arrow-right" /></span>
-			<span class="cs-next-tag">{next.tagline}</span>
+			<span class="cs-next-copy">
+				<span class="cs-next-label">Next case study</span>
+				<span class="cs-next-name">{next.name} <Icon width={22} name="mdi:arrow-right" /></span>
+				<span class="cs-next-tag">{next.tagline}</span>
+			</span>
+			{/* the next project's own screen, so the card shows what it is
+			    sending you to rather than leaving half of itself empty */}
+			<span class="cs-next-shot" aria-hidden="true">
+				<img src={next.img} alt="" loading="lazy" decoding="async" />
+			</span>
 		</a>
 	)}
 </div>
@@ -468,13 +475,40 @@ const cur = sectorCursor[p.sector] ?? 'repo';
 	.cs-tip-h { font-size: clamp(1.9rem, 4.5vw, 3.2rem); max-width: 16ch; margin-inline: auto; }
 
 	/* ── Next ── */
-	.cs-next { display: flex; flex-direction: column; gap: 0.4rem; max-width: 80rem; margin: 0 auto; padding: clamp(2rem, 5vw, 3rem) clamp(1.5rem, 4vw, 3rem); border-radius: 1.75rem; background: radial-gradient(620px 300px at 80% 50%, color-mix(in srgb, var(--c) 22%, transparent), transparent 65%), var(--bd-glass); border: 1px solid color-mix(in srgb, var(--c) 26%, var(--bd-glass-border)); box-shadow: var(--bd-shadow); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); transition: transform 0.35s ease, border-color 0.35s ease; }
+	.cs-next { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr); align-items: center; gap: clamp(1.2rem, 3vw, 2.5rem); max-width: 80rem; margin: 0 auto; padding: clamp(2rem, 5vw, 3rem) clamp(1.5rem, 4vw, 3rem); border-radius: 1.75rem; background: radial-gradient(620px 300px at 80% 50%, color-mix(in srgb, var(--c) 22%, transparent), transparent 65%), var(--bd-glass); border: 1px solid color-mix(in srgb, var(--c) 26%, var(--bd-glass-border)); box-shadow: var(--bd-shadow); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); transition: transform 0.35s ease, border-color 0.35s ease; }
 	.cs-next:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--c) 50%, var(--bd-glass-border)); }
 	.cs-next-label { font-size: 0.74rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--c); }
 	.cs-next-name { display: inline-flex; align-items: center; gap: 0.6rem; font-size: clamp(1.6rem, 3.5vw, 2.4rem); font-weight: 700; letter-spacing: -0.02em; }
 	.cs-next-name :global(svg) { color: var(--c); transition: transform 0.3s ease; }
 	.cs-next:hover .cs-next-name :global(svg) { transform: translateX(5px); }
 	.cs-next-tag { font-size: 0.95rem; color: var(--bd-muted); }
+	.cs-next-copy { display: flex; flex-direction: column; gap: 0.4rem; min-width: 0; }
+	.cs-next-shot {
+		position: relative;
+		display: block;
+		aspect-ratio: 16 / 10;
+		border-radius: 1rem;
+		overflow: hidden;
+		border: 1px solid color-mix(in srgb, var(--c) 24%, var(--bd-glass-border));
+		background: #05070f;
+	}
+	.cs-next-shot img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: 50% 0;
+		transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.cs-next:hover .cs-next-shot img { transform: scale(1.05); }
+	@media (max-width: 720px) {
+		.cs-next { grid-template-columns: 1fr; }
+		.cs-next-shot { aspect-ratio: 16 / 9; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.cs-next-shot img, .cs-next:hover .cs-next-shot img { transition: none; transform: none; }
+	}
 
 	/* ── Reveal ── */
 	.bd-reveal { opacity: 0; transform: translateY(26px); transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
