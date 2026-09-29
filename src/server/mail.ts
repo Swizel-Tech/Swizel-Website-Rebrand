@@ -16,6 +16,23 @@ export interface MailConfig {
 	toCareers: string;
 }
 
+/**
+ * Where the values actually come from at runtime.
+ *
+ * Astro replaces `import.meta.env.SOMETHING` at build time for anything
+ * it knows about, which on Vercel means a function can end up holding
+ * the value that existed when the site was built — or nothing at all,
+ * if the variable was added afterwards. `process.env` is read live by
+ * the function on every invocation, which is what we want, so it is
+ * asked first and import.meta.env is only the fallback for local dev.
+ */
+export function env(): Record<string, string | undefined> {
+	const fromProcess =
+		typeof process !== 'undefined' && process.env ? process.env : {};
+	const fromAstro = (import.meta.env ?? {}) as Record<string, string | undefined>;
+	return { ...fromAstro, ...fromProcess };
+}
+
 /** Read the environment once, and say exactly what is missing if it is. */
 export function readConfig(env: Record<string, string | undefined>): MailConfig | string {
 	const host = env.SMTP_HOST?.trim();

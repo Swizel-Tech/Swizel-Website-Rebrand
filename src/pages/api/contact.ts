@@ -5,7 +5,7 @@
 // point of moving off a third-party sender — it comes from
 // contact@swizel.co, so it lands in an inbox rather than a spam folder.
 import type { APIRoute } from 'astro';
-import { readConfig, transport, oneLine } from '../../server/mail';
+import { readConfig, transport, oneLine, env } from '../../server/mail';
 import { contactReply, teamNotice } from '../../server/emails';
 import { checkName, checkEmail, checkPhone, checkMessage } from '../../scripts/validate';
 
@@ -43,7 +43,7 @@ export const POST: APIRoute = async ({ request }) => {
 		checkMessage(message, { minWords: 5, maxChars: 4000 });
 	if (bad) return json({ ok: false, error: bad }, 400);
 
-	const cfg = readConfig(import.meta.env as unknown as Record<string, string | undefined>);
+	const cfg = readConfig(env());
 	if (typeof cfg === 'string') {
 		console.error('[contact]', cfg);
 		return json(

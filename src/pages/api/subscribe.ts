@@ -1,6 +1,6 @@
 // Joining the list, from any of the six sign-up boxes on the site.
 import type { APIRoute } from 'astro';
-import { readConfig, transport, oneLine } from '../../server/mail';
+import { readConfig, transport, oneLine, env } from '../../server/mail';
 import { subscribeReply, teamNotice } from '../../server/emails';
 import { checkEmail } from '../../scripts/validate';
 
@@ -26,7 +26,7 @@ export const POST: APIRoute = async ({ request }) => {
 	const bad = checkEmail(email);
 	if (bad) return json({ ok: false, error: bad }, 400);
 
-	const cfg = readConfig(import.meta.env as unknown as Record<string, string | undefined>);
+	const cfg = readConfig(env());
 	if (typeof cfg === 'string') {
 		console.error('[subscribe]', cfg);
 		return json({ ok: false, error: 'Our mail is being set up. Please write to contact@swizel.co.' }, 503);
