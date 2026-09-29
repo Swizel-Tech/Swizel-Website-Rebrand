@@ -9,6 +9,7 @@ category: EdTech
 author: Swizel Team
 featured: false
 draft: false
+seoTitle: 'E-Learning in Nigerian Education'
 metaDescription: 'What e-learning and virtual schooling actually mean for Nigerian students and schools — the advantages, the real obstacles, and where the gap is closing.'
 heroAlt: 'Nigerian schoolchildren sharing a tablet during a lesson'
 ---

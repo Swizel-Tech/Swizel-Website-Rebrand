@@ -73,10 +73,17 @@ const websiteSchema = {
 	publisher: { '@id': 'https://swizel.co/#organization' },
 };
 
-// Organization structured data for rich results in Google.
+// Structured data for rich results in Google.
+//
+// The type matters more than it looks. An Organization tells Google what
+// the company is; it does not tell it where the company *is*, so it can
+// never surface for "software company in Abuja". ProfessionalService is
+// a LocalBusiness, which is the family Google draws local results from —
+// and it needs a street, coordinates, hours and a service area to be
+// taken seriously, all of which are below.
 const organizationSchema = {
 	'@context': 'https://schema.org',
-	'@type': 'Organization',
+	'@type': ['Organization', 'ProfessionalService'],
 	'@id': 'https://swizel.co/#organization',
 	name: 'Swizel Technologies Limited',
 	legalName: 'Swizel Technologies Limited',
@@ -92,9 +99,66 @@ const organizationSchema = {
 	areaServed: 'Worldwide',
 	address: {
 		'@type': 'PostalAddress',
+		streetAddress: '2155 Peculiar Estate, Lokogoma',
 		addressLocality: 'Abuja',
 		addressRegion: 'FCT',
+		postalCode: '900107',
 		addressCountry: 'NG',
+	},
+	// Lokogoma, Abuja. Coordinates are what put a business on a map result.
+	geo: {
+		'@type': 'GeoCoordinates',
+		latitude: 8.9806,
+		longitude: 7.4165,
+	},
+	hasMap: 'https://www.google.com/maps/search/?api=1&query=Swizel+Technologies+Lokogoma+Abuja',
+	telephone: '+234-810-020-4570',
+	priceRange: '$$',
+	currenciesAccepted: 'NGN, USD, GBP, EUR',
+	openingHoursSpecification: [
+		{
+			'@type': 'OpeningHoursSpecification',
+			dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+			opens: '09:00',
+			closes: '18:00',
+		},
+	],
+	// Named places, not "Worldwide": a country and a city are things Google
+	// can match a search against; an adverb is not.
+	areaServed: [
+		{ '@type': 'City', name: 'Abuja' },
+		{ '@type': 'City', name: 'Lagos' },
+		{ '@type': 'Country', name: 'Nigeria' },
+		{ '@type': 'Country', name: 'Ireland' },
+		{ '@type': 'Country', name: 'United Kingdom' },
+		{ '@type': 'Country', name: 'United States' },
+	],
+	// The services themselves, so the company can be matched to the thing
+	// somebody is actually searching for rather than only to its own name.
+	hasOfferCatalog: {
+		'@type': 'OfferCatalog',
+		name: 'Software, design and marketing',
+		itemListElement: [
+			['Web development', 'Websites, web apps, PWAs and e-commerce, built to scale.', '/services/web-development'],
+			['Mobile app development', 'iOS and Android apps, designed, built and maintained.', '/services/mobile-development'],
+			['Product design', 'Interfaces, brand and the thinking behind both.', '/services/design'],
+			['Digital marketing', 'Search, social and campaigns that earn attention.', '/services/digital-marketing'],
+			['Software maintenance', 'Keeping shipped software running and earning.', '/services/maintenance'],
+			['AI automation', 'Putting AI to work on the parts of a business that repeat.', '/services/ai-automation'],
+		].map(([name, description, path]) => ({
+			'@type': 'Offer',
+			itemOffered: {
+				'@type': 'Service',
+				name,
+				description,
+				url: `https://swizel.co${path}`,
+				provider: { '@id': 'https://swizel.co/#organization' },
+				areaServed: [
+					{ '@type': 'City', name: 'Abuja' },
+					{ '@type': 'Country', name: 'Nigeria' },
+				],
+			},
+		})),
 	},
 	contactPoint: {
 		'@type': 'ContactPoint',
@@ -113,7 +177,7 @@ const organizationSchema = {
 		'AI automation',
 	],
 	description:
-		'Swizel Technologies Limited helps ambitious businesses anywhere turn bold ideas into products people love. We design, build, market and maintain software, from launch to legacy.',
+		'Swizel Technologies Limited is a software development company in Abuja, Nigeria. We design, build, market and maintain websites, web platforms and mobile apps for businesses in Nigeria and beyond.',
 	email: 'contact@swizel.co',
 	sameAs: [
 		'https://twitter.com/swizelhq',

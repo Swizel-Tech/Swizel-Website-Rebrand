@@ -17,7 +17,19 @@ export function getStaticPaths() {
 }
 
 const { discipline, others } = Astro.props;
-const pageTitle = `${discipline.title} | Swizel Services`;
+// "Design | Swizel Services" is a title only somebody who already knows
+// Swizel would ever search for. Each discipline gets the phrase a
+// stranger would actually type, with the place in it — these are the six
+// pages most likely to answer "app developers in Abuja" and the like.
+const SEARCH_TITLES: Record<string, string> = {
+	development: 'Web & Mobile App Development in Abuja, Nigeria',
+	design: 'UI/UX & Product Design Agency in Abuja, Nigeria',
+	marketing: 'Digital Marketing Agency in Abuja, Nigeria',
+	strategy: 'Product Strategy & Consulting in Abuja, Nigeria',
+	maintenance: 'Website & App Maintenance Services in Nigeria',
+	'ai-automation': 'AI & Automation Services for Businesses in Nigeria',
+};
+const pageTitle = `${SEARCH_TITLES[discipline.slug] ?? discipline.title} | Swizel`;
 const pageDescription = discipline.heroDesc;
 
 // One discipline, described to search engines the way it is described on the
@@ -31,9 +43,12 @@ const serviceSchema = {
 	description: discipline.overview || discipline.heroDesc,
 	serviceType: discipline.title,
 	provider: { '@id': 'https://swizel.co/#organization' },
+	// A city and a country are things a search can be matched against;
+	// "Worldwide" is an adverb and matches nothing.
 	areaServed: [
+		{ '@type': 'City', name: 'Abuja' },
+		{ '@type': 'City', name: 'Lagos' },
 		{ '@type': 'Country', name: 'Nigeria' },
-		{ '@type': 'Place', name: 'Worldwide' },
 	],
 	url: `https://swizel.co/services/${discipline.slug}/`,
 	audience: { '@type': 'BusinessAudience', name: 'Founders and businesses' },

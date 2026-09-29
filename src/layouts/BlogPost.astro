@@ -81,7 +81,10 @@ const wa = `https://wa.me/?text=${encodeURIComponent(title + ' ' + shareUrl)}`;
 ---
 
 <MainLayout
-	title={`${searchTitle} | Swizel Technologies Limited`}
+	{/* "| Swizel Technologies Limited" is 30 characters of suffix on a
+	    title Google cuts at about 60, which pushed every post's actual
+	    headline out of the result. The short name says the same thing. */}
+	title={`${searchTitle} | Swizel`}
 	description={searchDesc}
 	image={heroImage}
 	type="article"
