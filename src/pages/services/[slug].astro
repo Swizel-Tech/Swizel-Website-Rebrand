@@ -22,12 +22,12 @@ const { discipline, others } = Astro.props;
 // stranger would actually type, with the place in it — these are the six
 // pages most likely to answer "app developers in Abuja" and the like.
 const SEARCH_TITLES: Record<string, string> = {
-	development: 'Web & Mobile App Development in Abuja, Nigeria',
-	design: 'UI/UX & Product Design Agency in Abuja, Nigeria',
-	marketing: 'Digital Marketing Agency in Abuja, Nigeria',
-	strategy: 'Product Strategy & Consulting in Abuja, Nigeria',
-	maintenance: 'Website & App Maintenance Services in Nigeria',
-	'ai-automation': 'AI & Automation Services for Businesses in Nigeria',
+	development: 'Web & Mobile App Development Company in Nigeria',
+	design: 'UI/UX & Product Design Agency in Nigeria',
+	marketing: 'Digital Marketing Agency in Nigeria',
+	strategy: 'Product Strategy & Consulting for Founders',
+	maintenance: 'Website & App Maintenance Services',
+	'ai-automation': 'AI & Automation Services for Business',
 };
 const pageTitle = `${SEARCH_TITLES[discipline.slug] ?? discipline.title} | Swizel`;
 const pageDescription = discipline.heroDesc;
@@ -44,11 +44,16 @@ const serviceSchema = {
 	serviceType: discipline.title,
 	provider: { '@id': 'https://swizel.co/#organization' },
 	// A city and a country are things a search can be matched against;
-	// "Worldwide" is an adverb and matches nothing.
+	// "Worldwide" is an adverb and matches nothing. Every country there is
+	// an office in is named, so the page can answer a search from any of
+	// them rather than only from Abuja.
 	areaServed: [
 		{ '@type': 'City', name: 'Abuja' },
 		{ '@type': 'City', name: 'Lagos' },
 		{ '@type': 'Country', name: 'Nigeria' },
+		{ '@type': 'Country', name: 'Ireland' },
+		{ '@type': 'Country', name: 'United Kingdom' },
+		{ '@type': 'Country', name: 'United States' },
 	],
 	url: `https://swizel.co/services/${discipline.slug}/`,
 	audience: { '@type': 'BusinessAudience', name: 'Founders and businesses' },

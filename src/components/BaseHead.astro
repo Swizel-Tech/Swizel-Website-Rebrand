@@ -156,6 +156,8 @@ const organizationSchema = {
 				areaServed: [
 					{ '@type': 'City', name: 'Abuja' },
 					{ '@type': 'Country', name: 'Nigeria' },
+					{ '@type': 'Country', name: 'United Kingdom' },
+					{ '@type': 'Country', name: 'United States' },
 				],
 			},
 		})),
@@ -199,6 +201,49 @@ const organizationSchema = {
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
 <meta name="author" content="Swizel Technologies Limited" />
 <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
+
+<!-- ── the curtain, drawn before anything is fetched ──────────────────
+     This is the whole fix for the flash of raw text on load.
+
+     The curtain is meant to cover the page while it assembles, and the
+     inline script below raises it before the first paint. But every rule
+     that makes it *look* like a curtain lived in /styles/global.css —
+     an external file, on a separate request. So on any connection where
+     that file was slow, the class went on, nothing was styled by it, and
+     the browser painted unstyled HTML underneath a curtain that did not
+     yet exist. The one element whose job was to hide the flash was
+     waiting on the same stylesheet as everything it was hiding.
+
+     These few rules are inline, so they apply the instant the head is
+     parsed, before a single request goes out. Everything else about the
+     curtain — the glow, the mark, the sheen, the wipe — stays in the
+     stylesheet, because none of it matters until the page is up.
+     ────────────────────────────────────────────────────────────────── -->
+<style is:inline>
+	html.swz-booting .page-curtain {
+		position: fixed;
+		inset: 0;
+		z-index: 9990;
+		transform: none;
+		background: #090b16;
+		pointer-events: none;
+	}
+	/* and the page itself is not shown until the curtain is real. Without
+	   this, content can still paint in the gap before the rules above are
+	   reached on a very slow parse. */
+	html.swz-booting body > *:not(.page-curtain) {
+		visibility: hidden;
+	}
+	html.swz-booting .page-curtain,
+	html.swz-booted .page-curtain {
+		visibility: visible;
+	}
+	/* light mode gets a light curtain, so the wipe is not a black flash on
+	   a white page */
+	html.swz-booting:not(.dark) .page-curtain {
+		background: #eef1f7;
+	}
+</style>
 
 <!-- Apply saved theme + view before paint to avoid a flash -->
 <script is:inline>
