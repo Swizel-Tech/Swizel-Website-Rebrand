@@ -77,6 +77,11 @@ export function initBoardroomHero() {
 				rel: 0,
 				playsinline: 1,
 				iv_load_policy: 3,
+				// no subtitles burned over the backdrop: the hero film is
+				// wallpaper behind the headline, and a caption track fighting
+				// that headline is the one thing it must not do
+				cc_load_policy: 0,
+				cc_lang_pref: 'none',
 				disablekb: 1,
 				fs: 0,
 				showinfo: 0,

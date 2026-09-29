@@ -51,24 +51,30 @@ export const POST: APIRoute = async ({ request }) => {
 			`Application — ${track}`,
 			[['Name', name], ['Email', email], ['Phone', phone], ['Track', track], ...extras]
 		);
-		await mailer.sendMail({
-			from: `"${FROM_NAME}" <${cfg.user}>`,
-			to: cfg.toCareers, // a placement is a careers matter, not a sales one
-			replyTo: `"${oneLine(name)}" <${email}>`,
-			subject: `[Application] ${oneLine(track)} — ${oneLine(name)}`,
-			text: notice.text,
-			html: notice.html,
-		});
-
 		const reply = applyReply(name, track);
-		await mailer.sendMail({
-			from: `"${FROM_NAME} · Careers" <${cfg.user}>`,
-			to: email,
-			replyTo: cfg.toCareers,
-			subject: reply.subject,
-			text: reply.text,
-			html: reply.html,
-		});
+
+		// both at once, over one pooled connection — see api/contact.ts
+		const [toUs, toThem] = await Promise.allSettled([
+			mailer.sendMail({
+				from: `"${FROM_NAME}" <${cfg.user}>`,
+				to: cfg.toCareers, // a placement is a careers matter, not a sales one
+				replyTo: `"${oneLine(name)}" <${email}>`,
+				subject: `[Application] ${oneLine(track)} — ${oneLine(name)}`,
+				text: notice.text,
+				html: notice.html,
+			}),
+			mailer.sendMail({
+				from: `"${FROM_NAME} · Careers" <${cfg.user}>`,
+				to: email,
+				replyTo: cfg.toCareers,
+				subject: reply.subject,
+				text: reply.text,
+				html: reply.html,
+			}),
+		]);
+
+		if (toUs.status === 'rejected') throw toUs.reason;
+		if (toThem.status === 'rejected') console.error('[apply] confirmation failed', toThem.reason);
 
 		return json({ ok: true });
 	} catch (err) {

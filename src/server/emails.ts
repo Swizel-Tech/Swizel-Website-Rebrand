@@ -94,12 +94,12 @@ function shell({ preheader, heading, body, cta, unsubscribe }: Shell) {
         <tr><td style="height:3px;background:${BRAND};font-size:0;line-height:0;">&nbsp;</td></tr>
 
         <!-- the body, with the mark set very faintly behind it -->
-        <!-- The mark, set very faintly behind the words. Fully inside the
-             cell rather than bled off its edge: hung over the corner it
-             was clipped to a straight line and read as a grey rectangle
-             rather than as a logo. Gmail drops background images on a cell
-             anyway, so nothing here depends on it showing. -->
-        <tr><td style="padding:34px 30px 10px;background-image:url('${B}/email/watermark.png');background-repeat:no-repeat;background-position:right 20px bottom 16px;background-size:86px auto;">
+        <!-- No watermark behind the words. Three attempts at one all read
+             as a grey smudge on the paragraph rather than as a mark, and
+             Gmail drops background images on a cell in any case. The logo
+             appears twice, deliberately: the wordmark at the top and the
+             mark in the sign-off below. -->
+        <tr><td style="padding:34px 30px 10px;">
           <h1 style="margin:0 0 16px;font:700 25px/1.25 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;color:${INK};letter-spacing:-.02em;">${heading}</h1>
           <div style="font:400 15px/1.7 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;color:${MUTED};">${body}</div>
         </td></tr>
@@ -116,9 +116,6 @@ function shell({ preheader, heading, body, cta, unsubscribe }: Shell) {
 
         <!-- ── the footer: how to reach a person, and where we are ── -->
         <tr><td style="background:${DEEP};padding:26px 30px 24px;">
-          <img src="${B}/email/mark-white.png" width="30" height="20" alt=""
-               style="display:block;border:0;outline:none;height:auto;margin-bottom:14px;" />
-
           <p style="margin:0 0 4px;font:700 14px/1.5 -apple-system,Arial,sans-serif;color:#ffffff;">Swizel Technologies Limited</p>
           <p style="margin:0 0 16px;font:400 13px/1.5 -apple-system,Arial,sans-serif;color:${BRAND};">You imagine. We build.</p>
 
@@ -148,8 +145,14 @@ function shell({ preheader, heading, body, cta, unsubscribe }: Shell) {
         </td></tr>
       </table>
 
+      <!-- the sign-off, in the quiet space under the card: the mark in
+           its own blue, then the small print -->
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:580px;">
-        <tr><td style="padding:14px 6px 0;font:400 12px/1.6 -apple-system,Arial,sans-serif;color:#8a90a6;">
+        <tr><td align="center" style="padding:20px 6px 6px;">
+          <img src="${B}/email/mark-brand.png" width="26" height="18" alt="Swizel"
+               style="display:block;border:0;outline:none;height:auto;opacity:.9;" />
+        </td></tr>
+        <tr><td align="center" style="padding:2px 6px 0;font:400 12px/1.6 -apple-system,Arial,sans-serif;color:#8a90a6;">
           This is an automatic note — reply to it and a person will read it.
           ${
 						unsubscribe

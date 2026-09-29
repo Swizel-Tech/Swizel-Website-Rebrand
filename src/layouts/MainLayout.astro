@@ -53,33 +53,40 @@ const {
 	</head>
 	<body class="leading-loose">
 		<script is:inline type="text/javascript">
-		var Tawk_API = Tawk_API || {},
-			Tawk_LoadStart = new Date();
-		// We drive Tawk from our own compact icon launcher (#swizel-chat-fab) so the
-		// chat is a clean bubble that never covers content. Hide Tawk's own widget on
-		// load, and re-hide it whenever the chat is minimised so only our FAB shows.
-		// onLoad fires after Tawk has already drawn its own round launcher,
-		// so hiding it there means every refresh showed somebody else's
-		// green bubble for a moment and then took it away — the flash of an
-		// old design that isn't ours. onBeforeLoad runs first, and the
-		// stylesheet keeps the launcher down even if this never runs at all.
-		Tawk_API.onBeforeLoad = function () {
-			if (Tawk_API.hideWidget) Tawk_API.hideWidget();
-		};
-		Tawk_API.onLoad = function () {
-			if (Tawk_API.hideWidget) Tawk_API.hideWidget();
-		};
-		// Every way the chat can go away puts the page back to "no Tawk
-		// furniture on screen". Minimised, hidden and ended are three
-		// different events and Tawk fires whichever fits.
-		var swzTawkShut = function () {
-			document.documentElement.classList.remove('tawk-open');
-			if (Tawk_API.hideWidget) Tawk_API.hideWidget();
-		};
-		Tawk_API.onChatMinimized = swzTawkShut;
-		Tawk_API.onChatHidden = swzTawkShut;
-		Tawk_API.onChatEnded = swzTawkShut;
-		(function () {
+		// ── the live chat is not loaded until somebody asks for it ──
+		//
+		// Tawk was loaded on every page, for every visitor, and then told
+		// to hide itself. It does not always draw the same thing — a round
+		// launcher sometimes, a vertical "Chat" tab stuck to the edge of
+		// the screen other times — and whichever it drew appeared before
+		// the script that hides it could run. Chasing that with selectors
+		// was always going to be a losing game against someone else's
+		// markup.
+		//
+		// So it is not there at all until our own bubble is pressed. The
+		// page loads a third-party script less, the tab cannot appear
+		// because nothing has been injected, and the chat still opens in
+		// under a second when it is actually wanted.
+		window.Tawk_API = window.Tawk_API || {};
+		window.__swzLoadTawk = function () {
+			if (window.__swzTawkLoading) return;
+			window.__swzTawkLoading = true;
+			window.Tawk_LoadStart = new Date();
+
+			var shut = function () {
+				document.documentElement.classList.remove('tawk-open');
+				if (window.Tawk_API.hideWidget) window.Tawk_API.hideWidget();
+			};
+			window.Tawk_API.onChatMinimized = shut;
+			window.Tawk_API.onChatHidden = shut;
+			window.Tawk_API.onChatEnded = shut;
+			// the moment it is ready, open it — the visitor already asked
+			window.Tawk_API.onLoad = function () {
+				document.documentElement.classList.add('tawk-open');
+				if (window.Tawk_API.showWidget) window.Tawk_API.showWidget();
+				if (window.Tawk_API.maximize) window.Tawk_API.maximize();
+			};
+
 			var s1 = document.createElement('script'),
 				s0 = document.getElementsByTagName('script')[0];
 			s1.async = true;
@@ -87,7 +94,7 @@ const {
 			s1.charset = 'UTF-8';
 			s1.setAttribute('crossorigin', '*');
 			s0.parentNode.insertBefore(s1, s0);
-		})();
+		};
 		</script>
 		<main id="swup" class="transition-main">
 			<Header />
@@ -869,12 +876,15 @@ const {
 		// Our own compact chat launcher drives Tawk (which we keep hidden).
 		const openTawk = () => {
 			const api = (window as any).Tawk_API;
+			// already loaded: just show it
 			if (api && api.maximize) {
-				// the class is what lets the stylesheet show Tawk at all
 				document.documentElement.classList.add('tawk-open');
 				if (api.showWidget) api.showWidget();
 				api.maximize();
+				return;
 			}
+			// first time: fetch it now, and its own onLoad opens it
+			(window as any).__swzLoadTawk?.();
 		};
 		// The launcher now asks which room first: Tawk answers on the page,
 		// WhatsApp carries the thread to their phone.

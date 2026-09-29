@@ -1,7 +1,7 @@
 // Joining the list, from any of the six sign-up boxes on the site.
 import type { APIRoute } from 'astro';
 import { readConfig, transport, oneLine, env } from '../../server/mail';
-import { subscribeReply, teamNotice , FROM_NAME } from '../../server/emails';
+import { subscribeReply, teamNotice, unsubscribeLink, FROM_NAME } from '../../server/emails';
 import { checkEmail } from '../../scripts/validate';
 
 export const prerender = false;
@@ -41,31 +41,37 @@ export const POST: APIRoute = async ({ request }) => {
 			['From', where],
 			['Page', oneLine(data.page || '')],
 		]);
-		await mailer.sendMail({
-			from: `"${FROM_NAME}" <${cfg.user}>`,
-			to: cfg.toContact,
-			replyTo: email,
-			subject: `[Newsletter] ${where}`,
-			text: notice.text,
-			html: notice.html,
-		});
-
 		const reply = subscribeReply(email);
-		const { unsubscribeLink } = await import('../../server/emails');
-		await mailer.sendMail({
-			from: `"${FROM_NAME}" <${cfg.user}>`,
-			to: email,
-			replyTo: cfg.toContact,
-			subject: reply.subject,
-			text: reply.text,
-			html: reply.html,
-			// the header Gmail and Apple Mail read to draw their own
-			// "unsubscribe" button next to the sender's name
-			headers: {
-				'List-Unsubscribe': `<${unsubscribeLink(email)}>`,
-				'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
-			},
-		});
+
+		// both at once, over one pooled connection — see the note in
+		// api/contact.ts for why sequential sends fail in production
+		const [toUs, toThem] = await Promise.allSettled([
+			mailer.sendMail({
+				from: `"${FROM_NAME}" <${cfg.user}>`,
+				to: cfg.toContact,
+				replyTo: email,
+				subject: `[Newsletter] ${where}`,
+				text: notice.text,
+				html: notice.html,
+			}),
+			mailer.sendMail({
+				from: `"${FROM_NAME}" <${cfg.user}>`,
+				to: email,
+				replyTo: cfg.toContact,
+				subject: reply.subject,
+				text: reply.text,
+				html: reply.html,
+				// the header Gmail and Apple Mail read to draw their own
+				// "unsubscribe" button next to the sender's name
+				headers: {
+					'List-Unsubscribe': `<${unsubscribeLink(email)}>`,
+					'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+				},
+			}),
+		]);
+
+		if (toUs.status === 'rejected') throw toUs.reason;
+		if (toThem.status === 'rejected') console.error('[subscribe] confirmation failed', toThem.reason);
 
 		return json({ ok: true });
 	} catch (err) {

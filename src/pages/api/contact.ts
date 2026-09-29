@@ -67,26 +67,41 @@ export const POST: APIRoute = async ({ request }) => {
 			message
 		);
 
-		await mailer.sendMail({
-			from: `"${FROM_NAME}" <${cfg.user}>`,
-			to: cfg.toContact,
-			replyTo: `"${oneLine(name)}" <${email}>`, // hitting reply answers them
-			subject: `[Contact] ${oneLine(name)}`,
-			text: notice.text,
-			html: notice.html,
-		});
-
-		// The confirmation. Sent after the notice on purpose: if this one
-		// fails, the enquiry is already safely in the inbox.
 		const reply = contactReply(name);
-		await mailer.sendMail({
-			from: `"${FROM_NAME}" <${cfg.user}>`,
-			to: email,
-			replyTo: cfg.toContact,
-			subject: reply.subject,
-			text: reply.text,
-			html: reply.html,
-		});
+
+		// Both at once, over one pooled connection. Sent one after the
+		// other they were two round trips to a shared cPanel host inside a
+		// function that Vercel kills at ten seconds — which fails in
+		// production while working perfectly on a laptop.
+		//
+		// allSettled, not all: if the confirmation to the visitor fails,
+		// the enquiry is still safely in our inbox and the form should not
+		// report a failure for mail we actually received.
+		const [toUs, toThem] = await Promise.allSettled([
+			mailer.sendMail({
+				from: `"${FROM_NAME}" <${cfg.user}>`,
+				to: cfg.toContact,
+				replyTo: `"${oneLine(name)}" <${email}>`, // hitting reply answers them
+				subject: `[Contact] ${oneLine(name)}`,
+				text: notice.text,
+				html: notice.html,
+			}),
+			mailer.sendMail({
+				from: `"${FROM_NAME}" <${cfg.user}>`,
+				to: email,
+				replyTo: cfg.toContact,
+				subject: reply.subject,
+				text: reply.text,
+				html: reply.html,
+			}),
+		]);
+
+		if (toUs.status === 'rejected') throw toUs.reason;
+		if (toThem.status === 'rejected') {
+			// worth knowing about, but not worth telling the visitor their
+			// message failed when it did not
+			console.error('[contact] confirmation failed', toThem.reason);
+		}
 
 		return json({ ok: true });
 	} catch (err) {

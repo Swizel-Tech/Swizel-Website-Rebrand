@@ -2238,11 +2238,9 @@ html.tawk-open div[id^='tawkchat'] {
     color: var(--nav-ink);
     transition: border-color 0.25s ease, background 0.25s ease, transform 0.25s ease;
   }
-  /* the icon came in at 28px inside a 36px ring, which left no rim */
-  .site-header #toggler-show svg {
-    width: 17px;
-    height: 17px;
-  }
+  /* the glyph is drawn at 18 in the markup; nothing here needs to resize
+     it, and forcing a square onto an icon that was not one is what
+     squashed the old four-line version into a smudge */
   .site-header .view-switch--icon,
   .site-header .theme-toggle,
   .site-header #toggler-show {

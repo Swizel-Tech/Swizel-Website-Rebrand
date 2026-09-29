@@ -70,11 +70,18 @@ export function transport(cfg: MailConfig) {
 		port: cfg.port,
 		secure: cfg.secure,
 		auth: { user: cfg.user, pass: cfg.pass },
-		// a shared host can be slow to answer; better to fail in ten
-		// seconds with a clear message than to hang the visitor's button
-		connectionTimeout: 10_000,
-		greetingTimeout: 10_000,
-		socketTimeout: 20_000,
+		// One connection, reused for both messages. Opening a second TLS
+		// session to a shared cPanel host costs seconds we do not have.
+		pool: true,
+		maxConnections: 1,
+		maxMessages: 10,
+		// A Vercel function on the Hobby plan is killed at ten seconds.
+		// Two sequential sends to a shared host can pass that on their own,
+		// and the visitor sees a failure for mail that was about to work.
+		// These are set so the whole exchange fits well inside the budget.
+		connectionTimeout: 4_000,
+		greetingTimeout: 4_000,
+		socketTimeout: 6_000,
 	});
 	return cached;
 }
