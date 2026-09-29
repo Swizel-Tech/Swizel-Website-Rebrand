@@ -52,7 +52,7 @@ export function showSent(opts: SentOpts) {
 
 	const echo = q<HTMLElement>('[data-sent-echo]');
 	if (opts.echo) {
-		echo.textContent = `We wrote to ${opts.echo} — it should land in a minute or two.`;
+		echo.textContent = `In the meantime, check your inbox at ${opts.echo} — we just sent you a quick confirmation email.`;
 		echo.hidden = false;
 	} else echo.hidden = true;
 
@@ -83,4 +83,12 @@ export function showSent(opts: SentOpts) {
 		b.addEventListener('click', close, { once: true })
 	);
 	document.addEventListener('keydown', onKey);
+
+	// The card's own link navigates with swup, which swaps the page
+	// without reloading it — so the card survived the trip and sat on top
+	// of the page it had just sent you to. It closes itself on the way
+	// out, and again if anything else navigates while it is open.
+	cta.addEventListener('click', close, { once: true });
+	const swup = (window as unknown as { swup?: { on?: (e: string, f: () => void) => void } }).swup;
+	swup?.on?.('contentReplaced', close);
 }

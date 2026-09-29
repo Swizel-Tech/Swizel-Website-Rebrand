@@ -1,156 +1,250 @@
 // The emails a person actually receives from Swizel.
 //
-// Written as tables with inline styles, because that is the only thing
+// Built as tables with inline styles, because that is the only thing
 // every mail client agrees on — Outlook still renders with Word's engine,
 // Gmail strips <style> blocks, and none of them support flex or grid.
-// Dark backgrounds are used sparingly for the same reason: Gmail's dark
-// mode inverts some colours and not others.
 //
-// Every one of these also ships a plain-text version. A mail with no text
-// part scores as spam, and some people genuinely read in plain text.
+// Two things bit the first version and are worth saying out loud:
+//
+//   · Gmail refuses to render SVG. The mark has to be a PNG, and the
+//     first attempt pointed at a file that did not exist, which is the
+//     empty box that showed up in the inbox.
+//   · Those images are fetched over the internet by the mail client, so
+//     they must be absolute and on a host that is actually serving. The
+//     production domain is not pointed at this site yet, so the base URL
+//     is read from the environment and falls back to the deployment's own
+//     address rather than to a domain that would 404.
+//
+// Every message also ships a plain-text part. A mail without one scores
+// as spam, and some people genuinely read in plain text.
 import { esc } from './mail';
 
 const BRAND = '#28a6ec';
-const INK = '#14162a';
+const INK = '#101322';
 const MUTED = '#5b6076';
-const SITE = 'https://swizel.co';
+const LINE = '#e6e9f2';
+const DEEP = '#080b14';
+
+/** Where the images actually live. */
+function base(): string {
+	const e = (typeof process !== 'undefined' && process.env ? process.env : {}) as Record<
+		string,
+		string | undefined
+	>;
+	const explicit = e.PUBLIC_SITE_URL?.trim();
+	if (explicit) return explicit.replace(/\/$/, '');
+	// Vercel hands the deployment its own hostname; use it rather than a
+	// domain that may not be pointed here yet
+	const vercel = e.VERCEL_PROJECT_PRODUCTION_URL?.trim() || e.VERCEL_URL?.trim();
+	if (vercel) return `https://${vercel.replace(/\/$/, '')}`;
+	return 'https://swizel.co';
+}
+
+export const FROM_NAME = 'Swizel Technologies Limited';
+
+const SOCIALS = [
+	['X', 'https://twitter.com/swizelhq'],
+	['Instagram', 'https://instagram.com/swizelhq'],
+	['LinkedIn', 'https://www.linkedin.com/company/swizel-technologies-limited/'],
+	['Facebook', 'https://www.facebook.com/SWIZELTECHNOLOGIESLIMITED/'],
+];
+
+const OFFICES = [
+	['Abuja', '2155 Peculiar Estate, Lokogoma'],
+	['Cork', 'Eden Hall, Modern Farm Road'],
+	['Sheffield', '1 Sheffield, South Yorkshire, S2 3DB'],
+	['New York', 'Tiemann Ave, Bronx'],
+];
 
 interface Shell {
 	preheader: string;
 	heading: string;
 	body: string;
 	cta?: { label: string; href: string };
+	/** the list mail carries a way out; the others do not */
+	unsubscribe?: string;
 }
 
-/**
- * The frame every Swizel email sits in: the mark, a headline, the words,
- * an optional button, and a footer that says who we are and how to reach
- * a human.
- */
-function shell({ preheader, heading, body, cta }: Shell) {
+function shell({ preheader, heading, body, cta, unsubscribe }: Shell) {
+	const B = base();
 	return `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <meta name="color-scheme" content="light" />
+<meta name="supported-color-schemes" content="light" />
 <title>${esc(heading)}</title>
 </head>
-<body style="margin:0;padding:0;background:#eef1f7;">
-  <!-- the line shown in the inbox list, next to the subject -->
+<body style="margin:0;padding:0;background:#eef1f7;-webkit-font-smoothing:antialiased;">
   <div style="display:none;max-height:0;overflow:hidden;opacity:0;">${esc(preheader)}</div>
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#eef1f7;padding:28px 12px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#eef1f7;padding:26px 12px;">
     <tr><td align="center">
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 12px 40px -20px rgba(20,22,40,.35);">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:580px;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 14px 44px -22px rgba(16,19,34,.38);">
 
         <!-- the mark, on the deep blue the site opens on -->
-        <tr><td style="background:#090b16;padding:22px 28px;">
-          <table role="presentation" cellpadding="0" cellspacing="0"><tr>
-            <td style="vertical-align:middle;">
-              <img src="${SITE}/swizel-mark.png" width="26" height="26" alt=""
-                   style="display:block;border:0;" />
-            </td>
-            <td style="vertical-align:middle;padding-left:10px;">
-              <span style="font:700 17px/1 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;color:#ffffff;letter-spacing:.14em;">SWIZEL</span>
-            </td>
-          </tr></table>
+        <tr><td style="background:${DEEP};padding:24px 30px;">
+          <a href="${B}" style="text-decoration:none;display:inline-block;">
+            <img src="${B}/email/logo-white.png" width="140" height="31" alt="Swizel Technologies Limited"
+                 style="display:block;border:0;outline:none;height:auto;" />
+          </a>
         </td></tr>
 
-        <tr><td style="padding:32px 28px 8px;">
-          <h1 style="margin:0 0 14px;font:700 24px/1.25 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;color:${INK};letter-spacing:-.02em;">${heading}</h1>
-          <div style="font:400 15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;color:${MUTED};">${body}</div>
+        <!-- a hairline of the brand colour under the band -->
+        <tr><td style="height:3px;background:${BRAND};font-size:0;line-height:0;">&nbsp;</td></tr>
+
+        <!-- the body, with the mark set very faintly behind it -->
+        <!-- The mark, set very faintly behind the words. Fully inside the
+             cell rather than bled off its edge: hung over the corner it
+             was clipped to a straight line and read as a grey rectangle
+             rather than as a logo. Gmail drops background images on a cell
+             anyway, so nothing here depends on it showing. -->
+        <tr><td style="padding:34px 30px 10px;background-image:url('${B}/email/watermark.png');background-repeat:no-repeat;background-position:right 20px bottom 16px;background-size:86px auto;">
+          <h1 style="margin:0 0 16px;font:700 25px/1.25 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;color:${INK};letter-spacing:-.02em;">${heading}</h1>
+          <div style="font:400 15px/1.7 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;color:${MUTED};">${body}</div>
         </td></tr>
 
         ${
 					cta
-						? `<tr><td style="padding:8px 28px 30px;">
+						? `<tr><td style="padding:10px 30px 32px;">
           <table role="presentation" cellpadding="0" cellspacing="0"><tr><td style="border-radius:999px;background:${BRAND};">
-            <a href="${cta.href}" style="display:inline-block;padding:12px 26px;font:700 14px/1 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;color:#04101a;text-decoration:none;border-radius:999px;">${esc(cta.label)}</a>
+            <a href="${cta.href}" style="display:inline-block;padding:13px 28px;font:700 14px/1 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;color:#04101a;text-decoration:none;border-radius:999px;">${esc(cta.label)}</a>
           </td></tr></table>
         </td></tr>`
-						: '<tr><td style="padding:0 28px 22px;"></td></tr>'
+						: '<tr><td style="padding:0 30px 24px;"></td></tr>'
 				}
 
-        <tr><td style="padding:0 28px;">
-          <div style="height:1px;background:#e6e9f2;"></div>
-        </td></tr>
+        <!-- ── the footer: how to reach a person, and where we are ── -->
+        <tr><td style="background:${DEEP};padding:26px 30px 24px;">
+          <img src="${B}/email/mark-white.png" width="30" height="20" alt=""
+               style="display:block;border:0;outline:none;height:auto;margin-bottom:14px;" />
 
-        <tr><td style="padding:20px 28px 26px;">
-          <p style="margin:0 0 6px;font:700 13px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;color:${INK};">Swizel Technologies Limited</p>
-          <p style="margin:0 0 12px;font:400 13px/1.6 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;color:${MUTED};">
-            You imagine. We build.<br />
-            2155 Peculiar Estate, Lokogoma, Abuja &middot; Nigeria &middot; Ireland &middot; UK &middot; US
-          </p>
-          <p style="margin:0;font:400 13px/1.6 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;color:${MUTED};">
+          <p style="margin:0 0 4px;font:700 14px/1.5 -apple-system,Arial,sans-serif;color:#ffffff;">Swizel Technologies Limited</p>
+          <p style="margin:0 0 16px;font:400 13px/1.5 -apple-system,Arial,sans-serif;color:${BRAND};">You imagine. We build.</p>
+
+          <!-- talk to a person -->
+          <p style="margin:0 0 16px;font:400 13px/1.9 -apple-system,Arial,sans-serif;color:rgba(255,255,255,.72);">
+            <a href="tel:+2348100204570" style="color:#ffffff;text-decoration:none;font-weight:600;">+234 810 020 4570</a><br />
             <a href="mailto:contact@swizel.co" style="color:${BRAND};text-decoration:none;">contact@swizel.co</a>
-            &nbsp;&middot;&nbsp;
-            <a href="tel:+2348100204570" style="color:${BRAND};text-decoration:none;">+234 810 020 4570</a>
-            &nbsp;&middot;&nbsp;
-            <a href="${SITE}" style="color:${BRAND};text-decoration:none;">swizel.co</a>
+            &nbsp;·&nbsp;
+            <a href="${B}" style="color:${BRAND};text-decoration:none;">swizel.co</a>
           </p>
+
+          <!-- the offices, two to a row so it reads on a phone -->
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 18px;">
+            ${OFFICES.map(
+							([city, line]) =>
+								`<tr><td style="padding:3px 0;font:400 12px/1.5 -apple-system,Arial,sans-serif;color:rgba(255,255,255,.55);"><span style="color:rgba(255,255,255,.9);font-weight:600;">${city}</span> &nbsp;${esc(line)}</td></tr>`
+						).join('')}
+          </table>
+
+          <!-- find us -->
+          <table role="presentation" cellpadding="0" cellspacing="0"><tr>
+            ${SOCIALS.map(
+							([name, href]) =>
+								`<td style="padding-right:8px;"><a href="${href}" style="display:inline-block;padding:7px 13px;border-radius:999px;border:1px solid rgba(255,255,255,.22);font:700 11px/1 -apple-system,Arial,sans-serif;color:#ffffff;text-decoration:none;letter-spacing:.06em;">${name}</a></td>`
+						).join('')}
+          </tr></table>
         </td></tr>
       </table>
 
-      <p style="margin:16px 0 0;font:400 12px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;color:#8a90a6;">
-        This is an automatic note. Reply to it and a person will read it.
-      </p>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:580px;">
+        <tr><td style="padding:14px 6px 0;font:400 12px/1.6 -apple-system,Arial,sans-serif;color:#8a90a6;">
+          This is an automatic note — reply to it and a person will read it.
+          ${
+						unsubscribe
+							? `<br />Would rather not hear from us? <a href="${unsubscribe}" style="color:#7b8199;text-decoration:underline;">Unsubscribe</a> and we will take you off the list.`
+							: ''
+					}
+        </td></tr>
+      </table>
     </td></tr>
   </table>
 </body>
 </html>`;
 }
 
-const P = (t: string) => `<p style="margin:0 0 14px;">${t}</p>`;
+const P = (t: string) => `<p style="margin:0 0 15px;">${t}</p>`;
+const STRONG = (t: string) => `<strong style="color:${INK};">${t}</strong>`;
+
+/**
+ * Leaving the list. There is no subscriber database to delete a row
+ * from — the list lives in an inbox — so the way out is a pre-written
+ * mail to us. It is one tap, and it arrives labelled so it cannot be
+ * mistaken for anything else.
+ */
+export function unsubscribeLink(address: string) {
+	const subject = encodeURIComponent('[Unsubscribe] Remove me from the list');
+	const body = encodeURIComponent(
+		`Please remove ${address} from the Swizel mailing list.\n\n(Sent from the unsubscribe link in a Swizel email.)`
+	);
+	return `mailto:contact@swizel.co?subject=${subject}&body=${body}`;
+}
 
 /** Somebody sent a brief through the contact form. */
 export function contactReply(name: string) {
 	const first = esc(name.trim().split(/\s+/)[0] || 'there');
+	const B = base();
 	return {
 		subject: 'We have your message — Swizel',
-		text: `Hi ${first},
+		text: `Thanks for reaching out, ${first}. We've got your note.
 
-Thanks for writing to Swizel. Your message is in, and a senior person reads every one of these — not a queue.
+Every submission is read directly by senior leadership, so you can count on a thoughtful response within one business day (often the same day).
 
-You will hear back from us within one business day, usually the same day. If it is urgent, call +234 810 020 4570 or reply to this email.
+Need something right away? Reach us at +234 810 020 4570 or reply straight to this email.
 
-In the meantime, our recent work is at ${SITE}/portfolio.
+While we get back to you, here is a preview of what we've shipped recently: ${B}/portfolio
 
 Swizel Technologies Limited
 You imagine. We build.
-contact@swizel.co · +234 810 020 4570 · ${SITE}`,
+contact@swizel.co · +234 810 020 4570 · swizel.co`,
 		html: shell({
-			preheader: 'Your message is in. We reply within one business day.',
-			heading: `Thanks, ${first} — we have it.`,
+			preheader: 'We have your note. A reply within one business day, often the same day.',
+			heading: `Thanks for reaching out, ${first}.`,
 			body:
-				P('Your message is in, and a senior person reads every one of these — not a form queue.') +
-				P('You will hear back <strong style="color:#14162a;">within one business day</strong>, usually the same day. If it is urgent, call us on <a href="tel:+2348100204570" style="color:#28a6ec;text-decoration:none;">+234 810 020 4570</a>, or simply reply to this email.') +
-				P('While you wait, here is some of what we have shipped.'),
-			cta: { label: 'See our work', href: `${SITE}/portfolio` },
+				P("We've got your note.") +
+				P(
+					`Every submission is read directly by senior leadership, so you can count on a thoughtful response ${STRONG('within one business day')} (often the same day).`
+				) +
+				P(
+					`Need something right away? Reach us at <a href="tel:+2348100204570" style="color:${BRAND};text-decoration:none;font-weight:600;">+234 810 020 4570</a> or reply straight to this email.`
+				) +
+				P("While we get back to you, here is a preview of what we've shipped recently:"),
+			cta: { label: 'See our recent work', href: `${B}/portfolio` },
 		}),
 	};
 }
 
 /** Somebody joined the list. */
-export function subscribeReply() {
+export function subscribeReply(address: string) {
+	const B = base();
+	const out = unsubscribeLink(address);
 	return {
-		subject: 'You are on the list — Swizel',
-		text: `You are on the list.
+		subject: "You're on the list — Swizel",
+		text: `You're officially on the list.
 
-We write when something ships or when something is genuinely worth knowing — which is not often. No noise, no selling, and one click to leave whenever you like.
+We respect your inbox. We only hit send when we've shipped something new or have an insight genuinely worth your time.
 
-Our writing so far is at ${SITE}/blog.
+Zero noise, zero sales pitches, and you can unsubscribe with a single click anytime.
+
+While you wait for the next update, here is what we've shared so far: ${B}/blog
+
+To unsubscribe, reply to this email with "unsubscribe" and we will take you off the list.
 
 Swizel Technologies Limited
 You imagine. We build.
-contact@swizel.co · ${SITE}`,
+contact@swizel.co · +234 810 020 4570 · swizel.co`,
 		html: shell({
-			preheader: 'One short note when something ships. No noise, no selling.',
-			heading: 'You are on the list.',
+			preheader: "We only send when we've shipped something or have something worth your time.",
+			heading: "You're officially on the list.",
 			body:
-				P('We write when something ships, or when something is genuinely worth knowing — which is not often.') +
-				P('No noise, no selling, and one click to leave whenever you like.') +
-				P('Here is what we have written so far.'),
-			cta: { label: 'Read the journal', href: `${SITE}/blog` },
+				P(
+					`We respect your inbox. We only hit send when we've shipped something new or have an insight ${STRONG('genuinely worth your time')}.`
+				) +
+				P('Zero noise, zero sales pitches, and you can unsubscribe with a single click anytime.') +
+				P("While you wait for the next update, here is what we've shared so far."),
+			cta: { label: 'Read the journal', href: `${B}/blog` },
+			unsubscribe: out,
 		}),
 	};
 }
@@ -158,53 +252,58 @@ contact@swizel.co · ${SITE}`,
 /** A student applied for IT or NYSC placement. */
 export function applyReply(name: string, track: string) {
 	const first = esc(name.trim().split(/\s+/)[0] || 'there');
+	const B = base();
 	return {
 		subject: `Your ${track} application — Swizel`,
-		text: `Hi ${first},
+		text: `Thanks for applying, ${first}.
 
-Your application for ${track} has reached us, and it is with the team now.
+Your application for ${track} has reached us and it is with the team now.
 
-We read every application properly rather than filtering on keywords, so give us a few days. If you are shortlisted we will write to arrange a conversation; either way, you will hear from us.
+We read every application properly rather than filtering on keywords, so give us a few days. If you are shortlisted we will write to arrange a conversation — and either way, you will hear from us.
+
+While you wait, this is the kind of work you would be joining: ${B}/portfolio
 
 Swizel Technologies Limited
 You imagine. We build.
-career@swizel.co · ${SITE}`,
+career@swizel.co · +234 810 020 4570 · swizel.co`,
 		html: shell({
 			preheader: 'Your application has reached us and is with the team.',
-			heading: `Got it, ${first}.`,
+			heading: `Thanks for applying, ${first}.`,
 			body:
-				P(`Your application for <strong style="color:#14162a;">${esc(track)}</strong> has reached us, and it is with the team now.`) +
-				P('We read every application properly rather than filtering on keywords, so give us a few days. If you are shortlisted we will write to arrange a conversation — and either way, you will hear from us.') +
+				P(`Your application for ${STRONG(esc(track))} has reached us, and it is with the team now.`) +
+				P(
+					'We read every application properly rather than filtering on keywords, so give us a few days. If you are shortlisted we will write to arrange a conversation — and either way, you will hear from us.'
+				) +
 				P('While you wait, this is the kind of work you would be joining.'),
-			cta: { label: 'See our work', href: `${SITE}/portfolio` },
+			cta: { label: 'See our work', href: `${B}/portfolio` },
 		}),
 	};
 }
 
-/** What lands in the Swizel inbox. Plain, scannable, with everything in it. */
-export function teamNotice(
-	kind: string,
-	rows: [string, string][],
-	body?: string
-) {
+/**
+ * What lands in the Swizel inbox. It was a bare data table on a white
+ * page, which looked like a system error report rather than a message
+ * from our own site. Same information, same frame as everything else.
+ */
+export function teamNotice(kind: string, rows: [string, string][], body?: string) {
 	const table = rows
 		.map(
 			([k, v]) =>
-				`<tr><td style="padding:7px 12px 7px 0;font:600 13px/1.5 -apple-system,Arial,sans-serif;color:${MUTED};white-space:nowrap;vertical-align:top;">${esc(k)}</td><td style="padding:7px 0;font:400 14px/1.6 -apple-system,Arial,sans-serif;color:${INK};">${esc(v) || '—'}</td></tr>`
+				`<tr>
+          <td style="padding:8px 14px 8px 0;font:600 12px/1.5 -apple-system,Arial,sans-serif;color:${MUTED};white-space:nowrap;vertical-align:top;text-transform:uppercase;letter-spacing:.08em;">${esc(k)}</td>
+          <td style="padding:8px 0;font:400 14px/1.6 -apple-system,Arial,sans-serif;color:${INK};border-bottom:1px solid ${LINE};">${esc(v) || '—'}</td>
+        </tr>`
 		)
 		.join('');
 	return {
-		text:
-			`${kind}\n\n` +
-			rows.map(([k, v]) => `${k}: ${v}`).join('\n') +
-			(body ? `\n\n---\n\n${body}\n` : '\n'),
+		text: `${kind}\n\n` + rows.map(([k, v]) => `${k}: ${v}`).join('\n') + (body ? `\n\n---\n\n${body}\n` : '\n'),
 		html: shell({
 			preheader: rows.map(([k, v]) => `${k}: ${v}`).join(' · ').slice(0, 120),
 			heading: kind,
 			body:
-				`<table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;">${table}</table>` +
+				`<table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;">${table}</table>` +
 				(body
-					? `<div style="margin-top:18px;padding:16px;background:#f5f7fb;border-radius:10px;border:1px solid #e6e9f2;white-space:pre-wrap;font:400 14px/1.65 -apple-system,Arial,sans-serif;color:${INK};">${esc(body)}</div>`
+					? `<div style="margin-top:20px;padding:18px;background:#f5f7fb;border-radius:12px;border:1px solid ${LINE};white-space:pre-wrap;font:400 14px/1.7 -apple-system,Arial,sans-serif;color:${INK};">${esc(body)}</div>`
 					: ''),
 		}),
 	};

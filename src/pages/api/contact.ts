@@ -6,7 +6,7 @@
 // contact@swizel.co, so it lands in an inbox rather than a spam folder.
 import type { APIRoute } from 'astro';
 import { readConfig, transport, oneLine, env } from '../../server/mail';
-import { contactReply, teamNotice } from '../../server/emails';
+import { contactReply, teamNotice , FROM_NAME } from '../../server/emails';
 import { checkName, checkEmail, checkPhone, checkMessage } from '../../scripts/validate';
 
 export const prerender = false; // this one route is a function; every page stays static
@@ -68,7 +68,7 @@ export const POST: APIRoute = async ({ request }) => {
 		);
 
 		await mailer.sendMail({
-			from: `"Swizel website" <${cfg.user}>`,
+			from: `"${FROM_NAME}" <${cfg.user}>`,
 			to: cfg.toContact,
 			replyTo: `"${oneLine(name)}" <${email}>`, // hitting reply answers them
 			subject: `[Contact] ${oneLine(name)}`,
@@ -80,7 +80,7 @@ export const POST: APIRoute = async ({ request }) => {
 		// fails, the enquiry is already safely in the inbox.
 		const reply = contactReply(name);
 		await mailer.sendMail({
-			from: `"Swizel Technologies" <${cfg.user}>`,
+			from: `"${FROM_NAME}" <${cfg.user}>`,
 			to: email,
 			replyTo: cfg.toContact,
 			subject: reply.subject,

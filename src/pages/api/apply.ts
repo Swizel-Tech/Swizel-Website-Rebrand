@@ -1,7 +1,7 @@
 // An IT or NYSC placement application. Goes to the careers desk.
 import type { APIRoute } from 'astro';
 import { readConfig, transport, oneLine, env } from '../../server/mail';
-import { applyReply, teamNotice } from '../../server/emails';
+import { applyReply, teamNotice , FROM_NAME } from '../../server/emails';
 import { checkName, checkEmail, checkPhone } from '../../scripts/validate';
 
 export const prerender = false;
@@ -52,7 +52,7 @@ export const POST: APIRoute = async ({ request }) => {
 			[['Name', name], ['Email', email], ['Phone', phone], ['Track', track], ...extras]
 		);
 		await mailer.sendMail({
-			from: `"Swizel website" <${cfg.user}>`,
+			from: `"${FROM_NAME}" <${cfg.user}>`,
 			to: cfg.toCareers, // a placement is a careers matter, not a sales one
 			replyTo: `"${oneLine(name)}" <${email}>`,
 			subject: `[Application] ${oneLine(track)} — ${oneLine(name)}`,
@@ -62,7 +62,7 @@ export const POST: APIRoute = async ({ request }) => {
 
 		const reply = applyReply(name, track);
 		await mailer.sendMail({
-			from: `"Swizel Careers" <${cfg.user}>`,
+			from: `"${FROM_NAME} · Careers" <${cfg.user}>`,
 			to: email,
 			replyTo: cfg.toCareers,
 			subject: reply.subject,
