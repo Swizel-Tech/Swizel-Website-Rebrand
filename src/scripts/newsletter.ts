@@ -92,28 +92,35 @@ export function initNewsletter() {
 			if (w.btn) w.btn.disabled = true;
 
 			try {
-				const { default: emailjs } = await import('@emailjs/browser');
-				emailjs.init('6seJt_G90tNz7cnD5');
-				// the source is carried in the subject so the inbox can tell a
-				// footer sign-up from a blog one without opening either
+				// our own endpoint, which sends from contact@swizel.co over the
+				// domain's SMTP — and sends the person a themed confirmation.
 				const where = form.dataset.newsletter || 'site';
-				await emailjs.send('service_xtbicfb', 'template_gp3qzsk', {
-					from_name: 'Newsletter sign-up',
-					name: 'Newsletter sign-up',
-					email: address,
-					reply_to: address,
-					phoneNumber: 'Not given',
-					to_email: 'contact@swizel.co',
-					subject: `[Newsletter] ${where}`,
-					source: `Newsletter · ${where} · ${window.location.pathname}`,
-					message: `New newsletter sign-up.\n\nEmail: ${address}\nFrom: ${where}\nPage: ${window.location.href}`,
+				const res = await fetch('/api/subscribe', {
+					method: 'POST',
+					headers: { 'content-type': 'application/json' },
+					body: JSON.stringify({
+						email: address,
+						source: where,
+						page: window.location.pathname,
+						botField: pot?.value ?? '',
+					}),
 				});
+				const out = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+				if (!res.ok || !out.ok) throw new Error(out.error || 'send failed');
+
 				say(w, 'You are on the list. Talk soon.');
 				form.reset();
 				form.dispatchEvent(new CustomEvent('newsletter:done', { bubbles: true }));
+				const { showSent } = await import('./sent');
+				showSent({
+					title: 'You are on the list.',
+					body: 'One short note when something ships. No noise, no selling, and one click to leave whenever you like.',
+					echo: address,
+					cta: { label: 'Read the journal', href: '/blog' },
+				});
 			} catch (err) {
 				console.error('[newsletter]', err);
-				say(w, 'That did not send. Try contact@swizel.co directly.', true);
+				say(w, (err as Error).message || 'That did not send. Try contact@swizel.co directly.', true);
 			} finally {
 				if (w.btn) {
 					w.btn.disabled = false;

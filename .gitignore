@@ -29,3 +29,6 @@ _image-originals/
 
 # local sandbox dev config (never commit)
 astro.config.dev.mjs
+
+# Vercel builds this itself; the local copy is throwaway
+.vercel/

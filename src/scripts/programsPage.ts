@@ -169,31 +169,32 @@ export function initProgramsPage() {
 			submit.disabled = true;
 			submit.textContent = 'Sending…';
 
-			import('@emailjs/browser')
-				.then(({ default: emailjs }) => {
-					emailjs.init('6seJt_G90tNz7cnD5');
-					return emailjs.send('service_xtbicfb', 'template_gp3qzsk', {
-					from_name: values.fullName,
-					name: values.fullName,
-					email: values.email,
-					reply_to: values.email,
-					phoneNumber: values.phone,
-					// IT and NYSC placements are a careers matter, not a sales one
-					to_email: 'career@swizel.co',
-					subject: `[Application] ${values.track} — ${values.fullName}`,
-						message: `NEW APPLICATION\n\n${message}`,
-					});
-				})
-				.then(() => {
-					toast('success', 'Application sent to contact@swizel.co. We read every one, and we will get back to you.');
+			// our own endpoint, which mails career@swizel.co and sends the
+			// applicant a themed confirmation from the same domain
+			fetch('/api/apply', {
+				method: 'POST',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify({
+					...values,
+					phone: values.phone,
+					botField: (form.querySelector('input[name="bot-field"]') as HTMLInputElement | null)?.value ?? '',
+				}),
+			})
+				.then(async (res) => {
+					const out = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+					if (!res.ok || !out.ok) throw new Error(out.error || 'send failed');
 					form.reset();
+					const { showSent } = await import('./sent');
+					showSent({
+						title: 'Application received.',
+						body: 'It is with the team now. We read every application properly rather than filtering on keywords, so give us a few days — and either way, you will hear from us.',
+						echo: values.email,
+						cta: { label: 'See our work', href: '/portfolio' },
+					});
 				})
 				.catch((err) => {
 					console.error('[application]', err);
-					toast(
-						'danger',
-						'That did not go through. Please email contact@swizel.co directly, or try the live chat.'
-					);
+					toast('danger', err?.message || 'That did not go through. Please email career@swizel.co directly.');
 				})
 				.finally(() => {
 					submit.disabled = false;

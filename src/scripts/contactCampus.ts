@@ -198,18 +198,19 @@ export function initContactCampus() {
 			btn.textContent = 'Handing it in…';
 		}
 		try {
-			const { default: emailjs } = await import('@emailjs/browser');
-			emailjs.init('6seJt_G90tNz7cnD5');
-			await emailjs.send('service_xtbicfb', 'template_gp3qzsk', {
-				from_name: val('name'),
-				name: val('name'),
-				email: val('email'),
-				reply_to: val('email'),
-				phoneNumber: phone || 'N/A',
-				to_email: 'contact@swizel.co',
-				subject: `[Contact] ${val('name')} — campus sheet`,
-				message: `NEW ENQUIRY (campus contact sheet)\n\nName: ${val('name')}\nEmail: ${val('email')}\nPhone: ${phone || 'Not given'}\nPage: ${window.location.href}\n\n${val('message')}`,
+			const res = await fetch('/api/contact', {
+				method: 'POST',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify({
+					name: val('name'),
+					email: val('email'),
+					phone: val('phoneNumber'),
+					message: val('message'),
+					source: 'Campus contact sheet',
+				}),
 			});
+			const out = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+			if (!res.ok || !out.ok) throw new Error(out.error || 'send failed');
 			form.reset();
 			root.querySelectorAll('.ck-pick.is-on').forEach((p) => p.classList.remove('is-on'));
 			score();

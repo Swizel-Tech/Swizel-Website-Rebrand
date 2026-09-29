@@ -199,18 +199,13 @@ export function initCampusBody() {
 			if (note) note.textContent = 'Handing your slip in…';
 			if (btn) btn.disabled = true;
 			try {
-				const { default: emailjs } = await import('@emailjs/browser');
-				emailjs.init('6seJt_G90tNz7cnD5');
-				await emailjs.send('service_xtbicfb', 'template_gp3qzsk', {
-					from_name: 'Newsletter sign-up',
-					name: 'Newsletter sign-up',
-					email: address,
-					reply_to: address,
-					phoneNumber: 'N/A',
-					to_email: 'contact@swizel.co',
-					subject: '[Newsletter] campus journal',
-					message: `New newsletter sign-up from the blog.\n\nEmail: ${address}\nPage: ${window.location.href}`,
+				const res = await fetch('/api/subscribe', {
+					method: 'POST',
+					headers: { 'content-type': 'application/json' },
+					body: JSON.stringify({ email: address, source: 'campus journal', page: window.location.pathname, botField: trap?.value ?? '' }),
 				});
+				const out = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+				if (!res.ok || !out.ok) throw new Error(out.error || 'send failed');
 				if (note) note.textContent = '';
 				slip.reset();
 				if (stamp) {

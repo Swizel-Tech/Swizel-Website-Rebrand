@@ -2281,3 +2281,98 @@ html.tawk-open div[id^='tawkchat'] {
   color: #ff8b8b;
   opacity: 1;
 }
+
+/* ── the note after a form is sent ────────────────────────────────────
+   A toast is the wrong weight for this: writing a brief takes minutes,
+   and a strip of text that slides away before it is read is not an
+   answer. This holds the screen, says what happens next, and closes on
+   the button, the escape key or the backdrop. */
+.sent {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  padding: 1.2rem;
+}
+.sent[hidden] { display: none; }
+.sent__veil {
+  position: absolute;
+  inset: 0;
+  background: rgba(6, 9, 18, 0.62);
+  opacity: 0;
+  transition: opacity 0.26s ease;
+}
+.sent.is-on .sent__veil { opacity: 1; }
+.sent__card {
+  position: relative;
+  width: 100%;
+  max-width: 27rem;
+  padding: 2rem 1.6rem 1.5rem;
+  border-radius: 1.4rem;
+  text-align: center;
+  background: #fff;
+  color: #14162a;
+  box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  transform: translateY(14px) scale(0.97);
+  transition: opacity 0.26s ease, transform 0.36s cubic-bezier(0.22, 1, 0.36, 1);
+}
+html.dark .sent__card { background: #12151f; color: #f4f6fb; }
+.sent.is-on .sent__card { opacity: 1; transform: none; }
+.sent__ring {
+  display: inline-grid;
+  place-items: center;
+  margin-bottom: 0.9rem;
+  color: var(--view-accent, #28a6ec);
+}
+/* the ring closes, then the tick is drawn through it */
+.sent__ring-o { stroke-dasharray: 152; stroke-dashoffset: 152; }
+.sent__tick { stroke-dasharray: 40; stroke-dashoffset: 40; }
+.sent.is-on .sent__ring-o { animation: sent-ring 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.05s forwards; }
+.sent.is-on .sent__tick { animation: sent-tick 0.34s cubic-bezier(0.22, 1, 0.36, 1) 0.42s forwards; }
+@keyframes sent-ring { to { stroke-dashoffset: 0; } }
+@keyframes sent-tick { to { stroke-dashoffset: 0; } }
+.sent__h {
+  margin: 0 0 0.5rem;
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.sent__p { margin: 0; font-size: 0.95rem; line-height: 1.6; opacity: 0.78; }
+.sent__echo { margin: 0.7rem 0 0; font-size: 0.82rem; line-height: 1.5; opacity: 0.6; }
+.sent__acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  justify-content: center;
+  margin-top: 1.4rem;
+}
+.sent__go,
+.sent__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.6rem;
+  padding: 0 1.3rem;
+  border-radius: 999px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+.sent__go { background: var(--view-accent, #28a6ec); color: #04101a; }
+.sent__close {
+  background: transparent;
+  color: inherit;
+  border-color: rgba(20, 22, 40, 0.22);
+}
+html.dark .sent__close { border-color: rgba(255, 255, 255, 0.24); }
+.sent__go[hidden] { display: none; }
+.sent__go:hover, .sent__close:hover { transform: translateY(-1px); filter: brightness(1.05); }
+@media (prefers-reduced-motion: reduce) {
+  .sent__card, .sent__veil { transition: none; }
+  .sent__ring-o, .sent__tick { animation: none !important; stroke-dashoffset: 0; }
+}

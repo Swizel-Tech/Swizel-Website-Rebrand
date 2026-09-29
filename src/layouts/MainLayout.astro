@@ -572,18 +572,13 @@ const {
 				if (btn) btn.disabled = true;
 
 				try {
-					const { default: emailjs } = await import('@emailjs/browser');
-					emailjs.init('6seJt_G90tNz7cnD5');
-					await emailjs.send('service_xtbicfb', 'template_gp3qzsk', {
-						from_name: 'Footer sign-up',
-						name: 'Footer sign-up',
-						email: address,
-						reply_to: address,
-						phoneNumber: 'N/A',
-						to_email: 'contact@swizel.co',
-						subject: '[Newsletter] footer',
-						message: `New newsletter sign-up from the footer.\n\nEmail: ${address}\nPage: ${window.location.href}`,
+					const res = await fetch('/api/subscribe', {
+						method: 'POST',
+						headers: { 'content-type': 'application/json' },
+						body: JSON.stringify({ email: address, source: 'footer', page: window.location.pathname }),
 					});
+					const out = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+					if (!res.ok || !out.ok) throw new Error(out.error || 'send failed');
 					if (msg) msg.textContent = 'You are on the list. Talk soon.';
 					nf.reset();
 				} catch (err) {

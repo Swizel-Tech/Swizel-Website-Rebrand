@@ -125,6 +125,9 @@ const organizationSchema = {
 	],
 	// Named places, not "Worldwide": a country and a city are things Google
 	// can match a search against; an adverb is not.
+	// The cities and countries we actually work from and in, plus the
+	// plain fact that the work is not limited to them — there is a
+	// platform being built for a client in Iceland as this is written.
 	areaServed: [
 		{ '@type': 'City', name: 'Abuja' },
 		{ '@type': 'City', name: 'Lagos' },
@@ -132,6 +135,7 @@ const organizationSchema = {
 		{ '@type': 'Country', name: 'Ireland' },
 		{ '@type': 'Country', name: 'United Kingdom' },
 		{ '@type': 'Country', name: 'United States' },
+		{ '@type': 'Place', name: 'Worldwide' },
 	],
 	// The services themselves, so the company can be matched to the thing
 	// somebody is actually searching for rather than only to its own name.
@@ -178,8 +182,12 @@ const organizationSchema = {
 		'Software maintenance',
 		'AI automation',
 	],
+	// The company's own words, from its Google Business Profile — so the
+	// profile, the site and the structured data all say the same thing,
+	// which is one of the few local-search signals you get for free.
 	description:
-		'Swizel Technologies Limited is a software development company in Abuja, Nigeria. We design, build, market and maintain websites, web platforms and mobile apps for businesses in Nigeria and beyond.',
+		'We craft world-class custom software for ambitious businesses, no matter where you call home. Swizel Technologies Limited designs, builds, markets and maintains websites, web platforms and mobile apps from Abuja, Lagos, Cork, Sheffield and New York.',
+	slogan: 'You imagine. We build.',
 	email: 'contact@swizel.co',
 	sameAs: [
 		'https://twitter.com/swizelhq',

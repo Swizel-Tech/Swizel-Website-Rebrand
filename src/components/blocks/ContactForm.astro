@@ -47,7 +47,6 @@ import Input from '../HTML/Input.astro';
 <script>
 	import { type ContactFormData, contactFormDetails } from '../../consts';
 	import { rules, looksAutomated } from '../../scripts/validate';
-	import emailjs from '@emailjs/browser';
 	import toaster from '../../scripts/toast';
 
 	const assetNull = <T extends HTMLElement>(ele: T | null): T => {
@@ -55,10 +54,6 @@ import Input from '../HTML/Input.astro';
 
 		throw new Error(`Element is undefined for ${ele}`);
 	};
-
-	(function () {
-		emailjs.init('6seJt_G90tNz7cnD5');
-	})();
 
 	const toast = toaster();
 
@@ -171,30 +166,41 @@ import Input from '../HTML/Input.astro';
 			emailButtonn.textContent = 'Sending…';
 			emailButtonn.setAttribute('disabled', 'true');
 
-			emailjs
-				.send('service_xtbicfb', 'template_gp3qzsk', {
-					from_name: formData.name,
+			// our own endpoint: it sends from contact@swizel.co over the
+			// domain's own SMTP, and sends the person a themed confirmation
+			// back. The checks above run again on the server, because
+			// anything at all can post to that URL.
+			fetch('/api/contact', {
+				method: 'POST',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify({
 					name: formData.name,
 					email: formData.email,
+					phone: formData.phoneNumber,
 					message: formData.message,
-					reply_to: formData.email,
-					phoneNumber: formData.phoneNumber || 'Not given',
-					to_email: 'contact@swizel.co',
-					subject: `[Contact] ${formData.name}`,
 					source: `Contact form · ${window.location.pathname}`,
-				})
-				.then(() => {
-					toast('success', "Thanks for reaching out to us, we'd be in touch shortly");
+					botField: (contactForm.querySelector('input[name="bot-field"]') as HTMLInputElement | null)?.value ?? '',
+				}),
+			})
+				.then(async (res) => {
+					const out = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+					if (!res.ok || !out.ok) throw new Error(out.error || 'send failed');
+
 					emailButtonn.textContent = 'Submit';
 					emailButtonn.removeAttribute('disabled');
 					contactForm.reset();
+
+					const { showSent } = await import('../../scripts/sent');
+					showSent({
+						title: 'We have it.',
+						body: 'A senior person reads every one of these, and you will hear back within one business day — usually the same day.',
+						echo: formData.email,
+						cta: { label: 'See our work', href: '/portfolio' },
+					});
 				})
 				.catch((err) => {
-					console.log(err);
-					toast(
-						'danger',
-						'That did not send. You can reach us on live chat, or at contact@swizel.co.'
-					);
+					console.error('[contact]', err);
+					toast('danger', err?.message || 'That did not send. You can reach us on live chat, or at contact@swizel.co.');
 					emailButtonn.textContent = 'Submit';
 					emailButtonn.removeAttribute('disabled');
 				});
