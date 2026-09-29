@@ -39,31 +39,30 @@ export function initViewExperience() {
 	const bar = root.querySelector<HTMLElement>('#vo-bar');
 	const recName = root.querySelector<HTMLElement>('#vo-rec-name');
 	const recKicker = root.querySelector<HTMLElement>('#vo-rec-kicker');
-	const hereLine = root.querySelector<HTMLElement>('#vo-here');
-	const hereName = root.querySelector<HTMLElement>('#vo-here-name');
 
-	/** Name the world the visitor is standing in, from the live attribute. */
+	/**
+	 * Put the world the visitor is already in at the front of the grid and
+	 * mark it, so the answer to "where am I?" is the first thing read
+	 * rather than something to be hunted for in the middle of six boxes.
+	 *
+	 * The attribute is written on load from the stored choice, and the
+	 * choice is only ever written by applyView — so its absence means
+	 * "has not picked a world yet", which is the first run. On that run
+	 * nothing is marked, because telling somebody they are standing in
+	 * Boardroom before they have chosen anything, on the same screen that
+	 * recommends Boardroom to them, is two contradictory claims at once.
+	 */
 	const markHere = () => {
-		if (!hereLine || !hereName) return;
-		// The attribute is written on load from the stored choice, and the
-		// choice is only ever written by applyView — so its absence means
-		// "has not picked a world yet", which is the first run. Telling
-		// somebody they are standing in Boardroom before they have chosen
-		// anything, on the same screen that recommends Boardroom to them,
-		// is two contradictory claims at once.
+		root.querySelectorAll('.vo__card.is-here').forEach((c) => c.classList.remove('is-here'));
+
 		const id = document.documentElement.getAttribute('data-view');
-		if (!id) {
-			hereLine.hidden = true;
-			return;
-		}
+		if (!id) return;
+
 		const card = root.querySelector<HTMLElement>(`.vo__card[data-view-id="${id}"]`);
-		const name = card?.querySelector('.vo__card-name')?.textContent?.trim();
-		if (!name) {
-			hereLine.hidden = true;
-			return;
-		}
-		hereName.textContent = name;
-		hereLine.hidden = false;
+		if (!card?.parentElement) return;
+
+		card.classList.add('is-here');
+		card.parentElement.prepend(card);
 	};
 	const recTitle = recName?.closest('.vo__title') as HTMLElement | null;
 	const cards = Array.from(

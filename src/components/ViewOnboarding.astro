@@ -174,10 +174,7 @@ const orbs = [0, 1, 2, 3, 4];
 								Enter view
 								<Icon width={15} name="mdi:arrow-right" />
 							</span>
-							<span class="vo__card-now">
-								<i aria-hidden="true" />
-								You're here now
-							</span>
+							<span class="vo__card-now">You are here</span>
 							<span class="vo__card-badge">Best fit</span>
 						</button>
 					))
@@ -234,35 +231,57 @@ const orbs = [0, 1, 2, 3, 4];
 		border-color: color-mix(in srgb, var(--acc) 30%, transparent);
 		box-shadow: 0 20px 44px -30px rgba(20, 28, 60, 0.5);
 	}
-	/* The badge used to float in the corner, where it landed on top of the
-	   "Enter view" line. It stands in that line's place instead: on the
-	   card you are already inside, there is nothing to enter. */
+	/* ── the card you are already in ──
+	   It moves to the front of the grid (the script does that), so the
+	   answer to "where am I?" is the first thing read rather than
+	   something to hunt for in the middle of six boxes.
+
+	   The tag stands where "Enter view" would be, because on the card you
+	   are already inside there is nothing to enter. It had a pulsing dot
+	   in front of it, which read as a status light on a router; the card
+	   itself breathes now, which says the same thing without a bullet. */
 	.vo__card-now {
 		display: none;
 		align-items: center;
-		gap: 0.45rem;
-		padding: 0.24rem 0.6rem 0.24rem 0.45rem;
-		border-radius: 9999px;
-		font-size: 0.7rem;
-		font-weight: 800;
-		letter-spacing: 0.1em;
-		text-transform: uppercase;
-		color: #fff;
-		background: color-mix(in srgb, var(--acc, #18debe) 85%, #000);
+		justify-content: center;
 		align-self: flex-start;
+		padding: 0.34rem 0.85rem;
+		border-radius: 9999px;
+		font-size: 0.68rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: color-mix(in srgb, var(--acc, #18debe) 30%, #ffffff);
+		background: color-mix(in srgb, var(--acc, #18debe) 18%, transparent);
+		border: 1px solid color-mix(in srgb, var(--acc, #18debe) 55%, transparent);
+		box-shadow: inset 0 1px 0 color-mix(in srgb, var(--acc, #18debe) 30%, transparent);
 	}
-	.vo__card-now i {
-		width: 6px;
-		height: 6px;
-		border-radius: 50%;
-		background: #fff;
-		box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
-		animation: vo-here-beat 2.4s ease-out infinite;
+	:global(html:not(.dark)) .vo__card-now {
+		color: color-mix(in srgb, var(--acc, #18debe) 72%, #0a0d18);
+		background: color-mix(in srgb, var(--acc, #18debe) 14%, transparent);
 	}
-	@keyframes vo-here-beat {
-		0%   { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.65); }
-		70%  { box-shadow: 0 0 0 7px rgba(255, 255, 255, 0); }
-		100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+	/* ── the breath ──
+	   On a pseudo-element, not on the card. The card already animates
+	   itself in with vo-opt-in, and a second `animation` on the same rule
+	   replaces the first rather than joining it — which is why putting
+	   the breath there did nothing at all. This is a ring of its own,
+	   laid over the card's edge, free to pulse for as long as it likes. */
+	.vo__card.is-here {
+		border-color: color-mix(in srgb, var(--acc, #18debe) 62%, transparent);
+	}
+	.vo__card.is-here::after {
+		content: '';
+		position: absolute;
+		inset: -1px;
+		border-radius: inherit;
+		pointer-events: none;
+		box-shadow: 0 0 0 0 color-mix(in srgb, var(--acc, #18debe) 45%, transparent);
+		animation: vo-here-breathe 2.6s ease-out infinite;
+	}
+	@keyframes vo-here-breathe {
+		0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--acc, #18debe) 45%, transparent); }
+		70%  { box-shadow: 0 0 0 10px color-mix(in srgb, var(--acc, #18debe) 0%, transparent); }
+		100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--acc, #18debe) 0%, transparent); }
 	}
 	/* the line above the cards */
 	.vo__here {
@@ -289,7 +308,7 @@ const orbs = [0, 1, 2, 3, 4];
 	:global(html:not(.dark)) .vo__here { color: rgba(20, 22, 42, 0.8); }
 	@media (prefers-reduced-motion: reduce) {
 		.vo__here i,
-		.vo__card-now i { animation: none; }
+		.vo__card.is-here::after { animation: none; }
 	}
 	:global(html[data-view='builder']) .vo__card[data-view-id='builder'] .vo__card-go,
 	:global(html[data-view='boardroom']) .vo__card[data-view-id='boardroom'] .vo__card-go,

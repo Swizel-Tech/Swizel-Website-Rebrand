@@ -7,9 +7,9 @@
 // world now opens on the two-up, so this one does too.
 //
 // The order is what a contact page is for: the ways to reach a person
-// first, the form second, the questions people ask before writing third,
-// and the offices last — the page closes on somewhere real rather than
-// on another ask.
+// first, the form second, and the questions people ask before writing
+// third. The offices used to close the page; the footer already carries
+// them on every page, so saying it twice on this one said nothing.
 import { Icon } from 'astro-icon/components';
 import ContactForm from '../blocks/ContactForm.astro';
 import { faq } from '../../consts';
@@ -43,16 +43,6 @@ const channels = [
 		href: 'mailto:contact@swizel.co',
 		accent: '#8b5cf6',
 	},
-];
-
-// The same four offices the footer carries, with the same live clocks —
-// the tick is already bound globally to .ft-clock, so these only have to
-// carry the class and their zone.
-const offices = [
-	{ flag: '🇳🇬', country: 'Nigeria', city: 'Abuja', lines: ['2155 Peculiar Estate', 'Lokogoma, Abuja'], tz: 'Africa/Lagos' },
-	{ flag: '🇮🇪', country: 'Ireland', city: 'Cork', lines: ['Eden Hall, Modern Farm Road', 'Cork, Ireland'], tz: 'Europe/Dublin' },
-	{ flag: '🇬🇧', country: 'United Kingdom', city: 'Sheffield', lines: ['1, Sheffield, South Yorkshire', 'S2 3DB, England'], tz: 'Europe/London' },
-	{ flag: '🇺🇸', country: 'United States', city: 'New York', lines: ['Tiemann Ave', 'Bronx, New York'], tz: 'America/New_York' },
 ];
 
 // Three figures for the floor of the opening panel — all of them things
@@ -227,38 +217,6 @@ const glance = [
 		}
 	</div>
 
-	<!-- ── where we actually are ───────────────────────────
-	     The page closes on somewhere real rather than on another ask.
-	     The clocks are live, so it is obvious at a glance whether the
-	     office you are writing to is awake.
-	     ────────────────────────────────────────────────────── -->
-	<section class="bd-head bd-reveal">
-		<span class="bd-kicker">On the ground</span>
-		<h2 class="bd-h bd-h--center">Four desks, four time zones.</h2>
-		<p class="bd-p bd-p--center">Abuja is home. The rest is where the work took us.</p>
-	</section>
-	<ul class="ct-offices bd-reveal">
-		{
-			offices.map((o) => (
-				<li class="ct-office">
-					<span class="ct-office-top">
-						<span class="ct-office-flag" aria-hidden="true">{o.flag}</span>
-						<span class="ct-office-where">
-							<strong>{o.country}</strong>
-							<em>{o.city}</em>
-						</span>
-						<span class="ct-office-clock ft-clock" data-tz={o.tz}>
-							<Icon width={12} name="mdi:clock-outline" />
-							<span class="ft-clock-time">--:--</span>
-						</span>
-					</span>
-					<address class="ct-office-addr">
-						{o.lines.map((l) => <span>{l}</span>)}
-					</address>
-				</li>
-			))
-		}
-	</ul>
 </div>
 
 <style>
@@ -567,66 +525,12 @@ const glance = [
 	.ct-faq-item[open] summary { padding-bottom: 0.7rem; }
 	.ct-faq-item[open] p { border-top: 1px solid var(--bd-glass-border); padding-top: 0.8rem; }
 
-	/* ── the offices ──
-	   Four across on a desktop and two across on a phone: these are four
-	   short cards, and a column of them one at a time is a lot of
-	   scrolling for an address list. */
-	.ct-offices {
-		list-style: none;
-		max-width: 76rem;
-		margin: 0 auto;
-		padding: 0;
-		display: grid;
-		grid-template-columns: repeat(4, minmax(0, 1fr));
-		gap: clamp(0.7rem, 1.6vw, 1.1rem);
-	}
-	.ct-office {
-		min-width: 0;
-		padding: clamp(0.9rem, 2vw, 1.2rem);
-		border-radius: 1.15rem;
-		background: var(--bd-glass);
-		border: 1px solid var(--bd-glass-border);
-		box-shadow: var(--bd-shadow);
-		transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease;
-	}
-	.ct-office:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--bd-accent) 40%, var(--bd-glass-border)); }
-	.ct-office-top { display: flex; align-items: center; gap: 0.55rem; }
-	.ct-office-flag { font-size: 1.15rem; line-height: 1; }
-	.ct-office-where { display: grid; min-width: 0; line-height: 1.2; margin-right: auto; }
-	.ct-office-where strong { font-size: 0.95rem; font-weight: 700; letter-spacing: -0.01em; }
-	.ct-office-where em { font-style: normal; font-size: 0.76rem; color: var(--bd-muted); }
-	.ct-office-clock {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.25rem;
-		flex: none;
-		padding: 0.2rem 0.45rem;
-		border-radius: 9999px;
-		font-size: 0.7rem;
-		font-weight: 700;
-		font-variant-numeric: tabular-nums;
-		color: var(--bd-accent);
-		background: color-mix(in srgb, var(--bd-accent) 12%, transparent);
-		border: 1px solid color-mix(in srgb, var(--bd-accent) 26%, transparent);
-	}
-	:global(html:not(.dark)) .ct-office-clock { color: #1577b8; }
-	.ct-office-addr {
-		display: grid;
-		gap: 0.1rem;
-		margin-top: 0.7rem;
-		font-style: normal;
-		font-size: 0.82rem;
-		line-height: 1.45;
-		color: var(--bd-muted);
-	}
-
 	/* ── Reveal ── */
 	.bd-reveal { opacity: 0; transform: translateY(26px); transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
 	.bd-reveal.is-on { opacity: 1; transform: translateY(0); }
 	@media (prefers-reduced-motion: reduce) {
 		.bd-reveal { opacity: 1; transform: none; transition: none; }
 		.bdbody::before, .bdbody::after, .ct-live-dot { animation: none; }
-		.ct-office:hover, .ct-line-go:hover { transform: none; }
 	}
 
 	/* ── the opening two-up ──
@@ -999,7 +903,19 @@ const glance = [
 		.ab-h2--panel { font-size: clamp(1.2rem, 3vw, 1.6rem); }
 	}
 	@media (max-width: 620px) {
-		.ab-open { gap: 0.5rem; }
+		/* Two complaints, one cause. The panels were stretched to a shared
+		   height, so the shorter one — the copy — carried a quarter of a
+		   screen of empty white below its figures, while the taller one,
+		   four contact rows in half a phone's width, was squeezed.
+
+		   They size themselves now, so the pale panel ends where its
+		   content does. And the split is no longer even: the rows need the
+		   room more than the paragraph does, so they get it. */
+		.ab-open {
+			gap: 0.5rem;
+			grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+			align-items: start;
+		}
 		.ab-open-panel { min-height: clamp(17rem, 62vw, 23rem); }
 		.ab-open-copy { padding: 0.9rem 0.55rem 0; }
 		.ab-h1 { font-size: 1.05rem; line-height: 1.12; }
@@ -1140,9 +1056,6 @@ const glance = [
 	/* ── the contact page on smaller screens ──
 	   Last in the sheet on purpose: a media query carries no weight of
 	   its own and only beats the plain rules above by coming after them. */
-	@media (max-width: 1000px) {
-		.ct-offices { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-	}
 	@media (max-width: 620px) {
 		/* The panel these rows live in is beside the copy panel, not under
 		   it, so on a phone each row has about a hundred and fifty pixels
@@ -1171,16 +1084,7 @@ const glance = [
 		.ct-brief-side { padding: 1rem; border-radius: 1.1rem; }
 		.ct-faq-item summary { font-size: 0.9rem; padding: 0.8rem 0.7rem; }
 		.ct-faq-item p { font-size: 0.85rem; padding: 0 0.7rem 0.9rem; }
-		/* two offices across, still — four short address cards in a single
-		   column is a screen and a half of scrolling for a list */
-		.ct-office { padding: 0.75rem 0.7rem 0.85rem; border-radius: 0.95rem; }
-		.ct-office-where strong { font-size: 0.85rem; }
-		.ct-office-where em { font-size: 0.7rem; }
-		.ct-office-clock { font-size: 0.64rem; padding: 0.16rem 0.35rem; }
-		.ct-office-addr { font-size: 0.74rem; margin-top: 0.55rem; }
 	}
 	@media (max-width: 420px) {
-		.ct-office-top { flex-wrap: wrap; gap: 0.35rem; }
-		.ct-office-clock { order: 3; }
 	}
 </style>
