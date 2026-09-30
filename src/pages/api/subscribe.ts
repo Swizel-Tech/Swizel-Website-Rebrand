@@ -1,6 +1,6 @@
 // Joining the list, from any of the six sign-up boxes on the site.
 import type { APIRoute } from 'astro';
-import { readConfig, transport, oneLine, env } from '../../server/mail';
+import { readConfig, transport, release, describeMailError, oneLine, env } from '../../server/mail';
 import { subscribeReply, teamNotice, unsubscribeLink, FROM_NAME } from '../../server/emails';
 import { checkEmail } from '../../scripts/validate';
 
@@ -61,11 +61,21 @@ export const POST: APIRoute = async ({ request }) => {
 				subject: reply.subject,
 				text: reply.text,
 				html: reply.html,
-				// the header Gmail and Apple Mail read to draw their own
-				// "unsubscribe" button next to the sender's name
+				// The header Gmail and Apple Mail read to draw their own
+				// "unsubscribe" button next to the sender's name.
+				//
+				// List-Unsubscribe-Post used to be here too, and it was
+				// wrong: RFC 8058 one-click requires an https target the
+				// client can POST to, and ours is a mailto. A mailto with
+				// One-Click on it is a header a strict receiver is entitled
+				// to distrust, which is the opposite of what it is for.
+				// The mailto alone is valid and Gmail honours it.
+				//
+				// Worth upgrading to a real /api/unsubscribe endpoint later:
+				// it would be one click instead of an email, and it would
+				// let the One-Click header come back legitimately.
 				headers: {
 					'List-Unsubscribe': `<${unsubscribeLink(email)}>`,
-					'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
 				},
 			}),
 		]);
@@ -75,7 +85,20 @@ export const POST: APIRoute = async ({ request }) => {
 
 		return json({ ok: true });
 	} catch (err) {
-		console.error('[subscribe] send failed', err);
-		return json({ ok: false, error: 'That did not send. Try contact@swizel.co directly.' }, 502);
+		// "send failed [object Object]" is not a diagnosis. The code and
+		// the one likely cause go in the log, and the code goes in the
+		// response too — it names no secret, and it means the fault can be
+		// read off a browser's network tab without going to find the log.
+		const { code, cause } = describeMailError(err);
+		console.error(`[subscribe] send failed — ${code}: ${cause}`, err);
+		return json(
+			{ ok: false, error: 'That did not send. Try contact@swizel.co directly.', code },
+			502
+		);
+	} finally {
+		// The pool belongs to this request. See the note in server/mail.ts:
+		// a connection kept across a frozen Vercel container is a dead
+		// socket waiting for the next visitor.
+		release(mailer);
 	}
 };

@@ -5,7 +5,7 @@
 // point of moving off a third-party sender — it comes from
 // contact@swizel.co, so it lands in an inbox rather than a spam folder.
 import type { APIRoute } from 'astro';
-import { readConfig, transport, oneLine, env } from '../../server/mail';
+import { readConfig, transport, release, describeMailError, oneLine, env } from '../../server/mail';
 import { contactReply, teamNotice , FROM_NAME } from '../../server/emails';
 import { checkName, checkEmail, checkPhone, checkMessage } from '../../scripts/validate';
 
@@ -105,10 +105,18 @@ export const POST: APIRoute = async ({ request }) => {
 
 		return json({ ok: true });
 	} catch (err) {
-		console.error('[contact] send failed', err);
+		const { code, cause } = describeMailError(err);
+		console.error(`[contact] send failed — ${code}: ${cause}`, err);
 		return json(
-			{ ok: false, error: 'That did not send. Please try contact@swizel.co, or the live chat.' },
+			{
+				ok: false,
+				error: 'That did not send. Please try contact@swizel.co, or the live chat.',
+				code,
+			},
 			502
 		);
+	} finally {
+		// per-request pool — see the note in server/mail.ts
+		release(mailer);
 	}
 };

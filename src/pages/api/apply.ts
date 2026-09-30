@@ -1,6 +1,6 @@
 // An IT or NYSC placement application. Goes to the careers desk.
 import type { APIRoute } from 'astro';
-import { readConfig, transport, oneLine, env } from '../../server/mail';
+import { readConfig, transport, release, describeMailError, oneLine, env } from '../../server/mail';
 import { applyReply, teamNotice , FROM_NAME } from '../../server/emails';
 import { checkName, checkEmail, checkPhone } from '../../scripts/validate';
 
@@ -78,7 +78,14 @@ export const POST: APIRoute = async ({ request }) => {
 
 		return json({ ok: true });
 	} catch (err) {
-		console.error('[apply] send failed', err);
-		return json({ ok: false, error: 'That did not send. Please write to career@swizel.co.' }, 502);
+		const { code, cause } = describeMailError(err);
+		console.error(`[apply] send failed — ${code}: ${cause}`, err);
+		return json(
+			{ ok: false, error: 'That did not send. Please write to career@swizel.co.', code },
+			502
+		);
+	} finally {
+		// per-request pool — see the note in server/mail.ts
+		release(mailer);
 	}
 };
