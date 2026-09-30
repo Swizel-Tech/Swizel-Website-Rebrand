@@ -267,6 +267,7 @@ const {
 	import { initCaseShelf } from '../scripts/caseShelf';
 	import { initBlogBeats } from '../scripts/blogBeats';
 	import { initNewsletter } from '../scripts/newsletter';
+	import { initContactForm } from '../scripts/contactForm';
 	import { initAnalytics } from '../scripts/analytics';
 	import { initProgramsNotice } from '../scripts/programsNotice';
 
@@ -774,6 +775,10 @@ const {
 			initCaseShelf,
 			initBlogBeats,
 			initNewsletter,
+			// the brief form in the boardroom, builder, studio and founder
+			// worlds — it lived in its own component and therefore never
+			// re-bound after a swup navigation
+			initContactForm,
 			initAnalytics,
 			handleFooter,
 		].forEach(later);

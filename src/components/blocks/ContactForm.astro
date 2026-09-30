@@ -44,166 +44,30 @@ import Input from '../HTML/Input.astro';
 	}
 </style>
 
+{/* ── the handler is not in this file any more ──────────────────────
+    It used to be, as a long <script> below this markup, and that is
+    exactly why the form was dead in production.
+
+    A component script is bundled per page and runs once, when that page
+    is first parsed. This site navigates with swup: the URL changes and
+    the markup is swapped, but the document is never reloaded, so no page
+    script runs a second time. The form therefore worked if you typed
+    /contact into the address bar, and did nothing whatsoever if you
+    clicked "Contact" in the nav — which is how nearly everyone arrives.
+    The button simply had no listener on it.
+
+    The newsletter had the same bug and was fixed the same way. The logic
+    now lives in src/scripts/contactForm.ts and is called from the init
+    list in MainLayout, which runs on first load and on every swup
+    contentReplaced. That list is the only place on this site where a
+    handler can be attached and be relied upon to stay attached.
+
+    The call below is a belt-and-braces for a direct page load, so the
+    form is live even before the layout's list has got to it.
+    initContactForm marks every form it binds, so the two cannot end up
+    double-binding one and sending the brief twice.
+    ────────────────────────────────────────────────────────────────── */}
 <script>
-	import { type ContactFormData, contactFormDetails } from '../../consts';
-	import { rules, looksAutomated } from '../../scripts/validate';
-	import toaster from '../../scripts/toast';
-
-	const assetNull = <T extends HTMLElement>(ele: T | null): T => {
-		if (ele) return ele;
-
-		throw new Error(`Element is undefined for ${ele}`);
-	};
-
-	const toast = toaster();
-
-	// Every world dresses this form differently, so the page can hold more
-	// than one copy of it (founder's desk, builder's editor, the shared
-	// fallback) with only one visible at a time. Wire them ALL, and scope
-	// every lookup to the form it belongs to — a page-wide querySelector
-	// only ever found the first copy and left every other one dead.
-	const contactForms = document.querySelectorAll<HTMLFormElement>('form#contact-form');
-
-	// The schema this used to carry asked for a name of three characters,
-	// a message of five and nothing at all of a phone number — so "123"
-	// was a perfectly good name and "hello" a perfectly good brief. The
-	// checks live in one module now, shared with the campus sheet and the
-	// application form, and they are written as sentences a person can act
-	// on rather than "Invalid input".
-	const CHECKS: Record<string, (v: string) => string | null> = {
-		name: rules.name,
-		email: rules.email,
-		phoneNumber: rules.phone,
-		message: rules.message,
-	};
-
-	contactForms.forEach((contactForm) => {
-		const allFormInputs: (HTMLInputElement | HTMLTextAreaElement)[] = [];
-
-		const allErrorParagraph: HTMLParagraphElement[] = [];
-
-		contactFormDetails.forEach(({ name }) => {
-			const inputEle = contactForm.querySelector<HTMLInputElement | HTMLTextAreaElement>(
-				`#${name}`
-			);
-
-			const paragraphEle = contactForm.querySelector<HTMLParagraphElement>(
-				`#${name}-error`
-			);
-
-			if (inputEle) {
-				allFormInputs.push(inputEle);
-			}
-
-			if (paragraphEle) {
-				allErrorParagraph.push(paragraphEle);
-			}
-		});
-
-		contactForm.onsubmit = (e) => {
-			e.preventDefault();
-
-			allErrorParagraph.forEach((ele) => {
-				ele.textContent = '';
-			});
-
-			let formData: ContactFormData = {
-				email: '',
-				message: '',
-				name: '',
-				phoneNumber: '',
-			};
-
-			// let inputElements: HTMLInputElement[] = [];
-
-			allFormInputs.forEach((ele) => {
-				const { value, name } = ele;
-
-				formData = {
-					...formData,
-					[name]: value,
-				};
-			});
-
-			// a machine filled in the box no human can see: drop it without
-			// a word, so whatever is doing this learns nothing
-			if (looksAutomated(contactForm)) {
-				contactForm.reset();
-				toast('success', "Thanks for reaching out to us, we'd be in touch shortly");
-				return;
-			}
-
-			// Every field is checked, and every failing field says why on
-			// itself — the old version put one "Please fill all required
-			// fields" in a toast and left the person to work out which.
-			const problems: { field: string; msg: string }[] = [];
-			for (const key of Object.keys(CHECKS)) {
-				const msg = CHECKS[key]!((formData as Record<string, string>)[key] ?? '');
-				if (msg) problems.push({ field: key, msg });
-			}
-
-			if (problems.length) {
-				problems.forEach(({ field, msg }) => {
-					const note = allErrorParagraph.find(({ id }) => id === `${field}-error`);
-					if (note) note.textContent = msg;
-					const input = allFormInputs.find((el) => el.name === field);
-					input?.setAttribute('aria-invalid', 'true');
-				});
-				// the toast says the first real problem rather than a count
-				toast('danger', problems[0]!.msg);
-				const first = allFormInputs.find((el) => el.name === problems[0]!.field);
-				first?.focus();
-				first?.scrollIntoView({ block: 'center', behavior: 'smooth' });
-				return;
-			}
-
-			allFormInputs.forEach((el) => el.removeAttribute('aria-invalid'));
-
-			const emailButtonn = assetNull(
-				contactForm.querySelector<HTMLElement>('#form-button')
-			);
-
-			emailButtonn.textContent = 'Sending…';
-			emailButtonn.setAttribute('disabled', 'true');
-
-			// our own endpoint: it sends from contact@swizel.co over the
-			// domain's own SMTP, and sends the person a themed confirmation
-			// back. The checks above run again on the server, because
-			// anything at all can post to that URL.
-			fetch('/api/contact', {
-				method: 'POST',
-				headers: { 'content-type': 'application/json' },
-				body: JSON.stringify({
-					name: formData.name,
-					email: formData.email,
-					phone: formData.phoneNumber,
-					message: formData.message,
-					source: `Contact form · ${window.location.pathname}`,
-					botField: (contactForm.querySelector('input[name="bot-field"]') as HTMLInputElement | null)?.value ?? '',
-				}),
-			})
-				.then(async (res) => {
-					const out = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
-					if (!res.ok || !out.ok) throw new Error(out.error || 'send failed');
-
-					emailButtonn.textContent = 'Submit';
-					emailButtonn.removeAttribute('disabled');
-					contactForm.reset();
-
-					const { showSent } = await import('../../scripts/sent');
-					showSent({
-						title: 'Thanks for reaching out!',
-						body: 'A senior member of our team reviews every submission personally. Expect a direct response within one business day, typically the same day.',
-						echo: formData.email,
-						cta: { label: 'See our work', href: '/portfolio' },
-					});
-				})
-				.catch((err) => {
-					console.error('[contact]', err);
-					toast('danger', err?.message || 'That did not send. You can reach us on live chat, or at contact@swizel.co.');
-					emailButtonn.textContent = 'Submit';
-					emailButtonn.removeAttribute('disabled');
-				});
-		};
-	});
+	import { initContactForm } from '../../scripts/contactForm';
+	initContactForm();
 </script>
