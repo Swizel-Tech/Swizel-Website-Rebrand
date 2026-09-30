@@ -5,7 +5,8 @@
 // point of moving off a third-party sender — it comes from
 // contact@swizel.co, so it lands in an inbox rather than a spam folder.
 import type { APIRoute } from 'astro';
-import { readConfig, transport, release, describeMailError, oneLine, env } from '../../server/mail';
+import { readConfig, describeMailError, oneLine, env } from '../../server/mail';
+import { sendAll } from '../../server/send';
 import { contactReply, teamNotice , FROM_NAME } from '../../server/emails';
 import { checkName, checkEmail, checkPhone, checkMessage } from '../../scripts/validate';
 
@@ -43,7 +44,10 @@ export const POST: APIRoute = async ({ request }) => {
 		checkMessage(message, { minWords: 5, maxChars: 4000 });
 	if (bad) return json({ ok: false, error: bad }, 400);
 
-	const cfg = readConfig(env());
+	// Read the environment once and hand the same snapshot to both, so the
+	// courier that sendAll picks is the one readConfig validated for.
+	const e = env();
+	const cfg = readConfig(e);
 	if (typeof cfg === 'string') {
 		console.error('[contact]', cfg);
 		return json(
@@ -52,7 +56,6 @@ export const POST: APIRoute = async ({ request }) => {
 		);
 	}
 
-	const mailer = transport(cfg);
 	const source = oneLine(data.source || 'Contact form');
 
 	try {
@@ -69,39 +72,36 @@ export const POST: APIRoute = async ({ request }) => {
 
 		const reply = contactReply(name);
 
-		// Both at once, over one pooled connection. Sent one after the
-		// other they were two round trips to a shared cPanel host inside a
-		// function that Vercel kills at ten seconds — which fails in
-		// production while working perfectly on a laptop.
+		// Both at once. Sent one after the other they were two round trips
+		// inside a function that Vercel kills at ten seconds — which fails
+		// in production while working perfectly on a laptop.
 		//
-		// allSettled, not all: if the confirmation to the visitor fails,
-		// the enquiry is still safely in our inbox and the form should not
-		// report a failure for mail we actually received.
-		const [toUs, toThem] = await Promise.allSettled([
-			mailer.sendMail({
+		// The two are not equally important, and the code says so: if the
+		// enquiry to our own inbox fails, the visitor has to be told,
+		// because their message really is lost. If only their receipt
+		// fails, we have the enquiry and telling them it failed would be
+		// a lie that costs us the lead.
+		const [toUs, toThem] = await sendAll(cfg, e, [
+			{
 				from: `"${FROM_NAME}" <${cfg.user}>`,
 				to: cfg.toContact,
 				replyTo: `"${oneLine(name)}" <${email}>`, // hitting reply answers them
 				subject: `[Contact] ${oneLine(name)}`,
 				text: notice.text,
 				html: notice.html,
-			}),
-			mailer.sendMail({
+			},
+			{
 				from: `"${FROM_NAME}" <${cfg.user}>`,
 				to: email,
 				replyTo: cfg.toContact,
 				subject: reply.subject,
 				text: reply.text,
 				html: reply.html,
-			}),
+			},
 		]);
 
-		if (toUs.status === 'rejected') throw toUs.reason;
-		if (toThem.status === 'rejected') {
-			// worth knowing about, but not worth telling the visitor their
-			// message failed when it did not
-			console.error('[contact] confirmation failed', toThem.reason);
-		}
+		if (!toUs.ok) throw toUs.error;
+		if (!toThem.ok) console.error('[contact] confirmation failed', toThem.error);
 
 		return json({ ok: true });
 	} catch (err) {
@@ -115,8 +115,6 @@ export const POST: APIRoute = async ({ request }) => {
 			},
 			502
 		);
-	} finally {
-		// per-request pool — see the note in server/mail.ts
-		release(mailer);
 	}
+	// no finally: sendAll owns the connection now, and closes its own.
 };

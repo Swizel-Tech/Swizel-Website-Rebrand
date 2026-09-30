@@ -7,13 +7,17 @@
 import nodemailer from 'nodemailer';
 
 export interface MailConfig {
+	/** Which courier will carry it. See server/send.ts. */
+	courier: 'resend' | 'smtp';
+	/** The address every message is sent AS. */
+	user: string;
+	toContact: string;
+	toCareers: string;
+	/** Only set, and only needed, when the courier is smtp. */
 	host: string;
 	port: number;
 	secure: boolean;
-	user: string;
 	pass: string;
-	toContact: string;
-	toCareers: string;
 }
 
 /**
@@ -33,10 +37,43 @@ export function env(): Record<string, string | undefined> {
 	return { ...fromAstro, ...fromProcess };
 }
 
-/** Read the environment once, and say exactly what is missing if it is. */
+/**
+ * Read the environment once, and say exactly what is missing if it is.
+ *
+ * Which variables are required depends on which courier is in use, so
+ * the presence of RESEND_API_KEY decides before anything else is
+ * checked. Asking for SMTP_PASS on a site that no longer speaks SMTP
+ * would be a confusing thing to be told.
+ */
 export function readConfig(env: Record<string, string | undefined>): MailConfig | string {
+	const resend = env.RESEND_API_KEY?.trim();
+
+	// The address every message is sent AS. MAIL_FROM is the explicit
+	// name for it; SMTP_USER is accepted too, because on the SMTP setup
+	// the mailbox you authenticate as and the address you send as are the
+	// same thing, and it is already set.
+	const user = (env.MAIL_FROM || env.SMTP_USER)?.trim();
+	const toContact = env.MAIL_TO_CONTACT?.trim() || user;
+	const toCareers = env.MAIL_TO_CAREERS?.trim() || toContact;
+
+	if (resend) {
+		if (!user) {
+			return 'Mail is not configured yet: MAIL_FROM missing. Set it to the address mail should come from, e.g. contact@swizel.co.';
+		}
+		return {
+			courier: 'resend',
+			user,
+			toContact: toContact!,
+			toCareers: toCareers!,
+			// unused on this path, but the shape stays one shape
+			host: '',
+			port: 0,
+			secure: true,
+			pass: '',
+		};
+	}
+
 	const host = env.SMTP_HOST?.trim();
-	const user = env.SMTP_USER?.trim();
 	const pass = env.SMTP_PASS;
 	const missing = [
 		!host && 'SMTP_HOST',
@@ -47,6 +84,7 @@ export function readConfig(env: Record<string, string | undefined>): MailConfig 
 
 	const port = Number(env.SMTP_PORT ?? 465);
 	return {
+		courier: 'smtp',
 		host: host!,
 		port,
 		// 465 is implicit TLS; 587 upgrades with STARTTLS. Getting this
@@ -56,8 +94,8 @@ export function readConfig(env: Record<string, string | undefined>): MailConfig 
 		secure: env.SMTP_SECURE ? env.SMTP_SECURE !== 'false' : port === 465,
 		user: user!,
 		pass: pass!,
-		toContact: env.MAIL_TO_CONTACT?.trim() || user!,
-		toCareers: env.MAIL_TO_CAREERS?.trim() || env.MAIL_TO_CONTACT?.trim() || user!,
+		toContact: toContact!,
+		toCareers: toCareers!,
 	};
 }
 
@@ -129,6 +167,16 @@ export function describeMailError(err: unknown): { code: string; cause: string }
 	const e = (err ?? {}) as { code?: string; responseCode?: number; message?: string };
 	const code = e.code || (e.responseCode ? `SMTP${e.responseCode}` : 'UNKNOWN');
 	const causes: Record<string, string> = {
+		// ── Resend, over HTTPS ──
+		missing_api_key: 'RESEND_API_KEY is not set on this deployment.',
+		invalid_api_key: 'RESEND_API_KEY is wrong, or was revoked. Make a new one in the Resend dashboard.',
+		validation_error:
+			'Resend rejected the message. Almost always the From address: the domain has to be verified in Resend before it will send as it.',
+		not_found: 'Resend does not recognise that domain or endpoint.',
+		daily_quota_exceeded: 'The Resend free tier has hit its daily limit.',
+		rate_limit_exceeded: 'Too many requests to Resend in a short window.',
+		RESEND_TIMEOUT: 'api.resend.com did not answer. Rare — usually worth simply trying again.',
+		// ── SMTP ──
 		EAUTH:
 			'The mailbox rejected the username or password. Check SMTP_USER is the full address and that SMTP_PASS is the mailbox password, not the cPanel login.',
 		ENOTFOUND: 'SMTP_HOST does not resolve. Check the hostname and its DNS record.',

@@ -1,6 +1,7 @@
 // An IT or NYSC placement application. Goes to the careers desk.
 import type { APIRoute } from 'astro';
-import { readConfig, transport, release, describeMailError, oneLine, env } from '../../server/mail';
+import { readConfig, describeMailError, oneLine, env } from '../../server/mail';
+import { sendAll } from '../../server/send';
 import { applyReply, teamNotice , FROM_NAME } from '../../server/emails';
 import { checkName, checkEmail, checkPhone } from '../../scripts/validate';
 
@@ -33,13 +34,12 @@ export const POST: APIRoute = async ({ request }) => {
 		checkPhone(phone, true);
 	if (bad) return json({ ok: false, error: bad }, 400);
 
-	const cfg = readConfig(env());
+	const e = env();
+	const cfg = readConfig(e);
 	if (typeof cfg === 'string') {
 		console.error('[apply]', cfg);
 		return json({ ok: false, error: 'Our mail is being set up. Please write to career@swizel.co.' }, 503);
 	}
-
-	const mailer = transport(cfg);
 
 	// whatever else the form collected, kept in the order it was sent
 	const extras: [string, string][] = Object.entries(data)
@@ -53,28 +53,28 @@ export const POST: APIRoute = async ({ request }) => {
 		);
 		const reply = applyReply(name, track);
 
-		// both at once, over one pooled connection — see api/contact.ts
-		const [toUs, toThem] = await Promise.allSettled([
-			mailer.sendMail({
+		// both at once — see the note in api/contact.ts
+		const [toUs, toThem] = await sendAll(cfg, e, [
+			{
 				from: `"${FROM_NAME}" <${cfg.user}>`,
 				to: cfg.toCareers, // a placement is a careers matter, not a sales one
 				replyTo: `"${oneLine(name)}" <${email}>`,
 				subject: `[Application] ${oneLine(track)} — ${oneLine(name)}`,
 				text: notice.text,
 				html: notice.html,
-			}),
-			mailer.sendMail({
+			},
+			{
 				from: `"${FROM_NAME} · Careers" <${cfg.user}>`,
 				to: email,
 				replyTo: cfg.toCareers,
 				subject: reply.subject,
 				text: reply.text,
 				html: reply.html,
-			}),
+			},
 		]);
 
-		if (toUs.status === 'rejected') throw toUs.reason;
-		if (toThem.status === 'rejected') console.error('[apply] confirmation failed', toThem.reason);
+		if (!toUs.ok) throw toUs.error;
+		if (!toThem.ok) console.error('[apply] confirmation failed', toThem.error);
 
 		return json({ ok: true });
 	} catch (err) {
@@ -84,8 +84,6 @@ export const POST: APIRoute = async ({ request }) => {
 			{ ok: false, error: 'That did not send. Please write to career@swizel.co.', code },
 			502
 		);
-	} finally {
-		// per-request pool — see the note in server/mail.ts
-		release(mailer);
 	}
+	// no finally: sendAll owns the connection now, and closes its own.
 };
