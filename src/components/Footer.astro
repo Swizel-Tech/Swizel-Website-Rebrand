@@ -508,21 +508,30 @@ const phones = [
 	     pill nav rather than in it, in small muted type, because the
 	     visitor browsing the site is not the person these are for.
 	     ────────────────────────────────────────────────────────────── -->
-	{/* Ten links and two headings added 337px to the footer on a phone,
-	    which is about twenty lines of furniture for five destinations.
-	    Cut to exactly the pages that need the link and nothing else: the
-	    other services are already linked from the nav and /services, and
-	    a link that duplicates one already on the page is not a second
-	    vote. Measured at 320px it is now four lines. */}
-	<nav class="ft-seo" aria-label="What we build">
-		<span class="ft-seo-h">What we build</span>
-		<ul>
-			<li><Link href="/services/custom-software">Custom software development</Link></li>
-			<li><Link href="/services/app-development">App development</Link></li>
-			<li><Link href="/services/erp-systems">ERP systems</Link></li>
-			<li><Link href="/nigeria">Software development in Nigeria</Link></li>
-			<li><Link href="/global">UK, US &amp; EU delivery</Link></li>
-		</ul>
+	{/* ── one sentence, centred, carrying its own links ────────────────
+	    This began as a list of ten links under two headings, which added
+	    337px to the footer on a phone and read as a link farm. It is a
+	    sentence now: it says something true about the company, and the
+	    five pages that need a link from every page get one inside it.
+
+	    On "does it need to be visible at all" — yes, and this is the
+	    honest version. Text written for a crawler and hidden from the
+	    reader is cloaking; Google looks for exactly that and penalises
+	    it, and a hidden link passes far less weight than a visible one
+	    in any case. The right answer is not to hide it but to make it
+	    worth reading, small, and out of the way. This is 12px, centred,
+	    in the footer's faintest ink, three lines on a phone.
+	    ────────────────────────────────────────────────────────────── */}
+	<nav class="ft-seo" aria-label="What we build, and where">
+		<p>
+			<span class="ft-seo-h">What we build</span>
+			<Link href="/services/custom-software">Custom software</Link>,
+			<Link href="/services/app-development">mobile apps</Link> and
+			<Link href="/services/erp-systems">enterprise ERP systems</Link>
+			for businesses worldwide — from
+			<Link href="/nigeria">Nigeria and Africa</Link> to
+			<Link href="/global">the UK, the US and the EU</Link>.
+		</p>
 	</nav>
 
 	<div class="ft-bottom">
@@ -1290,41 +1299,40 @@ const phones = [
 	.ft-seo {
 		position: relative;
 		z-index: 1;
-		max-width: 1200px;
+		max-width: 46rem;
 		margin: 0 auto 1rem;
-		padding: 0.9rem 0.75rem 0;
+		padding: 0.85rem 1rem 0;
+		text-align: center;
 		/* derived from the footer's own faint ink, so it is a hairline in
 		   both light and dark rather than a white line on white */
 		border-top: 1px solid color-mix(in srgb, var(--ft-faint) 28%, transparent);
-		display: grid;
-		grid-template-columns: auto minmax(0, 1fr);
-		gap: 0.25rem clamp(0.5rem, 2vw, 1.2rem);
-		align-items: baseline;
+	}
+	.ft-seo p {
+		margin: 0;
+		font-size: 0.72rem;
+		line-height: 1.75;
+		color: var(--ft-faint);
+		text-wrap: pretty;
 	}
 	.ft-seo-h {
-		font-size: 0.6rem;
+		display: block;
+		font-size: 0.58rem;
 		font-weight: 700;
-		letter-spacing: 0.12em;
+		letter-spacing: 0.14em;
 		text-transform: uppercase;
 		color: var(--ft-faint);
-		white-space: nowrap;
+		margin-bottom: 0.15rem;
 	}
-	.ft-seo ul {
-		list-style: none;
-		margin: 0;
-		padding: 0;
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.1rem 0.85rem;
-	}
-	.ft-seo li { line-height: 1.5; }
 	.ft-seo :global(a) {
-		font-size: 0.68rem;
-		color: var(--ft-faint);
+		color: color-mix(in srgb, var(--ft-faint) 100%, transparent);
 		text-decoration: none;
-		transition: color 0.2s ease;
+		border-bottom: 1px solid color-mix(in srgb, var(--ft-faint) 35%, transparent);
+		transition: color 0.2s ease, border-color 0.2s ease;
 	}
-	.ft-seo :global(a:hover) { color: var(--view-accent, #18debe); }
+	.ft-seo :global(a:hover) {
+		color: var(--view-accent, #18debe);
+		border-bottom-color: var(--view-accent, #18debe);
+	}
 	.ft-nav-item {
 		flex: none;
 		display: inline-flex;

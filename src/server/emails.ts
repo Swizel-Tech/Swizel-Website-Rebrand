@@ -127,21 +127,28 @@ function shell({ preheader, heading, body, cta, unsubscribe }: Shell) {
             <a href="${B}" style="color:${BRAND};text-decoration:none;">swizel.co</a>
           </p>
 
-          <!-- the offices, two to a row so it reads on a phone -->
-          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 18px;">
+          <!-- ── the offices, on one line each and quiet ──
+               These were a four-row table with each address on its own
+               row, and the channels below were four bordered pill
+               buttons. Between them they gave the foot of every message
+               the shape of a marketing campaign, which is one of the
+               things Gmail reads when it decides between Primary and
+               Promotions. The information is all still here — it is what
+               makes the mail feel like it came from a real company — it
+               is simply set as text rather than as furniture. -->
+          <p style="margin:0 0 14px;font:400 12px/1.7 -apple-system,Arial,sans-serif;color:rgba(255,255,255,.55);">
             ${OFFICES.map(
 							([city, line]) =>
-								`<tr><td style="padding:3px 0;font:400 12px/1.5 -apple-system,Arial,sans-serif;color:rgba(255,255,255,.55);"><span style="color:rgba(255,255,255,.9);font-weight:600;">${city}</span> &nbsp;${esc(line)}</td></tr>`
-						).join('')}
-          </table>
+								`<span style="color:rgba(255,255,255,.85);font-weight:600;">${city}</span> ${esc(line)}`
+						).join('<br />')}
+          </p>
 
-          <!-- find us -->
-          <table role="presentation" cellpadding="0" cellspacing="0"><tr>
+          <p style="margin:0;font:400 12px/1.7 -apple-system,Arial,sans-serif;color:rgba(255,255,255,.45);">
             ${SOCIALS.map(
 							([name, href]) =>
-								`<td style="padding-right:8px;"><a href="${href}" style="display:inline-block;padding:7px 13px;border-radius:999px;border:1px solid rgba(255,255,255,.22);font:700 11px/1 -apple-system,Arial,sans-serif;color:#ffffff;text-decoration:none;letter-spacing:.06em;">${name}</a></td>`
-						).join('')}
-          </tr></table>
+								`<a href="${href}" style="color:rgba(255,255,255,.72);text-decoration:none;">${name}</a>`
+						).join('<span style="color:rgba(255,255,255,.28);"> · </span>')}
+          </p>
         </td></tr>
       </table>
 
@@ -153,7 +160,7 @@ function shell({ preheader, heading, body, cta, unsubscribe }: Shell) {
                style="display:block;border:0;outline:none;height:auto;opacity:.9;" />
         </td></tr>
         <tr><td align="center" style="padding:2px 6px 0;font:400 12px/1.6 -apple-system,Arial,sans-serif;color:#8a90a6;">
-          This is an automatic note — reply to it and a person will read it.
+          This is an automatic note. Reply to it and a person will read it.
           ${
 						unsubscribe
 							? `<br />Would rather not hear from us? <a href="${unsubscribe}" style="color:#7b8199;text-decoration:underline;">Unsubscribe</a> and we will take you off the list.`
@@ -189,7 +196,7 @@ export function contactReply(name: string) {
 	const first = esc(name.trim().split(/\s+/)[0] || 'there');
 	const B = base();
 	return {
-		subject: 'We have your message — Swizel',
+		subject: 'We have your message',
 		text: `Thanks for reaching out, ${first}. We've got your note.
 
 Every submission is read directly by senior leadership, so you can count on a thoughtful response within one business day (often the same day).
@@ -223,7 +230,7 @@ export function subscribeReply(address: string) {
 	const B = base();
 	const out = unsubscribeLink(address);
 	return {
-		subject: "You're on the list — Swizel",
+		subject: "You're on the list",
 		text: `You're officially on the list.
 
 We respect your inbox. We only hit send when we've shipped something new or have an insight genuinely worth your time.
@@ -257,12 +264,12 @@ export function applyReply(name: string, track: string) {
 	const first = esc(name.trim().split(/\s+/)[0] || 'there');
 	const B = base();
 	return {
-		subject: `Your ${track} application — Swizel`,
+		subject: `Your ${track} application`,
 		text: `Thanks for applying, ${first}.
 
 Your application for ${track} has reached us and it is with the team now.
 
-We read every application properly rather than filtering on keywords, so give us a few days. If you are shortlisted we will write to arrange a conversation — and either way, you will hear from us.
+We read every application properly rather than filtering on keywords, so give us a few days. If you are shortlisted we will write to arrange a conversation. Either way, you will hear from us.
 
 While you wait, this is the kind of work you would be joining: ${B}/portfolio
 
@@ -275,7 +282,7 @@ career@swizel.co · +234 810 020 4570 · swizel.co`,
 			body:
 				P(`Your application for ${STRONG(esc(track))} has reached us, and it is with the team now.`) +
 				P(
-					'We read every application properly rather than filtering on keywords, so give us a few days. If you are shortlisted we will write to arrange a conversation — and either way, you will hear from us.'
+					'We read every application properly rather than filtering on keywords, so give us a few days. If you are shortlisted we will write to arrange a conversation. Either way, you will hear from us.'
 				) +
 				P('While you wait, this is the kind of work you would be joining.'),
 			cta: { label: 'See our work', href: `${B}/portfolio` },
