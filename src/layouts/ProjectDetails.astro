@@ -6,9 +6,15 @@ import Section from '../components/HTML/Section.astro';
 import Link from '../components/Link.astro';
 import { Icon } from 'astro-icon/components';
 import AccentHeader from '../components/HTML/AccentHeader.astro';
+import { snippet } from '../data/seo';
 // import OurBlogSection from '../components/sections/OurBlogSection.astro';
 
-type Props = CollectionEntry<'portfolio'>['data'];
+type Props = CollectionEntry<'portfolio'>['data'] & {
+	/** Set when a newer case study is the version that should rank. */
+	canonical?: string;
+	/** A better blue link than "Project X | Swizel Portfolio". */
+	seoTitle?: string;
+};
 
 const {
 	clientLogo,
@@ -18,13 +24,23 @@ const {
 	title,
 	whatWeDid,
 	client,
+	canonical,
+	seoTitle,
 } = Astro.props;
+
+// The description on these three legacy write-ups is a full opening
+// paragraph — 251, 263 and 322 characters — and it was going straight
+// into the meta description, where Google cuts at about 160. The page
+// still shows the whole thing; only the snippet is trimmed, on a
+// sentence boundary where there is one.
+const seoDesc = snippet(description);
 ---
 
 <MainLayout
-	title={`${title} | Swizel Portfolio`}
-	description={description}
+	title={seoTitle ?? `${title} | Swizel Portfolio`}
+	description={seoDesc}
 	image={previewImage}
+	canonical={canonical}
 >
 	<Section divClass="py-20">
 		<div class="max-w-2xl mx-auto space-y-6 md:pb-16">

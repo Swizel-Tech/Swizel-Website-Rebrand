@@ -5,6 +5,7 @@
 // filter over every project. Reuses initBoardroomBody reveals/counters.
 import { Icon } from 'astro-icon/components';
 import { projects, featuredProjects, sectorLabels, sectorOrder, type ProjectSector } from '../../data/projects';
+import { PAGES } from '../../data/seo';
 import FilmPlayer from '../FilmPlayer.astro';
 
 // Three figures for the floor of the opening panel.
@@ -73,7 +74,9 @@ const [lead, ...shelf] = featuredProjects;
 	<div class="ab-open">
 		<article class="ab-open-panel is-pale bd-reveal">
 			<div class="ab-open-copy">
-				<span class="ab-kick">Our work · the receipts</span>
+				{/* From src/data/seo.ts. "Our work" was two words nobody
+				    searches; the receipts stay. */}
+				<span class="ab-kick">{PAGES['/portfolio'].kicker}</span>
 				<h1 class="ab-h1">
 					Proof, not
 					<em>promises.</em>

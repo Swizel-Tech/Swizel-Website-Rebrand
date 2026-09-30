@@ -14,9 +14,16 @@ import AboutStudio from '../components/sections/AboutStudio.astro';
 import AboutCampus from '../components/sections/AboutCampus.astro';
 import MainLayout from '../layouts/MainLayout.astro';
 
-const pageTitle = 'About Swizel | Software Company in Abuja, Nigeria';
-const pageDescription =
-	'Swizel Technologies is a product team in Abuja — designers, engineers and marketers who have shipped 65+ products across 10+ countries in seven years. Meet the people behind the work.';
+import { PAGES } from '../data/seo';
+
+// Titles, descriptions and the kicker above the H1 all live in
+// src/data/seo.ts, so the whole set can be read in one place and no two
+// pages can quietly end up chasing the same phrase. This page's job in
+// search is the brand and the people, not the place — /nigeria carries
+// Abuja and Lagos now.
+const seo = PAGES['/about'];
+const pageTitle = seo.title;
+const pageDescription = seo.description;
 ---
 
 <MainLayout

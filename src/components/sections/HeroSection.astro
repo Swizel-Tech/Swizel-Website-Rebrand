@@ -20,6 +20,7 @@
 // absence is a no-op rather than a break.
 // ══════════════════════════════════════════════════════════════════════
 import { Icon } from 'astro-icon/components';
+import { PAGES } from '../../data/seo';
 
 // The frames are pictures, nothing more. The cover says one thing and
 // keeps saying it; what changes behind it is the room. A film slot is
@@ -86,7 +87,19 @@ const sectors = [
 
 	<!-- ── the plate: said once, and left alone ── -->
 	<div class="hero--plate">
-		<span class="hero--kicker">Swizel Tech Ltd · Est. 2019</span>
+		{/* ── the kicker carries the phrase, so the H1 does not have to ──
+		    "You imagine. We build." is the best line on the site and it
+		    is also four words no stranger will ever type into Google.
+		    Rewriting it into "Custom Software Development Company" would
+		    buy one keyword and sell the company's voice to get it.
+
+		    The kicker is the honest trade. It is real, visible text in
+		    the strongest position on the page short of the H1 itself, it
+		    sits immediately above the H1 in the source, and it says
+		    plainly what this company does. The line keeps its job; the
+		    search gets its answer. The words live in src/data/seo.ts
+		    beside the title tag they match. */}
+		<span class="hero--kicker">{PAGES['/'].kicker}</span>
 
 		<h1 class="hero--display rhead">
 			<span class="hero--l1">You imagine.</span>

@@ -11,15 +11,18 @@ import PortfolioBuilder from '../../components/sections/PortfolioBuilder.astro';
 import PortfolioStudio from '../../components/sections/PortfolioStudio.astro';
 import PortfolioCampus from '../../components/sections/PortfolioCampus.astro';
 
+import { PAGES } from '../../data/seo';
+
 const getImageClass = (idx: number) =>
 	idx === 0 ? 'md:h-[600px] h-[250px]' : 'md:h-[420px] h-[280px]';
+
+// "Our Work" put two words nobody searches at the front of the title.
+// The phrase people actually type is "software development portfolio" or
+// "case studies" — see src/data/seo.ts.
+const seo = PAGES['/portfolio'];
 ---
 
-<MainLayout
-	title="Our Work | Websites & Apps Across 10+ Countries | Swizel"
-	image="/images/og/og-portfolio.jpg"
-	description="Explore Swizel's portfolio: web platforms, mobile apps and brands we've shipped across fintech, real estate, sports, education and energy, with the full story behind each build."
->
+<MainLayout title={seo.title} image={seo.image} description={seo.description}>
 	<!-- Boardroom world (also the default). Hidden in other views. -->
 	<PortfolioBoardroom />
 

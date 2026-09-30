@@ -14,12 +14,53 @@ import ServicesFounder from '../components/sections/ServicesFounder.astro';
 import ServicesBuilder from '../components/sections/ServicesBuilder.astro';
 import ServicesStudio from '../components/sections/ServicesStudio.astro';
 import ServicesCampus from '../components/sections/ServicesCampus.astro';
+import { PAGES } from '../data/seo';
+import { graph, SITE, ORG } from '../data/schema';
+
+const seo = PAGES['/services'];
+
+// The hub, described to a search engine as a list of what is under it.
+// This is the record that can earn sitelinks — the indented rows Google
+// sometimes shows beneath a result — and it is also how the three new
+// pages written for a search (custom software, apps, ERP) are declared
+// as part of the same offering rather than as strays.
+const SERVICE_LIST: [string, string][] = [
+	['Custom software development', '/services/custom-software/'],
+	['Web & mobile app development', '/services/app-development/'],
+	['Enterprise ERP systems', '/services/erp-systems/'],
+	['Web & mobile development', '/services/development/'],
+	['UI/UX & product design', '/services/design/'],
+	['Digital marketing', '/services/marketing/'],
+	['Product strategy & consulting', '/services/strategy/'],
+	['Maintenance & support', '/services/maintenance/'],
+	['AI & automation', '/services/ai-automation/'],
+];
+
+const pageSchema = graph({
+	'@type': 'ItemList',
+	'@id': `${SITE}/services/#list`,
+	name: 'Swizel software development services',
+	description: seo.description,
+	itemListElement: SERVICE_LIST.map(([name, path], i) => ({
+		'@type': 'ListItem',
+		position: i + 1,
+		name,
+		url: `${SITE}${path}`,
+		item: {
+			'@type': 'Service',
+			name,
+			url: `${SITE}${path}`,
+			provider: { '@id': ORG },
+		},
+	})),
+});
 ---
 
 <MainLayout
-	title="Web & Mobile App Development Services | Nigeria, UK & US | Swizel"
-	image="/images/og/og-services.jpg"
-	description="Swizel designs, builds, markets and maintains web and mobile software for businesses, one team across every discipline you need to launch and grow."
+	title={seo.title}
+	image={seo.image}
+	description={seo.description}
+	schema={pageSchema}
 >
 	<!-- Boardroom world (also the default). Hidden in other views. -->
 	<ServicesBoardroom />

@@ -5,6 +5,7 @@
 // and the themed cursor; locked to boardroom blue. Self-contained .bd-* styles.
 import { Icon } from 'astro-icon/components';
 import { disciplines } from '../../data/disciplines';
+import { PAGES } from '../../data/seo';
 import FilmPlayer from '../FilmPlayer.astro';
 import DoWall from './DoWall.astro';
 import CardShuffle from '../CardShuffle.astro';
@@ -66,7 +67,11 @@ const sectors = [
 	<div class="ab-open">
 		<article class="ab-open-panel is-pale bd-reveal">
 			<div class="ab-open-copy">
-				<span class="ab-kick">What we do</span>
+				{/* "What we do" is friendly and says nothing a search engine
+				    can use. The kicker above an H1 is prime, visible space;
+				    this one names the service while the H1 keeps its own
+				    voice. From src/data/seo.ts, beside the title tag. */}
+				<span class="ab-kick">{PAGES['/services'].kicker}</span>
 				<h1 class="ab-h1">
 					One team for the
 					<em>whole journey.</em>

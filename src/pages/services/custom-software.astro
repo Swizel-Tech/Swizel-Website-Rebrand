@@ -1,0 +1,166 @@
+---
+// ── Custom software development ────────────────────────────────────────
+//
+// One of three pages written for a search rather than for a browse.
+// /services/development is the discipline — the whole craft of building
+// things. This page is narrower and deeper: the business that has
+// outgrown a spreadsheet, or is paying for four tools that do not talk
+// to each other, and is searching the words "custom software
+// development". The discipline page cannot answer that query and also
+// stay a discipline page, so it does not try; it links here.
+//
+// Nothing on this page repeats the discipline page's copy. Two pages
+// saying the same thing in different words is not two chances at a
+// search, it is one chance split in half.
+import MainLayout from '../../layouts/MainLayout.astro';
+import LandingPage from '../../components/sections/LandingPage.astro';
+import { PAGES } from '../../data/seo';
+import { graph, service, faqPage } from '../../data/schema';
+
+const seo = PAGES['/services/custom-software'];
+const PATH = '/services/custom-software';
+
+const offer = [
+	{
+		icon: 'mdi:sitemap-outline',
+		title: 'Internal operations platforms',
+		desc: 'The system your team actually runs on — jobs, stock, staff, approvals, documents — in one place instead of six spreadsheets and a WhatsApp group.',
+		items: ['Workflow engine', 'Roles & approvals', 'Audit trail'],
+	},
+	{
+		icon: 'mdi:account-group-outline',
+		title: 'Customer portals & marketplaces',
+		desc: 'A logged-in space where your customers do for themselves what your staff currently do for them on the phone.',
+		items: ['Accounts', 'Self-service', 'Payments'],
+	},
+	{
+		icon: 'mdi:chart-timeline-variant',
+		title: 'Reporting & dashboards',
+		desc: 'One honest set of numbers, live, so a decision is not waiting on somebody exporting a file on Friday.',
+		items: ['Live KPIs', 'Scheduled reports', 'Exports'],
+	},
+	{
+		icon: 'mdi:swap-horizontal',
+		title: 'Integrations & middleware',
+		desc: 'The tools you already pay for, wired to each other: accounting, payments, CRM, logistics, bank feeds and whatever legacy system nobody will replace.',
+		items: ['REST & GraphQL', 'Webhooks', 'Legacy adapters'],
+	},
+	{
+		icon: 'mdi:shield-lock-outline',
+		title: 'Security & compliance',
+		desc: 'Least-privilege access, encrypted data at rest and in transit, full audit logs, and the paperwork trail your auditor or regulator will ask for.',
+		items: ['SSO & 2FA', 'Encryption', 'Access logs'],
+	},
+	{
+		icon: 'mdi:hand-heart-outline',
+		title: 'Ownership & handover',
+		desc: 'You own the code and the accounts. We document it, train your people, and stay on as long as you want us — not because you are locked in.',
+		items: ['Your repos', 'Documentation', 'Training'],
+	},
+];
+
+const steps = [
+	{
+		n: 'Step 01',
+		title: 'Map the work',
+		desc: 'Before anything is designed we sit with the people who do the job and write down how it really runs, including the bits nobody documents.',
+	},
+	{
+		n: 'Step 02',
+		title: 'Build the thin slice',
+		desc: 'One end-to-end piece, working and in your hands in weeks. You use it on real work and tell us what is wrong while it is still cheap to change.',
+	},
+	{
+		n: 'Step 03',
+		title: 'Roll out and stay',
+		desc: 'The rest is built in visible fortnightly loops, migrated with your data, and then maintained, monitored and extended as the business moves.',
+	},
+];
+
+const faqs = [
+	{
+		q: 'How is custom software different from buying an off-the-shelf tool?',
+		a: 'Off-the-shelf software asks your business to work the way the software works. That is a fair trade when the process is generic — accounting, email, payroll. It stops being a fair trade when the process is the thing that makes you money, because then you are paying a licence fee to be average at it. Custom software is built around your actual workflow, integrates with what you already run, and belongs to you rather than to a vendor who can change the price or the product at will.',
+	},
+	{
+		q: 'What does custom software development cost?',
+		a: 'A focused internal tool or a single workflow is usually in the low thousands of dollars. A full operations platform with several user types, integrations and reporting is a larger engagement, quoted in stages so you are never committing the whole budget to something you have not seen working. We give a written scope and a fixed price per stage before any code is written — and we will tell you honestly if an existing product would serve you better.',
+	},
+	{
+		q: 'How long does a custom build take?',
+		a: 'You will have a working slice in your hands in four to six weeks. A complete first version is typically three to five months depending on how many user types and integrations it carries. We ship every fortnight rather than disappearing for a quarter, so the date is never a surprise — 98% of our projects land on the date we gave.',
+	},
+	{
+		q: 'Who owns the code?',
+		a: 'You do — the repositories, the cloud accounts, the domains, all of it, in your name from day one. We document the system and train your team to run it. Most clients keep us on for maintenance and new features because they want to, and that is the only reason we want them to.',
+	},
+	{
+		q: 'Can you work with the systems we already have?',
+		a: 'Yes, and most of our work involves it. We integrate with accounting packages, payment providers, CRMs, logistics platforms, bank feeds and in-house systems nobody wants to touch. Where a system has no API we build an adapter around it rather than insisting it be replaced.',
+	},
+	{
+		q: 'Do you build for businesses outside Nigeria?',
+		a: 'Yes. We work from Abuja and Lagos with people in Cork, Sheffield and New York, and we have shipped for clients across Africa, the UK, the US, the EU and as far as Iceland. See <a href="/global/">our global delivery page</a> for how a build runs across time zones, or <a href="/nigeria/">our Nigeria page</a> if you are local.',
+	},
+];
+
+const related = [
+	{ label: 'Web & mobile app development', href: '/services/app-development/', note: 'iOS, Android and web applications.' },
+	{ label: 'Enterprise ERP systems', href: '/services/erp-systems/', note: 'Inventory, finance and operations in one system.' },
+	{ label: 'Product strategy', href: '/services/strategy/', note: 'Decide what to build before building it.' },
+	{ label: 'Maintenance & support', href: '/services/maintenance/', note: 'Keeping shipped software running.' },
+	{ label: 'The work', href: '/portfolio/', note: '65+ products, with the story behind each.' },
+	{ label: 'All services', href: '/services/', note: 'Every discipline, under one roof.' },
+];
+
+const pageSchema = graph(
+	service({
+		name: 'Custom software development',
+		description: seo.description,
+		path: PATH,
+		serviceType: 'Custom software development',
+		offers: offer.map((o) => ({ name: o.title, description: o.desc })),
+	}),
+	faqPage(faqs, PATH)
+);
+---
+
+<MainLayout
+	title={seo.title}
+	description={seo.description}
+	image={seo.image}
+	schema={pageSchema}
+>
+	<LandingPage
+		kicker={seo.kicker!}
+		h1={['Bespoke software, built around', 'how you actually work.']}
+		lede="When the process that makes you money does not fit any product you can buy, the answer is not a worse process. We design, build and maintain the platform your business runs on — and you own every line of it."
+		metrics={[
+			{ v: '65+', k: 'Products shipped' },
+			{ v: '98%', k: 'Delivered on time' },
+			{ v: '10+', k: 'Countries served' },
+		]}
+		intro={{
+			heading: 'Software that fits the business, not the other way round',
+			body: [
+				'Most companies reach the same wall. The spreadsheet that ran the operation for three years has become four spreadsheets, two of them out of date. The off-the-shelf tool does eight of the twelve things you need and refuses to do the other four. Somebody spends a day a week copying numbers from one system into another, and nobody can say with confidence what this month actually looks like.',
+				'<strong>Custom software development</strong> is the answer when the process itself is the asset. Instead of bending the way you work to fit a product built for an average company, the software is built around your workflow — your approval chains, your pricing rules, your stock logic, your reporting, your language for things.',
+				'We have been doing this since 2019, for businesses in fintech, real estate, logistics, energy, education and sport. The pattern that works is the same every time: understand the real process first, get one end-to-end slice into people\'s hands within weeks, then build outwards from something that is already earning its keep. What does not work is a nine-month specification and a big reveal.',
+				'Every build is yours. The repositories, the cloud accounts, the documentation and the training are in your name and your hands from the first commit. We stay on to maintain and extend it because most clients ask us to, never because leaving would be expensive.',
+			],
+		}}
+		offerHeading="What a custom build usually includes"
+		offer={offer}
+		stepsHeading="How a build actually runs"
+		steps={steps}
+		faqHeading="Questions people ask before they start"
+		faqs={faqs}
+		relatedHeading="Where to go next"
+		related={related}
+		cta={{
+			title: 'Tell us what is not working.',
+			body: 'A rough description of the problem is enough to start. We will come back with what it would take, honestly, before anyone signs anything.',
+			label: 'Send us a brief',
+		}}
+	/>
+</MainLayout>

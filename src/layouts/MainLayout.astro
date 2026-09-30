@@ -36,18 +36,38 @@ const {
 } = Astro.props;
 ---
 
+<!-- ── the document ──────────────────────────────────────────────────
+     There used to be an empty `{ /* prettier-ignore */ }` expression
+     between the doctype and this tag, and it cost the site its <html>
+     element. Astro's compiler only treats a template as a full document
+     when the doctype is followed by the <html> tag; with an expression
+     in between it decided this was a fragment, hoisted the head content
+     to the top level, and emitted no <html>, <head> or <body> at all.
+
+     Everything still worked, because a browser invents those elements
+     for you and the inline scripts set their attributes on
+     document.documentElement. What did not survive was anything written
+     on the tags in this file — so every page on the site shipped
+     without lang="en". That is a WCAG failure (a screen reader has no
+     idea what language to read in), and Google uses it as one of the
+     signals for which market a page belongs to.
+
+     The comment is gone and the doctype now sits directly above the tag.
+     ────────────────────────────────────────────────────────────────── -->
 <!DOCTYPE html>
-{
-/* prettier-ignore */
-}
 <html lang="en">
 	<head>
+		{/* canonical was in this layout's Props and was never passed on, so
+		    any page that set it — a blog post first published elsewhere, a
+		    write-up superseded by a newer case study — had the value
+		    silently dropped and shipped a self-canonical instead. */}
 		<BaseHead
 			title={title}
 			description={description}
 			image={image}
 			imageSquare={imageSquare}
 			type={type}
+			canonical={canonical}
 		/>
 		{schema && <script type="application/ld+json" set:html={JSON.stringify(schema)} />}
 	</head>

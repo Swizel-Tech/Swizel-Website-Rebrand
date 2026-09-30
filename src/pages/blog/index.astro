@@ -12,17 +12,20 @@ import BlogBuilder from '../../components/sections/BlogBuilder.astro';
 import BlogStudio from '../../components/sections/BlogStudio.astro';
 import BlogCampus from '../../components/sections/BlogCampus.astro';
 
+import { PAGES } from '../../data/seo';
+
 // Published posts, newest first. Drafts (draft: true) are kept out of the build.
 export const posts = (await getCollection('blog', ({ data }) => data.draft !== true)).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
+
+// The brand name was at the front, which spends the most valuable part of
+// a title on a phrase only existing readers search for. See
+// src/data/seo.ts.
+const seo = PAGES['/blog'];
 ---
 
-<MainLayout
-	title="The Swizel Journal | Insights on Software, Design & Marketing"
-	image="/images/og/og-blog.jpg"
-	description="Ideas, build notes and insights from the Swizel team on software, design, AI and digital marketing for businesses across Africa and beyond."
->
+<MainLayout title={seo.title} image={seo.image} description={seo.description}>
 	<!-- Boardroom world (also the default). Hidden in the other views. -->
 	<BlogBoardroom posts={posts} />
 

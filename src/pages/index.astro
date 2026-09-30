@@ -20,15 +20,29 @@ import FounderBody from '../components/sections/FounderBody.astro';
 import CampusBody from '../components/sections/CampusBody.astro';
 import StudioBody from '../components/sections/StudioBody.astro';
 
-// The front of a title carries the most weight, and the company name at
-// the front only helps people already looking for the company. What a
-// stranger types comes first, then where we are, then who we are.
-const pageTitle = 'Software Development Company in Nigeria, UK & US | Swizel';
-const pageDescription =
-	'Swizel Technologies builds websites, web platforms and mobile apps from Abuja, Lagos, Cork, Sheffield and New York. 65+ products shipped across 10+ countries. Tell us about your project.';
+import { PAGES } from '../data/seo';
+
+// ── the blue link ─────────────────────────────────────────────────────
+//
+// This title has now been three things, and the third is the right one.
+//
+// It began as "Swizel Technologies Limited | Digital Solutions for Smart
+// Businesses", which is a title only somebody already looking for Swizel
+// would ever match. Then it became "Software Development Company in
+// Nigeria, UK & US | Swizel" — better, but it is three searches sharing
+// sixty characters, and a title that tries to win Nigeria, Britain and
+// America at once wins none of them convincingly. Google also has to
+// decide what this page IS, and a list of countries does not tell it.
+//
+// So the home page now says only what we do, in the words a stranger
+// with no idea where we are would type — and the places have pages of
+// their own, /nigeria and /global, which can name Abuja, Lagos, Africa,
+// the UK, the US and the EU properly instead of in an abbreviation.
+// Every word of it lives in src/data/seo.ts with the rest of the set.
+const seo = PAGES['/'];
 ---
 
-<MainLayout title={pageTitle} description={pageDescription}>
+<MainLayout title={seo.title} description={seo.description}>
 	<HeroSection />
 	<HeroBuilder />
 	<HeroFounder />

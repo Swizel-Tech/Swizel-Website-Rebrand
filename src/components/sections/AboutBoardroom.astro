@@ -5,6 +5,7 @@
 // always reads as "Swizel for business", whatever view the visitor last chose.
 import { Icon } from 'astro-icon/components';
 import { teamDetails, CORE_VALUES, MISSION, MISSION_SUPPORT, VISION } from '../../consts';
+import { PAGES } from '../../data/seo';
 import FilmPlayer from '../FilmPlayer.astro';
 import CardShuffle from '../CardShuffle.astro';
 import DoWall from './DoWall.astro';
@@ -307,7 +308,9 @@ const currentYear = new Date().getFullYear();
 	<div class="ab-open">
 		<article class="ab-open-panel is-pale bd-reveal">
 			<div class="ab-open-copy">
-				<span class="ab-kick">About Swizel</span>
+				{/* From src/data/seo.ts, so the visible line above the H1 and
+				    the title tag say the same thing. */}
+				<span class="ab-kick">{PAGES['/about'].kicker}</span>
 				<h1 class="ab-h1">
 					<span data-years-since={FOUNDED_YEAR}>{yearsWord}</span> years building
 					<em>the software Africa runs on.</em>

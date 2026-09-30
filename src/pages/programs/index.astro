@@ -6,9 +6,15 @@ import { Icon } from 'astro-icon/components';
 import MainLayout from '../../layouts/MainLayout.astro';
 import { bootCampFaq } from '../../consts';
 
-const SEO_TITLE = 'Internships & NYSC Placement | Swizel Technologies Limited';
-const SEO_DESC =
-	'Do your IT / SIWES industrial training or your NYSC service year at Swizel Technologies Limited, building live client products beside working engineers and designers. A small, selective intake. Apply here.';
+import { PAGES } from '../../data/seo';
+
+// The description ran to 212 characters, so Google was cutting it a
+// sentence and a half early. The place matters on this one — an intern
+// searches "tech internship Abuja" — so unlike the service pages, this
+// title keeps the city. See src/data/seo.ts.
+const seo = PAGES['/programs'];
+const SEO_TITLE = seo.title;
+const SEO_DESC = seo.description;
 
 const tracks = [
 	{

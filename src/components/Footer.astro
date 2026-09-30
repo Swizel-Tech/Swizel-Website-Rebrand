@@ -496,6 +496,35 @@ const phones = [
 		<Link href="/contact" class="ft-nav-item">Contact</Link>
 	</nav>
 
+	<!-- ── the quiet row ──────────────────────────────────────────────
+	     Five pages written for a search rather than for a browse, and a
+	     link to each from every page on the site.
+
+	     This is not decoration. A page nothing links to is a page Google
+	     reaches once through the sitemap and then treats as an orphan,
+	     however good it is — internal links are how a site tells a
+	     crawler which of its pages matter, and the footer is the only
+	     place that appears on all thirty-five of them. It sits under the
+	     pill nav rather than in it, in small muted type, because the
+	     visitor browsing the site is not the person these are for.
+	     ────────────────────────────────────────────────────────────── -->
+	{/* Ten links and two headings added 337px to the footer on a phone,
+	    which is about twenty lines of furniture for five destinations.
+	    Cut to exactly the pages that need the link and nothing else: the
+	    other services are already linked from the nav and /services, and
+	    a link that duplicates one already on the page is not a second
+	    vote. Measured at 320px it is now four lines. */}
+	<nav class="ft-seo" aria-label="What we build">
+		<span class="ft-seo-h">What we build</span>
+		<ul>
+			<li><Link href="/services/custom-software">Custom software development</Link></li>
+			<li><Link href="/services/app-development">App development</Link></li>
+			<li><Link href="/services/erp-systems">ERP systems</Link></li>
+			<li><Link href="/nigeria">Software development in Nigeria</Link></li>
+			<li><Link href="/global">UK, US &amp; EU delivery</Link></li>
+		</ul>
+	</nav>
+
 	<div class="ft-bottom">
 		<span>&copy; <span id="footer-year"></span> <span class="ft-co-full">Swizel Technologies Limited</span><span class="ft-co-short">Swizel Tech LTD</span></span>
 		<button class="ft-film" type="button" data-open-film aria-label="Watch the welcome film">
@@ -1252,6 +1281,50 @@ const phones = [
 	}
 	.ft-nav::-webkit-scrollbar { display: none; }
 	@media (min-width: 720px) { .ft-nav { justify-content: center; } }
+
+	/* ── the quiet row of search pages ──
+	   Deliberately unshowy: one line per group on a phone, two columns
+	   on anything wider, in the footer's own faint ink. It adds four
+	   lines of height and gives every one of those pages a link from
+	   thirty-five other pages, which is the trade. */
+	.ft-seo {
+		position: relative;
+		z-index: 1;
+		max-width: 1200px;
+		margin: 0 auto 1rem;
+		padding: 0.9rem 0.75rem 0;
+		/* derived from the footer's own faint ink, so it is a hairline in
+		   both light and dark rather than a white line on white */
+		border-top: 1px solid color-mix(in srgb, var(--ft-faint) 28%, transparent);
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr);
+		gap: 0.25rem clamp(0.5rem, 2vw, 1.2rem);
+		align-items: baseline;
+	}
+	.ft-seo-h {
+		font-size: 0.6rem;
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--ft-faint);
+		white-space: nowrap;
+	}
+	.ft-seo ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.1rem 0.85rem;
+	}
+	.ft-seo li { line-height: 1.5; }
+	.ft-seo :global(a) {
+		font-size: 0.68rem;
+		color: var(--ft-faint);
+		text-decoration: none;
+		transition: color 0.2s ease;
+	}
+	.ft-seo :global(a:hover) { color: var(--view-accent, #18debe); }
 	.ft-nav-item {
 		flex: none;
 		display: inline-flex;

@@ -2,6 +2,7 @@
 // Import the global.css file here so that it is included on
 // all pages through the use of the <BaseHead /> component.
 import { SITE_TITLE } from '../consts';
+import { seoFor } from '../data/seo';
 
 export interface Props {
 	title: string;
@@ -44,6 +45,12 @@ const {
 const deployedHost = process.env.VERCEL_PROJECT_PRODUCTION_URL;
 const shareBase = deployedHost ? `https://${deployedHost}` : Astro.site;
 const socialImageURL = new URL(image, shareBase);
+
+// The page's own record in src/data/seo.ts, when it has one. Only used
+// for the keywords tag below — the title and description are passed in
+// as props by the page itself, so this is not a second source of truth
+// for them.
+const registry = seoFor(Astro.url.pathname);
 
 // Breadcrumbs, derived from the path so every page gets a trail without
 // each one having to declare it.
@@ -96,7 +103,11 @@ const organizationSchema = {
 	},
 	image: 'https://swizel.co/images/og-default.jpg',
 	foundingDate: '2019',
-	areaServed: 'Worldwide',
+	// NOTE: areaServed used to be declared here as the string 'Worldwide'
+	// AND again further down as a list of named places. In an object
+	// literal the second wins, so the string was dead code — but it is
+	// removed rather than left, because the next person to read this
+	// would reasonably assume the first one was the one in force.
 	address: {
 		'@type': 'PostalAddress',
 		streetAddress: '2155 Peculiar Estate, Lokogoma',
@@ -139,16 +150,27 @@ const organizationSchema = {
 	],
 	// The services themselves, so the company can be matched to the thing
 	// somebody is actually searching for rather than only to its own name.
+	//
+	// Four of the six URLs in here used to be wrong — /services/web-development,
+	// /services/mobile-development, /services/digital-marketing and a
+	// /services/design that was right by accident. The site's real slugs
+	// are development, design, marketing, strategy, maintenance and
+	// ai-automation, so this record was pointing Google at 404s from
+	// every page on the site. They are the real paths now, with the three
+	// pages written for a search added alongside them.
 	hasOfferCatalog: {
 		'@type': 'OfferCatalog',
 		name: 'Software, design and marketing',
 		itemListElement: [
-			['Web development', 'Websites, web apps, PWAs and e-commerce, built to scale.', '/services/web-development'],
-			['Mobile app development', 'iOS and Android apps, designed, built and maintained.', '/services/mobile-development'],
-			['Product design', 'Interfaces, brand and the thinking behind both.', '/services/design'],
-			['Digital marketing', 'Search, social and campaigns that earn attention.', '/services/digital-marketing'],
-			['Software maintenance', 'Keeping shipped software running and earning.', '/services/maintenance'],
-			['AI automation', 'Putting AI to work on the parts of a business that repeat.', '/services/ai-automation'],
+			['Custom software development', 'Bespoke platforms built around how a business actually works.', '/services/custom-software'],
+			['Mobile and web app development', 'iOS and Android apps and web applications, designed, built and maintained.', '/services/app-development'],
+			['Enterprise ERP software development', 'Custom ERP: stock, finance, operations and reporting in one system.', '/services/erp-systems'],
+			['Web and mobile development', 'Websites, web apps, PWAs, e-commerce and APIs, built to scale.', '/services/development'],
+			['Product and UI/UX design', 'Interfaces, brand and the thinking behind both.', '/services/design'],
+			['Digital marketing', 'Search, social and campaigns that earn attention.', '/services/marketing'],
+			['Product strategy and consulting', 'Deciding what to build, for whom, and why now.', '/services/strategy'],
+			['Software maintenance and support', 'Keeping shipped software running and earning.', '/services/maintenance'],
+			['AI and automation', 'Putting AI to work on the parts of a business that repeat.', '/services/ai-automation'],
 		].map(([name, description, path]) => ({
 			'@type': 'Offer',
 			itemOffered: {
@@ -159,9 +181,13 @@ const organizationSchema = {
 				provider: { '@id': 'https://swizel.co/#organization' },
 				areaServed: [
 					{ '@type': 'City', name: 'Abuja' },
+					{ '@type': 'City', name: 'Lagos' },
 					{ '@type': 'Country', name: 'Nigeria' },
+					{ '@type': 'Place', name: 'Africa' },
 					{ '@type': 'Country', name: 'United Kingdom' },
+					{ '@type': 'Country', name: 'Ireland' },
 					{ '@type': 'Country', name: 'United States' },
+					{ '@type': 'Place', name: 'European Union' },
 				],
 			},
 		})),
@@ -286,7 +312,57 @@ const organizationSchema = {
 					swzRoot.classList.remove('swz-booted');
 				}, 700);
 			};
-			window.setTimeout(window.__swzRelease, 2600);
+
+			// ── the curtain comes up when the CSS is here, not when a clock
+			//    says so ──
+			//
+			// This used to be a flat 2.6 second timer. On a desktop the
+			// stylesheets are always back inside that, so it looked fine. On
+			// a phone they often are not — and the timer fired anyway,
+			// lifting the curtain on a page whose CSS had not arrived. That
+			// is the flash of raw text, and it is why it only ever showed on
+			// mobile.
+			//
+			// Every <link rel=stylesheet> exposes a .sheet once the browser
+			// has actually parsed it, so that is what is waited on. The
+			// timer stays, much longer, purely so a stylesheet that never
+			// answers cannot hold the page hostage.
+			var swzCssReady = function () {
+				var links = document.querySelectorAll('link[rel="stylesheet"]');
+				for (var i = 0; i < links.length; i++) {
+					// a cross-origin sheet throws on access once loaded, which
+					// is itself proof that it loaded
+					try {
+						if (!links[i].sheet) return false;
+					} catch (e) {
+						/* loaded, just not readable */
+					}
+				}
+				return true;
+			};
+			var swzWaited = 0;
+			var swzWatch = function () {
+				// Not before the document has finished parsing. This script
+				// runs in the head, ABOVE the stylesheet links, so on the
+				// first pass there are none in the DOM yet — the check found
+				// zero sheets, concluded they had all loaded, and lifted the
+				// curtain immediately. Which is the bug it was written to fix.
+				if (document.readyState === 'loading') {
+					window.setTimeout(swzWatch, 40);
+					return;
+				}
+				if (swzCssReady()) {
+					// one more frame so the first styled paint lands behind it
+					requestAnimationFrame(function () {
+						requestAnimationFrame(window.__swzRelease);
+					});
+					return;
+				}
+				swzWaited += 60;
+				if (swzWaited >= 8000) return window.__swzRelease(); // hard ceiling
+				window.setTimeout(swzWatch, 60);
+			};
+			swzWatch();
 
 			var view = localStorage.getItem('swizel-view');
 			// the Legacy world was retired — send old visitors to the default view
@@ -333,9 +409,38 @@ const organizationSchema = {
 <title>{title}</title>
 <meta name="title" content={title} />
 <meta name="description" content={description} />
+{
+	/* Google has ignored the keywords tag since 2009, and this is not an
+	   attempt to fool it. Bing and Yandex still read it lightly, and more
+	   usefully it makes the page's intended phrase visible in view-source
+	   next to the title it is supposed to match — which is how you catch
+	   two pages quietly chasing the same search. The list lives in
+	   src/data/seo.ts and is only emitted for pages that have one. */
+	registry?.keywords?.length && (
+		<meta name="keywords" content={registry.keywords.join(', ')} />
+	)
+}
+
+<!-- ── where the company is ──────────────────────────────────────────
+     Not a ranking factor on their own, but they are read by Bing, by a
+     few aggregators, and by anything that builds a local listing from a
+     page it crawled. Cheap, and they agree with the ProfessionalService
+     record below rather than contradicting it. -->
+<meta name="geo.region" content="NG-FC" />
+<meta name="geo.placename" content="Abuja, Federal Capital Territory, Nigeria" />
+<meta name="geo.position" content="8.9806;7.4165" />
+<meta name="ICBM" content="8.9806, 7.4165" />
 
 <!-- Open Graph / Facebook -->
+<!-- en_NG is where the company is, and it stays primary. The alternates
+     are here because roughly half the people who see a Swizel link are
+     in Britain, Ireland or the United States, and a share card that
+     declares only a Nigerian locale tells Facebook and LinkedIn that
+     the page is for one market. -->
 <meta property="og:locale" content="en_NG" />
+<meta property="og:locale:alternate" content="en_GB" />
+<meta property="og:locale:alternate" content="en_US" />
+<meta property="og:locale:alternate" content="en_IE" />
 <meta property="og:type" content={type} />
 <meta property="og:url" content={canonicalURL} />
 <meta property="og:site_name" content={SITE_TITLE} />

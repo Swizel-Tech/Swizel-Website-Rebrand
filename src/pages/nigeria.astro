@@ -1,0 +1,192 @@
+---
+// ── Nigeria, Abuja, Lagos and the rest of Africa ───────────────────────
+//
+// Why this is a page and not a paragraph on the home page.
+//
+// The home page has one job: to answer "custom software development
+// company" for somebody who does not care where we are. The moment it
+// also has to answer "software developers in Abuja" it starts reading
+// like a directory listing, and it did — the old title was "Software
+// Development Company in Nigeria, UK & US", which is three searches
+// fighting over 60 characters and winning none of them convincingly.
+//
+// So the places get their own pages. This one carries Nigeria, Abuja,
+// Lagos, Port Harcourt and Africa, with the real address, the real
+// coordinates and the local specifics — Paystack, Flutterwave, VAT, WHT,
+// NDPR — that a local search is actually looking for. /global carries the
+// UK, US, Ireland and the EU. Both link back to the service pages, so
+// the authority pools rather than splits.
+//
+// /ng and /africa redirect here (see astro.config.mjs).
+import MainLayout from '../layouts/MainLayout.astro';
+import LandingPage from '../components/sections/LandingPage.astro';
+import { PAGES } from '../data/seo';
+import { graph, localPage, faqPage, AREA_AFRICA } from '../data/schema';
+
+const seo = PAGES['/nigeria'];
+const PATH = '/nigeria';
+
+const offer = [
+	{
+		icon: 'mdi:web',
+		title: 'Websites & web platforms',
+		desc: 'Marketing sites, portals, marketplaces and booking systems that load fast on Nigerian networks and rank for what your customers search.',
+		items: ['Websites', 'Portals', 'Marketplaces'],
+	},
+	{
+		icon: 'mdi:cellphone',
+		title: 'Mobile apps',
+		desc: 'iOS and Android builds tuned for the mid-range handsets and metered data most of your users actually have.',
+		items: ['iOS', 'Android', 'PWA'],
+	},
+	{
+		icon: 'mdi:credit-card-outline',
+		title: 'Local payments, wired properly',
+		desc: 'Paystack, Flutterwave, Interswitch, Remita and direct bank transfer, with reconciliation that survives a failed webhook and a duplicate charge.',
+		items: ['Paystack', 'Flutterwave', 'Remita'],
+	},
+	{
+		icon: 'mdi:file-document-outline',
+		title: 'Compliance that applies here',
+		desc: 'VAT and withholding tax handled the way FIRS filing expects, NDPR-aware data handling, and audit trails your auditor will accept.',
+		items: ['VAT & WHT', 'NDPR', 'Audit trail'],
+	},
+	{
+		icon: 'mdi:server-network',
+		title: 'Infrastructure for local reality',
+		desc: 'Edge delivery so pages arrive quickly on a Nigerian connection, offline tolerance where the network drops, and hosting that does not fall over at month end.',
+		items: ['Edge CDN', 'Offline-first', 'Monitoring'],
+	},
+	{
+		icon: 'mdi:bullhorn-outline',
+		title: 'Marketing that reaches Nigerians',
+		desc: 'Search, Meta and Google campaigns built around how people here actually find and buy, run by the same team that built the product.',
+		items: ['SEO', 'Meta ads', 'Google ads'],
+	},
+];
+
+const places = [
+	{ name: 'Abuja', note: 'Our base. Lokogoma, FCT — meetings in person, same day.' },
+	{ name: 'Lagos', note: 'Clients and team across the mainland and island.' },
+	{ name: 'Port Harcourt', note: 'Energy and logistics work, delivered remotely.' },
+	{ name: 'Across Africa', note: 'Ghana, Kenya and West Africa, shipped remotely.' },
+];
+
+const steps = [
+	{
+		n: 'Step 01',
+		title: 'Meet, in person if you like',
+		desc: 'We are in Abuja. Come to the office, or we come to yours, or a call if that is simpler. No sales deck — we want to hear the problem.',
+	},
+	{
+		n: 'Step 02',
+		title: 'A written scope and a fixed price',
+		desc: 'In Naira or in dollars, per stage, before anything starts. You see exactly what a stage buys and what it costs.',
+	},
+	{
+		n: 'Step 03',
+		title: 'Build, launch, and stay',
+		desc: 'Fortnightly builds you can use, then launch, then maintenance, hosting and marketing from the same team that built it.',
+	},
+];
+
+const faqs = [
+	{
+		q: 'Where in Nigeria are you based?',
+		a: 'Abuja — 2155 Peculiar Estate, Lokogoma, FCT. We work with clients across Lagos, Port Harcourt and the rest of the country, and with colleagues in Cork, Sheffield and New York, which is how a Nigerian build ends up meeting the standards of the markets our clients sell into.',
+	},
+	{
+		q: 'Do you meet clients in person?',
+		a: 'In Abuja, yes, and we prefer it for a first conversation — an hour in a room is worth three calls. For Lagos and elsewhere we travel for the kick-off and the significant milestones and run the rest remotely, which is how most of our Lagos work has gone.',
+	},
+	{
+		q: 'Can we pay in Naira?',
+		a: 'Yes. We quote and invoice in Naira for Nigerian businesses, or in dollars, pounds or euros where that suits your accounting better. Payment is staged against delivered work rather than taken up front.',
+	},
+	{
+		q: 'How much does a website or app cost in Nigeria?',
+		a: 'A serious business website is typically in the low hundreds of thousands of Naira; a web platform or a first mobile app is in the millions, quoted stage by stage so you commit to one stage at a time. What we will not do is quote a figure before understanding the work — the cheap quote you get without questions is the one that gets revised upwards halfway through.',
+	},
+	{
+		q: 'Do you handle Nigerian payment gateways and tax?',
+		a: 'Routinely. Paystack, Flutterwave, Interswitch, Remita and direct transfer, including the unglamorous parts — failed webhooks, duplicate charges, settlement reconciliation. On tax, we build VAT and withholding tax into the system the way FIRS filing expects rather than leaving your accountant to patch it in a spreadsheet.',
+	},
+	{
+		q: 'Do you only work with Nigerian clients?',
+		a: 'No — roughly half our work is for businesses outside Nigeria, in the UK, Ireland, the US, the EU and as far as Iceland. If you are outside Africa, <a href="/global/">our global delivery page</a> explains how that runs.',
+	},
+];
+
+const related = [
+	{ label: 'Custom software development', href: '/services/custom-software/', note: 'Bespoke platforms and internal systems.' },
+	{ label: 'Web & mobile app development', href: '/services/app-development/', note: 'iOS, Android and web applications.' },
+	{ label: 'Enterprise ERP systems', href: '/services/erp-systems/', note: 'Stock, finance and operations in one system.' },
+	{ label: 'Our work', href: '/portfolio/', note: '65+ products, with the story behind each.' },
+	{ label: 'Internships & NYSC', href: '/programs/', note: 'For Nigerian graduates and students.' },
+	{ label: 'Contact us in Abuja', href: '/contact/', note: '+234 810 020 4570 · contact@swizel.co' },
+];
+
+const pageSchema = graph(
+	localPage({
+		name: 'Swizel Technologies Limited — software development company in Nigeria',
+		description: seo.description,
+		path: PATH,
+		areaServed: AREA_AFRICA,
+		locations: [
+			{
+				name: 'Swizel Technologies Limited — Abuja',
+				street: '2155 Peculiar Estate, Lokogoma',
+				city: 'Abuja',
+				region: 'FCT',
+				postalCode: '900107',
+				country: 'NG',
+				lat: 8.9806,
+				lon: 7.4165,
+			},
+			{ name: 'Swizel Technologies Limited — Lagos', city: 'Lagos', region: 'Lagos', country: 'NG' },
+		],
+	}),
+	faqPage(faqs, PATH)
+);
+---
+
+<MainLayout
+	title={seo.title}
+	description={seo.description}
+	schema={pageSchema}
+>
+	<LandingPage
+		kicker={seo.kicker!}
+		h1={['Software built in Nigeria,', 'to the standard of anywhere.']}
+		lede="We are a software development company based in Abuja, working with businesses across Lagos, Port Harcourt and the rest of Africa — and with clients in the UK, the US and the EU, which is the standard everything here is held to."
+		metrics={[
+			{ v: '65+', k: 'Products shipped' },
+			{ v: '7+', k: 'Years in Abuja' },
+			{ v: '10+', k: 'Countries served' },
+		]}
+		intro={{
+			heading: 'A Nigerian team that builds for a global market',
+			body: [
+				'Swizel Technologies Limited has been building software from Abuja since 2019. Websites, web platforms, mobile apps and full <strong>ERP systems</strong> for distributors, real-estate groups, fintechs, schools, energy firms and sports businesses — in Nigeria, across Africa, and for clients who have never been here.',
+				'Being based in <strong>Abuja</strong> with colleagues in Cork, Sheffield and New York changes what gets built. The work is reviewed against what a client in London or New York will accept, and it is engineered for the conditions here: mid-range Android handsets, metered data, a network that drops. Software that is quick on a Nigerian connection is quick everywhere, and that is not a compromise — it is a discipline that makes the product better for everyone.',
+				'The local specifics are not extras we bolt on. Paystack, Flutterwave, Interswitch and Remita, with the settlement reconciliation that keeps the numbers honest when a webhook fails. VAT and withholding tax built in the way FIRS filing expects. NDPR-aware handling of customer data. Invoicing in Naira when that is what your accounts want.',
+				'And we stay. Launch day is the middle of the job — we host it, monitor it, market it and keep extending it. Nine in ten clients are still with us after the first release, which is the number we would want to be judged on.',
+			],
+		}}
+		offerHeading="What we build for Nigerian businesses"
+		offer={offer}
+		stepsHeading="How working with us goes"
+		steps={steps}
+		placesHeading="Where we work"
+		places={places}
+		faqHeading="Questions Nigerian businesses ask"
+		faqs={faqs}
+		relatedHeading="Where to go next"
+		related={related}
+		cta={{
+			title: 'Come and see us in Abuja.',
+			body: 'Or call, or send a brief. Tell us where you want the business to get to and we will tell you what it takes — honestly, before anyone signs anything.',
+			label: 'Send us a brief',
+		}}
+	/>
+</MainLayout>

@@ -1,5 +1,7 @@
 ---
 title: "The Recent Fintech Landscape and the Average Nigerian"
+# 53 characters plus the template's " | Swizel" is 62 — over the cut.
+seoTitle: "Fintech in Nigeria and the Average Nigerian"
 description: 'In May 2024, the term "Fintech" has become a buzzword in Nigeria, with companies like Opay, Palmpay, Piggyvest, and Moniepoint gaining widespread popularity for their financial services. However, recent directives from the Central Bank of Nigeria (CBN) to halt new customer registrations for these fintech firms have caused concern among Nigerians who rely on their services. This move, aimed at curbing illegal foreign exchange transactions, highlights the tension between the rapid growth of fintech and the need for regulatory oversight. Despite these challenges, the fintech sector in Nigeria continues to show promise, driven by a tech-savvy youth population and increasing smartphone usage, suggesting a potentially bright future if balanced regulations are implemented.'
 pubDate: "Jun 17 2024"
 heroImage: "/blogpost/fintech.jpg"

@@ -1,0 +1,160 @@
+---
+// ── Web & mobile app development ───────────────────────────────────────
+//
+// The second search-built page. Its subject is the *app* — the thing a
+// customer downloads or opens in a browser — as opposed to the internal
+// platform on /services/custom-software and the back-office system on
+// /services/erp-systems. Keeping those three apart in subject is what
+// keeps them from competing for each other's searches.
+import MainLayout from '../../layouts/MainLayout.astro';
+import LandingPage from '../../components/sections/LandingPage.astro';
+import { PAGES } from '../../data/seo';
+import { graph, service, faqPage } from '../../data/schema';
+
+const seo = PAGES['/services/app-development'];
+const PATH = '/services/app-development';
+
+const offer = [
+	{
+		icon: 'mdi:apple-ios',
+		title: 'iOS app development',
+		desc: 'Native Swift where the app needs the hardware, Flutter where one codebase serves both stores. Built to pass review the first time, and shipped to App Store Connect by us.',
+		items: ['Swift', 'Flutter', 'TestFlight'],
+	},
+	{
+		icon: 'mdi:android',
+		title: 'Android app development',
+		desc: 'Kotlin and Flutter builds that behave on a flagship and on the mid-range handset most of your users actually carry.',
+		items: ['Kotlin', 'Flutter', 'Play Console'],
+	},
+	{
+		icon: 'mdi:monitor-dashboard',
+		title: 'Web applications',
+		desc: 'Dashboards, portals, booking systems and marketplaces that load fast, work on a phone browser and hold up when traffic arrives.',
+		items: ['React', 'Next.js', 'Vue', 'Astro'],
+	},
+	{
+		icon: 'mdi:cellphone-arrow-down',
+		title: 'Progressive web apps',
+		desc: 'Installable, offline-capable and instant — no store review, no download, no 80MB over a metered connection. Often the right first move in markets where data costs money.',
+		items: ['Offline-first', 'Push', 'Installable'],
+	},
+	{
+		icon: 'mdi:api',
+		title: 'APIs & backends',
+		desc: 'The engine room: authentication, payments, notifications, media, search and the database schema that will still make sense at ten times the volume.',
+		items: ['Node', 'Python', 'PostgreSQL', 'Redis'],
+	},
+	{
+		icon: 'mdi:rocket-launch-outline',
+		title: 'Launch, analytics & iteration',
+		desc: 'Store listings, screenshots, crash reporting, funnels and a release train — so week two is informed by what week one actually did.',
+		items: ['Store listing', 'Crash reporting', 'Funnels'],
+	},
+];
+
+const steps = [
+	{
+		n: 'Step 01',
+		title: 'Scope and prototype',
+		desc: 'We agree the smallest version worth shipping and put a clickable prototype in front of real users before a line of production code exists.',
+	},
+	{
+		n: 'Step 02',
+		title: 'Build in the open',
+		desc: 'A new build lands on your phone every fortnight. You tap it, we fix it. No quarter-long silence ending in a reveal nobody asked for.',
+	},
+	{
+		n: 'Step 03',
+		title: 'Ship, watch, improve',
+		desc: 'We handle both store submissions, then read the crash logs and the funnels with you and spend the next release on whatever the numbers say.',
+	},
+];
+
+const faqs = [
+	{
+		q: 'Should we build native apps or one cross-platform app?',
+		a: 'It depends on what the app does. If it leans on the camera, Bluetooth, background location, heavy graphics or platform-specific hardware, native Swift and Kotlin earn their extra cost. For the large majority of products — marketplaces, booking, fintech front-ends, social, delivery, content — one Flutter codebase gives you iOS and Android from a single team at close to native quality, for meaningfully less money and a shorter timeline. We will tell you which case yours is in the first conversation rather than selling you the more expensive one by default.',
+	},
+	{
+		q: 'How much does app development cost?',
+		a: 'A focused first version for one platform typically starts in the mid four figures in dollars; a two-platform product with accounts, payments and a back office is a larger engagement, quoted stage by stage. The honest answer is that the range is wide because "an app" covers everything from a three-screen tool to a full marketplace — so we scope it properly and give you a fixed price per stage before you commit anything.',
+	},
+	{
+		q: 'How long until the app is in the stores?',
+		a: 'A lean first version usually reaches the stores in eight to fourteen weeks. Apple review adds a few days and occasionally a round of notes; we handle that, and we build to their guidelines from the start so it is rarely more than once. You see a working build on your own phone long before launch — from about week three.',
+	},
+	{
+		q: 'Do you submit the app to the App Store and Google Play for us?',
+		a: 'Yes. We set up or work inside your own developer accounts — they stay in your name — and handle the builds, signing, screenshots, listing copy, privacy declarations and the review correspondence. You end up owning the listing, not renting it from us.',
+	},
+	{
+		q: 'Can you take over an app somebody else built?',
+		a: 'Often, yes. We start with a paid audit: we read the code, the dependencies and the infrastructure and tell you plainly whether it is worth continuing or whether a rebuild will cost you less over two years. We have taken over both kinds and we will not pretend a rescue is cheap when it is not.',
+	},
+	{
+		q: 'What happens after launch?',
+		a: 'Apps are not finished, they are released. We keep them current with each OS version, watch the crash and performance numbers, and ship improvements on whatever cadence you want — see <a href="/services/maintenance/">maintenance and support</a>. Roughly nine in ten of our clients are still with us after launch.',
+	},
+];
+
+const related = [
+	{ label: 'Custom software development', href: '/services/custom-software/', note: 'The platform the business runs on.' },
+	{ label: 'Enterprise ERP systems', href: '/services/erp-systems/', note: 'Stock, finance and operations in one place.' },
+	{ label: 'UI/UX & product design', href: '/services/design/', note: 'How it looks, and why it works.' },
+	{ label: 'Maintenance & support', href: '/services/maintenance/', note: 'Keeping a live app healthy.' },
+	{ label: 'The work', href: '/portfolio/', note: 'Apps we have shipped, and what happened next.' },
+	{ label: 'All services', href: '/services/', note: 'Every discipline, under one roof.' },
+];
+
+const pageSchema = graph(
+	service({
+		name: 'Mobile and web application development',
+		description: seo.description,
+		path: PATH,
+		serviceType: 'Mobile app development',
+		offers: offer.map((o) => ({ name: o.title, description: o.desc })),
+	}),
+	faqPage(faqs, PATH)
+);
+---
+
+<MainLayout
+	title={seo.title}
+	description={seo.description}
+	image={seo.image}
+	schema={pageSchema}
+>
+	<LandingPage
+		kicker={seo.kicker!}
+		h1={['Apps people open again', 'the next morning.']}
+		lede="iOS, Android and the web, designed and engineered by one team. We build the version worth shipping first, put it in real hands early, and keep improving it on what the numbers say rather than on what anyone assumed."
+		metrics={[
+			{ v: '65+', k: 'Products shipped' },
+			{ v: '99.9%', k: 'Uptime, 12 months' },
+			{ v: '4.9', k: 'Average client rating' },
+		]}
+		intro={{
+			heading: 'One team for the app, the back end and the launch',
+			body: [
+				'Most app projects do not fail on the code. They fail in the gaps: the designer hands over screens the developer cannot build, the back end is somebody else\'s contract, and nobody owns the App Store listing until the week of launch. <strong>Mobile and web app development</strong> under one roof removes the gaps — the same team does the research, the interface, the engineering, the store submission and the first six months of improvement.',
+				'We build native where native pays for itself and cross-platform where it does not. Flutter gives most products iOS and Android from one codebase at close to native quality; Swift and Kotlin come out when an app leans hard on the hardware. On the web it is React, Next.js, Vue or Astro depending on whether the page needs to rank, to render instantly, or to hold a logged-in workspace together.',
+				'Performance is not a finishing touch here. Plenty of our users are on mid-range Android handsets and metered data, which is a discipline the whole product benefits from: smaller bundles, fewer round trips, offline tolerance and screens that are usable before every image has arrived. An app built to be fast in Lagos is a fast app in London.',
+				'And the work does not stop at launch. Stores change their rules, operating systems move, and the first month of real usage always disagrees with the plan in interesting ways. We stay to read that and act on it.',
+			],
+		}}
+		offerHeading="What we build"
+		offer={offer}
+		stepsHeading="How a build actually runs"
+		steps={steps}
+		faqHeading="Questions people ask before they start"
+		faqs={faqs}
+		relatedHeading="Where to go next"
+		related={related}
+		cta={{
+			title: 'Got an app in mind?',
+			body: 'Tell us what it should do and who it is for. We will come back with the shape of a first version, what it takes and what it costs — before anyone signs anything.',
+			label: 'Send us a brief',
+		}}
+	/>
+</MainLayout>

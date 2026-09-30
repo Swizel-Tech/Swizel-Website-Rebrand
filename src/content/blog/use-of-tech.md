@@ -6,6 +6,10 @@ heroImage: '/blogpost/tech-edu-nigeria.jpg'
 category: 'Technology'
 author: 'Swizel Team'
 metaDescription: 'Access to good schooling in Nigeria is scarce where it is not expensive. Here is where technology genuinely closes that gap, and where it does not.'
+# The headline on the page is 53 characters and the template adds
+# " | Swizel", which put the blue link at 63 — past where Google cuts.
+# The page keeps its own headline; this is only what the result says.
+seoTitle: 'EdTech in Nigeria: What Actually Closes the Gap'
 heroAlt: 'A university computer laboratory lined with desktop machines'
 ---
 

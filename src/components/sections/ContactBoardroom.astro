@@ -13,6 +13,7 @@
 import { Icon } from 'astro-icon/components';
 import ContactForm from '../blocks/ContactForm.astro';
 import { faq } from '../../consts';
+import { PAGES } from '../../data/seo';
 
 const contactFaq = faq.slice(0, 6);
 
@@ -63,7 +64,10 @@ const glance = [
 	<div class="ab-open">
 		<article class="ab-open-panel is-pale bd-reveal">
 			<div class="ab-open-copy">
-				<span class="ab-kick">Talk to us</span>
+				{/* From src/data/seo.ts. "anywhere in the world" is here
+				    because half the people who reach this page are not in
+				    Nigeria, and the page never used to say so. */}
+				<span class="ab-kick">{PAGES['/contact'].kicker}</span>
 				<h1 class="ab-h1">
 					Start with a
 					<em>conversation.</em>

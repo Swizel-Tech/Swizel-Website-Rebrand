@@ -1,0 +1,161 @@
+---
+// ── Enterprise ERP systems ─────────────────────────────────────────────
+//
+// The third search-built page, and the one with the least competition in
+// its own market: "custom ERP" in Nigeria is searched by companies who
+// have priced SAP or Odoo, found the licence per seat unworkable, and are
+// looking for someone who will build the three modules they actually
+// need. That is a real, specific visitor, and no page on the site spoke
+// to them before this one.
+import MainLayout from '../../layouts/MainLayout.astro';
+import LandingPage from '../../components/sections/LandingPage.astro';
+import { PAGES } from '../../data/seo';
+import { graph, service, faqPage } from '../../data/schema';
+
+const seo = PAGES['/services/erp-systems'];
+const PATH = '/services/erp-systems';
+
+const offer = [
+	{
+		icon: 'mdi:package-variant-closed',
+		title: 'Inventory & warehousing',
+		desc: 'Stock by location and batch, transfers, reorder points, stock counts and a valuation that agrees with the ledger at the end of the month.',
+		items: ['Multi-location', 'Batch & serial', 'Reorder alerts'],
+	},
+	{
+		icon: 'mdi:cash-register',
+		title: 'Sales, purchasing & invoicing',
+		desc: 'Quotes to orders to invoices to receipts, with your own approval limits, price lists, discount rules and credit terms enforced by the system.',
+		items: ['Quotes & orders', 'Approvals', 'Credit control'],
+	},
+	{
+		icon: 'mdi:calculator-variant-outline',
+		title: 'Finance & accounting',
+		desc: 'A chart of accounts that matches how you report, automatic journals from operations, bank reconciliation, VAT and WHT handled the way Nigerian and UK filing actually want them.',
+		items: ['General ledger', 'VAT & WHT', 'Reconciliation'],
+	},
+	{
+		icon: 'mdi:account-hard-hat-outline',
+		title: 'People & payroll',
+		desc: 'Staff records, leave, shifts, attendance and payroll runs with the statutory deductions for the countries you employ in.',
+		items: ['Leave & shifts', 'Payroll runs', 'Payslips'],
+	},
+	{
+		icon: 'mdi:chart-box-outline',
+		title: 'Reporting & business intelligence',
+		desc: 'Live dashboards per role, scheduled management packs, and the drill-down that lets a board question be answered in the meeting rather than after it.',
+		items: ['Role dashboards', 'Scheduled packs', 'Drill-down'],
+	},
+	{
+		icon: 'mdi:database-import-outline',
+		title: 'Migration & integration',
+		desc: 'Your existing data brought across and reconciled, and the systems you keep — bank feeds, payment gateways, e-commerce, POS, logistics — wired in rather than replaced.',
+		items: ['Data migration', 'Bank feeds', 'POS & e-commerce'],
+	},
+];
+
+const steps = [
+	{
+		n: 'Step 01',
+		title: 'Audit and scope',
+		desc: 'We walk the operation, module by module, and agree which two or three actually hurt today. Those get built first; the rest waits until they have earned their place.',
+	},
+	{
+		n: 'Step 02',
+		title: 'Build, migrate, run in parallel',
+		desc: 'The first modules go live alongside your existing process, with real data migrated and reconciled, so nobody is betting the month on a switch-over.',
+	},
+	{
+		n: 'Step 03',
+		title: 'Train, extend, support',
+		desc: 'Your team is trained on their own data, the remaining modules are added in order of value, and the system is monitored, backed up and maintained.',
+	},
+];
+
+const faqs = [
+	{
+		q: 'Why build a custom ERP instead of buying SAP, Odoo or Microsoft Dynamics?',
+		a: 'For a large multinational, an established ERP is usually the right answer. For a growing business it often is not, for three reasons. The licence is per seat and per year, so the cost grows with your headcount forever. You will use perhaps a fifth of what you are paying for. And the implementation consultants will spend months configuring the product to approximate your process, which frequently costs more than building the five modules you need. A custom ERP inverts all three: you own it, it covers exactly your operation, and there is no per-seat fee. We will still tell you to buy Odoo if your process really is standard.',
+	},
+	{
+		q: 'Do we have to replace everything at once?',
+		a: 'No, and you should not. Big-bang ERP replacement is how ERP projects become cautionary tales. We start with the two or three modules causing real pain — usually inventory and invoicing — run them in parallel with what you do now, and only retire the old process once the new one has closed a clean month. The rest follows in order of value.',
+	},
+	{
+		q: 'What does a custom ERP system cost?',
+		a: 'It is quoted per module, so the first phase is a real project rather than a leap: a single well-scoped module is typically a few thousand dollars, and a complete multi-module system with finance, inventory, sales and payroll is a staged engagement over several months. Against it, set the per-seat licence you would otherwise pay every year for as long as the company exists. We put the comparison in writing so you can make the call on numbers.',
+	},
+	{
+		q: 'Can it handle multiple locations, currencies and tax regimes?',
+		a: 'Yes. Multi-location stock, multi-currency transactions with the rate held against the document, and separate tax treatments per entity are all standard. We have built for businesses operating in Nigeria, the UK and the EU at once, where the same sale is reported three different ways.',
+	},
+	{
+		q: 'What about our existing data?',
+		a: 'Migration is part of the work, not an afterthought. We extract from whatever you are on — spreadsheets, QuickBooks, Sage, a bespoke system, paper — clean and map it, load it, and then reconcile the balances with your accountant before anyone relies on it.',
+	},
+	{
+		q: 'Who runs it once it is live?',
+		a: 'Your team, on your infrastructure, with your credentials — we train them on their own data and leave documentation behind. We stay on for hosting, monitoring, backups and new modules under a <a href="/services/maintenance/">support agreement</a> for as long as that is useful to you.',
+	},
+];
+
+const related = [
+	{ label: 'Custom software development', href: '/services/custom-software/', note: 'Bespoke platforms beyond the back office.' },
+	{ label: 'Web & mobile app development', href: '/services/app-development/', note: 'The customer-facing half.' },
+	{ label: 'Product strategy', href: '/services/strategy/', note: 'Which modules first, and why.' },
+	{ label: 'Maintenance & support', href: '/services/maintenance/', note: 'Hosting, backups and monitoring.' },
+	{ label: 'The work', href: '/portfolio/', note: 'Systems we have built, and what changed.' },
+	{ label: 'All services', href: '/services/', note: 'Every discipline, under one roof.' },
+];
+
+const pageSchema = graph(
+	service({
+		name: 'Enterprise ERP software development',
+		description: seo.description,
+		path: PATH,
+		serviceType: 'ERP software development',
+		offers: offer.map((o) => ({ name: o.title, description: o.desc })),
+	}),
+	faqPage(faqs, PATH)
+);
+---
+
+<MainLayout
+	title={seo.title}
+	description={seo.description}
+	image={seo.image}
+	schema={pageSchema}
+>
+	<LandingPage
+		kicker={seo.kicker!}
+		h1={['One system the whole', 'company can trust.']}
+		lede="Custom ERP software that pulls stock, sales, finance, people and reporting into one place — built module by module around how your business already runs, with no per-seat licence for the privilege."
+		metrics={[
+			{ v: '7+', k: 'Years building' },
+			{ v: '98%', k: 'Delivered on time' },
+			{ v: '10+', k: 'Countries served' },
+		]}
+		intro={{
+			heading: 'Built module by module, not bought in one leap',
+			body: [
+				'An ERP is only worth having if people use it, and people use a system that fits the job. That is the whole case for <strong>custom ERP development</strong>: instead of configuring a global product until it roughly resembles your operation, the modules are built to match the operation — your approval limits, your price lists, your stock logic, your chart of accounts, your statutory filings.',
+				'It is also the case on cost. A licensed ERP charges per seat, every year, for as long as you exist, and most companies use a fraction of what they are paying for. A custom system is capital spend once, owned outright, and extended only where extension pays. We put both numbers in front of clients and let them decide — and when the process really is standard, we say so and point at Odoo.',
+				'The risk in ERP has never been the software. It is the switch-over: a business that replaces everything on the first of the month and cannot invoice on the second. So we do not do that. Two or three modules go live first, in parallel with what you do today, with real data migrated and reconciled, and the old process is only retired once the new one has closed a clean month.',
+				'We have built this for distributors, real-estate groups, energy firms and logistics operators, in Nigeria and for businesses reporting across Nigeria, the UK and the EU at once. Multi-location stock, multi-currency documents and separate tax treatment per entity are ordinary requirements here, not enterprise extras.',
+			],
+		}}
+		offerHeading="The modules we build"
+		offer={offer}
+		stepsHeading="How a rollout actually runs"
+		steps={steps}
+		faqHeading="Questions people ask before they start"
+		faqs={faqs}
+		relatedHeading="Where to go next"
+		related={related}
+		cta={{
+			title: 'Priced an ERP and blinked?',
+			body: 'Tell us which part of the operation hurts most. We will scope that module, price it, and show you the comparison against a licence — honestly, before anyone signs anything.',
+			label: 'Book an ERP audit',
+		}}
+	/>
+</MainLayout>

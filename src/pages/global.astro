@@ -1,0 +1,176 @@
+---
+// ── The UK, the US, Ireland and the EU ─────────────────────────────────
+//
+// The other half of the pair with /nigeria. This one exists because the
+// searches are completely different in kind: a company in Sheffield or
+// Austin is not typing "software developers near me", it is typing
+// "software outsourcing UK", "dedicated development team", "offshore
+// software company" — and what it wants to read about is not our street
+// address, it is time zones, contracts, IP ownership, invoicing currency
+// and who it talks to at 9am its own time.
+//
+// /uk, /us and /eu redirect here (see astro.config.mjs).
+import MainLayout from '../layouts/MainLayout.astro';
+import LandingPage from '../components/sections/LandingPage.astro';
+import { PAGES } from '../data/seo';
+import { graph, localPage, faqPage, AREA_GLOBAL } from '../data/schema';
+
+const seo = PAGES['/global'];
+const PATH = '/global';
+
+const offer = [
+	{
+		icon: 'mdi:account-group-outline',
+		title: 'Dedicated development teams',
+		desc: 'A named team — engineers, designer, QA and a lead you speak to directly — working only on your product, on a monthly retainer you can scale up or down.',
+		items: ['Named team', 'Monthly retainer', 'Scale up or down'],
+	},
+	{
+		icon: 'mdi:clipboard-check-outline',
+		title: 'Fixed-scope project delivery',
+		desc: 'A written scope, a fixed price per stage and a date we hold to. Best when you know what you want built and would rather buy an outcome than a process.',
+		items: ['Fixed price', 'Stage gates', 'Held dates'],
+	},
+	{
+		icon: 'mdi:puzzle-outline',
+		title: 'Team extension',
+		desc: 'Our engineers inside your sprints, your tooling, your standups and your code review — filling a gap rather than running a parallel project.',
+		items: ['Your process', 'Your repos', 'Your standups'],
+	},
+	{
+		icon: 'mdi:clock-outline',
+		title: 'Real overlap, not a handover',
+		desc: 'West Africa Time is one hour ahead of London and puts a full working morning alongside New York. You get same-day answers, not overnight ticket replies.',
+		items: ['UTC+1', 'UK overlap all day', 'US mornings'],
+	},
+	{
+		icon: 'mdi:file-sign',
+		title: 'Contracts that stand up',
+		desc: 'Work-for-hire IP assignment, NDA, DPA and processor terms, GDPR-aware data handling, and invoicing in GBP, USD or EUR from a registered limited company.',
+		items: ['IP assigned', 'NDA & DPA', 'GDPR-aware'],
+	},
+	{
+		icon: 'mdi:shield-check-outline',
+		title: 'Quality you can audit',
+		desc: 'Code review on every change, automated tests, CI, staging environments and monitoring — and access to all of it, so the quality is something you can check rather than take on trust.',
+		items: ['CI & tests', 'Staging', 'Full access'],
+	},
+];
+
+const places = [
+	{ name: 'United Kingdom', note: 'Team in Sheffield. One hour behind us — full working overlap.' },
+	{ name: 'Ireland & EU', note: 'Team in Cork. GDPR-aware delivery and EUR invoicing.' },
+	{ name: 'United States', note: 'Team in New York. Our afternoon is your morning.' },
+	{ name: 'Further afield', note: 'Iceland, the UAE and Canada — shipped remotely.' },
+];
+
+const steps = [
+	{
+		n: 'Step 01',
+		title: 'A call, then a written scope',
+		desc: 'Thirty minutes to understand the product and the constraints, then a scope, a price per stage and a date — in your currency, before you commit anything.',
+	},
+	{
+		n: 'Step 02',
+		title: 'A two-week paid pilot',
+		desc: 'Rather than asking you to trust a deck, we build something real and small first. You judge the team on delivered work, and can stop there.',
+	},
+	{
+		n: 'Step 03',
+		title: 'Delivery in the open',
+		desc: 'A demo every fortnight, your repos, your cloud accounts, your board. You can read every commit on the day it lands.',
+	},
+];
+
+const faqs = [
+	{
+		q: 'What time zone do you work in, and will it be a problem?',
+		a: 'We are on West Africa Time, UTC+1. That is the same hour as Berlin, one hour ahead of London and five to eight ahead of the US. In practice a UK or EU client has a full shared working day with us, and a US client gets our afternoon as its morning — a real overlap for standups and decisions, rather than the twelve-hour handover you get from South or East Asia. It is one of the main reasons clients in the UK and the US choose us.',
+	},
+	{
+		q: 'Who owns the intellectual property?',
+		a: 'You do, completely. Our contract assigns all IP in the work to you on a work-for-hire basis, and the repositories, cloud accounts and domains are in your name from the first day rather than transferred at the end. We sign your NDA, or provide ours, whichever you prefer.',
+	},
+	{
+		q: 'How do you handle GDPR and data protection?',
+		a: 'We sign a data processing agreement and work to processor obligations: named sub-processors, data minimisation, encryption in transit and at rest, and EU or UK data residency where your product requires it — we deploy to EU and UK regions routinely. Where personal data does not need to leave your infrastructure, our access is scoped so that it does not.',
+	},
+	{
+		q: 'Can you invoice in GBP, USD or EUR?',
+		a: 'Yes. Swizel Technologies Limited is a registered limited company and invoices in pounds, dollars or euros, payable by bank transfer, with payment staged against delivered work rather than taken up front.',
+	},
+	{
+		q: 'How do we know the quality will hold up?',
+		a: 'Two ways, and neither asks you to take our word for it. First, most engagements start with a small paid pilot — two weeks of real work you can judge before committing to more. Second, you get access to everything as it happens: the repositories, the code review, the CI runs, the test suite, the staging environment and the board. Quality you can read is quality you can verify.',
+	},
+	{
+		q: 'Is this offshore development? What is the catch?',
+		a: 'It is offshore in the literal sense and the rate is lower than a London or New York studio, so the fair question is what you give up. The honest answer: you give up sitting in the same room, and you take on the overhead of running a distributed engagement — which is why we insist on a shared working day, a named lead and a fortnightly demo. What you do not give up is standard of work; our own team in Sheffield, Cork and New York reviews it against the market you are selling into.',
+	},
+	{
+		q: 'Where is the team actually based?',
+		a: 'The engineering base is Abuja, Nigeria, with colleagues in Lagos, Cork, Sheffield and New York. <a href="/nigeria/">Our Nigeria page</a> covers the local side of the business, and <a href="/about/">the about page</a> introduces the people.',
+	},
+];
+
+const related = [
+	{ label: 'Custom software development', href: '/services/custom-software/', note: 'Bespoke platforms and internal systems.' },
+	{ label: 'Web & mobile app development', href: '/services/app-development/', note: 'iOS, Android and web applications.' },
+	{ label: 'Enterprise ERP systems', href: '/services/erp-systems/', note: 'Stock, finance and operations in one system.' },
+	{ label: 'Our work', href: '/portfolio/', note: '65+ products across 10+ countries.' },
+	{ label: 'About the team', href: '/about/', note: 'Who you would actually be working with.' },
+	{ label: 'Start a conversation', href: '/contact/', note: 'A call in your time zone, this week.' },
+];
+
+const pageSchema = graph(
+	localPage({
+		name: 'Swizel Technologies Limited — global software development partner',
+		description: seo.description,
+		path: PATH,
+		areaServed: AREA_GLOBAL,
+		locations: [
+			{ name: 'Swizel Technologies Limited — United Kingdom', city: 'Sheffield', country: 'GB' },
+			{ name: 'Swizel Technologies Limited — Ireland', city: 'Cork', country: 'IE' },
+			{ name: 'Swizel Technologies Limited — United States', city: 'New York', region: 'NY', country: 'US' },
+		],
+	}),
+	faqPage(faqs, PATH)
+);
+---
+
+<MainLayout title={seo.title} description={seo.description} schema={pageSchema}>
+	<LandingPage
+		kicker={seo.kicker!}
+		h1={['A delivery team that shares', 'your working day.']}
+		lede="Custom software, apps and ERP builds for companies in the UK, the US, Ireland and the EU — delivered by a named team on West Africa Time, which means a full working overlap with London and your morning covered in New York."
+		metrics={[
+			{ v: '10+', k: 'Countries served' },
+			{ v: '98%', k: 'Delivered on time' },
+			{ v: '65+', k: 'Products shipped' },
+		]}
+		intro={{
+			heading: 'The engineering partner, without the twelve-hour gap',
+			body: [
+				'Most companies that look for an <strong>offshore software development partner</strong> have already tried one. The complaint is rarely about the code. It is that a question asked at 10am was answered at 3am, that the team was three people last month and five strangers this month, and that nobody could say what had actually been built until the demo.',
+				'We are set up against exactly that. Abuja is on UTC+1 — the same hour as Berlin, one ahead of London, five to eight ahead of the United States. A UK or EU client shares a whole working day with us; a US client gets our afternoon as its morning. You get a named lead and a named team rather than a resource pool, and a demo of working software every fortnight.',
+				'The commercial side is deliberately unremarkable, because that is what reassures people: a registered limited company, invoicing in <strong>pounds, dollars or euros</strong>, work-for-hire IP assignment so everything is yours from the first commit, your NDA or ours, a DPA with processor terms, and EU or UK data residency where the product needs it.',
+				'And most engagements start small — a two-week paid pilot on real work. You judge the team on something delivered rather than on a deck, and you can stop there. We have built this way for clients in Britain, Ireland, the United States, the EU and as far as Iceland.',
+			],
+		}}
+		offerHeading="How companies work with us"
+		offer={offer}
+		stepsHeading="How an engagement starts"
+		steps={steps}
+		placesHeading="Where our clients are"
+		places={places}
+		faqHeading="The questions we get asked first"
+		faqs={faqs}
+		relatedHeading="Where to go next"
+		related={related}
+		cta={{
+			title: 'Start with a two-week pilot.',
+			body: 'Real work, a fixed price, and a decision you make on delivered software rather than on a pitch. Tell us what you need built.',
+			label: 'Book a call',
+		}}
+	/>
+</MainLayout>

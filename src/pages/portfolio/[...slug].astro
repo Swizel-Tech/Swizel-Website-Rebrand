@@ -15,8 +15,36 @@ type Props = CollectionEntry<'portfolio'>;
 const portfolio = Astro.props;
 
 const { Content } = await portfolio.render();
+
+// ── two pages about the same project ──────────────────────────────────
+//
+// These three are the original write-ups, from before /work/<slug>
+// existed. All three projects now have a full case study there too —
+// BetSlipSwitch, Brixmarket and Hemam Synergy — which means the site
+// has two URLs competing for every search about each of them. Google
+// picks one, usually not the one you would choose, and the links
+// pointing at the other are largely wasted.
+//
+// They are not deleted: each carries material the newer page does not
+// (the image grids, the embedded walkthrough). Instead each declares
+// the case study as the canonical version, so the two stop competing
+// and the newer page gets the credit for both. They are also kept out
+// of the sitemap — see astro.config.mjs.
+const CANONICAL_TO_CASE_STUDY: Record<string, string> = {
+	betslipswitch: 'betslipswitch',
+	brixmarketplace: 'brixmarket',
+	hemamsynergy: 'hemam-synergy',
+};
+const caseSlug = CANONICAL_TO_CASE_STUDY[portfolio.slug];
+const canonical = caseSlug ? `https://swizel.co/work/${caseSlug}/` : undefined;
+
+// "Project Betslipswitch | Swizel Portfolio" spends the front of the
+// title on the word "Project". What the work was goes there instead.
+const seoTitle = portfolio.data.whatWeDid?.length
+	? `${portfolio.data.title.replace(/^Project\s+/i, '')} — ${portfolio.data.whatWeDid[0]} | Swizel`
+	: undefined;
 ---
 
-<ProjectDetails {...portfolio.data}>
+<ProjectDetails {...portfolio.data} canonical={canonical} seoTitle={seoTitle}>
 	<Content />
 </ProjectDetails>

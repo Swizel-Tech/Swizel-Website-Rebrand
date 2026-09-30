@@ -23,12 +23,12 @@ The real estate market is plagued with a lot of volatility, ranging from the eco
 
 <div class="grid sm:grid-cols-3 gap-5 full--width md:px-[15%] px-5 py-10">
     <div class="sm:col-span-2 grid sm:h-[466px] overflow-hidden">
-    <img src="/projects/brixmarket--grid-1.jpg" class="h-[230px] w-full !m-0 sm:h-full"/>
+    <img src="/projects/brixmarket--grid-1.jpg" alt="The Brix Marketplace property search, showing listings with verified price history" class="h-[230px] w-full !m-0 sm:h-full"/>
     </div>
     <div class="grid sm:justify-between sm:grid-rows-2 sm:items-center gap-5">
         <!-- <img src="/projects/brixmarket--grid-2-1.jpg" class="h-[230px] sm:h-full w-full !m-0"> -->
         <iframe class="h-[230px] sm:h-full w-full !m-0"  src="https://www.youtube.com/embed/UAdl-wRVoQ0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-        <img src="/projects/brixmarket--grid-2-2.jpg" class="h-[230px] sm:h-full w-full !m-0">
+        <img src="/projects/brixmarket--grid-2-2.jpg" alt="A Brix Marketplace property listing page on a phone" class="h-[230px] sm:h-full w-full !m-0">
     </div>
 
 </div>

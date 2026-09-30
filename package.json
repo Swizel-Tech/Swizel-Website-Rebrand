@@ -11,7 +11,9 @@
     "astro": "astro",
     "postinstall": "patch-package",
     "prebuild": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\" && node scripts/seo-check.mjs",
-    "seo": "node scripts/seo-check.mjs"
+    "postbuild": "node scripts/page-seo-check.mjs",
+    "seo": "node scripts/seo-check.mjs",
+    "seo:pages": "node scripts/page-seo-check.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.2.3",

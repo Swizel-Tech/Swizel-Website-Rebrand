@@ -1,0 +1,720 @@
+---
+/**
+ * One long-form page, built from data.
+ *
+ * The five new search pages — custom software, apps, ERP, Nigeria and
+ * global — all want the same shape: a plate, the figures, a real piece of
+ * writing, what you actually get, how it runs, the places, a question
+ * list and a way to start. Written five times that is five designs to
+ * keep in step; written once it is one.
+ *
+ * It is deliberately NOT gated to a world. Every other page on the site
+ * renders five times over, one telling per world, and that is right for
+ * pages people browse. These are pages people *land* on from Google,
+ * usually on a phone, usually never having seen the site — so there is
+ * nothing yet to be consistent with. Instead every accent here is
+ * var(--view-accent), which means the page still takes the colour of
+ * whichever world the visitor is in, and a returning visitor in the
+ * studio does not walk into a blue room.
+ *
+ * On width: the two-up stays two-up at every size and the card grids go
+ * three to two, never to one. A column of full-width cards on a phone is
+ * a page nobody reaches the bottom of.
+ */
+import { Icon } from 'astro-icon/components';
+
+export interface Metric {
+	v: string;
+	k: string;
+}
+export interface Offer {
+	icon: string;
+	title: string;
+	desc: string;
+	items?: string[];
+}
+export interface Step {
+	n: string;
+	title: string;
+	desc: string;
+}
+export interface Place {
+	name: string;
+	note: string;
+}
+export interface Faq {
+	q: string;
+	a: string;
+}
+export interface Related {
+	label: string;
+	href: string;
+	note: string;
+}
+
+export interface Props {
+	/** The visible line above the H1. Carries the phrase the title chases. */
+	kicker: string;
+	/** Two parts so the second can be set in the accent italic. */
+	h1: [string, string];
+	lede: string;
+	metrics: Metric[];
+	/** The piece of writing. One heading, then paragraphs. */
+	intro: { heading: string; body: string[] };
+	offerHeading: string;
+	offer: Offer[];
+	stepsHeading: string;
+	steps: Step[];
+	placesHeading?: string;
+	places?: Place[];
+	faqHeading: string;
+	faqs: Faq[];
+	relatedHeading: string;
+	related: Related[];
+	cta: { title: string; body: string; label?: string };
+}
+
+const {
+	kicker,
+	h1,
+	lede,
+	metrics,
+	intro,
+	offerHeading,
+	offer,
+	stepsHeading,
+	steps,
+	placesHeading,
+	places,
+	faqHeading,
+	faqs,
+	relatedHeading,
+	related,
+	cta,
+} = Astro.props;
+---
+
+<div class="lp">
+	<!-- ── the plate ───────────────────────────────────────────────── -->
+	<header class="lp-open">
+		<div class="lp-open-copy">
+			<p class="lp-kick">{kicker}</p>
+			<h1 class="lp-h1">
+				{h1[0]}
+				<em>{h1[1]}</em>
+			</h1>
+			<p class="lp-lede">{lede}</p>
+			<div class="lp-acts">
+				<a href="/contact" class="lp-pill">
+					Start a project
+					<Icon width={15} name="mdi:arrow-right" />
+				</a>
+				<a href="/portfolio" class="lp-more">
+					See the work
+					<Icon width={14} name="mdi:chevron-right" />
+				</a>
+			</div>
+		</div>
+		<ul class="lp-glance" aria-label="Swizel at a glance">
+			{
+				metrics.map((m) => (
+					<li>
+						<span class="lp-glance-v">{m.v}</span>
+						<span class="lp-glance-k">{m.k}</span>
+					</li>
+				))
+			}
+		</ul>
+	</header>
+
+	<!-- ── the writing. Every page that wants to rank for a commercial
+	     phrase needs prose a person would read, not a keyword dropped
+	     into a grid of cards. ── -->
+	<section class="lp-intro">
+		<h2 class="lp-h2">{intro.heading}</h2>
+		<div class="lp-prose">
+			{intro.body.map((p) => <p set:html={p} />)}
+		</div>
+	</section>
+
+	<!-- ── what you actually get ── -->
+	<section class="lp-block">
+		<h2 class="lp-h2">{offerHeading}</h2>
+		<ul class="lp-grid">
+			{
+				offer.map((o) => (
+					<li class="lp-card">
+						<span class="lp-card-ico" aria-hidden="true">
+							<Icon width={20} name={o.icon} />
+						</span>
+						<h3 class="lp-card-t">{o.title}</h3>
+						<p class="lp-card-d">{o.desc}</p>
+						{o.items && (
+							<ul class="lp-chips">
+								{o.items.map((i) => (
+									<li>{i}</li>
+								))}
+							</ul>
+						)}
+					</li>
+				))
+			}
+		</ul>
+	</section>
+
+	<!-- ── how it runs ── -->
+	<section class="lp-block">
+		<h2 class="lp-h2">{stepsHeading}</h2>
+		<ol class="lp-steps">
+			{
+				steps.map((s) => (
+					<li>
+						<span class="lp-step-n">{s.n}</span>
+						<h3 class="lp-step-t">{s.title}</h3>
+						<p class="lp-step-d">{s.desc}</p>
+					</li>
+				))
+			}
+		</ol>
+	</section>
+
+	<!-- ── the places. Named cities and countries, because a search
+	     engine can match a place; "worldwide" is an adverb. ── -->
+	{
+		places && places.length > 0 && (
+			<section class="lp-block">
+				<h2 class="lp-h2">{placesHeading}</h2>
+				<ul class="lp-places">
+					{places.map((p) => (
+						<li>
+							<span class="lp-place-n">{p.name}</span>
+							<span class="lp-place-d">{p.note}</span>
+						</li>
+					))}
+				</ul>
+			</section>
+		)
+	}
+
+	<!-- ── the questions. These are the page's shot at a rich result, so
+	     they are real questions with answers that stand on their own. ── -->
+	<section class="lp-block">
+		<h2 class="lp-h2">{faqHeading}</h2>
+		<div class="lp-faqs">
+			{
+				faqs.map((f, i) => (
+					<details class="lp-faq" open={i === 0}>
+						<summary>
+							<span>{f.q}</span>
+							<Icon width={16} name="mdi:plus" />
+						</summary>
+						<p set:html={f.a} />
+					</details>
+				))
+			}
+		</div>
+	</section>
+
+	<!-- ── where to go next. Internal links are how authority moves
+	     around a site; a page with no way out is a page Google reads as
+	     a dead end. ── -->
+	<section class="lp-block">
+		<h2 class="lp-h2">{relatedHeading}</h2>
+		<ul class="lp-links">
+			{
+				related.map((r) => (
+					<li>
+						<a href={r.href}>
+							<span class="lp-link-l">{r.label}</span>
+							<span class="lp-link-n">{r.note}</span>
+							<Icon class="lp-link-a" width={16} name="mdi:arrow-right" />
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</section>
+
+	<!-- ── the way to start ── -->
+	<section class="lp-cta">
+		<div>
+			<h2 class="lp-cta-t">{cta.title}</h2>
+			<p class="lp-cta-d">{cta.body}</p>
+		</div>
+		<div class="lp-cta-acts">
+			<a href="/contact" class="lp-pill">
+				{cta.label ?? 'Send us a brief'}
+				<Icon width={15} name="mdi:arrow-right" />
+			</a>
+			<a href="tel:+2348100204570" class="lp-more">
+				Or call +234 810 020 4570
+			</a>
+		</div>
+	</section>
+</div>
+
+<style>
+	.lp {
+		--lp-acc: var(--view-accent, #28a6ec);
+		--lp-pad: clamp(1rem, 5vw, 5rem);
+		max-width: 1400px;
+		margin: 0 auto;
+		padding: clamp(4.5rem, 9vw, 7rem) var(--lp-pad) clamp(3rem, 6vw, 5rem);
+		color: var(--text);
+	}
+
+	/* ── the plate ── */
+	.lp-open {
+		display: grid;
+		/* two-up from the smallest screen: the figures sit beside the words
+		   rather than under a phone-length scroll of them */
+		grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+		gap: clamp(0.9rem, 3vw, 2.75rem);
+		align-items: end;
+		padding-bottom: clamp(1.75rem, 4vw, 3rem);
+		border-bottom: 1px solid var(--surface-border);
+	}
+	.lp-kick {
+		font-size: clamp(0.62rem, 1.5vw, 0.72rem);
+		font-weight: 700;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--lp-acc);
+		margin: 0 0 clamp(0.5rem, 1.5vw, 0.9rem);
+		line-height: 1.4;
+	}
+	.lp-h1 {
+		font-size: clamp(1.72rem, 6.2vw, 4rem);
+		line-height: 1.04;
+		letter-spacing: -0.028em;
+		font-weight: 800;
+		margin: 0;
+		text-wrap: balance;
+	}
+	.lp-h1 em {
+		font-style: italic;
+		color: var(--lp-acc);
+		display: block;
+	}
+	.lp-lede {
+		margin: clamp(0.8rem, 2.2vw, 1.4rem) 0 0;
+		max-width: 46ch;
+		font-size: clamp(0.84rem, 2vw, 1.08rem);
+		line-height: 1.65;
+		color: var(--text-muted);
+	}
+
+	.lp-acts {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: clamp(0.5rem, 1.6vw, 1rem);
+		margin-top: clamp(1.1rem, 2.6vw, 1.75rem);
+	}
+	.lp-pill {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		padding: clamp(0.55rem, 1.5vw, 0.8rem) clamp(0.95rem, 2.4vw, 1.5rem);
+		border-radius: 999px;
+		background: var(--lp-acc);
+		color: #fff;
+		font-weight: 700;
+		font-size: clamp(0.75rem, 1.7vw, 0.9rem);
+		text-decoration: none;
+		transition: transform 0.25s ease, filter 0.25s ease;
+	}
+	.lp-pill:hover {
+		transform: translateY(-2px);
+		filter: brightness(1.08);
+	}
+	.lp-more {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.25rem;
+		font-weight: 600;
+		font-size: clamp(0.74rem, 1.7vw, 0.88rem);
+		color: var(--text);
+		text-decoration: none;
+		border-bottom: 1px solid color-mix(in srgb, var(--text) 25%, transparent);
+		padding-bottom: 1px;
+	}
+	.lp-more:hover {
+		color: var(--lp-acc);
+		border-bottom-color: var(--lp-acc);
+	}
+
+	.lp-glance {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		gap: clamp(0.45rem, 1.4vw, 1rem);
+	}
+	.lp-glance li {
+		display: flex;
+		flex-direction: column;
+		gap: 0.1rem;
+		padding-left: clamp(0.5rem, 1.4vw, 0.9rem);
+		border-left: 2px solid color-mix(in srgb, var(--lp-acc) 55%, transparent);
+	}
+	.lp-glance-v {
+		font-size: clamp(1.05rem, 3.4vw, 1.9rem);
+		font-weight: 800;
+		line-height: 1;
+		letter-spacing: -0.02em;
+	}
+	.lp-glance-k {
+		font-size: clamp(0.56rem, 1.4vw, 0.72rem);
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		font-weight: 600;
+		color: var(--text-muted);
+		line-height: 1.3;
+	}
+
+	/* ── the plate on a narrow phone ──
+	   Two columns is right down to about a tablet. Below that the copy
+	   column is under 200px, which turns a five-word headline into six
+	   lines and a lede into ten — the plate ends up taller than the
+	   screen, which is the opposite of compressed.
+
+	   So at the narrowest sizes the words take the full width and the
+	   figures drop underneath — but as a ROW of three, not a stack.
+	   The three stay beside each other, which is the arrangement; only
+	   their relationship to the headline changes. */
+	@media (max-width: 620px) {
+		.lp-open {
+			grid-template-columns: minmax(0, 1fr);
+			gap: clamp(0.9rem, 4vw, 1.4rem);
+			align-items: start;
+		}
+		.lp-glance {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+			gap: 0.5rem;
+		}
+		.lp-h1 {
+			font-size: clamp(1.9rem, 9vw, 2.6rem);
+		}
+		.lp-lede {
+			max-width: none;
+		}
+	}
+
+	/* ── sections ── */
+	.lp-block,
+	.lp-intro {
+		padding-top: clamp(2.5rem, 6vw, 4.5rem);
+	}
+	.lp-h2 {
+		font-size: clamp(1.25rem, 3.6vw, 2.35rem);
+		line-height: 1.12;
+		letter-spacing: -0.022em;
+		font-weight: 800;
+		margin: 0 0 clamp(0.9rem, 2.4vw, 1.6rem);
+		max-width: 26ch;
+		text-wrap: balance;
+	}
+
+	.lp-prose {
+		columns: 2;
+		column-gap: clamp(1rem, 4vw, 3.5rem);
+		max-width: 92ch;
+	}
+	.lp-prose p {
+		margin: 0 0 0.9em;
+		font-size: clamp(0.79rem, 1.85vw, 1rem);
+		line-height: 1.72;
+		color: var(--text-muted);
+		break-inside: avoid-column;
+	}
+	.lp-prose :global(strong) {
+		color: var(--text);
+		font-weight: 700;
+	}
+	@media (max-width: 560px) {
+		/* one column only once two would be four words wide */
+		.lp-prose {
+			columns: 1;
+		}
+	}
+
+	/* ── the cards ── */
+	.lp-grid {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		/* three across when there is room, two when there is not — never one */
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: clamp(0.5rem, 1.6vw, 1.1rem);
+	}
+	@media (min-width: 900px) {
+		.lp-grid {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+	}
+	.lp-card {
+		background: var(--surface);
+		border: 1px solid var(--surface-border);
+		border-radius: clamp(0.65rem, 1.6vw, 1.1rem);
+		padding: clamp(0.7rem, 2vw, 1.5rem);
+		display: flex;
+		flex-direction: column;
+		gap: clamp(0.3rem, 0.9vw, 0.55rem);
+		transition: border-color 0.25s ease, transform 0.25s ease;
+	}
+	.lp-card:hover {
+		border-color: color-mix(in srgb, var(--lp-acc) 55%, transparent);
+		transform: translateY(-2px);
+	}
+	.lp-card-ico {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: clamp(1.7rem, 4.4vw, 2.4rem);
+		height: clamp(1.7rem, 4.4vw, 2.4rem);
+		border-radius: 0.6rem;
+		background: color-mix(in srgb, var(--lp-acc) 12%, transparent);
+		color: var(--lp-acc);
+		flex: none;
+	}
+	.lp-card-t {
+		margin: 0;
+		font-size: clamp(0.78rem, 1.9vw, 1.02rem);
+		font-weight: 700;
+		line-height: 1.25;
+		letter-spacing: -0.01em;
+	}
+	.lp-card-d {
+		margin: 0;
+		font-size: clamp(0.68rem, 1.6vw, 0.86rem);
+		line-height: 1.55;
+		color: var(--text-muted);
+	}
+	.lp-chips {
+		list-style: none;
+		margin: auto 0 0;
+		padding: clamp(0.3rem, 0.9vw, 0.55rem) 0 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.25rem;
+	}
+	.lp-chips li {
+		font-size: clamp(0.56rem, 1.3vw, 0.68rem);
+		font-weight: 600;
+		padding: 0.15rem 0.45rem;
+		border-radius: 999px;
+		border: 1px solid var(--surface-border);
+		color: var(--text-muted);
+		white-space: nowrap;
+	}
+
+	/* ── the steps: three abreast at every width, because they are a
+	     sequence and a sequence read as a vertical list loses its shape ── */
+	.lp-steps {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: clamp(0.45rem, 1.6vw, 1.5rem);
+		counter-reset: none;
+	}
+	.lp-steps li {
+		padding-top: clamp(0.5rem, 1.4vw, 0.9rem);
+		border-top: 2px solid color-mix(in srgb, var(--lp-acc) 45%, transparent);
+	}
+	.lp-step-n {
+		display: block;
+		font-size: clamp(0.58rem, 1.4vw, 0.72rem);
+		font-weight: 800;
+		letter-spacing: 0.12em;
+		color: var(--lp-acc);
+	}
+	.lp-step-t {
+		margin: 0.25rem 0 0.2rem;
+		font-size: clamp(0.76rem, 1.9vw, 1.05rem);
+		font-weight: 700;
+		line-height: 1.2;
+	}
+	.lp-step-d {
+		margin: 0;
+		font-size: clamp(0.66rem, 1.55vw, 0.85rem);
+		line-height: 1.55;
+		color: var(--text-muted);
+	}
+
+	/* ── the places ── */
+	.lp-places {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: clamp(0.4rem, 1.4vw, 1rem);
+	}
+	@media (min-width: 760px) {
+		.lp-places {
+			grid-template-columns: repeat(4, minmax(0, 1fr));
+		}
+	}
+	.lp-places li {
+		border: 1px solid var(--surface-border);
+		border-radius: clamp(0.55rem, 1.4vw, 0.9rem);
+		padding: clamp(0.55rem, 1.7vw, 1.1rem);
+		background: color-mix(in srgb, var(--lp-acc) 4%, var(--surface));
+	}
+	.lp-place-n {
+		display: block;
+		font-weight: 800;
+		font-size: clamp(0.76rem, 1.9vw, 1rem);
+		letter-spacing: -0.01em;
+	}
+	.lp-place-d {
+		display: block;
+		margin-top: 0.15rem;
+		font-size: clamp(0.64rem, 1.5vw, 0.8rem);
+		line-height: 1.5;
+		color: var(--text-muted);
+	}
+
+	/* ── the questions ── */
+	.lp-faqs {
+		max-width: 90ch;
+		border-top: 1px solid var(--surface-border);
+	}
+	.lp-faq {
+		border-bottom: 1px solid var(--surface-border);
+	}
+	.lp-faq summary {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		cursor: pointer;
+		list-style: none;
+		padding: clamp(0.65rem, 1.9vw, 1.05rem) 0;
+		font-weight: 700;
+		font-size: clamp(0.76rem, 1.8vw, 1rem);
+		line-height: 1.35;
+	}
+	.lp-faq summary::-webkit-details-marker {
+		display: none;
+	}
+	.lp-faq summary :global(svg) {
+		flex: none;
+		color: var(--lp-acc);
+		transition: transform 0.25s ease;
+	}
+	.lp-faq[open] summary :global(svg) {
+		transform: rotate(45deg);
+	}
+	.lp-faq p {
+		margin: 0;
+		padding: 0 clamp(1rem, 3vw, 2.5rem) clamp(0.85rem, 2vw, 1.25rem) 0;
+		max-width: 72ch;
+		font-size: clamp(0.7rem, 1.65vw, 0.9rem);
+		line-height: 1.7;
+		color: var(--text-muted);
+	}
+	.lp-faq p :global(a) {
+		color: var(--lp-acc);
+		font-weight: 600;
+	}
+
+	/* ── where to go next ── */
+	.lp-links {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: clamp(0.4rem, 1.4vw, 0.9rem);
+	}
+	@media (min-width: 900px) {
+		.lp-links {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+	}
+	.lp-links a {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		align-items: center;
+		gap: 0.2rem clamp(0.4rem, 1.2vw, 0.8rem);
+		text-decoration: none;
+		color: inherit;
+		border: 1px solid var(--surface-border);
+		border-radius: clamp(0.55rem, 1.4vw, 0.9rem);
+		padding: clamp(0.55rem, 1.7vw, 1rem);
+		height: 100%;
+		transition: border-color 0.25s ease, background 0.25s ease;
+	}
+	.lp-links a:hover {
+		border-color: color-mix(in srgb, var(--lp-acc) 55%, transparent);
+		background: color-mix(in srgb, var(--lp-acc) 5%, transparent);
+	}
+	.lp-link-l {
+		font-weight: 700;
+		font-size: clamp(0.72rem, 1.75vw, 0.94rem);
+		line-height: 1.25;
+	}
+	.lp-link-n {
+		grid-column: 1;
+		font-size: clamp(0.62rem, 1.45vw, 0.78rem);
+		line-height: 1.45;
+		color: var(--text-muted);
+	}
+	.lp-link-a {
+		grid-row: 1 / span 2;
+		grid-column: 2;
+		color: var(--lp-acc);
+		flex: none;
+	}
+
+	/* ── the way to start ── */
+	.lp-cta {
+		margin-top: clamp(2.5rem, 6vw, 4.5rem);
+		display: grid;
+		grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+		gap: clamp(0.8rem, 3vw, 2.5rem);
+		align-items: center;
+		padding: clamp(1rem, 3.5vw, 2.75rem);
+		border-radius: clamp(0.8rem, 2vw, 1.5rem);
+		background: linear-gradient(
+			135deg,
+			color-mix(in srgb, var(--lp-acc) 13%, var(--surface)),
+			var(--surface)
+		);
+		border: 1px solid color-mix(in srgb, var(--lp-acc) 30%, var(--surface-border));
+	}
+	.lp-cta-t {
+		margin: 0;
+		font-size: clamp(1.05rem, 3.2vw, 2rem);
+		font-weight: 800;
+		line-height: 1.12;
+		letter-spacing: -0.02em;
+		text-wrap: balance;
+	}
+	.lp-cta-d {
+		margin: 0.4rem 0 0;
+		font-size: clamp(0.7rem, 1.65vw, 0.92rem);
+		line-height: 1.6;
+		color: var(--text-muted);
+		max-width: 48ch;
+	}
+	.lp-cta-acts {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: clamp(0.4rem, 1.2vw, 0.7rem);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.lp-pill,
+		.lp-card,
+		.lp-faq summary :global(svg) {
+			transition: none;
+		}
+	}
+</style>

@@ -136,7 +136,13 @@ const deploys = deployNames
 		sector: pr.tagline,
 		img: pr.img,
 		url: pr.url || '',
-		href: pr.url || `/portfolio/${pr.slug}`,
+		// `/portfolio/${slug}` was a guess, and for the two deploys with no
+		// live site — BuyGas and Purple Panda — it was a guess at a route
+		// that does not exist. Those two have written case studies, which
+		// live under /work/<slug>; /portfolio/<slug> is only the handful of
+		// legacy MDX write-ups. So: the live site if there is one, the case
+		// study if there is one, and the wall otherwise.
+		href: pr.url || (pr.caseStudy ? `/work/${pr.slug}` : `/portfolio#work-${pr.slug}`),
 		live: !!pr.url,
 		uptime: pr.url ? '99.9%' : '—',
 	}));

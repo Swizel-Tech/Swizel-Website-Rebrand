@@ -8,6 +8,8 @@ import ServiceDetailCampus from '../../components/sections/ServiceDetailCampus.a
 import CustomButton from '../../components/CustomButton.astro';
 import { Icon } from 'astro-icon/components';
 import { disciplines } from '../../data/disciplines';
+import { DISCIPLINE_SEO, snippet } from '../../data/seo';
+import { graph, service, faqPage } from '../../data/schema';
 
 export function getStaticPaths() {
 	return disciplines.map((d) => ({
@@ -17,54 +19,61 @@ export function getStaticPaths() {
 }
 
 const { discipline, others } = Astro.props;
+
 // "Design | Swizel Services" is a title only somebody who already knows
 // Swizel would ever search for. Each discipline gets the phrase a
-// stranger would actually type, with the place in it — these are the six
-// pages most likely to answer "app developers in Abuja" and the like.
-const SEARCH_TITLES: Record<string, string> = {
-	development: 'Web & Mobile App Development Company in Nigeria',
-	design: 'UI/UX & Product Design Agency in Nigeria',
-	marketing: 'Digital Marketing Agency in Nigeria',
-	strategy: 'Product Strategy & Consulting for Founders',
-	maintenance: 'Website & App Maintenance Services',
-	'ai-automation': 'AI & Automation Services for Business',
-};
-const pageTitle = `${SEARCH_TITLES[discipline.slug] ?? discipline.title} | Swizel`;
-const pageDescription = discipline.heroDesc;
+// stranger would actually type instead. The set lives in
+// src/data/seo.ts with every other title on the site, so it is possible
+// to see at a glance that no two of them are chasing the same words —
+// which matters more now that /services/custom-software,
+// /services/app-development and /services/erp-systems sit alongside
+// these six and must stay out of their way.
+const d = DISCIPLINE_SEO[discipline.slug];
+const pageTitle = d ? d.title : `${discipline.title} | Swizel`;
 
-// One discipline, described to search engines the way it is described on the
-// page: what it is, who provides it, where it is provided from and who it is
-// for. This is what lets a service page answer a query like "app development
-// company in Abuja" rather than only ranking for the company name.
-const serviceSchema = {
-	'@context': 'https://schema.org',
-	'@type': 'Service',
-	name: discipline.title,
-	description: discipline.overview || discipline.heroDesc,
-	serviceType: discipline.title,
-	provider: { '@id': 'https://swizel.co/#organization' },
-	// A city and a country are things a search can be matched against;
-	// "Worldwide" is an adverb and matches nothing. Every country there is
-	// an office in is named, so the page can answer a search from any of
-	// them rather than only from Abuja.
-	areaServed: [
-		{ '@type': 'City', name: 'Abuja' },
-		{ '@type': 'City', name: 'Lagos' },
-		{ '@type': 'Country', name: 'Nigeria' },
-		{ '@type': 'Country', name: 'Ireland' },
-		{ '@type': 'Country', name: 'United Kingdom' },
-		{ '@type': 'Country', name: 'United States' },
-	],
-	url: `https://swizel.co/services/${discipline.slug}/`,
-	audience: { '@type': 'BusinessAudience', name: 'Founders and businesses' },
-};
+// heroDesc is written for the page, not for a search result, so some of
+// them run well past the ~160 characters Google shows. Cut on a sentence
+// where there is one to cut on, and on a word otherwise, rather than
+// letting the snippet end mid-word. snippet() lives in src/data/seo.ts.
+//
+// The other half of the problem: four of the six heroDescs are SHORT —
+// 73 to 93 characters — and Google treats a description under about 70
+// as too thin to bother with, replacing it with whatever it scrapes off
+// the page. So the hero line and the overview are joined and then cut,
+// which lands every one of the six between 140 and 158.
+//
+// And where even both together fall short — /services/development's two
+// fields come to 93 characters between them — the reach is added, which
+// is true, is the thing somebody comparing agencies wants to know, and
+// gets every one of the six over the line Google draws at about 120.
+const written = [discipline.heroDesc, discipline.overview].filter(Boolean).join(' ');
+const pageDescription = snippet(
+	written.length < 120
+		? `${written.replace(/\s*$/, '')} For businesses in Nigeria, the UK, the US and across the EU.`
+		: written
+);
+
+// One discipline, described to search engines the way it is described on
+// the page: what it is, who provides it, where it is provided from and
+// who it is for — plus the page's own questions, which is the record
+// Google draws an expandable FAQ from under a result.
+const pageSchema = graph(
+	service({
+		name: discipline.title,
+		description: discipline.overview || discipline.heroDesc,
+		path: `/services/${discipline.slug}`,
+		serviceType: discipline.title,
+		offers: discipline.included?.map((s) => ({ name: s.title, description: s.desc })),
+	}),
+	discipline.faqs?.length ? faqPage(discipline.faqs, `/services/${discipline.slug}`) : null
+);
 ---
 
 <MainLayout
 	title={pageTitle}
 	description={pageDescription}
 	image="/images/og/og-services.jpg"
-	schema={serviceSchema}
+	schema={pageSchema}
 >
 	<!-- Boardroom world (also the default). Hidden in other views. -->
 	<ServiceDetail discipline={discipline} others={others} />

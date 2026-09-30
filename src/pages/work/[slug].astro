@@ -5,7 +5,8 @@ import CaseStudyFounder from '../../components/sections/CaseStudyFounder.astro';
 import CaseStudyBuilder from '../../components/sections/CaseStudyBuilder.astro';
 import CaseStudyStudio from '../../components/sections/CaseStudyStudio.astro';
 import CaseStudyCampus from '../../components/sections/CaseStudyCampus.astro';
-import { featuredProjects, projects } from '../../data/projects';
+import { featuredProjects, projects, sectorLabels } from '../../data/projects';
+import { snippet } from '../../data/seo';
 
 export async function getStaticPaths() {
 	// Six works have neither a live site nor a written case study, so their
@@ -25,13 +26,67 @@ export async function getStaticPaths() {
 
 const { project, others } = Astro.props;
 
-// the long legal name ate 30 characters of a title Google cuts at 60,
-// which pushed the project's own name out of the result
-const seoTitle = `${project.name} Case Study | Swizel`;
-const seoDesc = project.tagline || project.caseStudy?.intro || '';
+// The long legal name ate 30 characters of a title Google cuts at 60,
+// which pushed the project's own name out of the result. But
+// "Saros Case Study | Swizel" is only 25 characters — half the space
+// Google gives us, spent on two words that say nothing about the work.
+// The first discipline goes in, because "website case study" and "app
+// case study" are things people search and "case study" alone is not.
+const trade = (project.tags || [])[0] || '';
+const plain = `${project.name} Case Study | Swizel`;
+const withTrade = `${project.name} ${trade} Case Study | Swizel`;
+// Only widen if the result still fits inside the blue link. Trimming a
+// finished title to a character count is how you end up with "| Swize".
+const seoTitle = trade && withTrade.length <= 62 ? withTrade : plain;
+
+// ── the snippet ───────────────────────────────────────────────────────
+//
+// This was `project.tagline || intro`, and a tagline is written to sit
+// over a photograph — "Nigeria's gas delivery app", twenty-three
+// characters. Every one of the thirteen case studies was shipping a
+// description between 21 and 59 characters long, which Google treats as
+// too thin to use and replaces with whatever text it scrapes off the
+// page instead. So the tagline is now the opening clause and the blurb
+// — which is a real sentence about what the product is — carries the
+// rest, with the sector and the discipline named because those are the
+// words somebody comparing agencies is searching. snippet() lives in
+// src/data/seo.ts, since three different templates needed it.
+const lead = (project.tagline || '').replace(/\.$/, '');
+const body = project.blurb || project.caseStudy?.intro || '';
+const trades = (project.tags || []).join(', ').toLowerCase();
+const seoDesc = snippet(
+	[lead, body, trades && `${trades} by Swizel Technologies.`]
+		.filter(Boolean)
+		.join(lead && body ? ' — ' : ' ')
+		.replace(' — ' + trades, ' ' + trades)
+);
+
+// A case study, described as the thing it is: a piece of writing about a
+// product we made for a client. `about` is what lets it be associated
+// with the sector rather than floating free.
+const caseSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'CreativeWork',
+	'@id': `https://swizel.co/work/${project.slug}/#case-study`,
+	name: `${project.name} — case study`,
+	headline: `${project.name}: ${lead}`,
+	description: seoDesc,
+	url: `https://swizel.co/work/${project.slug}/`,
+	image: `https://swizel.co${project.img}`,
+	...(project.year ? { dateCreated: String(project.year) } : {}),
+	creator: { '@id': 'https://swizel.co/#organization' },
+	publisher: { '@id': 'https://swizel.co/#organization' },
+	about: {
+		'@type': 'Thing',
+		name: project.name,
+		description: body,
+	},
+	keywords: [...(project.tags || []), sectorLabels[project.sector], 'Swizel'].join(', '),
+	inLanguage: 'en',
+};
 ---
 
-<MainLayout title={seoTitle} description={seoDesc} image={project.img}>
+<MainLayout title={seoTitle} description={seoDesc} image={project.img} schema={caseSchema}>
 	<CaseStudy project={project} others={others} />
 
 	<!-- Founder world: the whole launch story, founder momentum. -->

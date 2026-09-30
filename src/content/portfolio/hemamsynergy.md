@@ -13,7 +13,7 @@ client: 'Hemamsynergy'
 Hemam Synergy is a leading agricultural company dedicated to revolutionizing the agriculture sector by supporting farmers in building climate resilience and contributing to food stability in the Nigeria’s food system through the provision of necessary inputs, technology, and information to adapt to climate change, as well as clean energy value chain, to help increase their yields per hectare, provide market linkages, create job opportunities, and improve the socio-economic well-being of farmers.
 
 <div class="full--width px-5 py-10 rounded-2xl overflow-hidden lg:px-20">
-    <img src="/projects/hemam-wwd.webp" class="mx-auto w-fit"/>
+    <img src="/projects/hemam-wwd.webp" alt="What Hemam Synergy does: inputs, technology and market linkages for smallholder farmers" class="mx-auto w-fit"/>
 </div>
 
 ### What does Hemam do

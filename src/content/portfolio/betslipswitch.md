@@ -26,7 +26,7 @@ The inability to transfer bet selection across bookies, untrusted platforms that
         .markdown--content > * + * {
         margin-block: 15px;
     }   --->
-        <img src="/projects/betslipswitch--grid-1-1.jpg" class="h-[230px] sm:h-full w-full !m-0"/>
+        <img src="/projects/betslipswitch--grid-1-1.jpg" alt="The BetSlipSwitch converter, turning a bookmaker slip code into another bookmaker's format" class="h-[230px] sm:h-full w-full !m-0"/>
     </div>
 </div>
 
