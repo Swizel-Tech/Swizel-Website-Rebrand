@@ -170,6 +170,8 @@ export function describeMailError(err: unknown): { code: string; cause: string }
 		// ── Resend, over HTTPS ──
 		missing_api_key: 'RESEND_API_KEY is not set on this deployment.',
 		invalid_api_key: 'RESEND_API_KEY is wrong, or was revoked. Make a new one in the Resend dashboard.',
+		restricted_api_key:
+			'The key is valid but scoped to sending only — which is the right setting. Whatever asked for more than that should not have.',
 		validation_error:
 			'Resend rejected the message. Almost always the From address: the domain has to be verified in Resend before it will send as it.',
 		not_found: 'Resend does not recognise that domain or endpoint.',

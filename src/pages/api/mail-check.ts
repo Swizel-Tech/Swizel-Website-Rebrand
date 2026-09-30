@@ -89,6 +89,37 @@ export const GET: APIRoute = async () => {
 				message?: string;
 			};
 
+			// ── a sending-only key cannot list domains, and should not ──
+			//
+			// The advice is to create the key with "Sending access" rather
+			// than full access, because a key that lives in an environment
+			// variable is the most exposed thing in the setup and sending
+			// is all the site ever needs. Then this check asked to list
+			// domains, which that key is quite rightly refused — and
+			// reported a failure on a configuration that is not merely
+			// working but is working *more* safely than the alternative.
+			//
+			// So the refusal is read for what it is: proof that the key is
+			// real, unrevoked, and correctly scoped. The domain's status
+			// simply cannot be read from here, which is said plainly rather
+			// than guessed at.
+			if (res.status === 401 && payload.name === 'restricted_api_key') {
+				steps.resend = {
+					keyAccepted: true,
+					scope: 'sending only — the safe setting, and the one we recommend',
+					ms: Date.now() - t,
+					domainStatus:
+						'Cannot be read with a sending-only key. Check it in the Resend dashboard under Domains; it must say Verified before mail will go out.',
+				};
+				return json({
+					ok: true,
+					summary:
+						'The key is valid and correctly restricted to sending. Everything this check can see is right — confirm the domain says Verified in Resend, then submit a form to prove it end to end.',
+					totalMs: Date.now() - started,
+					...steps,
+				});
+			}
+
 			if (!res.ok) {
 				const { code, cause } = describeMailError({
 					code: payload.name,
