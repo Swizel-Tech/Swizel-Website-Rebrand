@@ -12,14 +12,36 @@
 // anything you suggest. This is that card, for every world, taking each
 // one's accent so it never looks borrowed.
 export interface SentOption {
-	/** A single character. An emoji reads at any size and needs no asset. */
-	icon: string;
+	/** One of the keys in ICONS below. */
+	icon: keyof typeof ICONS;
 	title: string;
 	desc: string;
 	href: string;
 	/** for the magazine, which is a file rather than a page */
 	download?: boolean;
 }
+
+/**
+ * Line icons, drawn rather than typed.
+ *
+ * These were emoji, which is tempting because it costs nothing — and
+ * then renders as an empty box on any machine missing that glyph, sits
+ * at whatever size and colour the vendor chose, and cannot take the
+ * world's accent. Four small paths are cheaper than the bug reports.
+ */
+const ICONS = {
+	work: '<path d="M6 4h12v4a6 6 0 0 1-12 0V4Z"/><path d="M6 6H4a2 2 0 0 0 2 4M18 6h2a2 2 0 0 1-2 4"/><path d="M12 14v4m-4 2h8"/>',
+	journal:
+		'<path d="M4 5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5Z"/><path d="M14 3v6h6M8 13h8M8 17h5"/>',
+	magazine:
+		'<path d="M3 5a2 2 0 0 1 2-2h5a2 2 0 0 1 2 2v15a2 2 0 0 0-2-2H3V5Z"/><path d="M21 5a2 2 0 0 0-2-2h-5a2 2 0 0 0-2 2v15a2 2 0 0 1 2-2h7V5Z"/>',
+	worlds:
+		'<path d="M4 7h16M4 12h16M4 17h16"/><circle cx="9" cy="7" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="8" cy="17" r="2"/>',
+} as const;
+
+const icon = (k: keyof typeof ICONS) =>
+	`<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor"
+		stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[k]}</svg>`;
 
 export interface SentOpts {
 	title: string;
@@ -39,28 +61,28 @@ export interface SentOpts {
  */
 const HOUSE: SentOption[] = [
 	{
-		icon: '🏆',
-		title: 'See what we have shipped',
-		desc: 'Sixty-five builds, the full write-ups, and the numbers behind them.',
+		icon: 'work',
+		title: 'See the work',
+		desc: '65 builds, with the numbers behind them.',
 		href: '/portfolio',
 	},
 	{
-		icon: '📰',
+		icon: 'journal',
 		title: 'Read the journal',
-		desc: 'How we think about building for this market, in plain language.',
+		desc: 'How we think, in plain language.',
 		href: '/blog',
 	},
 	{
-		icon: '📖',
+		icon: 'magazine',
 		title: 'Take The Brevarium',
-		desc: 'Our magazine, free: featured projects, the team, and the thinking.',
+		desc: 'Our magazine, free. Yours to keep.',
 		href: '/brevarium/the-brevarium-latest.pdf',
 		download: true,
 	},
 	{
-		icon: '🎛️',
+		icon: 'worlds',
 		title: 'Try another world',
-		desc: 'The same Swizel in five skins. Pick the one that talks like you do.',
+		desc: 'The same Swizel in five skins.',
 		href: '/?views=1',
 	},
 ];
@@ -118,18 +140,16 @@ export function showSent(opts: SentOpts) {
 	// ── the onward links ──
 	const links = q<HTMLElement>('[data-sent-links]');
 	const list = opts.options ?? HOUSE;
+	// Buttons in a grid, not rows in a list. Four full-width rows made the
+	// card taller than a phone screen and read as a menu you scroll past;
+	// a two-by-two of tiles is half the height and looks like a choice.
 	links.innerHTML = list
 		.map(
 			(o) => `
 			<a class="sent__link" href="${o.href}"${o.download ? ' download' : ''}>
-				<span class="sent__link-ic" aria-hidden="true">${o.icon}</span>
-				<span class="sent__link-t">
-					<strong>${o.title}</strong>
-					<em>${o.desc}</em>
-				</span>
-				<svg class="sent__link-go" viewBox="0 0 24 24" width="15" height="15" fill="none"
-					stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-					aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+				<span class="sent__link-ic" aria-hidden="true">${icon(o.icon)}</span>
+				<strong class="sent__link-h">${o.title}</strong>
+				<em class="sent__link-d">${o.desc}</em>
 			</a>`
 		)
 		.join('');
