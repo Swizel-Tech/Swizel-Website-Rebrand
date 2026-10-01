@@ -54,11 +54,27 @@ export class SendError extends Error {
 	}
 }
 
+/**
+ * One address or several, comma separated.
+ *
+ * This exists because of a real failure: mail from contact@swizel.co to
+ * contact@swizel.co, relayed by an outside server, is the exact shape of
+ * a spoofing attempt, and a cPanel host is entitled to treat it as one.
+ * Resend accepts the message, the form reports success, and the enquiry
+ * is never seen. Being able to add a second, unrelated mailbox turns
+ * that from a lost lead into a duplicate.
+ */
+export const recipients = (to: string) =>
+	to
+		.split(',')
+		.map((a) => a.trim())
+		.filter(Boolean);
+
 /** Everything the API needs, in its own spelling. */
 function resendBody(m: Outgoing) {
 	return {
 		from: m.from,
-		to: [m.to],
+		to: recipients(m.to),
 		...(m.replyTo ? { reply_to: m.replyTo } : {}),
 		subject: m.subject,
 		text: m.text,

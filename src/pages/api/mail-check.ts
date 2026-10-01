@@ -15,7 +15,7 @@
 // server's own answer. Everything sensitive is masked before it leaves.
 import type { APIRoute } from 'astro';
 import { readConfig, transport, release, describeMailError, env } from '../../server/mail';
-import { apiBase } from '../../server/send';
+import { apiBase, sendAll } from '../../server/send';
 import { promises as dns } from 'node:dns';
 import net from 'node:net';
 
@@ -27,19 +27,66 @@ const json = (body: unknown, status = 200) =>
 		headers: { 'content-type': 'application/json', 'cache-control': 'no-store' },
 	});
 
-/** contact@swizel.co → c*****t@swizel.co */
-const mask = (address: string) => {
-	const [name, domain] = address.split('@');
-	if (!domain) return '***';
-	const head = name.slice(0, 1);
-	const tail = name.length > 1 ? name.slice(-1) : '';
-	return `${head}${'*'.repeat(Math.max(1, name.length - 2))}${tail}@${domain}`;
-};
+/**
+ * Send one plain message to the configured inbox and report the id.
+ *
+ * Deliberately plain text with no images, no button and no footer: if the
+ * designed mail is being filtered and this one arrives, the template is
+ * the problem; if neither arrives, the mailbox is. That is the whole
+ * point of having it.
+ */
+async function fireTest(
+	cfg: Exclude<ReturnType<typeof readConfig>, string>,
+	e: Record<string, string | undefined>
+) {
+	const when = new Date().toISOString();
+	const [r] = await sendAll(cfg, e, [
+		{
+			from: `Swizel website <${cfg.user}>`,
+			to: cfg.toContact,
+			subject: `Mail check ${when.slice(11, 19)} UTC`,
+			text: `This is a test from /api/mail-check.\n\nIf you are reading it, mail from the website reaches this inbox.\n\nSent ${when}\n`,
+			html: `<p>This is a test from <code>/api/mail-check</code>.</p><p>If you are reading it, mail from the website reaches this inbox.</p><p>Sent ${when}</p>`,
+		},
+	]);
+	return r.ok
+		? {
+				result: 'Resend accepted it',
+				id: r.id ?? '(none returned)',
+				sentTo: mask(cfg.toContact),
+				note: 'Accepted is not the same as delivered. Find this id in Resend → Logs: it will say Delivered or Bounced, and quote the receiving server.',
+			}
+		: { result: 'Resend refused it', ...describeMailError(r.error) };
+}
 
-export const GET: APIRoute = async () => {
+/** contact@swizel.co → c*****t@swizel.co, one or a comma-separated list */
+const mask = (addresses: string) =>
+	addresses
+		.split(',')
+		.map((a) => a.trim())
+		.filter(Boolean)
+		.map((address) => {
+			const [name, domain] = address.split('@');
+			if (!domain) return '***';
+			const head = name.slice(0, 1);
+			const tail = name.length > 1 ? name.slice(-1) : '';
+			return `${head}${'*'.repeat(Math.max(1, name.length - 2))}${tail}@${domain}`;
+		})
+		.join(', ');
+
+export const GET: APIRoute = async ({ url }) => {
 	const started = Date.now();
 	const e = env();
 	const steps: Record<string, unknown> = {};
+	/**
+	 * /api/mail-check?test=1 sends a real message, so "did it leave?" and
+	 * "did it land?" stop being the same question.
+	 *
+	 * It can only ever send to the address already configured in
+	 * MAIL_TO_CONTACT, never to one named in the URL — otherwise this is
+	 * an open relay for anyone who finds it.
+	 */
+	const wantsTest = url.searchParams.get('test') !== null;
 
 	// ── 1. is anything set at all ──
 	steps.variables = {
@@ -111,6 +158,7 @@ export const GET: APIRoute = async () => {
 					domainStatus:
 						'Cannot be read with a sending-only key. Check it in the Resend dashboard under Domains; it must say Verified before mail will go out.',
 				};
+				if (wantsTest) steps.test = await fireTest(cfg, e);
 				return json({
 					ok: true,
 					summary:
@@ -150,6 +198,8 @@ export const GET: APIRoute = async () => {
 						? 'verified — Resend will send as this domain.'
 						: `${ours.status} — the DNS records are not all in place yet. Resend will refuse to send until this says verified.`,
 			};
+
+			if (wantsTest) steps.test = await fireTest(cfg, e);
 
 			const good = ours?.status === 'verified';
 			return json({

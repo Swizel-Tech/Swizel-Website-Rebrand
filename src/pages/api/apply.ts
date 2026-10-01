@@ -74,6 +74,7 @@ export const POST: APIRoute = async ({ request }) => {
 		]);
 
 		if (!toUs.ok) throw toUs.error;
+		console.log(`[apply] application accepted — resend id ${toUs.id ?? 'none'} → ${cfg.toCareers}`);
 		if (!toThem.ok) console.error('[apply] confirmation failed', toThem.error);
 
 		return json({ ok: true });

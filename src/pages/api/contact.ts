@@ -101,6 +101,10 @@ export const POST: APIRoute = async ({ request }) => {
 		]);
 
 		if (!toUs.ok) throw toUs.error;
+		// The id is the only way to find a specific message in Resend's log
+		// when somebody says "it never arrived" — without it you are
+		// scrolling a list by timestamp and guessing.
+		console.log(`[contact] enquiry accepted — resend id ${toUs.id ?? 'none'} → ${cfg.toContact}`);
 		if (!toThem.ok) console.error('[contact] confirmation failed', toThem.error);
 
 		return json({ ok: true });
