@@ -297,6 +297,30 @@ const {
 			wrapperOverlay.onclick = () => toggleMenu('false');
 		}
 
+		// ── the drawer does not survive becoming a desktop ──────────────
+		//
+		// The drawer only exists below 1280px; above it the full nav
+		// returns and CSS hides the drawer. But hiding it does not close
+		// it: data-expanded stayed "true" and, worse, body.overflow stayed
+		// "hidden". So opening the menu on a tablet and then rotating it —
+		// or dragging a desktop window wider — left the page with no
+		// visible menu AND no ability to scroll. Measured: at 1500px the
+		// wrapper was display:none, zero drawer links visible, and the body
+		// still locked.
+		//
+		// matchMedia rather than a resize listener: it fires once on the
+		// crossing instead of on every intermediate pixel.
+		const wide = window.matchMedia('(min-width: 1280px)');
+		const closeIfWide = (e: MediaQueryList | MediaQueryListEvent) => {
+			if (e.matches) toggleMenu('false');
+		};
+		if (!(window as any).__drawerWidthBound) {
+			(window as any).__drawerWidthBound = true;
+			wide.addEventListener('change', closeIfWide);
+		}
+		// and if we have just loaded wide with a stale lock, clear it
+		closeIfWide(wide);
+
 		// Close the drawer when a destination link is tapped (the Services
 		// accordion summary is excluded so it can expand in place).
 		const menu = document.getElementById('mobile-menu');

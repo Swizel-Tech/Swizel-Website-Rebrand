@@ -631,6 +631,25 @@ html:not(.dark)[data-view='boardroom'] .site-header.at-hero-top::before { conten
 html.dark .site-header.at-hero-top:has(#mobile-wrapper[data-expanded='true']) {
   --nav-cta-border: rgba(255, 255, 255, 0.45);
 }
+/* …and the same applies to the legibility shadow.
+   at-hero-top gives the bar a heavy dark text-shadow and a drop-shadow
+   on its icons, so white ink survives over a bright frame of the
+   photograph. The drawer is inside .site-header and inherited both — so
+   on the home page every link in the menu was painted with a 14px dark
+   blur behind it, which on the drawer's near-white panel reads as
+   smudged, faded type. On /about there is no hero, no at-hero-top, and
+   the same links are crisp. That is the difference between the two
+   screenshots.
+
+   Nothing in an open drawer sits over a photograph, so neither shadow
+   has any work to do. */
+.site-header.at-hero-top:has(#mobile-wrapper[data-expanded='true']) #mobile-wrapper,
+.site-header.at-hero-top:has(#mobile-wrapper[data-expanded='true']) #mobile-wrapper * {
+  text-shadow: none;
+}
+.site-header.at-hero-top:has(#mobile-wrapper[data-expanded='true']) #mobile-wrapper svg {
+  filter: none;
+}
 /* The nav floats on the photograph with nothing behind it, so it carries
    its own legibility: a soft shade under the ink rather than a bar over
    the picture. Costs the image nothing and survives a bright frame. */
