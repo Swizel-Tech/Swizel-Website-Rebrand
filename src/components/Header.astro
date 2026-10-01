@@ -69,16 +69,23 @@ const isActive = (href: string) => {
 						<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
 					</svg>
 				</button>
-				{/* Drawn here rather than pulled from the icon set. That one is a
-				    four-line hamburger in a 24-box, and at the size this button
-				    gives it the four strokes closed up into a smudge. Three
-				    lines, at the same stroke weight as the two buttons beside
-				    it, so the row reads as one set. */}
-				<button id="toggler-show" aria-label="Open menu" type="button">
-					<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor"
-						stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
-						<path d="M3.5 7h17M3.5 12h17M3.5 17h17" />
-					</svg>
+				{/* Exactly as it was before I touched it, and the reason is
+				    worth recording so nobody repairs it again.
+
+				    It was the project's own four-line icon at 28, with no
+				    styling of its own. I first put a ring around it to make
+				    the three header controls "one set", which forced the glyph
+				    down to 17px to leave a rim and closed the four strokes
+				    into a smudge. I then "fixed" that by drawing a different,
+				    three-line hamburger — which is not the same mark. The
+				    second fix was as wrong as the first: the brief was never
+				    to improve it.
+
+				    This is the original line, restored. The two controls
+				    beside it keep their rings; a hamburger is the one thing in
+				    that row that should read as itself. */}
+				<button id="toggler-show" aria-label="show menu" type="button">
+					<Icon size={28} name="hamburger" />
 				</button>
 			</div>
 			<nav

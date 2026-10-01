@@ -2046,12 +2046,11 @@ iframe {
      falling off the end */
   .site-header .view-switch--icon,
   .site-header .theme-toggle,
+  .site-header #toggler-show,
   .site-header .m-nav-burger {
     width: 36px !important;
     height: 36px !important;
   }
-  /* the menu button is as wide as its glyph, not a 36px box */
-  .site-header #toggler-show { width: auto !important; height: auto !important; }
   .site-header .xl\:hidden.flex-1 {
     gap: 0.5rem !important;
   }
@@ -2229,25 +2228,11 @@ html.tawk-open div[id^='tawkchat'] {
    Scoped to the width the mobile bar actually appears at (below xl), so
    the desktop nav is untouched. */
 @media (max-width: 1279px) {
-  /* No ring on the menu button. I put one there to make the three
-     controls "one set" and it was worse: the glyph had to shrink to fit
-     inside it, and a hamburger is not a toggle — it is the one control
-     that should read as itself. It was right before I touched it. */
-  .site-header #toggler-show {
-    display: grid;
-    place-items: center;
-    padding: 0;
-    border: 0;
-    background: transparent;
-    color: var(--nav-ink);
-    transition: opacity 0.2s ease, transform 0.2s ease;
-  }
-  .site-header #toggler-show:active { transform: scale(0.94); }
-  /* the glyph is drawn at 18 in the markup; nothing here needs to resize
-     it, and forcing a square onto an icon that was not one is what
-     squashed the old four-line version into a smudge */
-  /* the two that ARE rings wear the world's accent; the menu button is
-     left alone */
+  /* Nothing here styles #toggler-show, deliberately. It had no rules of
+     its own before any of this, and every rule I added to it — the ring,
+     the 17px glyph, the auto width, the press scale — was repairing
+     damage caused by the rule before it. The two controls beside it ARE
+     rings and take the world's accent; the menu button is left alone. */
   .site-header .view-switch--icon,
   .site-header .theme-toggle {
     border-color: color-mix(in srgb, var(--view-accent, #28a6ec) 34%, var(--nav-cta-border));
@@ -2263,10 +2248,6 @@ html.tawk-open div[id^='tawkchat'] {
     border-bottom: 1px solid color-mix(in srgb, var(--view-accent, #28a6ec) 26%, transparent);
   }
 }
-@media (prefers-reduced-motion: reduce) {
-  .site-header #toggler-show { transition: none; }
-}
-
 /* ── the newsletter status line ───────────────────────────────────────
    Made by script for the sign-up forms that were never given one, since
    until now nothing was ever going to answer them. Neutral enough to sit
