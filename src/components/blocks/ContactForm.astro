@@ -45,8 +45,14 @@ import Input from '../HTML/Input.astro';
 </style>
 
 {/* ── the handler is not in this file any more ──────────────────────
-    It used to be, as a long <script> below this markup, and that is
-    exactly why the form was dead in production.
+    It used to be, as a long component script below this markup, and
+    that is exactly why the form was dead in production.
+
+    (That sentence used to spell the tag out literally. Don't. Vite's
+    dependency scanner looks for the opening tag with a plain text
+    search and does not know this is a comment, so it took the rest of
+    the prose for JavaScript and brought the whole dev server down with
+    "Expected ';' but found 'this'".)
 
     A component script is bundled per page and runs once, when that page
     is first parsed. This site navigates with swup: the URL changes and
