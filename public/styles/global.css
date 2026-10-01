@@ -2309,7 +2309,12 @@ html.tawk-open div[id^='tawkchat'] {
 .sent__card {
   position: relative;
   width: 100%;
-  max-width: 27rem;
+  /* wider than it was: the card carries a list of onward links now, the
+     way the campus sheet's always has, and four rows in a 27rem box read
+     as a cramped menu rather than as an offer */
+  max-width: 31rem;
+  max-height: calc(100dvh - 2.5rem);
+  overflow-y: auto;
   padding: 2rem 1.6rem 1.5rem;
   border-radius: 1.4rem;
   text-align: center;
@@ -2319,7 +2324,37 @@ html.tawk-open div[id^='tawkchat'] {
   opacity: 0;
   transform: translateY(14px) scale(0.97);
   transition: opacity 0.26s ease, transform 0.36s cubic-bezier(0.22, 1, 0.36, 1);
+  /* a wash of the world's own colour at the top, so the card belongs to
+     whichever room it opened in */
+  background-image: radial-gradient(
+    120% 70% at 50% -10%,
+    color-mix(in srgb, var(--view-accent, #28a6ec) 16%, transparent),
+    transparent 70%
+  );
 }
+/* ── the close cross ── */
+.sent__x {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  border: 1px solid rgba(20, 22, 40, 0.14);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  opacity: 0.65;
+  transition: opacity 0.2s ease, transform 0.25s ease, background 0.2s ease;
+}
+.sent__x:hover {
+  opacity: 1;
+  transform: rotate(90deg);
+  background: color-mix(in srgb, var(--view-accent, #28a6ec) 14%, transparent);
+}
+html.dark .sent__x { border-color: rgba(255, 255, 255, 0.18); }
 html.dark .sent__card { background: #12151f; color: #f4f6fb; }
 .sent.is-on .sent__card { opacity: 1; transform: none; }
 .sent__ring {
@@ -2343,6 +2378,63 @@ html.dark .sent__card { background: #12151f; color: #f4f6fb; }
 }
 .sent__p { margin: 0; font-size: 0.95rem; line-height: 1.6; opacity: 0.78; }
 .sent__echo { margin: 0.7rem 0 0; font-size: 0.82rem; line-height: 1.5; opacity: 0.6; }
+
+/* ── where to go next ──
+   The campus sheet has offered these since it was built, and it was the
+   only world that did. Somebody who has just written to you is the most
+   interested they will be all visit; one link and a Close button spends
+   that moment on nothing. */
+.sent__links {
+  display: grid;
+  gap: 0.4rem;
+  margin-top: 1.2rem;
+  text-align: left;
+}
+.sent__links:empty { display: none; }
+.sent__link {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 0.8rem;
+  border: 1px solid rgba(20, 22, 40, 0.1);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+html.dark .sent__link { border-color: rgba(255, 255, 255, 0.12); }
+.sent__link:hover {
+  border-color: color-mix(in srgb, var(--view-accent, #28a6ec) 55%, transparent);
+  background: color-mix(in srgb, var(--view-accent, #28a6ec) 8%, transparent);
+  transform: translateX(2px);
+}
+.sent__link-ic {
+  font-size: 1.15rem;
+  line-height: 1;
+  width: 1.9rem;
+  height: 1.9rem;
+  display: grid;
+  place-items: center;
+  border-radius: 0.55rem;
+  background: color-mix(in srgb, var(--view-accent, #28a6ec) 13%, transparent);
+}
+.sent__link-t { display: block; min-width: 0; }
+.sent__link-t strong {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.sent__link-t em {
+  display: block;
+  font-style: normal;
+  font-size: 0.74rem;
+  line-height: 1.45;
+  opacity: 0.62;
+}
+.sent__link-go { color: var(--view-accent, #28a6ec); flex: none; }
+
 .sent__acts {
   display: flex;
   flex-wrap: wrap;

@@ -43,10 +43,17 @@ function base(): string {
 export const FROM_NAME = 'Swizel Technologies Limited';
 
 const SOCIALS = [
+	['WhatsApp', 'https://wa.me/2348100204570'],
 	['X', 'https://twitter.com/swizelhq'],
 	['Instagram', 'https://instagram.com/swizelhq'],
 	['LinkedIn', 'https://www.linkedin.com/company/swizel-technologies-limited/'],
 	['Facebook', 'https://www.facebook.com/SWIZELTECHNOLOGIESLIMITED/'],
+];
+
+/** Both lines, side by side, so somebody abroad is not calling Nigeria. */
+const PHONES = [
+	['🇳🇬', '+234 810 020 4570'],
+	['🇺🇸', '+1 701 498 1811'],
 ];
 
 const OFFICES = [
@@ -82,11 +89,27 @@ function shell({ preheader, heading, body, cta, unsubscribe }: Shell) {
     <tr><td align="center">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:580px;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 14px 44px -22px rgba(16,19,34,.38);">
 
-        <!-- the mark, on the deep blue the site opens on -->
-        <tr><td style="background:${DEEP};padding:24px 30px;">
-          <a href="${B}" style="text-decoration:none;display:inline-block;">
-            <img src="${B}/email/logo-white.png" width="140" height="31" alt="Swizel Technologies Limited"
-                 style="display:block;border:0;outline:none;height:auto;" />
+        <!-- ── the header band, as ONE image ──────────────────────────
+             This was a white wordmark on a near-black table cell, and in
+             the Gmail Android app it disappeared completely.
+
+             Gmail applies its own colour inversion in dark mode: it flips
+             backgrounds and text, and it does not touch images. So the
+             near-black cell became near-white while the white wordmark
+             stayed white — a white logo on a white band. Nothing in the
+             message can prevent that; Gmail's app ignores meta
+             color-scheme and prefers-color-scheme alike.
+
+             So the band no longer depends on the cell. The dark
+             background is baked into the PNG, which means the image
+             carries its own contrast whatever the client decides to do
+             around it. bgcolor stays on the cell so that a reader with
+             images turned off still gets a dark band rather than a white
+             gap. -->
+        <tr><td bgcolor="${DEEP}" style="background:${DEEP};font-size:0;line-height:0;">
+          <a href="${B}" style="text-decoration:none;display:block;">
+            <img src="${B}/email/band-dark.png" width="580" alt="Swizel Technologies Limited"
+                 style="display:block;width:100%;max-width:580px;border:0;outline:none;height:auto;" />
           </a>
         </td></tr>
 
@@ -116,12 +139,46 @@ function shell({ preheader, heading, body, cta, unsubscribe }: Shell) {
 
         <!-- ── the footer: how to reach a person, and where we are ── -->
         <tr><td style="background:${DEEP};padding:26px 30px 24px;">
-          <p style="margin:0 0 4px;font:700 14px/1.5 -apple-system,Arial,sans-serif;color:#ffffff;">Swizel Technologies Limited</p>
-          <p style="margin:0 0 16px;font:400 13px/1.5 -apple-system,Arial,sans-serif;color:${BRAND};">You imagine. We build.</p>
 
-          <!-- talk to a person -->
-          <p style="margin:0 0 16px;font:400 13px/1.9 -apple-system,Arial,sans-serif;color:rgba(255,255,255,.72);">
-            <a href="tel:+2348100204570" style="color:#ffffff;text-decoration:none;font-weight:600;">+234 810 020 4570</a><br />
+          <!-- ── the name, and the mark beside it ──
+               The mark used to sit on its own under the whole card, small
+               and unexplained. It belongs here, in the footer's own empty
+               right-hand column, at a size you can actually see. Two
+               cells rather than a positioned element, because absolute
+               positioning is one of the many things Outlook's rendering
+               engine does not have. -->
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 16px;">
+            <tr>
+              <td valign="top" style="padding-right:12px;">
+                <p style="margin:0 0 4px;font:700 14px/1.5 -apple-system,Arial,sans-serif;color:#ffffff;">Swizel Technologies Limited</p>
+                <p style="margin:0;font:400 13px/1.5 -apple-system,Arial,sans-serif;color:${BRAND};">You imagine. We build.</p>
+              </td>
+              <td valign="middle" align="right" width="96" style="width:96px;">
+                <img src="${B}/email/mark-brand.png" width="88" height="60" alt=""
+                     style="display:block;border:0;outline:none;height:auto;opacity:.95;" />
+              </td>
+            </tr>
+          </table>
+
+          <!-- talk to a person: both lines, side by side -->
+          <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 14px;">
+            <tr>
+              ${PHONES.map(
+								([flag, num], i) =>
+									`<td style="padding:0 ${i === PHONES.length - 1 ? '0' : '18px'} 0 0;font:600 13px/1.6 -apple-system,Arial,sans-serif;white-space:nowrap;">
+                  <span style="opacity:.9;">${flag}</span>
+                  <!-- brand blue rather than white. Gmail's dark mode
+                       flips this footer from near-black to near-white but
+                       does not reliably recolour text that was given an
+                       explicit hex, so white numbers can end up white on
+                       white. Blue is legible on both. -->
+                  <a href="tel:${num.replace(/[^0-9+]/g, '')}" style="color:${BRAND};text-decoration:none;">${num}</a>
+                </td>`
+							).join('')}
+            </tr>
+          </table>
+
+          <p style="margin:0 0 16px;font:400 13px/1.8 -apple-system,Arial,sans-serif;color:rgba(255,255,255,.72);">
             <a href="mailto:contact@swizel.co" style="color:${BRAND};text-decoration:none;">contact@swizel.co</a>
             &nbsp;·&nbsp;
             <a href="${B}" style="color:${BRAND};text-decoration:none;">swizel.co</a>
@@ -152,14 +209,12 @@ function shell({ preheader, heading, body, cta, unsubscribe }: Shell) {
         </td></tr>
       </table>
 
-      <!-- the sign-off, in the quiet space under the card: the mark in
-           its own blue, then the small print -->
+      <!-- The small print. The mark used to sit here on its own, 26px
+           wide under the whole card, which is where you put something
+           you have not decided what to do with. It is up in the footer
+           now, at a size that reads as a mark rather than as a speck. -->
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:580px;">
-        <tr><td align="center" style="padding:20px 6px 6px;">
-          <img src="${B}/email/mark-brand.png" width="26" height="18" alt="Swizel"
-               style="display:block;border:0;outline:none;height:auto;opacity:.9;" />
-        </td></tr>
-        <tr><td align="center" style="padding:2px 6px 0;font:400 12px/1.6 -apple-system,Arial,sans-serif;color:#8a90a6;">
+        <tr><td align="center" style="padding:18px 6px 0;font:400 12px/1.6 -apple-system,Arial,sans-serif;color:#8a90a6;">
           This is an automatic note. Reply to it and a person will read it.
           ${
 						unsubscribe
