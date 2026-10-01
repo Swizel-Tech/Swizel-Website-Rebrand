@@ -370,6 +370,40 @@ const organizationSchema = {
 				view = 'boardroom';
 				localStorage.setItem('swizel-view', view);
 			}
+
+			// ── a shared link carries the world it was sent from ──────────
+			//
+			// Until now the world lived only in localStorage, so sending
+			// somebody "the portfolio in Builder" sent them the portfolio in
+			// whatever world THEY last used — which for most people is none
+			// at all. The thing that made the link worth sending did not
+			// survive the sending.
+			//
+			// ?view=builder fixes that, and it is read here rather than in a
+			// page script for one reason: this runs before the first paint,
+			// so the right world is on the html element before anything is
+			// drawn. Read it later and the visitor watches one world repaint
+			// into another.
+			//
+			// It also counts as onboarded. Somebody who followed a link to a
+			// specific thing has been sent somewhere deliberately; opening
+			// the two-question quiz over the top of it would be answering a
+			// question they did not ask. The tour is still one tap away.
+			//
+			// The parameter is left in the address bar on purpose — it is
+			// what makes the URL shareable by copy-paste as well as by the
+			// share button — and <link rel=canonical> already points at the
+			// clean path, so search engines never see it as a second page.
+			try {
+				var WORLDS = ['boardroom', 'founder', 'builder', 'studio', 'campus'];
+				var sent = new URLSearchParams(location.search).get('view');
+				if (sent && WORLDS.indexOf(sent) !== -1) {
+					view = sent;
+					localStorage.setItem('swizel-view', view);
+					localStorage.setItem('swizel-onboarded', '1');
+				}
+			} catch (e) {}
+
 			if (view) {
 				document.documentElement.setAttribute('data-view', view);
 			}

@@ -272,6 +272,19 @@ const isActive = (href: string) => {
 				<CustomButton elementType="a" class="m-nav-cta" variant="primary" href="/contact" notRounded>
 					Contact us
 				</CustomButton>
+				{/* Sends the page you are on WITH the world you are reading it
+				    in — see scripts/share.ts. Copying the address bar sends
+				    /portfolio; this sends /portfolio?view=builder, which is
+				    the thing that was worth sending. Share sheet on a phone,
+				    clipboard on a desktop. */}
+				<button class="m-nav-share" type="button" data-share>
+					<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+						stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+						<circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" />
+						<path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4" />
+					</svg>
+					<span data-share-label>Share this page</span>
+				</button>
 				<div class="m-nav-social" data-no-tip>
 					<a href="https://wa.me/2348100204570" aria-label="WhatsApp" target="_blank" rel="noopener"><Icon width={18} name="mdi:whatsapp" /></a>
 					<a href="https://www.linkedin.com/company/swizel-technologies" aria-label="LinkedIn" target="_blank" rel="noopener" data-leaving="linkedin.com" data-leaving-name="Swizel on LinkedIn"><Icon width={18} name="mdi:linkedin" /></a>
@@ -539,6 +552,31 @@ const isActive = (href: string) => {
 		font-family: 'Bradley Hand', 'Segoe Print', 'Comic Sans MS', cursive;
 		font-size: 1.05rem;
 	}
+	/* A quiet third action under Contact us: same width, no fill, so it
+	   reads as the secondary thing it is. */
+	.m-nav-share {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.45rem;
+		width: 100%;
+		min-height: 42px;
+		margin-top: 0.5rem;
+		padding: 0 0.9rem;
+		border-radius: 0.7rem;
+		border: 1px solid var(--m-line, rgba(127, 127, 127, 0.28));
+		background: transparent;
+		color: var(--m-ink);
+		font: inherit;
+		font-size: 0.82rem;
+		font-weight: 600;
+		cursor: pointer;
+		transition: background 0.2s ease, border-color 0.2s ease;
+	}
+	.m-nav-share:hover { background: var(--m-hover); border-color: var(--m-accent); }
+	.m-nav-share[data-shared] { border-color: var(--m-accent); color: var(--m-accent); }
+	.m-nav-share svg { flex: none; opacity: 0.75; }
+
 	.m-nav-social { display: flex; gap: 0.4rem; justify-content: space-between; }
 	.m-nav-social a {
 		display: grid;
