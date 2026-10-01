@@ -375,13 +375,26 @@ export const teamDetails = [
   },
   {
     name: "Dennis",
-    role: "UI/UX designer",
+    role: "UI/UX & Graphics Designer",
     linkedinURL: "#",
-    bio: "Achimi Dennis is a dedicated designer with a passion for creating seamless and impactful digital experiences. Specialising in user-centered design, He excels at transforming complex concepts into intuitive, user-friendly interfaces that achieve business goals and captivate users.",
+    // Rewritten from his own CV (Sept 2026). The old copy was the kind of
+    // thing that could describe any designer anywhere — "transforming
+    // complex concepts into intuitive interfaces" — and named one past
+    // employer. This says what he has actually drawn, which is more
+    // persuasive and happens to include the work now on the home page.
+    bio: "Achimi Dennis Ojodomo is a UI/UX and graphics designer with a Bachelor of Engineering in Computer Engineering from Covenant University. He designed TellaTrust and Nicetel, two fintech products for paying bills; Kribbs, a proptech platform matching house-hunters with owners and with space-sharing built in; and BetsConvert, which turns a bet code from one bookmaker into another's. He works in Figma from research and wireframes through to prototypes, and has shipped across proptech, AI, recruitment and e-commerce.",
     experience: [
       {
-        company: "Raadaa partners international limited",
-        jobDesc: "UI/UX designer",
+        company: "Swizel Technologies",
+        jobDesc: "UI/UX & Graphics Designer",
+      },
+      {
+        company: "Blu Horizon LLP",
+        jobDesc: "UI/UX & Graphics Designer",
+      },
+      {
+        company: "Raadaa Partners Limited",
+        jobDesc: "UI/UX Design Intern",
       },
     ],
   },
