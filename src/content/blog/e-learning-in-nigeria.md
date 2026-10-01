@@ -37,7 +37,7 @@ Some of the world’s most developed nations have achieved E-schooling, otherwis
 3. Just about anyone can submit a project or assignment rather than the student.
 4. Computer assessed results can be misleading, as the computer doesn’t have the ability to consider context and/or practicality.
 
-### E-learning in Nigeria.
+### E-learning in Nigeria Today
 
 The educational sector in Nigeria is posed with a peculiar problem –‘The increase in number of students isn’t met with equal increase in number of schools or educational facilities’.
 
