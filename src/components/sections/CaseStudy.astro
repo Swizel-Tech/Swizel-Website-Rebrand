@@ -324,6 +324,14 @@ const cur = sectorCursor[p.sector] ?? 'repo';
 	:global(html:not(.dark)) .cs-hero-aurora { opacity: 0.4; }
 	.cs-backrow { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 1.1rem; margin-bottom: 1.6rem; }
 	.cs-back { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.88rem; font-weight: 600; color: var(--bd-muted); background: none; border: 0; cursor: pointer; font-family: inherit; transition: gap 0.25s ease, color 0.25s ease; }
+	/* Measured at 54x28 on a 390px phone, which is under every guideline
+	   for a thumb and is a large part of why "the back doesn't work" —
+	   it was being pressed and missed. The label does not move; the
+	   target around it grows to the 44px minimum. */
+	@media (max-width: 720px) {
+		.cs-backrow { gap: 0.25rem 0.75rem; margin-bottom: 1.2rem; }
+		.cs-back { min-height: 44px; padding-inline: 0.15rem; }
+	}
 	.cs-back--alt { opacity: 0.85; }
 	.cs-back:hover { gap: 0.55rem; color: var(--c); }
 	.cs-hero-grid { display: grid; gap: clamp(1.8rem, 4vw, 3rem); align-items: center; }

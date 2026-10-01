@@ -978,27 +978,51 @@ const {
 			);
 		}
 
-		// [data-go-back] means exactly that: one step back through the history
-		// this visit created. Landing straight on the page from a search or a
-		// shared link leaves nothing to go back to, so those fall through to
-		// the work index rather than throwing the person out of the site.
+		// ── [data-go-back] ────────────────────────────────────────────────
+		//
+		// One step back through the history this visit created, falling
+		// through to the work index for somebody who arrived on the page
+		// from a search or a shared link and has nothing behind them.
+		//
+		// It used document.referrer to tell those two apart, and that is
+		// wrong on this site. referrer is set when a DOCUMENT loads; swup
+		// never loads one — it pushes state and swaps the markup. So after
+		// browsing from /portfolio into a case study, referrer still holds
+		// whatever it held when the tab first opened, which for anyone who
+		// typed the address or used a bookmark is nothing at all.
+		//
+		// The test therefore failed for almost every real visitor, and the
+		// button fell through to a hard navigation to /portfolio. It looked
+		// like it worked. What it actually did was reload the wall at the
+		// top, so somebody who had scrolled through sixty projects, opened
+		// one and pressed Back was returned to the beginning with the whole
+		// scroll to do again — which is what "I can't keep viewing" meant.
+		//
+		// So the visit counts its own navigations. If this tab has moved
+		// between pages at least once, there is somewhere to go back TO, and
+		// history.back() lets the scroll plugin put the wall back exactly
+		// where it was left.
 		if (!(window as any).__backBound) {
 			(window as any).__backBound = true;
 			document.addEventListener('click', (e) => {
 				const el = (e.target as HTMLElement)?.closest?.('[data-go-back]');
 				if (!el) return;
 				e.preventDefault();
-				const sameSite =
-					!!document.referrer &&
-					(() => {
-						try {
-							return new URL(document.referrer).origin === location.origin;
-						} catch {
-							return false;
-						}
-					})();
-				if (sameSite && window.history.length > 1) window.history.back();
-				else window.location.href = el.getAttribute('data-go-back') || '/portfolio';
+				const movedInSite = ((window as any).__swzNavs || 0) > 0;
+				const cameFromSameSite = (() => {
+					try {
+						return !!document.referrer && new URL(document.referrer).origin === location.origin;
+					} catch {
+						return false;
+					}
+				})();
+				if ((movedInSite || cameFromSameSite) && window.history.length > 1) {
+					// tell the scroll memory above that this arrival is a return
+					(window as any).__swzRestoreNext = true;
+					window.history.back();
+				} else {
+					window.location.href = el.getAttribute('data-go-back') || '/portfolio';
+				}
 			});
 		}
 
@@ -1168,6 +1192,66 @@ const {
 	window.addEventListener('load', () => window.setTimeout(releaseCurtain, 400));
 
 	// run after every additional navigation by swup
+	// How many times this tab has moved between pages. [data-go-back] reads
+	// it to tell "arrived here by browsing" from "landed here cold", which
+	// document.referrer cannot do on a site that never reloads a document.
+	swup.on('contentReplaced', () => {
+		(window as any).__swzNavs = ((window as any).__swzNavs || 0) + 1;
+	});
+
+	// ── remembering where you were on a long page ─────────────────────
+	//
+	// @swup/scroll-plugin is pinned at v2 here, and v2 does not restore
+	// scroll on a history move — it sends every arrival to the top. On
+	// most pages nobody notices. On /portfolio, which is sixty-five
+	// projects deep, it means opening a case study and pressing Back puts
+	// you at the beginning of the wall with the whole scroll to do again.
+	// That is what "I can't keep viewing" was describing, and it is not
+	// worth a major dependency bump to fix.
+	//
+	// So the page keeps its own note of where it was. The position is
+	// recorded against the path as you scroll, and put back only when our
+	// own Back control caused the move — a forward click should land at
+	// the top, as it does now.
+	const scrollMemory = new Map<string, number>();
+	let rememberQueued = false;
+	window.addEventListener(
+		'scroll',
+		() => {
+			// While a return is in flight the page is being scrolled BY US and
+			// by the plugin, not by the reader. Recording those movements
+			// overwrote the remembered position with the top of the page a
+			// fraction before it could be read — the first attempt at this
+			// restored 243px of a 2600px scroll for exactly that reason.
+			if ((window as any).__swzRestoreNext) return;
+			if (rememberQueued) return;
+			rememberQueued = true;
+			requestAnimationFrame(() => {
+				rememberQueued = false;
+				scrollMemory.set(window.location.pathname, window.scrollY);
+			});
+		},
+		{ passive: true }
+	);
+	(window as any).__swzRestoreNext = false;
+	swup.on('contentReplaced', () => {
+		if (!(window as any).__swzRestoreNext) return;
+		const y = scrollMemory.get(window.location.pathname);
+		const done = () => {
+			(window as any).__swzRestoreNext = false;
+		};
+		if (!y) return done();
+		// after the plugin has had its turn at sending us to the top
+		requestAnimationFrame(() =>
+			window.setTimeout(() => {
+				window.scrollTo({ top: y, behavior: 'auto' });
+				// one more frame before recording resumes, so the jump we just
+				// made is not itself remembered
+				requestAnimationFrame(done);
+			}, 60)
+		);
+	});
+
 	swup.on('contentReplaced', init);
 
 	// ── frame-rate watchdog ───────────────────────────────────────────────

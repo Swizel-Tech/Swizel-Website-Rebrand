@@ -392,6 +392,11 @@ const roman = ['I', 'II', 'III', 'IV', 'V', 'VI'];
 	.sc-folio span:first-child { color: var(--sa-ink); }
 	.sc-folio-nav { display: inline-flex; align-items: center; gap: 0.9rem; }
 	.sc-folio-back { color: var(--sa-faint); background: none; border: 0; padding: 0; cursor: pointer; font: inherit; transition: color 0.2s ease; }
+	/* 52x22 on a phone was the smallest target on the site. The gallery
+	   keeps its quiet type; only the area you can hit changes. */
+	@media (max-width: 720px) {
+		.sc-folio-back { display: inline-flex; align-items: center; min-height: 44px; padding-inline: 0.15rem; }
+	}
 	.sc-folio-back:hover { color: var(--c); }
 	.sc-rule {
 		display: flex;
