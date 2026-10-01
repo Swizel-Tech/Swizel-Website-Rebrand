@@ -346,9 +346,62 @@ career@swizel.co · +234 810 020 4570 · swizel.co`,
 }
 
 /**
- * What lands in the Swizel inbox. It was a bare data table on a white
- * page, which looked like a system error report rather than a message
- * from our own site. Same information, same frame as everything else.
+ * The chassis for mail that goes to US, not to a customer.
+ *
+ * It is deliberately NOT shell(). Gmail decides the Promotions tab from
+ * what a message looks like, and shell() looks exactly like a campaign:
+ * a full width clickable hero image, a pill call-to-action in brand
+ * colour, a dark footer carrying five social links, four office
+ * addresses and a logo. Wrapped around "somebody filled in your contact
+ * form", that is a newsletter chassis on a notification, and Gmail files
+ * it accordingly — which is how an enquiry ends up in a tab nobody
+ * checks.
+ *
+ * So the internal notice carries none of it: no images at all, no
+ * button, no socials, no addresses. A rule, a heading, the facts, and a
+ * line saying where it came from. It also reads better — this is a
+ * working document, and the person opening it wants the phone number,
+ * not the brand.
+ */
+function plainShell(heading: string, preheader: string, body: string) {
+	return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>${esc(heading)}</title>
+</head>
+<body style="margin:0;padding:0;background:#ffffff;-webkit-font-smoothing:antialiased;">
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;">${esc(preheader)}</div>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;padding:24px 16px;">
+    <tr><td align="left">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;">
+
+        <tr><td style="padding-bottom:14px;border-bottom:2px solid ${INK};font:700 13px/1 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;color:${INK};letter-spacing:.14em;text-transform:uppercase;">
+          Swizel &middot; from the website
+        </td></tr>
+
+        <tr><td style="padding:22px 0 14px;font:700 21px/1.3 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;color:${INK};">
+          ${esc(heading)}
+        </td></tr>
+
+        <tr><td style="font:400 15px/1.7 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;color:${INK};">
+          ${body}
+        </td></tr>
+
+        <tr><td style="padding-top:22px;border-top:1px solid ${LINE};font:400 12px/1.6 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;color:${MUTED};">
+          Sent automatically by swizel.co. Hit reply to answer the sender directly.
+        </td></tr>
+
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+}
+
+/**
+ * What lands in the Swizel inbox. Plain on purpose — see plainShell.
  */
 export function teamNotice(kind: string, rows: [string, string][], body?: string) {
 	const table = rows
@@ -362,14 +415,13 @@ export function teamNotice(kind: string, rows: [string, string][], body?: string
 		.join('');
 	return {
 		text: `${kind}\n\n` + rows.map(([k, v]) => `${k}: ${v}`).join('\n') + (body ? `\n\n---\n\n${body}\n` : '\n'),
-		html: shell({
-			preheader: rows.map(([k, v]) => `${k}: ${v}`).join(' · ').slice(0, 120),
-			heading: kind,
-			body:
-				`<table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;">${table}</table>` +
+		html: plainShell(
+			kind,
+			rows.map(([k, v]) => `${k}: ${v}`).join(' · ').slice(0, 120),
+			`<table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;">${table}</table>` +
 				(body
-					? `<div style="margin-top:20px;padding:18px;background:#f5f7fb;border-radius:12px;border:1px solid ${LINE};white-space:pre-wrap;font:400 14px/1.7 -apple-system,Arial,sans-serif;color:${INK};">${esc(body)}</div>`
-					: ''),
-		}),
+					? `<div style="margin-top:20px;padding:16px;background:#f7f8fb;border-left:3px solid ${INK};white-space:pre-wrap;font:400 14px/1.7 -apple-system,Arial,sans-serif;color:${INK};">${esc(body)}</div>`
+					: '')
+		),
 	};
 }

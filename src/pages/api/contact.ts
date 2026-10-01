@@ -87,6 +87,17 @@ export const POST: APIRoute = async ({ request }) => {
 				to: cfg.toContact,
 				replyTo: `"${oneLine(name)}" <${email}>`, // hitting reply answers them
 				subject: `[Contact] ${oneLine(name)}`,
+				// RFC 3834: this is a machine-generated notification, not
+				// something a person typed and not something anyone signed up
+				// for. It is the honest label, and it is also the one signal
+				// that separates a notification from a campaign in the eyes of
+				// anything sorting mail. The ref id stops Gmail collapsing
+				// successive enquiries into one conversation, which is what
+				// made a run of them look like a mailing list.
+				headers: {
+					'Auto-Submitted': 'auto-generated',
+					'X-Entity-Ref-ID': `contact-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`,
+				},
 				text: notice.text,
 				html: notice.html,
 			},

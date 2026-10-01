@@ -60,6 +60,10 @@ export const POST: APIRoute = async ({ request }) => {
 				to: cfg.toCareers, // a placement is a careers matter, not a sales one
 				replyTo: `"${oneLine(name)}" <${email}>`,
 				subject: `[Application] ${oneLine(track)} — ${oneLine(name)}`,
+				headers: {
+					'Auto-Submitted': 'auto-generated',
+					'X-Entity-Ref-ID': `application-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`,
+				},
 				text: notice.text,
 				html: notice.html,
 			},

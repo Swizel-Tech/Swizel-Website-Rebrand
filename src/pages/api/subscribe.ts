@@ -52,6 +52,10 @@ export const POST: APIRoute = async ({ request }) => {
 				to: cfg.toContact,
 				replyTo: email,
 				subject: `[Newsletter] ${where}`,
+				headers: {
+					'Auto-Submitted': 'auto-generated',
+					'X-Entity-Ref-ID': `newsletter-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`,
+				},
 				text: notice.text,
 				html: notice.html,
 			},
