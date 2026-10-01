@@ -1,14 +1,30 @@
 // Welcome film — the first-visit opener.
 //
-// A tiny timeline engine: scenes are declared with a start time, the clock is
-// driven by rAF (so it pauses honestly when the tab is hidden), and each scene
-// is just a DOM layer whose CSS animations run when it gets `.is-on`.
-// Everything is skippable from the first second, and the action buttons live
-// outside the stage so they are reachable on any screen without scrolling.
+// It runs in one of two MODES.
+//
+//   overture · what a first visit actually gets. The velvet parts, the name
+//              lands, "You imagine. We build." holds for a beat, and the
+//              choices are on screen inside six seconds. Nobody is made to
+//              sit through a company film to reach a website.
+//
+//   film     · the full seven scene reel, about thirty-three seconds. This is
+//              now opt-in: asked for from the chooser, from the views modal,
+//              or from anything wearing [data-open-film].
+//
+// Under the reel is a tiny timeline engine: scenes are declared with a start
+// time, the clock is driven by rAF (so it pauses honestly when the tab is
+// hidden), and each scene is just a DOM layer whose CSS animations run when it
+// gets `.is-on`. The overture does not need the clock at all — one scene, one
+// timeout — so it never starts it.
+//
+// Skip, at any point and in either mode, means the same thing: close the
+// house and put them on the default screen, at the top. It never dumps them
+// on the chooser, which is what it used to do.
 
 const ONBOARDED_KEY = 'swizel-onboarded';
 const AUDIO_SRC = '/audio/welcome.mp3';
 
+type Mode = 'overture' | 'film';
 type Scene = { id: string; at: number };
 
 // start times in ms; the last entry is the end card
@@ -27,6 +43,12 @@ const DURATION = LAST.at;
 // how long the house takes before the first frame: marquee card, then velvet
 const CURTAIN_HOLD = 1900;
 const CURTAIN_PART = 150;
+// The overture's own, shorter clock. The marquee card is a flash of the name
+// rather than a wait, and the scene itself has every animation finished by
+// 2.6s — the rest is a hold on a finished frame, which reads as composure
+// instead of dead air.
+const OV_HOLD = 950;
+const OV_RUN = 4300;
 
 export function initWelcomeFilm() {
 	const root = document.getElementById('welcome-film');
@@ -50,7 +72,23 @@ export function initWelcomeFilm() {
 	let playing = false;
 	let currentId = '';
 	let rate = 1;
+	let mode: Mode = 'film';
+	// every timeout the house owns, so a mode change can cancel the one
+	// still in flight rather than have it fire into the new mode
+	let timers: number[] = [];
 	const RATES = [1, 1.5, 2, 0.5];
+
+	const after = (ms: number, fn: () => void) => {
+		timers.push(window.setTimeout(fn, ms));
+	};
+	const clearTimers = () => {
+		timers.forEach((t) => window.clearTimeout(t));
+		timers = [];
+	};
+	const setMode = (m: Mode) => {
+		mode = m;
+		root.dataset.mode = m;
+	};
 
 	const sceneEl = (id: string) => scenes.find((s) => s.dataset.scene === id);
 
@@ -181,6 +219,9 @@ export function initWelcomeFilm() {
 	};
 
 	const finish = () => {
+		// an overture timeout may still be in flight (skip, or a replay
+		// pressed mid-hold); cancel it so it cannot fire into this state
+		clearTimers();
 		pause();
 		root.dataset.paused = 'false';
 		elapsed = DURATION;
@@ -193,15 +234,20 @@ export function initWelcomeFilm() {
 		audio?.pause();
 	};
 
-	const open = () => {
+	const open = (opts?: { overture?: boolean }) => {
+		clearTimers();
+		setMode(opts?.overture ? 'overture' : 'film');
 		root.dataset.open = 'true';
 		root.dataset.curtain = 'shut';
+		root.dataset.ended = 'false';
+		root.querySelector('#wf-finale')?.setAttribute('aria-hidden', 'true');
 		root.setAttribute('aria-hidden', 'false');
 		document.body.style.overflow = 'hidden';
 		// park the page's floating furniture (chat bubble, back-to-top) so
 		// nothing sits on top of the cinema
 		document.documentElement.classList.add('wf-open');
 		currentId = '';
+		scenes.forEach((s) => s.classList.remove('is-on'));
 		root.dataset.paused = 'false';
 		rate = 1;
 		// one signal for the whole site: the probe in BaseHead and the
@@ -216,13 +262,27 @@ export function initWelcomeFilm() {
 			probeAudio();
 			return;
 		}
+
+		if (mode === 'overture') {
+			// a glimpse of the marquee, the velvet goes, the name lands,
+			// and then the choices. No clock, no console.
+			after(OV_HOLD, () => {
+				root.dataset.curtain = 'open';
+				showScene('ov');
+			});
+			after(OV_HOLD + OV_RUN, finish);
+			probeAudio();
+			return;
+		}
+
 		// hold on the marquee card, part the velvet, then roll
-		window.setTimeout(() => (root.dataset.curtain = 'open'), CURTAIN_HOLD);
-		window.setTimeout(() => play(0), CURTAIN_HOLD + CURTAIN_PART);
+		after(CURTAIN_HOLD, () => (root.dataset.curtain = 'open'));
+		after(CURTAIN_HOLD + CURTAIN_PART, () => play(0));
 		probeAudio();
 	};
 
 	const close = () => {
+		clearTimers();
 		pause();
 		audio?.pause();
 		root.dataset.open = 'false';
@@ -233,6 +293,57 @@ export function initWelcomeFilm() {
 		try {
 			localStorage.setItem(ONBOARDED_KEY, '1');
 		} catch (e) {}
+	};
+
+	/**
+	 * Skip, from anywhere, in either mode.
+	 *
+	 * "If the person selects skip at any point, just take them to the default
+	 * screen" — so this is deliberately NOT the chooser. It shuts the house
+	 * and leaves them at the top of the home page.
+	 *
+	 * Nothing is written to the view: the ABSENCE of data-view is what the
+	 * stylesheet reads as Boardroom, so skipping leaves the default in place
+	 * without pretending the visitor chose it. Anyone who had already picked
+	 * a world keeps the one they picked.
+	 */
+	const enterSite = () => {
+		close();
+		window.scrollTo({ top: 0, behavior: 'auto' });
+		if (window.location.pathname !== '/') {
+			// a real link, so swup intercepts it and plays the transition
+			const a = document.createElement('a');
+			a.href = '/';
+			a.style.display = 'none';
+			document.body.appendChild(a);
+			a.click();
+			a.remove();
+		}
+	};
+
+	/**
+	 * "Watch the full welcome film" from the chooser.
+	 *
+	 * The velvet sweeps back in over the choices, the house resets, and the
+	 * reel opens on a fresh print — the same entrance the film has always
+	 * had, so it never looks like a jump cut from a menu.
+	 */
+	const playFull = () => {
+		clearTimers();
+		setMode('film');
+		root.dataset.ended = 'false';
+		root.querySelector('#wf-finale')?.setAttribute('aria-hidden', 'true');
+		currentId = '';
+		scenes.forEach((s) => s.classList.remove('is-on'));
+		setProgress(0);
+		if (reduce) {
+			finish();
+			return;
+		}
+		root.dataset.curtain = 'closing';
+		after(700, () => (root.dataset.curtain = 'shut'));
+		after(1000, () => (root.dataset.curtain = 'open'));
+		after(1150, () => play(0));
 	};
 
 	// Sound is optional: the button only appears once a real track exists at
@@ -264,6 +375,8 @@ export function initWelcomeFilm() {
 	stage?.addEventListener('click', (e) => {
 		const t = e.target as HTMLElement;
 		if (t.closest('button, a, #wf-scrub')) return;
+		// nothing to pause in a four second overture
+		if (mode === 'overture') return;
 		if (root.dataset.ended === 'true') return;
 		if (playing) pause(true);
 		else play();
@@ -279,6 +392,7 @@ export function initWelcomeFilm() {
 			return ((x - r.left) / r.width) * DURATION;
 		};
 		scrub.addEventListener('pointerdown', (e) => {
+			if (mode === 'overture') return;
 			if (root.dataset.ended === 'true') return;
 			dragging = true;
 			resumeAfter = playing;
@@ -317,33 +431,12 @@ export function initWelcomeFilm() {
 		rateBtn.setAttribute('aria-label', `Playback speed ${rate} times`);
 	});
 
-	// Watch again: the velvet sweeps back in, the house resets, and it opens
-	// on a fresh reel — the same entrance, never a jump cut.
-	let replaying = false;
-	const replay = () => {
-		if (replaying) return;
-		replaying = true;
-		root.dataset.ended = 'false';
-		root.querySelector('#wf-finale')?.setAttribute('aria-hidden', 'true');
-		currentId = '';
-		scenes.forEach((s) => s.classList.remove('is-on'));
-		setProgress(0);
-		if (reduce) {
-			replaying = false;
-			finish();
-			return;
-		}
-		root.dataset.curtain = 'closing';
-		window.setTimeout(() => {
-			root.dataset.curtain = 'shut';
-		}, 850);
-		window.setTimeout(() => {
-			root.dataset.curtain = 'open';
-			replaying = false;
-		}, 1150);
-		window.setTimeout(() => play(0), 1300);
-	};
-	replayBtn?.addEventListener('click', replay);
+	// "Watch it again" (out of the reel) and "Watch the full welcome film"
+	// (out of the overture) are the same journey, so they are the same code.
+	replayBtn?.addEventListener('click', playFull);
+	root
+		.querySelectorAll('[data-wf-full]')
+		.forEach((b) => b.addEventListener('click', playFull));
 
 	// the scene drifts a little under the pointer, so the screen has depth
 	if (stage && !reduce && window.matchMedia('(pointer: fine)').matches) {
@@ -368,21 +461,16 @@ export function initWelcomeFilm() {
 		});
 	}
 
-	root.querySelectorAll('[data-wf-skip]').forEach((b) =>
-		b.addEventListener('click', () => {
-			if (root.dataset.ended === 'true') close();
-			else {
-				// skipping mid curtain still opens the house, so the choices
-				// are never trapped behind the velvet
-				root.dataset.curtain = 'open';
-				finish();
-			}
-		})
-	);
+	// Skip means skip. It used to end the reel early and hand over to the
+	// chooser, which is the opposite of what somebody pressing Skip is
+	// asking for: they want the website, not a different screen.
+	root
+		.querySelectorAll('[data-wf-skip]')
+		.forEach((b) => b.addEventListener('click', enterSite));
 
 	root
 		.querySelectorAll('[data-wf-close]')
-		.forEach((b) => b.addEventListener('click', () => close()));
+		.forEach((b) => b.addEventListener('click', enterSite));
 
 	// "Make it mine" → close the film and hand over to the world picker.
 	// NOTE: there are two of these (the HUD and the finale), so bind ALL of
@@ -403,7 +491,9 @@ export function initWelcomeFilm() {
 
 	document.addEventListener('keydown', (e) => {
 		if (root.dataset.open !== 'true') return;
-		if (e.key === 'Escape') close();
+		// Escape is the keyboard's Skip, so it goes the same place
+		if (e.key === 'Escape') enterSite();
+		if (mode === 'overture') return;
 		if (e.key === ' ' || e.key === 'Spacebar') {
 			e.preventDefault();
 			if (root.dataset.ended === 'true') return;
@@ -419,20 +509,44 @@ export function initWelcomeFilm() {
 	// a hidden tab should not burn through the film
 	document.addEventListener('visibilitychange', () => {
 		if (root.dataset.open !== 'true' || root.dataset.ended === 'true') return;
+		if (mode === 'overture') return;
 		if (document.hidden) pause();
 		else if (!playing && root.dataset.paused !== 'true') play();
 	});
 
-	// let anything on the site replay the welcome
+	// let anything on the site play the full reel; the overture is only ever
+	// the first visit, so it gets its own door and nothing in the UI points
+	// at it
 	(window as any).openWelcomeFilm = () => open();
+	(window as any).openWelcomeOverture = () => open({ overture: true });
+	/**
+	 * Re-open the house on the chooser, with no film either side of it.
+	 *
+	 * This is what Back from the first question needs: the screen it came
+	 * from. It used to call openWelcomeFilm, which meant backing out of a
+	 * question started a thirty-three second reel — the single most
+	 * surprising thing a Back button could possibly do.
+	 */
+	(window as any).openWelcomeChooser = () => {
+		clearTimers();
+		setMode('overture');
+		root.dataset.open = 'true';
+		root.setAttribute('aria-hidden', 'false');
+		document.body.style.overflow = 'hidden';
+		document.documentElement.classList.add('wf-open');
+		currentId = '';
+		finish();
+	};
 	document
 		.querySelectorAll('[data-open-film]')
 		.forEach((b) => b.addEventListener('click', () => open()));
 
-	// first-time visitors only
+	// First-time visitors get the overture. 320ms is enough for the page
+	// behind it to have painted, so the velvet is drawn over a real site
+	// rather than over nothing.
 	let onboarded = false;
 	try {
 		onboarded = !!localStorage.getItem(ONBOARDED_KEY);
 	} catch (e) {}
-	if (!onboarded) window.setTimeout(open, 500);
+	if (!onboarded) window.setTimeout(() => open({ overture: true }), 320);
 }

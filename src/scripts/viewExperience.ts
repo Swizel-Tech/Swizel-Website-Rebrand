@@ -108,6 +108,11 @@ export function initViewExperience() {
 		steps.find((s) => s.classList.contains('is-active'))?.dataset.step ||
 		'intro';
 
+	// what the last run of recommend() landed on, so the countdown and the
+	// copy beside it do not have to work it out a second time
+	let recommendedId = '';
+	let recommendedName = '';
+
 	const recommend = () => {
 		const scores = totalScores();
 		let best = recommendableOrder[0];
@@ -126,10 +131,13 @@ export function initViewExperience() {
 				hasAnswers && c.dataset.viewId === best
 			)
 		);
+		recommendedId = hasAnswers ? best : '';
+		recommendedName = '';
 		if (hasAnswers) {
 			const card = cards.find((c) => c.dataset.viewId === best);
 			const name =
 				card?.querySelector('.vo__card-name')?.textContent || 'Boardroom';
+			recommendedName = name;
 			if (recName) recName.textContent = name;
 			if (recKicker) recKicker.textContent = 'Recommendation';
 			if (recTitle)
@@ -148,7 +156,47 @@ export function initViewExperience() {
 		}
 	};
 
+	// ── entering on a countdown ────────────────────────────────────────
+	// The brief was "they answer the two questions and enter the site", so
+	// the second answer is the last thing anybody has to press. The ring
+	// shows exactly how long they have, and reaching for the grid — or the
+	// Back button, or Escape — cancels it, so nobody is dragged anywhere
+	// while they are still reading.
+	const AUTO_MS = 3400;
+	const autoBox = root.querySelector<HTMLElement>('.vo__auto');
+	const autoName = root.querySelector<HTMLElement>('.vo__auto-name');
+	let autoTimer = 0;
+	let autoTarget = '';
+
+	const cancelAutoEnter = () => {
+		if (autoTimer) window.clearTimeout(autoTimer);
+		autoTimer = 0;
+		autoTarget = '';
+		if (autoBox) autoBox.dataset.on = 'false';
+	};
+
+	const startAutoEnter = () => {
+		cancelAutoEnter();
+		if (!autoBox || !recommendedId) return;
+		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+		autoTarget = recommendedId;
+		if (autoName) autoName.textContent = recommendedName || 'Boardroom';
+		autoBox.style.setProperty('--auto-ms', `${AUTO_MS}ms`);
+		// a reflow between off and on, or the ring's animation does not
+		// restart when the quiz is retaken
+		autoBox.dataset.on = 'false';
+		void autoBox.offsetWidth;
+		autoBox.dataset.on = 'true';
+		autoTimer = window.setTimeout(() => {
+			autoTimer = 0;
+			const id = autoTarget;
+			cancelAutoEnter();
+			if (id) enterView(id);
+		}, AUTO_MS);
+	};
+
 	const open = (atResults = false) => {
+		cancelAutoEnter();
 		root.dataset.open = 'true';
 		root.setAttribute('aria-hidden', 'false');
 		document.body.style.overflow = 'hidden';
@@ -165,6 +213,7 @@ export function initViewExperience() {
 	};
 
 	const close = () => {
+		cancelAutoEnter();
 		root.dataset.open = 'false';
 		root.setAttribute('aria-hidden', 'true');
 		document.body.style.overflow = '';
@@ -174,22 +223,59 @@ export function initViewExperience() {
 		} catch (e) {}
 	};
 
+	/**
+	 * Walk into a world: set it, shut the modal, and make sure the worlds
+	 * are actually on screen — they only render on the home page, so a
+	 * choice made from /about has to go home to be seen.
+	 *
+	 * Both doors into a view use this: clicking a card, and letting the
+	 * countdown run out.
+	 */
+	const enterView = (rawId: string) => {
+		let id: string | undefined = rawId;
+		// "Surprise me" — roll a random world (never the one you're in)
+		if (id === 'surprise') {
+			const here =
+				document.documentElement.getAttribute('data-view') || 'boardroom';
+			const pool = recommendableOrder.filter((v) => v !== here);
+			id = pool[Math.floor(Math.random() * pool.length)];
+		}
+		if (id) applyView(id);
+		close();
+		if (id && window.location.pathname !== '/') {
+			// Click a real link so swup intercepts it and plays the page
+			// transition (version-proof — no swup API call needed).
+			const a = document.createElement('a');
+			a.href = '/';
+			a.style.display = 'none';
+			document.body.appendChild(a);
+			a.click();
+			a.remove();
+		}
+	};
+
 	const goNextAfter = (qStep: string) => {
 		const idx = order.indexOf(qStep);
 		const next = order[idx + 1];
 		if (!next) return;
 		if (next === 'results') recommend();
 		show(next);
+		// the last answer is the whole ask: "answer the two questions and
+		// enter the site". So it does, unless they say otherwise.
+		if (next === 'results') startAutoEnter();
 	};
 
 	const goBack = () => {
+		cancelAutoEnter();
 		const idx = order.indexOf(current());
-		// Back from the first question rewinds to the beginning of the whole
-		// welcome, not to a text screen nobody asked for.
+		// Back from the first question returns to the chooser it came from.
+		// It used to start the full thirty-three second film, which is a
+		// remarkable thing for a Back button to do.
 		if (idx <= 1) {
 			close();
-			const film = (window as any).openWelcomeFilm;
-			if (typeof film === 'function') film();
+			const chooser =
+				(window as any).openWelcomeChooser || (window as any).openWelcomeFilm;
+			if (typeof chooser === 'function') chooser();
 			else show(order[0] ?? 'intro', 'back');
 			return;
 		}
@@ -222,52 +308,82 @@ export function initViewExperience() {
 		.querySelectorAll('[data-vo-back]')
 		.forEach((b) => b.addEventListener('click', () => goBack()));
 
+	// a ring of the answer's own colour, thrown from where it was clicked
+	const ripple = root.querySelector<HTMLElement>('.vo__ripple');
+	const panel = root.querySelector<HTMLElement>('.vo__panel');
+	const throwRipple = (from: HTMLElement, hue: string) => {
+		if (!ripple || !panel) return;
+		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+		const p = panel.getBoundingClientRect();
+		const r = from.getBoundingClientRect();
+		ripple.style.setProperty('--rx', `${r.left - p.left + r.width / 2}px`);
+		ripple.style.setProperty('--ry', `${r.top - p.top + r.height / 2}px`);
+		ripple.style.setProperty('--rhue', hue || 'var(--vo-acc)');
+		ripple.dataset.on = 'false';
+		void ripple.offsetWidth;
+		ripple.dataset.on = 'true';
+	};
+
+	// how long the choice is allowed to be admired before the step turns.
+	// Long enough for the stamp to land and the siblings to stand down
+	// (0.5s and 0.42s), short enough that it never feels like a wait.
+	const PICK_HOLD = 560;
+
 	root.querySelectorAll<HTMLButtonElement>('.vo__opt').forEach((opt) => {
 		opt.addEventListener('click', () => {
+			const group = opt.closest<HTMLElement>('.vo__options');
+			// a second click while the first is still playing out would
+			// double-advance; the lock closes that door
+			if (group?.classList.contains('is-locked')) return;
 			const q = opt.dataset.q || '0';
 			try {
 				answers[q] = JSON.parse(opt.dataset.scores || '{}') as Scores;
 			} catch (e) {}
 			// mark the choice (visible when revisiting via back)
-			opt
-				.closest('.vo__options')
-				?.querySelectorAll('.vo__opt')
-				.forEach((o) => o.classList.remove('is-selected'));
-			opt.classList.add('is-selected');
-			// brief pause so the check animation reads, then advance
-			window.setTimeout(() => goNextAfter(`q${q}`), 220);
+			group?.querySelectorAll('.vo__opt').forEach((o) => {
+				o.classList.remove('is-selected', 'is-picked');
+			});
+			opt.classList.add('is-selected', 'is-picked');
+			group?.classList.add('is-locked');
+			throwRipple(opt, opt.style.getPropertyValue('--hue').trim());
+			window.setTimeout(() => {
+				// hand the step back before leaving it, so coming back via
+				// Back finds a live question rather than a frozen one
+				group?.classList.remove('is-locked');
+				opt.classList.remove('is-picked');
+				goNextAfter(`q${q}`);
+			}, PICK_HOLD);
 		});
 	});
 
 	cards.forEach((card) => {
+		// reaching for the grid at all means they want to choose for
+		// themselves — stop the countdown on the way down, before the
+		// click even completes
+		card.addEventListener('pointerdown', cancelAutoEnter);
 		card.addEventListener('click', () => {
-			let id = card.dataset.viewId;
-			// "Surprise me" — roll a random world (never the one you're in)
-			if (id === 'surprise') {
-				const current =
-					document.documentElement.getAttribute('data-view') || 'boardroom';
-				const pool = recommendableOrder.filter((v) => v !== current);
-				id = pool[Math.floor(Math.random() * pool.length)];
-			}
-			if (id) applyView(id);
-			close();
-			// The view "worlds" only render on the home page. If a world is
-			// picked from another page (e.g. /about), go home so it shows.
-			// Click a real link so swup intercepts it and plays the page
-			// transition (version-proof — no swup API call needed).
-			if (id && window.location.pathname !== '/') {
-				const a = document.createElement('a');
-				a.href = '/';
-				a.style.display = 'none';
-				document.body.appendChild(a);
-				a.click();
-				a.remove();
-			}
+			cancelAutoEnter();
+			const id = card.dataset.viewId;
+			if (id) enterView(id);
 		});
 	});
 
+	root
+		.querySelectorAll('[data-vo-stay]')
+		.forEach((b) => b.addEventListener('click', () => cancelAutoEnter()));
+	// scrolling the result list is reading, not deciding
+	root
+		.querySelector('.vo__panel')
+		?.addEventListener('wheel', cancelAutoEnter, { passive: true });
+	root
+		.querySelector('.vo__panel')
+		?.addEventListener('touchmove', cancelAutoEnter, { passive: true });
+
 	document.addEventListener('keydown', (e) => {
-		if (e.key === 'Escape' && root.dataset.open === 'true') close();
+		if (root.dataset.open !== 'true') return;
+		// any key at all stops the clock; Escape also shuts the modal
+		cancelAutoEnter();
+		if (e.key === 'Escape') close();
 	});
 
 	// expose for the nav "switch view" control

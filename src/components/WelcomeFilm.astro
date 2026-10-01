@@ -117,6 +117,39 @@ const sparks = Array.from({ length: 18 }, (_, i) => i);
 					</button>
 				</div>
 
+				<!-- ── 0 · THE OVERTURE ────────────────────────────────
+				     What a first visit actually gets: the velvet parts, the
+				     name lands, and four seconds later the choices are on
+				     screen. Nobody is held in a waiting room.
+
+				     The seven-scene reel below it still exists in full — it
+				     is now something a visitor ASKS for from the finale,
+				     rather than a toll gate on the way in. -->
+				<section class="wf-scene wf-ov" data-scene="ov" aria-hidden="true">
+					<span class="wf-spark" aria-hidden="true"></span>
+					<span class="wf-ov-rays" aria-hidden="true">
+						{[0, 1, 2, 3, 4].map((i) => <i style={`--i:${i}`}></i>)}
+					</span>
+					<p class="wf-ov-kick">Welcome to</p>
+					<!-- drawn letter by letter so the name arrives rather than
+					     appears; the accessible name is on the heading -->
+					<h2 class="wf-ov-name" aria-label="Swizel">
+						{/* kept on one line on purpose: a newline between the
+						    span and {ch} becomes a real space inside the
+						    letter box, and six letters each carrying a
+						    leading and trailing space is a word with holes
+						    in it */}
+						{'SWIZEL'.split('').map((ch, i) => <span style={`--i:${i}`} aria-hidden="true">{ch}</span>)}
+						<span class="wf-ov-sweep" aria-hidden="true"></span>
+					</h2>
+					<span class="wf-ov-rule" aria-hidden="true"></span>
+					<p class="wf-ov-sig">Technologies Limited</p>
+					<p class="wf-ov-line">
+						<span>You imagine.</span>
+						<b>We build.</b>
+					</p>
+				</section>
+
 				<!-- ── 1 · the welcome ─────────────────────────────── -->
 				<section class="wf-scene wf-s0" data-scene="0" aria-hidden="true">
 					<span class="wf-spark" aria-hidden="true"></span>
@@ -308,43 +341,67 @@ const sparks = Array.from({ length: 18 }, (_, i) => i);
 		<span class="wf__finale-glow" aria-hidden="true"></span>
 		<div class="wf__finale-card">
 			<span class="wf__finale-mark"><Logo /></span>
-			<p class="wf__finale-kick">That was us</p>
-			<h2 class="wf__finale-h">So, where do you want to <em>start?</em></h2>
+			<!-- the kicker tells the truth about which way they came in:
+			     straight off the overture, or out of the full reel -->
+			<p class="wf__finale-kick">
+				<span class="wf__kick-ov">You're in</span>
+				<span class="wf__kick-film">That was us</span>
+			</p>
+			<h2 class="wf__finale-h">How do you want to <em>see us?</em></h2>
+			<p class="wf__finale-lead">
+				One company, five ways of telling it. Pick a door — none of them
+				locks behind you.
+			</p>
 
 			<div class="wf__picks">
 				<button class="wf__pick wf__pick--primary" type="button" data-wf-mine style="--i:0">
 					<span class="wf__pick-ic"><Icon width={20} name="mdi:auto-fix" /></span>
 					<span class="wf__pick-txt">
 						<b>Make it mine</b>
-						<em>Reshape the whole site around me</em>
+						<em>For a viewing experience customised to you &middot; two questions, ten seconds</em>
 					</span>
 					<Icon width={17} name="mdi:arrow-right" class="wf__pick-go" />
 				</button>
-				<a class="wf__pick" href="/contact" style="--i:1">
+				<button class="wf__pick wf__pick--film" type="button" data-wf-full style="--i:1">
+					<span class="wf__pick-ic"><Icon width={20} name="mdi:movie-open-play-outline" /></span>
+					<span class="wf__pick-txt">
+						<b>Watch the full welcome film</b>
+						<em>The whole story in half a minute &mdash; Abuja, six bases, 65+ products live</em>
+					</span>
+					<span class="wf__pick-run" aria-hidden="true">0:33</span>
+				</button>
+				<a class="wf__pick" href="/contact" style="--i:2">
 					<span class="wf__pick-ic"><Icon width={20} name="mdi:rocket-launch-outline" /></span>
 					<span class="wf__pick-txt">
 						<b>Start a project</b>
-						<em>Tell us what you imagine</em>
+						<em>Tell us what you imagine &mdash; we reply the same day</em>
 					</span>
 					<Icon width={17} name="mdi:arrow-right" class="wf__pick-go" />
 				</a>
-				<a class="wf__pick" href="/portfolio" style="--i:2">
+				<a class="wf__pick" href="/portfolio" style="--i:3">
 					<span class="wf__pick-ic"><Icon width={20} name="mdi:image-multiple-outline" /></span>
 					<span class="wf__pick-txt">
-						<b>See our work</b>
-						<em>65+ products, live in the market</em>
+						<b>See the work first</b>
+						<em>65+ products, live in the market right now</em>
 					</span>
 					<Icon width={17} name="mdi:arrow-right" class="wf__pick-go" />
 				</a>
-				<button class="wf__pick" type="button" data-wf-close style="--i:3">
+				<button class="wf__pick wf__pick--quiet" type="button" data-wf-skip style="--i:4">
 					<span class="wf__pick-ic"><Icon width={20} name="mdi:compass-outline" /></span>
 					<span class="wf__pick-txt">
 						<b>Just let me look around</b>
-						<em>Take me into the site</em>
+						<em>Straight into the site, nothing customised</em>
 					</span>
 					<Icon width={17} name="mdi:arrow-right" class="wf__pick-go" />
-				</a>
+				</button>
 			</div>
+
+			<ul class="wf__finale-facts">
+				<li><b>65+</b><span>products live</span></li>
+				<li><b>10+</b><span>countries</span></li>
+				<li><b>7+</b><span>years</span></li>
+				<li><b>Abuja</b><span>home base</span></li>
+			</ul>
 
 			<ul class="wf-endflags">
 				{
@@ -1794,8 +1851,236 @@ const sparks = Array.from({ length: 18 }, (_, i) => i);
 	}
 	.wf__replay:hover { color: #fff; border-color: rgba(255, 255, 255, 0.38); }
 
+	/* ═══════════════════════════════════════════════════════════
+	   THE OVERTURE  ·  scene "ov"
+	   The four and a half seconds that a first visit is actually
+	   given. Everything here has to land in that window, so the
+	   choreography is front loaded: the name is fully drawn by 1.4s
+	   and the rest of the time is a hold, not a wait.
+	   ═══════════════════════════════════════════════════════════ */
+	.wf-ov { gap: clamp(0.25rem, 0.9vw, 0.55rem); }
+	/* light thrown out from behind the name, as if the word itself
+	   is the source — five bars, each on its own delay */
+	.wf-ov-rays {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: min(150vw, 1500px);
+		height: min(150vh, 1100px);
+		transform: translate(-50%, -50%);
+		pointer-events: none;
+		opacity: 0;
+	}
+	.wf-scene.is-on .wf-ov-rays { animation: wf-ov-rays 3.4s cubic-bezier(0.22, 1, 0.36, 1) both 0.34s; }
+	@keyframes wf-ov-rays {
+		0% { opacity: 0; transform: translate(-50%, -50%) scale(0.72); }
+		40% { opacity: 1; }
+		100% { opacity: 0.72; transform: translate(-50%, -50%) scale(1); }
+	}
+	.wf-ov-rays i {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: 46%;
+		height: clamp(70px, 11vh, 130px);
+		transform-origin: 0 50%;
+		transform: rotate(calc(-54deg + var(--i) * 27deg)) translateY(-50%);
+		background: linear-gradient(90deg, color-mix(in srgb, var(--wf-acc) 42%, transparent), transparent 78%);
+		filter: blur(26px);
+		opacity: calc(0.34 + var(--i) * 0.04);
+	}
+
+	.wf-ov-kick {
+		font-family: 'Bebas Neue', Impact, sans-serif;
+		font-size: clamp(0.82rem, 2.3vw, 1.1rem);
+		letter-spacing: 0.46em;
+		text-indent: 0.46em;
+		text-transform: uppercase;
+		color: color-mix(in srgb, var(--wf-warm) 88%, #fff);
+	}
+	.wf-scene.is-on .wf-ov-kick { animation: wf-ov-kick 0.9s cubic-bezier(0.22, 1, 0.36, 1) both; }
+	@keyframes wf-ov-kick {
+		0% { opacity: 0; letter-spacing: 0.9em; text-indent: 0.9em; filter: blur(8px); }
+		100% { opacity: 1; letter-spacing: 0.46em; text-indent: 0.46em; filter: blur(0); }
+	}
+
+	/* the name, one letter at a time */
+	.wf-ov-name {
+		position: relative;
+		display: flex;
+		justify-content: center;
+		font-family: 'Bebas Neue', Impact, sans-serif;
+		font-weight: 400;
+		line-height: 0.86;
+		font-size: clamp(4.2rem, 19vw, 13rem);
+		/* each letter is its own flex item, so letter-spacing has nothing
+		   to act on — the tracking has to be the gap between the items */
+		gap: 0.022em;
+		text-transform: uppercase;
+		color: #fff;
+	}
+	.wf-ov-name span:not(.wf-ov-sweep) {
+		display: inline-block;
+		opacity: 0;
+		text-shadow: 0 0 60px color-mix(in srgb, var(--wf-acc) 45%, transparent);
+	}
+	.wf-scene.is-on .wf-ov-name span:not(.wf-ov-sweep) {
+		animation: wf-ov-letter 1s cubic-bezier(0.16, 1.02, 0.3, 1) both;
+		animation-delay: calc(0.26s + var(--i) * 0.085s);
+	}
+	@keyframes wf-ov-letter {
+		0% { opacity: 0; transform: translateY(-0.5em) rotate(-7deg) scale(1.35); filter: blur(16px); }
+		55% { opacity: 1; transform: translateY(0.03em) rotate(0.6deg) scale(0.985); filter: blur(0); }
+		100% { opacity: 1; transform: none; filter: blur(0); }
+	}
+	/* a single specular pass across the finished word */
+	.wf-ov-sweep {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		background: linear-gradient(104deg, transparent 38%, rgba(255, 255, 255, 0.78) 50%, transparent 62%);
+		mix-blend-mode: overlay;
+		opacity: 0;
+		transform: translateX(-120%);
+	}
+	.wf-scene.is-on .wf-ov-sweep { animation: wf-ov-sweep 1.25s cubic-bezier(0.4, 0, 0.2, 1) both 0.95s; }
+	@keyframes wf-ov-sweep {
+		0% { opacity: 0; transform: translateX(-120%); }
+		22% { opacity: 1; }
+		78% { opacity: 1; }
+		100% { opacity: 0; transform: translateX(120%); }
+	}
+
+	.wf-ov-rule {
+		width: min(62vw, 30rem);
+		height: 2px;
+		border-radius: 9999px;
+		background: linear-gradient(90deg, transparent, #13b6a0 18%, #1f8fd6 82%, transparent);
+		transform: scaleX(0);
+	}
+	.wf-scene.is-on .wf-ov-rule { animation: wf-ov-rule 1s cubic-bezier(0.22, 1, 0.36, 1) both 0.86s; }
+	@keyframes wf-ov-rule {
+		from { transform: scaleX(0); opacity: 0; }
+		to { transform: scaleX(1); opacity: 0.95; }
+	}
+
+	.wf-ov-sig {
+		font-family: 'Bebas Neue', Impact, sans-serif;
+		font-size: clamp(0.78rem, 2.4vw, 1.05rem);
+		letter-spacing: 0.34em;
+		text-indent: 0.34em;
+		text-transform: uppercase;
+		color: rgba(255, 255, 255, 0.6);
+	}
+	.wf-scene.is-on .wf-ov-sig { animation: wf-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both 1.1s; }
+
+	.wf-ov-line {
+		margin-top: clamp(0.5rem, 2vw, 1.1rem);
+		font-family: 'Bebas Neue', Impact, sans-serif;
+		font-size: clamp(1.5rem, 5.4vw, 2.9rem);
+		line-height: 1;
+		text-transform: uppercase;
+		letter-spacing: 0.015em;
+		color: rgba(255, 255, 255, 0.86);
+	}
+	.wf-ov-line b {
+		font-weight: 400;
+		background: linear-gradient(95deg, #13b6a0, #13a8bf, #1f8fd6);
+		background-size: 240% 100%;
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	.wf-scene.is-on .wf-ov-line { animation: wf-rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both 1.45s; }
+	.wf-scene.is-on .wf-ov-line b { animation: wf-rotshine 3s ease-in-out both 1.6s; }
+
+	/* ── what the overture does NOT show ────────────────────────
+	   A player's console on a four second clip is furniture: there
+	   is nothing to scrub, nothing to slow down, and nothing to
+	   pause. One way out (Skip) is all it needs. */
+	.wf[data-mode='overture'] .wf__hud,
+	.wf[data-mode='overture'] .wf__progress,
+	.wf[data-mode='overture'] .wf__rate,
+	.wf[data-mode='overture'] .wf__paused,
+	.wf[data-mode='overture'] .wf__replay,
+	.wf[data-mode='overture'] .wf__kick-film,
+	.wf[data-mode='film'] .wf__kick-ov { display: none !important; }
+	/* the reel's own scenes never run in overture mode, but belt and
+	   braces: only "ov" and the end card can take the stage */
+	.wf[data-mode='film'] .wf-ov { display: none !important; }
+
+	.wf__finale-lead {
+		max-width: 38ch;
+		margin: 0.1rem 0 0.55rem;
+		font-size: clamp(0.78rem, 2.1vw, 0.88rem);
+		line-height: 1.5;
+		color: var(--wf-dim);
+	}
+	.wf[data-ended='true'] .wf__finale-lead { animation: wf-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both 0.24s; }
+
+	/* the full film is an offer, not the default — so it reads as a
+	   reel: a warm hairline and its running time where the arrow
+	   would otherwise be */
+	.wf__pick--film { border-color: rgba(247, 198, 107, 0.34); }
+	.wf__pick--film .wf__pick-ic { color: var(--wf-warm); background: rgba(247, 198, 107, 0.12); }
+	.wf__pick--film:hover { border-color: rgba(247, 198, 107, 0.6); background: rgba(247, 198, 107, 0.08); }
+	.wf__pick-run {
+		margin-left: auto;
+		flex: none;
+		padding: 0.16rem 0.44rem;
+		border-radius: 0.3rem;
+		border: 1px solid rgba(247, 198, 107, 0.3);
+		font-family: 'Bebas Neue', Impact, sans-serif;
+		font-size: 0.8rem;
+		letter-spacing: 0.1em;
+		color: var(--wf-warm);
+	}
+	.wf__pick--quiet { background: transparent; border-style: dashed; border-color: rgba(255, 255, 255, 0.16); }
+	.wf__pick--quiet .wf__pick-ic { background: transparent; color: rgba(233, 240, 255, 0.5); }
+	.wf__pick--quiet:hover { background: rgba(255, 255, 255, 0.05); border-style: solid; }
+
+	.wf__finale-facts {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0.2rem clamp(0.9rem, 3vw, 1.6rem);
+		margin-top: 0.9rem;
+		padding-top: 0.8rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.09);
+		width: 100%;
+	}
+	.wf__finale-facts li { display: flex; flex-direction: column; align-items: center; gap: 0.08rem; }
+	.wf__finale-facts b {
+		font-family: 'Bebas Neue', Impact, sans-serif;
+		font-size: clamp(1.05rem, 3.2vw, 1.35rem);
+		font-weight: 400;
+		letter-spacing: 0.02em;
+		color: var(--wf-ink);
+	}
+	.wf__finale-facts span {
+		font-size: 0.62rem;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: rgba(233, 240, 255, 0.42);
+	}
+	.wf[data-ended='true'] .wf__finale-facts li {
+		animation: wf-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both 0.85s;
+	}
+	.wf[data-ended='true'] .wf__finale-facts li:nth-child(2) { animation-delay: 0.91s; }
+	.wf[data-ended='true'] .wf__finale-facts li:nth-child(3) { animation-delay: 0.97s; }
+	.wf[data-ended='true'] .wf__finale-facts li:nth-child(4) { animation-delay: 1.03s; }
+
 	/* ═══ phones ═══ */
 	@media (max-width: 640px) {
+		/* the name is the one thing that must not shrink politely */
+		.wf-ov-name { font-size: clamp(3.4rem, 21vw, 6rem); }
+		.wf-ov-kick { letter-spacing: 0.34em; text-indent: 0.34em; }
+		.wf-ov-sig { letter-spacing: 0.24em; text-indent: 0.24em; }
+		.wf-ov-line { font-size: clamp(1.15rem, 6.4vw, 1.7rem); }
+		.wf-ov-rays i { height: 56px; filter: blur(18px); }
+		.wf__finale-lead { display: none; }
+		.wf__finale-facts { gap: 0.2rem 0.85rem; margin-top: 0.7rem; padding-top: 0.65rem; }
+		.wf__pick-run { font-size: 0.72rem; }
 		.wf__cinema { padding: 0.5rem; }
 		.wf__sprockets { width: 9px; opacity: 0.4; }
 		.wf-wall { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
@@ -1868,7 +2153,15 @@ const sparks = Array.from({ length: 18 }, (_, i) => i);
 	.wf[data-lite='true'] .wf-scene.is-on .wf-ph--1 { animation: none !important; }
 	.wf[data-lite='true'] .wf-scene.is-on .wf-tile { opacity: 1; transform: none; }
 	.wf[data-lite='true'] .wf-scene.is-on .wf-build { opacity: 1; transform: none; }
-	.wf[data-lite='true'] .wf-tile-sheen { display: none; }
+	.wf[data-lite='true'] .wf-tile-sheen,
+	.wf[data-lite='true'] .wf-ov-rays,
+	.wf[data-lite='true'] .wf-ov-sweep { display: none; }
+	/* the letters still arrive one at a time, they just stop blurring */
+	.wf[data-lite='true'] .wf-scene.is-on .wf-ov-name span:not(.wf-ov-sweep) { animation-name: wf-ov-letter-lite; }
+	@keyframes wf-ov-letter-lite {
+		0% { opacity: 0; transform: translateY(-0.3em); }
+		100% { opacity: 1; transform: none; }
+	}
 	.wf[data-lite='true'] .wf__glow,
 	.wf[data-lite='true'] .wf__finale-glow { filter: none; }
 	.wf[data-lite='true'] .wf-scene.is-on .wf-d1,
@@ -1894,5 +2187,11 @@ const sparks = Array.from({ length: 18 }, (_, i) => i);
 		.wf-scene.is-on *,
 		.wf-scene.is-on { animation: none !important; }
 		.wf__grain { display: none; }
+		/* the letters are hidden by default and revealed BY the animation,
+		   so with animation off they have to be put back by hand */
+		.wf-ov-name span:not(.wf-ov-sweep) { opacity: 1; }
+		.wf-ov-rays,
+		.wf-ov-sweep { display: none; }
+		.wf-ov-rule { transform: none; }
 	}
 </style>
