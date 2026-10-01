@@ -42,10 +42,18 @@ const disciplines = [
 		short: ['Brand and product', 'design that works.'],
 		tag: 'brand · UI/UX · motion',
 		span: 'bd-w5',
-		img: 'https://i.ytimg.com/vi/EHi0Z2yqAr8/maxresdefault.jpg',
-		fallback: '/images/film/room.jpg',
-		pos: '50% 50%',
-		alt: 'A frame from the Swizel Studio film',
+		// Real work, and ours. This was a YouTube thumbnail fetched from
+		// i.ytimg.com — a third-party request on the home page, for a frame
+		// of a film, on the tile whose whole job is to show that we can
+		// design. The TellaTrust layouts say it in one picture.
+		//
+		// The source was a 1.1MB PNG. It is a 90KB WebP at 1600 wide, which
+		// covers a 2x screen for a card that is never more than ~800 CSS px,
+		// with a JPEG beside it for anything that cannot read WebP.
+		img: '/images/work/tellatrust-design.webp',
+		fallback: '/images/work/tellatrust-design.jpg',
+		pos: '50% 45%',
+		alt: 'Pages from the TellaTrust product design: the payments app and its marketing site',
 	},
 	{
 		icon: 'mdi:code-tags',
