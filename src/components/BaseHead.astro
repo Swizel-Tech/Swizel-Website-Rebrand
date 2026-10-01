@@ -433,11 +433,34 @@ const organizationSchema = {
 			// clean path, so search engines never see it as a second page.
 			try {
 				var WORLDS = ['boardroom', 'founder', 'builder', 'studio', 'campus'];
-				var sent = new URLSearchParams(location.search).get('view');
+				var params = new URLSearchParams(location.search);
+				var sent = params.get('view');
 				if (sent && WORLDS.indexOf(sent) !== -1) {
 					view = sent;
 					localStorage.setItem('swizel-view', view);
 					localStorage.setItem('swizel-onboarded', '1');
+
+					// Take it back out of the address bar once it has been
+					// read. The choice now lives in localStorage, so nothing
+					// downstream needs the parameter — and leaving it there
+					// means somebody who arrived on a shared link, and then
+					// copies the URL to send on themselves, silently passes a
+					// world they never chose to the next person. A link copied
+					// out of the address bar should be a plain link.
+					//
+					// replaceState, so no history entry is created and Back
+					// still returns to wherever they came from. It runs before
+					// swup initialises, so swup reads the cleaned URL as its
+					// own starting point.
+					try {
+						params.delete('view');
+						var q = params.toString();
+						history.replaceState(
+							history.state,
+							'',
+							location.pathname + (q ? '?' + q : '') + location.hash
+						);
+					} catch (e) {}
 				}
 			} catch (e) {}
 
