@@ -564,6 +564,22 @@ const isActive = (href: string) => {
 		background: none;
 		box-shadow: inset 2px 0 0 var(--view-accent, #28a6ec);
 		border-radius: 0;
+		/* The base .active is a filled accent pill with near-black text —
+		   color:#05221d — which is legible BECAUSE of the pill. Boardroom
+		   takes the pill away for a rule down the side and, alone of the
+		   five worlds, forgot to take the text colour with it. Studio,
+		   founder and campus all reset theirs; this one kept painting
+		   #05221d, which is invisible on the drawer's near-black panel in
+		   dark mode and merely dark-on-light in daylight. That is why only
+		   boardroom, and only at night, lost the name of the page you were
+		   standing on. The drawer's own ink reads in both. */
+		color: var(--m-ink);
+		-webkit-text-fill-color: var(--m-ink);
+	}
+	:global(html[data-view='boardroom']) .m-nav-link.active .m-nav-go,
+	:global(html:not([data-view])) .m-nav-link.active .m-nav-go {
+		color: var(--view-accent, #28a6ec);
+		-webkit-text-fill-color: var(--view-accent, #28a6ec);
 	}
 
 	:global(html[data-view='builder']) .m-nav-link {

@@ -609,6 +609,28 @@ html:not(.dark)[data-view='boardroom'] .site-header.at-hero-top {
 }
 html:not(.dark):not([data-view]) .site-header.at-hero-top::before,
 html:not(.dark)[data-view='boardroom'] .site-header.at-hero-top::before { content: none; }
+
+/* ── the drawer gets one appearance, not one per page ────────────────
+   at-hero-top retunes the bar for floating over a photograph, and part
+   of that is --nav-cta-border going to a soft white so the round
+   controls read against the picture. The mobile drawer's own header
+   lives inside .site-header and inherits it — so opening the menu on
+   the home page gave the theme toggle a pale rim, and opening it on
+   /about, where there is no hero and no at-hero-top, gave it the
+   world's accent. Same drawer, two different rings, depending on where
+   you happened to open it. That is the "nav is different on home and
+   about" in the screenshots.
+
+   While the drawer is open the hero is behind a full-height panel and
+   nobody can see it, so the floating treatment has nothing to do. The
+   variables go back to their solid values and the drawer looks like
+   itself wherever it was opened. */
+.site-header.at-hero-top:has(#mobile-wrapper[data-expanded='true']) {
+  --nav-cta-border: rgba(20, 22, 40, 0.3);
+}
+html.dark .site-header.at-hero-top:has(#mobile-wrapper[data-expanded='true']) {
+  --nav-cta-border: rgba(255, 255, 255, 0.45);
+}
 /* The nav floats on the photograph with nothing behind it, so it carries
    its own legibility: a soft shade under the ink rather than a bar over
    the picture. Costs the image nothing and survives a bright frame. */
