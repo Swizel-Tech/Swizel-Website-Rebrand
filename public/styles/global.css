@@ -1190,10 +1190,19 @@ html.dark .chat-fab-dot { --chat-fab-ring: #10111c; }
   html.swz-cursor *,
   html.swz-cursor *::before,
   html.swz-cursor *::after {
-    /* plain `none`, nothing else. Handing macOS a 1x1 transparent cursor
-       IMAGE makes it reject the image and draw the system arrow instead —
-       Windows tolerated it, macOS did not. */
-    cursor: none !important;
+    /* A 32x32 fully transparent cursor image, with `none` behind it.
+       `none` alone is correct and every browser claims to honour it —
+       checked on the live site in the owner's own Chrome: swz-cursor
+       applied, cursor computing to none on html, body and under the
+       pointer, and not one competing !important rule. macOS drew the
+       arrow anyway.
+       An earlier version used a 1x1 transparent image, which macOS
+       REJECTS as too small and answers by falling back to the system
+       arrow — that is why it was removed, and removing it did not help
+       because the real problem was the size, not the technique. 32x32 is
+       inside what macOS accepts, so it draws the image, and the image is
+       nothing. `none` stays as the fallback for everywhere else. */
+    cursor: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAPoAAAD6AG1e1JrAAAAGklEQVR42u3BAQEAAACCIP+vbkhAAQAAAO8GECAAAcm1w7EAAAAASUVORK5CYII=) 16 16, none !important;
   }
 
   html.swz-cursor input:not([type='button']):not([type='submit']):not([type='reset']):not([type='checkbox']):not([type='radio']):not([type='range']):not([type='color']):not([type='file']),

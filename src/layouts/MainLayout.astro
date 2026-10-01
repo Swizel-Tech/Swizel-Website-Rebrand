@@ -1330,19 +1330,28 @@ const {
 		// would otherwise leave the native arrow trailing our glyph, which
 		// is exactly the fault that has been reported.
 		//
-		// Plain `none`, and nothing else. An earlier version handed macOS a
-		// 1x1 transparent GIF alongside it, on the theory that some engines
-		// ignore `none` on its own; macOS responds to a cursor IMAGE it
-		// cannot use by drawing the system arrow instead, which is the
-		// arrow-on-top-of-the-briefcase people see. Windows tolerated it.
-		// Do not reintroduce the image.
+		// A 32x32 fully transparent PNG, with `none` behind it.
+		//
+		// `none` on its own is correct, and it was verified on the live
+		// site in the owner's own Chrome: swz-cursor applied, cursor
+		// computing to none on html, body and under the pointer, and zero
+		// competing !important rules. macOS drew the system arrow over the
+		// glyph regardless.
+		//
+		// An earlier version used a 1x1 transparent image, which is the
+		// trap: macOS rejects a cursor image that small and answers by
+		// drawing the system arrow. It was removed for that reason, and
+		// removing it did not help, because the fault was the SIZE, not
+		// the technique. 32x32 is within what macOS accepts, so it draws
+		// the image, and the image is nothing.
 		if (!document.getElementById('swz-cursor-hide')) {
 			const hide = document.createElement('style');
 			hide.id = 'swz-cursor-hide';
 			hide.textContent =
 				'@media (pointer: fine){' +
 				'html.swz-cursor,html.swz-cursor body,html.swz-cursor *,' +
-				'html.swz-cursor *::before,html.swz-cursor *::after{cursor:none !important}' +
+				'html.swz-cursor *::before,html.swz-cursor *::after{' +
+				'cursor:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAPoAAAD6AG1e1JrAAAAGklEQVR42u3BAQEAAACCIP+vbkhAAQAAAO8GECAAAcm1w7EAAAAASUVORK5CYII=) 16 16, none !important}' +
 				'html.swz-cursor input:not([type=button]):not([type=submit]):not([type=reset])' +
 				':not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]):not([type=file]),' +
 				'html.swz-cursor textarea,html.swz-cursor select,' +
