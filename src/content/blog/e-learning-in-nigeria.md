@@ -5,13 +5,15 @@ description: The internet has become a popular tool among the world’s young
   other, and for several reasons too
 pubDate: 2026-07-10
 heroImage: /blogpost/e-learning.jpg
+heroAlt: Nigerian schoolchildren sharing a tablet during a lesson
 category: EdTech
 author: Swizel Team
 featured: false
 draft: false
-seoTitle: 'E-Learning in Nigerian Education'
-metaDescription: 'What e-learning and virtual schooling actually mean for Nigerian students and schools — the advantages, the real obstacles, and where the gap is closing.'
-heroAlt: 'Nigerian schoolchildren sharing a tablet during a lesson'
+seoTitle: E-Learning in Nigerian Education
+metaDescription: What e-learning and virtual schooling actually mean for
+  Nigerian students and schools — the advantages, the real obstacles, and where
+  the gap is closing.
 ---
 The internet now has become a popular tool among the world’s young population. It’s safe to say “we all use the internet' in one way or the other, and for several reasons too. Yes, we research, download movies, pictures and applications, send and receive emails, messages, and get important news updates from the internet but internet technology has proven over the years to be more than that.
 
@@ -35,7 +37,7 @@ Some of the world’s most developed nations have achieved E-schooling, otherwis
 3. Just about anyone can submit a project or assignment rather than the student.
 4. Computer assessed results can be misleading, as the computer doesn’t have the ability to consider context and/or practicality.
 
-### E-learning in Nigeria
+### E-learning in Nigeria Today
 
 The educational sector in Nigeria is posed with a peculiar problem –‘The increase in number of students isn’t met with equal increase in number of schools or educational facilities’.
 
