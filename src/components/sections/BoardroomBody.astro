@@ -1600,8 +1600,14 @@ const logos = [
 	     then            the headline breathes, and the card wakes
 	   ══════════════════════════════════════════════════════════════════ */
 	.bd-life {
-		--t: 2.1s;          /* the pull */
-		--lag: 0.055s;      /* one letter to the next */
+		/* Halved, and then some. The original ran 2.1s for the pull plus
+		   27 letters at 0.055s plus half a second before the card woke —
+		   a little over four seconds from the section entering the screen
+		   to it being finished. On a phone that is comfortably longer than
+		   anybody waits, so the whole performance happened behind the
+		   reader and the first thing they saw was a dim card. */
+		--t: 0.85s;         /* the pull */
+		--lag: 0.022s;      /* one letter to the next */
 		position: relative;
 		overflow: hidden;
 	}
@@ -1683,14 +1689,14 @@ const logos = [
 		58%      { opacity: 1; transform: scale(1.35); }
 		61%      { opacity: 0.3; transform: scale(1.05); }
 		64%      { opacity: 1; transform: scale(1.18); }
-		78%      { opacity: 1; transform: scale(1); }
-		100%     { opacity: 1; transform: scale(1); }
+		78%      { opacity: 1; transform: scale(1.2); }
+		100%     { opacity: 1; transform: scale(1.24); }
 	}
 	@keyframes bd-rays {
 		0%, 55%  { opacity: 0; transform: scale(0.82); }
 		60%      { opacity: 1; transform: scale(1.12); }
-		70%      { opacity: 0.7; transform: scale(1); }
-		100%     { opacity: 0.7; transform: scale(1); }
+		70%      { opacity: 1; transform: scale(1.06); }
+		100%     { opacity: 1; transform: scale(1.06); }
 	}
 	@keyframes bd-bulb {
 		0%, 55%  { fill: color-mix(in srgb, var(--bd-ink) 9%, transparent); stroke: color-mix(in srgb, var(--bd-ink) 26%, transparent); }
@@ -1769,7 +1775,7 @@ const logos = [
 	.bd-life.is-lit .bd-life-h {
 		animation: bd-breathe 1.15s ease-in-out 3;
 		/* every letter's delay plus the last letter's own run */
-		animation-delay: calc(var(--t) + 27 * var(--lag) + 0.5s);
+		animation-delay: calc(var(--t) + 27 * var(--lag) + 0.22s);
 	}
 	@keyframes bd-breathe {
 		0%, 100% { filter: drop-shadow(0 0 0 rgba(40, 166, 236, 0)); }
@@ -1780,7 +1786,7 @@ const logos = [
 	.bd-wake { opacity: 0; transform: translateY(14px); }
 	.bd-life.is-lit .bd-wake {
 		animation: bd-wake 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-		animation-delay: calc(var(--t) + 27 * var(--lag) + 0.35s + var(--w) * 0.12s);
+		animation-delay: calc(var(--t) + 27 * var(--lag) + 0.16s + var(--w) * 0.07s);
 	}
 	@keyframes bd-wake {
 		to { opacity: 1; transform: none; }
@@ -1811,8 +1817,8 @@ const logos = [
 			bd-weather-in 1s ease forwards,
 			bd-weather 16s linear infinite;
 		animation-delay:
-			calc(var(--t) + 27 * var(--lag) + 0.45s + var(--w) * 0.12s),
-			calc(var(--t) + 27 * var(--lag) + 0.45s + var(--w) * 1.9s);
+			calc(var(--t) + 27 * var(--lag) + 0.2s + var(--w) * 0.07s),
+			calc(var(--t) + 27 * var(--lag) + 0.2s + var(--w) * 1.9s);
 	}
 	@keyframes bd-weather-in { to { opacity: 0.5; } }
 	@keyframes bd-weather {
@@ -1829,7 +1835,7 @@ const logos = [
 	@media (prefers-reduced-motion: reduce) {
 		.bd-life .lamp-hand { display: none; }
 		.bd-life .lamp-flare { opacity: 1; }
-		.bd-life .lamp-rays { opacity: 0.7; }
+		.bd-life .lamp-rays { opacity: 1; }
 		.bd-life .lamp-bulb { fill: #e6f6ff; stroke: #28a6ec; }
 		.bd-life .lamp-filament { stroke: #0b6fa4; }
 		.bd-life .bd-life-dusk { display: none; }
