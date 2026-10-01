@@ -802,6 +802,43 @@ html[data-view="founder"]   { --view-accent: #8b5cf6; }
 html[data-view="campus"]    { --view-accent: #f59e0b; }
 html[data-view="studio"]    { --view-accent: #ec4899; }
 
+/* =========================================================
+   --view-ink : the accent, but readable as TEXT on white
+
+   The accents are chosen to glow on a dark stage. Measured as
+   small text on the light theme's near-white, every single one
+   of them fails WCAG AA:
+
+     mint  #18debe  1.55:1      amber #f59e0b  1.94:1
+     blue  #28a6ec  2.44:1      pink  #ec4899  3.18:1
+     violet #8b5cf6 3.82:1                    (4.5 required)
+
+   — which is why the newsletter kicker and its confirmation
+   line were effectively invisible in the light footer.
+
+   So each view gets a second value: same hue, taken down in
+   luminance until it clears 5:1. Backgrounds, borders, glows
+   and fills keep using --view-accent; anything that is WORDS on
+   a light surface uses --view-ink.
+
+   The default is dark mint rather than dark blue on purpose.
+   A visitor who has not chosen a world has no data-view, so
+   --view-accent falls through to the #18debe fallback and the
+   site is mint — that is the brand, not a bug, and the ink has
+   to match the hue actually on screen.
+   ========================================================= */
+/* The default matches the default ACCENT, which is boardroom blue:
+   a visitor with no data-view is already being shown Boardroom, so
+   the ink has to be Boardroom's, not the mint it says at :root. */
+html                        { --view-ink: #15618f; }
+html[data-view="builder"]   { --view-ink: #0a6657; }
+html[data-view="boardroom"] { --view-ink: #15618f; }
+html[data-view="founder"]   { --view-ink: #5b2bb8; }
+html[data-view="campus"]    { --view-ink: #8a5705; }
+html[data-view="studio"]    { --view-ink: #ad1457; }
+/* on a dark stage the bright accent is already the readable one */
+html.dark                   { --view-ink: var(--view-accent, #18debe); }
+
 .view-switch {
   display: inline-flex;
   align-items: center;
@@ -832,45 +869,81 @@ html[data-view="studio"]    { --view-accent: #ec4899; }
 
    Set by src/scripts/viewNudge.ts, once, on the first page a
    visitor lands on after the quiz has reshaped the site around
-   them. Three breaths, then the class removes itself.
+   them. Five beats, then the class removes itself.
 
-   It is a halo drawn in ::after rather than a box-shadow on the
-   button itself, because the button already animates its own
-   border and background on hover and the two would fight. The
-   halo sits behind, is pointer-events:none, and carries the
-   view's own accent — so the thing drawing your eye is the
-   colour of the world you just walked into.
+   It carries the view's own accent, so the thing drawing the
+   eye is the colour of the world just walked into.
+
+   The first version of this was too polite to do its job — a
+   2px ring at 95% opacity for three beats, which is the kind of
+   thing you only see if you already knew to look. It now has
+   three layers running together for five beats:
+
+     ::before  a filled wash of the accent behind the control,
+               so the button itself changes colour and does not
+               merely acquire an outline
+     ::after   a ring that expands and fades, twice the weight
+               it was
+     the node  a real bounce, and a glow spilling outside it
+
+   Loud is the point. It fires once per visit, it stops on its
+   own, and it is marking the one control that undoes a change
+   the visitor did not entirely make by hand.
    ========================================================= */
 [data-open-views] { position: relative; }
 [data-open-views].is-nudging::after {
   content: "";
   position: absolute;
-  inset: -3px;
+  inset: -4px;
   border-radius: inherit;
-  border: 2px solid var(--view-accent, #18debe);
+  border: 3px solid var(--view-accent, #18debe);
   pointer-events: none;
   opacity: 0;
-  animation: view-nudge 1.35s cubic-bezier(0.22, 1, 0.36, 1) 3;
+  animation: view-nudge 1.25s cubic-bezier(0.22, 1, 0.36, 1) 5;
+}
+/* the filled wash, behind the label */
+[data-open-views].is-nudging::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--view-accent, #18debe);
+  pointer-events: none;
+  opacity: 0;
+  animation: view-nudge-fill 1.25s ease-in-out 5;
 }
 /* the drawer row is a wide rectangle, not a pill */
-.m-nav-worlds.is-nudging::after { border-radius: 0.8rem; }
+.m-nav-worlds.is-nudging::after,
+.m-nav-worlds.is-nudging::before { border-radius: 0.8rem; }
 @keyframes view-nudge {
-  0%   { opacity: 0;    transform: scale(0.92); }
-  22%  { opacity: 0.95; transform: scale(1); }
-  100% { opacity: 0;    transform: scale(1.22); }
+  0%   { opacity: 0; transform: scale(0.9); }
+  18%  { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.5); }
 }
-/* and the button itself leans in very slightly, so it is a
-   gesture rather than only a ring appearing beside it */
+@keyframes view-nudge-fill {
+  0%, 100% { opacity: 0; }
+  30%      { opacity: 0.3; }
+}
+/* the control itself bounces and throws light */
 [data-open-views].is-nudging {
-  animation: view-nudge-lean 1.35s cubic-bezier(0.22, 1, 0.36, 1) 3;
+  animation: view-nudge-lean 1.25s cubic-bezier(0.34, 1.6, 0.46, 1) 5;
+  border-color: var(--view-accent, #18debe) !important;
+  color: var(--view-accent, #18debe) !important;
 }
 @keyframes view-nudge-lean {
-  0%, 100% { transform: none; }
-  22%      { transform: scale(1.07); }
+  0%, 100% { transform: none;        box-shadow: 0 0 0 0 transparent; }
+  18%      { transform: scale(1.16); box-shadow: 0 0 22px 4px color-mix(in srgb, var(--view-accent, #18debe) 65%, transparent); }
+  45%      { transform: scale(0.98); }
 }
+/* Motion off, but the job still has to get done: hold the wash
+   and the ring steady for the same few seconds instead. */
 @media (prefers-reduced-motion: reduce) {
   [data-open-views].is-nudging,
-  [data-open-views].is-nudging::after { animation: none; }
+  [data-open-views].is-nudging::after,
+  [data-open-views].is-nudging::before { animation: none; }
+  [data-open-views].is-nudging::after  { opacity: 1; }
+  [data-open-views].is-nudging::before { opacity: 0.25; }
 }
 
 /* =========================================================

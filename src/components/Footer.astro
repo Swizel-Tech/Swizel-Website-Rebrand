@@ -1020,7 +1020,20 @@ const phones = [
 	}
 	:global(html:not(.dark)) .ft-signal-light { opacity: 0.28; }
 	.ft-signal-t em { display: block; font-style: normal; color: var(--view-accent, #18debe); }
-	:global(html:not(.dark)) .ft-signal-t em { color: #1e40af; }
+
+	/* ── readable in daylight ──────────────────────────────────────
+	   Everything in this card that is WORDS in the accent colour was
+	   mint on near-white: 1.55:1, which is not low contrast so much
+	   as invisible. The kicker, the headline's second line and the
+	   confirmation message now take --view-ink, which is the same
+	   hue carried down until it clears 5:1. The fills, borders and
+	   glows are untouched — they were never the problem. */
+	:global(html:not(.dark)) .ft-signal-t em,
+	:global(html:not(.dark)) .ft-signal-h,
+	:global(html:not(.dark)) .ft-news-msg { color: var(--view-ink, #0b7363); }
+	/* the confirmation is the one line a person is actively waiting
+	   for, so it is allowed to be heavier than the rest */
+	:global(html:not(.dark)) .ft-news-msg { font-weight: 700; }
 	.ft-signal-copy { position: relative; display: flex; flex-direction: column; gap: 0.2rem; }
 	.ft-signal-copy p {
 		margin: 0;
