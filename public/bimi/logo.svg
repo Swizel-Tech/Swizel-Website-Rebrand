@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.2" baseProfile="tiny-ps" viewBox="0 0 512 512">
+  <title>Swizel Technologies Limited</title>
+  <rect width="512" height="512" fill="#080b14"/>
+  <g transform="translate(87.0 140.5) scale(6.7965)" fill="#ffffff">
+    <path d="M30.1778 20.2051H40.0144V33.0823H30.1778V20.2051Z"/>
+    <path d="M30.0466 0.904297H44.569C47.4137 0.904297 49.7198 3.21041 49.7198 6.05514V18.7893H30.0466V0.904297Z"/>
+    <path d="M0.00012207 6.05514C0.00012207 3.21041 2.30624 0.904297 5.15097 0.904297H28.6158V33.0973H0.00012207V6.05514Z"/>
+  </g>
+</svg>
