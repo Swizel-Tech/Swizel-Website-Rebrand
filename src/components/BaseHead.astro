@@ -339,7 +339,32 @@ const organizationSchema = {
 			// has actually parsed it, so that is what is waited on. The
 			// timer stays, much longer, purely so a stylesheet that never
 			// answers cannot hold the page hostage.
+			// ── has the stylesheet actually taken effect? ─────────────────
+			//
+			// This used to ask every <link rel=stylesheet> whether it had a
+			// .sheet object. That is a weaker question than it looks: a
+			// media="print" sheet (the carousel's) reports one almost at
+			// once, a cross-origin sheet throws on access whether or not it
+			// has applied, and .sheet can be present a beat before the rules
+			// are in force. All three let the curtain up while the page was
+			// still unstyled underneath it — the flash of raw text that
+			// looks like the site loading twice.
+			//
+			// So it asks the page instead. --page-bg is declared in
+			// global.css and nowhere else; until that file is parsed AND
+			// applied, this reads as an empty string. It cannot be true
+			// early, and it is one lookup.
+			var swzStyled = function () {
+				try {
+					var v = getComputedStyle(document.documentElement)
+						.getPropertyValue('--page-bg');
+					return !!(v && v.trim());
+				} catch (e) {
+					return false;
+				}
+			};
 			var swzCssReady = function () {
+				if (!swzStyled()) return false;
 				var links = document.querySelectorAll('link[rel="stylesheet"]');
 				for (var i = 0; i < links.length; i++) {
 					// a cross-origin sheet throws on access once loaded, which
