@@ -524,7 +524,23 @@ const sectors = [
 	}
 	.svc-steps { position: relative; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1rem, 2.5vw, 1.75rem); }
 	.svc-steps-line { position: absolute; top: 38px; left: 12%; right: 12%; height: 2px; background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--bd-accent) 55%, transparent), transparent); z-index: 0; }
-	@media (max-width: 720px) { .svc-steps { grid-template-columns: 1fr; } .svc-steps-line { display: none; } }
+	/* Three steps are a sequence, and a sequence read as a vertical list
+	   loses the thing that makes it one. They stay three abreast and get
+	   smaller instead; only the connecting line goes, because at this
+	   width it has nothing to connect across. */
+	@media (max-width: 720px) {
+		.svc-steps { gap: 0.6rem; }
+		.svc-steps-line { display: none; }
+		.svc-step-n { width: 34px; height: 34px; font-size: 0.85rem; margin-bottom: 0.55rem; }
+		.svc-step-t { font-size: 0.85rem; margin-bottom: 0.25rem; }
+		.svc-step-d { font-size: 0.7rem; line-height: 1.45; }
+	}
+	@media (max-width: 420px) {
+		.svc-steps { gap: 0.4rem; }
+		.svc-step-n { width: 28px; height: 28px; font-size: 0.72rem; }
+		.svc-step-t { font-size: 0.76rem; }
+		.svc-step-d { font-size: 0.64rem; }
+	}
 	.svc-step { position: relative; z-index: 1; padding: 1.6rem 1.4rem; border-radius: 1.25rem; background: var(--bd-glass); border: 1px solid var(--bd-glass-border); box-shadow: var(--bd-shadow); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); text-align: center; transition: transform 0.35s ease, border-color 0.35s ease; }
 	.svc-step:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--bd-accent) 40%, var(--bd-glass-border)); }
 	.svc-step-n { display: grid; place-items: center; width: 46px; height: 46px; margin: 0 auto 0.9rem; border-radius: 9999px; font-weight: 800; font-size: 1.05rem; color: #fff; background: linear-gradient(135deg, color-mix(in srgb, var(--bd-accent) 90%, #fff), var(--bd-accent)); box-shadow: 0 10px 24px -10px color-mix(in srgb, var(--bd-accent) 70%, transparent); }

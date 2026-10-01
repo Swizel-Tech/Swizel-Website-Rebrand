@@ -772,7 +772,19 @@ const [lead, ...shelf] = featuredProjects;
 	/* ── Project grid ── */
 	.pf-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1rem, 2.2vw, 1.6rem); }
 	@media (max-width: 900px) { .pf-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-	@media (max-width: 580px) { .pf-grid { grid-template-columns: 1fr; } }
+	/* No single-column rule. Twenty-one cards one above the other is a
+	   page you scroll past rather than a wall you look at — and the brief
+	   was that things side by side on a desktop stay side by side on a
+	   phone, compressed rather than unstacked. Two columns hold down to
+	   320px; below 580 the card's own type and padding tighten instead. */
+	@media (max-width: 580px) {
+		.pf-grid { gap: 0.55rem; }
+		.pf-card { border-radius: 0.9rem; }
+		.pf-card .pf-card-body { padding: 0.65rem 0.7rem 0.8rem; }
+		.pf-card .pf-card-name { font-size: 0.82rem; line-height: 1.25; }
+		.pf-card .pf-card-year { font-size: 0.64rem; }
+		.pf-card .pf-card-tagline { font-size: 0.68rem; line-height: 1.4; }
+	}
 	.pf-card { border-radius: 1.3rem; background: var(--bd-glass); border: 1px solid var(--bd-glass-border); box-shadow: var(--bd-shadow); backdrop-filter: blur(18px) saturate(130%); -webkit-backdrop-filter: blur(18px) saturate(130%); overflow: hidden; transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.4s ease, box-shadow 0.4s ease; }
 	.pf-card:hover { transform: translateY(-7px); border-color: color-mix(in srgb, var(--c) 50%, var(--bd-glass-border)); box-shadow: 0 44px 90px -34px color-mix(in srgb, var(--c) 40%, rgba(0,0,0,0.85)); }
 	.pf-card-link { display: block; }
