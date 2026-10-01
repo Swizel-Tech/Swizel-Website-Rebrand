@@ -1,0 +1,176 @@
+---
+// ═══════════════════════════════════════════════════════════════════════════
+// /v/<view> — the shareable link for a world.
+//
+// WHY THIS PAGE EXISTS AT ALL
+//
+// Sharing used to produce swizel.co/?view=campus. That works perfectly for a
+// person — BaseHead reads the query before first paint and the site opens in
+// Campus — and not at all for a preview card, because:
+//
+//   1. a query string does not change which file a static host serves, so
+//      WhatsApp, LinkedIn, Slack and X all fetch exactly the same HTML
+//      whatever ?view= says; and
+//   2. none of those crawlers runs JavaScript, so nothing the page does
+//      afterwards can change the card they have already built.
+//
+// So every shared link, from every world, produced one identical preview. The
+// thing that makes this site worth sending — that it reshapes around you —
+// was the one thing the link could not show.
+//
+// A real path fixes both. /v/campus is its own prerendered file with its own
+// og:title, og:description and og:image, so the crawler has the right card in
+// the first response and needs to run nothing.
+//
+// WHAT A PERSON SEES
+//
+// Nothing, ideally. The redirect below runs before paint and sends them to
+// /?view=campus, which is the URL that has always worked. The visible card is
+// the fallback for the handful of cases where that cannot happen — no
+// JavaScript, or a crawler that renders and takes a screenshot.
+//
+// NOT INDEXED, ON PURPOSE
+//
+// These five pages say the same thing as the home page. Left indexable they
+// would compete with it and split its authority, so each carries
+// `noindex, follow` and a canonical pointing at the home page. They are
+// endpoints for sharing, not content. They are also kept out of the sitemap —
+// see the filter in astro.config.mjs.
+// ═══════════════════════════════════════════════════════════════════════════
+import { views, SITE_TITLE } from '../../consts';
+
+export const prerender = true;
+
+export function getStaticPaths() {
+	return views.map((v) => ({ params: { view: v.id }, props: { view: v } }));
+}
+
+const { view } = Astro.props;
+
+// The promise each card makes, written for someone who has been sent a link
+// and has no idea what "Campus view" means yet.
+const PITCH: Record<string, string> = {
+	boardroom:
+		'The same company, told for executives: return on investment, reliability, and proof you can take to a board.',
+	builder:
+		'The same company, told for engineers: the stack, the architecture and the code, first.',
+	founder:
+		'The same company, told for founders: zero to MVP, momentum, and a roadmap you can actually fund.',
+	campus:
+		'The same company, told for students: learn, build, and get hired, with internships and NYSC placement.',
+	studio:
+		'The same company, told for creatives: bold type, big imagery and the work itself.',
+};
+
+const SITE = 'https://swizel.co';
+const target = `/?view=${view.id}`;
+// Short on purpose: Facebook and LinkedIn cut the title around 60-70
+// characters, and SITE_TITLE alone is 78. The card image already carries
+// the wordmark, so the title only has to say which world this is.
+const title = `Swizel in ${view.name} view`;
+const description = PITCH[view.id] ?? view.blurb;
+const image = `${SITE}/images/og/views/${view.id}.jpg`;
+---
+
+<!doctype html>
+<html lang="en" data-view={view.id}>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1" />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+
+		<!-- the whole point of the page -->
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content={`${SITE}/v/${view.id}`} />
+		<meta property="og:site_name" content={SITE_TITLE} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={image} />
+		<meta property="og:image:secure_url" content={image} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:type" content="image/jpeg" />
+		<meta property="og:image:alt" content={`Swizel ${view.name} view — ${view.audience}`} />
+		<meta property="og:locale" content="en_NG" />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:site" content="@swizelhq" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={image} />
+		<meta name="twitter:image:alt" content={`Swizel ${view.name} view`} />
+
+		<!-- a share endpoint, not a page: say so to search, and point home -->
+		<meta name="robots" content="noindex, follow" />
+		<link rel="canonical" href={`${SITE}/`} />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+		<!--
+			Belt and braces. The script below is what actually moves a person,
+			because it runs immediately and leaves no entry in their history to
+			get stuck on when they press Back. This meta is for the case where
+			scripting is off, and is given a one second delay so that somebody
+			reading the fallback card is not yanked away mid-sentence.
+		-->
+		<meta http-equiv="refresh" content={`1; url=${target}`} />
+		<script is:inline define:vars={{ target }}>
+			// replace(), not assign(): pressing Back from the home page should
+			// return to wherever the link was opened from, not bounce through
+			// this page and straight forward again.
+			window.location.replace(target);
+		</script>
+
+		<style is:inline>
+			:root { color-scheme: dark; }
+			* { margin: 0; padding: 0; box-sizing: border-box; }
+			body {
+				min-height: 100vh;
+				display: grid;
+				place-items: center;
+				padding: 2rem;
+				background: #06070e;
+				color: #f6f8ff;
+				font-family: Epilogue, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+				text-align: center;
+			}
+			.g {
+				position: fixed;
+				inset: -30% -20% auto -20%;
+				height: 90%;
+				background: radial-gradient(60% 100% at 50% 0%, var(--a), transparent 70%);
+				opacity: 0.34;
+				filter: blur(50px);
+				pointer-events: none;
+			}
+			.c { position: relative; display: grid; gap: 0.6rem; max-width: 34rem; }
+			.k {
+				font-size: 0.78rem;
+				font-weight: 800;
+				letter-spacing: 0.3em;
+				text-transform: uppercase;
+				color: var(--a);
+			}
+			h1 { font-size: clamp(2rem, 7vw, 3rem); line-height: 1.05; letter-spacing: -0.03em; }
+			p { color: rgba(233, 240, 255, 0.66); line-height: 1.6; font-size: 0.95rem; }
+			a {
+				justify-self: center;
+				margin-top: 0.6rem;
+				padding: 0.8rem 1.6rem;
+				border-radius: 999px;
+				background: var(--a);
+				color: #04101a;
+				font-weight: 800;
+				text-decoration: none;
+			}
+		</style>
+	</head>
+	<body style={`--a:${view.accent}`}>
+		<span class="g" aria-hidden="true"></span>
+		<div class="c">
+			<p class="k">{view.name} view</p>
+			<h1>Swizel, told your way.</h1>
+			<p>{description}</p>
+			<a href={target}>Open the site &rarr;</a>
+		</div>
+	</body>
+</html>

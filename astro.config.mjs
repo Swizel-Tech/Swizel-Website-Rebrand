@@ -41,6 +41,11 @@ export default defineConfig({
       // canonical points elsewhere is a contradiction.
       filter: (page) =>
         !page.includes('/rss.xml') &&
+        // /v/<world> are share endpoints, not pages. Each one carries
+        // noindex and canonicalises to the home page, so listing them
+        // here would be asking Google to index five URLs that say they
+        // should not be indexed. See src/pages/v/[view].astro.
+        !/\/v\/[^/]+\/?$/.test(page) &&
         !/\/portfolio\/(betslipswitch|brixmarketplace|hemamsynergy)\/?$/.test(page),
       // Not every page deserves the same attention from a crawler. The
       // pages that earn money get a higher priority and a faster

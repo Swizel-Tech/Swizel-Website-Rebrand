@@ -13,14 +13,44 @@
 // Anything with [data-share] opens the share sheet on a phone and copies
 // the link on a desktop, which is what each platform actually has.
 
-/** The current page, with the world the reader is in attached. */
+/**
+ * The current page, with the world the reader is in attached.
+ *
+ * Two shapes, because a preview card and a person need different things.
+ *
+ * Sharing the HOME page in a world gives /v/<world>. That is a real
+ * prerendered path with its own og:image and og:title, so WhatsApp,
+ * LinkedIn, Slack and X build a card that actually shows which world is
+ * being sent. A query string could never do that: it does not change which
+ * file a static host serves, and none of those crawlers runs the JavaScript
+ * that would fix it afterwards — so every link, from every world, produced
+ * one identical card. /v/<world> redirects a person straight on to
+ * /?view=<world>, which is the URL that has always worked for humans.
+ *
+ * Sharing any OTHER page keeps ?view=, because the right card for
+ * /portfolio is Portfolio's own. The world still travels with the link; it
+ * is only the picture that stays the page's.
+ */
 export function shareUrl(): string {
 	const url = new URL(window.location.href);
 	const view = document.documentElement.getAttribute('data-view');
+
 	// No attribute means the visitor has not chosen a world, so there is
 	// nothing to carry — and a bare link is the honest thing to send.
-	if (view) url.searchParams.set('view', view);
-	else url.searchParams.delete('view');
+	if (!view) {
+		url.searchParams.delete('view');
+		return url.toString();
+	}
+
+	const onHome = url.pathname === '/' || url.pathname === '/index.html';
+	if (onHome) {
+		url.pathname = `/v/${view}`;
+		url.searchParams.delete('view');
+		url.hash = '';
+		return url.toString();
+	}
+
+	url.searchParams.set('view', view);
 	return url.toString();
 }
 
