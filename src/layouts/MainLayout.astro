@@ -269,6 +269,7 @@ const {
 	import { initNewsletter } from '../scripts/newsletter';
 	import { initContactForm } from '../scripts/contactForm';
 	import { initShare } from '../scripts/share';
+	import { initViewNudge } from '../scripts/viewNudge';
 	import { initAnalytics } from '../scripts/analytics';
 	import { initProgramsNotice } from '../scripts/programsNotice';
 
@@ -806,6 +807,8 @@ const {
 			initContactForm,
 			// [data-share] — sends the page with the world attached
 			initShare,
+			// a one-off pulse on the Views control, after a world is picked
+			initViewNudge,
 			initAnalytics,
 			handleFooter,
 		].forEach(later);

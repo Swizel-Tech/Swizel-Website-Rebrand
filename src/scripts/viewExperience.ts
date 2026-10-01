@@ -1,6 +1,8 @@
 // Multi-view experience: gamified onboarding (welcome pitch + 2 questions)
 // and view switching. Theme (light/dark) and view are independent, both persisted.
 
+import { armViewNudge } from './viewNudge';
+
 type Scores = Record<string, number>;
 
 const VIEW_KEY = 'swizel-view';
@@ -24,6 +26,9 @@ export function applyView(id: string) {
 		// left ages ago. See scripts/programsNotice.ts.
 		sessionStorage.removeItem('swizel-came-from');
 	} catch (e) {}
+	// The site is about to look completely different. Point at the control
+	// that undoes it, once, on whatever page they land on. See viewNudge.ts.
+	armViewNudge();
 	// Switching worlds should always land you at the top, so the new view is
 	// seen from its hero rather than wherever you happened to be scrolled.
 	const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

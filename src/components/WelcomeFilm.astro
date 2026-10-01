@@ -339,6 +339,15 @@ const sparks = Array.from({ length: 18 }, (_, i) => i);
 	<!-- ══ the finale: velvet halfway shut, choices in the light ══ -->
 	<div class="wf__finale" id="wf-finale" aria-hidden="true">
 		<span class="wf__finale-glow" aria-hidden="true"></span>
+		{/* A way out of the corner of the screen as well as a row in the
+		    list. "Just let me look around" is the same action, but it is the
+		    fifth item down and an X is where a person's hand already goes to
+		    dismiss something. Both run enterSite: default view, top of home. */}
+		<button class="wf__finale-x" type="button" data-wf-skip aria-label="Skip and go to the site">
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+				<path d="M6 6l12 12M18 6L6 18" />
+			</svg>
+		</button>
 		<div class="wf__finale-card">
 			<span class="wf__finale-mark"><Logo /></span>
 			<!-- the kicker tells the truth about which way they came in:
@@ -349,8 +358,8 @@ const sparks = Array.from({ length: 18 }, (_, i) => i);
 			</p>
 			<h2 class="wf__finale-h">How do you want to <em>see us?</em></h2>
 			<p class="wf__finale-lead">
-				One company, five ways of telling it. Pick a door — none of them
-				locks behind you.
+				One company, five ways of telling it. Pick a door; none of them
+				lock behind you.
 			</p>
 
 			<div class="wf__picks">
@@ -366,7 +375,7 @@ const sparks = Array.from({ length: 18 }, (_, i) => i);
 					<span class="wf__pick-ic"><Icon width={20} name="mdi:movie-open-play-outline" /></span>
 					<span class="wf__pick-txt">
 						<b>Watch the full welcome film</b>
-						<em>The whole story in half a minute &mdash; Abuja, six bases, 65+ products live</em>
+						<em>The whole story in half a minute: Abuja, six bases, 65+ products live</em>
 					</span>
 					<span class="wf__pick-run" aria-hidden="true">0:33</span>
 				</button>
@@ -374,7 +383,7 @@ const sparks = Array.from({ length: 18 }, (_, i) => i);
 					<span class="wf__pick-ic"><Icon width={20} name="mdi:rocket-launch-outline" /></span>
 					<span class="wf__pick-txt">
 						<b>Start a project</b>
-						<em>Tell us what you imagine &mdash; we reply the same day</em>
+						<em>Tell us what you imagine, we reply the same day</em>
 					</span>
 					<Icon width={17} name="mdi:arrow-right" class="wf__pick-go" />
 				</a>
@@ -2008,6 +2017,35 @@ const sparks = Array.from({ length: 18 }, (_, i) => i);
 	/* the reel's own scenes never run in overture mode, but belt and
 	   braces: only "ov" and the end card can take the stage */
 	.wf[data-mode='film'] .wf-ov { display: none !important; }
+
+	.wf__finale-x {
+		position: absolute;
+		top: clamp(0.6rem, 2vw, 1.3rem);
+		right: clamp(0.6rem, 2vw, 1.3rem);
+		z-index: 2;
+		display: grid;
+		place-items: center;
+		width: 2.3rem;
+		height: 2.3rem;
+		border-radius: 9999px;
+		border: 1px solid rgba(255, 255, 255, 0.18);
+		background: rgba(10, 12, 22, 0.72);
+		color: rgba(246, 248, 255, 0.62);
+		cursor: pointer;
+		transition: color 0.22s ease, border-color 0.22s ease, background 0.22s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.wf__finale-x svg { width: 15px; height: 15px; }
+	.wf__finale-x:hover {
+		color: #fff;
+		border-color: rgba(255, 255, 255, 0.42);
+		background: rgba(255, 255, 255, 0.1);
+		transform: rotate(90deg);
+	}
+	/* opacity only, never transform: an animation with fill-mode:both keeps
+	   owning the property after it ends, so animating transform here would
+	   permanently outrank the hover rotate below it */
+	.wf[data-ended='true'] .wf__finale-x { animation: wf-fade 0.5s ease both 0.6s; }
+	@keyframes wf-fade { from { opacity: 0; } to { opacity: 1; } }
 
 	.wf__finale-lead {
 		max-width: 38ch;
