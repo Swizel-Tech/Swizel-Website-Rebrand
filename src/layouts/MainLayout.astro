@@ -1325,11 +1325,17 @@ const {
 	if (swizelCursor && finePointer && !(window as any).__swzCursorBound) {
 		(window as any).__swzCursorBound = true;
 
-		// The rule that hides the OS pointer ships HERE, with the engine, rather
-		// than living only in global.css — a stale cached stylesheet would
-		// otherwise leave the native arrow trailing our glyph. A 1x1
-		// transparent GIF is used alongside `none`, because a few
-		// engines/platforms quietly ignore `none` on its own.
+		// The rule that hides the OS pointer ships HERE, with the engine,
+		// rather than living only in global.css — a stale cached stylesheet
+		// would otherwise leave the native arrow trailing our glyph, which
+		// is exactly the fault that has been reported.
+		//
+		// Plain `none`, and nothing else. An earlier version handed macOS a
+		// 1x1 transparent GIF alongside it, on the theory that some engines
+		// ignore `none` on its own; macOS responds to a cursor IMAGE it
+		// cannot use by drawing the system arrow instead, which is the
+		// arrow-on-top-of-the-briefcase people see. Windows tolerated it.
+		// Do not reintroduce the image.
 		if (!document.getElementById('swz-cursor-hide')) {
 			const hide = document.createElement('style');
 			hide.id = 'swz-cursor-hide';

@@ -236,6 +236,13 @@ const organizationSchema = {
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
 <link rel="manifest" href="/manifest.webmanifest" />
 <meta name="generator" content={Astro.generator} />
+{/* Which build this page came from. Three times now a bug has been
+    chased that was simply an old file being served — stale CSS from the
+    service worker, then a stale copy at the edge — and each time the
+    first twenty minutes went on establishing whether the code was even
+    live. View source, read this, compare it to the commit in Vercel.
+    On Vercel it is the commit SHA; locally, a build timestamp. */}
+<meta name="swizel:build" content={BUILD_ID} />
 <meta name="theme-color" content="#28293E" />
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
 <meta name="author" content="Swizel Technologies Limited" />
