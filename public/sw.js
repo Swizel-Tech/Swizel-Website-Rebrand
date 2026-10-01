@@ -4,7 +4,11 @@
 // v3 so every v2 cache is dropped on activate — anyone carrying a stale
 // global.css from the old stale-while-revalidate rule gets a clean start.
 const CACHE = 'swizel-v3';
-const CORE = ['/', '/styles/global.css', '/manifest.webmanifest'];
+// global.css is no longer listed here. It is requested with a ?v= stamp
+// that changes every build, so precaching the bare URL would store a
+// copy nothing ever asks for — and the stamp is what guarantees freshness
+// now, so there is nothing left for this list to protect.
+const CORE = ['/', '/manifest.webmanifest'];
 
 const IS_DEV =
 	self.location.hostname === 'localhost' ||

@@ -3,6 +3,7 @@
 // all pages through the use of the <BaseHead /> component.
 import { SITE_TITLE } from '../consts';
 import { seoFor } from '../data/seo';
+import { BUILD_ID } from '../buildId';
 
 export interface Props {
 	title: string;
@@ -51,6 +52,10 @@ const socialImageURL = new URL(image, shareBase);
 // as props by the page itself, so this is not a second source of truth
 // for them.
 const registry = seoFor(Astro.url.pathname);
+
+// One stamp for the whole build — see src/buildId.ts for why it cannot
+// be computed here.
+const cssVersion = BUILD_ID;
 
 // Breadcrumbs, derived from the path so every page gets a trail without
 // each one having to declare it.
@@ -537,7 +542,27 @@ const organizationSchema = {
 <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
 
 <!-- Global CSS -->
-<link rel="stylesheet" href="/styles/global.css" />
+{/* ── the stylesheet carries the build that made it ─────────────────
+    /styles/global.css lives in public/, so it is copied through
+    untouched and its URL never changes. Astro hashes everything it
+    bundles for exactly this reason; this file opts out of that, and
+    then behaves exactly as you would expect something with a permanent
+    URL and changing contents to behave.
+
+    It bit twice in one day. The service worker served it
+    stale-while-revalidate, so a deploy only appeared on the second
+    load. And the CDN held its own copy, so the site served new HTML —
+    with markup that did not exist a day earlier — against a stylesheet
+    from before any of it was written. A drawer built by one build,
+    styled by another. That is not a layout bug to chase; it is two
+    files from different days.
+
+    The stamp makes the URL change whenever the build does, so no
+    cache anywhere — browser, service worker or edge — can hand back
+    yesterday's styles for today's markup. The commit SHA on Vercel,
+    the build time everywhere else.
+    ────────────────────────────────────────────────────────────────── */}
+<link rel="stylesheet" href={`/styles/global.css?v=${cssVersion}`} />
 
 <!-- swiper js — every carousel is below the fold, so this loads without
      blocking the first paint and swaps in when it arrives -->
