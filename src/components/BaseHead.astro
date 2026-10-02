@@ -66,12 +66,12 @@ const breadcrumbSchema = {
 	'@context': 'https://schema.org',
 	'@type': 'BreadcrumbList',
 	itemListElement: [
-		{ '@type': 'ListItem', position: 1, name: 'Home', item: 'https://swizel.co/' },
+		{ '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.swizel.co/' },
 		...segments.map((seg, i) => ({
 			'@type': 'ListItem',
 			position: i + 2,
 			name: titleCase(seg),
-			item: `https://swizel.co/${segments.slice(0, i + 1).join('/')}/`,
+			item: `https://www.swizel.co/${segments.slice(0, i + 1).join('/')}/`,
 		})),
 	],
 };
@@ -80,9 +80,9 @@ const websiteSchema = {
 	'@context': 'https://schema.org',
 	'@type': 'WebSite',
 	name: SITE_NAME,
-	url: 'https://swizel.co',
+	url: 'https://www.swizel.co',
 	inLanguage: 'en',
-	publisher: { '@id': 'https://swizel.co/#organization' },
+	publisher: { '@id': 'https://www.swizel.co/#organization' },
 };
 
 // Structured data for rich results in Google.
@@ -96,17 +96,17 @@ const websiteSchema = {
 const organizationSchema = {
 	'@context': 'https://schema.org',
 	'@type': ['Organization', 'ProfessionalService'],
-	'@id': 'https://swizel.co/#organization',
+	'@id': 'https://www.swizel.co/#organization',
 	name: 'Swizel Technologies Limited',
 	legalName: 'Swizel Technologies Limited',
 	alternateName: 'Swizel',
-	url: 'https://swizel.co',
+	url: 'https://www.swizel.co',
 	logo: {
 		'@type': 'ImageObject',
-		url: 'https://swizel.co/swizel.svg',
+		url: 'https://www.swizel.co/swizel.svg',
 		caption: 'Swizel Technologies Limited',
 	},
-	image: 'https://swizel.co/images/og-default.jpg',
+	image: 'https://www.swizel.co/images/og-default.jpg',
 	foundingDate: '2019',
 	// NOTE: areaServed used to be declared here as the string 'Worldwide'
 	// AND again further down as a list of named places. In an object
@@ -182,8 +182,8 @@ const organizationSchema = {
 				'@type': 'Service',
 				name,
 				description,
-				url: `https://swizel.co${path}`,
-				provider: { '@id': 'https://swizel.co/#organization' },
+				url: `https://www.swizel.co${path}`,
+				provider: { '@id': 'https://www.swizel.co/#organization' },
 				areaServed: [
 					{ '@type': 'City', name: 'Abuja' },
 					{ '@type': 'City', name: 'Lagos' },

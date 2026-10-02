@@ -6,8 +6,8 @@
 // silently: a malformed block is not an error, it is simply ignored, so
 // you find out months later that none of it ever counted.
 
-export const ORG = 'https://swizel.co/#organization';
-export const SITE = 'https://swizel.co';
+export const ORG = 'https://www.swizel.co/#organization';
+export const SITE = 'https://www.swizel.co';
 
 /** Named places beat "worldwide": a search can be matched against a city. */
 export const AREA_SERVED = [

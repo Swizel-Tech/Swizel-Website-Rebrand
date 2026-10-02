@@ -37,7 +37,7 @@ function base(): string {
 	// domain that may not be pointed here yet
 	const vercel = e.VERCEL_PROJECT_PRODUCTION_URL?.trim() || e.VERCEL_URL?.trim();
 	if (vercel) return `https://${vercel.replace(/\/$/, '')}`;
-	return 'https://swizel.co';
+	return 'https://www.swizel.co';
 }
 
 export const FROM_NAME = 'Swizel Technologies Limited';

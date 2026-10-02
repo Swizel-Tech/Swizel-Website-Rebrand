@@ -5,7 +5,7 @@
 // — is it the key, the password, the port, the firewall, the DNS? — has
 // four plausible answers and no way to choose between them.
 //
-// So: open https://swizel.co/api/mail-check in a browser and it says.
+// So: open https://www.swizel.co/api/mail-check in a browser and it says.
 // It runs whichever chain this deployment actually uses and reports
 // exactly where it got to and how long each step took.
 //

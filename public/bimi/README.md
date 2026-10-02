@@ -28,7 +28,7 @@ What has to be true, in order:
 3. **This file, published, and a DNS record pointing at it.**
 
    ```
-   default._bimi.swizel.co  TXT  "v=BIMI1; l=https://swizel.co/bimi/logo.svg; a=https://swizel.co/bimi/cert.pem"
+   default._bimi.swizel.co  TXT  "v=BIMI1; l=https://www.swizel.co/bimi/logo.svg; a=https://www.swizel.co/bimi/cert.pem"
    ```
 
    The `a=` part is the certificate and is what makes Gmail display it.

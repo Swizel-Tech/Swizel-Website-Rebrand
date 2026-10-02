@@ -8,7 +8,7 @@ import vercel from '@astrojs/vercel';
 // https://astro.build/config
 export default defineConfig({
   // Production domain — powers canonical URLs, the sitemap, and Open Graph tags.
-  site: 'https://swizel.co',
+  site: 'https://www.swizel.co',
   // Every page is still built to static HTML exactly as before. The
   // adapter is here so the handful of API routes under src/pages/api can
   // run as functions — nothing else on the site becomes server-rendered,
