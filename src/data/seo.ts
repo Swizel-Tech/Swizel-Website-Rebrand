@@ -73,9 +73,9 @@ export const REACH = {
 export const PAGES: Record<string, PageSeo> = {
 	// ── what we do ────────────────────────────────────────────────────
 	'/': {
-		title: 'Custom Website, Software & App Development Company | Swizel',
+		title: 'Custom Website, Software & App Development Company | Swizel Technologies Limited',
 		description:
-			'We build custom software, web platforms and mobile apps for ambitious businesses — from Nigeria and the UK to the US, EU and beyond. 65+ products shipped.',
+			'We build custom software, web platforms and mobile apps for ambitious businesses, from Nigeria and the UK to the US, EU and beyond. 65+ products shipped.',
 		keywords: [
 			'custom software development company',
 			'app development agency',
@@ -116,7 +116,7 @@ export const PAGES: Record<string, PageSeo> = {
 	'/services/app-development': {
 		title: 'Mobile & Web App Development Company | Swizel',
 		description:
-			'We design and build high-performance iOS and Android apps and responsive web applications — engineered for speed, scale and a seamless user experience.',
+			'We design and build high-performance iOS and Android apps and responsive web applications, engineered for speed, scale and a seamless user experience.',
 		keywords: [
 			'mobile app development',
 			'web application development',
@@ -130,7 +130,7 @@ export const PAGES: Record<string, PageSeo> = {
 	'/services/erp-systems': {
 		title: 'Enterprise ERP Software Development | Swizel',
 		description:
-			'Custom ERP systems that pull inventory, finance, operations and reporting into one place — built for how your business runs, in Nigeria and internationally.',
+			'Custom ERP systems that pull inventory, finance, operations and reporting into one place, built for how your business runs, in Nigeria and internationally.',
 		keywords: [
 			'enterprise ERP development',
 			'custom ERP software',
@@ -143,7 +143,7 @@ export const PAGES: Record<string, PageSeo> = {
 
 	// ── where we are ──────────────────────────────────────────────────
 	'/nigeria': {
-		title: 'Software Company in Nigeria — Abuja & Lagos | Swizel',
+		title: 'Software Company in Abuja & Lagos, Nigeria | Swizel',
 		description:
 			'A software development company in Nigeria building web platforms, mobile apps and ERP systems for businesses in Abuja, Lagos and across Africa since 2019.',
 		keywords: [
@@ -189,7 +189,7 @@ export const PAGES: Record<string, PageSeo> = {
 	'/contact': {
 		title: 'Contact Our Software Development Team | Swizel',
 		description:
-			'Ready to build a web platform, mobile app or ERP system? Call +234 810 020 4570, write to contact@swizel.co, or send a brief — we reply within one business day.',
+			'Ready to build a web platform, mobile app or ERP system? Call +234 810 020 4570, write to contact@swizel.co, or send a brief. We reply within one business day.',
 		keywords: [
 			'hire software developers',
 			'contact software company',
@@ -203,7 +203,7 @@ export const PAGES: Record<string, PageSeo> = {
 	'/portfolio': {
 		title: 'Software Development Portfolio & Case Studies | Swizel',
 		description:
-			'Web platforms, mobile apps and brands we have shipped across fintech, real estate, sport, education and energy — with the full story behind each build.',
+			'Web platforms, mobile apps and brands we have shipped across fintech, real estate, sport, education and energy, with the full story behind each build.',
 		keywords: [
 			'software development portfolio',
 			'software case studies',
@@ -217,7 +217,7 @@ export const PAGES: Record<string, PageSeo> = {
 	'/blog': {
 		title: 'Software, Design & Marketing Insights | Swizel Journal',
 		description:
-			'Build notes and plain-English insight on software, design, AI and digital marketing from the team shipping it — for businesses in Africa, Europe and the US.',
+			'Build notes and plain-English insight on software, design, AI and digital marketing from the team shipping it, for businesses in Africa, Europe and the US.',
 		keywords: [
 			'software development blog',
 			'technology insights Nigeria',

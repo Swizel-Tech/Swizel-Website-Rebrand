@@ -150,7 +150,20 @@ for (const p of pages) {
 	// ── the blue link ──
 	if (!p.title) problem('no <title> at all.');
 	else {
-		if (p.title.length > LIMITS.titleMax)
+		// One documented exception. The home page carries the registered
+		// company name in full — "… | Swizel Technologies Limited" — which
+		// cannot fit under 62 alongside the services it has to name. It is a
+		// deliberate trade, decided with the owner: the share card on
+		// WhatsApp and LinkedIn wraps to two lines and shows the whole
+		// thing, while Google truncates the tail. The keywords lead, so what
+		// Google cuts is the company name, not the thing being searched for.
+		//
+		// It is listed here rather than silently allowed, so the rule still
+		// guards the other forty-five pages and this one deviation stays
+		// visible to whoever reads the file next.
+		const TITLE_LENGTH_EXEMPT = new Set(['/', '/index.html']);
+		const exempt = TITLE_LENGTH_EXEMPT.has(p.url.replace(/\/$/, '') || '/');
+		if (p.title.length > LIMITS.titleMax && !exempt)
 			problem(`title is ${p.title.length} characters — Google cuts it near 60. "${p.title}"`);
 		if (p.title.length < LIMITS.titleMin)
 			note(`title is only ${p.title.length} characters — there is room to say more.`);
