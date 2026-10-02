@@ -1,8 +1,26 @@
 // Place any global data in this file.
 // You can import this data from anywhere in your site by using the `import` keyword.
 
-export const SITE_TITLE =
-  "Swizel Technologies Limited | Digital Solutions for Smart Businesses";
+/**
+ * The company, as it is registered and as it should be shown wherever a
+ * NAME is wanted rather than a description: og:site_name, the schema
+ * graph, the PWA install prompt. Keywords do not belong here — og:site_name
+ * is printed above the title on LinkedIn and Facebook, and a keyword string
+ * in that slot reads as spam.
+ */
+export const SITE_NAME = "Swizel Technologies Limited";
+
+/**
+ * What we do, in the words people actually type into Google. Used as the
+ * default page <title>; individual pages override it from src/data/seo.ts.
+ *
+ * It replaced "Digital Solutions for Smart Businesses", which described
+ * nothing and matched no search anyone has ever performed.
+ */
+export const SITE_TAGLINE =
+  "Custom Website, Software and App Development Company";
+
+export const SITE_TITLE = `${SITE_NAME} | ${SITE_TAGLINE}`;
 
 export const SITE_DESCRIPTION =
   "Swizel Technologies Limited helps ambitious businesses anywhere turn bold ideas into products people love. We design, build, market and maintain software, from launch to legacy. 65+ products live across 10+ countries.";

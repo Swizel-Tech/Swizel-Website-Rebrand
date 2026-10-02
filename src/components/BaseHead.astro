@@ -1,7 +1,7 @@
 ---
 // Import the global.css file here so that it is included on
 // all pages through the use of the <BaseHead /> component.
-import { SITE_TITLE } from '../consts';
+import { SITE_NAME, SITE_TITLE } from '../consts';
 import { seoFor } from '../data/seo';
 import { BUILD_ID } from '../buildId';
 
@@ -79,7 +79,7 @@ const breadcrumbSchema = {
 const websiteSchema = {
 	'@context': 'https://schema.org',
 	'@type': 'WebSite',
-	name: SITE_TITLE,
+	name: SITE_NAME,
 	url: 'https://swizel.co',
 	inLanguage: 'en',
 	publisher: { '@id': 'https://swizel.co/#organization' },
@@ -537,7 +537,7 @@ const organizationSchema = {
 <meta property="og:locale:alternate" content="en_IE" />
 <meta property="og:type" content={type} />
 <meta property="og:url" content={canonicalURL} />
-<meta property="og:site_name" content={SITE_TITLE} />
+<meta property="og:site_name" content={SITE_NAME} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={socialImageURL} />

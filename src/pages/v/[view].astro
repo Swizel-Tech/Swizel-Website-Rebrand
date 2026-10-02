@@ -37,7 +37,7 @@
 // endpoints for sharing, not content. They are also kept out of the sitemap —
 // see the filter in astro.config.mjs.
 // ═══════════════════════════════════════════════════════════════════════════
-import { views, SITE_TITLE } from '../../consts';
+import { views, SITE_NAME } from '../../consts';
 
 export const prerender = true;
 
@@ -65,7 +65,7 @@ const PITCH: Record<string, string> = {
 const SITE = 'https://swizel.co';
 const target = `/?view=${view.id}`;
 // Short on purpose: Facebook and LinkedIn cut the title around 60-70
-// characters, and SITE_TITLE alone is 78. The card image already carries
+// characters, and the full site title alone is 81. The card image already carries
 // the wordmark, so the title only has to say which world this is.
 const title = `Swizel in ${view.name} view`;
 const description = PITCH[view.id] ?? view.blurb;
@@ -83,7 +83,7 @@ const image = `${SITE}/images/og/views/${view.id}.jpg`;
 		<!-- the whole point of the page -->
 		<meta property="og:type" content="website" />
 		<meta property="og:url" content={`${SITE}/v/${view.id}`} />
-		<meta property="og:site_name" content={SITE_TITLE} />
+		<meta property="og:site_name" content={SITE_NAME} />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
 		<meta property="og:image" content={image} />
