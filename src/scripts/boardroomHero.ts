@@ -23,6 +23,8 @@ interface Film {
 	unMute(): void;
 	isMuted(): boolean;
 	destroy(): void;
+	setOption(module: string, option: string, value: unknown): void;
+	unloadModule(module: string): void;
 }
 
 export function initBoardroomHero() {
@@ -54,6 +56,33 @@ export function initBoardroomHero() {
 		playBtn?.setAttribute('aria-label', want ? 'Pause the film' : 'Play the film');
 		muteBtn?.setAttribute('aria-pressed', String(muted));
 		muteBtn?.setAttribute('aria-label', muted ? 'Unmute the film' : 'Mute the film');
+	};
+
+	// ── no captions, ever ───────────────────────────────────────────────
+	// `cc_load_policy: 0` is only a hint. A viewer whose YouTube account
+	// forces subtitles on gets them anyway, and the player loads its
+	// captions module late — and again every time the loop restarts the
+	// film — so the hint alone lets them creep back. The track is cleared
+	// and the module unloaded the moment it appears (onApiChange), on every
+	// state change, on a run of passes after each start, and on a slow
+	// guard while it plays. Same treatment as the whiteboard and footer
+	// players.
+	const killCaptions = () => {
+		if (!film) return;
+		const f = film;
+		['captions', 'cc'].forEach((mod) => {
+			try { f.setOption(mod, 'track', {}); } catch { /* not loaded yet */ }
+			try { f.unloadModule(mod); } catch { /* not loaded yet */ }
+		});
+	};
+	const sweep = () =>
+		[250, 800, 1600, 3000, 5000, 8000].forEach((ms) => window.setTimeout(killCaptions, ms));
+	let guard = 0;
+	const guardOn = () => {
+		if (!guard) guard = window.setInterval(killCaptions, 4000);
+	};
+	const guardOff = () => {
+		if (guard) { window.clearInterval(guard); guard = 0; }
 	};
 
 	// ── the backdrop ────────────────────────────────────────────────────
@@ -88,6 +117,8 @@ export function initBoardroomHero() {
 			},
 			events: {
 				onReady: () => {
+					killCaptions();
+					sweep();
 					film?.mute();
 					muted = true;
 					want = true;
@@ -100,7 +131,13 @@ export function initBoardroomHero() {
 					if (muteBtn) hintUnmute(muteBtn);
 					paint();
 				},
+				// fired when the player loads a module with its own API —
+				// which, for this player, is the captions module arriving
+				onApiChange: () => killCaptions(),
 				onStateChange: (e: { data: number }) => {
+					killCaptions();
+					if (e?.data === 1) { sweep(); guardOn(); }
+					else if (e?.data === 2) guardOff();
 					// 0 ENDED · 1 PLAYING · 2 PAUSED.
 					//
 					// The backdrop must never stop and never go blank: an
