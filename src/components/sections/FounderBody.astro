@@ -1389,12 +1389,48 @@ const chat = [
 		position: absolute;
 		inset: 0;
 		mix-blend-mode: soft-light;
-		background: linear-gradient(165deg, color-mix(in srgb, var(--fd-acc) 55%, transparent), transparent 55%, color-mix(in srgb, var(--fd-acc2) 45%, transparent));
+		background: linear-gradient(165deg, color-mix(in srgb, var(--fd-acc) 68%, transparent), transparent 52%, color-mix(in srgb, var(--fd-acc2) 58%, transparent));
 	}
 	.fdf-sheen {
 		position: absolute;
 		inset: 0;
-		background: linear-gradient(180deg, transparent 52%, rgba(9, 7, 20, 0.72) 100%);
+		background: linear-gradient(180deg, transparent 52%, rgba(9, 7, 20, 0.78) 100%);
+	}
+
+	/* ── blending a studio portrait into a dark page ──────────────────
+	   The photograph is lit on a pale grey backdrop and this section is
+	   deep purple, so left alone the picture reads as a bright rectangle
+	   pasted onto the page rather than part of it.
+
+	   The fix is the one a retoucher would use: pull the EDGES of the
+	   frame down into the section's own colour and leave the middle
+	   alone. The radial stop holds full transparency across the centre
+	   38%, which is exactly where his face and shoulders sit, so nothing
+	   is darkened that anybody is actually looking at — only the grey
+	   corners, which are the part that was fighting the background.
+
+	   The second layer is a soft wash of the view's accent across the
+	   top edge, so the picture meets the section in its own hue instead
+	   of a hard grey line. */
+	.fdf-shot::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+		pointer-events: none;
+		border-radius: inherit;
+		background:
+			radial-gradient(
+				120% 95% at 50% 36%,
+				transparent 38%,
+				color-mix(in srgb, #0d0a1c 48%, transparent) 72%,
+				color-mix(in srgb, #0d0a1c 86%, transparent) 100%
+			),
+			linear-gradient(
+				180deg,
+				color-mix(in srgb, var(--fd-acc) 26%, transparent) 0%,
+				transparent 30%
+			);
 	}
 	/* the brass plate, set into the bottom of the frame */
 	.fdf-plate {
@@ -1594,6 +1630,11 @@ const chat = [
 	:global(html:not(.dark)) .fbody .fdf-sheen {
 		background: linear-gradient(180deg, transparent 58%, rgba(23, 19, 49, 0.42) 100%);
 	}
+	/* The founder section stays dark in both themes, so the vignette is
+	   right either way — but light mode already eases the tint and the
+	   sheen, and the blend has to be eased with them or the portrait ends
+	   up more heavily darkened in light mode than in dark. */
+	:global(html:not(.dark)) .fbody .fdf-shot::after { opacity: 0.72; }
 
 	.fd-qgrid {
 		display: grid;
