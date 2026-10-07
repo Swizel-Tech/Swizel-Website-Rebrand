@@ -4,6 +4,7 @@ import { readConfig, describeMailError, oneLine, env } from '../../server/mail';
 import { sendAll } from '../../server/send';
 import { applyReply, teamNotice , FROM_NAME } from '../../server/emails';
 import { checkName, checkEmail, checkPhone } from '../../scripts/validate';
+import { allow, clientKey, emailKey } from '../../server/rateLimit';
 
 export const prerender = false;
 
@@ -23,6 +24,20 @@ export const POST: APIRoute = async ({ request }) => {
 
 	if ((data.botField || '').trim()) return json({ ok: true });
 
+	/* ── the speed bump ──────────────────────────────────────────────
+	   Same answer as the honeypot above — a cheerful ok, no mail sent.
+	   Telling a bot it has been rate limited only teaches it the shape
+	   of the limit; a person who double-clicks sees nothing wrong, which
+	   is also what we want. The refusal is logged so it is visible in
+	   the Vercel logs when somebody asks why applications stopped. */
+	{
+		const ip = clientKey(request);
+		if (!allow('apply:ip', ip, 4, 10 * 60_000)) {
+			console.warn(`[apply] rate limited ip ${ip}`);
+			return json({ ok: true });
+		}
+	}
+
 	const name = (data.fullName || '').trim();
 	const email = (data.email || '').trim();
 	const phone = (data.phone || '').trim();
@@ -33,6 +48,16 @@ export const POST: APIRoute = async ({ request }) => {
 		checkEmail(email) ||
 		checkPhone(phone, true);
 	if (bad) return json({ ok: false, error: bad }, 400);
+
+	/* The address is guarded separately from the IP, because the attack
+	   that matters is not volume from one machine — it is the SAME
+	   victim's address submitted from many. Two applications from one address an hour is plenty.
+	   Gmail's dots are collapsed first, so moving a full stop does not
+	   buy a fresh quota. */
+	if (!allow('apply:email', emailKey(email), 2, 60 * 60_000)) {
+		console.warn(`[apply] rate limited address`);
+		return json({ ok: true });
+	}
 
 	const e = env();
 	const cfg = readConfig(e);

@@ -4,6 +4,7 @@ import { readConfig, describeMailError, oneLine, env } from '../../server/mail';
 import { sendAll } from '../../server/send';
 import { subscribeReply, teamNotice, unsubscribeLink, FROM_NAME } from '../../server/emails';
 import { checkEmail } from '../../scripts/validate';
+import { allow, clientKey, emailKey } from '../../server/rateLimit';
 
 export const prerender = false;
 
@@ -23,9 +24,33 @@ export const POST: APIRoute = async ({ request }) => {
 
 	if ((data.botField || '').trim()) return json({ ok: true });
 
+	/* ── the speed bump ──────────────────────────────────────────────
+	   Same answer as the honeypot above — a cheerful ok, no mail sent.
+	   Telling a bot it has been rate limited only teaches it the shape
+	   of the limit; a person who double-clicks sees nothing wrong, which
+	   is also what we want. The refusal is logged so it is visible in
+	   the Vercel logs when somebody asks why the list stopped growing. */
+	{
+		const ip = clientKey(request);
+		if (!allow('subscribe:ip', ip, 5, 10 * 60_000)) {
+			console.warn(`[subscribe] rate limited ip ${ip}`);
+			return json({ ok: true });
+		}
+	}
+
 	const email = (data.email || '').trim();
 	const bad = checkEmail(email);
 	if (bad) return json({ ok: false, error: bad }, 400);
+
+	/* The address is guarded separately from the IP, because the attack
+	   that matters is not volume from one machine — it is the SAME
+	   victim's address submitted from many. The same inbox cannot be signed up again for an hour.
+	   Gmail's dots are collapsed first, so moving a full stop does not
+	   buy a fresh quota. */
+	if (!allow('subscribe:email', emailKey(email), 1, 60 * 60_000)) {
+		console.warn(`[subscribe] rate limited address`);
+		return json({ ok: true });
+	}
 
 	const e = env();
 	const cfg = readConfig(e);

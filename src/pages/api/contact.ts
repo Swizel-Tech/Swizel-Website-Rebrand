@@ -9,6 +9,7 @@ import { readConfig, describeMailError, oneLine, env } from '../../server/mail';
 import { sendAll } from '../../server/send';
 import { contactReply, teamNotice , FROM_NAME } from '../../server/emails';
 import { checkName, checkEmail, checkPhone, checkMessage } from '../../scripts/validate';
+import { allow, clientKey, emailKey } from '../../server/rateLimit';
 
 export const prerender = false; // this one route is a function; every page stays static
 
@@ -29,6 +30,20 @@ export const POST: APIRoute = async ({ request }) => {
 	// the box no human can see; a machine fills everything it finds
 	if ((data.botField || '').trim()) return json({ ok: true });
 
+	/* ── the speed bump ──────────────────────────────────────────────
+	   Same answer as the honeypot above — a cheerful ok, no mail sent.
+	   Telling a bot it has been rate limited only teaches it the shape
+	   of the limit; a person who double-clicks sees nothing wrong, which
+	   is also what we want. The refusal is logged so it is visible in
+	   the Vercel logs when somebody asks why the list stopped growing. */
+	{
+		const ip = clientKey(request);
+		if (!allow('contact:ip', ip, 4, 10 * 60_000)) {
+			console.warn(`[contact] rate limited ip ${ip}`);
+			return json({ ok: true });
+		}
+	}
+
 	const name = (data.name || '').trim();
 	const email = (data.email || '').trim();
 	const phone = (data.phone || '').trim();
@@ -43,6 +58,16 @@ export const POST: APIRoute = async ({ request }) => {
 		checkPhone(phone, false) ||
 		checkMessage(message, { minWords: 5, maxChars: 4000 });
 	if (bad) return json({ ok: false, error: bad }, 400);
+
+	/* The address is guarded separately from the IP, because the attack
+	   that matters is not volume from one machine — it is the SAME
+	   victim's address submitted from many. Two briefs from one address in half an hour is plenty.
+	   Gmail's dots are collapsed first, so moving a full stop does not
+	   buy a fresh quota. */
+	if (!allow('contact:email', emailKey(email), 2, 30 * 60_000)) {
+		console.warn(`[contact] rate limited address`);
+		return json({ ok: true });
+	}
 
 	// Read the environment once and hand the same snapshot to both, so the
 	// courier that sendAll picks is the one readConfig validated for.
