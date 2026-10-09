@@ -48,6 +48,8 @@ const MARKS: Record<string, string> = {
 		'<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM10 9h3.8v1.71h.05c.53-.95 1.83-1.96 3.76-1.96 4.02 0 4.76 2.5 4.76 5.76V21h-4v-5.6c0-1.34-.02-3.06-1.9-3.06-1.9 0-2.19 1.45-2.19 2.96V21h-4z"/></svg>',
 	facebook:
 		'<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.51 1.5-3.9 3.78-3.9 1.1 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.45 2.89h-2.33v6.99A10 10 0 0 0 22 12z"/></svg>',
+	tiktok:
+		'<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.21v12.67a2.59 2.59 0 1 1-2.59-2.59c.27 0 .53.04.78.12v-3.3a5.88 5.88 0 0 0-.78-.05 5.85 5.85 0 1 0 5.85 5.85V8.66a7.5 7.5 0 0 0 4.37 1.4V6.85a4.28 4.28 0 0 1-3.36-1.03z"/></svg>',
 	whatsapp:
 		'<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm0 18.15h-.01a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.11.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.23 8.24-8.23 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.82c0 4.54-3.69 8.23-8.24 8.23zm4.52-6.16c-.25-.13-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.15.16-.29.18-.53.06-.25-.13-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.71-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.43.12-.15.16-.25.25-.41.08-.17.04-.31-.02-.43-.06-.13-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.06s.89 2.39 1.01 2.56c.12.16 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.47-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.11-.23-.17-.48-.29z"/></svg>',
 };
@@ -56,6 +58,9 @@ const socials = [
 	// First, because it is the one people in this market actually open —
 	// and because it is a way to reach a person rather than a feed.
 	{ name: 'WhatsApp', short: '+234 810 020 4570', handle: '+234 810 020 4570', icon: 'whatsapp', href: 'https://wa.me/2348100204570', tag: 'Message us directly', color: '#25d366', peek: 'The fastest way to reach us. Send a voice note if it is easier — somebody reads every message.' },
+	// Second, because it is where the ads send people — somebody who
+	// tapped through from a video should find the channel they came from.
+	{ name: 'TikTok', short: '@swizelhq', handle: '@swizelhq', icon: 'tiktok', href: 'https://www.tiktok.com/@swizelhq', tag: 'Builds in short videos', color: '#fe2c55', peek: 'The studio in sixty seconds. Builds, launches and the people behind them, one short video at a time.' },
 	{ name: 'X', short: '@swizelhq', handle: '@swizelhq', icon: 'twitter', isX: true, href: 'https://twitter.com/swizelhq', tag: 'Daily build updates', color: '#0f1419', peek: 'Ship week at Swizel. Another product just went live. Follow along for launches and behind-the-build threads.' },
 	{ name: 'Instagram', short: '@swizelhq', handle: '@swizelhq', icon: 'instagram', href: 'https://instagram.com/swizelhq', tag: 'Behind the scenes', color: '#e1306c', peek: 'The studio, unfiltered. Whiteboards, late builds, launch days and the team behind it all.' },
 	{ name: 'LinkedIn', short: 'Swizel Tech', handle: 'Swizel Technologies Limited', icon: 'linkedin', href: 'https://www.linkedin.com/company/swizel-technologies-limited/', tag: 'Company & careers', color: '#0a66c2', peek: 'Company news, open roles and stories from the products we ship across 10+ countries.' },
@@ -65,6 +70,9 @@ const socials = [
 // The channel's uploads playlist is simply UU + the channel id minus its
 // UC prefix, so the TV in the footer always plays the newest videos with
 // nothing to keep up to date by hand.
+// Spelled out for the studio plate, so the count follows the list.
+const COUNT_WORD = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight'][socials.length - 1] ?? String(socials.length);
+
 const YT_CHANNEL = 'UCZlQKVfjUd1Y0t362gQDgDg';
 const YT_UPLOADS = `UU${YT_CHANNEL.slice(2)}`;
 const YT_URL = 'https://www.youtube.com/@SwizelTechnologiesLtd';
@@ -278,7 +286,7 @@ const phones = [
 					}
 					<p class="ft-term-out">
 						<span class="ft-term-ok" aria-hidden="true">✓</span>
-						4 channels linked
+						{socials.length} channels linked
 						<span class="ft-term-caret" aria-hidden="true"></span>
 					</p>
 				</div>
@@ -351,7 +359,7 @@ const phones = [
 					</div>
 					<span class="ft-wall-plate">
 						<b>Follow the build</b>
-						<em>@swizelhq · four channels, one studio</em>
+						<em>@swizelhq · {COUNT_WORD} channels, one studio</em>
 					</span>
 				</div>
 			</div>
@@ -1840,10 +1848,13 @@ const phones = [
 		list-style: none;
 		margin: 0;
 		padding: 1.3rem 0.9rem 0.9rem;
-		display: flex;
-		justify-content: space-between;
-		align-items: flex-start;
-		gap: 0.35rem;
+		/* six channels in one row clipped every name to three letters at
+		   card width, so they sit three across in two rows instead */
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		align-items: start;
+		column-gap: 0.35rem;
+		row-gap: 0.85rem;
 	}
 	.ft-dots li { min-width: 0; }
 	.ft-dot {
@@ -1931,14 +1942,14 @@ const phones = [
 	}
 	.ft-dot:hover .ft-dot-h,
 	.ft-dot:focus-visible .ft-dot-h { opacity: 1; transform: translate(-50%, 0); }
-	/* the first and last buttons sit on the card's edges, so their labels
-	   are hung from that edge instead of centred off the side of it */
-	.ft-dots li:first-child .ft-dot-h { left: 0; transform: translate(0, 4px); }
-	.ft-dots li:first-child .ft-dot:hover .ft-dot-h,
-	.ft-dots li:first-child .ft-dot:focus-visible .ft-dot-h { transform: translate(0, 0); }
-	.ft-dots li:last-child .ft-dot-h { left: auto; right: 0; transform: translate(0, 4px); }
-	.ft-dots li:last-child .ft-dot:hover .ft-dot-h,
-	.ft-dots li:last-child .ft-dot:focus-visible .ft-dot-h { transform: translate(0, 0); }
+	/* the first and last buttons of each row sit on the card's edges, so
+	   their labels are hung from that edge instead of centred off the side */
+	.ft-dots li:nth-child(3n + 1) .ft-dot-h { left: 0; transform: translate(0, 4px); }
+	.ft-dots li:nth-child(3n + 1) .ft-dot:hover .ft-dot-h,
+	.ft-dots li:nth-child(3n + 1) .ft-dot:focus-visible .ft-dot-h { transform: translate(0, 0); }
+	.ft-dots li:nth-child(3n) .ft-dot-h { left: auto; right: 0; transform: translate(0, 4px); }
+	.ft-dots li:nth-child(3n) .ft-dot:hover .ft-dot-h,
+	.ft-dots li:nth-child(3n) .ft-dot:focus-visible .ft-dot-h { transform: translate(0, 0); }
 	@media (prefers-reduced-motion: reduce) {
 		.ft-dot-h { transition: opacity 0.2s ease; }
 	}
@@ -1949,7 +1960,7 @@ const phones = [
 	   labels give up a little size and the row gives up a little padding
 	   only in that band. */
 	@media (min-width: 1000px) and (max-width: 1260px) {
-		.ft-dots { padding-inline: 0.55rem; gap: 0.15rem; }
+		.ft-dots { padding-inline: 0.55rem; column-gap: 0.15rem; }
 		.ft-dot { padding-inline: 0.05rem; }
 		.ft-dot-n { font-size: 0.63rem; letter-spacing: -0.015em; }
 		.ft-dot-ic { width: 2.4rem; height: 2.4rem; }
@@ -2055,11 +2066,12 @@ const phones = [
 			0 32px 58px -20px rgba(0, 0, 0, 0.9);
 	}
 
-	/* the mount, ruled into four panes */
+	/* the mount, ruled into panes three across — six channels sit as two
+	   even rows instead of four and a lone straggler */
 	:global(html[data-view='studio']) .ft-wall-mount {
 		position: relative;
 		display: grid;
-		grid-template-columns: repeat(4, minmax(0, 1fr));
+		grid-template-columns: repeat(3, minmax(0, 1fr));
 		border-radius: 1px;
 		overflow: hidden;
 		background:
@@ -2085,6 +2097,13 @@ const phones = [
 	/* hairline dividers, the way panes are mounted */
 	:global(html[data-view='studio']) .ft-pane + .ft-pane {
 		box-shadow: inset 1px 0 0 rgba(217, 164, 140, 0.3);
+	}
+	/* the first pane of each row starts at the frame, so no rule on its left;
+	   the second row carries one along its top instead */
+	:global(html[data-view='studio']) .ft-pane:nth-child(3n + 1) { box-shadow: none; }
+	:global(html[data-view='studio']) .ft-pane:nth-child(n + 4) { box-shadow: inset 0 1px 0 rgba(217, 164, 140, 0.3); }
+	:global(html[data-view='studio']) .ft-pane:nth-child(n + 4):not(:nth-child(3n + 1)) {
+		box-shadow: inset 1px 0 0 rgba(217, 164, 140, 0.3), inset 0 1px 0 rgba(217, 164, 140, 0.3);
 	}
 	:global(html[data-view='studio']) .ft-pane:hover {
 		background: radial-gradient(90% 80% at 50% 45%, color-mix(in srgb, var(--pk) 26%, transparent), transparent 74%);

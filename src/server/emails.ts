@@ -44,6 +44,7 @@ export const FROM_NAME = 'Swizel Technologies Limited';
 
 const SOCIALS = [
 	['WhatsApp', 'https://wa.me/2348100204570'],
+	['TikTok', 'https://www.tiktok.com/@swizelhq'],
 	['X', 'https://twitter.com/swizelhq'],
 	['Instagram', 'https://instagram.com/swizelhq'],
 	['LinkedIn', 'https://www.linkedin.com/company/swizel-technologies-limited/'],
