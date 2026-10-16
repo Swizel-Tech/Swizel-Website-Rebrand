@@ -401,17 +401,22 @@ const logos = [
 					class:list={['bd-tile', 'bd-tile--svc', d.span, 'bd-reveal', { 'bd-tile--loud': d.loud }]}
 					data-cursor={d.cur}
 				>
+					<!-- autoplay + preload="metadata" fetched the whole film the
+					     moment the page opened — 2.6 MB before anything was looked
+					     at. The poster paints now; the film is fetched and started
+					     by MainLayout when the tile scrolls into view (data-lazy-play),
+					     and never on a connection or machine that asked for less. -->
 					{
 						d.video ? (
 							<video
 								class="bd-svc-media"
 								src={d.video}
 								poster={d.poster}
-								autoplay
+								data-lazy-play
 								muted
 								loop
 								playsinline
-								preload="metadata"
+								preload="none"
 								aria-hidden="true"
 								tabindex="-1"
 							/>

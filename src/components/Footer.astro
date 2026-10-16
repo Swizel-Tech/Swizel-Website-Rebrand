@@ -4,6 +4,14 @@ import Link from './Link.astro';
 import Logo from './Logo.astro';
 import { formatLink, links } from '../consts';
 
+// The world this page was built in, when it was built in one. The socials
+// take a different form in each world — a pinboard, a terminal, a deck, a
+// wall, a board — and only one is ever shown; a page that knows its world
+// renders just that one. A page skinned by CSS (Programs, a blog post)
+// still carries all five and lets global.css pick.
+const { world } = Astro.props as { world?: string };
+const show = (w: string) => !world || world === w;
+
 const offices = [
 	{
 		flag: '🇳🇬',
@@ -216,6 +224,7 @@ const phones = [
 
 			<!-- Campus keeps its own: a noticeboard of pinned cards rather
 			     than a stack of logos, since we cannot pull live posts. -->
+			{show('campus') && (
 			<div class="ft-pinboard">
 				{
 					socials.map((sc, i) => (
@@ -247,9 +256,11 @@ const phones = [
 					))
 				}
 			</div>
+			)}
 
 			<!-- Builder gets a program: follow.sh, one line per channel,
 			     with the exit code of a run that always passes. -->
+			{show('builder') && (
 			<div class="ft-term">
 				<div class="ft-term-bar">
 					<i aria-hidden="true"></i><i aria-hidden="true"></i><i aria-hidden="true"></i>
@@ -291,9 +302,11 @@ const phones = [
 					</p>
 				</div>
 			</div>
+			)}
 
 			<!-- Founder gets the thing founders stand in front of: a deck
 			     on a projector screen, one slide, four lines. -->
+			{show('founder') && (
 			<div class="ft-deck">
 				<span class="ft-deck-beam" aria-hidden="true"></span>
 				<div class="ft-deck-screen">
@@ -328,10 +341,12 @@ const phones = [
 				</div>
 				<span class="ft-deck-stand" aria-hidden="true"></span>
 			</div>
+			)}
 
 			<!-- Studio keeps its own: not four frames but one — a single
 			     work, four panes behind the same glass, plate along the
 			     bottom. Four separate frames took half the footer. -->
+			{show('studio') && (
 			<div class="ft-wall">
 				<span class="ft-wall-hook" aria-hidden="true"></span>
 				<div class="ft-wall-frame">
@@ -363,10 +378,12 @@ const phones = [
 					</span>
 				</div>
 			</div>
+			)}
 
 			{/* Boardroom: the channels as a board report. Every other world
 			    owns an object here — a pinboard, a terminal, a projector —
 			    and boardroom was falling through to the house card list. */}
+			{show('boardroom') && (
 			<div class="ft-board">
 				<span class="ft-board-edge" aria-hidden="true"></span>
 				<div class="ft-board-intro">
@@ -412,53 +429,8 @@ const phones = [
 					}
 				</ul>
 			</div>
+			)}
 
-			<div class="ft-socials">
-				{
-					socials.map((s) => (
-						<a
-							class="ft-social"
-							href={s.href}
-							target="_blank"
-							rel="noopener noreferrer"
-							data-leaving=""
-							data-leaving-name={`Swizel on ${s.name}`}
-							style={`--pk:${s.color}`}
-						>
-							<span class="ft-social-ic">
-								<Icon size={22} name={s.icon} />
-							</span>
-							<span class="ft-social-meta">
-								<span class="ft-social-name">{s.name}</span>
-								<span class="ft-social-handle">{s.handle}</span>
-								<span class="ft-social-tag">{s.tag}</span>
-							</span>
-							<span class="ft-social-go">
-								<Icon width={15} name="mdi:arrow-top-right" />
-							</span>
-
-							{/* hover preview of a recent post */}
-							<span class="ft-peek" aria-hidden="true">
-								<span class="ft-peek-head">
-									<span class="ft-peek-ic">
-										<Icon size={15} name={s.icon} />
-									</span>
-									<span class="ft-peek-id">
-										<strong>{s.name}</strong>
-										<em>{s.handle}</em>
-									</span>
-									<span class="ft-peek-live">latest</span>
-								</span>
-								<span class="ft-peek-media">
-									<Icon width={22} name="mdi:image-multiple-outline" />
-									<span>Recent post preview</span>
-								</span>
-								<span class="ft-peek-body">{s.peek}</span>
-							</span>
-						</a>
-					))
-				}
-			</div>
 		</div>
 
 		<!-- the signal band: its own row, running from Talk to us all the

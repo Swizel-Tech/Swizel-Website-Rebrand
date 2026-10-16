@@ -8,6 +8,8 @@
 // which is finding your way back. So: no delay and no interruption on the
 // way out. We just remember which world you came from, and the Programs
 // page offers you the door back.
+import { rememberWorld, worldPageUrl } from './viewStore';
+import type { World } from '../lib/worlds';
 import { views, DEFAULT_VIEW } from '../consts';
 
 const KEY = 'swizel-came-from';
@@ -41,10 +43,12 @@ export function initProgramsNotice() {
 
 				try {
 					sessionStorage.setItem(KEY, view);
-					localStorage.setItem('swizel-view', 'campus');
 				} catch (err) {
 					/* private mode; the page still loads, just without the door back */
 				}
+				// localStorage for the page, the cookie for the edge — and
+				// not "onboarded": walking into Programs is not choosing a world
+				rememberWorld('campus', false);
 				document.documentElement.setAttribute('data-view', 'campus');
 			},
 			true
@@ -75,13 +79,15 @@ export function initProgramsNotice() {
 	link?.addEventListener('click', (e) => {
 		e.preventDefault();
 		try {
-			localStorage.setItem('swizel-view', from);
 			sessionStorage.removeItem(KEY);
 		} catch (err) {
 			/* nothing to clean up */
 		}
+		rememberWorld(from as World, false);
 		document.documentElement.setAttribute('data-view', from);
-		window.location.href = '/';
+		// home, in the world they came from — the edge serves it at "/",
+		// and without the edge the /v/ address does
+		window.location.href = worldPageUrl('/', from as World);
 	});
 
 	bar.querySelector<HTMLElement>('[data-came-from-x]')?.addEventListener('click', () => {

@@ -1,0 +1,13 @@
+---
+import MainLayout from '../../../../layouts/MainLayout.astro';
+import PortfolioCampus from '../../../../components/sections/PortfolioCampus.astro';
+import { PAGES } from '../../../../data/seo';
+const world = 'campus' as const;
+const seo = PAGES['/portfolio'];
+---
+{/* One page per world — see src/lib/worlds.ts. This file is the Campus
+    version of /portfolio; the others sit beside it under src/pages/v/<world>/
+    and share everything but the world component. */}
+<MainLayout title={seo.title} description={seo.description} image={seo.image} world={world}>
+	<PortfolioCampus />
+</MainLayout>

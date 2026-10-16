@@ -1,0 +1,24 @@
+---
+import MainLayout from '../../../layouts/MainLayout.astro';
+import HeroStudio from '../../../components/sections/HeroStudio.astro';
+import StudioBody from '../../../components/sections/StudioBody.astro';
+import ViewBanner from '../../../components/ViewBanner.astro';
+import { homeSeo } from '../../../lib/pages/home';
+const world = 'studio' as const;
+const seo = homeSeo(world);
+---
+{/* One page per world — see src/lib/worlds.ts. This file is the Studio
+    version of the home page; the others sit beside it under src/pages/v/<world>/
+    and share everything but the world component. */}
+<MainLayout
+	title={seo.title}
+	description={seo.description}
+	shareTitle={seo.shareTitle}
+	shareDescription={seo.shareDescription}
+	world={world}
+>
+	<HeroStudio />
+	{/* "You are here" — orient the visitor, let them switch worlds */}
+	<ViewBanner />
+	<StudioBody />
+</MainLayout>

@@ -25,6 +25,15 @@ interface Film {
 	destroy(): void;
 }
 
+// A YT.Player has no methods until its iframe reports ready — before
+// that, playVideo and friends are simply not there, and calling them
+// threw on the home page every time the reel was pressed early. Every
+// call goes through here, where a not-yet-ready player is a no-op.
+const call = (f: Film | undefined | null, m: string, ...args: unknown[]) => {
+	const fn = f && (f as unknown as Record<string, unknown>)[m];
+	if (typeof fn === 'function') (fn as (...a: unknown[]) => void).apply(f, args);
+};
+
 const STEP = 7600; // how long a card holds the middle before the walk moves on
 
 export function initBusinessReel() {
@@ -129,12 +138,12 @@ export function initBusinessReel() {
 			},
 			events: {
 				onReady: () => {
-					films[i]?.mute();
+					call(films[i], 'mute');
 					if (live === i) {
-						films[i]?.playVideo();
+						call(films[i], 'playVideo');
 						mid(i).classList.add('is-playing');
 					} else {
-						films[i]?.pauseVideo();
+						call(films[i], 'pauseVideo');
 					}
 				},
 				onStateChange: (e: { data: number }) => {
@@ -143,12 +152,12 @@ export function initBusinessReel() {
 					// card and a paused one its big centre button, and either
 					// puts someone else's furniture on our picture.
 					if (e?.data === 0) {
-						films[i]?.seekTo(0, true);
-						if (live === i) films[i]?.playVideo();
+						call(films[i], 'seekTo', 0, true);
+						if (live === i) call(films[i], 'playVideo');
 					} else if (e?.data === 2 && live === i) {
-						films[i]?.playVideo();
+						call(films[i], 'playVideo');
 					} else if (e?.data === 1 && live !== i) {
-						films[i]?.pauseVideo();
+						call(films[i], 'pauseVideo');
 					}
 					mid(i).classList.toggle('is-playing', e?.data === 1);
 				},
@@ -173,8 +182,8 @@ export function initBusinessReel() {
 		films.forEach((f, fi) => {
 			if (fi === live) return;
 			loud[fi] = false;
-			f?.pauseVideo();
-			f?.mute();
+			call(f, 'pauseVideo');
+			call(f, 'mute');
 		});
 		pips.forEach((p, pi) => {
 			p.classList.toggle('is-on', pi === live);
@@ -185,7 +194,7 @@ export function initBusinessReel() {
 		if (!walking) return;
 
 		const cur = films[live];
-		if (cur) cur.playVideo();
+		if (cur) call(cur, 'playVideo');
 		else void mount(live);
 	};
 
@@ -221,10 +230,10 @@ export function initBusinessReel() {
 			if (i !== live) setLive(i, { scroll: true, to: Number(s.dataset.bzDom) });
 			const f = films[i];
 			if (f) {
-				f.unMute();
+				call(f, 'unMute');
 				loud[i] = true;
 				mid(i).classList.add('is-loud');
-				f.playVideo();
+				call(f, 'playVideo');
 			}
 			mid(i).querySelector<HTMLButtonElement>('[data-bz-sound]')
 				?.setAttribute('aria-pressed', 'false');
@@ -234,7 +243,7 @@ export function initBusinessReel() {
 			const f = films[i];
 			if (!f) return;
 			loud[i] = !loud[i];
-			loud[i] ? f.unMute() : f.mute();
+			loud[i] ? call(f, 'unMute') : call(f, 'mute');
 			s.classList.toggle('is-loud', loud[i]);
 			const btn = e.currentTarget as HTMLButtonElement;
 			btn.setAttribute('aria-pressed', String(!loud[i]));
@@ -303,7 +312,7 @@ export function initBusinessReel() {
 						walking = true;
 						void mount(live).then((f) => {
 							if (!f) return;
-							f.playVideo();
+							call(f, 'playVideo');
 							const snd = mid(live).querySelector<HTMLButtonElement>('[data-bz-sound]');
 							// it is playing and it is silent: say so, the same way
 							// every other film on the site does
@@ -313,7 +322,7 @@ export function initBusinessReel() {
 					startWalk();
 				} else {
 					stopWalk();
-					films.forEach((f) => f?.pauseVideo());
+					films.forEach((f) => call(f, 'pauseVideo'));
 					slides.forEach((s) => s.classList.remove('is-playing'));
 				}
 			},
@@ -324,10 +333,10 @@ export function initBusinessReel() {
 	document.addEventListener('visibilitychange', () => {
 		if (document.hidden) {
 			stopWalk();
-			films.forEach((f) => f?.pauseVideo());
+			films.forEach((f) => call(f, 'pauseVideo'));
 		} else if (walking) {
 			startWalk();
-			films[live]?.playVideo();
+			call(films[live], 'playVideo');
 		}
 	});
 

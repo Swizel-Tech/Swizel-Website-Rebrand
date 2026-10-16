@@ -2,10 +2,16 @@
 // and view switching. Theme (light/dark) and view are independent, both persisted.
 
 import { armViewNudge } from './viewNudge';
+import { isWorld, stripWorld } from '../lib/worlds';
+import { rememberWorld, worldPageUrl } from './viewStore';
+import { applyView, prefetchWorld } from './viewSwitch';
+
+// the switch itself lives in viewSwitch.ts so the rail and the nav can
+// change worlds without loading the whole quiz
+export { applyView, prefetchWorld };
 
 type Scores = Record<string, number>;
 
-const VIEW_KEY = 'swizel-view';
 const ONBOARDED_KEY = 'swizel-onboarded';
 
 const recommendableOrder = [
@@ -15,26 +21,6 @@ const recommendableOrder = [
 	'campus',
 	'studio',
 ];
-
-export function applyView(id: string) {
-	document.documentElement.setAttribute('data-view', id);
-	try {
-		localStorage.setItem(VIEW_KEY, id);
-		localStorage.setItem(ONBOARDED_KEY, '1');
-		// Choosing a world by hand makes "the world you came from" stale:
-		// Programs would otherwise still offer a door back to somewhere you
-		// left ages ago. See scripts/programsNotice.ts.
-		sessionStorage.removeItem('swizel-came-from');
-	} catch (e) {}
-	// The site is about to look completely different. Point at the control
-	// that undoes it, once, on whatever page they land on. See viewNudge.ts.
-	armViewNudge();
-	// Switching worlds should always land you at the top, so the new view is
-	// seen from its hero rather than wherever you happened to be scrolled.
-	const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-	window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
-	window.dispatchEvent(new CustomEvent('swizel:viewchange', { detail: id }));
-}
 
 export function initViewExperience() {
 	const root = document.getElementById('view-onboarding');
@@ -245,18 +231,29 @@ export function initViewExperience() {
 			const pool = recommendableOrder.filter((v) => v !== here);
 			id = pool[Math.floor(Math.random() * pool.length)];
 		}
-		if (id) applyView(id);
-		close();
-		if (id && window.location.pathname !== '/') {
-			// Click a real link so swup intercepts it and plays the page
-			// transition (version-proof — no swup API call needed).
-			const a = document.createElement('a');
-			a.href = '/';
-			a.style.display = 'none';
-			document.body.appendChild(a);
-			a.click();
-			a.remove();
+		if (!id || !isWorld(id)) {
+			close();
+			return;
 		}
+		const path = stripWorld(window.location.pathname);
+		if (path === '/') {
+			applyView(id);
+			close();
+			return;
+		}
+		// Off the home page: remember the choice, then go home in that
+		// world. Click a real link so swup intercepts it and plays the
+		// page transition (version-proof — no swup API call needed).
+		rememberWorld(id);
+		armViewNudge();
+		try { sessionStorage.removeItem('swizel-came-from'); } catch (e) {}
+		close();
+		const a = document.createElement('a');
+		a.href = worldPageUrl('/', id, true);
+		a.style.display = 'none';
+		document.body.appendChild(a);
+		a.click();
+		a.remove();
 	};
 
 	const goNextAfter = (qStep: string) => {
@@ -265,6 +262,9 @@ export function initViewExperience() {
 		if (!next) return;
 		if (next === 'results') recommend();
 		show(next);
+		// the countdown is about to walk them into the recommended world:
+		// have it ready before the clock runs out
+		if (next === 'results' && recommendedId) prefetchWorld(recommendedId);
 		// the last answer is the whole ask: "answer the two questions and
 		// enter the site". So it does, unless they say otherwise.
 		if (next === 'results') startAutoEnter();
@@ -366,6 +366,14 @@ export function initViewExperience() {
 		// themselves — stop the countdown on the way down, before the
 		// click even completes
 		card.addEventListener('pointerdown', cancelAutoEnter);
+		// the page for that world starts arriving before the click lands
+		const warm = () => {
+			const id = card.dataset.viewId;
+			if (id && id !== 'surprise') prefetchWorld(id);
+		};
+		card.addEventListener('pointerenter', warm);
+		card.addEventListener('focus', warm);
+		card.addEventListener('touchstart', warm, { passive: true });
 		card.addEventListener('click', () => {
 			cancelAutoEnter();
 			const id = card.dataset.viewId;

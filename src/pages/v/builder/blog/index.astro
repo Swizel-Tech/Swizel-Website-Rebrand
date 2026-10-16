@@ -1,0 +1,15 @@
+---
+import MainLayout from '../../../../layouts/MainLayout.astro';
+import BlogBuilder from '../../../../components/sections/BlogBuilder.astro';
+import { PAGES } from '../../../../data/seo';
+import { blogPosts } from '../../../../lib/pages/blog';
+const world = 'builder' as const;
+const seo = PAGES['/blog'];
+const posts = await blogPosts();
+---
+{/* One page per world — see src/lib/worlds.ts. This file is the Builder
+    version of /blog; the others sit beside it under src/pages/v/<world>/
+    and share everything but the world component. */}
+<MainLayout title={seo.title} description={seo.description} image={seo.image} world={world}>
+	<BlogBuilder posts={posts} />
+</MainLayout>

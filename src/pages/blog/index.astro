@@ -1,72 +1,15 @@
 ---
-import { getCollection } from 'astro:content';
 import MainLayout from '../../layouts/MainLayout.astro';
-import Breadcrumb from '../../components/blocks/Breadcrumb.astro';
-import BlogPostCard from '../../components/elements/BlogPostCard.astro';
-import Section from '../../components/HTML/Section.astro';
-import FooterCTA from '../../components/blocks/FooterCTA.astro';
-import NewsLetterAndContact from '../../components/sections/NewsLetterAndContact.astro';
 import BlogBoardroom from '../../components/sections/BlogBoardroom.astro';
-import BlogFounder from '../../components/sections/BlogFounder.astro';
-import BlogBuilder from '../../components/sections/BlogBuilder.astro';
-import BlogStudio from '../../components/sections/BlogStudio.astro';
-import BlogCampus from '../../components/sections/BlogCampus.astro';
-
 import { PAGES } from '../../data/seo';
-
-// Published posts, newest first. Drafts (draft: true) are kept out of the build.
-export const posts = (await getCollection('blog', ({ data }) => data.draft !== true)).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
-);
-
-// The brand name was at the front, which spends the most valuable part of
-// a title on a phrase only existing readers search for. See
-// src/data/seo.ts.
+import { blogPosts } from '../../lib/pages/blog';
+const world = 'boardroom' as const;
 const seo = PAGES['/blog'];
+const posts = await blogPosts();
 ---
-
-<MainLayout title={seo.title} image={seo.image} description={seo.description}>
-	<!-- Boardroom world (also the default). Hidden in the other views. -->
+{/* One page per world — see src/lib/worlds.ts. This file is the Boardroom
+    version of /blog; the others sit beside it under src/pages/v/<world>/
+    and share everything but the world component. */}
+<MainLayout title={seo.title} description={seo.description} image={seo.image} world={world}>
 	<BlogBoardroom posts={posts} />
-
-	<!-- Founder world: the same journal, founder momentum. -->
-	<BlogFounder posts={posts} />
-
-	<!-- Builder world: the journal/ directory. -->
-	<BlogBuilder posts={posts} />
-
-	<!-- Studio world: the Reading Room of the gallery. -->
-	<BlogStudio posts={posts} />
-
-	<!-- Campus world: the school paper. -->
-	<BlogCampus posts={posts} />
-
-	<!-- Fallback for the remaining worlds. -->
-	<div class="alt-view-only blog-fallback">
-		<Breadcrumb title="Articles" desc="" />
-		<Section divClass="py-20">
-			<ul
-				class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 pb-20 border-b border-swizelBrown"
-			>
-				{
-					posts.map((post) => (
-						<BlogPostCard as="li" to={`/blog/${post.slug}`} {...post} />
-					))
-				}
-			</ul>
-		</Section>
-		<NewsLetterAndContact hideContact />
-		<FooterCTA />
-	</div>
 </MainLayout>
-
-<style is:global>
-	/* Founder, Builder and Studio views have their own Blog now — hide the
-	   generic fallback there. */
-	html[data-view='founder'] .blog-fallback,
-	html[data-view='builder'] .blog-fallback,
-	html[data-view='studio'] .blog-fallback,
-	html[data-view='campus'] .blog-fallback {
-		display: none !important;
-	}
-</style>

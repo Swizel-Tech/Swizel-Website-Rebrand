@@ -672,6 +672,26 @@ html:not([data-view]) .site-header.at-hero-top nav:not(.m-nav-links) a:hover,
 html:not([data-view]) .site-header.at-hero-top nav:not(.m-nav-links) a.active,
 [data-view='boardroom'] .site-header.at-hero-top nav:not(.m-nav-links) a:hover,
 [data-view='boardroom'] .site-header.at-hero-top nav:not(.m-nav-links) a.active { color: #ffffff; }
+/* The Services panel is a solid sheet, not the photograph. The white ink
+   and the legibility shadow above are for links floating over the hero;
+   inherited by the panel they painted dark-blurred white type onto a
+   light panel in light mode — unreadable. The panel keeps its own ink. */
+html:not([data-view]) .site-header.at-hero-top .nav-dd-panel,
+[data-view='boardroom'] .site-header.at-hero-top .nav-dd-panel {
+  text-shadow: none;
+}
+html:not([data-view]) .site-header.at-hero-top .nav-dd-panel svg,
+[data-view='boardroom'] .site-header.at-hero-top .nav-dd-panel svg {
+  filter: none;
+}
+html:not([data-view]) .site-header.at-hero-top nav:not(.m-nav-links) .nav-dd-panel a,
+[data-view='boardroom'] .site-header.at-hero-top nav:not(.m-nav-links) .nav-dd-panel a {
+  color: #e9eaf2;
+}
+html:not(.dark):not([data-view]) .site-header.at-hero-top nav:not(.m-nav-links) .nav-dd-panel a,
+html:not(.dark)[data-view='boardroom'] .site-header.at-hero-top nav:not(.m-nav-links) .nav-dd-panel a {
+  color: #14162a;
+}
 /* lift the live hero up so its dark canvas fills behind the floating bar.
    margin/padding cancel for content, so nothing moves — the hero bg just
    extends up under the nav. */
@@ -2325,6 +2345,50 @@ html.perf-lite [class*='ticker'] {
 html.perf-lite .orb__ring-f,
 html.perf-lite .shuf__ring-f {
   display: none !important;
+}
+
+/* ── the calm version, properly ──────────────────────────────────────────
+   perf-lite is decided before first paint (BaseHead): a phone or laptop
+   that reports few cores or little memory, a connection that asks for
+   less data, or a machine that could not hold a frame rate earlier this
+   session. Nothing about the layout changes; the effects that cost the
+   most per frame on weak hardware are what go.
+
+   · backdrop-filter is the single most expensive thing on this site for a
+     low-end GPU: every frosted panel re-blurs whatever scrolls behind it,
+     every frame. The panels keep their own translucent backgrounds; they
+     just stop blurring what is behind them.
+   · Decoration carries aria-hidden="true" throughout this codebase — the
+     orbs, beams, grain, auras, rings. Those lose their blur and their
+     looping animation. Anything that means something keeps moving.  */
+html.perf-lite *,
+html.perf-lite *::before,
+html.perf-lite *::after {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+html.perf-lite [aria-hidden='true'],
+html.perf-lite [aria-hidden='true'] * {
+  filter: none !important;
+  animation-iteration-count: 1 !important;
+}
+html.perf-lite .hero--spotlight,
+html.perf-lite .hero--photo-spot {
+  display: none !important;
+}
+
+/* ── asleep off screen ───────────────────────────────────────────────────
+   Every section is watched by one IntersectionObserver (MainLayout). Far
+   from the viewport it is marked asleep and its CSS animations pause —
+   the looping belts, pulses and shimmers in sections nobody is looking at
+   stop costing frames. The margin is half a screen either side, so a
+   section is awake again well before it is seen. Transitions and
+   script-driven motion are unaffected. */
+.swz-asleep,
+.swz-asleep *,
+.swz-asleep *::before,
+.swz-asleep *::after {
+  animation-play-state: paused !important;
 }
 
 /* A visitor who asks for less motion gets the same deal, plus stillness. */

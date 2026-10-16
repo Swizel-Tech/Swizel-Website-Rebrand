@@ -1,51 +1,13 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
-import ContactCampus from '../components/sections/ContactCampus.astro';
-import ContactFounder from '../components/sections/ContactFounder.astro';
-import ContactBuilder from '../components/sections/ContactBuilder.astro';
-import ContactStudio from '../components/sections/ContactStudio.astro';
 import ContactBoardroom from '../components/sections/ContactBoardroom.astro';
-
 import { PAGES } from '../data/seo';
-
-// See src/data/seo.ts for the whole set. A contact page's search intent
-// is the most commercial on the site — somebody typing "hire software
-// developers" is ready to spend — so the title leads with the action
-// rather than with the place.
+const world = 'boardroom' as const;
 const seo = PAGES['/contact'];
-const SEO_TITLE = seo.title;
-const SEO_DESC = seo.description;
-
 ---
-
-<MainLayout title={SEO_TITLE} description={SEO_DESC} image="/images/og/og-contact.jpg">
-	<!-- Campus world: the front office, with its own sheet and its own desk. -->
-	<ContactCampus />
-
-	<!-- Founder world: the desk, with the three answers before the form. -->
-	<ContactFounder />
-
-	<!-- Builder world: the brief as a file you edit, and a terminal that ships it. -->
-	<ContactBuilder />
-
-	<!-- Studio world: the commissions desk, and a slip to fill in. -->
-	<ContactStudio />
-
-	<!-- Boardroom world (also the default): the two-up, the lines, the
-	     brief, the questions and the desks. -->
+{/* One page per world — see src/lib/worlds.ts. This file is the Boardroom
+    version of /contact; the others sit beside it under src/pages/v/<world>/
+    and share everything but the world component. */}
+<MainLayout title={seo.title} description={seo.description} image="/images/og/og-contact.jpg" world={world}>
 	<ContactBoardroom />
-
-	{/* The toast container comes from MainLayout. A second copy here put
-	    two #toast-success, #toast-danger and #toast-warning elements on
-	    the page, and the toaster writes into the first one it finds. */}
 </MainLayout>
-
-<style is:global>
-	/* Every world has a contact page of its own now — campus, builder,
-	   studio, founder and boardroom — so the shared page that used to
-	   stand behind them all is gone rather than hidden five times over.
-	   It was also rendering a second copy of the contact form, which put
-	   two elements with id="contact-form" on the page: the script binds
-	   to the first one it finds, so the visible form was the one without
-	   a handler on it. */
-</style>

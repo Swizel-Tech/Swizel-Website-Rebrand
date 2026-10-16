@@ -22,7 +22,8 @@ import { join, relative, sep } from 'node:path';
 // The adapter moves the static pages to .vercel/output/static, so look
 // there first and fall back to dist for a plain `astro build`.
 const ROOTS = ['.vercel/output/static', 'dist'];
-const ROOT = ROOTS.find((r) => existsSync(r));
+// SEO_ROOT=dist/client lets a local build be checked when .vercel/ is in the way.
+const ROOT = process.env.SEO_ROOT || ROOTS.find((r) => existsSync(r));
 
 const LIMITS = {
 	titleMin: 20,
@@ -127,6 +128,7 @@ const seenTitle = new Map();
 const seenDesc = new Map();
 
 console.log(`\nPage SEO check — ${pages.length} pages in ${ROOT}\n`);
+let worldPages = 0;
 
 for (const p of pages) {
 	// ── redirect stubs are not pages ──
@@ -140,6 +142,17 @@ for (const p of pages) {
 	if (/<meta[^>]+http-equiv=["']refresh["']/i.test(p.html)) {
 		console.log(`${dim('·')} ${p.url} ${dim('(redirect — skipped)')}`);
 		console.log('');
+		continue;
+	}
+
+	// ── /v/<world>/… is the same page in another world ──
+	//
+	// The edge serves these at the clean address by cookie (see
+	// src/lib/worlds.ts). Each carries noindex and canonicalises to the
+	// clean path, so by every rule below it is a duplicate — which is
+	// exactly what it is meant to be. Counted and skipped.
+	if (/^\/v\/(boardroom|builder|founder|campus|studio)(\/|$)/.test(p.url)) {
+		worldPages++;
 		continue;
 	}
 
@@ -336,6 +349,8 @@ if (!existsSync(sitemapIndex)) {
 	console.log('');
 }
 
+if (worldPages)
+	console.log(dim(`· ${worldPages} per-world copies under /v/ (noindex, canonical to the clean page) — skipped\n`));
 console.log(
 	`${errors ? red(`${errors} to fix`) : green('0 to fix')}  ·  ${
 		warns ? yellow(`${warns} worth a look`) : green('0 warnings')

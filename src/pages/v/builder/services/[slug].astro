@@ -1,0 +1,15 @@
+---
+import MainLayout from '../../../../layouts/MainLayout.astro';
+import ServiceDetailBuilder from '../../../../components/sections/ServiceDetailBuilder.astro';
+import { servicePaths, serviceSeo } from '../../../../lib/pages/service';
+const world = 'builder' as const;
+export const getStaticPaths = servicePaths;
+const { discipline, others } = Astro.props;
+const { pageTitle, pageDescription, pageSchema } = serviceSeo(discipline);
+---
+{/* One page per world — see src/lib/worlds.ts. This file is the Builder
+    version of /services/<slug>; the others sit beside it under src/pages/v/<world>/
+    and share everything but the world component. */}
+<MainLayout title={pageTitle} description={pageDescription} image="/images/og/og-services.jpg" schema={pageSchema} world={world}>
+	<ServiceDetailBuilder discipline={discipline} others={others} />
+</MainLayout>

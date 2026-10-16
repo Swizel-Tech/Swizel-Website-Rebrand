@@ -7,8 +7,19 @@ import ToastContainer from '../components/elements/ToastContainer.astro';
 import ViewOnboarding from '../components/ViewOnboarding.astro';
 import WelcomeFilm from '../components/WelcomeFilm.astro';
 import Logo from '../components/Logo.astro';
+import type { World } from '../lib/worlds';
 
 export interface Props {
+	/**
+	 * The world this page was built in. Set only on pages that exist in
+	 * all five worlds (see src/lib/worlds.ts); a page that is one markup
+	 * skinned by CSS leaves it out and the inline script in BaseHead
+	 * puts the visitor's stored world on <html> before first paint.
+	 */
+	world?: World;
+	/** Share-card copy, when it should differ from the page title (see BaseHead). */
+	shareTitle?: string;
+	shareDescription?: string;
 	title?: string;
 	description?: string;
 	image?: string;
@@ -33,6 +44,9 @@ const {
 	type = 'website',
 	schema = null,
 	canonical,
+	world,
+	shareTitle,
+	shareDescription,
 } = Astro.props;
 ---
 
@@ -55,7 +69,7 @@ const {
      The comment is gone and the doctype now sits directly above the tag.
      ────────────────────────────────────────────────────────────────── -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-view={world} data-world={world}>
 	<head>
 		{/* canonical was in this layout's Props and was never passed on, so
 		    any page that set it — a blog post first published elsewhere, a
@@ -68,6 +82,9 @@ const {
 			imageSquare={imageSquare}
 			type={type}
 			canonical={canonical}
+			world={world}
+			shareTitle={shareTitle}
+			shareDescription={shareDescription}
 		/>
 		{schema && <script type="application/ld+json" set:html={JSON.stringify(schema)} />}
 	</head>
@@ -116,13 +133,24 @@ const {
 			s0.parentNode.insertBefore(s1, s0);
 		};
 		</script>
-		<main id="swup" class="transition-main">
+		{/* data-world rides on the swup container so a swapped-in page can
+		    tell the <html> element which world it was built in — swup
+		    replaces this container, never <html> itself. */}
+		<main id="swup" class="transition-main" data-world={world}>
 			<Header />
 			<slot />
-			{!hideFooter && <Footer />}
+			{!hideFooter && <Footer world={world} />}
 			<ToastContainer />
-			<ViewOnboarding />
-			<WelcomeFilm />
+			{/* The welcome film and the two questions ride along as an inert
+			    <template>: the markup is on every page, but the browser builds
+			    none of it — a thousand nodes, their styles and their layout —
+			    until it is actually needed. MainLayout's script lifts it out on
+			    a first visit, or the moment a visitor reaches for "Views" or
+			    "Watch the film". */}
+			<template id="swz-onboarding-tpl">
+				<ViewOnboarding />
+				<WelcomeFilm />
+			</template>
 		</main>
 		<button id="back-to-top" type="button" aria-label="Back to top">
 			<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
@@ -222,56 +250,132 @@ const {
 	import Swup from 'swup';
 	import SwupA11yPlugin from '@swup/a11y-plugin';
 	import SwupHeadPlugin from '@swup/head-plugin';
-	import Splide from '@splidejs/splide';
 	import SwupScrollPlugin from '@swup/scroll-plugin';
-	import { initFlowbite } from 'flowbite';
 	import toaster from '../scripts/toast';
 
-	import { isTrue, teamDetails } from '../consts';
+	// Per-view widget scripts are wrapped so a failure in any one of them
+	// can never block the nav / menu / scroll bindings that run afterwards
+	// (which would otherwise leave the navbar dead until a hard refresh).
+	const safe = (fn: () => void) => {
+		try { fn(); } catch (err) { console.error('[init]', err); }
+	};
 
-	import { handleDropDown } from '../scripts/handleDropDown';
-	import { initViewExperience } from '../scripts/viewExperience';
-	import { initWelcomeFilm } from '../scripts/welcomeFilm';
-	import { initViewBanner } from '../scripts/viewBanner';
-	import { initBuilderView, initBuilderStack, initCopyLines } from '../scripts/builderView';
-	import { initBuilderBody } from '../scripts/builderBody';
-	import { initFounderBody } from '../scripts/founderBody';
-	import { initFilmPlayers } from '../scripts/filmPlayer';
-	import { initAboutFounder, initAboutCampus } from '../scripts/aboutFounder';
-	import { initCampusBody } from '../scripts/campusBody';
-	import { initContactCampus } from '../scripts/contactCampus';
-	import { initProgramsPage } from '../scripts/programsPage';
-	import { resumeTour } from '../scripts/tour';
-	import { initStudioBody } from '../scripts/studioBody';
-	import { initBoardroomBody } from '../scripts/boardroomBody';
-	import { initBusinessReel } from '../scripts/businessReel';
-	import { initBoardroomHero } from '../scripts/boardroomHero';
-	import { initFounderView } from '../scripts/founderView';
-	import { initFounderReel } from '../scripts/founderReel';
-	import { initPitchDeck } from '../scripts/pitchDeck';
-	import { initCardShuffle } from '../scripts/cardShuffle';
-	import { initOrbitDeck, initInlineFilms } from '../scripts/orbitDeck';
-	import { initBranchTree } from '../scripts/branchTree';
-	import { initBuildTeam } from '../scripts/buildTeam';
-	import { initJourneyClimb } from '../scripts/journeyClimb';
-	import { initContactFounder } from '../scripts/contactFounder';
-	import { initCampusView } from '../scripts/campusView';
-	import { initStudioView } from '../scripts/studioView';
-	import { initBoardroomView } from '../scripts/boardroomView';
-	import { initWhiteboardVideo } from '../scripts/whiteboardVideo';
-	import { initMentorsBand } from '../scripts/mentorsBand';
-	import { initCampusLibrary } from '../scripts/campusLibrary';
-	import { initCampusArchives } from '../scripts/campusArchives';
+	// ── what every page needs, loaded with the page ──────────────────
+	// The chrome: world switching, the nav, the footer, analytics, the
+	// forms. Small, and needed everywhere.
+	import { prefetchWorld } from '../scripts/viewSwitch';
+	import { edgeServesWorlds, storedWorld, pageHasWorlds } from '../scripts/viewStore';
+	import { DEFAULT_WORLD, WORLDS, stripWorld, worldHref, worldInPath } from '../lib/worlds';
 	import { initFooterTv } from '../scripts/footerTv';
-	import { initFilmExpand } from '../scripts/filmExpand';
-	import { initCaseShelf } from '../scripts/caseShelf';
-	import { initBlogBeats } from '../scripts/blogBeats';
 	import { initNewsletter } from '../scripts/newsletter';
 	import { initContactForm } from '../scripts/contactForm';
 	import { initShare } from '../scripts/share';
 	import { initViewNudge } from '../scripts/viewNudge';
 	import { initAnalytics } from '../scripts/analytics';
 	import { initProgramsNotice } from '../scripts/programsNotice';
+
+	// ── everything else arrives only on a page that has the thing ─────
+	//
+	// This used to be fifty static imports: every world's widgets, on
+	// every page, for every visitor — a 300 KB script to render a blog
+	// post. Each entry below names the markup it drives and the module
+	// that drives it; the module is fetched the first time a page with
+	// that markup is seen, then kept for the session. Vite turns each
+	// import() into its own chunk, so the first visit to the home page
+	// in Boardroom fetches the Boardroom pieces and nothing else.
+	//
+	// `when` is a selector on the page; `load` resolves to the init
+	// functions to run, in order. The order inside one entry matters
+	// where it did before (the film hands "Make it mine" to the quiz).
+	type Feature = { when: string; load: () => Promise<Array<() => void>> };
+	const FEATURES: Feature[] = [
+		// the welcome film, the two questions and the rail — see below for
+		// how these are gated, because the markup is on every page
+		{ when: '#view-banner', load: () => import('../scripts/viewBanner').then((m) => [m.initViewBanner]) },
+		// worlds: home bodies and heroes
+		{ when: '.bdbody', load: () => import('../scripts/boardroomBody').then((m) => [m.initBoardroomBody]) },
+		{ when: '.hero-boardroom', load: () => import('../scripts/boardroomView').then((m) => [m.initBoardroomView]) },
+		{ when: '[data-bh]', load: () => import('../scripts/boardroomHero').then((m) => [m.initBoardroomHero]) },
+		{ when: '[data-bz-reel]', load: () => import('../scripts/businessReel').then((m) => [m.initBusinessReel]) },
+		{ when: '.bbody', load: () => import('../scripts/builderBody').then((m) => [m.initBuilderBody]) },
+		{ when: '#builder-ide, [data-bstack], [data-copy]', load: () => import('../scripts/builderView').then((m) => [m.initBuilderView, m.initBuilderStack, m.initCopyLines]) },
+		{ when: '.fbody', load: () => import('../scripts/founderBody').then((m) => [m.initFounderBody]) },
+		{ when: '#founder-widget', load: () => import('../scripts/founderView').then((m) => [m.initFounderView]) },
+		{ when: '[data-freel]', load: () => import('../scripts/founderReel').then((m) => [m.initFounderReel]) },
+		{ when: '.cbody', load: () => import('../scripts/campusBody').then((m) => [m.initCampusBody]) },
+		{ when: '#campus-widget', load: () => import('../scripts/campusView').then((m) => [m.initCampusView]) },
+		{ when: '.sbody', load: () => import('../scripts/studioBody').then((m) => [m.initStudioBody]) },
+		{ when: '[data-shr]', load: () => import('../scripts/studioView').then((m) => [m.initStudioView]) },
+		// shared widgets, wherever they appear
+		{ when: '.fabout, .fsvc, .fsd, .fpf, .fcs, .fbl, .sabout, .ssvc, .ssd, .spf, .scs, .sbl, .cabout, .csvc, .csd, .cpf, .ccs, .cbl, [data-fa-tilt], [data-ca-film]', load: () => import('../scripts/aboutFounder').then((m) => [m.initAboutFounder, m.initAboutCampus]) },
+		{ when: '[data-flm], script[data-yt-api]', load: () => import('../scripts/filmPlayer').then((m) => [m.initFilmPlayers]) },
+		{ when: '[data-film-expand]', load: () => import('../scripts/filmExpand').then((m) => [m.initFilmExpand]) },
+		{ when: '[data-pdeck]', load: () => import('../scripts/pitchDeck').then((m) => [m.initPitchDeck]) },
+		{ when: '[data-shuffle]', load: () => import('../scripts/cardShuffle').then((m) => [m.initCardShuffle]) },
+		{ when: '[data-orbit], [data-fs-film]', load: () => import('../scripts/orbitDeck').then((m) => [m.initOrbitDeck, m.initInlineFilms]) },
+		{ when: '[data-tree]', load: () => import('../scripts/branchTree').then((m) => [m.initBranchTree]) },
+		{ when: '[data-bteam]', load: () => import('../scripts/buildTeam').then((m) => [m.initBuildTeam]) },
+		{ when: '[data-clb]', load: () => import('../scripts/journeyClimb').then((m) => [m.initJourneyClimb]) },
+		{ when: '[data-wbv]', load: () => import('../scripts/whiteboardVideo').then((m) => [m.initWhiteboardVideo]) },
+		{ when: '[data-mentors]', load: () => import('../scripts/mentorsBand').then((m) => [m.initMentorsBand]) },
+		{ when: '[data-library]', load: () => import('../scripts/campusLibrary').then((m) => [m.initCampusLibrary]) },
+		{ when: '[data-arch-poster]', load: () => import('../scripts/campusArchives').then((m) => [m.initCampusArchives]) },
+		{ when: '[data-pf-shelf-wrap]', load: () => import('../scripts/caseShelf').then((m) => [m.initCaseShelf]) },
+		{ when: '[data-bl-beat]', load: () => import('../scripts/blogBeats').then((m) => [m.initBlogBeats]) },
+		// pages
+		{ when: '.ck', load: () => import('../scripts/contactCampus').then((m) => [m.initContactCampus]) },
+		{ when: '.fct', load: () => import('../scripts/contactFounder').then((m) => [m.initContactFounder]) },
+		{ when: '.pg', load: () => import('../scripts/programsPage').then((m) => [m.initProgramsPage]) },
+		// a tour left half-walked in the last page
+		{ when: '.tour-doors, .tour-overlay', load: () => import('../scripts/tour').then((m) => [m.resumeTour]) },
+	];
+	// a loaded module's inits, kept so a swup navigation re-runs them
+	// without fetching again
+	const loaded = new Map<Feature, Array<() => void>>();
+	const loading = new Map<Feature, Promise<void>>();
+
+	// ── the welcome film and the two questions ───────────────────────
+	//
+	// Their markup is on every page, but a returning visitor only needs
+	// the code when they press "Views" (or "Watch the film"). So it is
+	// fetched on the first visit, when the film opens by itself; or the
+	// moment a visitor hovers, touches or focuses a control that opens
+	// it; or on the click, with the click replayed once it is here.
+	let onboarding: Promise<void> | null = null;
+	let onboardingInits: Array<() => void> = [];
+	// lift the film and the quiz out of their <template> into the page
+	// (once per page — swup swaps the container, template included)
+	const materializeOnboarding = () => {
+		if (document.getElementById('view-onboarding')) return;
+		const tpl = document.getElementById('swz-onboarding-tpl') as HTMLTemplateElement | null;
+		if (!tpl) return;
+		tpl.parentElement?.insertBefore(tpl.content.cloneNode(true), tpl);
+		// the card carries its own light/dark switch: show the current state
+		setThemeToggleState();
+	};
+	const loadOnboarding = () => {
+		materializeOnboarding();
+		if (!onboarding) {
+			onboarding = Promise.all([
+				import('../scripts/viewExperience'),
+				import('../scripts/welcomeFilm'),
+			]).then(([ve, wf]) => {
+				// the film must init after the view experience: it hands
+				// "Make it mine" over to window.openViewQuiz
+				onboardingInits = [ve.initViewExperience, wf.initWelcomeFilm];
+				onboardingInits.forEach(safe);
+			});
+		}
+		return onboarding;
+	};
+	const onboardingWanted = () => {
+		try {
+			if (!localStorage.getItem('swizel-onboarded')) return true;
+		} catch (e) {
+			return true;
+		}
+		return false;
+	};
 
 	const handleMenuToggle = () => {
 		const menuWrapper = document.querySelector<HTMLElement>('#mobile-wrapper');
@@ -349,82 +453,6 @@ const {
 		}
 	};
 
-	const handleTeamDialog = () => {
-		const teamMatesMember = document.querySelectorAll<HTMLLIElement>('.teammate-member');
-
-		const dialogModal = document.querySelector<HTMLDialogElement>('#member-dialog');
-
-		const dialogCloseBtn = document.getElementById('close-team-dialog') as HTMLButtonElement;
-
-		const dialogContent = document.getElementById('team-dialog--content') as HTMLDivElement;
-
-		// using typecasting because null checks would be verbose
-		const memberImage = document.getElementById('dialog--image') as HTMLImageElement;
-
-		const memberRole = document.getElementById('teammate--role') as HTMLParagraphElement;
-
-		const memberBio = document.getElementById('teammate--bio') as HTMLParagraphElement;
-
-		const memberExperienceList = document.getElementById(
-			'teammate--experience'
-		) as HTMLUListElement;
-
-		const memberName = document.getElementById('teammate--name') as HTMLHeadingElement;
-		const memberLinkedin = document.getElementById('teammate--linkedin') as HTMLLinkElement;
-
-		const writeExperienceItem = (company: string, jobDesc: string) => `
-		<div class="space-y-2 astro-7KIUVPD3">
-			<h4 class="text-xl font-bold text-darker leading-tight">
-				${company}
-			</h4>
-			<p class="astro-7KIUVPD3">${jobDesc}</p>
-		</div>`;
-
-		teamMatesMember.forEach((member) => {
-			member.onclick = () => {
-				const { membername } = member.dataset;
-
-				const selectedMember = teamDetails.find(({ name }) => name === membername);
-
-				if (dialogModal && selectedMember) {
-					// open modal
-					dialogModal.showModal();
-
-					// remove initial focus when dialog is open: https://stackoverflow.com/a/61855683
-					dialogCloseBtn.blur();
-
-					const { bio, experience, linkedinURL, name, role } = selectedMember;
-
-					// insert content into the dom
-					memberImage.src = `/teammates/${membername}.jpg`;
-					memberRole.textContent = role;
-					memberBio.textContent = bio;
-					memberName.textContent = name;
-					memberLinkedin.href = linkedinURL;
-
-					memberExperienceList.innerHTML = experience
-						.map(({ company, jobDesc }) => writeExperienceItem(company, jobDesc))
-						.join('');
-				} else {
-					throw new Error('Please check dialog and member details');
-				}
-			};
-		});
-
-		dialogCloseBtn.onclick = () => {
-			dialogModal!.close(); // using nullish operator because the element already exists
-		};
-
-		// using this to make sure that onclick outside of the dialog, it closes the modal cc: https://stackoverflow.com/a/73988585
-		if (dialogModal) {
-			dialogModal.onclick = (_e) => dialogModal.close();
-		}
-
-		if (dialogContent) {
-			dialogContent.onclick = (e) => e.stopPropagation();
-		}
-	};
-
 	const setThemeToggleState = () => {
 		const isDark = document.documentElement.classList.contains('dark');
 		document
@@ -432,20 +460,22 @@ const {
 			.forEach((btn) => btn.setAttribute('aria-checked', String(isDark)));
 	};
 
+	// One delegated listener on the document, bound once: it serves every
+	// [data-theme-toggle] on the page — the one in the header, the one in
+	// the drawer, and the one in the Views card, which is lifted out of its
+	// <template> after init has run and so was never bound per element.
 	const handleThemeToggle = () => {
-		const toggles = document.querySelectorAll<HTMLButtonElement>(
-			'[data-theme-toggle]'
-		);
 		setThemeToggleState();
-		toggles.forEach((btn) => {
-			btn.onclick = () => {
-				const isDark =
-					document.documentElement.classList.toggle('dark');
-				try {
-					localStorage.setItem('theme', isDark ? 'dark' : 'light');
-				} catch (e) {}
-				setThemeToggleState();
-			};
+		if ((window as any).__swzThemeBound) return;
+		(window as any).__swzThemeBound = true;
+		document.addEventListener('click', (e) => {
+			const btn = (e.target as HTMLElement | null)?.closest?.('[data-theme-toggle]');
+			if (!btn) return;
+			const isDark = document.documentElement.classList.toggle('dark');
+			try {
+				localStorage.setItem('theme', isDark ? 'dark' : 'light');
+			} catch (e) {}
+			setThemeToggleState();
 		});
 	};
 
@@ -734,17 +764,62 @@ const {
 		});
 	};
 
+	// ── asleep off screen ─────────────────────────────────────────────
+	// One observer marks every section that is far from the viewport, and
+	// global.css pauses the CSS animations inside it (.swz-asleep). The
+	// margin is half a screen either side, so nothing is seen waking up.
+	const sleepOffscreen = () => {
+		const w = window as any;
+		if (w.__swzSleeper) w.__swzSleeper.disconnect();
+		if (!('IntersectionObserver' in window)) return;
+		const io: IntersectionObserver = new IntersectionObserver(
+			(entries) =>
+				entries.forEach((e) => e.target.classList.toggle('swz-asleep', !e.isIntersecting)),
+			{ rootMargin: '50% 0px 50% 0px' }
+		);
+		w.__swzSleeper = io;
+		document
+			.querySelectorAll<HTMLElement>('#swup section, #swup .site-footer')
+			.forEach((el) => io.observe(el));
+	};
+
+	// ── films that wait to be looked at ───────────────────────────────
+	// <video data-lazy-play> ships with preload="none" and a poster. It is
+	// fetched and started only once on screen, paused again off it, and
+	// left as its poster on the calm version (perf-lite) or when the
+	// connection asked for less data.
+	const lazyFilms = () => {
+		const w = window as any;
+		if (w.__swzFilmIo) w.__swzFilmIo.disconnect();
+		const vids = document.querySelectorAll<HTMLVideoElement>('video[data-lazy-play]');
+		if (!vids.length) return;
+		const c = (navigator as any).connection;
+		const still =
+			document.documentElement.classList.contains('perf-lite') ||
+			(c && (c.saveData || /2g|3g/.test(c.effectiveType || ''))) ||
+			window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		if (still || !('IntersectionObserver' in window)) return;
+		const io = new IntersectionObserver(
+			(entries) =>
+				entries.forEach((e) => {
+					const v = e.target as HTMLVideoElement;
+					if (e.isIntersecting) {
+						if (v.preload === 'none') v.preload = 'auto';
+						v.play().catch(() => {});
+					} else if (!v.paused) v.pause();
+				}),
+			{ rootMargin: '25% 0px 25% 0px' }
+		);
+		w.__swzFilmIo = io;
+		vids.forEach((v) => io.observe(v));
+	};
+
 	const init = () => {
-		initFlowbite();
 		toaster();
 		handleThemeToggle();
 		handleHero();
-		// Per-view widget scripts are wrapped so a failure in any one of them
-		// can never block the nav / menu / scroll bindings that run afterwards
-		// (which would otherwise leave the navbar dead until a hard refresh).
-		const safe = (fn: () => void) => {
-			try { fn(); } catch (err) { console.error('[init]', err); }
-		};
+		sleepOffscreen();
+		lazyFilms();
 		// The chrome has to be live immediately — nav, menu, theme, scroll.
 		// Everything below is decoration, and on a modest laptop running it
 		// all synchronously at DOMContentLoaded held the main thread long
@@ -757,49 +832,8 @@ const {
 
 		[
 			initPortfolioDeck,
-			initViewExperience,
-			// the film must init after the view experience: it hands "Make it
-			// mine" over to window.openViewQuiz
-			initWelcomeFilm,
-			initViewBanner,
-			initBuilderView,
-			initBuilderBody,
-			initFounderBody,
-			initAboutFounder,
-			initAboutCampus,
-			initCampusBody,
-			initContactCampus,
-			initProgramsPage,
-			resumeTour,
-			initStudioBody,
-			initBoardroomBody,
-			initBusinessReel,
-			initBoardroomHero,
-			initFounderView,
-			initFounderReel,
-			initPitchDeck,
-			initCardShuffle,
-			initOrbitDeck,
-			initInlineFilms,
-			initBranchTree,
-			initBuildTeam,
-			initJourneyClimb,
-			initContactFounder,
-			initCampusView,
-			initStudioView,
-			initBoardroomView,
-			initWhiteboardVideo,
-			initBuilderStack,
-			initCopyLines,
-			initFilmPlayers,
-			initMentorsBand,
-			initCampusLibrary,
-			initCampusArchives,
 			initProgramsNotice,
 			initFooterTv,
-			initFilmExpand,
-			initCaseShelf,
-			initBlogBeats,
 			initNewsletter,
 			// the brief form in the boardroom, builder, studio and founder
 			// worlds — it lived in its own component and therefore never
@@ -813,81 +847,78 @@ const {
 			handleFooter,
 		].forEach(later);
 
-		// the page has reported for duty: the reveal backstop in BaseHead
-		// stands down
-		document.documentElement.classList.add('swz-ready');
-
-		if (document.querySelector('#newsletter')) {
-			const newsletterForm = document.getElementById('newsletter') as HTMLFormElement;
-
-			const email = document.getElementById('email') as HTMLInputElement;
-
-			newsletterForm.onsubmit = (e) => {
-				e.preventDefault();
-
-				const { name } = email;
-
-				/* should be submitted ::mailchimp */
-				console.log(name);
-			};
-		}
-
-		if (document.querySelector('#teammates-carousel')) {
-			const splide = new Splide('.splide', {
-				perPage: 1,
-				type: 'loop',
-				perMove: 1,
-				autoplay: true,
-				interval: 2000,
-				mediaQuery: 'min',
-				breakpoints: {
-					640: {
-						perPage: 2,
-						gap: 30,
-					},
-					768: {
-						perPage: 3,
-					},
-					1024: {
-						perPage: 4,
-					},
-				},
+		// the widgets this page actually has — fetched once, re-run on
+		// every navigation that has them
+		later(() => {
+			const inFlight: Promise<unknown>[] = [];
+			FEATURES.forEach((f) => {
+				if (!document.querySelector(f.when)) return;
+				const inits = loaded.get(f);
+				if (inits) {
+					inits.forEach(safe);
+					return;
+				}
+				if (loading.has(f)) {
+					inFlight.push(loading.get(f)!);
+					return;
+				}
+				const p = f
+					.load()
+					.then((fns) => {
+						loaded.set(f, fns);
+						// the page may have moved on while this was in flight;
+						// only init what is still here
+						if (document.querySelector(f.when)) fns.forEach(safe);
+					})
+					.catch((err) => console.error('[feature]', f.when, err))
+					.finally(() => loading.delete(f));
+				loading.set(f, p);
+				inFlight.push(p);
 			});
-			splide.mount();
+			// The reveal backstop in BaseHead shows every section as-is if
+			// the page has not reported ready in time. The sections are
+			// revealed by these modules, so "ready" means they are here —
+			// not merely that this script ran.
+			Promise.allSettled(inFlight).then(() =>
+				document.documentElement.classList.add('swz-ready')
+			);
+		});
+
+		// the welcome film and the two questions: at once on a first visit,
+		// otherwise only when reached for
+		if (onboardingInits.length) {
+			materializeOnboarding();
+			onboardingInits.forEach(safe);
+		} else if (onboardingWanted()) {
+			later(() => { void loadOnboarding(); });
 		}
-
-		if (document.querySelector('#services--dropdown')) {
-			const fields = document.querySelectorAll<HTMLDivElement>('.services--field');
-
-			fields.forEach((field) => {
-				field.addEventListener('click', () => {
-					const isActive = isTrue(field.dataset.hidden ?? '');
-					const fieldName = field.dataset.fieldname;
-					const btn = document.getElementById(`btn-${fieldName}`);
-
-					if (btn !== null) {
-						if (isActive) {
-							btn.firstElementChild!.textContent = `Hide ${fieldName}`;
-							btn.setAttribute('aria-expanded', 'true');
-						} else {
-							btn.firstElementChild!.textContent = `Expand ${fieldName}`;
-							btn.setAttribute('aria-expanded', 'false');
-						}
-					} else {
-						throw new Error(`${fieldName} Button is not defined:`);
-					}
-
-					field.dataset.hidden = (!isActive).toString();
+		if (!(window as any).__swzOnboardBound) {
+			(window as any).__swzOnboardBound = true;
+			const OPENERS = '[data-open-views], [data-open-film]';
+			const warm = (e: Event) => {
+				if ((e.target as HTMLElement | null)?.closest?.(OPENERS)) void loadOnboarding();
+			};
+			document.addEventListener('pointerover', warm, { passive: true });
+			document.addEventListener('touchstart', warm, { passive: true });
+			document.addEventListener('focusin', warm);
+			// a click before the code is here: fetch it, then open what was asked for
+			document.addEventListener('click', (e) => {
+				if (onboardingInits.length) return; // live: the real handlers have it
+				const el = (e.target as HTMLElement | null)?.closest?.(OPENERS) as HTMLElement | null;
+				if (!el) return;
+				e.preventDefault();
+				const film = el.hasAttribute('data-open-film');
+				void loadOnboarding().then(() => {
+					const w = window as any;
+					if (film && typeof w.openWelcomeFilm === 'function') w.openWelcomeFilm();
+					else if (typeof w.openViewPicker === 'function') w.openViewPicker();
 				});
 			});
 		}
 
+
 		if (document.querySelector<HTMLElement>('#mobile-wrapper')) {
 			handleMenuToggle();
-		}
-
-		if (document.querySelector('#member-dialog')) {
-			handleTeamDialog();
 		}
 
 		if (document.querySelector('#navbar--header')) {
@@ -1098,18 +1129,6 @@ const {
 			document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !leaveModal.hidden) closeLeave(); });
 		}
 
-		if (document.querySelector('#bootcamp-register')) {
-			const registerationForm = document.querySelector<HTMLFormElement>('#bootcamp-register');
-
-			registerationForm!.onsubmit = (e) => {
-				e.preventDefault();
-
-				console.log('hello');
-			};
-		}
-		if (document.querySelector('#bootcamp--faq')) {
-			handleDropDown('faq--item');
-		}
 	};
 
 	// guide to events and function check: https://swup.js.org/getting-started/reloading-javascript
@@ -1131,6 +1150,96 @@ const {
 	});
 	// expose so the view picker can navigate home when a world is chosen off-home
 	(window as any).swup = swup;
+
+	// ── one page per world ──────────────────────────────────────────────
+	//
+	// Every page that exists in all five worlds is five prerendered files
+	// (see src/lib/worlds.ts). In production the edge serves the visitor's
+	// world at the clean address, so an ordinary link needs nothing. When
+	// the edge is not there — local dev, or a host without it — the page
+	// has to be asked for by its /v/ address instead, so every navigation
+	// is routed through here first.
+	{
+		const origLoad = swup.loadPage.bind(swup);
+		swup.loadPage = (data: any) => {
+			try {
+				if (data && typeof data.url === 'string' && !edgeServesWorlds()) {
+					const u = new URL(data.url, location.origin);
+					if (u.origin === location.origin && !worldInPath(u.pathname)) {
+						const w = storedWorld();
+						if (w !== DEFAULT_WORLD && pageHasWorlds(u.pathname)) {
+							data = { ...data, url: worldHref(u.pathname, w) + u.search + u.hash };
+						}
+					}
+				}
+			} catch (e) {}
+			return origLoad(data);
+		};
+	}
+
+	// After a page lands: put the address bar right, and finish what a
+	// world switch started.
+	swup.on('contentReplaced', () => {
+		const w = window as any;
+		const root = document.documentElement;
+		// swup swaps the container, not <html>: carry the new page's world
+		// up to where the CSS reads it
+		const built = document.getElementById('swup')?.getAttribute('data-world') || '';
+		if (built) {
+			const want = storedWorld();
+			if (built !== want && !worldInPath(location.pathname) && pageHasWorlds(location.pathname)) {
+				// the clean address came back in the wrong world: the edge is
+				// not rewriting (or the cookie is gone). Note it, and ask for
+				// this page by its /v/ address instead — once.
+				try { sessionStorage.setItem('swizel-noedge', '1'); } catch (e) {}
+				try { document.cookie = `swizel-view=${want};path=/;max-age=31536000;SameSite=Lax`; } catch (e) {}
+				swup.loadPage({ url: worldHref(location.pathname, want), history: 'replace' });
+				return;
+			}
+			root.setAttribute('data-world', built);
+			root.setAttribute('data-view', built);
+		} else {
+			root.removeAttribute('data-world');
+			root.setAttribute('data-view', storedWorld());
+		}
+		const here = worldInPath(location.pathname);
+		// a /v/ address while the edge is known to work → show the clean one,
+		// so a link copied from the bar is a plain link
+		if (here && edgeServesWorlds()) {
+			try {
+				const clean = stripWorld(location.pathname) + location.search + location.hash;
+				history.replaceState(history.state, '', clean);
+			} catch (e) {}
+		}
+		if (w.__swzWorldSwitch) {
+			w.__swzWorldSwitch = false;
+			const id = root.getAttribute('data-view') || DEFAULT_WORLD;
+			// the switch used to scroll to the top in place; the new page
+			// arrives at the top already — only the listeners need telling
+			window.dispatchEvent(new CustomEvent('swizel:viewchange', { detail: id }));
+		}
+	});
+
+	// On the home page, where the rail and the quiz make a switch most
+	// likely, the other four worlds are fetched once the page is idle — on
+	// a connection that can afford it. Elsewhere a world is fetched the
+	// moment its card is touched (see prefetchWorld).
+	const warmOtherWorlds = () => {
+		if (stripWorld(location.pathname) !== '/') return;
+		const c = (navigator as any).connection;
+		if (c && (c.saveData || /2g|3g/.test(c.effectiveType || ''))) return;
+		if (document.documentElement.classList.contains('perf-lite')) return;
+		const here = document.documentElement.getAttribute('data-world') || DEFAULT_WORLD;
+		const run = () =>
+			WORLDS.filter((v) => v !== here).forEach((v, i) =>
+				window.setTimeout(() => prefetchWorld(v), 400 * i)
+			);
+		'requestIdleCallback' in window
+			? (window as any).requestIdleCallback(run, { timeout: 4000 })
+			: window.setTimeout(run, 2500);
+	};
+	window.addEventListener('load', () => window.setTimeout(warmOtherWorlds, 1500), { once: true });
+	swup.on('contentReplaced', () => window.setTimeout(warmOtherWorlds, 1500));
 
 	// ── measurement across a swapped page ───────────────────────
 	// swup changes the URL and replaces the markup without a reload, so the

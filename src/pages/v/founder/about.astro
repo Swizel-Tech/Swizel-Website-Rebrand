@@ -1,0 +1,13 @@
+---
+import MainLayout from '../../../layouts/MainLayout.astro';
+import AboutFounder from '../../../components/sections/AboutFounder.astro';
+import { PAGES } from '../../../data/seo';
+const world = 'founder' as const;
+const seo = PAGES['/about'];
+---
+{/* One page per world — see src/lib/worlds.ts. This file is the Founder
+    version of /about; the others sit beside it under src/pages/v/<world>/
+    and share everything but the world component. */}
+<MainLayout title={seo.title} description={seo.description} image="/images/og/og-about.jpg" world={world}>
+	<AboutFounder />
+</MainLayout>

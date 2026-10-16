@@ -4,8 +4,35 @@
 import { SITE_NAME, SITE_TITLE } from '../consts';
 import { seoFor } from '../data/seo';
 import { BUILD_ID } from '../buildId';
+import { stripWorld, worldInPath, type World } from '../lib/worlds';
+
+// The site's two typefaces, bundled into the page CSS (see the fonts
+// comment below). Upright weights only, exactly the set the Google Fonts
+// link used to load; italics stay browser-synthesised as they were.
+import '@fontsource/bebas-neue/latin-400.css';
+import '@fontsource/epilogue/latin-400.css';
+import '@fontsource/epilogue/latin-500.css';
+import '@fontsource/epilogue/latin-600.css';
+import '@fontsource/epilogue/latin-700.css';
+import '@fontsource/epilogue/latin-800.css';
+import '@fontsource/epilogue/latin-900.css';
+import bebas400 from '@fontsource/bebas-neue/files/bebas-neue-latin-400-normal.woff2?url';
+import epilogue400 from '@fontsource/epilogue/files/epilogue-latin-400-normal.woff2?url';
+import epilogue700 from '@fontsource/epilogue/files/epilogue-latin-700-normal.woff2?url';
+import epilogue800 from '@fontsource/epilogue/files/epilogue-latin-800-normal.woff2?url';
 
 export interface Props {
+	/** The world this page was built in, for pages that have one per world. */
+	world?: World;
+	/**
+	 * What a shared link's preview card says, when that should differ from
+	 * the page's own title and description. Used by the /v/<world>/ home
+	 * pages so a link sent from Founder shows "Swizel in Founder view"
+	 * on WhatsApp, while the tab and the search snippet keep the real
+	 * title. Only the og:/twitter: tags read these.
+	 */
+	shareTitle?: string;
+	shareDescription?: string;
 	title: string;
 	description: string;
 	image?: string;
@@ -26,15 +53,28 @@ export interface Props {
 	canonical?: string;
 }
 
+// ── /v/<world>/… is the same page in another world ────────────────────
+//
+// Those files exist so the edge can serve a visitor their chosen world
+// at the clean address (see src/lib/worlds.ts). To a search engine they
+// are duplicates, so every one of them canonicalises to the clean path
+// and asks not to be indexed — the same treatment the old /v/<world>
+// share endpoints had. Everything below that derives from the path
+// (canonical, breadcrumbs, the keywords record) uses the clean one.
+const pagePath = stripWorld(Astro.url.pathname);
+const isWorldVariant = worldInPath(Astro.url.pathname) !== null;
+
 const canonicalURL = Astro.props.canonical
 	? new URL(Astro.props.canonical)
-	: new URL(Astro.url.pathname, Astro.site);
+	: new URL(pagePath, Astro.site);
 
 const {
 	title,
 	description,
 	image = '/images/og-default.jpg',
 	type = 'website',
+	shareTitle = title,
+	shareDescription = description,
 } = Astro.props;
 
 // Absolute URL for the social share image (required by Facebook/Twitter).
@@ -51,7 +91,7 @@ const socialImageURL = new URL(image, shareBase);
 // for the keywords tag below — the title and description are passed in
 // as props by the page itself, so this is not a second source of truth
 // for them.
-const registry = seoFor(Astro.url.pathname);
+const registry = seoFor(pagePath);
 
 // One stamp for the whole build — see src/buildId.ts for why it cannot
 // be computed here.
@@ -59,7 +99,7 @@ const cssVersion = BUILD_ID;
 
 // Breadcrumbs, derived from the path so every page gets a trail without
 // each one having to declare it.
-const segments = Astro.url.pathname.split('/').filter(Boolean);
+const segments = pagePath.split('/').filter(Boolean);
 const titleCase = (s: string) =>
 	s.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 const breadcrumbSchema = {
@@ -248,7 +288,14 @@ const organizationSchema = {
     On Vercel it is the commit SHA; locally, a build timestamp. */}
 <meta name="swizel:build" content={BUILD_ID} />
 <meta name="theme-color" content="#28293E" />
-<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+<meta
+	name="robots"
+	content={
+		isWorldVariant
+			? 'noindex, follow'
+			: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'
+	}
+/>
 <meta name="author" content="Swizel Technologies Limited" />
 <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
 
@@ -405,6 +452,17 @@ const organizationSchema = {
 			};
 			swzWatch();
 
+			// ── which world is this visitor in? ───────────────────────────
+			//
+			// Three places can say: the /v/<world>/ prefix of the address
+			// (a shared link), a ?view=<world> query (the older share
+			// shape), and localStorage (what they chose last time). The
+			// first two win, and are remembered.
+			var WORLDS = ['boardroom', 'founder', 'builder', 'studio', 'campus'];
+			var root = document.documentElement;
+			var path = location.pathname;
+			var vm = /^\/v\/(boardroom|founder|builder|studio|campus)(?=\/|$)/.exec(path);
+			var fromPath = vm ? vm[1] : '';
 			var view = localStorage.getItem('swizel-view');
 			// the Legacy world was retired — send old visitors to the default view
 			if (view === 'legacy') {
@@ -414,48 +472,25 @@ const organizationSchema = {
 
 			// ── a shared link carries the world it was sent from ──────────
 			//
-			// Until now the world lived only in localStorage, so sending
-			// somebody "the portfolio in Builder" sent them the portfolio in
-			// whatever world THEY last used — which for most people is none
-			// at all. The thing that made the link worth sending did not
-			// survive the sending.
-			//
-			// ?view=builder fixes that, and it is read here rather than in a
-			// page script for one reason: this runs before the first paint,
-			// so the right world is on the html element before anything is
-			// drawn. Read it later and the visitor watches one world repaint
-			// into another.
+			// ?view=builder is read here rather than in a page script for
+			// one reason: this runs before the first paint, so the right
+			// world is on the html element before anything is drawn.
 			//
 			// It also counts as onboarded. Somebody who followed a link to a
 			// specific thing has been sent somewhere deliberately; opening
 			// the two-question quiz over the top of it would be answering a
 			// question they did not ask. The tour is still one tap away.
-			//
-			// The parameter is left in the address bar on purpose — it is
-			// what makes the URL shareable by copy-paste as well as by the
-			// share button — and <link rel=canonical> already points at the
-			// clean path, so search engines never see it as a second page.
 			try {
-				var WORLDS = ['boardroom', 'founder', 'builder', 'studio', 'campus'];
 				var params = new URLSearchParams(location.search);
 				var sent = params.get('view');
 				if (sent && WORLDS.indexOf(sent) !== -1) {
 					view = sent;
 					localStorage.setItem('swizel-view', view);
 					localStorage.setItem('swizel-onboarded', '1');
-
 					// Take it back out of the address bar once it has been
-					// read. The choice now lives in localStorage, so nothing
-					// downstream needs the parameter — and leaving it there
-					// means somebody who arrived on a shared link, and then
-					// copies the URL to send on themselves, silently passes a
-					// world they never chose to the next person. A link copied
-					// out of the address bar should be a plain link.
-					//
-					// replaceState, so no history entry is created and Back
-					// still returns to wherever they came from. It runs before
-					// swup initialises, so swup reads the cleaned URL as its
-					// own starting point.
+					// read, so a URL copied out of the bar is a plain link.
+					// replaceState, so Back still returns to wherever they
+					// came from, and it runs before swup initialises.
 					try {
 						params.delete('view');
 						var q = params.toString();
@@ -466,10 +501,62 @@ const organizationSchema = {
 						);
 					} catch (e) {}
 				}
+				if (fromPath) {
+					view = fromPath;
+					localStorage.setItem('swizel-view', view);
+					localStorage.setItem('swizel-onboarded', '1');
+				}
 			} catch (e) {}
 
+			// The edge reads a cookie, localStorage is what the page reads;
+			// keep the two in step so the next request lands in the same
+			// world this one did.
 			if (view) {
-				document.documentElement.setAttribute('data-view', view);
+				try {
+					document.cookie =
+						'swizel-view=' + view + ';path=/;max-age=31536000;SameSite=Lax';
+				} catch (e) {}
+			}
+
+			// ── was this page built for the right world? ──────────────────
+			//
+			// Pages that exist in all five worlds carry data-world, stamped
+			// at build time. If the visitor chose a different world than
+			// the one that arrived, the edge rewrite did not happen (local
+			// dev, another host) — so go to that world's own address
+			// instead, and remember that links must do the same from now
+			// on. One extra request, once, and only when the edge is away.
+			var built = root.getAttribute('data-world') || '';
+			if (built) {
+				if (view && view !== built && !fromPath) {
+					try { sessionStorage.setItem('swizel-noedge', '1'); } catch (e) {}
+					var to =
+						view === 'boardroom'
+							? path
+							: '/v/' + view + (path === '/' ? '/' : path);
+					location.replace(to + location.search + location.hash);
+					return;
+				}
+				root.setAttribute('data-view', built);
+				if (built !== 'boardroom' && !fromPath) {
+					// the clean address came back in the chosen world: the
+					// edge is doing its job
+					try { sessionStorage.removeItem('swizel-noedge'); } catch (e) {}
+				}
+				// Arrived on a /v/ address while the edge is known to work:
+				// show the clean one, so a copied link is a plain link. The
+				// world itself is already stored above.
+				var noedge = false;
+				try { noedge = sessionStorage.getItem('swizel-noedge') === '1'; } catch (e) {}
+				var local = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+				if (fromPath && !noedge && !local) {
+					try {
+						var clean = path.replace(/^\/v\/[a-z]+/, '') || '/';
+						history.replaceState(history.state, '', clean + location.search + location.hash);
+					} catch (e) {}
+				}
+			} else if (view) {
+				root.setAttribute('data-view', view);
 			}
 		} catch (e) {}
 	})();
@@ -492,16 +579,19 @@ const organizationSchema = {
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
 
-<!-- Fonts. These used to be an @import at the top of global.css, which
-     chains the request: the browser had to download and parse global.css
-     before it even learned the fonts existed, so the first screen could sit
-     unstyled for a beat on a slow machine. A link here starts both at once. -->
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link
-	rel="stylesheet"
-	href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Epilogue:wght@400;500;600;700;800;900&display=swap"
-/>
+<!-- Fonts, served from this site.
+     They came from Google Fonts: two extra origins to connect to, a
+     stylesheet to fetch and parse before the browser even learned where
+     the font files were, all on the critical path of every first visit.
+     The same faces — Bebas Neue, and Epilogue in the same six upright
+     weights, latin subset, font-display: swap — now ship with the site's
+     own CSS, and the four files the first screen needs are preloaded so
+     they start downloading with the HTML. Nothing about how the type
+     renders has changed. -->
+<link rel="preload" as="font" type="font/woff2" href={bebas400} crossorigin />
+<link rel="preload" as="font" type="font/woff2" href={epilogue400} crossorigin />
+<link rel="preload" as="font" type="font/woff2" href={epilogue700} crossorigin />
+<link rel="preload" as="font" type="font/woff2" href={epilogue800} crossorigin />
 
 <!-- Primary Meta Tags -->
 <title>{title}</title>
@@ -542,8 +632,8 @@ const organizationSchema = {
 <meta property="og:type" content={type} />
 <meta property="og:url" content={canonicalURL} />
 <meta property="og:site_name" content={SITE_NAME} />
-<meta property="og:title" content={title} />
-<meta property="og:description" content={description} />
+<meta property="og:title" content={shareTitle} />
+<meta property="og:description" content={shareDescription} />
 <meta property="og:image" content={socialImageURL} />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
@@ -556,8 +646,8 @@ const organizationSchema = {
 <meta property="twitter:creator" content="@swizelhq" />
 <meta property="twitter:image:alt" content={title} />
 <meta property="twitter:url" content={canonicalURL} />
-<meta property="twitter:title" content={title} />
-<meta property="twitter:description" content={description} />
+<meta property="twitter:title" content={shareTitle} />
+<meta property="twitter:description" content={shareDescription} />
 <meta property="twitter:image" content={socialImageURL} />
 
 <!-- Performance mode: decided before first paint so the page never starts
@@ -571,8 +661,12 @@ const organizationSchema = {
 			var weak =
 				(n.hardwareConcurrency && n.hardwareConcurrency <= 4) ||
 				(n.deviceMemory && n.deviceMemory <= 4);
+			// a connection that asks for less — Data Saver on, or 2G/3G —
+			// gets the calm version too, whatever the hardware says
+			var c = n.connection || n.mozConnection || n.webkitConnection;
+			var thin = !!(c && (c.saveData || /(^|\b)(slow-2g|2g|3g)$/.test(c.effectiveType || '')));
 			var flagged = sessionStorage.getItem('swizel-lite') === '1';
-			if (weak || flagged) document.documentElement.classList.add('perf-lite');
+			if (weak || thin || flagged) document.documentElement.classList.add('perf-lite');
 		} catch (e) {}
 	})();
 </script>
@@ -580,14 +674,14 @@ const organizationSchema = {
 <!-- Scroll reveals start at opacity 0 and are turned on by an observer once
      the page's scripts run. On a slow machine, or if a script throws, that
      left whole sections blank. This is the backstop: if the page has not
-     reported itself ready within three seconds, everything is shown as-is. -->
+     reported itself ready within two seconds, everything is shown as-is. -->
 <script is:inline>
 	(function () {
 		try {
 			var r = document.documentElement;
 			window.setTimeout(function () {
 				if (!r.classList.contains('swz-ready')) r.classList.add('swz-show-all');
-			}, 3000);
+			}, 2000);
 		} catch (e) {}
 	})();
 </script>
@@ -623,17 +717,9 @@ const organizationSchema = {
     ────────────────────────────────────────────────────────────────── */}
 <link rel="stylesheet" href={`/styles/global.css?v=${cssVersion}`} />
 
-<!-- swiper js — every carousel is below the fold, so this loads without
-     blocking the first paint and swaps in when it arrives -->
-<link
-	rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css"
-	media="print"
-	onload="this.media='all'"
-/>
-<noscript
-	><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" /></noscript
->
+{/* The Swiper stylesheet used to load here from jsdelivr on every page.
+    Nothing on the site uses Swiper — it was a third-party request for
+    nothing, on the critical path of every visit. */}
 
 <!-- The Google tag used to sit here, async in the head, competing with
      the fonts and the first images for the connection on the very

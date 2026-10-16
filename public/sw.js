@@ -1,9 +1,10 @@
 /* Swizel service worker — network-first for pages, stale-while-revalidate
    for static assets. Keeps the PWA installable and snappy offline.
    v2: self-destructs on localhost so development never sees stale files. */
-// v3 so every v2 cache is dropped on activate — anyone carrying a stale
+// v4 (the per-world rebuild: new pages, fonts and WebP images) so every
+// older cache is dropped on activate — anyone carrying a stale
 // global.css from the old stale-while-revalidate rule gets a clean start.
-const CACHE = 'swizel-v3';
+const CACHE = 'swizel-v4';
 // global.css is no longer listed here. It is requested with a ?v= stamp
 // that changes every build, so precaching the bare URL would store a
 // copy nothing ever asks for — and the stamp is what guarantees freshness

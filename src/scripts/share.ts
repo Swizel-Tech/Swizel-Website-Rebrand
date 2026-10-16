@@ -1,3 +1,4 @@
+import { hasWorldVariant, isWorld, stripWorld, worldHref } from '../lib/worlds';
 // Sharing a page, in the world you were reading it in.
 //
 // The problem this solves: somebody reading the portfolio in Builder
@@ -34,22 +35,33 @@
 export function shareUrl(): string {
 	const url = new URL(window.location.href);
 	const view = document.documentElement.getAttribute('data-view');
+	const clean = stripWorld(url.pathname === '/index.html' ? '/' : url.pathname);
+	url.searchParams.delete('view');
 
 	// No attribute means the visitor has not chosen a world, so there is
 	// nothing to carry — and a bare link is the honest thing to send.
-	if (!view) {
-		url.searchParams.delete('view');
+	if (!isWorld(view)) {
+		url.pathname = clean;
 		return url.toString();
 	}
 
-	const onHome = url.pathname === '/' || url.pathname === '/index.html';
-	if (onHome) {
-		url.pathname = `/v/${view}`;
-		url.searchParams.delete('view');
+	// The home page has a /v/<world>/ address for every world, each with
+	// its own preview card, so that is the link — even for Boardroom.
+	if (clean === '/') {
+		url.pathname = `/v/${view}/`;
 		url.hash = '';
 		return url.toString();
 	}
 
+	// Any other page that exists per world: its own address in that
+	// world (the clean path for Boardroom). The card is the page's own.
+	if (hasWorldVariant(clean)) {
+		url.pathname = worldHref(clean, view);
+		return url.toString();
+	}
+
+	// One markup skinned by CSS: the world travels as a query instead.
+	url.pathname = clean;
 	url.searchParams.set('view', view);
 	return url.toString();
 }

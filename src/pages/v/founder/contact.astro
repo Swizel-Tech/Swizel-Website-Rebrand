@@ -1,0 +1,13 @@
+---
+import MainLayout from '../../../layouts/MainLayout.astro';
+import ContactFounder from '../../../components/sections/ContactFounder.astro';
+import { PAGES } from '../../../data/seo';
+const world = 'founder' as const;
+const seo = PAGES['/contact'];
+---
+{/* One page per world — see src/lib/worlds.ts. This file is the Founder
+    version of /contact; the others sit beside it under src/pages/v/<world>/
+    and share everything but the world component. */}
+<MainLayout title={seo.title} description={seo.description} image="/images/og/og-contact.jpg" world={world}>
+	<ContactFounder />
+</MainLayout>

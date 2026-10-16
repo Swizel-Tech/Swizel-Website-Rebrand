@@ -1,0 +1,13 @@
+---
+import MainLayout from '../../../layouts/MainLayout.astro';
+import AboutStudio from '../../../components/sections/AboutStudio.astro';
+import { PAGES } from '../../../data/seo';
+const world = 'studio' as const;
+const seo = PAGES['/about'];
+---
+{/* One page per world — see src/lib/worlds.ts. This file is the Studio
+    version of /about; the others sit beside it under src/pages/v/<world>/
+    and share everything but the world component. */}
+<MainLayout title={seo.title} description={seo.description} image="/images/og/og-about.jpg" world={world}>
+	<AboutStudio />
+</MainLayout>

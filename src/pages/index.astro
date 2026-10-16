@@ -1,73 +1,24 @@
 ---
-import AboutSection from '../components/sections/AboutSection.astro';
-import HeroSection from '../components/sections/HeroSection.astro';
-import HeroBuilder from '../components/sections/HeroBuilder.astro';
-import HeroFounder from '../components/sections/HeroFounder.astro';
-import HeroCampus from '../components/sections/HeroCampus.astro';
-import HeroStudio from '../components/sections/HeroStudio.astro';
-import HowWeDoIt from '../components/sections/HowWeDoIt.astro';
-import PartnersSection from '../components/sections/PartnersSection.astro';
-import Portfolio from '../components/sections/Portfolio.astro';
 import MainLayout from '../layouts/MainLayout.astro';
-import ServicesSection from '../components/sections/ServicesSection.astro';
-import TestemonialSection from '../components/sections/TestemonialSection.astro';
-import OurBlogSection from '../components/sections/OurBlogSection.astro';
-import NewsLetterAndContact from '../components/sections/NewsLetterAndContact.astro';
-import ViewBanner from '../components/ViewBanner.astro';
+import HeroSection from '../components/sections/HeroSection.astro';
 import BoardroomBody from '../components/sections/BoardroomBody.astro';
-import BuilderBody from '../components/sections/BuilderBody.astro';
-import FounderBody from '../components/sections/FounderBody.astro';
-import CampusBody from '../components/sections/CampusBody.astro';
-import StudioBody from '../components/sections/StudioBody.astro';
-
-import { PAGES } from '../data/seo';
-
-// ── the blue link ─────────────────────────────────────────────────────
-//
-// This title has now been three things, and the third is the right one.
-//
-// It began as "Swizel Technologies Limited | Digital Solutions for Smart
-// Businesses", which is a title only somebody already looking for Swizel
-// would ever match. Then it became "Software Development Company in
-// Nigeria, UK & US | Swizel" — better, but it is three searches sharing
-// sixty characters, and a title that tries to win Nigeria, Britain and
-// America at once wins none of them convincingly. Google also has to
-// decide what this page IS, and a list of countries does not tell it.
-//
-// So the home page now says only what we do, in the words a stranger
-// with no idea where we are would type — and the places have pages of
-// their own, /nigeria and /global, which can name Abuja, Lagos, Africa,
-// the UK, the US and the EU properly instead of in an abbreviation.
-// Every word of it lives in src/data/seo.ts with the rest of the set.
-const seo = PAGES['/'];
+import ViewBanner from '../components/ViewBanner.astro';
+import { homeSeo } from '../lib/pages/home';
+const world = 'boardroom' as const;
+const seo = homeSeo(world);
 ---
-
-<MainLayout title={seo.title} description={seo.description}>
+{/* One page per world — see src/lib/worlds.ts. This file is the Boardroom
+    version of the home page; the others sit beside it under src/pages/v/<world>/
+    and share everything but the world component. */}
+<MainLayout
+	title={seo.title}
+	description={seo.description}
+	shareTitle={seo.shareTitle}
+	shareDescription={seo.shareDescription}
+	world={world}
+>
 	<HeroSection />
-	<HeroBuilder />
-	<HeroFounder />
-	<HeroCampus />
-	<HeroStudio />
-
-	<!-- "You are here" — orient the visitor, let them switch worlds -->
+	{/* "You are here" — orient the visitor, let them switch worlds */}
 	<ViewBanner />
-
-	<!-- Per-view bodies (built section by section) -->
 	<BoardroomBody />
-	<BuilderBody />
-	<FounderBody />
-	<CampusBody />
-	<StudioBody />
-
-	<!-- Shared body for the other views -->
-	<div class="default-body">
-		<PartnersSection />
-		<AboutSection />
-		<HowWeDoIt />
-		<Portfolio />
-		<ServicesSection />
-		<TestemonialSection />
-		<OurBlogSection />
-		<NewsLetterAndContact />
-	</div>
 </MainLayout>

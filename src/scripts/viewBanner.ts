@@ -1,5 +1,5 @@
 import { views, DEFAULT_VIEW } from '../consts';
-import { applyView } from './viewExperience';
+import { applyView, prefetchWorld } from './viewSwitch';
 
 // Powers the "choose your world" rail under the hero: keeps the headline in
 // sync with the active view, marks the current poster, and switches worlds
@@ -72,6 +72,17 @@ export function initViewBanner() {
 			c.classList.toggle('is-current', c.dataset.switchView === id)
 		);
 	};
+
+	// the moment a poster is hovered, touched or focused, its world starts
+	// arriving — so the click that follows is usually instant
+	const warmFrom = (e: Event) => {
+		const card = (e.target as HTMLElement | null)?.closest<HTMLElement>('[data-switch-view]');
+		const id = card?.dataset.switchView;
+		if (id && id !== 'surprise') prefetchWorld(id);
+	};
+	banner.addEventListener('pointerover', warmFrom, { passive: true });
+	banner.addEventListener('touchstart', warmFrom, { passive: true });
+	banner.addEventListener('focusin', warmFrom);
 
 	// one listener for every poster, original or copy
 	banner.addEventListener('click', (e) => {

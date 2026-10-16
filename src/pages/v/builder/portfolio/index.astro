@@ -1,0 +1,13 @@
+---
+import MainLayout from '../../../../layouts/MainLayout.astro';
+import PortfolioBuilder from '../../../../components/sections/PortfolioBuilder.astro';
+import { PAGES } from '../../../../data/seo';
+const world = 'builder' as const;
+const seo = PAGES['/portfolio'];
+---
+{/* One page per world — see src/lib/worlds.ts. This file is the Builder
+    version of /portfolio; the others sit beside it under src/pages/v/<world>/
+    and share everything but the world component. */}
+<MainLayout title={seo.title} description={seo.description} image={seo.image} world={world}>
+	<PortfolioBuilder />
+</MainLayout>

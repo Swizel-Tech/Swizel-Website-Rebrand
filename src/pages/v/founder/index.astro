@@ -1,0 +1,24 @@
+---
+import MainLayout from '../../../layouts/MainLayout.astro';
+import HeroFounder from '../../../components/sections/HeroFounder.astro';
+import FounderBody from '../../../components/sections/FounderBody.astro';
+import ViewBanner from '../../../components/ViewBanner.astro';
+import { homeSeo } from '../../../lib/pages/home';
+const world = 'founder' as const;
+const seo = homeSeo(world);
+---
+{/* One page per world — see src/lib/worlds.ts. This file is the Founder
+    version of the home page; the others sit beside it under src/pages/v/<world>/
+    and share everything but the world component. */}
+<MainLayout
+	title={seo.title}
+	description={seo.description}
+	shareTitle={seo.shareTitle}
+	shareDescription={seo.shareDescription}
+	world={world}
+>
+	<HeroFounder />
+	{/* "You are here" — orient the visitor, let them switch worlds */}
+	<ViewBanner />
+	<FounderBody />
+</MainLayout>

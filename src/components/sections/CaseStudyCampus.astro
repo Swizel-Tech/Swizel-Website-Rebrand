@@ -208,7 +208,7 @@ const heroBadges = cs.results.slice(0, 2);
 								/>
 							) : (
 							<figure class="cc-mframe cc-mframe--wide">
-								<video src={galVideo.src} muted loop playsinline autoplay />
+								<video src={galVideo.src} muted loop playsinline preload="none" data-lazy-play />
 								<figcaption>{galVideo.label}</figcaption>
 							</figure>
 							)

@@ -1,5 +1,6 @@
 ---
-import { posts } from '../../pages/blog/index.astro';
+import { blogPosts } from '../../lib/pages/blog';
+const posts = await blogPosts();
 import CustomButton from '../CustomButton.astro';
 import AccentHeader from '../HTML/AccentHeader.astro';
 import Heading from '../HTML/Heading.astro';

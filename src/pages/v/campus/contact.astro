@@ -1,0 +1,13 @@
+---
+import MainLayout from '../../../layouts/MainLayout.astro';
+import ContactCampus from '../../../components/sections/ContactCampus.astro';
+import { PAGES } from '../../../data/seo';
+const world = 'campus' as const;
+const seo = PAGES['/contact'];
+---
+{/* One page per world — see src/lib/worlds.ts. This file is the Campus
+    version of /contact; the others sit beside it under src/pages/v/<world>/
+    and share everything but the world component. */}
+<MainLayout title={seo.title} description={seo.description} image="/images/og/og-contact.jpg" world={world}>
+	<ContactCampus />
+</MainLayout>
