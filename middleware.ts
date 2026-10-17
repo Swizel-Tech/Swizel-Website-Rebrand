@@ -20,10 +20,21 @@ import { next, rewrite } from '@vercel/edge';
 import { DEFAULT_WORLD, WORLD_COOKIE, hasWorldVariant, isWorld, worldHref } from './src/lib/worlds';
 
 export const config = {
-	// Not the API, not Astro's hashed assets, not the /v/ pages themselves.
-	// Everything else is checked against the list of pages that exist per
-	// world (hasWorldVariant) — a stylesheet or an image never matches it.
-	matcher: ['/((?!api/|_astro/|v/).*)'],
+	// Only the pages that exist per world (the same list as hasWorldVariant
+	// in src/lib/worlds.ts). Measured live: every request that passes
+	// through here costs about 200 ms more than one that does not, so the
+	// images, fonts, stylesheets, videos and the single-world pages must
+	// never match. Trailing slashes are matched as well.
+	matcher: [
+		'/',
+		'/about(/)?',
+		'/services(/)?',
+		'/services/:slug',
+		'/portfolio(/)?',
+		'/work/:slug',
+		'/blog(/)?',
+		'/contact(/)?',
+	],
 };
 
 export default function middleware(request: Request) {

@@ -136,7 +136,10 @@ const {
 		{/* data-world rides on the swup container so a swapped-in page can
 		    tell the <html> element which world it was built in — swup
 		    replaces this container, never <html> itself. */}
+		{/* keyboard users jump past the header; invisible until it has focus */}
+		<a class="swz-skip" href="#swz-content">Skip to content</a>
 		<main id="swup" class="transition-main" data-world={world}>
+			<span id="swz-content" tabindex="-1" aria-hidden="true"></span>
 			<Header />
 			<slot />
 			{!hideFooter && <Footer world={world} />}
@@ -814,6 +817,48 @@ const {
 		vids.forEach((v) => io.observe(v));
 	};
 
+	// ── fingers, not pointers ───────────────────────────────────────
+	// On a touch screen every link and button smaller than 40px gets an
+	// invisible halo (global.css .swz-hit::after) that catches the tap.
+	// Nothing changes on screen; the target just stops being a 24px dot.
+	const widenTouchTargets = () => {
+		if (!window.matchMedia('(pointer: coarse)').matches) return;
+		document.querySelectorAll<HTMLElement>('a[href], button').forEach((el) => {
+			if (el.classList.contains('swz-hit') || el.closest('[data-no-hit]')) return;
+			const r = el.getBoundingClientRect();
+			if (r.width === 0 || r.height === 0) return;
+			if (r.width < 40 || r.height < 40) {
+				const pos = getComputedStyle(el).position;
+				if (pos === 'static') el.style.position = 'relative';
+				el.classList.add('swz-hit');
+			}
+		});
+	};
+
+	// ── phones: nothing smaller than 12px ─────────────────────────────
+	// Chips, captions and stat labels across the worlds are set at 9–11px,
+	// which is fine on a desktop and unreadable on a phone. On narrow
+	// screens any piece of text below 12px is raised to 12px — the floor
+	// a phone can actually render legibly. Desktop is untouched. Done
+	// here, once per page, rather than in two hundred CSS rules.
+	const phoneTextFloor = () => {
+		if (!window.matchMedia('(max-width: 640px)').matches) return;
+		const FLOOR = 12;
+		const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+			acceptNode: (n) =>
+				n.nodeValue && n.nodeValue.trim().length > 1 ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT,
+		});
+		const seen = new Set<HTMLElement>();
+		let n: Node | null;
+		while ((n = walker.nextNode())) {
+			const el = n.parentElement;
+			if (!el || seen.has(el) || el.closest('script, style, svg, code, pre, [data-no-floor]')) continue;
+			seen.add(el);
+			const size = parseFloat(getComputedStyle(el).fontSize);
+			if (size > 0 && size < FLOOR) el.style.fontSize = `${FLOOR}px`;
+		}
+	};
+
 	const init = () => {
 		toaster();
 		handleThemeToggle();
@@ -845,6 +890,8 @@ const {
 			initViewNudge,
 			initAnalytics,
 			handleFooter,
+			widenTouchTargets,
+			phoneTextFloor,
 		].forEach(later);
 
 		// the widgets this page actually has — fetched once, re-run on

@@ -209,7 +209,7 @@ const ticker = [
 							<span class="shr-swing">
 								<span class="shr-peg" aria-hidden="true"></span>
 								<span class="shr-hung-frame">
-									<img src={p.img} alt={`${p.name} — ${p.tagline}`} loading="eager" decoding="async" />
+									<img src={p.img} alt={`${p.name} — ${p.tagline}`} loading="eager" fetchpriority="high" decoding="async" />
 									<span class="shr-glass" aria-hidden="true"></span>
 									<span class="shr-scribble">{p.name}</span>
 								</span>

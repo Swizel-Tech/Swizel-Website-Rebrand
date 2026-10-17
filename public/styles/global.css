@@ -2729,3 +2729,32 @@ html.dark .sent__close { border-color: rgba(255, 255, 255, 0.24); }
   .sent__card, .sent__veil { transition: none; }
   .sent__ring-o, .sent__tick { animation: none !important; stroke-dashoffset: 0; }
 }
+
+/* ── keyboard: skip past the header ─────────────────────────────────── */
+.swz-skip {
+  position: absolute;
+  left: 16px;
+  top: -200px;
+  z-index: 10000;
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  background: #14162a;
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+.swz-skip:focus-visible { top: 16px; outline: 3px solid var(--view-accent, #28a6ec); outline-offset: 2px; }
+
+/* ── fingers: a 44px tap area around any small control on touch screens.
+   Added by MainLayout (widenTouchTargets); draws nothing. ─────────── */
+.swz-hit::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: max(100%, 44px);
+  height: max(100%, 44px);
+  transform: translate(-50%, -50%);
+  background: transparent;
+}

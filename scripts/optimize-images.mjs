@@ -93,6 +93,7 @@ let imgs = 0;
 let posters = 0;
 let urls = 0;
 let sized = 0;
+let heroes = 0;
 
 async function rewriteHtml(html) {
 	// <img …>
@@ -124,6 +125,25 @@ async function rewriteHtml(html) {
 		last = t.index + t[0].length;
 	}
 	html = out + html.slice(last);
+
+	// ── the hero, announced in the head ──
+	// The first image marked fetchpriority="high" is the hero, and the
+	// largest thing on the first screen. A preload in the head lets the
+	// browser ask for it with the HTML instead of after parsing to it.
+	const hero = /<img\b[^>]*\sfetchpriority=["']high["'][^>]*>/i.exec(html);
+	if (hero && !/rel="preload" as="image"/.test(html)) {
+		const src = attr(hero[0], 'src');
+		if (src && !/^https?:/.test(src)) {
+			const srcset = attr(hero[0], 'srcset');
+			const sizes = attr(hero[0], 'sizes');
+			const link =
+				`<link rel="preload" as="image" href="${src}"` +
+				(srcset ? ` imagesrcset="${srcset}" imagesizes="${sizes || '100vw'}"` : '') +
+				` fetchpriority="high">`;
+			html = html.replace(/(<meta charset=[^>]*>)/i, `$1${link}`);
+			heroes++;
+		}
+	}
 
 	// <video poster="…">
 	html = await replaceAsync(html, /(<video\b[^>]*\sposter=)("([^"]*)"|'([^']*)')/gi, async (m, pre, _q, a, b) => {
@@ -169,5 +189,5 @@ for (const file of files) {
 	}
 }
 console.log(
-	`optimize-images: ${touched} files in ${ROOT} · ${imgs} <img> to WebP (${sized} given width/height) · ${posters} posters · ${urls} url() backgrounds`
+	`optimize-images: ${touched} files in ${ROOT} · ${imgs} <img> to WebP (${sized} given width/height) · ${posters} posters · ${heroes} hero preloads · ${urls} url() backgrounds`
 );

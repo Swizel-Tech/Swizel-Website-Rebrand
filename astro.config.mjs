@@ -46,6 +46,10 @@ export default defineConfig({
         // here would be asking Google to index five URLs that say they
         // should not be indexed. See src/pages/v/[view].astro.
         !/\/v\/[^/]+(\/|$)/.test(page) &&
+        // /bootcamp and /bootcamp/register only redirect to /programs; a
+        // sitemap entry for a redirect is a URL Google is told to index
+        // and then told to leave
+        !/\/bootcamp(\/|$)/.test(page) &&
         !/\/portfolio\/(betslipswitch|brixmarketplace|hemamsynergy)\/?$/.test(page),
       // Not every page deserves the same attention from a crawler. The
       // pages that earn money get a higher priority and a faster
