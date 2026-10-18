@@ -289,11 +289,15 @@ const logos = [
 							aria-hidden={f.ghost ? 'true' : undefined}
 						>
 							<div class="bz-frame">
+								<!-- YouTube serves the same still as WebP at about half the
+								     bytes of the JPEG (the JPEGs were 944 KB across the reel).
+								     Not every upload has a maxres still, so the fallbacks are
+								     a list: JPEG maxres, then hq — see businessReel.ts. -->
 								<img
 									class="bz-poster"
-									src={`https://i.ytimg.com/vi/${f.id}/maxresdefault.jpg`}
-									data-bz-fallback={`https://i.ytimg.com/vi/${f.id}/hqdefault.jpg`}
-									alt=""
+									src={`https://i.ytimg.com/vi_webp/${f.id}/maxresdefault.webp`}
+									data-bz-fallback={`https://i.ytimg.com/vi/${f.id}/maxresdefault.jpg|https://i.ytimg.com/vi/${f.id}/hqdefault.jpg`}
+									alt={f.ghost ? '' : `${f.title} — film still`}
 									loading="lazy"
 									decoding="async"
 								/>

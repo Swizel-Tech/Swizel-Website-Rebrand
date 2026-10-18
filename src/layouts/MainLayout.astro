@@ -821,42 +821,67 @@ const {
 	// On a touch screen every link and button smaller than 40px gets an
 	// invisible halo (global.css .swz-hit::after) that catches the tap.
 	// Nothing changes on screen; the target just stops being a 24px dot.
+	//
+	// Reads first, writes after: measuring an element and then changing one
+	// in the same loop makes the browser lay the page out again for every
+	// element (a "forced reflow"). All the measuring happens in one pass,
+	// all the changes in a second, so the page is laid out once.
 	const widenTouchTargets = () => {
 		if (!window.matchMedia('(pointer: coarse)').matches) return;
+		const small: HTMLElement[] = [];
 		document.querySelectorAll<HTMLElement>('a[href], button').forEach((el) => {
 			if (el.classList.contains('swz-hit') || el.closest('[data-no-hit]')) return;
 			const r = el.getBoundingClientRect();
 			if (r.width === 0 || r.height === 0) return;
-			if (r.width < 40 || r.height < 40) {
-				const pos = getComputedStyle(el).position;
-				if (pos === 'static') el.style.position = 'relative';
-				el.classList.add('swz-hit');
-			}
+			if ((r.width < 40 || r.height < 40) && getComputedStyle(el).position === 'static') small.push(el);
+			else if (r.width < 40 || r.height < 40) el.classList.add('swz-hit');
+		});
+		small.forEach((el) => {
+			el.style.position = 'relative';
+			el.classList.add('swz-hit');
 		});
 	};
 
 	// ── phones: nothing smaller than 12px ─────────────────────────────
 	// Chips, captions and stat labels across the worlds are set at 9–11px,
 	// which is fine on a desktop and unreadable on a phone. On narrow
-	// screens any piece of text below 12px is raised to 12px — the floor
-	// a phone can actually render legibly. Desktop is untouched. Done
-	// here, once per page, rather than in two hundred CSS rules.
+	// screens any piece of text below 12px is raised to 12px. Desktop is
+	// untouched. The work is spread over idle moments in slices of a few
+	// milliseconds, reads before writes, so it never blocks a tap or a
+	// scroll and never forces the page to lay itself out twice.
 	const phoneTextFloor = () => {
 		if (!window.matchMedia('(max-width: 640px)').matches) return;
 		const FLOOR = 12;
+		const els: HTMLElement[] = [];
+		const seen = new Set<HTMLElement>();
 		const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
 			acceptNode: (n) =>
 				n.nodeValue && n.nodeValue.trim().length > 1 ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT,
 		});
-		const seen = new Set<HTMLElement>();
 		let n: Node | null;
 		while ((n = walker.nextNode())) {
 			const el = n.parentElement;
-			if (!el || seen.has(el) || el.closest('script, style, svg, code, pre, [data-no-floor]')) continue;
+			if (!el || seen.has(el) || el.closest('script, style, svg, code, pre, template, [data-no-floor]')) continue;
 			seen.add(el);
-			const size = parseFloat(getComputedStyle(el).fontSize);
-			if (size > 0 && size < FLOOR) el.style.fontSize = `${FLOOR}px`;
+			els.push(el);
 		}
+		const toFix: HTMLElement[] = [];
+		let i = 0;
+		const idle = (fn: (deadline?: { timeRemaining(): number }) => void) =>
+			'requestIdleCallback' in window
+				? (window as any).requestIdleCallback(fn, { timeout: 1500 })
+				: window.setTimeout(() => fn({ timeRemaining: () => 8 }), 16);
+		const read = (deadline?: { timeRemaining(): number }) => {
+			const until = performance.now() + Math.max(4, Math.min(12, deadline?.timeRemaining() ?? 8));
+			while (i < els.length && performance.now() < until) {
+				const el = els[i++]!;
+				const size = parseFloat(getComputedStyle(el).fontSize);
+				if (size > 0 && size < FLOOR) toFix.push(el);
+			}
+			if (i < els.length) idle(read);
+			else toFix.forEach((el) => { el.style.fontSize = `${FLOOR}px`; });
+		};
+		idle(read);
 	};
 
 	const init = () => {
@@ -1187,7 +1212,12 @@ const {
 		// first and you get a screen of raw, unstyled HTML for a beat.
 		plugins: [
 			new SwupA11yPlugin(),
-			new SwupHeadPlugin({ awaitAssets: true }),
+			// awaitAssets holds the swap until the incoming page's stylesheets
+			// have loaded, for up to 3 s. That is only enough because the
+			// styles of a world are asked for the moment it is chosen — before
+			// its HTML has even arrived (see viewSwitch.ts, warmWorldStyles) —
+			// so by the time the swap is due they are almost always here.
+			new SwupHeadPlugin({ awaitAssets: true, timeout: 3000 }),
 			new SwupScrollPlugin(),
 		],
 		linkSelector: 'a[href]',
@@ -1285,8 +1315,28 @@ const {
 			? (window as any).requestIdleCallback(run, { timeout: 4000 })
 			: window.setTimeout(run, 2500);
 	};
-	window.addEventListener('load', () => window.setTimeout(warmOtherWorlds, 1500), { once: true });
-	swup.on('contentReplaced', () => window.setTimeout(warmOtherWorlds, 1500));
+	// Not in the first seconds: four pages' worth of HTML parsed into the
+	// cache is work a phone should do after the visitor has settled, not
+	// while the first screen is still being assembled. It waits for the
+	// first touch, scroll or key — or eight quiet seconds, whichever comes
+	// first.
+	const warmLater = () => {
+		let done = false;
+		const go = () => {
+			if (done) return;
+			done = true;
+			['pointerdown', 'scroll', 'keydown', 'touchstart'].forEach((ev) =>
+				window.removeEventListener(ev, go)
+			);
+			warmOtherWorlds();
+		};
+		['pointerdown', 'scroll', 'keydown', 'touchstart'].forEach((ev) =>
+			window.addEventListener(ev, go, { passive: true, once: true })
+		);
+		window.setTimeout(go, 8000);
+	};
+	window.addEventListener('load', warmLater, { once: true });
+	swup.on('contentReplaced', warmLater);
 
 	// ── measurement across a swapped page ───────────────────────
 	// swup changes the URL and replaces the markup without a reload, so the

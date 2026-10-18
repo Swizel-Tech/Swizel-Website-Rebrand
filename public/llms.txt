@@ -1,0 +1,20 @@
+# Swizel Technologies
+
+> Custom software, mobile apps, web platforms and digital marketing from Abuja, Nigeria. We design, build and ship products for startups, SMEs and institutions, and we run a hands-on tech bootcamp.
+
+Website: https://www.swizel.co
+Contact: https://www.swizel.co/contact
+
+## Pages
+
+- [Home](https://www.swizel.co/): who we are and what we build
+- [About](https://www.swizel.co/about): the team and how we work
+- [Services](https://www.swizel.co/services): software development, product design, digital marketing
+- [Portfolio](https://www.swizel.co/portfolio): case studies of shipped products
+- [Blog](https://www.swizel.co/blog): articles on tech, product and growth
+- [Contact](https://www.swizel.co/contact): start a project
+
+## Notes
+
+- The site offers five reading views (Boardroom, Builder, Founder, Campus, Studio). The default Boardroom view at the clean URLs above is the canonical content.
+- Sitemap: https://www.swizel.co/sitemap-index.xml

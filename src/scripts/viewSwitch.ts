@@ -37,6 +37,9 @@ export function applyView(id: string) {
 	const swup = (window as any).swup;
 	if (builtFor && builtFor !== id && swup && pageHasWorlds(location.pathname)) {
 		// a different file holds this page in that world — go and get it.
+		// Its stylesheets are asked for right now, in parallel with the
+		// HTML, so the transition's 3 s wait for them is never reached.
+		warmWorldStyles(id);
 		// The cache is emptied first: it is keyed by address, and a clean
 		// address means "whatever world the cookie said at the time".
 		try { swup.cache.empty(); } catch (e) {}
@@ -65,9 +68,56 @@ export function prefetchWorld(id: string) {
 	if (!swup || !pageHasWorlds(location.pathname)) return;
 	if (id === (document.documentElement.getAttribute('data-world') || '')) return;
 	const url = worldPageUrl(location.pathname, id, true);
+	warmWorldStyles(id);
 	try {
 		if (swup.cache.exists(url)) return;
-		swup.fetchPage({ url }).catch(() => {});
+		swup
+			.fetchPage({ url })
+			.then((page: { originalContent?: string }) => preloadStyles(page?.originalContent || ''))
+			.catch(() => {});
 	} catch (e) {}
+}
+
+/**
+ * A world's page brings its own stylesheets. Fetching the HTML ahead of
+ * the click is only half the job — the styles are what the visitor
+ * would otherwise wait for behind the curtain. Each one the current page
+ * does not already have is asked for now, as a preload, so it is in the
+ * cache by the time the page is swapped in.
+ */
+const preloaded = new Set<string>();
+
+/**
+ * The build writes onto <main id="swup"> which stylesheets each sibling
+ * world needs that this page does not have (scripts/world-css-manifest).
+ * This asks for them. No manifest (local dev) means nothing to do here;
+ * preloadStyles below still covers it once the HTML has been fetched.
+ */
+export function warmWorldStyles(id: string, attr: 'data-world-css' | 'data-home-css' = 'data-world-css') {
+	try {
+		const raw = document.getElementById('swup')?.getAttribute(attr);
+		if (!raw) return;
+		const map = JSON.parse(raw) as Record<string, string[]>;
+		(map[id] || []).forEach(preloadOne);
+	} catch (e) {}
+}
+
+function preloadOne(href: string) {
+	const abs = new URL(href, location.origin).href;
+	if (preloaded.has(abs)) return;
+	if (Array.from(document.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]')).some((l) => l.href === abs)) return;
+	preloaded.add(abs);
+	const l = document.createElement('link');
+	l.rel = 'preload';
+	l.as = 'style';
+	l.href = abs;
+	document.head.appendChild(l);
+}
+
+function preloadStyles(html: string) {
+	if (!html) return;
+	const re = /<link\s+rel="stylesheet"\s+href="([^"]+)"/g;
+	let m: RegExpExecArray | null;
+	while ((m = re.exec(html))) preloadOne(m[1]!);
 }
 

@@ -4,7 +4,7 @@
 import { armViewNudge } from './viewNudge';
 import { isWorld, stripWorld } from '../lib/worlds';
 import { rememberWorld, worldPageUrl } from './viewStore';
-import { applyView, prefetchWorld } from './viewSwitch';
+import { applyView, prefetchWorld, warmWorldStyles } from './viewSwitch';
 
 // the switch itself lives in viewSwitch.ts so the rail and the nav can
 // change worlds without loading the whole quiz
@@ -248,6 +248,10 @@ export function initViewExperience() {
 		armViewNudge();
 		try { sessionStorage.removeItem('swizel-came-from'); } catch (e) {}
 		close();
+		// Ask for the home page's stylesheets in that world now, alongside
+		// the HTML, so the transition never waits on them (see
+		// scripts/world-css-manifest.mjs — data-home-css).
+		warmWorldStyles(id, 'data-home-css');
 		const a = document.createElement('a');
 		a.href = worldPageUrl('/', id, true);
 		a.style.display = 'none';

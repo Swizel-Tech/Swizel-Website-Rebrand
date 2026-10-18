@@ -96,4 +96,19 @@ export default defineConfig({
     // @iconify-json/mdi, so icons never depend on a remote API at build time.
     icon({ iconDir: 'src/icons' }),
   ],
+  // ── fewer stylesheet requests ──
+  // A page used to link seven stylesheets, three of them tiny (a few KB
+  // for a shared widget). Each one is a round trip the first paint waits
+  // on; on slow 4G Google measured the set at over a second. Sheets under
+  // 12 KB are written into the page instead — the bytes are the same, the
+  // waits are not. The big shared ones stay as files so they cache across
+  // pages.
+  build: {
+    inlineStylesheets: 'auto',
+  },
+  vite: {
+    build: {
+      assetsInlineLimit: 12288,
+    },
+  },
 });

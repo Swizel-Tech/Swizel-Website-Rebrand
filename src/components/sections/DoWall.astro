@@ -100,8 +100,8 @@ const doPanels = allDisciplines.map((d, i) => ({
 							<p class="bd-do-s">{d.line[0]}</p>
 							<p class="bd-do-s bd-do-s--sm">{d.line[1]}</p>
 							<div class="bd-do-acts">
-								<a class="bd-do-pill" href={`/services/${d.slug}`}>See the work</a>
-								<a class="bd-do-pill bd-do-pill--ghost" href="/contact">Start</a>
+								<a class="bd-do-pill" href={`/services/${d.slug}`} aria-label={`See our ${d.title.toLowerCase()} work`}>See the work</a>
+								<a class="bd-do-pill bd-do-pill--ghost" href="/contact" aria-label={`Start a ${d.title.toLowerCase()} project with Swizel`}>Start</a>
 							</div>
 						</div>
 						<div class="bd-do-shot">

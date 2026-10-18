@@ -27,6 +27,23 @@ interface Film {
 	unloadModule(module: string): void;
 }
 
+/**
+ * The YouTube player is the single heaviest thing on the home page — about
+ * 1.4 s of CPU on a mid-range phone. It used to start the moment the cover
+ * had been on screen for a beat, which on a phone meant it fought the
+ * first screen for the processor. Now it also waits for the page to have
+ * finished loading and gone quiet; the poster is up the whole time, and
+ * on a desktop the difference is not noticeable.
+ */
+function whenSettled(fn: () => void) {
+	const idle = () =>
+		'requestIdleCallback' in window
+			? (window as any).requestIdleCallback(fn, { timeout: 2500 })
+			: window.setTimeout(fn, 300);
+	if (document.readyState === 'complete') idle();
+	else window.addEventListener('load', idle, { once: true });
+}
+
 export function initBoardroomHero() {
 	const stage = document.querySelector<HTMLElement>('[data-bh]');
 	if (!stage) return;
@@ -171,7 +188,7 @@ export function initBoardroomHero() {
 				const en = entries[0];
 				if (!en) return;
 				if (en.isIntersecting) {
-					if (!timer) timer = window.setTimeout(() => { io.disconnect(); void mount(); }, FILM_DELAY);
+					if (!timer) timer = window.setTimeout(() => { io.disconnect(); whenSettled(() => void mount()); }, FILM_DELAY);
 				} else if (timer) {
 					window.clearTimeout(timer);
 					timer = 0;

@@ -74,10 +74,13 @@ export function initBusinessReel() {
 	// than leaving a black rectangle where the still should be.
 	reel.querySelectorAll<HTMLImageElement>('.bz-poster').forEach((img) => {
 		img.addEventListener('error', () => {
-			const next = img.dataset.bzFallback;
+			// a |-separated list: WebP maxres → JPEG maxres → hq
+			const rest = (img.dataset.bzFallback || '').split('|').filter(Boolean);
+			const next = rest.shift();
 			if (next && img.src !== next) {
 				img.src = next;
-				delete img.dataset.bzFallback;
+				if (rest.length) img.dataset.bzFallback = rest.join('|');
+				else delete img.dataset.bzFallback;
 			}
 		});
 	});

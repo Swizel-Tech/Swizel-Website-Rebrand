@@ -11,7 +11,7 @@
     "astro": "astro",
     "postinstall": "patch-package",
     "prebuild": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\" && node scripts/make-webp.mjs && node scripts/seo-check.mjs",
-    "postbuild": "node scripts/optimize-images.mjs && node scripts/page-seo-check.mjs",
+    "postbuild": "node scripts/optimize-images.mjs && node scripts/world-css-manifest.mjs && node scripts/minify-static.mjs && node scripts/page-seo-check.mjs",
     "seo": "node scripts/seo-check.mjs",
     "seo:pages": "node scripts/page-seo-check.mjs",
     "webp": "node scripts/make-webp.mjs",
