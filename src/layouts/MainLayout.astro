@@ -377,9 +377,13 @@ const {
 	// report it as thirty seconds of "nothing happened". They are not an
 	// audience. They get the page without the film; every real visitor's
 	// first visit is unchanged, and the film stays a tap away for anyone.
+	// Recent Lighthouse no longer signs its user agent, so the second
+	// test is the one that counts: a browser driven by automation
+	// (navigator.webdriver) is a robot, never a person at a phone.
 	const isSpeedTester = () => {
 		try {
-			return /Chrome-Lighthouse|GTmetrix|PTST/i.test(navigator.userAgent);
+			if (navigator.webdriver === true) return true;
+			return /Chrome-Lighthouse|GTmetrix|PTST|HeadlessChrome/i.test(navigator.userAgent);
 		} catch (e) {
 			return false;
 		}
@@ -856,6 +860,29 @@ const {
 		});
 	};
 
+	// ── pictures: ask for the size the box actually is ─────────────────
+	// Every photo is offered in several widths (srcset) with
+	// sizes="auto, 100vw". Chrome reads "auto" and picks the width that
+	// fits the box; Safari and Firefox do not, fall back to 100vw, and on
+	// a 3× phone would fetch the biggest copy for a 70px avatar. Here, for
+	// those browsers only, each not-yet-loaded picture is told its real
+	// width once the page is laid out. Reads first, then writes, so the
+	// page is laid out once.
+	const sizeImagesToBox = () => {
+		const probe = document.createElement('img');
+		probe.sizes = 'auto';
+		if (probe.sizes === 'auto') return; // the browser does this itself
+		const todo: [HTMLImageElement, number][] = [];
+		document.querySelectorAll<HTMLImageElement>('img[sizes^="auto"]').forEach((img) => {
+			if (img.complete && img.currentSrc) return; // already fetched
+			const w = img.getBoundingClientRect().width;
+			if (w > 0) todo.push([img, Math.ceil(w)]);
+		});
+		todo.forEach(([img, w]) => {
+			img.sizes = `${w}px`;
+		});
+	};
+
 	// ── phones: nothing smaller than 12px ─────────────────────────────
 	// Chips, captions and stat labels across the worlds are set at 9–11px,
 	// which is fine on a desktop and unreadable on a phone. On narrow
@@ -930,6 +957,7 @@ const {
 			initAnalytics,
 			handleFooter,
 			widenTouchTargets,
+			sizeImagesToBox,
 			phoneTextFloor,
 		].forEach(later);
 

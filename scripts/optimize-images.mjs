@@ -6,11 +6,14 @@
  * Runs after the build, over the HTML and CSS in the output folder:
  *
  *   <img src="/images/x.jpg">          →  src="/images/x.webp"
- *                                         srcset="…x-720.webp 720w, …x.webp 1600w"
+ *                                         srcset="…x-360.webp 360w, …x-720.webp 720w, …x-1080.webp 1080w, …x.webp 1600w"
  *                                         sizes="auto, 100vw"   (lazy images)
  *                                         width="1600" height="900"
  *   <video poster="/images/x.jpg">     →  poster="/images/x.webp"
  *   url(/images/x.jpg) in CSS/style    →  url(/images/x.webp)
+ *
+ * A picture authored as .webp already keeps its address and gets the
+ * same srcset from its narrower copies.
  *
  * Only when the twin actually exists in public/. Anything else — remote
  * images, the OG cards in <meta>, SVGs — is left exactly as it was.
@@ -37,8 +40,9 @@ if (!ROOT) {
 	process.exit(0);
 }
 const PUBLIC = 'public';
-const PHOTO = /^(\/[^"'?#]+?)\.(jpe?g|png)$/i;
-const SMALL = 720;
+const PHOTO = /^(\/[^"'?#]+?)\.(jpe?g|png|webp)$/i;
+// the narrower copies make-webp.mjs cuts; whichever exist are offered
+const LADDER = [360, 720, 1080];
 
 function walk(dir, out = []) {
 	for (const name of readdirSync(dir)) {
@@ -61,9 +65,15 @@ async function twin(rawSrc) {
 	if (metaCache.has(src)) return metaCache.get(src);
 	// a twin keeps the original's extension in its name only when two
 	// pictures share a stem (see make-webp.mjs); that one is tried first
-	const base = existsSync(join(PUBLIC, `${src}.webp`)) ? src : m[1];
+	const isWebp = /webp$/i.test(m[2]);
+	// a picture already shipped as WebP is left at its own address; a
+	// narrower copy of it (name-720.webp) is never widened further
+	if (isWebp && /-\d{3,4}$/.test(m[1])) {
+		metaCache.set(src, null);
+		return null;
+	}
+	const base = !isWebp && existsSync(join(PUBLIC, `${src}.webp`)) ? src : m[1];
 	const full = `${base}.webp`;
-	const small = `${base}-${SMALL}.webp`;
 	let info = null;
 	if (existsSync(join(PUBLIC, full))) {
 		let width = 0;
@@ -73,12 +83,10 @@ async function twin(rawSrc) {
 			width = md.width ?? 0;
 			height = md.height ?? 0;
 		} catch (e) {}
-		info = {
-			full: encodeURI(full),
-			small: existsSync(join(PUBLIC, small)) ? encodeURI(small) : null,
-			width,
-			height,
-		};
+		const variants = LADDER.filter((w) => w < width && existsSync(join(PUBLIC, `${base}-${w}.webp`))).map(
+			(w) => ({ w, href: encodeURI(`${base}-${w}.webp`) })
+		);
+		info = { full: encodeURI(full), variants, width, height };
 	}
 	metaCache.set(src, info);
 	return info;
@@ -108,8 +116,8 @@ async function rewriteHtml(html) {
 			tag = tag.replace(/(\ssrc=)("[^"]*"|'[^']*')/i, `$1"${info.full}"`);
 			imgs++;
 			const lazy = /\sloading=["']lazy["']/i.test(tag);
-			if (info.small && info.width && attr(tag, 'srcset') === null) {
-				const srcset = `${info.small} ${SMALL}w, ${info.full} ${info.width}w`;
+			if (info.variants.length && info.width && attr(tag, 'srcset') === null) {
+				const srcset = [...info.variants.map((v) => `${v.href} ${v.w}w`), `${info.full} ${info.width}w`].join(', ');
 				// "auto" lets a lazily-loaded image size itself from its own
 				// layout box (Chrome); the rest fall back to 100vw, which can
 				// only ever over-fetch, never blur.

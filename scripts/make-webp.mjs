@@ -8,8 +8,16 @@
  *
  * For each public/**.jpg|jpeg|png this writes, beside it:
  *   name.webp        the same picture, same pixels, as WebP
- *   name-720.webp    a 720px-wide copy, when the original is wider than
- *                    1000px — what a phone actually needs
+ *   name-360.webp    narrower copies — 360, 720 and 1080px wide — each
+ *   name-720.webp    one only when the picture is comfortably wider than
+ *   name-1080.webp   it, so a 70px avatar and a 3600px portfolio shot
+ *                    both have a size that fits their box (a phone at
+ *                    2–3× pixel density needs ~200px for that avatar,
+ *                    not 800)
+ *
+ * Hand-made WebPs (a .webp in public/ with no JPG/PNG beside it, or one
+ * older than its source) get the same narrower copies, cut from the WebP
+ * itself, so what is shown is always the same picture.
  *
  * scripts/optimize-images.mjs then points the built HTML and CSS at them.
  * Nothing in src/ changes and the dev server keeps serving the originals,
@@ -27,8 +35,12 @@ import sharp from 'sharp';
 const ROOT = 'public';
 const SKIP = [/^public\/email\//, /^public\/bimi\//, /^public\/icons\//, /^public\/images\/og\//];
 const PHOTO = /\.(jpe?g|png)$/i;
-const SMALL_WIDTH = 720;
-const NEEDS_SMALL_ABOVE = 1000;
+const HANDMADE = /\.webp$/i;
+const VARIANT = /-(\d{3,4})\.webp$/i;
+// widths of the narrower copies; a copy is only cut when the source is
+// at least 30% wider than it, so nothing is upscaled or near-duplicated
+const LADDER = [360, 720, 1080];
+const NEEDS_ABOVE = 1.3;
 
 function walk(dir, out = []) {
 	for (const name of readdirSync(dir)) {
@@ -36,6 +48,7 @@ function walk(dir, out = []) {
 		const s = statSync(p);
 		if (s.isDirectory()) walk(p, out);
 		else if (PHOTO.test(name)) out.push(p);
+		else if (HANDMADE.test(name) && !VARIANT.test(name)) out.push(p);
 	}
 	return out;
 }
@@ -45,7 +58,11 @@ function walk(dir, out = []) {
 // the same picture. Delete a twin to have it made again.
 const fresh = (twin) => existsSync(twin);
 
-const files = walk(ROOT).filter((f) => !SKIP.some((re) => re.test(f)));
+// stray copies that have turned up beside the real pictures
+// ("x.png.jpeg", "x-1080.jpeg") are not sources: nothing is cut from them
+const STRAY = /(\.(jpe?g|png|webp)|-\d{3,4})\.jpe?g$/i;
+const all = walk(ROOT).filter((f) => !SKIP.some((re) => re.test(f)) && !STRAY.test(f));
+const files = all.filter((f) => PHOTO.test(f));
 // "photo.jpg" and "photo.png" side by side are two different pictures
 // (it happens once, in the portfolio): their twins keep the extension in
 // the name so neither overwrites the other.
@@ -59,6 +76,11 @@ export const twinBase = (file) => {
 	return stems.get(stem) > 1 ? file : stem;
 };
 
+// a .webp that is not the twin of any JPG/PNG is a hand-made picture in
+// its own right (beauty-hive.webp, the retouched tellatrust-design.webp)
+const twins = new Set(files.map((f) => `${twinBase(f)}.webp`));
+const handmade = all.filter((f) => HANDMADE.test(f) && !twins.has(f));
+
 let made = 0;
 let kept = 0;
 let bytesIn = 0;
@@ -66,9 +88,6 @@ let bytesOut = 0;
 for (const file of files) {
 	const base = twinBase(file);
 	const full = `${base}.webp`;
-	const small = `${base}-${SMALL_WIDTH}.webp`;
-	const img = sharp(file);
-	const meta = await img.metadata();
 	const isPng = /\.png$/i.test(file);
 	// PNGs may carry transparency or flat graphics: lossless keeps them exact.
 	const opts = isPng ? { lossless: true } : { quality: 82, effort: 5 };
@@ -88,11 +107,28 @@ for (const file of files) {
 	bytesIn += statSync(file).size;
 	bytesOut += statSync(full).size;
 
-	if (ours && (meta.width ?? 0) > NEEDS_SMALL_ABOVE) {
-		if (!fresh(small)) {
-			await sharp(file).resize({ width: SMALL_WIDTH }).webp(opts).toFile(small);
-			made++;
-		} else kept++;
+	// the narrower copies are cut from whichever WebP is actually shown:
+	// our own conversion, or the hand-made twin that predates this script
+	const master = ours ? file : full;
+	// resized copies are lossy even for PNGs: at a fraction of the size
+	// the detail is gone anyway, and transparency survives either way
+	await ladder(master, base, { quality: 82, effort: 5 });
+}
+for (const file of handmade) {
+	await ladder(file, file.slice(0, -5), { quality: 82, effort: 5 });
+}
+
+async function ladder(master, base, opts) {
+	const width = (await sharp(master).metadata()).width ?? 0;
+	for (const w of LADDER) {
+		if (width < w * NEEDS_ABOVE) continue;
+		const out = `${base}-${w}.webp`;
+		if (fresh(out)) {
+			kept++;
+			continue;
+		}
+		await sharp(master).resize({ width: w }).webp(opts).toFile(out);
+		made++;
 	}
 }
 const kb = (n) => `${Math.round(n / 1024)} KB`;
