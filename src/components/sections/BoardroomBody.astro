@@ -297,7 +297,7 @@ const logos = [
 									class="bz-poster"
 									src={`https://i.ytimg.com/vi_webp/${f.id}/maxresdefault.webp`}
 									data-bz-fallback={`https://i.ytimg.com/vi/${f.id}/maxresdefault.jpg|https://i.ytimg.com/vi/${f.id}/hqdefault.jpg`}
-									alt={f.ghost ? '' : `${f.title} — film still`}
+									alt={`${f.title} — film still`}
 									loading="lazy"
 									decoding="async"
 								/>
@@ -354,7 +354,7 @@ const logos = [
 									<img
 										class="bz-tile-img"
 										src={w.img}
-										alt={pass === 1 ? '' : `${w.name} — ${w.sector}`}
+										alt={`${w.name} — ${w.sector}`}
 										loading="lazy"
 										decoding="async"
 									/>
