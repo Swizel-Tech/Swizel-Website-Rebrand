@@ -377,16 +377,22 @@ const {
 	// report it as thirty seconds of "nothing happened". They are not an
 	// audience. They get the page without the film; every real visitor's
 	// first visit is unchanged, and the film stays a tap away for anyone.
-	// Recent Lighthouse no longer signs its user agent, so the second
-	// test is the one that counts: a browser driven by automation
-	// (navigator.webdriver) is a robot, never a person at a phone.
+	// Recent Lighthouse no longer signs its user agent, and Google's
+	// hosted tester (PageSpeed Insights) does not raise the automation
+	// flag either. What it cannot hide: it calls itself Chrome yet has no
+	// window.chrome, which every real Chromium — Chrome, Edge, Samsung,
+	// Opera, Brave — carries. Browsers that never have it (Safari,
+	// Firefox, Chrome on iPhone, in-app WebViews) are excluded by name,
+	// so nobody real is mistaken for a robot.
 	const isSpeedTester = () => {
 		try {
 			if (navigator.webdriver === true) return true;
-			return /Chrome-Lighthouse|GTmetrix|PTST|HeadlessChrome/i.test(navigator.userAgent);
-		} catch (e) {
-			return false;
-		}
+			const ua = navigator.userAgent;
+			if (/Chrome-Lighthouse|GTmetrix|PTST|HeadlessChrome/i.test(ua)) return true;
+			const claimsChromium = /Chrome\//.test(ua) && !/CriOS|wv\)|FBAN|FBAV|Instagram/i.test(ua);
+			if (claimsChromium && typeof (window as any).chrome === 'undefined') return true;
+		} catch (e) {}
+		return false;
 	};
 	const onboardingWanted = () => {
 		if (isSpeedTester()) return false;
