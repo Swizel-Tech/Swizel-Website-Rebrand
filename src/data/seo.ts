@@ -73,7 +73,7 @@ export const REACH = {
 export const PAGES: Record<string, PageSeo> = {
 	// ── what we do ────────────────────────────────────────────────────
 	'/': {
-		title: 'Custom Website, Software & App Development Company | Swizel Technologies Limited',
+		title: 'Website, Software & App Development Company | Swizel Tech Ltd',
 		description:
 			'We build custom software, web platforms and mobile apps for ambitious businesses, from Nigeria and the UK to the US, EU and beyond. 65+ products shipped.',
 		keywords: [

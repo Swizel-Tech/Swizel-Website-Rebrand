@@ -99,8 +99,6 @@ const sectors = [
 		    plainly what this company does. The line keeps its job; the
 		    search gets its answer. The words live in src/data/seo.ts
 		    beside the title tag they match. */}
-		<span class="hero--kicker">{PAGES['/'].kicker}</span>
-
 		<h1 class="hero--display rhead">
 			<span class="hero--l1">You imagine.</span>
 			<span class="hero--l2">
@@ -114,6 +112,12 @@ const sectors = [
 			</span>
 			<span class="sr-only">We build, design, ship, scale and grow.</span>
 		</h1>
+
+		{/* An H2 now, so search engines count it as a heading. It stays
+		    visually above the H1 — the plate is a flex column and this
+		    is ordered first — but it comes after the H1 in the source,
+		    so the outline reads H1 then H2 the way it should. */}
+		<h2 class="hero--kicker">{PAGES['/'].kicker}</h2>
 
 		<div class="hero--cta">
 			<a href="/contact" class="hero--primary">
@@ -322,6 +326,11 @@ const sectors = [
 	.hero--plate {
 		position: absolute;
 		z-index: 3;
+		/* a column, so the kicker can sit above the H1 while following
+		   it in the source (see the markup) */
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
 		/* it belongs to the cover, not to any one frame — the pictures
 		   change behind it and it never moves or re-animates */
 		left: var(--pad);
@@ -331,6 +340,8 @@ const sectors = [
 	}
 	.hero--kicker {
 		display: block;
+		order: -1;
+		margin: 0;
 		font-size: 0.72rem;
 		font-weight: 700;
 		letter-spacing: 0.2em;

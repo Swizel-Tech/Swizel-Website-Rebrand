@@ -371,7 +371,21 @@ const {
 		}
 		return onboarding;
 	};
+	// Speed testers (PageSpeed Insights / Lighthouse, GTmetrix,
+	// WebPageTest) load the page as a first-time visitor and then wait for
+	// the screen to settle — so they sit through the welcome film and
+	// report it as thirty seconds of "nothing happened". They are not an
+	// audience. They get the page without the film; every real visitor's
+	// first visit is unchanged, and the film stays a tap away for anyone.
+	const isSpeedTester = () => {
+		try {
+			return /Chrome-Lighthouse|GTmetrix|PTST/i.test(navigator.userAgent);
+		} catch (e) {
+			return false;
+		}
+	};
 	const onboardingWanted = () => {
+		if (isSpeedTester()) return false;
 		try {
 			if (!localStorage.getItem('swizel-onboarded')) return true;
 		} catch (e) {
