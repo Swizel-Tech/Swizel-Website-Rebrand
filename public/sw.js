@@ -4,7 +4,12 @@
 // v4 (the per-world rebuild: new pages, fonts and WebP images) so every
 // older cache is dropped on activate — anyone carrying a stale
 // global.css from the old stale-while-revalidate rule gets a clean start.
-const CACHE = 'swizel-v4';
+// v5: pages fetched by swup (world switches, in-site links) were being
+// treated as assets — served from cache first — so after a deploy a
+// visitor could be handed the PREVIOUS build's HTML, pointing at
+// stylesheets that no longer exist. That is one way a world arrived
+// unstyled. Those fetches are now network-first like a navigation.
+const CACHE = 'swizel-v5';
 // global.css is no longer listed here. It is requested with a ?v= stamp
 // that changes every build, so precaching the bare URL would store a
 // copy nothing ever asks for — and the stamp is what guarantees freshness
@@ -55,7 +60,12 @@ self.addEventListener('fetch', (e) => {
 	if (url.origin !== self.location.origin) return;
 
 	// Pages: network first so content stays fresh, cache as fallback.
-	if (req.mode === 'navigate') {
+	// swup fetches pages with fetch() (mode 'cors'), not a navigation, so
+	// the Accept header is what identifies them as HTML.
+	const wantsHtml =
+		(req.headers.get('accept') || '').includes('text/html') ||
+		req.headers.get('x-requested-with') === 'swup';
+	if (req.mode === 'navigate' || wantsHtml) {
 		e.respondWith(
 			fetch(req)
 				.then((res) => {
