@@ -5,15 +5,15 @@ import { graph, SITE, ORG } from '../../data/schema';
 export const servicesSeo = PAGES['/services'];
 
 const SERVICE_LIST: [string, string][] = [
-	['Custom software development', '/services/custom-software/'],
-	['Web & mobile app development', '/services/app-development/'],
-	['Enterprise ERP systems', '/services/erp-systems/'],
-	['Web & mobile development', '/services/development/'],
-	['UI/UX & product design', '/services/design/'],
-	['Digital marketing', '/services/marketing/'],
-	['Product strategy & consulting', '/services/strategy/'],
-	['Maintenance & support', '/services/maintenance/'],
-	['AI & automation', '/services/ai-automation/'],
+	['Custom software development', '/services/custom-software'],
+	['Web & mobile app development', '/services/app-development'],
+	['Enterprise ERP systems', '/services/erp-systems'],
+	['Web & mobile development', '/services/development'],
+	['UI/UX & product design', '/services/design'],
+	['Digital marketing', '/services/marketing'],
+	['Product strategy & consulting', '/services/strategy'],
+	['Maintenance & support', '/services/maintenance'],
+	['AI & automation', '/services/ai-automation'],
 ];
 
 export const servicesSchema = graph({

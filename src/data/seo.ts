@@ -158,17 +158,18 @@ export const PAGES: Record<string, PageSeo> = {
 	},
 
 	'/global': {
-		title: 'Global Software Development Partner | UK, US & EU | Swizel',
+		title: 'Software Outsourcing for UK, US & EU Companies | Swizel',
 		description:
-			'A dedicated engineering partner for teams in the UK, US, Ireland and the EU. Custom software, apps and ERP builds, on a working day you actually share.',
+			'Software outsourcing and dedicated development teams for companies in the UK, US, Ireland and the EU. Custom software, apps and ERP, on a working day you share.',
 		keywords: [
-			'global software development partner',
-			'software outsourcing UK US',
+			'software outsourcing UK',
+			'software outsourcing company USA',
 			'offshore software development company',
-			'software development EU',
+			'nearshore software development Europe',
 			'dedicated development team',
+			'outsourced software development partner',
 		],
-		kicker: 'United Kingdom · United States · Ireland · EU',
+		kicker: 'Software outsourcing · United Kingdom, United States, Ireland & EU',
 	},
 
 	// ── who we are ────────────────────────────────────────────────────

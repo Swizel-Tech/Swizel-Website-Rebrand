@@ -111,7 +111,7 @@ const breadcrumbSchema = {
 			'@type': 'ListItem',
 			position: i + 2,
 			name: titleCase(seg),
-			item: `https://www.swizel.co/${segments.slice(0, i + 1).join('/')}/`,
+			item: `https://www.swizel.co/${segments.slice(0, i + 1).join('/')}`,
 		})),
 	],
 };
@@ -297,6 +297,11 @@ const organizationSchema = {
 	}
 />
 <meta name="author" content="Swizel Technologies Limited" />
+{/* Google Search Console ownership proof for https://www.swizel.co/.
+    Google re-checks it now and then, so it stays on every page even
+    after verification; removing it un-verifies the property. The same
+    token is also the DNS TXT record for the swizel.co domain property. */}
+<meta name="google-site-verification" content="b8RfvEsXlKlVZNgWN_W8nvK-E10h-TPEdnjXF8asgis" />
 <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
 
 <!-- ── the curtain, drawn before anything is fetched ──────────────────

@@ -9,6 +9,13 @@ import vercel from '@astrojs/vercel';
 export default defineConfig({
   // Production domain — powers canonical URLs, the sitemap, and Open Graph tags.
   site: 'https://www.swizel.co',
+  // One address per page. Vercel served /about and /about/ as two
+  // identical pages, the site's own links used the first and the
+  // canonical tag claimed the second, so Google picked /nigeria over
+  // /nigeria/ and filed the one we asked for as a duplicate. 'never'
+  // makes the build emit slash-less canonicals and sitemap entries, and
+  // the Vercel adapter turns it into a 308 from /about/ to /about.
+  trailingSlash: 'never',
   // Every page is still built to static HTML exactly as before. The
   // adapter is here so the handful of API routes under src/pages/api can
   // run as functions — nothing else on the site becomes server-rendered,
@@ -23,13 +30,13 @@ export default defineConfig({
   // credit the destination rather than treating five URLs as five pages
   // saying the same thing.
   redirects: {
-    '/ng': { status: 301, destination: '/nigeria/' },
-    '/africa': { status: 301, destination: '/nigeria/' },
-    '/abuja': { status: 301, destination: '/nigeria/' },
-    '/lagos': { status: 301, destination: '/nigeria/' },
-    '/uk': { status: 301, destination: '/global/' },
-    '/us': { status: 301, destination: '/global/' },
-    '/eu': { status: 301, destination: '/global/' },
+    '/ng': { status: 301, destination: '/nigeria' },
+    '/africa': { status: 301, destination: '/nigeria' },
+    '/abuja': { status: 301, destination: '/nigeria' },
+    '/lagos': { status: 301, destination: '/nigeria' },
+    '/uk': { status: 301, destination: '/global' },
+    '/us': { status: 301, destination: '/global' },
+    '/eu': { status: 301, destination: '/global' },
   },
   integrations: [
     mdx(),
