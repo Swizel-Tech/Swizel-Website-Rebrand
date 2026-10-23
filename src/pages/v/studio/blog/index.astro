@@ -1,10 +1,10 @@
 ---
 import MainLayout from '../../../../layouts/MainLayout.astro';
 import BlogStudio from '../../../../components/sections/BlogStudio.astro';
-import { PAGES } from '../../../../data/seo';
+import { worldSeo } from '../../../../data/worldSeo';
 import { blogPosts } from '../../../../lib/pages/blog';
 const world = 'studio' as const;
-const seo = PAGES['/blog'];
+const seo = worldSeo(world, '/blog');
 const posts = await blogPosts();
 ---
 {/* One page per world — see src/lib/worlds.ts. This file is the Studio

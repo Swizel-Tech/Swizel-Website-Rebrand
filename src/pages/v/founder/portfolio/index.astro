@@ -1,9 +1,9 @@
 ---
 import MainLayout from '../../../../layouts/MainLayout.astro';
 import PortfolioFounder from '../../../../components/sections/PortfolioFounder.astro';
-import { PAGES } from '../../../../data/seo';
+import { worldSeo } from '../../../../data/worldSeo';
 const world = 'founder' as const;
-const seo = PAGES['/portfolio'];
+const seo = worldSeo(world, '/portfolio');
 ---
 {/* One page per world — see src/lib/worlds.ts. This file is the Founder
     version of /portfolio; the others sit beside it under src/pages/v/<world>/

@@ -111,7 +111,10 @@ for (const p of pages) {
 	// /about/ is served, and /about should be treated as reachable too
 	served.add(p.url.replace(/\/$/, '') || '/');
 }
-const assetExists = (path) => existsSync(join(ROOT, path.replace(/^\//, '')));
+// A browser decodes the href before asking for the file, so the check
+// has to as well — "brix%20marketplace.webp" is "brix marketplace.webp"
+// on disk, and it is there.
+const assetExists = (path) => existsSync(join(ROOT, decodeURIComponent(path).replace(/^\//, '')));
 
 let errors = 0;
 let warns = 0;
@@ -151,7 +154,14 @@ for (const p of pages) {
 	// src/lib/worlds.ts). Each carries noindex and canonicalises to the
 	// clean path, so by every rule below it is a duplicate — which is
 	// exactly what it is meant to be. Counted and skipped.
-	if (/^\/v\/(boardroom|builder|founder|campus|studio)(\/|$)/.test(p.url)) {
+	//
+	// Except the six hub pages per world: those have their own title and
+	// description (src/data/worldSeo.ts), a self-canonical and index —
+	// so they are judged like any other page, duplicates included.
+	if (
+		/^\/v\/(boardroom|builder|founder|campus|studio)(\/|$)/.test(p.url) &&
+		!/^\/v\/(builder|founder|campus|studio)(\/(about|services|portfolio|blog|contact))?\/?$/.test(p.url)
+	) {
 		worldPages++;
 		continue;
 	}
@@ -350,7 +360,7 @@ if (!existsSync(sitemapIndex)) {
 }
 
 if (worldPages)
-	console.log(dim(`· ${worldPages} per-world copies under /v/ (noindex, canonical to the clean page) — skipped\n`));
+	console.log(dim(`· ${worldPages} per-world copies under /v/ (noindex, canonical to the clean page) — skipped; the 24 world hub pages were checked above\n`));
 console.log(
 	`${errors ? red(`${errors} to fix`) : green('0 to fix')}  ·  ${
 		warns ? yellow(`${warns} worth a look`) : green('0 warnings')

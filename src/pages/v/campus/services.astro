@@ -1,8 +1,10 @@
 ---
 import MainLayout from '../../../layouts/MainLayout.astro';
 import ServicesCampus from '../../../components/sections/ServicesCampus.astro';
-import { servicesSeo as seo, servicesSchema } from '../../../lib/pages/services';
+import { servicesSchema } from '../../../lib/pages/services';
+import { worldSeo } from '../../../data/worldSeo';
 const world = 'campus' as const;
+const seo = worldSeo(world, '/services');
 ---
 {/* One page per world — see src/lib/worlds.ts. This file is the Campus
     version of /services; the others sit beside it under src/pages/v/<world>/

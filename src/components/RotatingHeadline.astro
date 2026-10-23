@@ -3,14 +3,17 @@
 // Reused across every view so the swapping headline is a constant.
 interface Props {
 	class?: string;
+	/** h1 on a world's own home page, where it is the page's one headline. */
+	as?: 'h1' | 'h2';
 }
-const { class: className = '' } = Astro.props;
+const { class: className = '', as: Tag = 'h2' } = Astro.props;
 const words = ['Build.', 'Design.', 'Scale.', 'Launch.'];
 ---
 
-<!-- h2 (not h1): every view hero is in the DOM at once, and only the default
-     Boardroom hero should own the page's single h1 for SEO. -->
-<h2 class:list={['rhead font-bebas', className]}>
+<!-- h2 by default. Each world's home is its own page now, indexed under
+     /v/<world>, so the hero that opens it passes as="h1" and owns the
+     page's single h1; nowhere else does. -->
+<Tag class:list={['rhead font-bebas', className]}>
 	<span class="rhead__l1">You Imagine.</span>
 	<span class="rhead__l2">
 		<span>We</span>
@@ -25,7 +28,7 @@ const words = ['Build.', 'Design.', 'Scale.', 'Launch.'];
 		</span>
 		<span class="rhead__sr">We build, design, scale and launch.</span>
 	</span>
-</h2>
+</Tag>
 
 <style>
 	.rhead {

@@ -4,15 +4,17 @@ import HeroBuilder from '../../../components/sections/HeroBuilder.astro';
 import BuilderBody from '../../../components/sections/BuilderBody.astro';
 import ViewBanner from '../../../components/ViewBanner.astro';
 import { homeSeo } from '../../../lib/pages/home';
+import { worldSeo } from '../../../data/worldSeo';
 const world = 'builder' as const;
 const seo = homeSeo(world);
+const own = worldSeo(world, '/');
 ---
 {/* One page per world — see src/lib/worlds.ts. This file is the Builder
     version of the home page; the others sit beside it under src/pages/v/<world>/
     and share everything but the world component. */}
 <MainLayout
-	title={seo.title}
-	description={seo.description}
+	title={own.title}
+	description={own.description}
 	shareTitle={seo.shareTitle}
 	shareDescription={seo.shareDescription}
 	world={world}

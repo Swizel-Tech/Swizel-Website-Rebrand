@@ -5,6 +5,7 @@ import { SITE_NAME, SITE_TITLE } from '../consts';
 import { seoFor } from '../data/seo';
 import { BUILD_ID } from '../buildId';
 import { stripWorld, worldInPath, type World } from '../lib/worlds';
+import { isWorldPagePath } from '../data/worldSeo';
 
 // The site's two typefaces, bundled into the page CSS (see the fonts
 // comment below). Upright weights only, exactly the set the Google Fonts
@@ -56,17 +57,25 @@ export interface Props {
 // ── /v/<world>/… is the same page in another world ────────────────────
 //
 // Those files exist so the edge can serve a visitor their chosen world
-// at the clean address (see src/lib/worlds.ts). To a search engine they
-// are duplicates, so every one of them canonicalises to the clean path
-// and asks not to be indexed — the same treatment the old /v/<world>
-// share endpoints had. Everything below that derives from the path
-// (canonical, breadcrumbs, the keywords record) uses the clean one.
+// at the clean address (see src/lib/worlds.ts). Two kinds:
+//
+//   · the six hub pages per world (home, about, services, portfolio,
+//     blog, contact) carry their own title and description, written for
+//     that world's audience (src/data/worldSeo.ts). Each is a page in
+//     its own right: self-canonical, indexable, listed in the sitemap.
+//   · everything else under /v/ — case studies, the per-service pages —
+//     tells the same story in a different skin. To a search engine that
+//     is a duplicate, so it canonicalises to the clean path and asks
+//     not to be indexed.
+//
+// Breadcrumbs and the keywords record always derive from the clean path.
 const pagePath = stripWorld(Astro.url.pathname);
 const isWorldVariant = worldInPath(Astro.url.pathname) !== null;
+const isIndexedWorldPage = isWorldVariant && isWorldPagePath(pagePath);
 
 const canonicalURL = Astro.props.canonical
 	? new URL(Astro.props.canonical)
-	: new URL(pagePath, Astro.site);
+	: new URL(isIndexedWorldPage ? Astro.url.pathname : pagePath, Astro.site);
 
 const {
 	title,
@@ -291,7 +300,7 @@ const organizationSchema = {
 <meta
 	name="robots"
 	content={
-		isWorldVariant
+		isWorldVariant && !isIndexedWorldPage
 			? 'noindex, follow'
 			: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'
 	}
@@ -538,7 +547,7 @@ const organizationSchema = {
 					var to =
 						view === 'boardroom'
 							? path
-							: '/v/' + view + (path === '/' ? '/' : path);
+							: '/v/' + view + (path === '/' ? '' : path);
 					location.replace(to + location.search + location.hash);
 					return;
 				}

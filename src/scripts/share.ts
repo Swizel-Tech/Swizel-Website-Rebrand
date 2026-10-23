@@ -48,7 +48,7 @@ export function shareUrl(): string {
 	// The home page has a /v/<world>/ address for every world, each with
 	// its own preview card, so that is the link — even for Boardroom.
 	if (clean === '/') {
-		url.pathname = `/v/${view}/`;
+		url.pathname = `/v/${view}`;
 		url.hash = '';
 		return url.toString();
 	}

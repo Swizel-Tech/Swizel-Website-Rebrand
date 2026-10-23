@@ -1,9 +1,9 @@
 ---
 import MainLayout from '../../../layouts/MainLayout.astro';
 import AboutBuilder from '../../../components/sections/AboutBuilder.astro';
-import { PAGES } from '../../../data/seo';
+import { worldSeo } from '../../../data/worldSeo';
 const world = 'builder' as const;
-const seo = PAGES['/about'];
+const seo = worldSeo(world, '/about');
 ---
 {/* One page per world — see src/lib/worlds.ts. This file is the Builder
     version of /about; the others sit beside it under src/pages/v/<world>/

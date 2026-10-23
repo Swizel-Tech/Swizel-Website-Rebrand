@@ -1,9 +1,9 @@
 ---
 import MainLayout from '../../../layouts/MainLayout.astro';
 import AboutCampus from '../../../components/sections/AboutCampus.astro';
-import { PAGES } from '../../../data/seo';
+import { worldSeo } from '../../../data/worldSeo';
 const world = 'campus' as const;
-const seo = PAGES['/about'];
+const seo = worldSeo(world, '/about');
 ---
 {/* One page per world — see src/lib/worlds.ts. This file is the Campus
     version of /about; the others sit beside it under src/pages/v/<world>/

@@ -75,5 +75,8 @@ export const worldInPath = (pathname: string): World | null => {
 export const worldHref = (pathname: string, world: World): string => {
 	const clean = stripWorld(pathname);
 	if (world === DEFAULT_WORLD || !hasWorldVariant(clean)) return clean;
-	return `/v/${world}${clean === '/' ? '/' : clean}`;
+	// No trailing slash on the world's home: the site serves /v/founder,
+	// and since trailingSlash became 'never' a /v/founder/ costs a 308 —
+	// which the edge rewrite of / was paying on every non-Boardroom visit.
+	return `/v/${world}${clean === '/' ? '' : clean}`;
 };

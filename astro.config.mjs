@@ -48,11 +48,12 @@ export default defineConfig({
       // canonical points elsewhere is a contradiction.
       filter: (page) =>
         !page.includes('/rss.xml') &&
-        // /v/<world> are share endpoints, not pages. Each one carries
-        // noindex and canonicalises to the home page, so listing them
-        // here would be asking Google to index five URLs that say they
-        // should not be indexed. See src/pages/v/[view].astro.
-        !/\/v\/[^/]+(\/|$)/.test(page) &&
+        // Under /v/<world>/ only the six hub pages per world are real
+        // pages with their own words (src/data/worldSeo.ts). The case
+        // studies and per-service pages there carry noindex and
+        // canonicalise to the clean page, so they stay out.
+        !(/\/v\/[^/]+(\/|$)/.test(page) &&
+          !/\/v\/(builder|founder|campus|studio)(\/(about|services|portfolio|blog|contact))?\/?$/.test(page)) &&
         // /bootcamp and /bootcamp/register only redirect to /programs; a
         // sitemap entry for a redirect is a URL Google is told to index
         // and then told to leave
@@ -71,6 +72,10 @@ export default defineConfig({
         if (is('/')) {
           item.priority = 1.0;
           item.changefreq = 'weekly';
+        } else if (/^\/v\/(builder|founder|campus|studio)(\/|$)/.test(path)) {
+          // a world's own telling of a hub page
+          item.priority = 0.8;
+          item.changefreq = 'monthly';
         } else if (
           is('/services') ||
           is('/contact') ||

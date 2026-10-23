@@ -1,8 +1,10 @@
 ---
 import MainLayout from '../../../layouts/MainLayout.astro';
 import ServicesFounder from '../../../components/sections/ServicesFounder.astro';
-import { servicesSeo as seo, servicesSchema } from '../../../lib/pages/services';
+import { servicesSchema } from '../../../lib/pages/services';
+import { worldSeo } from '../../../data/worldSeo';
 const world = 'founder' as const;
+const seo = worldSeo(world, '/services');
 ---
 {/* One page per world — see src/lib/worlds.ts. This file is the Founder
     version of /services; the others sit beside it under src/pages/v/<world>/

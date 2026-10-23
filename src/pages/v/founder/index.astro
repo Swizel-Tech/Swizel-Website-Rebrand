@@ -4,15 +4,17 @@ import HeroFounder from '../../../components/sections/HeroFounder.astro';
 import FounderBody from '../../../components/sections/FounderBody.astro';
 import ViewBanner from '../../../components/ViewBanner.astro';
 import { homeSeo } from '../../../lib/pages/home';
+import { worldSeo } from '../../../data/worldSeo';
 const world = 'founder' as const;
 const seo = homeSeo(world);
+const own = worldSeo(world, '/');
 ---
 {/* One page per world — see src/lib/worlds.ts. This file is the Founder
     version of the home page; the others sit beside it under src/pages/v/<world>/
     and share everything but the world component. */}
 <MainLayout
-	title={seo.title}
-	description={seo.description}
+	title={own.title}
+	description={own.description}
 	shareTitle={seo.shareTitle}
 	shareDescription={seo.shareDescription}
 	world={world}
